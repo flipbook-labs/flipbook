@@ -9,7 +9,7 @@ for _, child in ipairs(ReplicatedStorage.RoactStorybook:GetChildren()) do
 	end
 end
 
-local results = TestEZ.TestBootstrap:run(roots, TestEZ.Reporters.TextReporterQuiet)
+local results = TestEZ.TestBootstrap:run(roots)
 
 if results.failureCount > 0 then
 	print("❌ Test run failed")
