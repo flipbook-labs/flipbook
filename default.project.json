@@ -1,6 +1,9 @@
 {
-	"name": "roact-storybook",
+	"name": "RoactStorybook",
 	"tree": {
+		"Packages": {
+			"$path": "Packages"
+		},
 		"$path": "src"
 	}
 }
