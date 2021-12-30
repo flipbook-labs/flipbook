@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  OUTPUT_NAME: "PACKAGE_NAME.rbxm"
+  OUTPUT_NAME: "RoactStorybook.rbxm"
 
 jobs:
   publish:
