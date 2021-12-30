@@ -1,0 +1,6 @@
+{
+	"name": "roact-storybook",
+	"tree": {
+		"$path": "src"
+	}
+}

@@ -1,0 +1,12 @@
+[package]
+name = "vocksel/roact-storybook"
+version = "0.1.0"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = [
+    "*.spec.lua"
+]
+
+[dev-dependencies]
+TestEZ = "roblox/testez@0.4.1"

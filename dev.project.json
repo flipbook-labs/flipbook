@@ -1,0 +1,19 @@
+{
+    "name": "roact-storybook (dev)",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "Packages": {
+                "$path": "Packages",
+                "RoactStorybook": {
+                    "$path": "src"
+                }
+            }
+        },
+        "ServerScriptService": {
+            "Tests": {
+                "$path": "tests"
+            }
+        }
+    }
+}
