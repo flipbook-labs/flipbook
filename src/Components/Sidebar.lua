@@ -3,32 +3,26 @@ local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local t = require(script.Parent.Parent.Packages.t)
 local useTheme = require(script.Parent.Parent.Hooks.useTheme)
+local styles = require(script.Parent.Parent.styles)
 
 local STORY_LABEL_SIZE = 32 -- px
 
 local validateProps = t.interface({
 	stories = t.array(t.instance("ModuleScript")),
-	maxSize = t.optional(t.Vector2),
 })
 
 type Props = {
 	stories: { ModuleScript },
-	maxSize: Vector2?,
-}
-
-local defaultProps: Props = {
-	maxSize = Vector2.new(math.huge, math.huge),
+	selectStory: () -> nil,
 }
 
 local function Sidebar(props: Props, hooks: any)
-	props = Llama.Dictionary.join(defaultProps, props)
-
 	assert(validateProps(props))
 
 	local theme = useTheme(hooks)
 
 	local onStorySelected = hooks.useCallback(function(rbx: TextButton)
-		print(rbx.Text, "selected")
+		props.selectStory(rbx.Text)
 	end, {})
 
 	local children = {}
@@ -60,15 +54,13 @@ local function Sidebar(props: Props, hooks: any)
 		})
 	end
 
-	return Roact.createElement("ScrollingFrame", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
-		CanvasSize = UDim2.fromScale(1, 0),
-		AutomaticCanvasSize = Enum.AutomaticSize.Y,
-		ScrollingDirection = Enum.ScrollingDirection.Y,
-		BorderSizePixel = 0,
-		ScrollBarThickness = 3,
-	}, children)
+	return Roact.createElement(
+		"ScrollingFrame",
+		Llama.Dictionary.join(styles.ScrollingFrame, {
+			BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
+		}),
+		children
+	)
 end
 
 return RoactHooks.new(Roact)(Sidebar)
