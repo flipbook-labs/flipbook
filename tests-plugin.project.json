@@ -1,0 +1,12 @@
+{
+    "name": "TestRunner",
+    "tree": {
+        "DevPackages": {
+            "$path": "DevPackages"
+        },
+        "Packages": {
+            "$path": "Packages"
+        },
+        "$path": "tests"
+    }
+}

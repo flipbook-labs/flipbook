@@ -12,22 +12,6 @@
                     "$path": "src"
                 }
             }
-        },
-        "ReplicatedStorage": {
-            "DevPackages": {
-                "$path": "DevPackages"
-            },
-            "RoactStorybook": {
-                "Packages": {
-                    "$path": "Packages"
-                },
-                "$path": "src"
-            }
-        },
-        "ServerScriptService": {
-            "tests": {
-                "$path": "tests"
-            }
         }
     }
 }

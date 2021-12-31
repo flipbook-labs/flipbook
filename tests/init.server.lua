@@ -1,18 +1,18 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ModuleLoader = require(script.Packages.ModuleLoader)
 
-local TestEZ = require(ReplicatedStorage.DevPackages.TestEZ)
+if plugin then
+	local loader = ModuleLoader.new()
 
-local roots = {}
-for _, child in ipairs(ReplicatedStorage.RoactStorybook:GetChildren()) do
-	if child.Name ~= "Packages" then
-		table.insert(roots, child)
-	end
-end
+	local action = plugin:CreatePluginAction(
+		"run-tests",
+		"Run tests",
+		"Runs all unit tests in the experience with plugin-level security."
+	)
 
-local results = TestEZ.TestBootstrap:run(roots)
-
-if results.failureCount > 0 then
-	print("❌ Test run failed")
+	action.Triggered:Connect(function()
+		loader:load(script.runTests)
+		loader:clear()
+	end)
 else
-	print("✔️ All tests passed")
+	require(script.runTests)
 end
