@@ -7,7 +7,9 @@ local Sidebar = require(script.Parent.Sidebar)
 local StoryView = require(script.Parent.StoryView)
 
 local function App(_props, hooks: any)
-	local selectedStory, selectStory = hooks.useState(nil)
+	local selectedStory, selectStory = hooks.useState(
+		game.PluginDebugService["user_RoactStorybook.rbxm"].RoactStorybook.Components["Sidebar.story"]
+	)
 
 	return Roact.createElement("Frame", {
 		BackgroundTransparency = 1,

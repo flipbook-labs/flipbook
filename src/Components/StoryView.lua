@@ -1,13 +1,20 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
-local types = require(script.Parent.Parent.types)
 local styles = require(script.Parent.Parent.styles)
+local useStory = require(script.Parent.Parent.Hooks.useStory)
 
 type Props = {
-	story: types.Story,
+	story: ModuleScript?,
 }
 
-local function StoryView(props: Props, _hooks: any)
+local function StoryView(props: Props, hooks: any)
+	-- local story = useStory(hooks, props.story)
+	local story = useStory(hooks, script.Parent["Sample.story"])
+
+	if not story then
+		return
+	end
+
 	return Roact.createElement("ScrollingFrame", styles.ScrollingFrame, {
 		Meta = Roact.createElement("Frame", {
 			Size = UDim2.fromScale(1, 0),
@@ -17,13 +24,15 @@ local function StoryView(props: Props, _hooks: any)
 				Size = UDim2.fromScale(1, 0.2),
 			}),
 
-			Controls = props.story.controls and Roact.createElement("Frame", {
+			Controls = Roact.createElement("Frame", {
 				Size = UDim2.fromScale(1, 0.3),
 			}),
 		}),
 
 		Preview = Roact.createElement("Frame", {
 			Size = UDim2.fromScale(1, 1),
+		}, {
+			Story = story,
 		}),
 	})
 end
