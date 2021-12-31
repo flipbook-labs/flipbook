@@ -7,7 +7,7 @@ type Props = {
 	story: types.Story,
 }
 
-local function StoryView(props: Props, hooks: any)
+local function StoryView(props: Props, _hooks: any)
 	return Roact.createElement("ScrollingFrame", styles.ScrollingFrame, {
 		Meta = Roact.createElement("Frame", {
 			Size = UDim2.fromScale(1, 0),
