@@ -1,3 +1,4 @@
+local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local styles = require(script.Parent.Parent.styles)
@@ -8,14 +9,13 @@ type Props = {
 }
 
 local function StoryView(props: Props, hooks: any)
-	-- local story = useStory(hooks, props.story)
-	local story = useStory(hooks, script.Parent["Sample.story"])
+	local story = useStory(hooks, props.story)
 
 	if not story then
 		return
 	end
 
-	return Roact.createElement("ScrollingFrame", styles.ScrollingFrame, {
+	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
 		Meta = Roact.createElement("Frame", {
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,

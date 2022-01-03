@@ -1,5 +1,7 @@
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
-local Roact = require(script.Parent.Parent.Packages.Roact)
+local Packages = script.Parent.Parent.Packages
+
+local ModuleLoader = require(Packages.ModuleLoader)
+local Roact = require(Packages.Roact)
 
 local function useStory(hooks: any, module: ModuleScript)
 	local story, setStory = hooks.useState(nil)
@@ -7,14 +9,13 @@ local function useStory(hooks: any, module: ModuleScript)
 	hooks.useEffect(function()
 		if module then
 			local loader = ModuleLoader.new()
-			local result = loader:load(module)
 
-			-- Something goes wrong with Roact components when they are loaded
-			-- with ModuleLoader. Likely a problem with the symbols. Because of
-			-- this, we create a brand new element based off the one given.
-			local element = Roact.createElement(result.story.component, result.story.props)
+			-- Roact needs to be cached so that the story is using the same
+			-- table instance as the plugin
+			loader:cache(Packages.Roact, Roact)
 
-			setStory(element)
+			local result = loader:require(module)
+			setStory(result.story)
 
 			loader:clear()
 		end
