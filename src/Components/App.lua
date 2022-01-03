@@ -5,13 +5,11 @@ local useStories = require(script.Parent.Parent.Hooks.useStories)
 local Sidebar = require(script.Parent.Sidebar)
 local StoryView = require(script.Parent.StoryView)
 
-local Sample = script.Parent["Sample.story"]
-
 local function App(_props, hooks: any)
 	local storybooks = useStorybooks(hooks, game)
 	local selectedStorybook, selectStorybook = hooks.useState(nil)
 	local stories = useStories(hooks, selectedStorybook)
-	local selectedStory, selectStory = hooks.useState(Sample)
+	local selectedStory, selectStory = hooks.useState(nil)
 
 	if selectedStorybook then
 		storybooks = nil
