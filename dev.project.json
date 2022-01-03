@@ -2,17 +2,6 @@
     "name": "RoactStorybook (dev)",
     "tree": {
         "$className": "DataModel",
-        "PluginDebugService": {
-            "user_RoactStorybook.rbxm": {
-                "$className": "Plugin",
-                "RoactStorybook": {
-                    "Packages": {
-                        "$path": "Packages"
-                    },
-                    "$path": "src"
-                }
-            }
-        },
         "ReplicatedStorage": {
             "DevPackages": {
                 "$path": "DevPackages"
