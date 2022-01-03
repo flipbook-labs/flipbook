@@ -13,17 +13,13 @@ local validateProps = t.interface({
 
 type Props = {
 	stories: { ModuleScript },
-	selectStory: () -> nil,
+	selectStory: (ModuleScript) -> nil,
 }
 
 local function Sidebar(props: Props, hooks: any)
 	assert(validateProps(props))
 
 	local theme = useTheme(hooks)
-
-	local onStorySelected = hooks.useCallback(function(rbx: TextButton)
-		props.selectStory(rbx.Text)
-	end, {})
 
 	local children = {}
 
@@ -43,7 +39,9 @@ local function Sidebar(props: Props, hooks: any)
 			Size = UDim2.new(1, 0, 0, STORY_LABEL_SIZE),
 			Text = name,
 			TextXAlignment = Enum.TextXAlignment.Left,
-			[Roact.Event.Activated] = onStorySelected,
+			[Roact.Event.Activated] = function()
+				props.selectStory(story)
+			end,
 		}, {
 			Padding = Roact.createElement("UIPadding", {
 				PaddingTop = UDim.new(0, 8),

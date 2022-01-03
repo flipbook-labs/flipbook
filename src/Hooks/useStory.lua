@@ -15,7 +15,12 @@ local function useStory(hooks: any, module: ModuleScript)
 			loader:cache(Packages.Roact, Roact)
 
 			local result = loader:require(module)
-			setStory(result.story)
+
+			if typeof(result) == "table" and result.story then
+				setStory(result.story)
+			else
+				print("could not select story", module:GetFullName())
+			end
 
 			loader:clear()
 		end
