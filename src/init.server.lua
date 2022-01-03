@@ -1,9 +1,16 @@
+local RunService = game:GetService("RunService")
+
 local Roact = require(script.Packages.Roact)
 local createWidget = require(script.Plugin.createWidget)
 local createToggleButton = require(script.Plugin.createToggleButton)
 local App = require(script.Components.App)
 
 local PLUGIN_NAME = "RoactStorybook"
+
+if RunService:IsRunning() or not RunService:IsEdit() then
+	print("exit")
+	return
+end
 
 print("Loading", PLUGIN_NAME)
 
