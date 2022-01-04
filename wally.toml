@@ -12,7 +12,5 @@ RoactHooks = "kampfkarren/roact-hooks@0.3.0"
 Flipper = "reselim/flipper@2.0.0"
 Llama = "freddylist/llama@1.1.1"
 t = "osyrisrblx/t@3.0.0"
-ModuleLoader = "vocksel/module-loader@0.2.0"
-
-[dev-dependencies]
+ModuleLoader = "vocksel/module-loader@0.3.0"
 TestEZ = "roblox/testez@0.4.1"

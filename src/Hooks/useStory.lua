@@ -3,26 +3,38 @@ local Packages = script.Parent.Parent.Packages
 local ModuleLoader = require(Packages.ModuleLoader)
 local Roact = require(Packages.Roact)
 
+local loader = ModuleLoader.new()
+
 local function useStory(hooks: any, module: ModuleScript)
 	local story, setStory = hooks.useState(nil)
 
+	local loadStory = hooks.useCallback(function()
+		if not module then
+			return
+		end
+
+		loader:clear()
+
+		-- Roact needs to be cached so that the story is using the same
+		-- table instance as the plugin
+		loader:cache(Packages.Roact, Roact)
+
+		local result = loader:require(module)
+
+		if typeof(result) == "table" and result.story then
+			setStory(result.story)
+		else
+			print("could not select story", module:GetFullName())
+		end
+	end, { module })
+
 	hooks.useEffect(function()
-		if module then
-			local loader = ModuleLoader.new()
+		local conn = loader.loadedModuleChanged:Connect(loadStory)
 
-			-- Roact needs to be cached so that the story is using the same
-			-- table instance as the plugin
-			loader:cache(Packages.Roact, Roact)
+		loadStory()
 
-			local result = loader:require(module)
-
-			if typeof(result) == "table" and result.story then
-				setStory(result.story)
-			else
-				print("could not select story", module:GetFullName())
-			end
-
-			loader:clear()
+		return function()
+			conn:Disconnect()
 		end
 	end, { module })
 
