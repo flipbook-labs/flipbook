@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local TestEZ = require(ReplicatedStorage.DevPackages.TestEZ)
+local TestEZ = require(ReplicatedStorage.Packages.TestEZ)
 
 local roots = {}
 for _, child in ipairs(ReplicatedStorage.RoactStorybook:GetChildren()) do
