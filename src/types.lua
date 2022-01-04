@@ -1,8 +1,6 @@
 export type Storybook = {
 	storyRoots: { Instance },
 	name: string?,
-	summary: string?,
-	roact: table?,
 }
 
 export type StoryControl = {

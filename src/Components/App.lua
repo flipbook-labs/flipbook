@@ -1,15 +1,22 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
-local getStories = require(script.Parent.Parent.getStories)
+local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
+local useStories = require(script.Parent.Parent.Hooks.useStories)
 local Sidebar = require(script.Parent.Sidebar)
 local StoryView = require(script.Parent.StoryView)
 
-local Sample = script.Parent["Sample.story"]
-
 local function App(_props, hooks: any)
-	local selectedStory, selectStory = hooks.useState(Sample)
+	local storybooks = useStorybooks(hooks, game)
+	local selectedStorybook, selectStorybook = hooks.useState(nil)
+	local stories = useStories(hooks, selectedStorybook)
+	local selectedStory, selectStory = hooks.useState(nil)
+
+	if selectedStorybook then
+		storybooks = nil
+	end
+
+	print(selectedStorybook)
+	print(selectedStory)
 
 	return Roact.createElement("Frame", {
 		BackgroundTransparency = 1,
@@ -26,7 +33,9 @@ local function App(_props, hooks: any)
 			BackgroundTransparency = 1,
 		}, {
 			Sidebar = Roact.createElement(Sidebar, {
-				stories = getStories(ReplicatedStorage),
+				storybooks = storybooks,
+				stories = stories,
+				selectStorybook = selectStorybook,
 				selectStory = selectStory,
 			}),
 		}),
