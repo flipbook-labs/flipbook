@@ -4,11 +4,11 @@ local StoryList = require(script.Parent.StoryList)
 
 return {
 	story = Roact.createElement(StoryList, {
-		storybooks = {
+		stories = {
 			SampleStory,
 		},
-		onStorybookSelected = function(storybook)
-			print(storybook.name)
+		onStorySelected = function(story)
+			print(story.name)
 		end,
 	}),
 }
