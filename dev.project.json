@@ -3,8 +3,8 @@
     "tree": {
         "$className": "DataModel",
         "ReplicatedStorage": {
-            "DevPackages": {
-                "$path": "DevPackages"
+            "Packages": {
+                "$path": "Packages"
             },
             "RoactStorybook": {
                 "Packages": {
