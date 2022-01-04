@@ -8,7 +8,6 @@ local App = require(script.Components.App)
 local PLUGIN_NAME = "RoactStorybook"
 
 if RunService:IsRunning() or not RunService:IsEdit() then
-	print("exit")
 	return
 end
 
