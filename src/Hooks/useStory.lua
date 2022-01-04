@@ -2,10 +2,11 @@ local Packages = script.Parent.Parent.Packages
 
 local ModuleLoader = require(Packages.ModuleLoader)
 local Roact = require(Packages.Roact)
+local types = require(script.Parent.Parent.types)
 
 local loader = ModuleLoader.new()
 
-local function useStory(hooks: any, module: ModuleScript)
+local function useStory(hooks: any, module: ModuleScript): types.Story?
 	local story, setStory = hooks.useState(nil)
 
 	local loadStory = hooks.useCallback(function()
@@ -22,7 +23,7 @@ local function useStory(hooks: any, module: ModuleScript)
 		local result = loader:require(module)
 
 		if typeof(result) == "table" and result.story then
-			setStory(result.story)
+			setStory(result)
 		else
 			print("could not select story", module:GetFullName())
 		end
