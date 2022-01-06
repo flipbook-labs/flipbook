@@ -39,33 +39,33 @@ local function StoryView(props: Props, hooks: any)
 		return Roact.createElement(
 			"TextLabel",
 			Llama.Dictionary.join(styles.TextLabel, {
-				Text = if story then "Select a story to preview it" else err,
+				Text = if not story then "Select a story to preview it" else err,
+				TextColor3 = Color3.fromRGB(0, 0, 0),
 				TextScaled = true,
 				Size = UDim2.fromScale(1, 1),
-				AutomaticSize = Enum.AutomaticSize.None,
 			})
 		)
+	else
+		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
+			Meta = Roact.createElement("Frame", {
+				Size = UDim2.fromScale(1, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+			}, {
+				Summary = Roact.createElement("Frame", {
+					Size = UDim2.fromScale(1, 0.2),
+				}),
+
+				Controls = Roact.createElement("Frame", {
+					Size = UDim2.fromScale(1, 0.3),
+				}),
+			}),
+
+			Preview = Roact.createElement("Frame", {
+				Size = UDim2.fromScale(1, 1),
+				[Roact.Ref] = storyParent,
+			}),
+		})
 	end
-
-	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
-		Meta = Roact.createElement("Frame", {
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-		}, {
-			Summary = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 0.2),
-			}),
-
-			Controls = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 0.3),
-			}),
-		}),
-
-		Preview = Roact.createElement("Frame", {
-			Size = UDim2.fromScale(1, 1),
-			[Roact.Ref] = storyParent,
-		}),
-	})
 end
 
 return RoactHooks.new(Roact)(StoryView)
