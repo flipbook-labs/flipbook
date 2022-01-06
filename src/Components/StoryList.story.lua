@@ -1,6 +1,7 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
-local SampleStory = require(script.Parent["Sample.story"])
 local StoryList = require(script.Parent.StoryList)
+
+local SampleStory = script.Parent["Sample.story"]
 
 return {
 	story = Roact.createElement(StoryList, {
