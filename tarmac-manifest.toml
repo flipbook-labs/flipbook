@@ -1,0 +1,14 @@
+[inputs."img/folder.png"]
+hash = "2d8f0bcefe96d8b99273785c0f09aa4afb6b2aec6c6758e94ae5ae8996ebaf00"
+id = 8472668100
+packable = false
+
+[inputs."img/story.png"]
+hash = "b6ee4a6695239943e74d0f5e857dfd12e02cf8fd3d0190dfda8ffbf37aa140fd"
+id = 8472668301
+packable = false
+
+[inputs."img/storybook.png"]
+hash = "2146ce46cabdbb7688db72aa6c87a46b45919a5908228c6031e808ddc9f30f00"
+id = 8472668370
+packable = false
