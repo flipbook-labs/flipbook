@@ -1,5 +1,9 @@
 local styles = {}
 
+styles.PADDING = UDim.new(0, 8)
+styles.LARGE_PADDING = UDim.new(0, 16)
+styles.SMALL_PADDING = UDim.new(0, 4)
+
 styles.TextLabel = {
 	TextSize = 16,
 	Font = Enum.Font.Gotham,
