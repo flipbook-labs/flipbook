@@ -93,7 +93,7 @@ local function TreeNode(props: Props, hooks: any)
 			),
 
 			-- Need to wrap the arrow ImageLabel so that rotation can be applied
-			ArrowWrapper = props.node.children and Roact.createElement("Frame", {
+			ArrowWrapper = hasChildren and Roact.createElement("Frame", {
 				LayoutOrder = 3,
 				Size = UDim2.fromOffset(NODE_HEIGHT, NODE_HEIGHT),
 				BackgroundTransparency = 1,
