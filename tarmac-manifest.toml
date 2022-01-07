@@ -9,8 +9,8 @@ id = 8472668100
 packable = false
 
 [inputs."img/story.png"]
-hash = "b6ee4a6695239943e74d0f5e857dfd12e02cf8fd3d0190dfda8ffbf37aa140fd"
-id = 8472668301
+hash = "b2ba799507dfbc53c359c718b570abf305b708a846a38312fe7a46ed6c71e52e"
+id = 8481250291
 packable = false
 
 [inputs."img/storybook.png"]

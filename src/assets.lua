@@ -2,6 +2,6 @@
 return {
 	["chevron-right"] = "rbxassetid://8472731876",
 	folder = "rbxassetid://8472668100",
-	story = "rbxassetid://8472668301",
+	story = "rbxassetid://8481250291",
 	storybook = "rbxassetid://8472668370",
 }
