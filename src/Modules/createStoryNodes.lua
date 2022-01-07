@@ -41,8 +41,6 @@ local function createStoryNodes(storybooks: { types.Storybook }): { TreeList.Nod
 		end
 	end
 
-	print(nodes)
-
 	return nodes
 end
 
