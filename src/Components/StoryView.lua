@@ -11,7 +11,7 @@ type Props = {
 }
 
 local function StoryView(props: Props, hooks: any)
-	local storyParent = hooks.useBinding(Roact.createRef())
+	local storyParent = Roact.createRef()
 	local err, setErr = hooks.useState(nil)
 	local story, storyErr = useStory(hooks, props.story)
 	local controls, setControls = hooks.useState(story and story.controls)
@@ -49,14 +49,16 @@ local function StoryView(props: Props, hooks: any)
 			end)
 
 			if success then
+				if err then
 				setErr(nil)
+				end
 			else
 				setErr(result)
 			end
 		end
 
 		return unmount
-	end, { story, controls, storyParent })
+	end, { story, controls, storyParent, setErr })
 
 	if not story or err then
 		return Roact.createElement(
