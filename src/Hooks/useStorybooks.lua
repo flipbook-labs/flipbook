@@ -1,3 +1,4 @@
+local constants = require(script.Parent.Parent.constants)
 local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
 
 local function hasPermission(instance: Instance)
@@ -20,7 +21,7 @@ local function useStorybooks(hooks: any, parent: Instance)
 				end)
 
 				if success and typeof(result) == "table" and result.storyRoots then
-					result.name = result.name or descendant.Name
+					result.name = result.name or descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
 					table.insert(newStorybooks, result)
 				end
 			end
