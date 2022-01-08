@@ -5,11 +5,14 @@ local Counter = require(script.Parent.Counter)
 return {
 	summary = "A simple counter that increments every second",
 	controls = {
-		increment = 1,
+		Increment = 1,
+		["Wait time"] = 1,
 	},
+	roact = Roact,
 	story = function(props)
 		return Roact.createElement(Counter, {
-			increment = props.controls.increment,
+			increment = props.controls["Increment"],
+			waitTime = props.controls["Wait time"],
 		})
 	end,
 }

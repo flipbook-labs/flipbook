@@ -6,6 +6,7 @@ return {
 		["Message content"] = "Hello, World!",
 		["Use alt color"] = false,
 	},
+	roact = Roact,
 	story = function(props)
 		local color = if props.controls["Use alt color"]
 			then Color3.fromRGB(68, 32, 228)
