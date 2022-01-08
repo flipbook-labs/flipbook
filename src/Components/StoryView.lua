@@ -34,7 +34,7 @@ local function StoryView(props: Props, hooks: any)
 			story.roact.unmount(tree.value)
 			tree.value = nil
 		end
-	end, {})
+	end, { story, storyParent })
 
 	hooks.useEffect(function()
 		setControls(if story and story.controls then story.controls else nil)
