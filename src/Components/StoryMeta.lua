@@ -44,8 +44,20 @@ local function StoryMeta(props: Props)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Summary = props.story.summary and Roact.createElement(Panel, {
+		Title = Roact.createElement(Panel, {
 			layoutOrder = 1,
+		}, {
+			Title = Roact.createElement(
+				"TextLabel",
+				Llama.Dictionary.join(styles.Header, {
+					LayoutOrder = 1,
+					Text = props.story.name,
+				})
+			),
+		}),
+
+		Summary = props.story.summary and Roact.createElement(Panel, {
+			layoutOrder = 2,
 		}, {
 			Title = Roact.createElement(
 				"TextLabel",
@@ -65,7 +77,7 @@ local function StoryMeta(props: Props)
 		}),
 
 		Controls = hasControls and Roact.createElement(Panel, {
-			layoutOrder = 2,
+			layoutOrder = 3,
 		}, {
 			Title = Roact.createElement(
 				"TextLabel",
