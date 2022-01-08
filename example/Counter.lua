@@ -34,12 +34,16 @@ function Counter:render()
 end
 
 function Counter:didMount()
+	local props: Props = self.props
+
 	self.isMounted = true
 
 	task.spawn(function()
 		while self.isMounted do
 			self:setState(function(prev: State)
-				return prev.count + 1
+				return {
+					count = prev.count + props.increment,
+				}
 			end)
 
 			task.wait(1)
