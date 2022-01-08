@@ -1,8 +1,9 @@
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
-local styles = require(script.Parent.Parent.styles)
 local useStory = require(script.Parent.Parent.Hooks.useStory)
+local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
+local styles = require(script.Parent.Parent.styles)
 local StoryMeta = require(script.Parent.StoryMeta)
 
 type Props = {
@@ -19,11 +20,13 @@ local function StoryView(props: Props, hooks: any)
 	end
 
 	hooks.useEffect(function()
-		local tree: table
+		local tree: Dictionary<any>
 
 		if story then
+			local element = getStoryElement(story)
+
 			local success, result = pcall(function()
-				tree = Roact.mount(story.story, storyParent:getValue(), story.name)
+				tree = Roact.mount(element, storyParent:getValue(), story.name)
 			end)
 
 			if success then
