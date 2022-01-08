@@ -7,7 +7,7 @@ local styles = require(script.Parent.Parent.styles)
 local StoryMeta = require(script.Parent.StoryMeta)
 
 type Props = {
-	story: ModuleScript?,
+	story: ModuleScript,
 }
 
 local function StoryView(props: Props, hooks: any)
@@ -37,7 +37,7 @@ local function StoryView(props: Props, hooks: any)
 	end, { story, storyParent })
 
 	hooks.useEffect(function()
-		setControls(if story and story.controls then story.controls else nil)
+		setControls(if story and story.controls then story.controls else {})
 	end, { story })
 
 	hooks.useEffect(function()
@@ -62,41 +62,36 @@ local function StoryView(props: Props, hooks: any)
 		return unmount
 	end, { story, controls, storyParent, setErr })
 
-	if not story or err then
+	if err then
 		return Roact.createElement(
 			"TextLabel",
 			Llama.Dictionary.join(styles.TextLabel, {
-				Text = if not story then "Select a story to preview it" else err,
+				Text = err,
 				TextColor3 = Color3.fromRGB(0, 0, 0),
-				TextScaled = true,
 				Size = UDim2.fromScale(1, 1),
 			})
 		)
-	else
-		return Roact.createElement(
-			"ScrollingFrame",
-			Llama.Dictionary.join(styles.ScrollingFrame, {
-				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	elseif story then
+		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
+			Layout = Roact.createElement("UIListLayout", {
+				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
-			{
-				Layout = Roact.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-				}),
 
-				Meta = Roact.createElement(StoryMeta, {
-					layoutOrder = 1,
-					story = story,
-					controls = controls,
-					onControlChanged = onControlChanged,
-				}),
+			Meta = Roact.createElement(StoryMeta, {
+				layoutOrder = 1,
+				story = story,
+				controls = controls,
+				onControlChanged = onControlChanged,
+			}),
 
-				Preview = Roact.createElement("Frame", {
-					LayoutOrder = 2,
-					Size = UDim2.fromScale(1, 1),
-					[Roact.Ref] = storyParent,
-				}),
-			}
-		)
+			Preview = Roact.createElement("Frame", {
+				LayoutOrder = 2,
+				Size = UDim2.fromScale(1, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+				BackgroundTransparency = 1,
+				[Roact.Ref] = storyParent,
+			}),
+		})
 	end
 end
 
