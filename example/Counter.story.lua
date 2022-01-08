@@ -7,6 +7,7 @@ return {
 	controls = {
 		increment = 1,
 	},
+	roact = Roact,
 	story = function(props)
 		return Roact.createElement(Counter, {
 			increment = props.controls.increment,
