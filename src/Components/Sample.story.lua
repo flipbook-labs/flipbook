@@ -1,6 +1,8 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
 
 return {
+	summary = "This is a sample story to show off how to write one!",
+	controls = {},
 	story = Roact.createElement("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundColor3 = Color3.fromRGB(228, 32, 114),
