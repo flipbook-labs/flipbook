@@ -3,6 +3,11 @@ local Roact = require(ReplicatedStorage.Packages.Roact)
 
 local Counter = Roact.Component:extend("Counter")
 
+export type Props = {
+	increment: number,
+	waitTime: number,
+}
+
 export type State = {
 	count: number,
 }
@@ -20,8 +25,6 @@ function Counter:render()
 		Font = Enum.Font.Gotham,
 		TextColor3 = Color3.fromRGB(0, 0, 0),
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromOffset(300, 100),
 	}, {
 		Padding = Roact.createElement("UIPadding", {
@@ -46,7 +49,7 @@ function Counter:didMount()
 				}
 			end)
 
-			task.wait(1)
+			task.wait(props.waitTime)
 		end
 	end)
 end
