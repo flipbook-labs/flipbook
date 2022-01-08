@@ -11,7 +11,11 @@ type Props = {
 local function StoryView(props: Props, hooks: any)
 	local storyParent = hooks.useBinding(Roact.createRef())
 	local err, setErr = hooks.useState(nil)
-	local story = useStory(hooks, props.story)
+	local story, storyErr = useStory(hooks, props.story)
+
+	if storyErr then
+		err = storyErr
+	end
 
 	hooks.useEffect(function()
 		local tree: table
