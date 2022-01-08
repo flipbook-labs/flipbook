@@ -19,7 +19,7 @@ styles.TextLabel = {
 
 styles.Header = Llama.Dictionary.join(styles.TextLabel, {
 	Font = Enum.Font.GothamBold,
-	TextSize = styles.TextLabel.TextSize * 1.5,
+	TextSize = styles.TextLabel.TextSize * 1.25,
 })
 
 styles.ScrollingFrame = {

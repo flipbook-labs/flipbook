@@ -6,6 +6,7 @@ local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
 local constants = require(script.Parent.Parent.constants)
 local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
+local Panel = require(script.Parent.Panel)
 local TreeList = require(script.Parent.TreeList)
 
 type Props = {
@@ -28,22 +29,20 @@ local function Sidebar(props: Props, hooks: any)
 
 	local children = {}
 
-	children.SizeConstraint = Roact.createElement("UISizeConstraint", {
-		MaxSize = props.maxSize,
-	})
-
 	children.StoryList = Roact.createElement(TreeList, {
 		onNodeActivated = onNodeActivated,
 		nodes = storybookNodes,
 	})
 
-	return Roact.createElement(
-		"ScrollingFrame",
-		Llama.Dictionary.join(styles.ScrollingFrame, {
-			BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
-		}),
-		children
-	)
+	return Roact.createElement(Panel, {}, {
+		ScrollingFrame = Roact.createElement(
+			"ScrollingFrame",
+			Llama.Dictionary.join(styles.ScrollingFrame, {
+				BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
+			}),
+			children
+		),
+	})
 end
 
 return RoactHooks.new(Roact)(Sidebar)

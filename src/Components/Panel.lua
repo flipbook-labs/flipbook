@@ -14,6 +14,8 @@ local function Panel(props: any, hooks: any)
 		LayoutOrder = props.layoutOrder,
 		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
 		Size = UDim2.fromScale(1, 0),
+		BorderMode = Enum.BorderMode.Inset,
+		BorderSizePixel = 0,
 		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
 		Layout = Roact.createElement("UIListLayout", {
@@ -31,6 +33,7 @@ local function Panel(props: any, hooks: any)
 		Border = Roact.createElement("UIStroke", {
 			Color = theme:GetColor(Enum.StudioStyleGuideColor.Border),
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Thickness = 2,
 		}),
 
 		Children = Roact.createFragment(props[Roact.Children]),
