@@ -15,8 +15,9 @@ export type Props = {
 
 local function StoryMeta(props: Props)
 	local controlFields = {}
+	local hasControls = props.controls and #props.controls > 0
 
-	if props.controls then
+	if hasControls then
 		for key, value in pairs(props.controls) do
 			table.insert(
 				controlFields,
@@ -63,7 +64,7 @@ local function StoryMeta(props: Props)
 			),
 		}),
 
-		Controls = props.controls and Roact.createElement(Panel, {
+		Controls = hasControls and Roact.createElement(Panel, {
 			layoutOrder = 2,
 		}, {
 			Title = Roact.createElement(
