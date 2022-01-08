@@ -9,6 +9,7 @@ export type Props = {
 	key: string,
 	value: any,
 	onValueChange: ((any) -> nil)?,
+	layoutOrder: number?,
 }
 
 local function StoryControl(props: Props, hooks: any)
@@ -46,6 +47,7 @@ local function StoryControl(props: Props, hooks: any)
 	end
 
 	return Roact.createElement("Frame", {
+		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
