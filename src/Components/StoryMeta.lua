@@ -15,7 +15,7 @@ export type Props = {
 
 local function StoryMeta(props: Props)
 	local controlFields = {}
-	local hasControls = props.controls and #props.controls > 0
+	local hasControls = props.controls and not Llama.isEmpty(props.controls)
 
 	if hasControls then
 		for key, value in pairs(props.controls) do
