@@ -14,19 +14,40 @@ local function StoryView(props: Props, hooks: any)
 	local storyParent = hooks.useBinding(Roact.createRef())
 	local err, setErr = hooks.useState(nil)
 	local story, storyErr = useStory(hooks, props.story)
+	local controls, setControls = hooks.useState(story and story.controls)
+	local tree = hooks.useValue(nil)
 
 	if storyErr then
 		err = storyErr
 	end
 
+	local onControlChanged = hooks.useCallback(function(key: string, newValue: any)
+		setControls(Llama.Dictionary.join(controls, {
+			[key] = newValue,
+		}))
+	end, { controls, setControls })
+
 	hooks.useEffect(function()
-		local tree: Dictionary<any>
+		if story and story.controls then
+			setControls(story.controls)
+		end
+	end, { story })
+
+	local unmount = hooks.useCallback(function()
+		if tree.value then
+			Roact.unmount(tree.value)
+			tree.value = nil
+		end
+	end, {})
+
+	hooks.useEffect(function()
+		unmount()
 
 		if story then
-			local element = getStoryElement(story)
+			local element = getStoryElement(story, controls)
 
 			local success, result = pcall(function()
-				tree = Roact.mount(element, storyParent:getValue(), story.name)
+				tree.value = Roact.mount(element, storyParent:getValue(), story.name)
 			end)
 
 			if success then
@@ -36,12 +57,8 @@ local function StoryView(props: Props, hooks: any)
 			end
 		end
 
-		return function()
-			if tree then
-				Roact.unmount(tree)
-			end
-		end
-	end, { story, storyParent })
+		return unmount
+	end, { story, controls, storyParent })
 
 	if not story or err then
 		return Roact.createElement(
@@ -67,6 +84,8 @@ local function StoryView(props: Props, hooks: any)
 				Meta = Roact.createElement(StoryMeta, {
 					layoutOrder = 1,
 					story = story,
+					controls = controls,
+					onControlChanged = onControlChanged,
 				}),
 
 				Preview = Roact.createElement("Frame", {

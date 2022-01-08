@@ -4,13 +4,35 @@ local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
 local Panel = require(script.Parent.Panel)
+local StoryControl = require(script.Parent.StoryControl)
 
 export type Props = {
 	layoutOrder: number,
 	story: types.Story,
+	controls: Dictionary<any>?,
+	onControlChanged: ((string, any) -> nil)?,
 }
 
 local function StoryMeta(props: Props)
+	local controlFields = {}
+
+	if props.controls then
+		for key, value in pairs(props.controls) do
+			table.insert(
+				controlFields,
+				Roact.createElement(StoryControl, {
+					key = key,
+					value = value,
+					onValueChange = function(newValue: any)
+						if props.onControlChanged then
+							props.onControlChanged(key, newValue)
+						end
+					end,
+				})
+			)
+		end
+	end
+
 	return Roact.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
@@ -41,16 +63,18 @@ local function StoryMeta(props: Props)
 			),
 		}),
 
-		Controls = props.story.controls and Roact.createElement(Panel, {
+		Controls = props.controls and Roact.createElement(Panel, {
 			layoutOrder = 2,
 		}, {
 			Title = Roact.createElement(
 				"TextLabel",
 				Llama.Dictionary.join(styles.Header, {
-					LayoutOrder = 1,
+					LayoutOrder = 0,
 					Text = "Controls",
 				})
 			),
+
+			Controls = Roact.createFragment(controlFields),
 		}),
 	})
 end

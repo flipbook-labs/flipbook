@@ -32,11 +32,11 @@
 
 local types = require(script.Parent.Parent.types)
 
-local function getStoryElement(story: types.Story)
+local function getStoryElement(story: types.Story, controls: Dictionary<any>)
 	if typeof(story.story) == "function" then
 		local success, result = pcall(function()
 			return story.story({
-				controls = story.controls,
+				controls = controls,
 			})
 		end)
 
