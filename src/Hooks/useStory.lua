@@ -1,7 +1,4 @@
-local Packages = script.Parent.Parent.Packages
-
-local ModuleLoader = require(Packages.ModuleLoader)
-local Roact = require(Packages.Roact)
+local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
 
 local loader = ModuleLoader.new()
@@ -16,10 +13,6 @@ local function useStory(hooks: any, module: ModuleScript): types.Story?
 		end
 
 		loader:clear()
-
-		-- Roact needs to be cached so that the story is using the same
-		-- table instance as the plugin
-		loader:cache(Packages.Roact, Roact)
 
 		local success, result = pcall(function()
 			return loader:require(module)
