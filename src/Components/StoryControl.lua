@@ -42,7 +42,12 @@ local function StoryControl(props: Props, hooks: any)
 				BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.InputFieldBorder),
 				BackgroundTransparency = 0,
 				[Roact.Event.FocusLost] = onSubmit,
-			})
+			}),
+			{
+				SizeContraint = Roact.createElement("UISizeConstraint", {
+					MinSize = Vector2.new(200, 0),
+				}),
+			}
 		)
 	end
 
