@@ -22,9 +22,15 @@ local function StoryControl(props: Props, hooks: any)
 
 	local valueElement
 	if typeof(props.value) == "boolean" then
-		valueElement = Roact.createElement(Checkbox, {
-			isChecked = props.value,
-			onActivated = props.onValueChange,
+		valueElement = Roact.createElement("Frame", {
+			LayoutOrder = 2,
+			Size = UDim2.fromOffset(styles.TextLabel.TextSize, styles.TextLabel.TextSize),
+			BackgroundTransparency = 1,
+		}, {
+			Checkbox = Roact.createElement(Checkbox, {
+				isChecked = props.value,
+				onActivated = props.onValueChange,
+			}),
 		})
 	else
 		valueElement = Roact.createElement(
@@ -54,7 +60,7 @@ local function StoryControl(props: Props, hooks: any)
 			"TextLabel",
 			Llama.Dictionary.join(styles.TextLabel, {
 				LayoutOrder = 1,
-				Text = props.key,
+				Text = props.key .. ":",
 			})
 		),
 
