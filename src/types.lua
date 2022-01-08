@@ -1,3 +1,5 @@
+export type RoactElement = Dictionary<any>
+
 export type Storybook = {
 	storyRoots: { Instance },
 	name: string?,
@@ -10,10 +12,10 @@ export type StoryControl = {
 }
 
 export type Story = {
-	name: string?,
+	name: string,
 	summary: string?,
-	controls: { [string]: StoryControl },
-	story: table,
+	controls: { [string]: StoryControl }?,
+	story: RoactElement | (Dictionary<any>) -> RoactElement,
 }
 
 -- Hoarcekat stories are functions that take a GuiObject to mount to and return
