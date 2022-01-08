@@ -17,7 +17,8 @@ local function StoryControl(props: Props, hooks: any)
 
 	local onSubmit = hooks.useCallback(function(rbx: TextBox, enterPressed: boolean)
 		if props.onValueChange and enterPressed then
-			props.onValueChange(rbx.Text)
+			local number = tonumber(rbx.Text)
+			props.onValueChange(if number then number else rbx.Text)
 		end
 	end, {})
 
