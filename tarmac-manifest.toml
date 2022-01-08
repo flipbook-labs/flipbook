@@ -1,3 +1,8 @@
+[inputs."img/checkmark.png"]
+hash = "30338bd2331a45091fb153dc87c52922a0c1b658959b28183a254080153f8120"
+id = 8484527786
+packable = false
+
 [inputs."img/chevron-right.png"]
 hash = "3a776a9c0c780d5943506eb12ad1370467e5faba0629338a0727d59385c7af31"
 id = 8472731876

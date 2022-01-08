@@ -28,6 +28,10 @@ local function useStory(hooks: any, module: ModuleScript): types.Story?
 		setErr(if success then nil else result)
 
 		if typeof(result) == "table" and result.story then
+			if not result.name then
+				result.name = module.Name
+			end
+
 			setStory(result)
 		else
 			print("could not select story", module:GetFullName())

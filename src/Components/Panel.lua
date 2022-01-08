@@ -24,10 +24,10 @@ local function Panel(props: any, hooks: any)
 		}),
 
 		Padding = Roact.createElement("UIPadding", {
-			PaddingTop = styles.PADDING,
-			PaddingRight = styles.PADDING,
-			PaddingBottom = styles.PADDING,
-			PaddingLeft = styles.PADDING,
+			PaddingTop = styles.LARGE_PADDING,
+			PaddingRight = styles.LARGE_PADDING,
+			PaddingBottom = styles.LARGE_PADDING,
+			PaddingLeft = styles.LARGE_PADDING,
 		}),
 
 		Border = Roact.createElement("UIStroke", {
