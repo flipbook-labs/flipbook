@@ -15,9 +15,6 @@ local function App(_props, hooks: any)
 		storybooks = nil
 	end
 
-	print(selectedStorybook)
-	print(selectedStory)
-
 	return Roact.createElement("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),

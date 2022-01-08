@@ -9,40 +9,67 @@ type Props = {
 }
 
 local function StoryView(props: Props, hooks: any)
-	local story = useStory(hooks, props.story)
+	local storyParent = hooks.useBinding(Roact.createRef())
+	local err, setErr = hooks.useState(nil)
+	local story, storyErr = useStory(hooks, props.story)
 
-	if not story then
+	if storyErr then
+		err = storyErr
+	end
+
+	hooks.useEffect(function()
+		local tree: table
+
+		if story then
+			local success, result = pcall(function()
+				tree = Roact.mount(story.story, storyParent:getValue(), story.name)
+			end)
+
+			if success then
+				setErr(nil)
+			else
+				setErr(result)
+			end
+		end
+
+		return function()
+			if tree then
+				Roact.unmount(tree)
+			end
+		end
+	end, { story, storyParent })
+
+	if not story or err then
 		return Roact.createElement(
 			"TextLabel",
 			Llama.Dictionary.join(styles.TextLabel, {
-				Text = "Select a story to preview it",
+				Text = if not story then "Select a story to preview it" else err,
+				TextColor3 = Color3.fromRGB(0, 0, 0),
 				TextScaled = true,
 				Size = UDim2.fromScale(1, 1),
-				AutomaticSize = Enum.AutomaticSize.None,
 			})
 		)
+	else
+		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
+			Meta = Roact.createElement("Frame", {
+				Size = UDim2.fromScale(1, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+			}, {
+				Summary = Roact.createElement("Frame", {
+					Size = UDim2.fromScale(1, 0.2),
+				}),
+
+				Controls = Roact.createElement("Frame", {
+					Size = UDim2.fromScale(1, 0.3),
+				}),
+			}),
+
+			Preview = Roact.createElement("Frame", {
+				Size = UDim2.fromScale(1, 1),
+				[Roact.Ref] = storyParent,
+			}),
+		})
 	end
-
-	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
-		Meta = Roact.createElement("Frame", {
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-		}, {
-			Summary = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 0.2),
-			}),
-
-			Controls = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 0.3),
-			}),
-		}),
-
-		Preview = Roact.createElement("Frame", {
-			Size = UDim2.fromScale(1, 1),
-		}, {
-			Story = story,
-		}),
-	})
 end
 
 return RoactHooks.new(Roact)(StoryView)
