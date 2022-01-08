@@ -1,3 +1,5 @@
+local Llama = require(script.Parent.Packages.Llama)
+
 local styles = {}
 
 styles.PADDING = UDim.new(0, 8)
@@ -14,6 +16,11 @@ styles.TextLabel = {
 	TextYAlignment = Enum.TextYAlignment.Top,
 	BackgroundTransparency = 1,
 }
+
+styles.Header = Llama.Dictionary.join(styles.TextLabel, {
+	Font = Enum.Font.GothamBold,
+	TextSize = styles.TextLabel.TextSize * 1.5,
+})
 
 styles.ScrollingFrame = {
 	Size = UDim2.fromScale(1, 1),

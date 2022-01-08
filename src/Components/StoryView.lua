@@ -3,6 +3,7 @@ local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local styles = require(script.Parent.Parent.styles)
 local useStory = require(script.Parent.Parent.Hooks.useStory)
+local StoryMeta = require(script.Parent.StoryMeta)
 
 type Props = {
 	story: ModuleScript?,
@@ -50,25 +51,28 @@ local function StoryView(props: Props, hooks: any)
 			})
 		)
 	else
-		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
-			Meta = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-			}, {
-				Summary = Roact.createElement("Frame", {
-					Size = UDim2.fromScale(1, 0.2),
+		return Roact.createElement(
+			"ScrollingFrame",
+			Llama.Dictionary.join(styles.ScrollingFrame, {
+				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+			}),
+			{
+				Layout = Roact.createElement("UIListLayout", {
+					SortOrder = Enum.SortOrder.LayoutOrder,
 				}),
 
-				Controls = Roact.createElement("Frame", {
-					Size = UDim2.fromScale(1, 0.3),
+				Meta = Roact.createElement(StoryMeta, {
+					layoutOrder = 1,
+					story = story,
 				}),
-			}),
 
-			Preview = Roact.createElement("Frame", {
-				Size = UDim2.fromScale(1, 1),
-				[Roact.Ref] = storyParent,
-			}),
-		})
+				Preview = Roact.createElement("Frame", {
+					LayoutOrder = 2,
+					Size = UDim2.fromScale(1, 1),
+					[Roact.Ref] = storyParent,
+				}),
+			}
+		)
 	end
 end
 
