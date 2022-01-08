@@ -22,14 +22,12 @@ local function StoryView(props: Props, hooks: any)
 	end
 
 	local onControlChanged = hooks.useCallback(function(key: string, newValue: any)
-		setControls(Llama.Dictionary.join(controls, {
-			[key] = newValue,
-		}))
-	end, { controls, setControls })
-
-	hooks.useEffect(function()
-		setControls(if story and story.controls then story.controls else nil)
-	end, { story })
+		setControls(function(prev)
+			return Llama.Dictionary.join(prev, {
+				[key] = newValue,
+			})
+		end)
+	end, { setControls })
 
 	local unmount = hooks.useCallback(function()
 		if tree.value then
@@ -37,6 +35,10 @@ local function StoryView(props: Props, hooks: any)
 			tree.value = nil
 		end
 	end, {})
+
+	hooks.useEffect(function()
+		setControls(if story and story.controls then story.controls else nil)
+	end, { story })
 
 	hooks.useEffect(function()
 		unmount()
@@ -50,7 +52,7 @@ local function StoryView(props: Props, hooks: any)
 
 			if success then
 				if err then
-				setErr(nil)
+					setErr(nil)
 				end
 			else
 				setErr(result)
