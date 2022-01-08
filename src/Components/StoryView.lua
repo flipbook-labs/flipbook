@@ -30,8 +30,8 @@ local function StoryView(props: Props, hooks: any)
 	end, { setControls })
 
 	local unmount = hooks.useCallback(function()
-		if tree.value then
-			Roact.unmount(tree.value)
+		if tree.value and story then
+			story.roact.unmount(tree.value)
 			tree.value = nil
 		end
 	end, {})
@@ -47,7 +47,7 @@ local function StoryView(props: Props, hooks: any)
 			local element = getStoryElement(story, controls)
 
 			local success, result = pcall(function()
-				tree.value = Roact.mount(element, storyParent:getValue(), story.name)
+				tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
 			end)
 
 			if success then
