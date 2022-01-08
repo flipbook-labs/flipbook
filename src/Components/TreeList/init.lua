@@ -25,8 +25,8 @@ local function TreeList(props: Props)
 		PaddingLeft = styles.PADDING,
 	})
 
-	for _, node in ipairs(props.nodes) do
-		children[node.name] = Roact.createElement(TreeNode, {
+	for index, node in ipairs(props.nodes) do
+		children[node.name .. index] = Roact.createElement(TreeNode, {
 			node = node,
 			onNodeActivated = props.onNodeActivated,
 		})
