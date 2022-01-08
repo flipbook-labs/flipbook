@@ -28,9 +28,7 @@ local function StoryView(props: Props, hooks: any)
 	end, { controls, setControls })
 
 	hooks.useEffect(function()
-		if story and story.controls then
-			setControls(story.controls)
-		end
+		setControls(if story and story.controls then story.controls else nil)
 	end, { story })
 
 	local unmount = hooks.useCallback(function()
