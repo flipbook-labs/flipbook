@@ -12,9 +12,9 @@ export type StoryControl = {
 }
 
 export type Story = {
-	name: string?,
+	name: string,
 	summary: string?,
-	controls: { [string]: StoryControl },
+	controls: { [string]: StoryControl }?,
 	story: RoactElement | (Dictionary<any>) -> RoactElement,
 }
 
