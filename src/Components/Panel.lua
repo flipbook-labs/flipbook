@@ -18,11 +18,6 @@ local function Panel(props: any, hooks: any)
 		BorderSizePixel = 0,
 		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
-		Layout = Roact.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = styles.PADDING,
-		}),
-
 		Padding = Roact.createElement("UIPadding", {
 			PaddingTop = styles.LARGE_PADDING,
 			PaddingRight = styles.LARGE_PADDING,

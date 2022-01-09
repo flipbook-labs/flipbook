@@ -35,6 +35,8 @@ local function Sidebar(props: Props, hooks: any)
 	})
 
 	return Roact.createElement(Panel, {}, {
+		Layout = Roact.createElement("UIListLayout"),
+
 		ScrollingFrame = Roact.createElement(
 			"ScrollingFrame",
 			Llama.Dictionary.join(styles.ScrollingFrame, {
