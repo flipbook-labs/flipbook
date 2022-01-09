@@ -26,7 +26,8 @@ local function StoryView(props: Props, hooks: any)
 	local err, setErr = hooks.useState(nil)
 	local story, storyErr = useStory(hooks, props.story)
 	local prevStory = usePrevious(hooks, story)
-	local controls, setControls = hooks.useState(story and story.controls)
+	local controls, setControls = hooks.useState({})
+	local prevControls = usePrevious(hooks, controls)
 	local tree = hooks.useValue(nil)
 
 	if storyErr then
@@ -42,10 +43,10 @@ local function StoryView(props: Props, hooks: any)
 	end, { setControls })
 
 	local unmount = hooks.useCallback(function()
-		if tree.value and story then
-			if story.format == enums.Format.Default then
-				story.roact.unmount(tree.value)
-			elseif story.format == enums.Format.Hoarcekat then
+		if tree.value and prevStory then
+			if prevStory.format == enums.Format.Default then
+				prevStory.roact.unmount(tree.value)
+			elseif prevStory.format == enums.Format.Hoarcekat then
 				local success, result = xpcall(function()
 					return tree.value()
 				end, debug.traceback)
@@ -57,11 +58,26 @@ local function StoryView(props: Props, hooks: any)
 
 			tree.value = nil
 		end
-	end, { story, storyParent })
+	end, { prevStory, setErr })
 
 	hooks.useEffect(function()
 		setControls(if story and story.controls then story.controls else {})
-	end, { story })
+	end, { story, setControls })
+
+	hooks.useEffect(function()
+		if not (story and tree.value and controls) then
+			return
+		end
+
+		if story.format ~= enums.Format.Default then
+			return
+		end
+
+		if controls ~= prevControls then
+			local element = getStoryElement(story, controls)
+			story.roact.update(tree.value, element)
+		end
+	end, { story, controls, prevControls, tree })
 
 	hooks.useEffect(function()
 		if story == prevStory then
@@ -74,9 +90,9 @@ local function StoryView(props: Props, hooks: any)
 			if story.format == enums.Format.Default then
 				local element = getStoryElement(story, controls)
 
-				local success, result = pcall(function()
+				local success, result = xpcall(function()
 					tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
-				end)
+				end, debug.traceback)
 
 				if success then
 					if err then
@@ -90,20 +106,14 @@ local function StoryView(props: Props, hooks: any)
 					return story.story(storyParent:getValue())
 				end, debug.traceback)
 
-				if success then
-					if err then
-						setErr(nil)
-					end
+				setErr(if success then nil else result)
 
+				if success then
 					tree.value = result
-				else
-					setErr(result)
 				end
 			end
 		end
-
-		return unmount
-	end, { story, controls, storyParent, setErr })
+	end, { story, prevStory, controls, unmount, storyParent, setErr })
 
 	if err then
 		return Roact.createElement(
