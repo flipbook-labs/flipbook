@@ -3,6 +3,7 @@ local SelectionService = game:GetService("Selection")
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
+local assets = require(script.Parent.Parent.assets)
 local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
 local Panel = require(script.Parent.Panel)
@@ -47,6 +48,10 @@ local function StoryMeta(props: Props, hooks: any)
 		SelectionService:Set({ props.storyModule })
 	end, { props.storyModule })
 
+	local toggleViewport = hooks.useCallback(function()
+		print("toggle viewport mounting")
+	end, {})
+
 	return Roact.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
@@ -89,14 +94,20 @@ local function StoryMeta(props: Props, hooks: any)
 
 				Explore = Roact.createElement(Button, {
 					layoutOrder = 1,
-					text = "Explore",
+					icon = assets.explore,
 					onActivated = selectGui,
 				}),
 
 				SelectModule = Roact.createElement(Button, {
 					layoutOrder = 2,
-					text = "Select Story",
+					icon = assets.story,
 					onActivated = selectModule,
+				}),
+
+				MountInViewport = Roact.createElement(Button, {
+					layoutOrder = 3,
+					icon = assets.viewport,
+					onActivated = toggleViewport,
 				}),
 			}),
 		}),
