@@ -1,4 +1,4 @@
-local SelectionService = game:GetService("SelectionService")
+local SelectionService = game:GetService("Selection")
 
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
@@ -12,11 +12,13 @@ local Button = require(script.Parent.Button)
 export type Props = {
 	layoutOrder: number,
 	story: types.Story,
+	storyModule: ModuleScript,
+	storyParent: any,
 	controls: Dictionary<any>?,
 	onControlChanged: ((string, any) -> nil)?,
 }
 
-local function StoryMeta(props: Props)
+local function StoryMeta(props: Props, hooks: any)
 	local controlFields = {}
 	local hasControls = props.controls and not Llama.isEmpty(props.controls)
 
@@ -36,6 +38,14 @@ local function StoryMeta(props: Props)
 			)
 		end
 	end
+
+	local selectGui = hooks.useCallback(function()
+		SelectionService:Set({ props.storyParent:getValue() })
+	end, { props.storyParent })
+
+	local selectModule = hooks.useCallback(function()
+		SelectionService:Set({ props.storyModule })
+	end, { props.storyModule })
 
 	return Roact.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
@@ -80,11 +90,13 @@ local function StoryMeta(props: Props)
 				Explore = Roact.createElement(Button, {
 					layoutOrder = 1,
 					text = "Explore",
+					onActivated = selectGui,
 				}),
 
 				SelectModule = Roact.createElement(Button, {
 					layoutOrder = 2,
 					text = "Select Story",
+					onActivated = selectModule,
 				}),
 			}),
 		}),
