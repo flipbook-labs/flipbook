@@ -13,6 +13,11 @@ hash = "491acb0782b16b465643ad565f5d1d350e857899d7df68de3af65695c18cb80c"
 id = 8492343246
 packable = false
 
+[inputs."img/explore.png"]
+hash = "bb8d672dd1e6a5ae1ea884a7ffaf8b26cbc06ce08bdbd7c6b947dddb3a2d942f"
+id = 8500157719
+packable = false
+
 [inputs."img/folder.png"]
 hash = "2d8f0bcefe96d8b99273785c0f09aa4afb6b2aec6c6758e94ae5ae8996ebaf00"
 id = 8472668100
@@ -26,4 +31,9 @@ packable = false
 [inputs."img/storybook.png"]
 hash = "2146ce46cabdbb7688db72aa6c87a46b45919a5908228c6031e808ddc9f30f00"
 id = 8472668370
+packable = false
+
+[inputs."img/viewport.png"]
+hash = "8d328c1ddae15c2f49d24e7a5b28ac82cf80ab3d5182b6572c582d0ad89f9fbe"
+id = 8500158048
 packable = false
