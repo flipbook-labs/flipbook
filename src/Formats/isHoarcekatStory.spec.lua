@@ -1,5 +1,5 @@
 return function()
-	local Roact = require(script.Parent.Packages.Roact)
+	local Roact = require(script.Parent.Parent.Packages.Roact)
 	local isHoarcekatStory = require(script.Parent.isHoarcekatStory)
 
 	local hoarcekat = function(_target: Instance)
