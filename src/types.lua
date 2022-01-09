@@ -17,6 +17,7 @@ export type Story = {
 	summary: string?,
 	controls: { [string]: StoryControl }?,
 	story: RoactElement | (Dictionary<any>) -> RoactElement,
+	format: string?,
 }
 
 -- Hoarcekat stories are functions that take a GuiObject to mount to and return
