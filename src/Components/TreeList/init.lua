@@ -18,13 +18,6 @@ local function TreeList(props: Props)
 		Padding = UDim.new(0, 4),
 	})
 
-	children.Padding = Roact.createElement("UIPadding", {
-		PaddingTop = styles.PADDING,
-		PaddingRight = styles.PADDING,
-		PaddingBottom = styles.PADDING,
-		PaddingLeft = styles.PADDING,
-	})
-
 	for index, node in ipairs(props.nodes) do
 		children[node.name .. index] = Roact.createElement(TreeNode, {
 			node = node,
