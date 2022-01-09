@@ -5,5 +5,8 @@ return {
 	roact = Roact,
 	story = Roact.createElement(Button, {
 		text = "Click me",
+		onActivated = function()
+			print("clicked")
+		end,
 	}),
 }
