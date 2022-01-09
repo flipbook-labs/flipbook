@@ -1,5 +1,4 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
 local TreeNode = require(script.TreeNode)
 local types = require(script.types)
 
