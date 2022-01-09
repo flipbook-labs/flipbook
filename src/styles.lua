@@ -27,8 +27,8 @@ styles.ScrollingFrame = {
 	CanvasSize = UDim2.fromScale(1, 0),
 	AutomaticCanvasSize = Enum.AutomaticSize.Y,
 	ScrollingDirection = Enum.ScrollingDirection.Y,
-	BorderSizePixel = 0,
 	ScrollBarThickness = 3,
+	BackgroundTransparency = 1,
 }
 
 return styles

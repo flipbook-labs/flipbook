@@ -4,6 +4,7 @@ local TreeList = require(script.Parent)
 local types = require(script.Parent.types)
 
 return {
+	roact = Roact,
 	story = Roact.createElement(TreeList, {
 		onNodeActivated = function(node: types.Node)
 			print(node.name, "activated")
