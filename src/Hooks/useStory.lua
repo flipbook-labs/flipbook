@@ -33,7 +33,7 @@ local function useStory(hooks: any, module: ModuleScript): types.Story?
 		elseif isHoarcekatStory(result) then
 			local newStory = {
 				name = module.Name,
-				story = story,
+				story = result,
 				format = enums.Format.Hoarcekat,
 			}
 

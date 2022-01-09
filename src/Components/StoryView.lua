@@ -3,6 +3,7 @@ local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local useStory = require(script.Parent.Parent.Hooks.useStory)
 local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
+local enums = require(script.Parent.Parent.enums)
 local styles = require(script.Parent.Parent.styles)
 local StoryMeta = require(script.Parent.StoryMeta)
 
@@ -44,6 +45,7 @@ local function StoryView(props: Props, hooks: any)
 		unmount()
 
 		if story then
+			if story.format == enums.Format.Default then
 			local element = getStoryElement(story, controls)
 
 			local success, result = pcall(function()
@@ -56,6 +58,21 @@ local function StoryView(props: Props, hooks: any)
 				end
 			else
 				setErr(result)
+				end
+			elseif story.format == enums.Format.Hoarcekat then
+				local success, result = xpcall(function()
+					return story.story(storyParent:getValue())
+				end, debug.traceback)
+
+				if success then
+					if err then
+						setErr(nil)
+					end
+
+					tree.value = result
+				else
+					setErr(result)
+				end
 			end
 		end
 
