@@ -32,7 +32,18 @@ local function StoryView(props: Props, hooks: any)
 
 	local unmount = hooks.useCallback(function()
 		if tree.value and story then
-			story.roact.unmount(tree.value)
+			if story.format == enums.Format.Default then
+				story.roact.unmount(tree.value)
+			elseif story.format == enums.Format.Hoarcekat then
+				local success, result = xpcall(function()
+					return tree.value()
+				end, debug.traceback)
+
+				if not success then
+					setErr(result)
+				end
+			end
+
 			tree.value = nil
 		end
 	end, { story, storyParent })
@@ -46,18 +57,18 @@ local function StoryView(props: Props, hooks: any)
 
 		if story then
 			if story.format == enums.Format.Default then
-			local element = getStoryElement(story, controls)
+				local element = getStoryElement(story, controls)
 
-			local success, result = pcall(function()
-				tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
-			end)
+				local success, result = pcall(function()
+					tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
+				end)
 
-			if success then
-				if err then
-					setErr(nil)
-				end
-			else
-				setErr(result)
+				if success then
+					if err then
+						setErr(nil)
+					end
+				else
+					setErr(result)
 				end
 			elseif story.format == enums.Format.Hoarcekat then
 				local success, result = xpcall(function()
