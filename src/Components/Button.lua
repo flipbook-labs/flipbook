@@ -28,9 +28,9 @@ local function Button(props: Props, hooks: any)
 		[Roact.Event.Activated] = props.onActivated,
 	}, {
 		Padding = Roact.createElement("UIPadding", {
-			PaddingTop = styles.SMALL_PADDING,
+			PaddingTop = styles.PADDING,
 			PaddingRight = styles.PADDING,
-			PaddingBottom = styles.SMALL_PADDING,
+			PaddingBottom = styles.PADDING,
 			PaddingLeft = styles.PADDING,
 		}),
 
