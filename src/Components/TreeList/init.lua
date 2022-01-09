@@ -1,5 +1,4 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
 local TreeNode = require(script.TreeNode)
 local types = require(script.types)
 
@@ -18,15 +17,8 @@ local function TreeList(props: Props)
 		Padding = UDim.new(0, 4),
 	})
 
-	children.Padding = Roact.createElement("UIPadding", {
-		PaddingTop = styles.PADDING,
-		PaddingRight = styles.PADDING,
-		PaddingBottom = styles.PADDING,
-		PaddingLeft = styles.PADDING,
-	})
-
-	for _, node in ipairs(props.nodes) do
-		children[node.name] = Roact.createElement(TreeNode, {
+	for index, node in ipairs(props.nodes) do
+		children[node.name .. index] = Roact.createElement(TreeNode, {
 			node = node,
 			onNodeActivated = props.onNodeActivated,
 		})

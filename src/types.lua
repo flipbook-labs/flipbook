@@ -13,6 +13,7 @@ export type StoryControl = {
 
 export type Story = {
 	name: string,
+	roact: any,
 	summary: string?,
 	controls: { [string]: StoryControl }?,
 	story: RoactElement | (Dictionary<any>) -> RoactElement,
