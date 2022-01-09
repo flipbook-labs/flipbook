@@ -80,6 +80,8 @@ local function StoryView(props: Props, hooks: any)
 			Meta = Roact.createElement(StoryMeta, {
 				layoutOrder = 1,
 				story = story,
+				storyModule = props.story,
+				storyParent = storyParent,
 				controls = controls,
 				onControlChanged = onControlChanged,
 			}),
