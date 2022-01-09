@@ -11,10 +11,21 @@ type Props = {
 	story: ModuleScript,
 }
 
+local function usePrevious(hooks: any, value: any)
+	local prev = hooks.useValue(nil)
+
+	hooks.useEffect(function()
+		prev.value = value
+	end, { value })
+
+	return prev.value
+end
+
 local function StoryView(props: Props, hooks: any)
 	local storyParent = Roact.createRef()
 	local err, setErr = hooks.useState(nil)
 	local story, storyErr = useStory(hooks, props.story)
+	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState(story and story.controls)
 	local tree = hooks.useValue(nil)
 
@@ -53,6 +64,10 @@ local function StoryView(props: Props, hooks: any)
 	end, { story })
 
 	hooks.useEffect(function()
+		if story == prevStory then
+			return
+		end
+
 		unmount()
 
 		if story then
