@@ -36,11 +36,14 @@ foreman install
 # Install dependencies
 wally install
 
-# Serve the project
-rojo serve dev.project.json
+# Build the plugin
+rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm # Windows
+rojo build -o ~/Documents/Roblox/Plugins/RoactStorybook.rbxm # MacOS
 ```
 
-Now you can open Studio to a new Baseplate and start syncing with the Rojo plugin.
+Once built, open up a Baseplate to start interacting with the plugin.
+
+You can also run `rojo build` with the `--watch` flag while developing so that the plugin gets rebuilt when changes are made. Once rebuilt, simply reload to a new Baseplate for the changes to take effect.
 
 ## Testing
 
