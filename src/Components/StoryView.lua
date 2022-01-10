@@ -27,7 +27,6 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story)
 	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState({})
-	local prevControls = usePrevious(hooks, controls)
 	local tree = hooks.useValue(nil)
 
 	if storyErr then
@@ -65,30 +64,14 @@ local function StoryView(props: Props, hooks: any)
 	end, { story, setControls })
 
 	hooks.useEffect(function()
-		if not (story and tree.value and controls) then
-			return
-		end
-
-		if story.format ~= enums.Format.Default then
-			return
-		end
-
-		if controls ~= prevControls then
-			local element = getStoryElement(story, controls)
-			story.roact.update(tree.value, element)
-		end
-	end, { story, controls, prevControls, tree })
-
-	hooks.useEffect(function()
-		if story == prevStory then
-			return
-		end
-
 		unmount()
 
 		if story then
 			if story.format == enums.Format.Default then
-				local element = getStoryElement(story, controls)
+				-- This ensures that the controls are always ready before mounting
+				local initialControls = if Llama.isEmpty(controls) then story.controls else controls
+
+				local element = getStoryElement(story, initialControls)
 
 				local success, result = xpcall(function()
 					tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
@@ -113,7 +96,7 @@ local function StoryView(props: Props, hooks: any)
 				end
 			end
 		end
-	end, { story, prevStory, controls, unmount, storyParent, setErr })
+	end, { story, controls, unmount, storyParent, setErr })
 
 	if err then
 		return Roact.createElement(
