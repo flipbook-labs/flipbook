@@ -1,35 +1,23 @@
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
+local loadStoryModule = require(script.Parent.Parent.Modules.loadStoryModule)
 
 local loader = ModuleLoader.new()
 
 local function useStory(hooks: any, module: ModuleScript): types.Story?
-	local story, setStory = hooks.useState(nil)
-	local err, setErr = hooks.useState(nil)
+	local state, setState = hooks.useState({
+		story = nil,
+		err = nil,
+	})
 
 	local loadStory = hooks.useCallback(function()
-		if not module then
-			return
-		end
+		local story, err = loadStoryModule(loader, module)
 
-		loader:clear()
-
-		local success, result = pcall(function()
-			return loader:require(module)
-		end)
-
-		setErr(if success then nil else result)
-
-		if typeof(result) == "table" and result.story then
-			if not result.name then
-				result.name = module.Name
-			end
-
-			setStory(result)
-		else
-			print("could not select story", module:GetFullName())
-		end
-	end, { module, setStory, setErr })
+		setState({
+			story = story,
+			err = err,
+		})
+	end, { module })
 
 	hooks.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStory)
@@ -41,7 +29,7 @@ local function useStory(hooks: any, module: ModuleScript): types.Story?
 		end
 	end, { module })
 
-	return story, err
+	return state.story, state.err
 end
 
 return useStory
