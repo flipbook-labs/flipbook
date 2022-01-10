@@ -36,13 +36,13 @@ local function TreeNode(props: Props, hooks: any)
 
 	if hasChildren then
 		children.Layout = Roact.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
+			SortOrder = Enum.SortOrder.Name,
 			Padding = if isExpanded then styles.SMALL_PADDING else nil,
 		})
 
 		if props.node.children then
-			for _, child in ipairs(props.node.children) do
-				children[child.name] = Roact.createElement(TreeNode, {
+			for index, child in ipairs(props.node.children) do
+				children[child.name .. index] = Roact.createElement(TreeNode, {
 					node = child,
 					onNodeActivated = props.onNodeActivated,
 					indentLevel = nextIndentLevel,

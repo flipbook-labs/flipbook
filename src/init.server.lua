@@ -11,8 +11,6 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-print("Loading", PLUGIN_NAME)
-
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
 local disconnectButton = createToggleButton(toolbar, widget)
@@ -20,7 +18,6 @@ local disconnectButton = createToggleButton(toolbar, widget)
 local handle = Roact.mount(Roact.createElement(App), widget, "App")
 
 plugin.Unloading:Connect(function()
-	print("Unloading", PLUGIN_NAME)
 	disconnectButton()
 	Roact.unmount(handle)
 end)

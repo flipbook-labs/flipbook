@@ -8,8 +8,10 @@ styles.SMALL_PADDING = UDim.new(0, 4)
 
 styles.TextLabel = {
 	TextSize = 16,
+	LineHeight = 1.25,
 	Font = Enum.Font.Gotham,
 	TextColor3 = Color3.fromRGB(255, 255, 255),
+	RichText = true,
 	Size = UDim2.fromScale(0, 0),
 	AutomaticSize = Enum.AutomaticSize.XY,
 	TextXAlignment = Enum.TextXAlignment.Left,
