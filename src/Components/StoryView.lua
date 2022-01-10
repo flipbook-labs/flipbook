@@ -145,6 +145,13 @@ local function StoryView(props: Props, hooks: any)
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundTransparency = 1,
 				[Roact.Ref] = storyParent,
+			}, {
+				Padding = Roact.createElement("UIPadding", {
+					PaddingTop = styles.LARGE_PADDING,
+					PaddingRight = styles.LARGE_PADDING,
+					PaddingBottom = styles.LARGE_PADDING,
+					PaddingLeft = styles.LARGE_PADDING,
+				}),
 			}),
 		})
 	end
