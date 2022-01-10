@@ -6,6 +6,7 @@ local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
 local enums = require(script.Parent.Parent.enums)
 local styles = require(script.Parent.Parent.styles)
 local StoryMeta = require(script.Parent.StoryMeta)
+local StoryError = require(script.Parent.StoryError)
 
 type Props = {
 	story: ModuleScript,
@@ -98,46 +99,39 @@ local function StoryView(props: Props, hooks: any)
 		end
 	end, { story, controls, unmount, storyParent, setErr })
 
-	if err then
-		return Roact.createElement(
-			"TextLabel",
-			Llama.Dictionary.join(styles.TextLabel, {
-				Text = err,
-				TextColor3 = Color3.fromRGB(0, 0, 0),
-				Size = UDim2.fromScale(1, 1),
-			})
-		)
-	elseif story then
-		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
-			Layout = Roact.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
+	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
+		Layout = Roact.createElement("UIListLayout", {
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}),
+
+		Meta = story and Roact.createElement(StoryMeta, {
+			layoutOrder = 1,
+			story = story,
+			storyModule = props.story,
+			storyParent = storyParent,
+			controls = controls,
+			onControlChanged = onControlChanged,
+		}),
+
+		Preview = Roact.createElement("Frame", {
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			[Roact.Ref] = storyParent,
+		}, {
+			Error = err and Roact.createElement(StoryError, {
+				message = err,
 			}),
 
-			Meta = Roact.createElement(StoryMeta, {
-				layoutOrder = 1,
-				story = story,
-				storyModule = props.story,
-				storyParent = storyParent,
-				controls = controls,
-				onControlChanged = onControlChanged,
+			Padding = Roact.createElement("UIPadding", {
+				PaddingTop = styles.LARGE_PADDING,
+				PaddingRight = styles.LARGE_PADDING,
+				PaddingBottom = styles.LARGE_PADDING,
+				PaddingLeft = styles.LARGE_PADDING,
 			}),
-
-			Preview = Roact.createElement("Frame", {
-				LayoutOrder = 2,
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				[Roact.Ref] = storyParent,
-			}, {
-				Padding = Roact.createElement("UIPadding", {
-					PaddingTop = styles.LARGE_PADDING,
-					PaddingRight = styles.LARGE_PADDING,
-					PaddingBottom = styles.LARGE_PADDING,
-					PaddingLeft = styles.LARGE_PADDING,
-				}),
-			}),
-		})
-	end
+		}),
+	})
 end
 
 return RoactHooks.new(Roact)(StoryView)
