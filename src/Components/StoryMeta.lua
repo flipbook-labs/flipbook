@@ -17,6 +17,7 @@ export type Props = {
 	storyParent: any,
 	controls: Dictionary<any>?,
 	onControlChanged: ((string, any) -> nil)?,
+	onViewportToggled: (() -> nil)?,
 }
 
 local function StoryMeta(props: Props, hooks: any)
@@ -47,10 +48,6 @@ local function StoryMeta(props: Props, hooks: any)
 	local selectModule = hooks.useCallback(function()
 		SelectionService:Set({ props.storyModule })
 	end, { props.storyModule })
-
-	local toggleViewport = hooks.useCallback(function()
-		print("toggle viewport mounting")
-	end, {})
 
 	return Roact.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
@@ -107,7 +104,7 @@ local function StoryMeta(props: Props, hooks: any)
 				MountInViewport = Roact.createElement(Button, {
 					layoutOrder = 3,
 					icon = assets.viewport,
-					onActivated = toggleViewport,
+					onActivated = props.onViewportToggled,
 				}),
 			}),
 		}),

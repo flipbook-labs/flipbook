@@ -1,3 +1,5 @@
+local CoreGui = game:GetService("CoreGui")
+
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
@@ -28,6 +30,7 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story)
 	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState({})
+	local isUsingViewport, setIsUsingViewport = hooks.useState(false)
 	local tree = hooks.useValue(nil)
 
 	if storyErr then
@@ -41,6 +44,12 @@ local function StoryView(props: Props, hooks: any)
 			})
 		end)
 	end, { setControls })
+
+	local onViewportToggled = hooks.useCallback(function()
+		setIsUsingViewport(function(prev)
+			return not prev
+		end)
+	end, { setIsUsingViewport })
 
 	local unmount = hooks.useCallback(function()
 		if tree.value and prevStory then
@@ -73,9 +82,16 @@ local function StoryView(props: Props, hooks: any)
 				local initialControls = if Llama.isEmpty(controls) then story.controls else controls
 
 				local element = getStoryElement(story, initialControls)
+				local parent = if isUsingViewport then CoreGui else storyParent:getValue()
+
+				if isUsingViewport then
+					element = story.roact.createElement("ScreenGui", {}, {
+						Story = element,
+					})
+				end
 
 				local success, result = xpcall(function()
-					tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
+					tree.value = story.roact.mount(element, parent, story.name)
 				end, debug.traceback)
 
 				if success then
@@ -83,7 +99,9 @@ local function StoryView(props: Props, hooks: any)
 						setErr(nil)
 					end
 				else
-					setErr(result)
+					if err ~= result then
+						setErr(result)
+					end
 				end
 			elseif story.format == enums.Format.Hoarcekat then
 				local success, result = xpcall(function()
@@ -97,7 +115,7 @@ local function StoryView(props: Props, hooks: any)
 				end
 			end
 		end
-	end, { story, controls, unmount, storyParent, setErr })
+	end, { story, controls, unmount, storyParent, setErr, isUsingViewport })
 
 	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
 		Layout = Roact.createElement("UIListLayout", {
@@ -111,6 +129,7 @@ local function StoryView(props: Props, hooks: any)
 			storyParent = storyParent,
 			controls = controls,
 			onControlChanged = onControlChanged,
+			onViewportToggled = onViewportToggled,
 		}),
 
 		Preview = Roact.createElement("Frame", {
@@ -120,6 +139,13 @@ local function StoryView(props: Props, hooks: any)
 			BackgroundTransparency = 1,
 			[Roact.Ref] = storyParent,
 		}, {
+			MountedInViewport = isUsingViewport and Roact.createElement(
+				"TextLabel",
+				Llama.Dictionary.join(styles.TextLabel, {
+					Text = "Story mounted in viewport...",
+				})
+			),
+
 			Error = err and Roact.createElement(StoryError, {
 				message = err,
 			}),
