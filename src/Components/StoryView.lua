@@ -87,17 +87,19 @@ local function StoryView(props: Props, hooks: any)
 				end
 			elseif story.format == enums.Format.Hoarcekat then
 				local success, result = xpcall(function()
-					return story.story(storyParent:getValue())
+					tree.value = story.story(storyParent:getValue())
 				end, debug.traceback)
 
-				setErr(if success then nil else result)
-
 				if success then
-					tree.value = result
+					if err then
+						setErr(nil)
+					end
+				else
+					setErr(result)
 				end
 			end
 		end
-	end, { story, controls, unmount, storyParent, setErr })
+	end, { story, controls, unmount, storyParent, err, setErr })
 
 	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
 		Layout = Roact.createElement("UIListLayout", {
