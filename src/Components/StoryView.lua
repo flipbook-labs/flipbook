@@ -14,6 +14,14 @@ type Props = {
 	story: ModuleScript,
 }
 
+local function createViewportPreview(): ScreenGui
+	local screen = Instance.new("ScreenGui")
+	screen.Name = "StoryPreview"
+	screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+	return screen
+end
+
 local function usePrevious(hooks: any, value: any)
 	local prev = hooks.useValue(nil)
 
@@ -31,6 +39,7 @@ local function StoryView(props: Props, hooks: any)
 	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState({})
 	local isUsingViewport, setIsUsingViewport = hooks.useState(false)
+	local viewport = hooks.useValue(createViewportPreview())
 	local tree = hooks.useValue(nil)
 
 	if storyErr then
@@ -70,6 +79,10 @@ local function StoryView(props: Props, hooks: any)
 	end, { prevStory, setErr })
 
 	hooks.useEffect(function()
+		viewport.value.Parent = if isUsingViewport then CoreGui else nil
+	end, { isUsingViewport })
+
+	hooks.useEffect(function()
 		setControls(if story and story.controls then story.controls else {})
 	end, { story, setControls })
 
@@ -77,18 +90,13 @@ local function StoryView(props: Props, hooks: any)
 		unmount()
 
 		if story then
+			local parent = if isUsingViewport then viewport.value else storyParent:getValue()
+
 			if story.format == enums.Format.Default then
 				-- This ensures that the controls are always ready before mounting
 				local initialControls = if Llama.isEmpty(controls) then story.controls else controls
 
 				local element = getStoryElement(story, initialControls)
-				local parent = if isUsingViewport then CoreGui else storyParent:getValue()
-
-				if isUsingViewport then
-					element = story.roact.createElement("ScreenGui", {}, {
-						Story = element,
-					})
-				end
 
 				local success, result = xpcall(function()
 					tree.value = story.roact.mount(element, parent, story.name)
@@ -105,13 +113,17 @@ local function StoryView(props: Props, hooks: any)
 				end
 			elseif story.format == enums.Format.Hoarcekat then
 				local success, result = xpcall(function()
-					return story.story(storyParent:getValue())
+					tree.value = story.story(parent)
 				end, debug.traceback)
 
-				setErr(if success then nil else result)
-
 				if success then
-					tree.value = result
+					if err then
+						setErr(nil)
+					end
+				else
+					if err ~= result then
+						setErr(result)
+					end
 				end
 			end
 		end
