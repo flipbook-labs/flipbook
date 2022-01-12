@@ -6,6 +6,7 @@ local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
 local enums = require(script.Parent.Parent.enums)
 local styles = require(script.Parent.Parent.styles)
 local StoryMeta = require(script.Parent.StoryMeta)
+local StoryError = require(script.Parent.StoryError)
 
 type Props = {
 	story: ModuleScript,
@@ -27,7 +28,6 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story)
 	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState({})
-	local prevControls = usePrevious(hooks, controls)
 	local tree = hooks.useValue(nil)
 
 	if storyErr then
@@ -65,30 +65,14 @@ local function StoryView(props: Props, hooks: any)
 	end, { story, setControls })
 
 	hooks.useEffect(function()
-		if not (story and tree.value and controls) then
-			return
-		end
-
-		if story.format ~= enums.Format.Default then
-			return
-		end
-
-		if controls ~= prevControls then
-			local element = getStoryElement(story, controls)
-			story.roact.update(tree.value, element)
-		end
-	end, { story, controls, prevControls, tree })
-
-	hooks.useEffect(function()
-		if story == prevStory then
-			return
-		end
-
 		unmount()
 
 		if story then
 			if story.format == enums.Format.Default then
-				local element = getStoryElement(story, controls)
+				-- This ensures that the controls are always ready before mounting
+				local initialControls = if Llama.isEmpty(controls) then story.controls else controls
+
+				local element = getStoryElement(story, initialControls)
 
 				local success, result = xpcall(function()
 					tree.value = story.roact.mount(element, storyParent:getValue(), story.name)
@@ -113,41 +97,41 @@ local function StoryView(props: Props, hooks: any)
 				end
 			end
 		end
-	end, { story, prevStory, controls, unmount, storyParent, setErr })
+	end, { story, controls, unmount, storyParent, setErr })
 
-	if err then
-		return Roact.createElement(
-			"TextLabel",
-			Llama.Dictionary.join(styles.TextLabel, {
-				Text = err,
-				TextColor3 = Color3.fromRGB(0, 0, 0),
-				Size = UDim2.fromScale(1, 1),
-			})
-		)
-	elseif story then
-		return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
-			Layout = Roact.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
+	return Roact.createElement("ScrollingFrame", Llama.Dictionary.join(styles.ScrollingFrame, {}), {
+		Layout = Roact.createElement("UIListLayout", {
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}),
+
+		Meta = story and Roact.createElement(StoryMeta, {
+			layoutOrder = 1,
+			story = story,
+			storyModule = props.story,
+			storyParent = storyParent,
+			controls = controls,
+			onControlChanged = onControlChanged,
+		}),
+
+		Preview = Roact.createElement("Frame", {
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			[Roact.Ref] = storyParent,
+		}, {
+			Error = err and Roact.createElement(StoryError, {
+				message = err,
 			}),
 
-			Meta = Roact.createElement(StoryMeta, {
-				layoutOrder = 1,
-				story = story,
-				storyModule = props.story,
-				storyParent = storyParent,
-				controls = controls,
-				onControlChanged = onControlChanged,
+			Padding = Roact.createElement("UIPadding", {
+				PaddingTop = styles.LARGE_PADDING,
+				PaddingRight = styles.LARGE_PADDING,
+				PaddingBottom = styles.LARGE_PADDING,
+				PaddingLeft = styles.LARGE_PADDING,
 			}),
-
-			Preview = Roact.createElement("Frame", {
-				LayoutOrder = 2,
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				[Roact.Ref] = storyParent,
-			}),
-		})
-	end
+		}),
+	})
 end
 
 return RoactHooks.new(Roact)(StoryView)

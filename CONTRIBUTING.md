@@ -9,21 +9,23 @@ You should be using [Visual Studio Code](https://code.visualstudio.com/) as your
 - [Rojo](https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo)
 - [Selene](https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode)
 - [StyLua](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua)
+- [Roblox LSP](https://marketplace.visualstudio.com/items?itemName=Nightrains.robloxlsp)
 
-Once installed, the Rojo extension will display a welcome screen. Scroll down to the section for the Roblox Studio plugin and select "Manage it for me." Next time you open a place in Studio you will have the Rojo plugin ready to go.
+Once the Rojo extension is installed a welcome screen will be displayed. Scroll down to the section for the Roblox Studio plugin and select "Manage it for me." Next time you open a place in Studio you will have the Rojo plugin ready to go.
 
-Next install our toolchain manager, [Foreman](https://github.com/Roblox/foreman/). Foreman handles the installation of several of our other tools, like Rojo, Wally, Selene, and StyLua. 
+Next install our toolchain manager, [Foreman](https://github.com/Roblox/foreman/). Foreman handles the installation of several of our other tools, like Rojo, Wally, Selene, and StyLua.
 
 To make the tools that Foreman installs avialable on your system you will need to manually add it to your `PATH`.
+
 - Windows
-    - Add `C:\Users\You\.foreman\bin` to your `PATH`
-    - Follow [this guide](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) for how to do that
+  - Add `C:\Users\You\.foreman\bin` to your `PATH`
+  - Follow [this guide](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) for how to do that
 - MacOS
-    - Open Terminal
-    - Open the corresponding file for your terminal
-        - Bash: `nano ~/.bash_profile`
-        - ZSH: `nano ~/.zshrc`
-    - Append `export PATH="$PATH:~/.foreman/bin` to the end of the file
+  - Open Terminal
+  - Open the corresponding file for your terminal
+    - Bash: `nano ~/.bash_profile`
+    - ZSH: `nano ~/.zshrc`
+  - Append `export PATH="$PATH:~/.foreman/bin` to the end of the file
 
 ## Development
 
@@ -35,10 +37,16 @@ foreman install
 
 # Install dependencies
 wally install
+```
 
-# Build the plugin
-rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm # Windows
-rojo build -o ~/Documents/Roblox/Plugins/RoactStorybook.rbxm # MacOS
+Next use Rojo to build the plugin:
+
+```sh
+# Windows
+rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm
+
+# MacOS
+rojo build -o ~/Documents/Roblox/Plugins/RoactStorybook.rbxm
 ```
 
 Once built, open up a Baseplate to start interacting with the plugin.
