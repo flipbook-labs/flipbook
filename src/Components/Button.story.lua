@@ -35,7 +35,7 @@ return {
 			end,
 		}),
 
-		Boith = Roact.createElement(Button, {
+		Both = Roact.createElement(Button, {
 			layoutOrder = 3,
 			text = "Explore",
 			icon = assets.explore,
