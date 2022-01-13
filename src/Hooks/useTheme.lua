@@ -1,13 +1,15 @@
+local themes = require(script.Parent.Parent.themes)
+
 local function useTheme(hooks: any)
 	local studio = hooks.useMemo(function()
 		return settings().Studio
 	end, {})
 
-	local theme: StudioTheme, set = hooks.useState(studio.Theme)
+	local theme, set = hooks.useState(themes[studio.Theme.Name])
 
 	hooks.useEffect(function()
 		local conn = studio.ThemeChanged:Connect(function()
-			set(studio.Theme)
+			set(themes[studio.Theme.Name])
 		end)
 
 		return function()
