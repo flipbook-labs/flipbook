@@ -1,4 +1,5 @@
 local hook = require(script.Parent.Parent.hook)
+local Icon = require(script.Parent.Icon)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
@@ -6,7 +7,7 @@ type Props = {
 	position: UDim2?,
 }
 
-local function Searchbar(props, hooks)
+local function Searchbar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	return Roact.createElement("Frame", {
@@ -20,6 +21,12 @@ local function Searchbar(props, hooks)
 
 		UIStroke = Roact.createElement("UIStroke", {
 			Color = theme.stroke,
+		}),
+
+		Icon = Roact.createElement(Icon, {
+			color = theme.icons.search,
+			icon = "magnifying-glass",
+			size = 14,
 		}),
 	})
 end

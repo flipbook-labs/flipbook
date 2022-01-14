@@ -7,7 +7,7 @@ type Props = {
 	size: number?,
 }
 
-local function Branding(props)
+local function Branding(props: Props)
 	return Roact.createElement("TextLabel", {
 		AutomaticSize = Enum.AutomaticSize.XY,
 		BackgroundTransparency = 1,
