@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# flipbook
+# Getting Started
 
 flipbook is a Roblox plugin for previewing Roact components in real-time to speed up development and help you break down your components into small, reusable parts of your app.
 
