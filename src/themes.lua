@@ -7,8 +7,11 @@ local function fromHex(decimal: number): Color3
 end
 
 return {
+	Brand = fromHex(0x933EA),
+
 	Light = {
 		background = fromHex(0xF3F4F6),
+		stroke = fromHex(0xD1D5DB),
 	},
 
 	Dark = {
