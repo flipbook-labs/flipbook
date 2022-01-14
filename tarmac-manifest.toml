@@ -23,6 +23,11 @@ hash = "2d8f0bcefe96d8b99273785c0f09aa4afb6b2aec6c6758e94ae5ae8996ebaf00"
 id = 8472668100
 packable = false
 
+[inputs."img/magnifying-glass.png"]
+hash = "5e16f8d79c120809f2e75b988f595a64bbc77e97bf8564d50e780eb7476ff876"
+id = 8531717030
+packable = false
+
 [inputs."img/story.png"]
 hash = "b2ba799507dfbc53c359c718b570abf305b708a846a38312fe7a46ed6c71e52e"
 id = 8481250291
