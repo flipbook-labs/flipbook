@@ -5,7 +5,7 @@ return {
 	["double-arrow"] = "rbxassetid://8492343246",
 	explore = "rbxassetid://8500157719",
 	folder = "rbxassetid://8472668100",
-	["magnifying-glass"] = "rbxassetid://8531717030",
+	["magnifying-glass"] = "rbxassetid://8531722222",
 	story = "rbxassetid://8481250291",
 	storybook = "rbxassetid://8472668370",
 	viewport = "rbxassetid://8500158048",

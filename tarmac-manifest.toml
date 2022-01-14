@@ -24,8 +24,8 @@ id = 8472668100
 packable = false
 
 [inputs."img/magnifying-glass.png"]
-hash = "5e16f8d79c120809f2e75b988f595a64bbc77e97bf8564d50e780eb7476ff876"
-id = 8531717030
+hash = "a8f4b389c08e2b33a5e2342507924543a399535f7e8cb58739c50b9f0296659a"
+id = 8531722222
 packable = false
 
 [inputs."img/story.png"]

@@ -2,6 +2,7 @@ local assets = require(script.Parent.Parent.assets)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 
 type Props = {
+	anchorPoint: Vector2?,
 	color: Color3?,
 	icon: string,
 	position: UDim2?,
@@ -14,6 +15,7 @@ local function Icon(props: Props)
 
 	return icon
 			and Roact.createElement("ImageLabel", {
+				AnchorPoint = props.anchorPoint,
 				BackgroundTransparency = 1,
 				Image = icon,
 				ImageColor3 = props.color,
