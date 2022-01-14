@@ -15,6 +15,10 @@ return {
 		icons = {
 			search = fromHex(0x111228),
 		},
+		searchbar = {
+			stroke = fromHex(0x933EA),
+			background = fromHex(0xFFFFFF),
+		},
 	},
 
 	Dark = {
