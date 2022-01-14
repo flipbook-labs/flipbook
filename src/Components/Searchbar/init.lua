@@ -25,7 +25,7 @@ end
 local function Searchbar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local spring, setSpring = useSingleMotor(hooks, 0)
-	local active, setActive = hooks.useState(false)
+	local active = hooks.useState(false)
 
 	hooks.useEffect(function()
 		if active then
@@ -70,29 +70,6 @@ local function Searchbar(props: Props, hooks: any)
 			BorderSizePixel = 0,
 			Position = UDim2.new(0, 23, 0.5, 0),
 			Size = UDim2.new(0, 1, 1, -8),
-		}),
-
-		DeselectedText = Roact.createElement("TextLabel", {
-			AnchorPoint = Vector2.new(0, 0.5),
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Position = UDim2.new(0, 32, 0.5, 0),
-			Text = "Find components",
-			TextColor3 = theme.stroke,
-			TextSize = 10,
-		}),
-
-		Hitbox = Roact.createElement("TextButton", {
-			BackgroundTransparency = 1,
-			Size = UDim2.fromScale(1, 1),
-			Text = "",
-			[Roact.Event.Activated] = function()
-				if active then
-					setActive(false)
-				else
-					setActive(true)
-				end
-			end,
 		}),
 	})
 end
