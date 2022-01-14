@@ -6,7 +6,7 @@
     {
       "label": "Build and watch",
       "type": "shell",
-      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm --watch",
+      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch",
       "group": "test",
       "presentation": {
         "reveal": "always",

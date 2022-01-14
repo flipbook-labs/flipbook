@@ -11,7 +11,7 @@ return {
 		end,
 		nodes = {
 			{
-				name = "RoactStorybook",
+				name = "flipbook",
 				icon = assets.storybook,
 				children = {
 					{
