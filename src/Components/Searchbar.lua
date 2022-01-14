@@ -35,7 +35,7 @@ local function Searchbar(props: Props, hooks: any)
 
 		Icon = Roact.createElement(Icon, {
 			anchorPoint = Vector2.new(0, 0.5),
-			color = theme.icons.search,
+			color = theme.stroke,
 			icon = "magnifying-glass",
 			position = UDim2.fromScale(0, 0.5),
 			size = 14,
@@ -47,6 +47,16 @@ local function Searchbar(props: Props, hooks: any)
 			BorderSizePixel = 0,
 			Position = UDim2.new(0, 23, 0.5, 0),
 			Size = UDim2.new(0, 1, 1, -8),
+		}),
+
+		DeselectedText = Roact.createElement("TextLabel", {
+			AnchorPoint = Vector2.new(0, 0.5),
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			Position = UDim2.new(0, 32, 0.5, 0),
+			Text = "Find components",
+			TextColor3 = theme.stroke,
+			TextSize = 10,
 		}),
 	})
 end
