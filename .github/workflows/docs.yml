@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  REPO_URL: github.com/vocksel/flipbook
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Use GITHUB_TOKEN to allow pushing
-        run: git remote set-url origin https://github-actions[bot]:${{ env.GITHUB_TOKEN }}@github.com/vocksel/module-loader
+        run: git remote set-url origin https://github-actions[bot]:${{ env.GITHUB_TOKEN }}@${{ env.REPO_URL }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
