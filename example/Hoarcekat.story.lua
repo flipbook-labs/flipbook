@@ -1,5 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Roact = require(ReplicatedStorage.Packages.Roact)
+local Roact = require(script.Parent.Parent.Roact)
 
 return function(target: Instance)
 	local root = Roact.createElement("TextLabel", {

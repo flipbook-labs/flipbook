@@ -4,10 +4,10 @@
         "$className": "DataModel",
         "ReplicatedStorage": {
             "Packages": {
-                "$path": "Packages"
-            },
-            "Example": {
-                "$path": "example"
+                "$path": "Packages",
+                "Example": {
+                    "$path": "example"
+                }
             },
             "RoactStorybook": {
                 "Packages": {
