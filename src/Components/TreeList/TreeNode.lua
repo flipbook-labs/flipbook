@@ -1,6 +1,7 @@
 local Llama = require(script.Parent.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Parent.Packages.RoactHooks)
+local useTheme = require(script.Parent.Parent.Parent.Hooks.useTheme)
 local assets = require(script.Parent.Parent.Parent.assets)
 local styles = require(script.Parent.Parent.Parent.styles)
 local types = require(script.Parent.types)
@@ -9,6 +10,7 @@ local NODE_HEIGHT = styles.TextLabel.TextSize
 
 export type Props = {
 	node: types.Node,
+	activeNode: types.Node?,
 	onNodeActivated: (types.Node) -> (),
 	indentLevel: number,
 }
@@ -20,8 +22,10 @@ local defaultProps = {
 local function TreeNode(props: Props, hooks: any)
 	props = Llama.Dictionary.join(defaultProps, props)
 
+	local theme = useTheme(hooks)
 	local isExpanded, setIsExpanded = hooks.useState(false)
 	local hasChildren = props.node.children and #props.node.children > 0
+	local isActive = props.node == props.activeNode
 	local nextIndentLevel = props.indentLevel + 1
 
 	local onActivated = hooks.useCallback(function()
@@ -44,6 +48,7 @@ local function TreeNode(props: Props, hooks: any)
 			for index, child in ipairs(props.node.children) do
 				children[child.name .. index] = Roact.createElement(TreeNode, {
 					node = child,
+					activeNode = props.activeNode,
 					onNodeActivated = props.onNodeActivated,
 					indentLevel = nextIndentLevel,
 				})
@@ -66,7 +71,8 @@ local function TreeNode(props: Props, hooks: any)
 		Node = Roact.createElement("Frame", {
 			LayoutOrder = 1,
 			Size = UDim2.new(1, 0, 0, NODE_HEIGHT),
-			BackgroundTransparency = 1,
+			BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.Shadow),
+			BackgroundTransparency = if isActive then 0.5 else 1,
 		}, {
 			Layout = Roact.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
