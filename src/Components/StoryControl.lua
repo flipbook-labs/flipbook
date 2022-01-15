@@ -8,7 +8,7 @@ local Checkbox = require(script.Parent.Checkbox)
 export type Props = {
 	key: string,
 	value: any,
-	onValueChange: ((any) -> nil)?,
+	onValueChange: ((any) -> ())?,
 	layoutOrder: number?,
 }
 

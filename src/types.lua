@@ -22,6 +22,6 @@ export type Story = {
 
 -- Hoarcekat stories are functions that take a GuiObject to mount to and return
 -- another function which acts as the cleanup step.
-export type HoarcekatStory = (GuiObject) -> () -> nil
+export type HoarcekatStory = (GuiObject) -> () -> ()
 
 return nil
