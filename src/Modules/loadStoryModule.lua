@@ -2,8 +2,8 @@ local Llama = require(script.Parent.Parent.Packages.Llama)
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local enums = require(script.Parent.Parent.enums)
 local types = require(script.Parent.Parent.types)
-local isStory = require(script.Parent.Parent.Formats.isStory)
-local isHoarcekatStory = require(script.Parent.Parent.Formats.isHoarcekatStory)
+local isStory = require(script.Parent.Parent.Modules.isStory)
+local isHoarcekatStory = require(script.Parent.Parent.Modules.isHoarcekatStory)
 
 local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript): (types.Story?, string?)
 	if not module then
@@ -23,7 +23,7 @@ local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript)
 	if isStory(result) then
 		local story: types.Story = Llama.Dictionary.join({
 			name = module.Name,
-			format = enums.Modules.Default,
+			format = enums.Format.Default,
 		}, result)
 
 		return story, nil
@@ -31,7 +31,7 @@ local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript)
 		local story: types.Story = {
 			name = module.Name,
 			story = result,
-			format = enums.Modules.Hoarcekat,
+			format = enums.Format.Hoarcekat,
 		}
 
 		return story, nil
