@@ -8,7 +8,7 @@ export type Props = {
 	icon: string?,
 	layoutOrder: number?,
 	maxSize: Vector2?,
-	onActivated: (() -> nil)?,
+	onActivated: (() -> ())?,
 }
 
 local function Button(props: Props, hooks: any)

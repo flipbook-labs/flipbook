@@ -4,7 +4,7 @@
     This function also sets up some events to toggle the widget when the button
     is clicked, and to sync up the button's "active" state with the widget.
 
-    @return () -> nil -- Returns a callback for disconnecting button events
+    @return () -> () -- Returns a callback for disconnecting button events
 ]=]
 local function createToggleButton(toolbar: PluginToolbar, widget: DockWidgetPluginGui)
 	local button = toolbar:CreateButton(
