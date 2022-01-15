@@ -15,9 +15,22 @@ local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
 local disconnectButton = createToggleButton(toolbar, widget)
 
-local handle = Roact.mount(Roact.createElement(App), widget, "App")
+local handle: any
+
+local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+	if widget.Enabled then
+		handle = Roact.mount(Roact.createElement(App), widget, "App")
+	else
+		Roact.unmount(handle)
+		handle = nil
+	end
+end)
 
 plugin.Unloading:Connect(function()
 	disconnectButton()
-	Roact.unmount(handle)
+	widgetConn:Disconnect()
+
+	if handle then
+		Roact.unmount(handle)
+	end
 end)

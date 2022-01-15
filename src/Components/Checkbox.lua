@@ -5,7 +5,7 @@ local assets = require(script.Parent.Parent.assets)
 
 export type Props = {
 	isChecked: boolean,
-	onActivated: (boolean) -> nil,
+	onActivated: (boolean) -> (),
 }
 
 local function Checkbox(props: Props, hooks: any)
