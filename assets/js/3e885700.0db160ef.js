@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[893],{7868:function(s){s.exports=JSON.parse('{"sourceUrl":"https://github.com/vocksel/flipbook/blob/master","baseUrl":"/flipbook/","classOrder":[],"apiCategories":[]}')}}]);
