@@ -23,7 +23,7 @@ local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript)
 	if isStory(result) then
 		local story: types.Story = Llama.Dictionary.join({
 			name = module.Name,
-			format = enums.Format.Default,
+			format = enums.Modules.Default,
 		}, result)
 
 		return story, nil
@@ -31,7 +31,7 @@ local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript)
 		local story: types.Story = {
 			name = module.Name,
 			story = result,
-			format = enums.Format.Hoarcekat,
+			format = enums.Modules.Hoarcekat,
 		}
 
 		return story, nil

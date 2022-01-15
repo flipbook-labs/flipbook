@@ -62,9 +62,9 @@ local function StoryView(props: Props, hooks: any)
 
 	local unmount = hooks.useCallback(function()
 		if tree.value and prevStory then
-			if prevStory.format == enums.Format.Default then
+			if prevStory.format == enums.Modules.Default then
 				prevStory.roact.unmount(tree.value)
-			elseif prevStory.format == enums.Format.Hoarcekat then
+			elseif prevStory.format == enums.Modules.Hoarcekat then
 				local success, result = xpcall(function()
 					return tree.value()
 				end, debug.traceback)
@@ -92,7 +92,7 @@ local function StoryView(props: Props, hooks: any)
 		if story then
 			local parent = if isUsingViewport then viewport.value else storyParent:getValue()
 
-			if story.format == enums.Format.Default then
+			if story.format == enums.Modules.Default then
 				-- This ensures that the controls are always ready before mounting
 				local initialControls = if Llama.isEmpty(controls) then story.controls else controls
 
@@ -111,7 +111,7 @@ local function StoryView(props: Props, hooks: any)
 						setErr(result)
 					end
 				end
-			elseif story.format == enums.Format.Hoarcekat then
+			elseif story.format == enums.Modules.Hoarcekat then
 				local success, result = xpcall(function()
 					tree.value = story.story(parent)
 				end, debug.traceback)
