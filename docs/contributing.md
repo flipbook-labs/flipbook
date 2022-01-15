@@ -47,10 +47,10 @@ Next use Rojo to build the plugin:
 
 ```sh
 # Windows
-rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm
+rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
 
 # MacOS
-rojo build -o ~/Documents/Roblox/Plugins/RoactStorybook.rbxm
+rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm
 ```
 
 Once built, open up a Baseplate to start interacting with the plugin.

@@ -5,7 +5,7 @@ local createWidget = require(script.Modules.createWidget)
 local createToggleButton = require(script.Modules.createToggleButton)
 local App = require(script.Components.App)
 
-local PLUGIN_NAME = "RoactStorybook"
+local PLUGIN_NAME = "flipbook"
 
 if RunService:IsRunning() or not RunService:IsEdit() then
 	return

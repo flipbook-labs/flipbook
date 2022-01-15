@@ -1,5 +1,5 @@
 {
-    "name": "RoactStorybook (dev)",
+    "name": "flipbook (dev)",
     "tree": {
         "$className": "DataModel",
         "ReplicatedStorage": {
@@ -9,7 +9,7 @@
                     "$path": "example"
                 }
             },
-            "RoactStorybook": {
+            "flipbook": {
                 "Packages": {
                     "$path": "Packages"
                 },
