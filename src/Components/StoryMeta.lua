@@ -16,8 +16,8 @@ export type Props = {
 	storyModule: ModuleScript,
 	storyParent: any,
 	controls: Dictionary<any>?,
-	onControlChanged: ((string, any) -> nil)?,
-	onViewportToggled: (() -> nil)?,
+	onControlChanged: ((string, any) -> ())?,
+	onViewportToggled: (() -> ())?,
 }
 
 local function StoryMeta(props: Props, hooks: any)

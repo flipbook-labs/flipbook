@@ -5,7 +5,7 @@ local types = require(script.types)
 export type Props = {
 	nodes: { types.Node },
 	activeNode: types.Node?,
-	onNodeActivated: (types.Node) -> nil,
+	onNodeActivated: (types.Node) -> (),
 }
 
 export type Node = types.Node

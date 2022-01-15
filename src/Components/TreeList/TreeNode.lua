@@ -11,7 +11,7 @@ local NODE_HEIGHT = styles.TextLabel.TextSize
 export type Props = {
 	node: types.Node,
 	activeNode: types.Node?,
-	onNodeActivated: (types.Node) -> nil,
+	onNodeActivated: (types.Node) -> (),
 	indentLevel: number,
 }
 

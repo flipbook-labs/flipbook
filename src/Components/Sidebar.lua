@@ -14,9 +14,9 @@ type Props = {
 	isExpanded: boolean,
 	width: NumberRange,
 	storybooks: { types.Storybook },
-	selectStory: (types.Story) -> nil,
+	selectStory: (types.Story) -> (),
 	layoutOrder: number?,
-	onToggleActivated: (() -> nil)?,
+	onToggleActivated: (() -> ())?,
 }
 
 local function Sidebar(props: Props, hooks: any)

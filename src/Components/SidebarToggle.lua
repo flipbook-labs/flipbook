@@ -7,7 +7,7 @@ type Props = {
 	isExpanded: boolean,
 	position: UDim2?,
 	anchorPoint: Vector2?,
-	onActivated: (() -> nil)?,
+	onActivated: (() -> ())?,
 }
 
 local function SidebarToggle(props: Props, hooks: any)
