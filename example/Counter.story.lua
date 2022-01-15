@@ -1,5 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Roact = require(ReplicatedStorage.Packages.Roact)
+local Roact = require(script.Parent.Parent.Roact)
 local Counter = require(script.Parent.Counter)
 
 return {

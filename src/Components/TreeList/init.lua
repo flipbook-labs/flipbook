@@ -4,6 +4,7 @@ local types = require(script.types)
 
 export type Props = {
 	nodes: { types.Node },
+	activeNode: types.Node?,
 	onNodeActivated: (types.Node) -> (),
 }
 
@@ -20,6 +21,7 @@ local function TreeList(props: Props)
 	for index, node in ipairs(props.nodes) do
 		children[node.name .. index] = Roact.createElement(TreeNode, {
 			node = node,
+			activeNode = props.activeNode,
 			onNodeActivated = props.onNodeActivated,
 		})
 	end

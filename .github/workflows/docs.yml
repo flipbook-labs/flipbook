@@ -1,0 +1,32 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Use GITHUB_TOKEN to allow pushing
+        run: git remote set-url origin https://github-actions[bot]:${{ env.GITHUB_TOKEN }}@github.com/vocksel/module-loader
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+
+      - name: Install Moonwave
+        run: npm install -g moonwave
+
+      - name: Deploy
+        run: moonwave build --publish
