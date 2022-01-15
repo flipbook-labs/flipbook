@@ -26,6 +26,10 @@ local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 	end
 end)
 
+if widget.Enabled then
+	handle = Roact.mount(Roact.createElement(App), widget, "App")
+end
+
 plugin.Unloading:Connect(function()
 	disconnectButton()
 	widgetConn:Disconnect()
