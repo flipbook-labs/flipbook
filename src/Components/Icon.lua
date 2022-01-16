@@ -14,15 +14,14 @@ local function Icon(props: Props)
 	local size = props.size or 16
 
 	return icon
-			and Roact.createElement("ImageLabel", {
-				AnchorPoint = props.anchorPoint,
-				BackgroundTransparency = 1,
-				Image = icon,
-				ImageColor3 = props.color,
-				Position = props.position,
-				Size = UDim2.fromOffset(size, size),
-			})
-		or nil
+		and Roact.createElement("ImageLabel", {
+			AnchorPoint = props.anchorPoint,
+			BackgroundTransparency = 1,
+			Image = icon,
+			ImageColor3 = props.color,
+			Position = props.position,
+			Size = UDim2.fromOffset(size, size),
+		})
 end
 
 return Icon
