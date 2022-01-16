@@ -1,6 +1,7 @@
 local Branding = require(script.Parent.Branding)
-local Searchbar = require(script.Parent.Searchbar)
+local LibraryHeader = require(script.Parent.LibraryHeader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
+local Searchbar = require(script.Parent.Searchbar)
 
 local PADDING = UDim.new(0, 20)
 local NO_PADDING = UDim.new(0, 0)
@@ -33,6 +34,8 @@ local function Sidebar(props: Props)
 		Searchbar = Roact.createElement(Searchbar, {
 			position = UDim2.fromOffset(0, 45),
 		}),
+
+		LibraryHeader = Roact.createElement(LibraryHeader),
 	})
 end
 
