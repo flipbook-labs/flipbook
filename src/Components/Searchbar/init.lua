@@ -1,6 +1,8 @@
 local Flipper = require(script.Parent.Parent.Packages.Flipper)
 local hook = require(script.Parent.Parent.hook)
 local Icon = require(script.Parent.Icon)
+local InputArea = require(script.InputArea)
+local mapColors = require(script.Parent.Parent.Modules.mapColors)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local useSingleMotor = require(script.Parent.Parent.Hooks.useSingleMotor)
 local useTheme = require(script.Parent.Parent.Hooks.useTheme)
@@ -16,16 +18,10 @@ type Props = {
 	position: UDim2?,
 }
 
-local function mapColors(spring, color1, color2)
-	return spring:map(function(alpha)
-		return color1:Lerp(color2, alpha)
-	end)
-end
-
 local function Searchbar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local spring, setSpring = useSingleMotor(hooks, 0)
-	local active = hooks.useState(false)
+	local active, setActive = hooks.useState(false)
 
 	hooks.useEffect(function()
 		if active then
@@ -70,6 +66,21 @@ local function Searchbar(props: Props, hooks: any)
 			BorderSizePixel = 0,
 			Position = UDim2.new(0, 23, 0.5, 0),
 			Size = UDim2.new(0, 1, 1, -8),
+		}),
+
+		Input = Roact.createElement(InputArea, {
+			active = active,
+			setActive = setActive,
+			spring = spring,
+		}),
+
+		Hitbox = Roact.createElement("TextButton", {
+			BackgroundTransparency = 1,
+			Size = UDim2.fromScale(1, 1),
+			Text = "",
+			[Roact.Event.Activated] = function()
+				setActive(not active)
+			end,
 		}),
 	})
 end
