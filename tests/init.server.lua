@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TestEZ = require(ReplicatedStorage.Packages.TestEZ)
 
 local roots = {}
-for _, child in ipairs(ReplicatedStorage.RoactStorybook:GetChildren()) do
+for _, child in ipairs(ReplicatedStorage.flipbook:GetChildren()) do
 	if child.Name ~= "Packages" then
 		table.insert(roots, child)
 	end
