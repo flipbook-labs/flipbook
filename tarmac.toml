@@ -1,4 +1,4 @@
-name = "RoactStorybook"
+name = "flipbook"
 
 [[inputs]]
 glob = "img/**/*.png"

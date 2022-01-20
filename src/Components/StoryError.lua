@@ -12,12 +12,14 @@ local function StoryError(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	return Roact.createElement(
-		"TextLabel",
+		"TextBox",
 		Llama.Dictionary.join(styles.TextLabel, {
 			Text = props.message,
 			Font = Enum.Font.RobotoMono,
 			TextWrapped = true,
 			TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainText),
+			ClearTextOnFocus = false,
+			TextEditable = false,
 		})
 	)
 end

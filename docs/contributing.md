@@ -1,3 +1,7 @@
+---
+sidebar_position: 5
+---
+
 # Contributing
 
 Thank you for your interest in contributing to this repository! This guide will help you get your environment setup so you can have the best possible development experience.
@@ -43,10 +47,10 @@ Next use Rojo to build the plugin:
 
 ```sh
 # Windows
-rojo build -o $LOCALAPPDATA/Roblox/Plugins/RoactStorybook.rbxm
+rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
 
 # MacOS
-rojo build -o ~/Documents/Roblox/Plugins/RoactStorybook.rbxm
+rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm
 ```
 
 Once built, open up a Baseplate to start interacting with the plugin.

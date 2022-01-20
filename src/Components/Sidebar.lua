@@ -14,18 +14,20 @@ type Props = {
 	isExpanded: boolean,
 	width: NumberRange,
 	storybooks: { types.Storybook },
-	selectStory: (types.Story) -> nil,
+	selectStory: (types.Story) -> (),
 	layoutOrder: number?,
-	onToggleActivated: (() -> nil)?,
+	onToggleActivated: (() -> ())?,
 }
 
 local function Sidebar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local width = if props.isExpanded then props.width.Max else props.width.Min
+	local activeNode, setActiveNode = hooks.useState(nil)
 
 	local onNodeActivated = hooks.useCallback(function(node: TreeList.Node)
 		if node.instance and node.name:match(constants.STORY_NAME_PATTERN) then
 			props.selectStory(node.instance)
+			setActiveNode(node)
 		end
 	end, {})
 
@@ -37,6 +39,7 @@ local function Sidebar(props: Props, hooks: any)
 
 	children.StoryList = Roact.createElement(TreeList, {
 		onNodeActivated = onNodeActivated,
+		activeNode = activeNode,
 		nodes = storybookNodes,
 	})
 

@@ -2,8 +2,8 @@ local Llama = require(script.Parent.Parent.Packages.Llama)
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local enums = require(script.Parent.Parent.enums)
 local types = require(script.Parent.Parent.types)
-local isStory = require(script.Parent.Parent.Formats.isStory)
-local isHoarcekatStory = require(script.Parent.Parent.Formats.isHoarcekatStory)
+local isStory = require(script.Parent.Parent.Modules.isStory)
+local isHoarcekatStory = require(script.Parent.Parent.Modules.isHoarcekatStory)
 
 local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript): (types.Story?, string?)
 	if not module then
