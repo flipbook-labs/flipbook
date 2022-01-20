@@ -1,6 +1,8 @@
 local constants = require(script.Parent.Parent.constants)
 local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
 
+local internalStorybook = script.Parent.Parent["init.storybook"]
+
 local function hasPermission(instance: Instance)
 	local success = pcall(function()
 		return instance.Name
@@ -15,6 +17,11 @@ local function useStorybooks(hooks: any, parent: Instance)
 		local newStorybooks = {}
 
 		for _, descendant in ipairs(parent:GetDescendants()) do
+			-- Skip over flipbook's internal storybook
+			if descendant == internalStorybook and not constants.DEBUG_SHOW_INTERNAL_STORYBOOK then
+				continue
+			end
+
 			if isStorybookModule(descendant) then
 				local success, result = pcall(function()
 					return require(descendant)
