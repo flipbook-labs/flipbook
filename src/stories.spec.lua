@@ -1,7 +1,8 @@
-local CoreGui = game:GetService("CoreGui")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Roact = require(script.Parent.Packages.Roact)
 local isStoryModule = require(script.Parent.Modules.isStoryModule)
+local getStoryElement = require(script.Parent.Modules.getStoryElement)
 
 return function()
 	Roact.setGlobalConfig({
@@ -11,21 +12,13 @@ return function()
 
 	for _, descendant in ipairs(script.Parent:GetDescendants()) do
 		if isStoryModule(descendant) then
-			it("should mount/unmount " .. descendant:GetFullName(), function()
+			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)
-
-				local root
-				if typeof(story.story) == "function" then
-					root = Roact.createElement(story.story, {
-						controls = story.controls or {},
-					})
-				else
-					root = story.story
-				end
+				local element = getStoryElement(story)
 
 				local handle
 				expect(function()
-					handle = Roact.mount(root, CoreGui)
+					handle = Roact.mount(element, ReplicatedStorage)
 				end).to.never.throw()
 
 				expect(function()
