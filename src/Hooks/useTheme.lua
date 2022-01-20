@@ -14,8 +14,6 @@ local function useTheme(hooks: any)
 		return if success then result else MOCK_STUDIO
 	end, {})
 
-	print(studio)
-
 	local theme: StudioTheme, set = hooks.useState(studio.Theme)
 
 	hooks.useEffect(function()
