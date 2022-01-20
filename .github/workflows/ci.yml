@@ -50,6 +50,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Check for ROBLOSECURITY token
+        shell: bash
+        run: ./.github/workflows/validate-secret.sh ROBLOSECURITY "${{ secrets.ROBLOSECURITY }}"
+
+      - name: Check for RBXID token
+        shell: bash
+        run: ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
+
       - name: Install toolchain
         uses: Roblox/setup-foreman@v1
         with:
@@ -61,19 +69,14 @@ jobs:
       - name: Build place file
         run: rojo build dev.project.json -o studio-tests.rbxlx
 
+      - name: Add RBXID to the Windows registry
+        run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
+
       - name: Install Roblox Studio
         uses: OrbitalOwen/roblox-win-installer-action@1.1
         with:
           cookie: ${{ secrets.ROBLOSECURITY }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      # https://github.com/rojo-rbx/run-in-roblox/issues/21#issuecomment-1009419592
-      - name: Create FFlag overrides
-        run: |
-          $flags = @{DFIntStudioUseNewLoginDataEndpointHundredthPercent=0; FFlagStudioUseNewLoginDataEndpoint=$false}
-          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
-          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
-          $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxlx --script tests/init.server.lua
