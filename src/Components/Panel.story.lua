@@ -4,7 +4,6 @@ local styles = require(script.Parent.Parent.styles)
 local Panel = require(script.Parent.Panel)
 
 return {
-	roact = Roact,
 	story = Roact.createElement("Frame", {
 		Size = UDim2.fromScale(0.5, 1),
 		BackgroundTransparency = 1,

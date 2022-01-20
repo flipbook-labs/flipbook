@@ -4,6 +4,5 @@ local App = require(script.Parent.App)
 return {
 	summary = "The main component that handles the entire plugin",
 	controls = {},
-	roact = Roact,
 	story = Roact.createElement(App),
 }

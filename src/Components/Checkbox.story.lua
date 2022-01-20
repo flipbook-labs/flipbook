@@ -19,6 +19,5 @@ end
 Story = RoactHooks.new(Roact)(Story)
 
 return {
-	roact = Roact,
 	story = Roact.createElement(Story),
 }
