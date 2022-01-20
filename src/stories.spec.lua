@@ -1,7 +1,7 @@
 local CoreGui = game:GetService("CoreGui")
 
 local Roact = require(script.Parent.Packages.Roact)
-local isStory = require(script.Parent.Modules.isStory)
+local isStoryModule = require(script.Parent.Modules.isStoryModule)
 
 return function()
 	Roact.setGlobalConfig({
@@ -10,7 +10,7 @@ return function()
 	})
 
 	for _, descendant in ipairs(script.Parent:GetDescendants()) do
-		if isStory(descendant) then
+		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant:GetFullName(), function()
 				local story = require(descendant)
 
