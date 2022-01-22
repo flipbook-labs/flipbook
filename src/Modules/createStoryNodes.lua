@@ -19,7 +19,7 @@ local function addStoriesToNode(root: Instance, node: TreeList.Node, storybook: 
 			if #child:GetChildren() > 0 then
 				nextNode.icon = assets.folder
 				table.insert(node.children, nextNode)
-				addStoriesToNode(child, nextNode)
+				addStoriesToNode(child, nextNode, storybook)
 			end
 		end
 	end
