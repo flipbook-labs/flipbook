@@ -3,7 +3,6 @@ local ButtonWithControls = require(script.Parent.ButtonWithControls)
 
 return {
 	summary = "A generic button component that can be used anywhere",
-	roact = Roact,
 	controls = {
 		isDisabled = false,
 	},

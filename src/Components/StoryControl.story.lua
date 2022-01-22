@@ -7,7 +7,6 @@ end
 
 return {
 	summary = "Several of these components get created based off the controls specified for a story",
-	roact = Roact,
 	story = Roact.createFragment({
 		Layout = Roact.createElement("UIListLayout", {
 			Padding = UDim.new(0, 16),

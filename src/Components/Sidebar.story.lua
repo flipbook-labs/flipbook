@@ -27,6 +27,5 @@ Story = RoactHooks.new(Roact)(Story)
 
 return {
 	summary = "The sidebar that displays all the available stories for the current Storybook",
-	roact = Roact,
 	story = Roact.createElement(Story),
 }

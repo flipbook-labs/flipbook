@@ -2,7 +2,12 @@ local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
 local loadStoryModule = require(script.Parent.Parent.Modules.loadStoryModule)
 
-local function useStory(hooks: any, module: ModuleScript, loader: ModuleLoader.Class): types.Story?
+local function useStory(
+	hooks: any,
+	module: ModuleScript,
+	storybook: types.Storybook,
+	loader: ModuleLoader.Class
+): types.Story?
 	local state, setState = hooks.useState({
 		story = nil,
 		err = nil,
@@ -10,6 +15,8 @@ local function useStory(hooks: any, module: ModuleScript, loader: ModuleLoader.C
 
 	local loadStory = hooks.useCallback(function()
 		local story, err = loadStoryModule(loader, module)
+
+		story.roact = story.roact or storybook.roact
 
 		setState({
 			story = story,
