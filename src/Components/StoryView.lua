@@ -1,6 +1,7 @@
 local CoreGui = game:GetService("CoreGui")
 
 local Llama = require(script.Parent.Parent.Packages.Llama)
+local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local useStory = require(script.Parent.Parent.Hooks.useStory)
@@ -12,6 +13,7 @@ local StoryError = require(script.Parent.StoryError)
 
 type Props = {
 	story: ModuleScript,
+	loader: ModuleLoader.Class,
 }
 
 local function createViewportPreview(): ScreenGui
@@ -35,7 +37,7 @@ end
 local function StoryView(props: Props, hooks: any)
 	local storyParent = Roact.createRef()
 	local err, setErr = hooks.useState(nil)
-	local story, storyErr = useStory(hooks, props.story)
+	local story, storyErr = useStory(hooks, props.story, props.loader)
 	local prevStory = usePrevious(hooks, story)
 	local controls, setControls = hooks.useState({})
 	local isUsingViewport, setIsUsingViewport = hooks.useState(false)
