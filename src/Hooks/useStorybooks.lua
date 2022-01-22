@@ -1,7 +1,6 @@
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local constants = require(script.Parent.Parent.constants)
 local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
-local loadStorybookModule = require(script.Parent.Parent.Modules.loadStorybookModule)
 
 local internalStorybook = script.Parent.Parent["init.storybook"]
 
@@ -39,7 +38,7 @@ local function useStorybooks(hooks: any, parent: Instance, loader: ModuleLoader.
 		end
 
 		set(newStorybooks)
-	end, { set, parent })
+	end, { set, parent, loader })
 
 	local onDataModelChanged = hooks.useCallback(function(instance: Instance)
 		if hasPermission(instance) and isStorybookModule(instance) then
