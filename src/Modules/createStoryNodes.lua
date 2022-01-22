@@ -3,7 +3,7 @@ local assets = require(script.Parent.Parent.assets)
 local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
 
-local function addStoriesToNode(root: Instance, node: TreeList.Node)
+local function addStoriesToNode(root: Instance, node: TreeList.Node, storybook: types.Storybook)
 	for _, child in ipairs(root:GetChildren()) do
 		local nextNode = {
 			name = child.Name,
@@ -13,6 +13,7 @@ local function addStoriesToNode(root: Instance, node: TreeList.Node)
 
 		if child.Name:match(constants.STORY_NAME_PATTERN) then
 			nextNode.icon = assets.story
+			nextNode.storybook = storybook
 			table.insert(node.children, nextNode)
 		else
 			if #child:GetChildren() > 0 then
@@ -37,7 +38,7 @@ local function createStoryNodes(storybooks: { types.Storybook }): { TreeList.Nod
 		table.insert(nodes, node)
 
 		for _, root in ipairs(storybook.storyRoots) do
-			addStoriesToNode(root, node)
+			addStoriesToNode(root, node, storybook)
 		end
 	end
 
