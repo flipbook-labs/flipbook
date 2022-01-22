@@ -15,6 +15,7 @@ type Props = {
 	width: NumberRange,
 	storybooks: { types.Storybook },
 	selectStory: (types.Story) -> (),
+	selectStorybook: (types.Storybook) -> (),
 	layoutOrder: number?,
 	onToggleActivated: (() -> ())?,
 }
@@ -26,6 +27,7 @@ local function Sidebar(props: Props, hooks: any)
 
 	local onNodeActivated = hooks.useCallback(function(node: TreeList.Node)
 		if node.instance and node.name:match(constants.STORY_NAME_PATTERN) then
+			props.selectStorybook(node.storybook)
 			props.selectStory(node.instance)
 			setActiveNode(node)
 		end

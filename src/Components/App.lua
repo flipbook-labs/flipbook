@@ -15,6 +15,7 @@ local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
 	local storybooks = useStorybooks(hooks, game, loader)
 	local story, selectStory = hooks.useState(nil)
+	local storybook, selectStorybook = hooks.useState(nil)
 	local isSidebarExpanded, setIsSidebarExpanded = hooks.useState(true)
 
 	local toggleSidebar = hooks.useCallback(function()
@@ -38,6 +39,7 @@ local function App(_props, hooks: any)
 			layoutOrder = 1,
 			storybooks = storybooks,
 			selectStory = selectStory,
+			selectStorybook = selectStorybook,
 			isExpanded = isSidebarExpanded,
 			width = SIDEBAR_WIDTH,
 			onToggleActivated = toggleSidebar,
@@ -50,6 +52,7 @@ local function App(_props, hooks: any)
 		}, {
 			StoryView = story and Roact.createElement(StoryView, {
 				story = story,
+				storybook = storybook,
 				loader = loader,
 			}),
 
