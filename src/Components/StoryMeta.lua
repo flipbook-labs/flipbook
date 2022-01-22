@@ -25,19 +25,21 @@ local function StoryMeta(props: Props, hooks: any)
 	local hasControls = props.controls and not Llama.isEmpty(props.controls)
 
 	if hasControls then
-		for key, value in pairs(props.controls) do
-			table.insert(
-				controlFields,
-				Roact.createElement(StoryControl, {
-					key = key,
-					value = value,
-					onValueChange = function(newValue: any)
-						if props.onControlChanged then
-							props.onControlChanged(key, newValue)
-						end
-					end,
-				})
-			)
+		local controls = Llama.Dictionary.values(Llama.Dictionary.map(props.controls, function(value, key)
+			return { name = key, value = value }
+		end))
+
+		for index, control in ipairs(controls) do
+			controlFields[control.name] = Roact.createElement(StoryControl, {
+				layoutOrder = index + 1,
+				key = control.name,
+				value = control.value,
+				onValueChange = function(newValue: any)
+					if props.onControlChanged then
+						props.onControlChanged(control.name, newValue)
+					end
+				end,
+			})
 		end
 	end
 
@@ -145,7 +147,7 @@ local function StoryMeta(props: Props, hooks: any)
 			Title = Roact.createElement(
 				"TextLabel",
 				Llama.Dictionary.join(styles.Header, {
-					LayoutOrder = 0,
+					LayoutOrder = 1,
 					Text = "Controls",
 				})
 			),

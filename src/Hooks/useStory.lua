@@ -2,9 +2,7 @@ local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
 local loadStoryModule = require(script.Parent.Parent.Modules.loadStoryModule)
 
-local loader = ModuleLoader.new()
-
-local function useStory(hooks: any, module: ModuleScript): types.Story?
+local function useStory(hooks: any, module: ModuleScript, loader: ModuleLoader.Class): types.Story?
 	local state, setState = hooks.useState({
 		story = nil,
 		err = nil,

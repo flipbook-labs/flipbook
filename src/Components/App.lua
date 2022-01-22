@@ -1,3 +1,4 @@
+local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
@@ -8,9 +9,11 @@ local NoStorySelected = require(script.Parent.NoStorySelected)
 
 local SIDEBAR_WIDTH = NumberRange.new(24, 250)
 
+local loader = ModuleLoader.new()
+
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
-	local storybooks = useStorybooks(hooks, game)
+	local storybooks = useStorybooks(hooks, game, loader)
 	local story, selectStory = hooks.useState(nil)
 	local isSidebarExpanded, setIsSidebarExpanded = hooks.useState(true)
 
@@ -47,6 +50,7 @@ local function App(_props, hooks: any)
 		}, {
 			StoryView = story and Roact.createElement(StoryView, {
 				story = story,
+				loader = loader,
 			}),
 
 			NoStorySelected = not story and Roact.createElement(NoStorySelected),
