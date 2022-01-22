@@ -2,9 +2,19 @@ local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local StoryView = require(script.Parent.StoryView)
 
-return {
-	story = Roact.createElement(StoryView, {
+local function Story()
+	local loader = ModuleLoader.new()
+	loader:cache(script.Parent.Parent.Packages.Roact, Roact)
+
+	local storybook = loader:require(script.Parent.Parent["init.storybook"])
+
+	return Roact.createElement(StoryView, {
 		story = script.Parent["Button.story"],
-		loader = ModuleLoader.new(),
-	}),
+		storybook = storybook,
+		loader = loader,
+	})
+end
+
+return {
+	story = Story,
 }
