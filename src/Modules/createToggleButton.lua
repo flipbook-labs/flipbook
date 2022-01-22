@@ -1,3 +1,5 @@
+local constants = require(script.Parent.Parent.constants)
+
 --[[
     Creates the button to toggle the plugin widget.
 
@@ -7,11 +9,7 @@
 	@return () -> () -- Returns a callback for disconnecting button events
 ]]
 local function createToggleButton(toolbar: PluginToolbar, widget: DockWidgetPluginGui)
-	local button = toolbar:CreateButton(
-		widget.Name,
-		"Open story view",
-		"" -- TODO: Add an icon
-	)
+	local button = toolbar:CreateButton(widget.Name, "Open story view", constants.PLUGIN_ICON)
 
 	local click = button.Click:Connect(function()
 		widget.Enabled = not widget.Enabled
