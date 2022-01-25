@@ -3,7 +3,7 @@ local Roact = require(script.Parent.Parent.Packages.Roact)
 local Sidebar = require(script.Parent.Sidebar)
 local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
-local SIDEBAR_WIDTH = NumberRange.new(240, 240)
+local SIDEBAR_WIDTH = NumberRange.new(220, 220)
 
 local function App(_, hooks)
 	local theme = useTheme(hooks)
