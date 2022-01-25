@@ -1,8 +1,19 @@
 local themes = require(script.Parent.Parent.themes)
 
+local MOCK_STUDIO = {
+	ThemeChanged = Instance.new("BindableEvent").Event,
+	Theme = {
+		GetColor = function() end,
+	},
+}
+
 local function useTheme(hooks: any)
 	local studio = hooks.useMemo(function()
-		return settings().Studio
+		local success, result = pcall(function()
+			return settings().Studio
+		end)
+
+		return if success then result else MOCK_STUDIO
 	end, {})
 
 	local theme, set = hooks.useState(themes[studio.Theme.Name])

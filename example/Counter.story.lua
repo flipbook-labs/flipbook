@@ -1,5 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Roact = require(ReplicatedStorage.Packages.Roact)
+local Roact = require(script.Parent.Parent.Roact)
 local Counter = require(script.Parent.Counter)
 
 return {
@@ -8,7 +7,6 @@ return {
 		Increment = 1,
 		["Wait time"] = 1,
 	},
-	roact = Roact,
 	story = function(props)
 		return Roact.createElement(Counter, {
 			increment = props.controls["Increment"],

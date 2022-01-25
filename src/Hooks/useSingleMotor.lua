@@ -6,7 +6,7 @@ local function useSingleMotor(hooks, initialValue)
 
 	hooks.useEffect(function()
 		motor:onStep(setBinding)
-	end)
+	end, {})
 
 	local function setGoal(goal)
 		motor:setGoal(goal)

@@ -1,15 +1,15 @@
 {
-    "name": "RoactStorybook (dev)",
+    "name": "flipbook (dev)",
     "tree": {
         "$className": "DataModel",
         "ReplicatedStorage": {
             "Packages": {
-                "$path": "Packages"
+                "$path": "Packages",
+                "Example": {
+                    "$path": "example"
+                }
             },
-            "Example": {
-                "$path": "example"
-            },
-            "RoactStorybook": {
+            "flipbook": {
                 "Packages": {
                     "$path": "Packages"
                 },

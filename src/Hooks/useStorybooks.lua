@@ -1,5 +1,8 @@
+local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local constants = require(script.Parent.Parent.constants)
 local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
+
+local internalStorybook = script.Parent.Parent["init.storybook"]
 
 local function hasPermission(instance: Instance)
 	local success = pcall(function()
@@ -8,16 +11,23 @@ local function hasPermission(instance: Instance)
 	return success
 end
 
-local function useStorybooks(hooks: any, parent: Instance)
+local function useStorybooks(hooks: any, parent: Instance, loader: ModuleLoader.Class)
 	local storybooks, set = hooks.useState({})
 
-	local getStorybooks = hooks.useCallback(function()
+	local loadStorybooks = hooks.useCallback(function()
 		local newStorybooks = {}
 
+		loader:clear()
+
 		for _, descendant in ipairs(parent:GetDescendants()) do
+			-- Skip over flipbook's internal storybook
+			if descendant == internalStorybook and not constants.DEBUG_SHOW_INTERNAL_STORYBOOK then
+				continue
+			end
+
 			if isStorybookModule(descendant) then
 				local success, result = pcall(function()
-					return require(descendant)
+					return loader:require(descendant)
 				end)
 
 				if success and typeof(result) == "table" and result.storyRoots then
@@ -27,18 +37,24 @@ local function useStorybooks(hooks: any, parent: Instance)
 			end
 		end
 
-		return newStorybooks
-	end, { parent })
+		set(newStorybooks)
+	end, { set, parent, loader })
 
 	local onDataModelChanged = hooks.useCallback(function(instance: Instance)
 		if hasPermission(instance) and isStorybookModule(instance) then
-			set(getStorybooks())
+			loadStorybooks()
 		end
-	end, { set })
+	end, { loadStorybooks })
 
 	hooks.useEffect(function()
-		set(getStorybooks())
-	end, { parent })
+		local conn = loader.loadedModuleChanged:Connect(loadStorybooks)
+
+		loadStorybooks()
+
+		return function()
+			conn:Disconnect()
+		end
+	end, { loadStorybooks })
 
 	hooks.useEffect(function()
 		local added = parent.DescendantAdded:Connect(onDataModelChanged)
@@ -48,7 +64,7 @@ local function useStorybooks(hooks: any, parent: Instance)
 			added:Disconnect()
 			removing:Disconnect()
 		end
-	end, { set, getStorybooks })
+	end, { set, loadStorybooks })
 
 	return storybooks
 end
