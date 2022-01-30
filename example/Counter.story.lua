@@ -7,7 +7,6 @@ return {
 		Increment = 1,
 		["Wait time"] = 1,
 	},
-	roact = Roact,
 	story = function(props)
 		return Roact.createElement(Counter, {
 			increment = props.controls["Increment"],

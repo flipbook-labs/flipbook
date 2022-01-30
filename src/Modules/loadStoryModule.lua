@@ -10,8 +10,6 @@ local function loadStoryModule(loader: ModuleLoader.Class, module: ModuleScript)
 		return nil, "Did not receive a module to load"
 	end
 
-	loader:clear()
-
 	local success, result = pcall(function()
 		return loader:require(module)
 	end)

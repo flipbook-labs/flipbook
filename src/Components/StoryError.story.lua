@@ -3,7 +3,6 @@ local StoryError = require(script.Parent.StoryError)
 
 return {
 	summary = "Displays the error message when something goes wrong in a story",
-	roact = Roact,
 	story = Roact.createElement(StoryError, {
 		message = [[
 14:27:55.439  PluginDebugService.user_flipbook.rbxm.flipbook.Components.App:11: oops  -  Edit - App:11

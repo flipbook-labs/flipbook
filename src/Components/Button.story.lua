@@ -5,7 +5,6 @@ local Button = require(script.Parent.Button)
 local PADDING = UDim.new(0, 16)
 
 return {
-	roact = Roact,
 	story = Roact.createFragment({
 		Layout = Roact.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
