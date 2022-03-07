@@ -24,4 +24,17 @@ export type Story = {
 -- another function which acts as the cleanup step.
 export type HoarcekatStory = (GuiObject) -> () -> ()
 
+export type Theme = {
+	background: Color3,
+	stroke: Color3,
+	text: Color3,
+	icons: {
+		search: Color3,
+	},
+	searchbar: {
+		background: Color3,
+		stroke: Color3,
+	}
+}
+
 return nil
