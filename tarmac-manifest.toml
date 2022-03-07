@@ -4,8 +4,8 @@ id = 8484527786
 packable = false
 
 [inputs."img/chevron-right.png"]
-hash = "3a776a9c0c780d5943506eb12ad1370467e5faba0629338a0727d59385c7af31"
-id = 8472731876
+hash = "6bbe0ac0953ab0e14004bc7457f78e875b6219f1c097b4c124058aa77d8e71e4"
+id = 9040299846
 packable = false
 
 [inputs."img/double-arrow.png"]
@@ -24,8 +24,8 @@ id = 9039499168
 packable = false
 
 [inputs."img/story.png"]
-hash = "5875f3f5d90d89894972c4d6ae538d7ec924f298c5b1f8480e38a444d34989c4"
-id = 9039499430
+hash = "bf01c962637ef3a285b9e17962bed4e43dc7ede86065bf9f21f5fe467394c37e"
+id = 9040299928
 packable = false
 
 [inputs."img/storybook.png"]
