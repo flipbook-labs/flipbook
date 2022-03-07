@@ -1,7 +1,7 @@
 local fromHex = require(script.Parent.Modules.fromHex)
 
 return {
-	Brand = fromHex(0x933EA),
+	Brand = fromHex(0x9333EA),
 
 	Light = {
 		background = fromHex(0xF3F4F6),
@@ -10,15 +10,17 @@ return {
 		icons = {
 			search = fromHex(0x111228),
 			folder = fromHex(0x6366F1),
-			story = fromHex(0x93C5FD),
+			story = fromHex(0x4ADE80),
 		},
 		searchbar = {
 			background = fromHex(0xFFFFFF),
-			stroke = fromHex(0x933EA),
+			stroke = fromHex(0x9333EA),
 		},
 		entry = {
 			background = fromHex(0xFFFFFF),
-			text = fromHex(0x000000)
-		}
+			selectedBackground = fromHex(0x6366F1),
+			selectedText = fromHex(0xFFFFFF),
+			text = fromHex(0x000000),
+		},
 	},
 }
