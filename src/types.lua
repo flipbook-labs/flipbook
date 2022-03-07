@@ -30,10 +30,16 @@ export type Theme = {
 	text: Color3,
 	icons: {
 		search: Color3,
+		folder: Color3,
+		story: Color3,
 	},
 	searchbar: {
 		background: Color3,
 		stroke: Color3,
+	},
+	entry: {
+		background: Color3,
+		text: Color3,
 	}
 }
 

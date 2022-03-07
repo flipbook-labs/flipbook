@@ -19,13 +19,13 @@ id = 8500157719
 packable = false
 
 [inputs."img/folder.png"]
-hash = "2d8f0bcefe96d8b99273785c0f09aa4afb6b2aec6c6758e94ae5ae8996ebaf00"
-id = 8472668100
+hash = "7587a57a567d6b5bc8480b26f9efe6a20c5b58d1dfe0110129870f7d29cf828f"
+id = 9039499168
 packable = false
 
 [inputs."img/story.png"]
-hash = "b2ba799507dfbc53c359c718b570abf305b708a846a38312fe7a46ed6c71e52e"
-id = 8481250291
+hash = "5875f3f5d90d89894972c4d6ae538d7ec924f298c5b1f8480e38a444d34989c4"
+id = 9039499430
 packable = false
 
 [inputs."img/storybook.png"]
