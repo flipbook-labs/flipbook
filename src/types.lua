@@ -39,8 +39,10 @@ export type Theme = {
 	},
 	entry: {
 		background: Color3,
+		selectedBackground: Color3,
+		selectedText: Color3,
 		text: Color3,
-	}
+	},
 }
 
 return nil
