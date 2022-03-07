@@ -24,6 +24,12 @@ styles.Header = Llama.Dictionary.join(styles.TextLabel, {
 	TextSize = styles.TextLabel.TextSize * 1.25,
 })
 
+styles.Icon = {
+	BackgroundTransparency = 1,
+	ImageColor3 = Color3.new(1, 1, 1),
+	Size = UDim2.fromOffset(16, 16),
+}
+
 styles.ScrollingFrame = {
 	Size = UDim2.fromScale(1, 1),
 	CanvasSize = UDim2.fromScale(1, 0),
