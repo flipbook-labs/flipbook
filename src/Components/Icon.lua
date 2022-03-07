@@ -2,7 +2,6 @@ local assets = require(script.Parent.Parent.assets)
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local styles = require(script.Parent.Parent.styles)
-local types = require(script.Parent.Parent.types)
 
 type Props = {
 	anchorPoint: Vector2,
@@ -20,7 +19,7 @@ local function reconcileSize(size: UDim2 | number): UDim2
 	end
 end
 
-local function Icon(props: Props): types.RoactElement
+local function Icon(props: Props)
 	return Roact.createElement(
 		"ImageLabel",
 		Llama.Dictionary.join(styles.Icon, {
