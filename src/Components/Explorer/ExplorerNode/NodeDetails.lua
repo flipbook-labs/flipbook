@@ -1,3 +1,4 @@
+local constants = require(script.Parent.Parent.Parent.Parent.constants)
 local hook = require(script.Parent.Parent.Parent.Parent.hook)
 local Icon = require(script.Parent.Parent.Parent.Icon)
 local Llama = require(script.Parent.Parent.Parent.Parent.Packages.Llama)
@@ -11,6 +12,8 @@ local e = Roact.createElement
 
 type Props = {
 	active: boolean,
+	expanded: boolean,
+	hasChildren: boolean,
 	indentLevel: number?,
 	node: types.Node,
 	onActivated: (types.Node) -> (),
@@ -54,6 +57,10 @@ local function NodeDetails(props: Props, hooks: any)
 			setHovered(false)
 		end,
 	}, {
+		UICorner = e("UICorner", {
+			CornerRadius = UDim.new(0, 4),
+		}),
+
 		UIPadding = e("UIPadding", {
 			PaddingLeft = UDim.new(0, styles.PADDING.Offset * props.indentLevel + 1),
 		}),
@@ -71,13 +78,32 @@ local function NodeDetails(props: Props, hooks: any)
 			Llama.Dictionary.join(styles.TextLabel, {
 				AnchorPoint = Vector2.new(0, 0.5),
 				Position = UDim2.new(0, 55, 0.5, 0),
-				Text = props.node.name,
+				Text = if props.node.name:match(constants.STORY_NAME_PATTERN) then
+					props.node.name:sub(1, #props.node.name - 6)
+				else
+					props.node.name,
 				TextColor3 = style.background:map(function(value)
 					return theme.entry.selectedText:Lerp(theme.entry.text, value)
 				end),
 				TextSize = 12,
 			})
 		),
+
+		ArrowWrapper = props.hasChildren and e("Frame", {
+			AnchorPoint = Vector2.new(0, 0.5),
+			BackgroundTransparency = 1,
+			Position = UDim2.new(0, 10, 0.5, 0),
+			Size = UDim2.fromOffset(16, 16),
+		}, {
+			Arrow = e(Icon, {
+				anchorPoint = Vector2.new(0.5, 0.5),
+				color = theme.icons.arrow,
+				icon = "chevron-right",
+				position = UDim2.fromScale(0.5, 0.5),
+				rotation = if props.expanded then 90 else 0,
+				size = 6,
+			}),
+		}),
 	})
 end
 

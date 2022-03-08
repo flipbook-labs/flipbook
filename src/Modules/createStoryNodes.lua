@@ -12,12 +12,12 @@ local function addStoriesToNode(root: Instance, node: TreeList.Node, storybook: 
 		}
 
 		if child.Name:match(constants.STORY_NAME_PATTERN) then
-			nextNode.icon = assets.story
+			nextNode.icon = "story"
 			nextNode.storybook = storybook
 			table.insert(node.children, nextNode)
 		else
 			if #child:GetChildren() > 0 then
-				nextNode.icon = assets.folder
+				nextNode.icon = "folder"
 				table.insert(node.children, nextNode)
 				addStoriesToNode(child, nextNode, storybook)
 			end

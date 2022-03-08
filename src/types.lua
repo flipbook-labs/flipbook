@@ -30,8 +30,9 @@ export type Theme = {
 	text: Color3,
 	storybookEntry: Color3,
 	icons: {
-		search: Color3,
+		arrow: Color3,
 		folder: Color3,
+		search: Color3,
 		story: Color3,
 	},
 	searchbar: {

@@ -1,14 +1,16 @@
+local constants = require(script.Parent.Parent.constants)
+local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
+local Explorer = require(script.Parent.Explorer)
 local Llama = require(script.Parent.Parent.Packages.Llama)
+local Panel = require(script.Parent.Panel)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
-local useTheme = require(script.Parent.Parent.Hooks.useTheme)
-local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
-local constants = require(script.Parent.Parent.constants)
-local styles = require(script.Parent.Parent.styles)
-local types = require(script.Parent.Parent.types)
-local Panel = require(script.Parent.Panel)
-local TreeList = require(script.Parent.TreeList)
 local SidebarToggle = require(script.Parent.SidebarToggle)
+local Branding = require(script.Parent.Branding)
+local styles = require(script.Parent.Parent.styles)
+local TreeList = require(script.Parent.TreeList)
+local types = require(script.Parent.Parent.types)
+local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 type Props = {
 	isExpanded: boolean,
@@ -39,10 +41,10 @@ local function Sidebar(props: Props, hooks: any)
 
 	local children = {}
 
-	children.StoryList = Roact.createElement(TreeList, {
-		onNodeActivated = onNodeActivated,
+	children.StoryList = Roact.createElement(Explorer, {
 		activeNode = activeNode,
 		nodes = storybookNodes,
+		onNodeActivated = onNodeActivated,
 	})
 
 	return Roact.createElement("Frame", {
@@ -50,11 +52,9 @@ local function Sidebar(props: Props, hooks: any)
 		Size = UDim2.new(0, width, 1, 0),
 		BackgroundTransparency = 1,
 	}, {
-		Toggle = Roact.createElement(SidebarToggle, {
-			isExpanded = props.isExpanded,
-			onActivated = props.onToggleActivated,
-			position = UDim2.fromScale(1, 0.5),
-			anchorPoint = Vector2.new(0.5, 0.5),
+		Branding = Roact.createElement(Branding, {
+			size = 22,
+			position = UDim2.fromOffset(20, 20),
 		}),
 
 		Panel = Roact.createElement(Panel, {}, {
@@ -63,7 +63,8 @@ local function Sidebar(props: Props, hooks: any)
 			ScrollingFrame = Roact.createElement(
 				"ScrollingFrame",
 				Llama.Dictionary.join(styles.ScrollingFrame, {
-					BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
+					BackgroundTransparency = 1,
+					BorderSizePixel = 0,
 				}),
 				children
 			),

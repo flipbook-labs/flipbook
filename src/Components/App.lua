@@ -2,12 +2,12 @@ local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
-local useTheme = require(script.Parent.Parent.Hooks.useTheme)
+local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 local Sidebar = require(script.Parent.Sidebar)
 local StoryView = require(script.Parent.StoryView)
 local NoStorySelected = require(script.Parent.NoStorySelected)
 
-local SIDEBAR_WIDTH = NumberRange.new(24, 250)
+local SIDEBAR_WIDTH = NumberRange.new(250, 250)
 
 local loader = ModuleLoader.new()
 
@@ -27,7 +27,7 @@ local function App(_props, hooks: any)
 	local previewOffset = if isSidebarExpanded then -SIDEBAR_WIDTH.Max else 0
 
 	return Roact.createElement("Frame", {
-		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
+		BackgroundColor3 = theme.background,
 		Size = UDim2.fromScale(1, 1),
 	}, {
 		Layout = Roact.createElement("UIListLayout", {

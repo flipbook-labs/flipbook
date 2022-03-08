@@ -11,4 +11,26 @@ export type Props = {
 	onNodeActivated: (types.Node) -> (),
 }
 
-local function Explorer(props: Props) end
+local function Explorer(props: Props)
+	local children = {}
+
+	children.Layout = Roact.createElement("UIListLayout", {
+		SortOrder = Enum.SortOrder.Name,
+	})
+
+	for index, node in ipairs(props.nodes) do
+		children[node.name .. index] = e(ExplorerNode, {
+			activeNode = props.activeNode,
+			node = node,
+			onNodeActivated = props.onNodeActivated,
+		})
+	end
+
+	return e("Frame", {
+		Size = UDim2.fromScale(1, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+	}, children)
+end
+
+return Explorer

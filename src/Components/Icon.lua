@@ -8,6 +8,7 @@ type Props = {
 	color: Color3,
 	icon: string,
 	position: Vector2,
+	rotation: number?,
 	size: UDim2 | number,
 }
 
@@ -27,6 +28,7 @@ local function Icon(props: Props)
 			Image = assets[props.icon],
 			ImageColor3 = props.color,
 			Position = props.position,
+			Rotation = props.rotation,
 			Size = reconcileSize(props.size),
 		})
 	)

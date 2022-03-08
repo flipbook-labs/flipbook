@@ -55,10 +55,14 @@ local function ExplorerNode(props: Props, hooks: any)
 		}),
 
 		Node = props.node.icon == "storybook" and e(StorybookDetails, {
+			expanded = expanded,
+			hasChildren = hasChildren,
 			node = props.node,
 			onActivated = onActivated,
 		}) or e(NodeDetails, {
 			active = props.activeNode == props.node,
+			expanded = expanded,
+			hasChildren = hasChildren,
 			indentLevel = indentLevel,
 			node = props.node,
 			onActivated = onActivated,
