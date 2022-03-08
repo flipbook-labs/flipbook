@@ -1,6 +1,7 @@
 local hook = require(script.Parent.Parent.Parent.hook)
 local NodeDetails = require(script.NodeDetails)
 local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
+local StorybookDetails = require(script.StorybookDetails)
 local types = require(script.Parent.types)
 
 local e = Roact.createElement
@@ -53,11 +54,14 @@ local function ExplorerNode(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Node = e(NodeDetails, {
+		Node = props.node.icon == "storybook" and e(StorybookDetails, {
+			node = props.node,
+			onActivated = onActivated,
+		}) or e(NodeDetails, {
 			active = props.activeNode == props.node,
 			indentLevel = indentLevel,
+			node = props.node,
 			onActivated = onActivated,
-			type = props.node.icon,
 		}),
 
 		ChildrenWrapper = (expanded and hasChildren) and e("Frame", {

@@ -12,9 +12,8 @@ local e = Roact.createElement
 type Props = {
 	active: boolean,
 	indentLevel: number?,
-	name: string,
+	node: types.Node,
 	onActivated: (types.Node) -> (),
-	type: string,
 }
 
 local function deriveIconSize(icon: string): UDim2
@@ -61,10 +60,10 @@ local function NodeDetails(props: Props, hooks: any)
 
 		Icon = e(Icon, {
 			anchorPoint = Vector2.new(0, 0.5),
-			color = theme.icons[props.type],
-			icon = props.type,
+			color = theme.icons[props.node.icon],
+			icon = props.node.icon,
 			position = UDim2.new(0, 30, 0.5, 0),
-			size = deriveIconSize(props.type),
+			size = deriveIconSize(props.node.icon),
 		}),
 
 		Name = e(
@@ -72,7 +71,7 @@ local function NodeDetails(props: Props, hooks: any)
 			Llama.Dictionary.join(styles.TextLabel, {
 				AnchorPoint = Vector2.new(0, 0.5),
 				Position = UDim2.new(0, 55, 0.5, 0),
-				Text = props.name,
+				Text = props.node.name,
 				TextColor3 = style.background:map(function(value)
 					return theme.entry.selectedText:Lerp(theme.entry.text, value)
 				end),

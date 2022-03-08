@@ -7,6 +7,7 @@ return {
 		background = fromHex(0xF3F4F6),
 		stroke = fromHex(0xD1D5DB),
 		text = fromHex(0x000000),
+		storybookEntry = fromHex(0xC4C4C4),
 		icons = {
 			search = fromHex(0x111228),
 			folder = fromHex(0x6366F1),

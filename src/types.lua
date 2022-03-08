@@ -28,6 +28,7 @@ export type Theme = {
 	background: Color3,
 	stroke: Color3,
 	text: Color3,
+	storybookEntry: Color3,
 	icons: {
 		search: Color3,
 		folder: Color3,

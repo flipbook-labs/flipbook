@@ -31,7 +31,7 @@ local function createStoryNodes(storybooks: { types.Storybook }): { TreeList.Nod
 	for _, storybook in ipairs(storybooks) do
 		local node = {
 			name = storybook.name,
-			icon = assets.storybook,
+			icon = "storybook",
 			children = {},
 		}
 
