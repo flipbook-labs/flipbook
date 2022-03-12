@@ -14,8 +14,15 @@ export type Props = {
 local function Explorer(props: Props)
 	local children = {}
 
-	children.Layout = Roact.createElement("UIListLayout", {
+	children.UIListLayoutLayout = e("UIListLayout", {
 		SortOrder = Enum.SortOrder.Name,
+	})
+
+	children.UIPadding = e("UIPadding", {
+		PaddingBottom = UDim.new(0, 0),
+		PaddingLeft = UDim.new(0, 0),
+		PaddingRight = UDim.new(0, 5),
+		PaddingTop = UDim.new(0, 0),
 	})
 
 	for index, node in ipairs(props.nodes) do

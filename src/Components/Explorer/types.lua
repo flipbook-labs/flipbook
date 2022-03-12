@@ -1,8 +1,9 @@
 export type Node = {
-	name: string,
-	icon: string?,
 	children: { Node },
+	icon: string?,
 	instance: Instance?,
+	name: string,
+	storybook: any?,
 }
 
 return {}
