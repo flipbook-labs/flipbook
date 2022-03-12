@@ -28,17 +28,17 @@ return {
 
 	Dark = {
 		background = fromHex(0x171717),
-		stroke = fromHex(0xD1D5DB),
+		stroke = fromHex(0x2B2B2B),
 		text = fromHex(0xFFFFFF),
 		storybookEntry = fromHex(0x5F5F5F),
 		icons = {
 			arrow = fromHex(0x5F5F5F),
 			folder = fromHex(0x6366F1),
-			search = fromHex(0x111228),
+			search = fromHex(0xFFFFFF),
 			story = fromHex(0x4ADE80),
 		},
 		searchbar = {
-			background = fromHex(0xFFFFFF),
+			background = fromHex(0x121212),
 			stroke = fromHex(0x9333EA),
 		},
 		entry = {
