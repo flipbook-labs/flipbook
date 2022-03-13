@@ -1,5 +1,4 @@
 local TreeList = require(script.Parent.Parent.Components.TreeList)
-local assets = require(script.Parent.Parent.assets)
 local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
 
