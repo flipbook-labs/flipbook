@@ -61,6 +61,7 @@ jobs:
       - name: Install toolchain
         uses: Roblox/setup-foreman@v1
         with:
+          version: "^1.0.3"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
