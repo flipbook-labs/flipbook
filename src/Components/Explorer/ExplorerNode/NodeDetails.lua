@@ -34,9 +34,9 @@ local function NodeDetails(props: Props, hooks: any)
 		transparency = if hovered or props.active then 0 else 1,
 		background = if props.active then 0 else 1,
 		config = {
-			mass = 1,
-			friction = 12,
 			clamp = true,
+			mass = 0.6,
+			tension = 700,
 		},
 	})
 
