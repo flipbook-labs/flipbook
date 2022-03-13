@@ -42,7 +42,7 @@ jobs:
 
       - name: Extract moonwave
         run: moonwave-extractor extract src
-        
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
@@ -50,13 +50,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Check for ROBLOSECURITY token
+      - name: Validate secrets
         shell: bash
-        run: ./.github/workflows/validate-secret.sh ROBLOSECURITY "${{ secrets.ROBLOSECURITY }}"
-
-      - name: Check for RBXID token
-        shell: bash
-        run: ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
+        run: |
+          ./.github/workflows/validate-secret.sh ROBLOSECURITY "${{ secrets.ROBLOSECURITY }}"
+          ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
 
       - name: Install toolchain
         uses: Roblox/setup-foreman@v1
