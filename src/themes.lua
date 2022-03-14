@@ -5,6 +5,7 @@ return {
 
 	Light = {
 		background = fromHex(0xF3F4F6),
+		canvas = fromHex(0xFFFFFF),
 		stroke = fromHex(0xD1D5DB),
 		text = fromHex(0x000000),
 		storybookEntry = fromHex(0xC4C4C4),
@@ -28,6 +29,7 @@ return {
 
 	Dark = {
 		background = fromHex(0x171717),
+		canvas = fromHex(0x1E1E1E),
 		stroke = fromHex(0x2B2B2B),
 		text = fromHex(0xFFFFFF),
 		storybookEntry = fromHex(0x5F5F5F),

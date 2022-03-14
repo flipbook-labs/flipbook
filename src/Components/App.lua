@@ -1,9 +1,8 @@
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
-local NoStorySelected = require(script.Parent.NoStorySelected)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local Sidebar = require(script.Parent.Sidebar)
-local StoryView = require(script.Parent.StoryView)
+local Canvas = require(script.Parent.Canvas)
 local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
 local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
@@ -32,18 +31,10 @@ local function App(_props, hooks: any)
 			selectStorybook = selectStorybook,
 		}),
 
-		StoryViewWrapper = Roact.createElement("Frame", {
-			LayoutOrder = 2,
-			Size = UDim2.new(1, -270, 1, -40),
-			BackgroundTransparency = 1,
-		}, {
-			StoryView = story and Roact.createElement(StoryView, {
-				story = story,
-				storybook = storybook,
-				loader = loader,
-			}),
-
-			NoStorySelected = not story and Roact.createElement(NoStorySelected),
+		Canvas = Roact.createElement(Canvas, {
+			story = story,
+			storybook = storybook,
+			loader = loader,
 		}),
 	})
 end

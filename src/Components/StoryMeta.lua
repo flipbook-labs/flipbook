@@ -79,36 +79,36 @@ local function StoryMeta(props: Props, hooks: any)
 				})
 			),
 
-			Buttons = Roact.createElement("Frame", {
-				LayoutOrder = 2,
-				Size = UDim2.fromScale(1 / 2, 1),
-				BackgroundTransparency = 1,
-			}, {
-				Layout = Roact.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-					FillDirection = Enum.FillDirection.Horizontal,
-					HorizontalAlignment = Enum.HorizontalAlignment.Right,
-					Padding = styles.LARGE_PADDING,
-				}),
+			-- Buttons = Roact.createElement("Frame", {
+			-- 	LayoutOrder = 2,
+			-- 	Size = UDim2.fromScale(1 / 2, 1),
+			-- 	BackgroundTransparency = 1,
+			-- }, {
+			-- 	Layout = Roact.createElement("UIListLayout", {
+			-- 		SortOrder = Enum.SortOrder.LayoutOrder,
+			-- 		FillDirection = Enum.FillDirection.Horizontal,
+			-- 		HorizontalAlignment = Enum.HorizontalAlignment.Right,
+			-- 		Padding = styles.LARGE_PADDING,
+			-- 	}),
 
-				Explore = Roact.createElement(Button, {
-					layoutOrder = 1,
-					icon = assets.explore,
-					onActivated = selectGui,
-				}),
+			-- 	Explore = Roact.createElement(Button, {
+			-- 		layoutOrder = 1,
+			-- 		icon = assets.explore,
+			-- 		onActivated = selectGui,
+			-- 	}),
 
-				SelectModule = Roact.createElement(Button, {
-					layoutOrder = 2,
-					icon = assets.story,
-					onActivated = selectModule,
-				}),
+			-- 	SelectModule = Roact.createElement(Button, {
+			-- 		layoutOrder = 2,
+			-- 		icon = assets.story,
+			-- 		onActivated = selectModule,
+			-- 	}),
 
-				MountInViewport = Roact.createElement(Button, {
-					layoutOrder = 3,
-					icon = assets.viewport,
-					onActivated = props.onViewportToggled,
-				}),
-			}),
+			-- 	MountInViewport = Roact.createElement(Button, {
+			-- 		layoutOrder = 3,
+			-- 		icon = assets.viewport,
+			-- 		onActivated = props.onViewportToggled,
+			-- 	}),
+			-- }),
 		}),
 
 		Summary = props.story.summary and Roact.createElement(Panel, {
