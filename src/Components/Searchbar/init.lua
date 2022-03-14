@@ -1,3 +1,4 @@
+local constants = require(script.Parent.Parent.constants)
 local hook = require(script.Parent.Parent.hook)
 local Icon = require(script.Parent.Icon)
 local InputArea = require(script.InputArea)
@@ -16,11 +17,7 @@ local function Searchbar(_, hooks: any)
 	local active, setActive = hooks.useState(false)
 	local style = RoactSpring.useSpring(hooks, {
 		alpha = if active then 0 else 1,
-		config = {
-			clamp = true,
-			mass = 0.6,
-			tension = 700,
-		},
+		config = constants.SPRING_CONFIG,
 	})
 
 	return e("Frame", {

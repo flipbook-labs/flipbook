@@ -39,7 +39,7 @@ export type Theme = {
 		background: Color3,
 		stroke: Color3,
 	},
-	entry: {
+	explorerEntry: {
 		background: Color3,
 		selectedBackground: Color3,
 		selectedText: Color3,

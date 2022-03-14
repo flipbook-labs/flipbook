@@ -33,17 +33,13 @@ local function NodeDetails(props: Props, hooks: any)
 	local style = RoactSpring.useSpring(hooks, {
 		transparency = if hovered or props.active then 0 else 1,
 		background = if props.active then 0 else 1,
-		config = {
-			clamp = true,
-			mass = 0.6,
-			tension = 700,
-		},
+		config = constants.SPRING_CONFIG,
 	})
 
 	return e("ImageButton", {
 		AutoButtonColor = false,
 		BackgroundColor3 = style.background:map(function(value)
-			return theme.entry.selectedBackground:Lerp(theme.entry.background, value)
+			return theme.explorerEntry.selectedBackground:Lerp(theme.explorerEntry.background, value)
 		end),
 		BackgroundTransparency = style.transparency,
 		BorderSizePixel = 0,
@@ -83,7 +79,7 @@ local function NodeDetails(props: Props, hooks: any)
 				else
 					props.node.name,
 				TextColor3 = style.background:map(function(value)
-					return theme.entry.selectedText:Lerp(theme.entry.text, value)
+					return theme.explorerEntry.selectedText:Lerp(theme.explorerEntry.text, value)
 				end),
 				TextSize = 12,
 			})
