@@ -54,19 +54,21 @@ local function ExplorerNode(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Node = props.node.icon == "storybook" and e(StorybookDetails, {
-			expanded = expanded,
-			hasChildren = hasChildren,
-			node = props.node,
-			onActivated = onActivated,
-		}) or e(NodeDetails, {
-			active = props.activeNode == props.node,
-			expanded = expanded,
-			hasChildren = hasChildren,
-			indentLevel = indentLevel,
-			node = props.node,
-			onActivated = onActivated,
-		}),
+		Node = if props.node.icon == "storybook"
+			then e(StorybookDetails, {
+				expanded = expanded,
+				hasChildren = hasChildren,
+				node = props.node,
+				onActivated = onActivated,
+			})
+			else e(NodeDetails, {
+				active = props.activeNode == props.node,
+				expanded = expanded,
+				hasChildren = hasChildren,
+				indentLevel = indentLevel,
+				node = props.node,
+				onActivated = onActivated,
+			}),
 
 		ChildrenWrapper = (expanded and hasChildren) and e("Frame", {
 			AutomaticSize = if expanded then Enum.AutomaticSize.Y else Enum.AutomaticSize.None,

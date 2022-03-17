@@ -13,6 +13,7 @@ local types = require(script.Parent.Parent.types)
 local e = Roact.createElement
 
 type Props = {
+	layoutOrder: number?,
 	selectStory: (types.Story) -> (),
 	selectStorybook: (types.Storybook) -> (),
 	storybooks: { types.Storybook },
@@ -35,6 +36,7 @@ local function Sidebar(props: Props, hooks: any)
 
 	return e("Frame", {
 		BackgroundTransparency = 1,
+		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(0, 230, 1, 0),
 	}, {
 		UIPadding = e("UIPadding", {

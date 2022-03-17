@@ -33,17 +33,13 @@ local function NodeDetails(props: Props, hooks: any)
 	local style = RoactSpring.useSpring(hooks, {
 		transparency = if hovered or props.active then 0 else 1,
 		background = if props.active then 0 else 1,
-		config = {
-			clamp = true,
-			mass = 0.6,
-			tension = 700,
-		},
+		config = constants.SPRING_CONFIG,
 	})
 
 	return e("ImageButton", {
 		AutoButtonColor = false,
 		BackgroundColor3 = style.background:map(function(value)
-			return theme.entry.selectedBackground:Lerp(theme.entry.background, value)
+			return theme.explorerEntry.selectedBackground:Lerp(theme.explorerEntry.background, value)
 		end),
 		BackgroundTransparency = style.transparency,
 		BorderSizePixel = 0,
@@ -78,12 +74,11 @@ local function NodeDetails(props: Props, hooks: any)
 			Llama.Dictionary.join(styles.TextLabel, {
 				AnchorPoint = Vector2.new(0, 0.5),
 				Position = UDim2.new(0, 55, 0.5, 0),
-				Text = if props.node.name:match(constants.STORY_NAME_PATTERN) then
-					props.node.name:sub(1, #props.node.name - 6)
-				else
-					props.node.name,
+				Text = if props.node.name:match(constants.STORY_NAME_PATTERN)
+					then props.node.name:sub(1, #props.node.name - 6)
+					else props.node.name,
 				TextColor3 = style.background:map(function(value)
-					return theme.entry.selectedText:Lerp(theme.entry.text, value)
+					return theme.explorerEntry.selectedText:Lerp(theme.explorerEntry.text, value)
 				end),
 				TextSize = 12,
 			})
