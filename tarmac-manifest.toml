@@ -4,8 +4,8 @@ id = 8484527786
 packable = false
 
 [inputs."img/chevron-right.png"]
-hash = "3a776a9c0c780d5943506eb12ad1370467e5faba0629338a0727d59385c7af31"
-id = 8472731876
+hash = "6bbe0ac0953ab0e14004bc7457f78e875b6219f1c097b4c124058aa77d8e71e4"
+id = 9040299846
 packable = false
 
 [inputs."img/double-arrow.png"]
@@ -19,13 +19,18 @@ id = 8500157719
 packable = false
 
 [inputs."img/folder.png"]
-hash = "2d8f0bcefe96d8b99273785c0f09aa4afb6b2aec6c6758e94ae5ae8996ebaf00"
-id = 8472668100
+hash = "7587a57a567d6b5bc8480b26f9efe6a20c5b58d1dfe0110129870f7d29cf828f"
+id = 9039499168
+packable = false
+
+[inputs."img/magnifying-glass.png"]
+hash = "1e656da513ba1d180e0fe92c61843feff506cb58ab1f0be4dc8e1e7dd5ef8f93"
+id = 9048167374
 packable = false
 
 [inputs."img/story.png"]
-hash = "b2ba799507dfbc53c359c718b570abf305b708a846a38312fe7a46ed6c71e52e"
-id = 8481250291
+hash = "bf01c962637ef3a285b9e17962bed4e43dc7ede86065bf9f21f5fe467394c37e"
+id = 9040299928
 packable = false
 
 [inputs."img/storybook.png"]

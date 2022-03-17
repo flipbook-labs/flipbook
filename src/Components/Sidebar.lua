@@ -1,31 +1,28 @@
+local Branding = require(script.Parent.Branding)
+local constants = require(script.Parent.Parent.constants)
+local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
+local Explorer = require(script.Parent.Explorer)
+local hook = require(script.Parent.Parent.hook)
 local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
-local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
-local useTheme = require(script.Parent.Parent.Hooks.useTheme)
-local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
-local constants = require(script.Parent.Parent.constants)
+local Searchbar = require(script.Parent.Searchbar)
 local styles = require(script.Parent.Parent.styles)
+local themes = require(script.Parent.Parent.themes)
 local types = require(script.Parent.Parent.types)
-local Panel = require(script.Parent.Panel)
-local TreeList = require(script.Parent.TreeList)
-local SidebarToggle = require(script.Parent.SidebarToggle)
+
+local e = Roact.createElement
 
 type Props = {
-	isExpanded: boolean,
-	width: NumberRange,
-	storybooks: { types.Storybook },
+	layoutOrder: number?,
 	selectStory: (types.Story) -> (),
 	selectStorybook: (types.Storybook) -> (),
-	layoutOrder: number?,
-	onToggleActivated: (() -> ())?,
+	storybooks: { types.Storybook },
 }
 
 local function Sidebar(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local width = if props.isExpanded then props.width.Max else props.width.Min
 	local activeNode, setActiveNode = hooks.useState(nil)
 
-	local onNodeActivated = hooks.useCallback(function(node: TreeList.Node)
+	local onNodeActivated = hooks.useCallback(function(node: Explorer.Node)
 		if node.instance and node.name:match(constants.STORY_NAME_PATTERN) then
 			props.selectStorybook(node.storybook)
 			props.selectStory(node.instance)
@@ -37,38 +34,44 @@ local function Sidebar(props: Props, hooks: any)
 		return createStoryNodes(props.storybooks)
 	end, { props.storybooks })
 
-	local children = {}
-
-	children.StoryList = Roact.createElement(TreeList, {
-		onNodeActivated = onNodeActivated,
-		activeNode = activeNode,
-		nodes = storybookNodes,
-	})
-
-	return Roact.createElement("Frame", {
-		LayoutOrder = props.layoutOrder,
-		Size = UDim2.new(0, width, 1, 0),
+	return e("Frame", {
 		BackgroundTransparency = 1,
+		LayoutOrder = props.layoutOrder,
+		Size = UDim2.new(0, 230, 1, 0),
 	}, {
-		Toggle = Roact.createElement(SidebarToggle, {
-			isExpanded = props.isExpanded,
-			onActivated = props.onToggleActivated,
-			position = UDim2.fromScale(1, 0.5),
-			anchorPoint = Vector2.new(0.5, 0.5),
+		UIPadding = e("UIPadding", {
+			PaddingBottom = styles.LARGE_PADDING,
+			PaddingLeft = UDim.new(0, 0),
+			PaddingRight = UDim.new(0, 0),
+			PaddingTop = styles.LARGE_PADDING,
 		}),
 
-		Panel = Roact.createElement(Panel, {}, {
-			Layout = Roact.createElement("UIListLayout"),
+		Branding = e(Branding, {
+			position = UDim2.fromOffset(20, 0),
+			size = 22,
+			tag = "DEV",
+			tagColor = themes.Brand,
+			tagSize = 8,
+		}),
 
-			ScrollingFrame = Roact.createElement(
-				"ScrollingFrame",
-				Llama.Dictionary.join(styles.ScrollingFrame, {
-					BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainBackground),
+		Searchbar = e(Searchbar),
+
+		Entries = e(
+			"ScrollingFrame",
+			Llama.Dictionary.merge(styles.ScrollingFrame, {
+				BorderSizePixel = 0,
+				Position = UDim2.fromOffset(0, 102),
+				Size = UDim2.new(1, 0, 1, -102),
+			}),
+			{
+				Explorer = e(Explorer, {
+					activeNode = activeNode,
+					nodes = storybookNodes,
+					onNodeActivated = onNodeActivated,
 				}),
-				children
-			),
-		}),
+			}
+		),
 	})
 end
 
-return RoactHooks.new(Roact)(Sidebar)
+return hook(Sidebar)
