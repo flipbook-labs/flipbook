@@ -5,6 +5,7 @@ return {
 
 	Light = {
 		background = Color3.fromHex("F3F4F6"),
+		canvas = Color3.fromHex("FFFFFF"),
 		stroke = Color3.fromHex("D1D5DB"),
 		text = Color3.fromHex("000000"),
 		storybookEntry = Color3.fromHex("C4C4C4"),
@@ -28,6 +29,7 @@ return {
 
 	Dark = {
 		background = Color3.fromHex("171717"),
+		canvas = Color3.fromHex("1E1E1E"),
 		stroke = Color3.fromHex("2B2B2B"),
 		text = Color3.fromHex("FFFFFF"),
 		storybookEntry = Color3.fromHex("5F5F5F"),

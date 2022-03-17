@@ -5,6 +5,10 @@ local createWidget = require(script.Modules.createWidget)
 local createToggleButton = require(script.Modules.createToggleButton)
 local App = require(script.Components.App)
 
+Roact.setGlobalConfig({
+	elementTracing = true,
+})
+
 local PLUGIN_NAME = "flipbook [DEV]"
 
 if RunService:IsRunning() or not RunService:IsEdit() then

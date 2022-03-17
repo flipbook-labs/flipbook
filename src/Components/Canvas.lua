@@ -43,13 +43,13 @@ local function Canvas(props: Props, hooks: any)
 				CornerRadius = UDim.new(0, 4),
 			}),
 
-			StoryView = props.story and Roact.createElement(StoryView, {
+			StoryView = props.story and e(StoryView, {
+				loader = props.loader,
 				story = props.story,
 				storybook = props.storybook,
-				loader = props.loader,
 			}),
 
-			NoStorySelected = not props.story and Roact.createElement(NoStorySelected),
+			NoStorySelected = not props.story and e(NoStorySelected),
 		}),
 	})
 end

@@ -15,6 +15,8 @@ return {
 		Icon = "folder",
 	},
 
+	summary = "Show's off the various icons we use in our plugin.",
+
 	story = function(props)
 		local icon = if themes.Light.icons[props.controls.Icon] then props.controls.Icon else "folder"
 

@@ -1,8 +1,8 @@
-local TreeList = require(script.Parent.Parent.Components.TreeList)
+local Explorer = require(script.Parent.Parent.Components.Explorer)
 local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
 
-local function addStoriesToNode(root: Instance, node: TreeList.Node, storybook: types.Storybook)
+local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: types.Storybook)
 	for _, child in ipairs(root:GetChildren()) do
 		local nextNode = {
 			name = child.Name,
@@ -24,7 +24,7 @@ local function addStoriesToNode(root: Instance, node: TreeList.Node, storybook: 
 	end
 end
 
-local function createStoryNodes(storybooks: { types.Storybook }): { TreeList.Node }
+local function createStoryNodes(storybooks: { types.Storybook }): { Explorer.Node }
 	local nodes = {}
 
 	for _, storybook in ipairs(storybooks) do
