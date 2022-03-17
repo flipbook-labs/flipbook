@@ -22,11 +22,9 @@ local function ExplorerNodeStory(_, hooks: any)
 	local state, set = hooks.useState(nil)
 	local onNodeActivated = hooks.useCallback(function(node: types.Node)
 		if node.name:match(constants.STORY_NAME_PATTERN) then
-			if node == state then
-				set(nil)
-			else
-				set(node)
-			end
+			set(function(prevState)
+			    return if node == prevState then nil else node
+			end)
 		end
 	end, { state, set })
 
