@@ -32,13 +32,14 @@ local function StoryMeta(props: Props, hooks: any)
 		Title = e(
 			"TextLabel",
 			Dictionary.join(styles.Header, {
+				Font = Enum.Font.GothamBlack,
 				LayoutOrder = 1,
 				Text = props.story.name,
 				TextColor3 = theme.text,
 			})
 		),
 
-		Summary = e(
+		Summary = props.story.summary and e(
 			"TextLabel",
 			Dictionary.join(styles.TextLabel, {
 				LayoutOrder = 2,

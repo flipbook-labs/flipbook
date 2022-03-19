@@ -11,11 +11,10 @@ local function deriveIconSize(icon: string): UDim2
 end
 
 return {
+	summary = "Show's off the various icons we use in our plugin.",
 	controls = {
 		Icon = "folder",
 	},
-
-	summary = "Show's off the various icons we use in our plugin.",
 
 	story = function(props)
 		local icon = if themes.Light.icons[props.controls.Icon] then props.controls.Icon else "folder"
