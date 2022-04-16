@@ -23,6 +23,9 @@ jobs:
       - name: Remove spec files
         run: rm -rf **/*.spec.lua
 
+      - name: Install packages
+        run: wally install
+
       - name: Build
         run: rojo build -o ${{ env.OUTPUT_NAME }}
 
