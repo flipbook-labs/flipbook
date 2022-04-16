@@ -54,14 +54,14 @@ local function ExplorerNode(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Node = if props.node.icon == "storybook" then
-			e(StorybookDetails, {
+		Node = if props.node.icon == "storybook"
+			then e(StorybookDetails, {
 				expanded = expanded,
 				hasChildren = hasChildren,
 				node = props.node,
-			 	onActivated = onActivated,
+				onActivated = onActivated,
 			})
-		else e(NodeDetails, {
+			else e(NodeDetails, {
 				active = props.activeNode == props.node,
 				expanded = expanded,
 				hasChildren = hasChildren,

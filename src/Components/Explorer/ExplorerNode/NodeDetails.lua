@@ -74,10 +74,9 @@ local function NodeDetails(props: Props, hooks: any)
 			Llama.Dictionary.join(styles.TextLabel, {
 				AnchorPoint = Vector2.new(0, 0.5),
 				Position = UDim2.new(0, 55, 0.5, 0),
-				Text = if props.node.name:match(constants.STORY_NAME_PATTERN) then
-					props.node.name:sub(1, #props.node.name - 6)
-				else
-					props.node.name,
+				Text = if props.node.name:match(constants.STORY_NAME_PATTERN)
+					then props.node.name:sub(1, #props.node.name - 6)
+					else props.node.name,
 				TextColor3 = style.background:map(function(value)
 					return theme.explorerEntry.selectedText:Lerp(theme.explorerEntry.text, value)
 				end),
