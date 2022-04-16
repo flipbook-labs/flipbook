@@ -42,7 +42,10 @@ jobs:
 
       - name: Extract moonwave
         run: moonwave-extractor extract src
-        
+
+      - name: Build
+        run: npx moonwave build
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
