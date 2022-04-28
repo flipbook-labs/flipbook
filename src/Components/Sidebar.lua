@@ -49,7 +49,7 @@ local function Sidebar(props: Props, hooks: any)
 		Branding = e(Branding, {
 			position = UDim2.fromOffset(20, 0),
 			size = 22,
-			tag = "DEV",
+			tag = if constants.IS_DEV_MODE then "DEV" else nil,
 			tagColor = themes.Brand,
 			tagSize = 8,
 		}),
