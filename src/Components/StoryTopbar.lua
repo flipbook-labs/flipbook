@@ -2,10 +2,13 @@ local hook = require(script.Parent.Parent.hook)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
+local DEFAULT_HEIGHT = 50
+
 local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
+	height: number?,
 }
 
 local function StoryTopbar(props: Props, hooks: any)
@@ -14,7 +17,7 @@ local function StoryTopbar(props: Props, hooks: any)
 	return e("Frame", {
 		BackgroundTransparency = 1,
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.new(1, 0, 0, 50),
+		Size = UDim2.new(1, 0, 0, props.height or DEFAULT_HEIGHT),
 	}, {
 		Divider = e("Frame", {
 			AnchorPoint = Vector2.new(0, 1),
