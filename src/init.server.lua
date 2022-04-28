@@ -5,11 +5,16 @@ local createWidget = require(script.Modules.createWidget)
 local createToggleButton = require(script.Modules.createToggleButton)
 local App = require(script.Components.App)
 
-Roact.setGlobalConfig({
-	elementTracing = true,
-})
+local IS_DEV = false
+local PLUGIN_NAME = "flipbook"
 
-local PLUGIN_NAME = "flipbook [DEV]"
+if IS_DEV then
+	Roact.setGlobalConfig({
+		elementTracing = true,
+	})
+
+	PLUGIN_NAME = "flipbook [DEV]"
+end
 
 if RunService:IsRunning() or not RunService:IsEdit() then
 	return
