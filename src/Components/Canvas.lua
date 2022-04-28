@@ -3,6 +3,7 @@ local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local NoStorySelected = require(script.Parent.NoStorySelected)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local StoryView = require(script.Parent.StoryView)
+local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
 local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
@@ -40,7 +41,7 @@ local function Canvas(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 1),
 		}, {
 			UICorner = e("UICorner", {
-				CornerRadius = UDim.new(0, 4),
+				CornerRadius = styles.SMALL_PADDING,
 			}),
 
 			StoryView = props.story and e(StoryView, {
