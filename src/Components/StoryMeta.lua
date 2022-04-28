@@ -5,10 +5,12 @@ local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
 local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
+local MAX_SUMMARY_SIZE = 600
+
 local Dictionary = Llama.Dictionary
 local e = Roact.createElement
 
-type Props = {
+export type Props = {
 	layoutOrder: number,
 	story: types.Story,
 	storyModule: ModuleScript,
@@ -50,7 +52,7 @@ local function StoryMeta(props: Props, hooks: any)
 			}),
 			{
 				UISizeConstraint = e("UISizeConstraint", {
-					MaxSize = Vector2.new(600, math.huge),
+					MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
 				}),
 			}
 		),
