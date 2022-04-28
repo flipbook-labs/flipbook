@@ -54,8 +54,6 @@ local function StoryView(props: Props, hooks: any)
 			story = story,
 			storyModule = props.story,
 		}),
-
-		-- StoryControls = story and e(StoryControls)
 	})
 end
 
