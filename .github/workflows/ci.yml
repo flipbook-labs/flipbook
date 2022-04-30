@@ -52,13 +52,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download global Roblox types
-        shell: bash
-        run: curl https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua > globalTypes.d.lua
-
       - name: Analyze
         shell: bash
-        run: luau-analyze --sourcemap=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+        run: ./scripts/analyze.sh
 
   tests:
     runs-on: windows-latest
