@@ -42,7 +42,7 @@ jobs:
 
       - name: Extract moonwave
         run: moonwave-extractor extract src
-        
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
@@ -69,14 +69,23 @@ jobs:
       - name: Build place file
         run: rojo build dev.project.json -o studio-tests.rbxlx
 
+      - name: Install Roblox Studio
+        run:
+          Invoke-WebRequest -Uri "https://github.com/OrbitalOwen/roblox-win-installer/archive/0.5.zip" -OutFile roblox-win-installer.zip;
+          Expand-Archive -LiteralPath roblox-win-installer.zip -DestinationPath .;
+          cd roblox-win-installer-0.5;
+          pip install --requirement requirements.txt;
+          python install.py "${{ secrets.ROBLOSECURITY }}"
+
+      - name: Create flag overrides for successful login
+        run: |
+          $flags = @{DFIntStudioUseNewLoginDataEndpointHundredthPercent=0; FFlagStudioUseNewLoginDataEndpoint=$false}
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
+          $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
+
       - name: Add RBXID to the Windows registry
         run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
-
-      - name: Install Roblox Studio
-        uses: OrbitalOwen/roblox-win-installer-action@1.1
-        with:
-          cookie: ${{ secrets.ROBLOSECURITY }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxlx --script tests/init.server.lua
