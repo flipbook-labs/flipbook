@@ -42,7 +42,26 @@ jobs:
 
       - name: Extract moonwave
         run: moonwave-extractor extract src
-        
+
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download global Roblox types
+        shell: bash
+        run: |
+          curl https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/dumpRobloxTypes.py > dumpRobloxTypes.py
+          python dumpRobloxTypes.py > globalTypes.d.lua
+
+      - name: Analyze
+        shell: bash
+        run: luau-analyze --sourcemap=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
