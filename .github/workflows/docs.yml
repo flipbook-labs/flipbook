@@ -1,6 +1,7 @@
 name: Docs
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -9,11 +10,25 @@ env:
   REPO_URL: github.com/vocksel/flipbook
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v2.5.1
+
+      - name: Install Moonwave
+        run: npm install -g moonwave
+
+      - name: Extract
+        run: moonwave-extractor extract src
+
+      - name: Build
+        run: moonwave build
 
       - name: Configure Git user
         run: |
@@ -25,11 +40,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
-
-      - name: Install Moonwave
-        run: npm install -g moonwave
-
       - name: Deploy
+        if: ${{ github.event_name == 'push' }}
         run: moonwave build --publish

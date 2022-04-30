@@ -29,23 +29,6 @@ jobs:
       - name: Format
         run: stylua --check src/
 
-  validate-moonwave-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Foreman dependencies
-        uses: Roblox/setup-foreman@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract moonwave
-        run: moonwave-extractor extract src
-
-      - name: Build
-        run: npx moonwave build
-
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
