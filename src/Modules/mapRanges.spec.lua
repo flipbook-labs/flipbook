@@ -6,6 +6,8 @@ return function()
 	end)
 
 	it("should error if max0 is the same as min0", function()
-		expect(mapRanges(0.5, 1, 1, 2, 2)).to.throw()
+		expect(function()
+			mapRanges(0.5, 1, 1, 2, 2)
+		end).to.throw()
 	end)
 end
