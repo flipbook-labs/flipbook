@@ -54,7 +54,7 @@ jobs:
 
       - name: Download global Roblox types
         shell: bash
-        run: curl https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua > globalTypes.d.lua
+        run: curl -O https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua
 
       - name: Analyze
         shell: bash
