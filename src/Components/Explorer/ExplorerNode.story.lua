@@ -1,6 +1,5 @@
 local constants = require(script.Parent.Parent.Parent.constants)
 local ExplorerNode = require(script.Parent.ExplorerNode)
-local fromHex = require(script.Parent.Parent.Parent.Modules.fromHex)
 local hook = require(script.Parent.Parent.Parent.hook)
 local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
 local types = require(script.Parent.types)
@@ -23,13 +22,13 @@ local function ExplorerNodeStory(_, hooks: any)
 	local onNodeActivated = hooks.useCallback(function(node: types.Node)
 		if node.name:match(constants.STORY_NAME_PATTERN) then
 			set(function(prevState)
-			    return if node == prevState then nil else node
+				return if node == prevState then nil else node
 			end)
 		end
 	end, { state, set })
 
 	return e("Frame", {
-		BackgroundColor3 = fromHex(0xF3F4F6),
+		BackgroundColor3 = Color3.fromHex("#F3F4F6"),
 		BorderSizePixel = 0,
 		Size = UDim2.new(0, 200, 1, 0),
 	}, {
