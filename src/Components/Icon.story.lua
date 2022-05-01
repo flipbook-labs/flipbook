@@ -2,12 +2,13 @@ local Icon = require(script.Parent.Icon)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local themes = require(script.Parent.Parent.themes)
 
-local function deriveIconSize(icon: string): UDim2
+local function deriveIconSize(icon: string): UDim2?
 	if icon == "folder" then
 		return UDim2.fromOffset(14, 10)
 	elseif icon == "story" then
 		return UDim2.fromOffset(14, 14)
 	end
+	return nil
 end
 
 return {

@@ -32,7 +32,7 @@
 
 local types = require(script.Parent.Parent.types)
 
-local function getStoryElement(story: types.Story, controls: Dictionary<any>?)
+local function getStoryElement(story: types.Story, controls: types.Controls?)
 	controls = controls or story.controls
 
 	if typeof(story.story) == "function" then
