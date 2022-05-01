@@ -44,7 +44,7 @@ jobs:
 
       - name: Analyze
         shell: bash
-        run: luau-analyze --sourcemap=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+        run: luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
 
   tests:
     runs-on: windows-latest
