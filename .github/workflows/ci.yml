@@ -47,7 +47,9 @@ jobs:
 
       - name: Analyze
         shell: bash
-        run: luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+        run: |
+          mv .github/workflows/.luaurc Packages
+          luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
 
   tests:
     runs-on: windows-latest
