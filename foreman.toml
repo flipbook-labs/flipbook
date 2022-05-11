@@ -6,4 +6,4 @@ run-in-roblox = { source = "rojo-rbx/run-in-roblox", version = "0.3.0" }
 tarmac = { source = "Roblox/tarmac", version = "0.7.0" }
 wally = { source = "UpliftGames/wally", version = "0.3.1" }
 moonwave-extractor = { source = "UpliftGames/moonwave", version = "0.3.3" }
-luau-analyze = { source = "JohnnyMorganz/luau-analyze-rojo", version = "*" }
+luau-analyze = { source = "JohnnyMorganz/luau-analyze-rojo", version = "0.526.1 " }
