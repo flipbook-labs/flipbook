@@ -2,6 +2,18 @@ local Explorer = require(script.Parent.Parent.Components.Explorer)
 local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
 
+local function getStoriesInRoot(root: Instance): { ModuleScript }
+	local children = {}
+
+	for _, child in ipairs(root:GetChildren()) do
+		if child.Name:match(constants.STORY_NAME_PATTERN) then
+			table.insert(children, child)
+		end
+	end
+
+	return children
+end
+
 local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: types.Storybook)
 	for _, child in ipairs(root:GetChildren()) do
 		local nextNode = {
@@ -16,9 +28,15 @@ local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: 
 			table.insert(node.children, nextNode)
 		else
 			if #child:GetChildren() > 0 then
-				nextNode.icon = "folder"
-				table.insert(node.children, nextNode)
-				addStoriesToNode(child, nextNode, storybook)
+				warn("We have multiple children", child.Name)
+				local childChildren = getStoriesInRoot(child)
+
+				if #childChildren > 0 then
+					print("Ok, they are actually stories in here", child.Name)
+					nextNode.icon = "folder"
+					table.insert(node.children, nextNode)
+					addStoriesToNode(child, nextNode, storybook)
+				end
 			end
 		end
 	end
