@@ -28,11 +28,9 @@ local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: 
 			table.insert(node.children, nextNode)
 		else
 			if #child:GetChildren() > 0 then
-				warn("We have multiple children", child.Name)
 				local childChildren = getStoriesInRoot(child)
 
 				if #childChildren > 0 then
-					print("Ok, they are actually stories in here", child.Name)
 					nextNode.icon = "folder"
 					table.insert(node.children, nextNode)
 					addStoriesToNode(child, nextNode, storybook)
