@@ -49,7 +49,7 @@ jobs:
         run: wally install
 
       - name: Build place file
-        run: rojo build dev.project.json -o studio-tests.rbxlx
+        run: rojo build dev.project.json -o studio-tests.rbxl
 
       - name: Install Roblox Studio
         run:
@@ -70,4 +70,4 @@ jobs:
         run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
 
       - name: Run tests
-        run: run-in-roblox --place studio-tests.rbxlx --script tests/init.server.lua
+        run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
