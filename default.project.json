@@ -1,9 +1,9 @@
 {
-	"name": "flipbook",
-	"tree": {
-		"Packages": {
-			"$path": "Packages"
-		},
-		"$path": "src"
-	}
+  "name": "flipbook",
+  "tree": {
+    "Packages": {
+      "$path": "Packages"
+    },
+    "$path": "src"
+  }
 }
