@@ -1,7 +1,6 @@
 local CoreGui = game:GetService("CoreGui")
 
 local Llama = require(script.Parent.Parent.Packages.Llama)
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local useStory = require(script.Parent.Parent.Hooks.useStory)
@@ -14,7 +13,7 @@ local StoryError = require(script.Parent.StoryError)
 
 type Props = {
 	story: ModuleScript,
-	loader: ModuleLoader.Class,
+	loader: any,
 	storybook: types.Storybook,
 }
 
