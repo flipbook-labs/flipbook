@@ -24,6 +24,9 @@ jobs:
       - name: Format
         run: stylua --check src/
 
+      - name: Install dependencies
+        run: wally install
+
       - name: Build
         run: rojo build -o build.rbxm
 
