@@ -13,7 +13,6 @@ local e = Roact.createElement
 export type Props = {
 	layoutOrder: number,
 	story: types.Story,
-	storyModule: ModuleScript,
 }
 
 local function StoryMeta(props: Props, hooks: any)

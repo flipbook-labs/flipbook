@@ -5,19 +5,14 @@ on:
     branches:
       - main
   pull_request:
-  schedule:
-    # Every day at 8pm UTC (12am PST)
-    - cron: "0 20 * * *"
 
 jobs:
-  code-quality:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Install Foreman dependencies
-        uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -29,26 +24,39 @@ jobs:
       - name: Format
         run: stylua --check src/
 
-  validate-moonwave-docs:
+      - name: Install dependencies
+        run: wally install
+
+      - name: Build
+        run: rojo build -o build.rbxm
+
+  analyze:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Install Foreman dependencies
-        uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract moonwave
-        run: moonwave-extractor extract src
-        
+      - name: Install dependencies
+        run: wally install
+
+      - name: Download global Roblox types
+        shell: bash
+        run: curl -O https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua
+
+      - name: Analyze
+        shell: bash
+        run: |
+          mv .github/workflows/.luaurc Packages
+          luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Check for ROBLOSECURITY token
         shell: bash
@@ -58,8 +66,7 @@ jobs:
         shell: bash
         run: ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
 
-      - name: Install toolchain
-        uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -67,16 +74,25 @@ jobs:
         run: wally install
 
       - name: Build place file
-        run: rojo build dev.project.json -o studio-tests.rbxlx
+        run: rojo build dev.project.json -o studio-tests.rbxl
+
+      - name: Install Roblox Studio
+        run:
+          Invoke-WebRequest -Uri "https://github.com/OrbitalOwen/roblox-win-installer/archive/0.5.zip" -OutFile roblox-win-installer.zip;
+          Expand-Archive -LiteralPath roblox-win-installer.zip -DestinationPath .;
+          cd roblox-win-installer-0.5;
+          pip install --requirement requirements.txt;
+          python install.py "${{ secrets.ROBLOSECURITY }}"
+
+      - name: Create flag overrides for successful login
+        run: |
+          $flags = @{DFIntStudioUseNewLoginDataEndpointHundredthPercent=0; FFlagStudioUseNewLoginDataEndpoint=$false}
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
+          $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
 
       - name: Add RBXID to the Windows registry
         run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
 
-      - name: Install Roblox Studio
-        uses: OrbitalOwen/roblox-win-installer-action@1.1
-        with:
-          cookie: ${{ secrets.ROBLOSECURITY }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Run tests
-        run: run-in-roblox --place studio-tests.rbxlx --script tests/init.server.lua
+        run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua

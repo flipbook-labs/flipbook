@@ -1,6 +1,5 @@
 local hook = require(script.Parent.Parent.hook)
 local Llama = require(script.Parent.Parent.Packages.Llama)
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local StoryMeta = require(script.Parent.StoryMeta)
 local StoryPreview = require(script.Parent.StoryPreview)
@@ -14,7 +13,7 @@ local e = Roact.createElement
 
 type Props = {
 	story: ModuleScript,
-	loader: ModuleLoader.Class,
+	loader: any,
 	storybook: types.Storybook,
 }
 

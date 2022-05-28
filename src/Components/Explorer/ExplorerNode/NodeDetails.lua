@@ -19,12 +19,13 @@ type Props = {
 	onActivated: (types.Node) -> (),
 }
 
-local function deriveIconSize(icon: string): UDim2
+local function deriveIconSize(icon: string): UDim2?
 	if icon == "folder" then
 		return UDim2.fromOffset(14, 10)
 	elseif icon == "story" then
 		return UDim2.fromOffset(14, 14)
 	end
+	return nil
 end
 
 local function NodeDetails(props: Props, hooks: any)
@@ -66,7 +67,7 @@ local function NodeDetails(props: Props, hooks: any)
 			color = theme.icons[props.node.icon],
 			icon = props.node.icon,
 			position = UDim2.new(0, 30, 0.5, 0),
-			size = deriveIconSize(props.node.icon),
+			size = if props.node.icon then deriveIconSize(props.node.icon) else nil,
 		}),
 
 		Name = e(

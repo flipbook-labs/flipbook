@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  pull_request:
   release:
     types: [published]
 
@@ -11,22 +12,23 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Install toolchain
-        uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Remove spec files
         run: rm -rf **/*.spec.lua
 
+      - name: Install packages
+        run: wally install
+
       - name: Build
         run: rojo build -o ${{ env.OUTPUT_NAME }}
 
-      - name: Add model file to release
-        uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v1
+        if: ${{ github.event.release }}
         with:
           files: ${{ env.OUTPUT_NAME }}
         env:

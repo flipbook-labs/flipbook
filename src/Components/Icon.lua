@@ -12,12 +12,13 @@ type Props = {
 	size: UDim2 | number,
 }
 
-local function reconcileSize(size: UDim2 | number): UDim2
+local function reconcileSize(size: UDim2 | number): UDim2?
 	if typeof(size) == "UDim2" then
 		return size
 	elseif typeof(size) == "number" then
 		return UDim2.fromOffset(size, size)
 	end
+	return nil
 end
 
 local function Icon(props: Props)

@@ -1,25 +1,25 @@
 {
-    "name": "flipbook (dev)",
-    "tree": {
-        "$className": "DataModel",
-        "ReplicatedStorage": {
-            "Packages": {
-                "$path": "Packages",
-                "Example": {
-                    "$path": "example"
-                }
-            },
-            "flipbook": {
-                "Packages": {
-                    "$path": "Packages"
-                },
-                "$path": "src"
-            }
-        },
-        "ServerScriptService": {
-            "tests": {
-                "$path": "tests"
-            }
+  "name": "flipbook (dev)",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Packages": {
+        "$path": "Packages",
+        "Example": {
+          "$path": "example"
         }
+      },
+      "flipbook": {
+        "Packages": {
+          "$path": "Packages"
+        },
+        "$path": "src"
+      }
+    },
+    "ServerScriptService": {
+      "tests": {
+        "$path": "tests"
+      }
     }
+  }
 }

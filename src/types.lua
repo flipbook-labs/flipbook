@@ -1,8 +1,9 @@
-export type RoactElement = Dictionary<any>
+export type RoactElement = { [string]: any }
 
 export type Storybook = {
 	storyRoots: { Instance },
 	name: string?,
+	roact: any,
 }
 
 export type StoryControl = {
@@ -11,12 +12,16 @@ export type StoryControl = {
 	value: any,
 }
 
+export type Controls = {
+	[string]: StoryControl,
+}
+
 export type Story = {
 	name: string,
 	roact: any,
 	summary: string?,
-	controls: { [string]: StoryControl }?,
-	story: RoactElement | (Dictionary<any>) -> RoactElement,
+	controls: Controls?,
+	story: RoactElement | ({ [string]: any }) -> RoactElement,
 	format: string?,
 }
 

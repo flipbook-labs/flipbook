@@ -11,7 +11,7 @@ local MOCK_STUDIO = {
 local function useTheme(hooks: any)
 	local studio = hooks.useMemo(function()
 		local success, result = pcall(function()
-			return settings().Studio
+			return (settings() :: any).Studio
 		end)
 
 		return if success then result else MOCK_STUDIO
