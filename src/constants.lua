@@ -2,11 +2,9 @@ return {
 	STORY_NAME_PATTERN = "%.story$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
-	-- Determines whether or not flipbook's storybook will appear in the
-	-- storybook list. Regular users will not need to see this, but it helps
-	-- when debugging.
-	-- When set to true, the plugin's name will have a [DEV] tag.
-	-- Aswell, the UI will have a DEV tag next to the icon.
+	-- Enabling dev mode will add flipbook's storybook to the list of available
+	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
+	-- plugin
 	IS_DEV_MODE = true,
 
 	SPRING_CONFIG = {
