@@ -4,11 +4,11 @@ local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
 local e = Roact.createElement
 local defaultProps = {
-    height = 50
+	height = 50,
 }
 
 export type Props = typeof(defaultProps) & {
-    layoutOrder: number?
+	layoutOrder: number?,
 }
 
 local function StoryTopbar(props: Props, hooks: any)
@@ -30,5 +30,5 @@ local function StoryTopbar(props: Props, hooks: any)
 end
 
 return hook(StoryTopbar, {
-	defaultProps = defaultProps
+	defaultProps = defaultProps,
 })
