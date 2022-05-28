@@ -1,4 +1,3 @@
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local constants = require(script.Parent.Parent.constants)
 local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
 
@@ -11,7 +10,7 @@ local function hasPermission(instance: Instance)
 	return success
 end
 
-local function useStorybooks(hooks: any, parent: Instance, loader: ModuleLoader.Class)
+local function useStorybooks(hooks: any, parent: Instance, loader: any)
 	local storybooks, set = hooks.useState({})
 
 	local loadStorybooks = hooks.useCallback(function()

@@ -15,7 +15,7 @@ export type Props = {
 	story: types.Story,
 	storyModule: ModuleScript,
 	storyParent: any,
-	controls: Dictionary<any>?,
+	controls: types.Controls?,
 	onControlChanged: ((string, any) -> ())?,
 	onViewportToggled: (() -> ())?,
 }

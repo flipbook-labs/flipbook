@@ -14,7 +14,7 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number?,
-	selectStory: (types.Story) -> (),
+	selectStory: (ModuleScript) -> (),
 	selectStorybook: (types.Storybook) -> (),
 	storybooks: { types.Storybook },
 }
@@ -23,7 +23,7 @@ local function Sidebar(props: Props, hooks: any)
 	local activeNode, setActiveNode = hooks.useState(nil)
 
 	local onNodeActivated = hooks.useCallback(function(node: Explorer.Node)
-		if node.instance and node.name:match(constants.STORY_NAME_PATTERN) then
+		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			props.selectStorybook(node.storybook)
 			props.selectStory(node.instance)
 			setActiveNode(node)

@@ -30,6 +30,28 @@ jobs:
       - name: Build
         run: rojo build -o build.rbxm
 
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: wally install
+
+      - name: Download global Roblox types
+        shell: bash
+        run: curl -O https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua
+
+      - name: Analyze
+        shell: bash
+        run: |
+          mv .github/workflows/.luaurc Packages
+          luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
