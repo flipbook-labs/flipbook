@@ -2,7 +2,7 @@ local Explorer = require(script.Parent.Parent.Components.Explorer)
 local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
 
-local function hasStoriesInRoot(root: Instance): { ModuleScript }
+local function hasStoriesInRoot(root: Instance): boolean
 	for _, child in ipairs(root:GetChildren()) do
 		if child.Name:match(constants.STORY_NAME_PATTERN) then
 			return true

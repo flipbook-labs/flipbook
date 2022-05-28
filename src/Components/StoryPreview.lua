@@ -47,7 +47,7 @@ local function StoryPreview(props: Props, hooks: any)
 				xpcall(function()
 					tree.value = props.story.roact.mount(element, storyParent:getValue(), props.story.name)
 				end, debug.traceback)
-			elseif props.story.format == enums.Format.Hoarcekat then
+			elseif props.story.format == enums.Format.Hoarcekat and typeof(props.story.story) == "function" then
 				xpcall(function()
 					tree.value = props.story.story(storyParent:getValue())
 				end, debug.traceback)
