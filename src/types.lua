@@ -31,26 +31,13 @@ export type HoarcekatStory = (GuiObject) -> () -> ()
 
 export type Theme = {
 	background: Color3,
+	brand: Color3,
 	canvas: Color3,
+	component: Color3,
 	stroke: Color3,
+	strokeSecondary: Color3,
 	text: Color3,
-	storybookEntry: Color3,
-	icons: {
-		arrow: Color3,
-		folder: Color3,
-		search: Color3,
-		story: Color3,
-	},
-	searchbar: {
-		background: Color3,
-		stroke: Color3,
-	},
-	explorerEntry: {
-		background: Color3,
-		selectedBackground: Color3,
-		selectedText: Color3,
-		text: Color3,
-	},
+	textSecondary: Color3,
 }
 
 return nil

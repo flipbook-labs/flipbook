@@ -5,49 +5,23 @@ return {
 
 	Light = {
 		background = Color3.fromHex("F3F4F6"),
+		brand = Color3.fromHex("9333EA"),
 		canvas = Color3.fromHex("FFFFFF"),
+		component = Color3.fromHex("4ADE80"),
 		stroke = Color3.fromHex("D1D5DB"),
-		text = Color3.fromHex("000000"),
-		storybookEntry = Color3.fromHex("C4C4C4"),
-		icons = {
-			arrow = Color3.fromHex("C4C4C4"),
-			folder = Color3.fromHex("6366F1"),
-			search = Color3.fromHex("111228"),
-			story = Color3.fromHex("4ADE80"),
-		},
-		searchbar = {
-			background = Color3.fromHex("FFFFFF"),
-			stroke = Color3.fromHex("9333EA"),
-		},
-		explorerEntry = {
-			background = Color3.fromHex("FFFFFF"),
-			selectedBackground = Color3.fromHex("6366F1"),
-			selectedText = Color3.fromHex("FFFFFF"),
-			text = Color3.fromHex("000000"),
-		},
+		strokeSecondary = Color3.fromHex("B9BDC2"),
+		text = Color3.fromHex("111228"),
+		textSecondary = Color3.fromHex("FFFFFF"),
 	} :: types.Theme,
 
 	Dark = {
 		background = Color3.fromHex("171717"),
+		brand = Color3.fromHex("9333EA"),
 		canvas = Color3.fromHex("1E1E1E"),
+		component = Color3.fromHex("4ADE80"),
 		stroke = Color3.fromHex("2B2B2B"),
+		strokeSecondary = Color3.fromHex("3A3A3A"),
 		text = Color3.fromHex("FFFFFF"),
-		storybookEntry = Color3.fromHex("5F5F5F"),
-		icons = {
-			arrow = Color3.fromHex("5F5F5F"),
-			folder = Color3.fromHex("6366F1"),
-			search = Color3.fromHex("FFFFFF"),
-			story = Color3.fromHex("4ADE80"),
-		},
-		searchbar = {
-			background = Color3.fromHex("121212"),
-			stroke = Color3.fromHex("9333EA"),
-		},
-		explorerEntry = {
-			background = Color3.fromHex("272727"),
-			selectedBackground = Color3.fromHex("6366F1"),
-			selectedText = Color3.fromHex("FFFFFF"),
-			text = Color3.fromHex("FFFFFF"),
-		},
+		textSecondary = Color3.fromHex("111228"),
 	} :: types.Theme,
 }
