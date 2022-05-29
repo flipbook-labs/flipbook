@@ -31,6 +31,7 @@ export type HoarcekatStory = (GuiObject) -> () -> ()
 
 export type Theme = {
 	background: Color3,
+	canvas: Color3,
 	stroke: Color3,
 	text: Color3,
 	storybookEntry: Color3,

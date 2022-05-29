@@ -12,6 +12,7 @@ local function deriveIconSize(icon: string): UDim2?
 end
 
 return {
+	summary = "Show's off the various icons we use in our plugin.",
 	controls = {
 		Icon = "folder",
 	},

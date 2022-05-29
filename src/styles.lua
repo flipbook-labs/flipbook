@@ -4,6 +4,7 @@ local styles = {}
 
 styles.PADDING = UDim.new(0, 10)
 styles.LARGE_PADDING = UDim.new(0, 20)
+styles.XL_PADDING = UDim.new(0, 30)
 styles.SMALL_PADDING = UDim.new(0, 5)
 
 styles.TextLabel = {

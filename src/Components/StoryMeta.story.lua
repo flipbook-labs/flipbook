@@ -1,15 +1,13 @@
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local StoryMeta = require(script.Parent.StoryMeta)
 
+local e = Roact.createElement
+
 return {
-	story = Roact.createElement(StoryMeta, {
+	story = e(StoryMeta, {
 		story = {
 			name = "Sample.story",
 			summary = "A summary of the current story",
-		},
-		controls = {
-			Foo = true,
-			Bar = "string",
 		},
 		storyModule = script.Parent,
 		storyParent = workspace,
