@@ -40,7 +40,7 @@ local function StorybookDetails(props: Props, hooks: any)
 				Font = Enum.Font.GothamBlack,
 				Position = UDim2.new(0, 20, 0.5, 0),
 				Text = props.node.name:gsub(".", "%1 "):sub(1, -2),
-				TextColor3 = theme.storybookEntry,
+				TextColor3 = theme.strokeSecondary,
 				TextSize = 16,
 			})
 		),
@@ -53,7 +53,7 @@ local function StorybookDetails(props: Props, hooks: any)
 		}, {
 			Arrow = e(Icon, {
 				anchorPoint = Vector2.new(0.5, 0.5),
-				color = theme.icons.arrow,
+				color = theme.strokeSecondary,
 				icon = "chevron-right",
 				position = UDim2.fromScale(0.5, 0.5),
 				rotation = if props.expanded then 90 else 0,

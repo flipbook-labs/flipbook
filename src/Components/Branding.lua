@@ -74,7 +74,7 @@ local function Branding(props: Props)
 				LayoutOrder = props.layoutOrder,
 				Position = props.position,
 				Text = "flipbook",
-				TextColor3 = themes.Brand,
+				TextColor3 = themes.Light.brand,
 				TextSize = props.size,
 			})
 		)
