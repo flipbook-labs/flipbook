@@ -12,8 +12,20 @@ local loader = ModuleLoader.new()
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
 	local storybooks = useStorybooks(hooks, game, loader)
-	local story, selectStory = hooks.useState(nil)
+	local story, setStory = hooks.useState(nil)
 	local storybook, selectStorybook = hooks.useState(nil)
+
+	local selectStory = hooks.useCallback(function(newStory: ModuleScript)
+		setStory(function(prevStory)
+			if prevStory then
+				if prevStory == newStory then
+					return nil
+				end
+			end
+
+			return newStory
+		end)
+	end, { setStory })
 
 	return Roact.createElement("Frame", {
 		BackgroundColor3 = theme.background,
