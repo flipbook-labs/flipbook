@@ -31,8 +31,9 @@ local function NoStorySelected(_, hooks: any)
 			"TextLabel",
 			Llama.Dictionary.join(styles.TextLabel, {
 				LayoutOrder = 2,
-				TextSize = styles.TextLabel.TextSize * 1.5,
 				Text = "Select a story to preview it",
+				TextColor3 = theme.text,
+				TextSize = styles.TextLabel.TextSize * 1.5,
 			})
 		),
 	})
