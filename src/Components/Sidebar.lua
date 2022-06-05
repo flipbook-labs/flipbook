@@ -24,7 +24,9 @@ local function Sidebar(props: Props, hooks: any)
 
 	local onNodeActivated = hooks.useCallback(function(node: Explorer.Node)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
-			props.selectStorybook(node.storybook)
+			if node.storybook then
+				props.selectStorybook(node.storybook)
+			end
 			props.selectStory(node.instance)
 			setActiveNode(node)
 		end
