@@ -17,19 +17,8 @@ type Props = {
 	storybook: types.Storybook,
 }
 
-local function usePrevious(hooks: any, value: any)
-	local previous = hooks.useValue(nil)
-
-	hooks.useEffect(function()
-		previous.value = value
-	end, { value })
-
-	return previous.value
-end
-
 local function StoryView(props: Props, hooks: any)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
-	local prevStory = usePrevious(hooks, story)
 
 	return e("ScrollingFrame", Dictionary.copy(styles.ScrollingFrame), {
 		UIListLayout = e("UIListLayout", {
@@ -49,7 +38,6 @@ local function StoryView(props: Props, hooks: any)
 
 		StoryPreview = story and e(StoryPreview, {
 			layoutOrder = 3,
-			prevStory = prevStory,
 			story = story,
 			storyModule = props.story,
 		}),
