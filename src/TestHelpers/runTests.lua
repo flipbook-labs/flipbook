@@ -12,7 +12,7 @@ local function runTests()
 
 	local results = TestEZ.TestBootstrap:run({
 		flipbook,
-	})
+	}, TestEZ.Reporters.TextReporterQuiet)
 
 	return results.failureCount == 0
 end
