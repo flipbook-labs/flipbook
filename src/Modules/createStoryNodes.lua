@@ -14,20 +14,23 @@ end
 local function createChildNodes(parent: Explorer.Node, instance: Instance, storybook: types.Storybook)
 	for _, child in ipairs(instance:GetChildren()) do
 		local isStory = isStoryModule(child)
+		local isContainer = hasStories(child)
 
-		local node: Explorer.Node = {
-			name = child.Name,
-			instance = child,
-			children = {},
+		if isStory or isContainer then
+			local node: Explorer.Node = {
+				name = child.Name,
+				instance = child,
+				children = {},
 
-			icon = if isStory then "story" else "folder",
-			storybook = if isStory then storybook else nil,
-		}
+				icon = if isStory then "story" else "folder",
+				storybook = if isStory then storybook else nil,
+			}
 
-		table.insert(parent.children, node)
+			table.insert(parent.children, node)
 
-		if not isStory and hasStories(child) then
-			createChildNodes(node, child, storybook)
+			if not isStory and isContainer then
+				createChildNodes(node, child, storybook)
+			end
 		end
 	end
 end

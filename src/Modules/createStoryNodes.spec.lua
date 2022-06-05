@@ -8,7 +8,8 @@ return function()
 
 	local mockStoryRoot = newFolder({
 		Components = newFolder({
-			["Story.story"] = mockStoryModule,
+			["Component"] = Instance.new("ModuleScript"),
+			["Component.story"] = mockStoryModule,
 		}),
 	})
 
@@ -44,5 +45,17 @@ return function()
 
 		expect(story).to.be.ok()
 		expect(story.icon).to.equal("story")
+	end)
+
+	it("should ignore other ModuleScripts", function()
+		local nodes = createStoryNodes({ mockStorybook })
+
+		local storybook = nodes[1]
+		local components = storybook.children[1]
+
+		-- In mockStoryRoot, there is a Component module and an accompanying
+		-- story. We only want stories in the node tree, so we only expect to
+		-- get one child
+		expect(#components.children).to.equal(1)
 	end)
 end
