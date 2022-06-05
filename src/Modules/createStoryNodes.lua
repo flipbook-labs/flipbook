@@ -11,45 +11,32 @@ local function hasStories(instance: Instance): boolean
 	return false
 end
 
-local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: types.Storybook)
-	-- TODO: Maybe use GetDescendants instead and for every .story file, use
-	-- GetFullName() and go up the chain the build the hierarchy
-	for _, child in ipairs(root:GetChildren()) do
-		local nextNode = {
+local function createChildNodes(parent: Explorer.Node, instance: Instance, storybook: types.Storybook)
+	for _, child in ipairs(instance:GetChildren()) do
+		local isStory = isStoryModule(child)
+
+		local node: Explorer.Node = {
 			name = child.Name,
 			instance = child,
 			children = {},
+
+			icon = if isStory then "story" else "folder",
+			storybook = if isStory then storybook else nil,
 		}
 
-		if isStoryModule(child) then
-			nextNode.icon = "story"
-			nextNode.storybook = storybook
-			table.insert(node.children, nextNode)
-		else
-			if #child:GetChildren() > 0 then
-				-- This is why my stories arent showing up. The folders have no
-				-- stories as direct descendants so of course they don't show up
-				if hasStories(child) then
-					nextNode.icon = "folder"
-					table.insert(node.children, nextNode)
-					addStoriesToNode(child, nextNode, storybook)
-				end
-			end
+		table.insert(parent.children, node)
+
+		if not isStory and hasStories(child) then
+			createChildNodes(node, child, storybook)
 		end
 	end
 end
 
--- Got an idea for how to construct this: Clone each storyRoot,  loop over the
--- list of descendants for each, and remove any that aren't stories or part of a
--- story's ancestry
---
--- Can then map that right to the story nodes
-
 local function createStoryNodes(storybooks: { types.Storybook }): { Explorer.Node }
-	local nodes = {}
+	local nodes: { Explorer.Node } = {}
 
 	for _, storybook in ipairs(storybooks) do
-		local node = {
+		local node: Explorer.Node = {
 			name = storybook.name,
 			icon = "storybook",
 			children = {},
@@ -58,7 +45,7 @@ local function createStoryNodes(storybooks: { types.Storybook }): { Explorer.Nod
 		table.insert(nodes, node)
 
 		for _, root in ipairs(storybook.storyRoots) do
-			addStoriesToNode(root, node, storybook)
+			createChildNodes(node, root, storybook)
 		end
 	end
 

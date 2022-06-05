@@ -1,9 +1,11 @@
+local types = require(script.Parent.Parent.Parent.types)
+
 export type Node = {
+	name: string,
 	children: { Node },
 	icon: string?,
 	instance: Instance?,
-	name: string,
-	storybook: any?,
+	storybook: types.Storybook?,
 }
 
 return {}

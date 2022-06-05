@@ -53,4 +53,4 @@ export type Theme = {
 	},
 }
 
-return nil
+return {}
