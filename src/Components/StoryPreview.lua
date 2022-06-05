@@ -1,5 +1,5 @@
 local enums = require(script.Parent.Parent.enums)
-local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
+local getStoryElement = require(script.Parent.Parent.Story.getStoryElement)
 local hook = require(script.Parent.Parent.hook)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local styles = require(script.Parent.Parent.styles)

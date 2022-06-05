@@ -1,5 +1,5 @@
 local constants = require(script.Parent.Parent.constants)
-local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
+local isStorybookModule = require(script.Parent.Parent.Story.isStorybookModule)
 
 local internalStorybook = script.Parent.Parent["init.storybook"]
 
