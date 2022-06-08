@@ -3,4 +3,5 @@ local NoStorySelected = require(script.Parent.NoStorySelected)
 
 return {
 	story = Roact.createElement(NoStorySelected),
+	roact = Roact,
 }

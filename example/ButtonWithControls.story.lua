@@ -15,4 +15,5 @@ return {
 			end,
 		})
 	end,
+	roact = Roact,
 }

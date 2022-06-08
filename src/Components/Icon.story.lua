@@ -27,4 +27,5 @@ return {
 			size = deriveIconSize(icon),
 		})
 	end,
+	roact = Roact,
 }

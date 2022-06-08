@@ -13,4 +13,5 @@ return {
 			waitTime = props.controls["Wait time"],
 		})
 	end,
+	roact = Roact,
 }
