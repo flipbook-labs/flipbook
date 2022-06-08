@@ -1,8 +1,10 @@
-local Llama = require(script.Parent.Parent.Packages.Llama)
-local enums = require(script.Parent.Parent.enums)
-local types = require(script.Parent.Parent.types)
-local isStory = require(script.Parent.Parent.Modules.isStory)
-local isHoarcekatStory = require(script.Parent.Parent.Modules.isHoarcekatStory)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local enums = require(flipbook.enums)
+local types = require(flipbook.types)
+local isStory = require(flipbook.Modules.isStory)
+local isHoarcekatStory = require(flipbook.Modules.isHoarcekatStory)
 
 local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?, string?)
 	if not module then

@@ -1,6 +1,8 @@
-local Explorer = require(script.Parent.Parent.Components.Explorer)
-local constants = require(script.Parent.Parent.constants)
-local types = require(script.Parent.Parent.types)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local constants = require(flipbook.constants)
+local types = require(flipbook.types)
+local Explorer = require(flipbook.Components.Explorer)
 
 local function hasStoriesInRoot(root: Instance): boolean
 	for _, child in ipairs(root:GetChildren()) do

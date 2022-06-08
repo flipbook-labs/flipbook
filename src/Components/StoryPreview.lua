@@ -1,9 +1,11 @@
-local enums = require(script.Parent.Parent.enums)
-local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
-local hook = require(script.Parent.Parent.hook)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
-local types = require(script.Parent.Parent.types)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local enums = require(flipbook.enums)
+local hook = require(flipbook.hook)
+local styles = require(flipbook.styles)
+local types = require(flipbook.types)
+local getStoryElement = require(flipbook.Modules.getStoryElement)
 
 local e = Roact.createElement
 

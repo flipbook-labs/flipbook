@@ -30,7 +30,9 @@
     ```
 ]]
 
-local types = require(script.Parent.Parent.types)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local types = require(flipbook.types)
 
 local function getStoryElement(story: types.Story, controls: types.Controls?)
 	controls = controls or story.controls

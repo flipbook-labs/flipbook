@@ -1,14 +1,16 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local Roact = require(flipbook.Packages.Roact)
+local constants = require(flipbook.constants)
+local hook = require(flipbook.hook)
+local styles = require(flipbook.styles)
+local themes = require(flipbook.themes)
+local types = require(flipbook.types)
+local createStoryNodes = require(flipbook.Modules.createStoryNodes)
 local Branding = require(script.Parent.Branding)
-local constants = require(script.Parent.Parent.constants)
-local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
 local Explorer = require(script.Parent.Explorer)
-local hook = require(script.Parent.Parent.hook)
-local Llama = require(script.Parent.Parent.Packages.Llama)
-local Roact = require(script.Parent.Parent.Packages.Roact)
 local Searchbar = require(script.Parent.Searchbar)
-local styles = require(script.Parent.Parent.styles)
-local themes = require(script.Parent.Parent.themes)
-local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
 
