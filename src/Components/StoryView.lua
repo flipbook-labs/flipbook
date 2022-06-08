@@ -13,7 +13,6 @@ local e = Roact.createElement
 
 type Props = {
 	story: ModuleScript,
-	loader: any,
 	storybook: types.Storybook,
 }
 
@@ -28,7 +27,7 @@ local function usePrevious(hooks: any, value: any)
 end
 
 local function StoryView(props: Props, hooks: any)
-	local story = useStory(hooks, props.story, props.storybook, props.loader)
+	local story = useStory(hooks, props.story, props.storybook)
 	local prevStory = usePrevious(hooks, story)
 
 	return e("ScrollingFrame", Dictionary.copy(styles.ScrollingFrame), {

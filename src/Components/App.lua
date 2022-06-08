@@ -1,5 +1,4 @@
 local Canvas = require(script.Parent.Canvas)
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local Sidebar = require(script.Parent.Sidebar)
@@ -7,11 +6,9 @@ local styles = require(script.Parent.Parent.styles)
 local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
 local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
-local loader = ModuleLoader.new()
-
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
-	local storybooks = useStorybooks(hooks, game, loader)
+	local storybooks = useStorybooks(hooks, game)
 	local story, selectStory = hooks.useState(nil)
 	local storybook, selectStorybook = hooks.useState(nil)
 
@@ -34,7 +31,6 @@ local function App(_props, hooks: any)
 		}),
 
 		Canvas = Roact.createElement(Canvas, {
-			loader = loader,
 			story = story,
 			storybook = storybook,
 		}),

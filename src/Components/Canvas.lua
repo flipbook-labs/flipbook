@@ -10,7 +10,6 @@ local e = Roact.createElement
 
 type Props = {
 	story: ModuleScript,
-	loader: any,
 	storybook: types.Storybook,
 }
 
@@ -44,7 +43,6 @@ local function Canvas(props: Props, hooks: any)
 			}),
 
 			StoryView = props.story and e(StoryView, {
-				loader = props.loader,
 				story = props.story,
 				storybook = props.storybook,
 			}),

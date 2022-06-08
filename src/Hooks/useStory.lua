@@ -1,16 +1,21 @@
+local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
 local loadStoryModule = require(script.Parent.Parent.Modules.loadStoryModule)
 
-local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook, loader: any): types.Story?
+local loader = ModuleLoader.new()
+
+local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook): types.Story?
 	local state, setState = hooks.useState({
 		story = nil,
 		err = nil,
 	})
 
 	local loadStory = hooks.useCallback(function()
+		loader:clear()
+
 		local story, err = loadStoryModule(loader, module)
 
-		story.roact = story.roact or storybook.roact
+		assert(story.roact, "no Roact found for " .. module:GetFullName())
 
 		setState({
 			story = story,
