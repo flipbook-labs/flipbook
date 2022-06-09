@@ -1,6 +1,6 @@
 local Branding = require(script.Parent.Branding)
 local constants = require(script.Parent.Parent.constants)
-local createStoryNodes = require(script.Parent.Parent.Modules.createStoryNodes)
+local createStoryNodes = require(script.Parent.Parent.Story.createStoryNodes)
 local Explorer = require(script.Parent.Explorer)
 local hook = require(script.Parent.Parent.hook)
 local Llama = require(script.Parent.Parent.Packages.Llama)
@@ -24,7 +24,9 @@ local function Sidebar(props: Props, hooks: any)
 
 	local onNodeActivated = hooks.useCallback(function(node: Explorer.Node)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
-			props.selectStorybook(node.storybook)
+			if node.storybook then
+				props.selectStorybook(node.storybook)
+			end
 			props.selectStory(node.instance)
 			setActiveNode(node)
 		end

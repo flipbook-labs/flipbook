@@ -1,10 +1,11 @@
 local RunService = game:GetService("RunService")
 
 local Roact = require(script.Packages.Roact)
-local createWidget = require(script.Modules.createWidget)
-local createToggleButton = require(script.Modules.createToggleButton)
+local createWidget = require(script.Plugin.createWidget)
+local createToggleButton = require(script.Plugin.createToggleButton)
 local App = require(script.Components.App)
 local constants = require(script.constants)
+local runTests = require(script.TestHelpers.runTests)
 
 local PLUGIN_NAME = "flipbook"
 
@@ -14,6 +15,8 @@ if constants.IS_DEV_MODE then
 	Roact.setGlobalConfig({
 		elementTracing = true,
 	})
+
+	runTests()
 end
 
 if RunService:IsRunning() or not RunService:IsEdit() then

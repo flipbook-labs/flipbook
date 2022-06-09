@@ -1,6 +1,6 @@
 local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local constants = require(script.Parent.Parent.constants)
-local isStorybookModule = require(script.Parent.Parent.Modules.isStorybookModule)
+local isStorybookModule = require(script.Parent.Parent.Story.isStorybookModule)
 
 local internalStorybook = script.Parent.Parent["init.storybook"]
 
@@ -33,7 +33,10 @@ local function useStorybooks(hooks: any, parent: Instance)
 				end)
 
 				if success and typeof(result) == "table" and result.storyRoots then
-					result.name = result.name or descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+					result.name = if result.name
+						then result.name
+						else descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+
 					table.insert(newStorybooks, result)
 				end
 			end
