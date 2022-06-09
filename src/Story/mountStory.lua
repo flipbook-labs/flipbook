@@ -1,6 +1,6 @@
 local enums = require(script.Parent.Parent.enums)
-local getStoryElement = require(script.Parent.Parent.Modules.getStoryElement)
 local types = require(script.Parent.Parent.types)
+local getStoryElement = require(script.Parent.getStoryElement)
 
 local function mountStory(story: types.Story, parent: Instance)
 	local handle

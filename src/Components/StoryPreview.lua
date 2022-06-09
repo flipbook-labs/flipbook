@@ -3,8 +3,8 @@ local Roact = require(script.Parent.Parent.Packages.Roact)
 local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
 local usePrevious = require(script.Parent.Parent.Hooks.usePrevious)
-local mountStory = require(script.Parent.Parent.Stories.mountStory)
-local unmountStory = require(script.Parent.Parent.Stories.unmountStory)
+local mountStory = require(script.Parent.Parent.Story.mountStory)
+local unmountStory = require(script.Parent.Parent.Story.unmountStory)
 
 local e = Roact.createElement
 
