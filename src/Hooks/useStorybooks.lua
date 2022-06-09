@@ -30,7 +30,10 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 				end)
 
 				if success and typeof(result) == "table" and result.storyRoots then
-					result.name = result.name or descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+					result.name = if result.name
+						then result.name
+						else descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+
 					table.insert(newStorybooks, result)
 				end
 			end

@@ -40,4 +40,4 @@ export type Theme = {
 	textSecondary: Color3,
 }
 
-return nil
+return {}

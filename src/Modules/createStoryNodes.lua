@@ -1,46 +1,45 @@
 local Explorer = require(script.Parent.Parent.Components.Explorer)
-local constants = require(script.Parent.Parent.constants)
 local types = require(script.Parent.Parent.types)
+local isStoryModule = require(script.Parent.isStoryModule)
 
-local function hasStoriesInRoot(root: Instance): boolean
-	for _, child in ipairs(root:GetChildren()) do
-		if child.Name:match(constants.STORY_NAME_PATTERN) then
+local function hasStories(instance: Instance): boolean
+	for _, descendant in ipairs(instance:GetDescendants()) do
+		if isStoryModule(descendant) then
 			return true
 		end
 	end
-
 	return false
 end
 
-local function addStoriesToNode(root: Instance, node: Explorer.Node, storybook: types.Storybook)
-	for _, child in ipairs(root:GetChildren()) do
-		local nextNode = {
-			name = child.Name,
-			instance = child,
-			children = {},
-		}
+local function createChildNodes(parent: Explorer.Node, instance: Instance, storybook: types.Storybook)
+	for _, child in ipairs(instance:GetChildren()) do
+		local isStory = isStoryModule(child)
+		local isContainer = hasStories(child)
 
-		if child.Name:match(constants.STORY_NAME_PATTERN) then
-			nextNode.icon = "story"
-			nextNode.storybook = storybook
-			table.insert(node.children, nextNode)
-		else
-			if #child:GetChildren() > 0 then
-				if hasStoriesInRoot(child) then
-					nextNode.icon = "folder"
-					table.insert(node.children, nextNode)
-					addStoriesToNode(child, nextNode, storybook)
-				end
+		if isStory or isContainer then
+			local node: Explorer.Node = {
+				name = child.Name,
+				instance = child,
+				children = {},
+
+				icon = if isStory then "story" else "folder",
+				storybook = if isStory then storybook else nil,
+			}
+
+			table.insert(parent.children, node)
+
+			if not isStory and isContainer then
+				createChildNodes(node, child, storybook)
 			end
 		end
 	end
 end
 
 local function createStoryNodes(storybooks: { types.Storybook }): { Explorer.Node }
-	local nodes = {}
+	local nodes: { Explorer.Node } = {}
 
 	for _, storybook in ipairs(storybooks) do
-		local node = {
+		local node: Explorer.Node = {
 			name = storybook.name,
 			icon = "storybook",
 			children = {},
@@ -49,7 +48,7 @@ local function createStoryNodes(storybooks: { types.Storybook }): { Explorer.Nod
 		table.insert(nodes, node)
 
 		for _, root in ipairs(storybook.storyRoots) do
-			addStoriesToNode(root, node, storybook)
+			createChildNodes(node, root, storybook)
 		end
 	end
 
