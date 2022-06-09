@@ -21,7 +21,7 @@ local function Searchbar(_, hooks: any)
 	})
 
 	return e("Frame", {
-		BackgroundColor3 = theme.searchbar.background,
+		BackgroundColor3 = theme.canvas,
 		BackgroundTransparency = style.alpha,
 		Position = UDim2.fromOffset(20, 45),
 		Size = UDim2.fromOffset(200, 32),
@@ -32,7 +32,7 @@ local function Searchbar(_, hooks: any)
 
 		UIStroke = e("UIStroke", {
 			Color = style.alpha:map(function(value)
-				return theme.searchbar.stroke:Lerp(theme.stroke, value)
+				return theme.brand:Lerp(theme.stroke, value)
 			end),
 		}),
 
@@ -46,7 +46,7 @@ local function Searchbar(_, hooks: any)
 		Icon = e(Icon, {
 			anchorPoint = Vector2.new(0, 0.5),
 			color = style.alpha:map(function(value)
-				return theme.icons.search:Lerp(theme.stroke, value)
+				return theme.text:Lerp(theme.stroke, value)
 			end),
 			icon = "magnifying-glass",
 			position = UDim2.fromScale(0, 0.5),
@@ -56,7 +56,7 @@ local function Searchbar(_, hooks: any)
 		Divider = e("Frame", {
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundColor3 = style.alpha:map(function(value)
-				return theme.searchbar.stroke:Lerp(theme.stroke, value)
+				return theme.brand:Lerp(theme.stroke, value)
 			end),
 			BorderSizePixel = 0,
 			Position = UDim2.new(0, 23, 0.5, 0),

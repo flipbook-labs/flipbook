@@ -40,7 +40,7 @@ local function NodeDetails(props: Props, hooks: any)
 	return e("ImageButton", {
 		AutoButtonColor = false,
 		BackgroundColor3 = style.background:map(function(value)
-			return theme.explorerEntry.selectedBackground:Lerp(theme.explorerEntry.background, value)
+			return theme.brand:Lerp(theme.canvas, value)
 		end),
 		BackgroundTransparency = style.transparency,
 		BorderSizePixel = 0,
@@ -64,7 +64,7 @@ local function NodeDetails(props: Props, hooks: any)
 
 		Icon = e(Icon, {
 			anchorPoint = Vector2.new(0, 0.5),
-			color = theme.icons[props.node.icon],
+			color = if props.node.icon == "folder" then theme.brand else theme.component,
 			icon = props.node.icon,
 			position = UDim2.new(0, 30, 0.5, 0),
 			size = if props.node.icon then deriveIconSize(props.node.icon) else nil,
@@ -79,7 +79,7 @@ local function NodeDetails(props: Props, hooks: any)
 					then props.node.name:sub(1, #props.node.name - 6)
 					else props.node.name,
 				TextColor3 = style.background:map(function(value)
-					return theme.explorerEntry.selectedText:Lerp(theme.explorerEntry.text, value)
+					return Color3.fromHex("FFFFFF"):Lerp(theme.text, value)
 				end),
 				TextSize = 12,
 			})
@@ -93,7 +93,7 @@ local function NodeDetails(props: Props, hooks: any)
 		}, {
 			Arrow = e(Icon, {
 				anchorPoint = Vector2.new(0.5, 0.5),
-				color = theme.icons.arrow,
+				color = theme.strokeSecondary,
 				icon = "chevron-right",
 				position = UDim2.fromScale(0.5, 0.5),
 				rotation = if props.expanded then 90 else 0,

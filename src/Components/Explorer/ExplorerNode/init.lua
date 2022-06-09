@@ -14,7 +14,7 @@ export type Props = {
 }
 
 local function ExplorerNode(props: Props, hooks: any)
-	local indentLevel = props.indentLevel or 0
+	local indentLevel = if props.indentLevel then props.indentLevel else 0
 	local hasChildren = props.node.children and #props.node.children > 0
 	local children = {}
 
