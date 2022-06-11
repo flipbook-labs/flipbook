@@ -10,23 +10,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 	})
 
 	local loadStory = hooks.useCallback(function()
-		loader:clear()
-
-		if storybook.roact then
-			for cachedModule: ModuleScript in pairs(loader._cache) do
-				print(cachedModule.Name)
-				if cachedModule.Name:match("Roact") then
-					loader:cache(cachedModule, storybook.roact)
-				end
-			end
-		end
-
 		local story, err = loadStoryModule(loader, module)
-
-		print(story.roact ~= nil)
-		print(story.roact == storybook.roact)
-
-		print(story)
 
 		story.roact = if story.roact then story.roact else storybook.roact
 
