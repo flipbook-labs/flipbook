@@ -12,5 +12,4 @@ return {
 		storyModule = script.Parent,
 		storyParent = workspace,
 	}),
-	roact = Roact,
 }

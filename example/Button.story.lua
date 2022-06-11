@@ -9,5 +9,4 @@ return {
 			print("click")
 		end,
 	}),
-	roact = Roact,
 }

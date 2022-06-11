@@ -6,5 +6,4 @@ return {
 		position = UDim2.fromOffset(20, 20),
 		size = 24,
 	}),
-	roact = Roact,
 }
