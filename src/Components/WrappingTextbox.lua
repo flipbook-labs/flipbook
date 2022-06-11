@@ -1,6 +1,8 @@
-local hook = require(script.Parent.Parent.hook)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local hook = require(flipbook.hook)
+local useTheme = require(flipbook.Hooks.useThemeNew)
 
 local e = Roact.createElement
 

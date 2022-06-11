@@ -1,8 +1,10 @@
-local hook = require(script.Parent.Parent.Parent.hook)
-local NodeDetails = require(script.NodeDetails)
-local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
-local StorybookDetails = require(script.StorybookDetails)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local hook = require(flipbook.hook)
+local Roact = require(flipbook.Packages.Roact)
 local types = require(script.Parent.types)
+local NodeDetails = require(script.NodeDetails)
+local StorybookDetails = require(script.StorybookDetails)
 
 local e = Roact.createElement
 

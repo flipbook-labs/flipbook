@@ -1,7 +1,9 @@
-local Llama = require(script.Parent.Parent.Packages.Llama)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
-local themes = require(script.Parent.Parent.themes)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local Roact = require(flipbook.Packages.Roact)
+local styles = require(flipbook.styles)
+local themes = require(flipbook.themes)
 
 local e = Roact.createElement
 

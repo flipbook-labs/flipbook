@@ -1,4 +1,6 @@
-local enums = require(script.Parent.Parent.enums)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local enums = require(flipbook.enums)
 local types = require(script.Parent.Parent.types)
 
 local function unmountStory(story: types.Story, handle: any)

@@ -1,4 +1,6 @@
-local themes = require(script.Parent.Parent.themes)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local themes = require(flipbook.themes)
 local types = require(script.Parent.Parent.types)
 
 local MOCK_STUDIO = {

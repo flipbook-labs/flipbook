@@ -1,5 +1,7 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
 local Branding = require(script.Parent.Branding)
-local Roact = require(script.Parent.Parent.Packages.Roact)
 
 return {
 	story = Roact.createElement(Branding, {

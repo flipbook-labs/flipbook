@@ -1,5 +1,8 @@
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local RoactHooks = require(flipbook.Packages.RoactHooks)
+local internalStorybook = require(flipbook["init.storybook"])
 
 local Sidebar = require(script.Parent.Sidebar)
 
@@ -14,7 +17,7 @@ local function Story(_props, hooks)
 
 	return Roact.createElement(Sidebar, {
 		storybooks = {
-			require(script.Parent.Parent["init.storybook"]),
+			internalStorybook,
 		},
 		width = NumberRange.new(24, 250),
 		selectStory = print,

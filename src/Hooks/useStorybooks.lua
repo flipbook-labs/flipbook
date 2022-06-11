@@ -1,7 +1,9 @@
-local constants = require(script.Parent.Parent.constants)
-local isStorybookModule = require(script.Parent.Parent.Story.isStorybookModule)
+local flipbook = script:FindFirstAncestor("flipbook")
 
-local internalStorybook = script.Parent.Parent["init.storybook"]
+local constants = require(flipbook.constants)
+local isStorybookModule = require(flipbook.Story.isStorybookModule)
+
+local internalStorybook = flipbook["init.storybook"]
 
 local function hasPermission(instance: Instance)
 	local success = pcall(function()

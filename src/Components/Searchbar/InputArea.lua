@@ -1,10 +1,12 @@
-local hook = require(script.Parent.Parent.Parent.hook)
-local Llama = require(script.Parent.Parent.Parent.Packages.Llama)
-local mapRanges = require(script.Parent.Parent.Parent.Modules.mapRanges)
-local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.Parent.styles)
-local useTheme = require(script.Parent.Parent.Parent.Hooks.useThemeNew)
-local WrappingTextbox = require(script.Parent.Parent.WrappingTextbox)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local Roact = require(flipbook.Packages.Roact)
+local hook = require(flipbook.hook)
+local styles = require(flipbook.styles)
+local mapRanges = require(flipbook.Modules.mapRanges)
+local useTheme = require(flipbook.Hooks.useThemeNew)
+local WrappingTextbox = require(flipbook.Components.WrappingTextbox)
 
 local e = Roact.createElement
 
