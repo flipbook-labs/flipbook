@@ -4,6 +4,7 @@ return {
 	["chevron-right"] = "rbxassetid://9040299846",
 	["double-arrow"] = "rbxassetid://8492343246",
 	explore = "rbxassetid://8500157719",
+	flipbook = "rbxassetid://9884429367",
 	folder = "rbxassetid://9039499168",
 	["magnifying-glass"] = "rbxassetid://9048167374",
 	story = "rbxassetid://9040299928",
