@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 local loadStoryModule = require(flipbook.Story.loadStoryModule)
 
 local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook, loader: any): types.Story?

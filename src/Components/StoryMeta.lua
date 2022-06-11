@@ -4,7 +4,7 @@ local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local styles = require(flipbook.styles)
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 local useTheme = require(flipbook.Hooks.useThemeNew)
 
 local MAX_SUMMARY_SIZE = 600

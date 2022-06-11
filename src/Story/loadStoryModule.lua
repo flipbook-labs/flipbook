@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Llama = require(flipbook.Packages.Llama)
 local enums = require(flipbook.enums)
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 local isStory = require(flipbook.Story.isStory)
 local isHoarcekatStory = require(flipbook.Story.isHoarcekatStory)
 
