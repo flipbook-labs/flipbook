@@ -18,8 +18,6 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 	local loadStorybooks = hooks.useCallback(function()
 		local newStorybooks = {}
 
-		loader:clear()
-
 		for _, descendant in ipairs(parent:GetDescendants()) do
 			-- Skip over flipbook's internal storybook
 			if descendant == internalStorybook and not constants.IS_DEV_MODE then
