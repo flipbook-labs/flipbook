@@ -1,10 +1,12 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local RoactHooks = require(flipbook.Packages.RoactHooks)
+local styles = require(flipbook.styles)
+local useStorybooks = require(flipbook.Hooks.useStorybooks)
+local useTheme = require(flipbook.Hooks.useThemeNew)
 local Canvas = require(script.Parent.Canvas)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local Sidebar = require(script.Parent.Sidebar)
-local styles = require(script.Parent.Parent.styles)
-local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
 
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)

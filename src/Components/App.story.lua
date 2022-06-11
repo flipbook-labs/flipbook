@@ -1,4 +1,6 @@
-local Roact = require(script.Parent.Parent.Packages.Roact)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
 local App = require(script.Parent.App)
 
 return {

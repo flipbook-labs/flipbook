@@ -1,6 +1,8 @@
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local types = require(script.Parent.Parent.types)
-local loadStoryModule = require(script.Parent.Parent.Story.loadStoryModule)
+local loadStoryModule = require(flipbook.Story.loadStoryModule)
 
 local loader = ModuleLoader.new()
 

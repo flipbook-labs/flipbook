@@ -1,10 +1,12 @@
-local hook = require(script.Parent.Parent.hook)
-local NoStorySelected = require(script.Parent.NoStorySelected)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local StoryView = require(script.Parent.StoryView)
-local styles = require(script.Parent.Parent.styles)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local hook = require(flipbook.hook)
+local Roact = require(flipbook.Packages.Roact)
+local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useThemeNew)
+local NoStorySelected = require(script.Parent.NoStorySelected)
+local StoryView = require(script.Parent.StoryView)
 
 local e = Roact.createElement
 
