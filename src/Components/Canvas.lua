@@ -11,8 +11,8 @@ local StoryView = require(script.Parent.StoryView)
 local e = Roact.createElement
 
 type Props = {
-	loader: any,
 	story: ModuleScript,
+	loader: any,
 	storybook: types.Storybook,
 }
 

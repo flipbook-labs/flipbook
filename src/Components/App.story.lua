@@ -7,5 +7,4 @@ return {
 	summary = "The main component that handles the entire plugin",
 	controls = {},
 	story = Roact.createElement(App),
-	roact = Roact,
 }
