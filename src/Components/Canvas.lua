@@ -11,6 +11,7 @@ local StoryView = require(script.Parent.StoryView)
 local e = Roact.createElement
 
 type Props = {
+	loader: any,
 	story: ModuleScript,
 	storybook: types.Storybook,
 }
@@ -45,6 +46,7 @@ local function Canvas(props: Props, hooks: any)
 			}),
 
 			StoryView = props.story and e(StoryView, {
+				loader = props.loader,
 				story = props.story,
 				storybook = props.storybook,
 			}),

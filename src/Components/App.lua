@@ -2,15 +2,18 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local RoactHooks = require(flipbook.Packages.RoactHooks)
+local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local styles = require(flipbook.styles)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTheme = require(flipbook.Hooks.useThemeNew)
 local Canvas = require(script.Parent.Canvas)
 local Sidebar = require(script.Parent.Sidebar)
 
+local loader = ModuleLoader.new()
+
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
-	local storybooks = useStorybooks(hooks, game)
+	local storybooks = useStorybooks(hooks, game, loader)
 	local story, selectStory = hooks.useState(nil)
 	local storybook, selectStorybook = hooks.useState(nil)
 
@@ -33,6 +36,7 @@ local function App(_props, hooks: any)
 		}),
 
 		Canvas = Roact.createElement(Canvas, {
+			loader = loader,
 			story = story,
 			storybook = storybook,
 		}),

@@ -1,12 +1,9 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local ModuleLoader = require(script.Parent.Parent.Packages.ModuleLoader)
 local constants = require(flipbook.constants)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
 
 local internalStorybook = flipbook["init.storybook"]
-
-local loader = ModuleLoader.new()
 
 local function hasPermission(instance: Instance)
 	local success = pcall(function()
@@ -15,7 +12,7 @@ local function hasPermission(instance: Instance)
 	return success
 end
 
-local function useStorybooks(hooks: any, parent: Instance)
+local function useStorybooks(hooks: any, parent: Instance, loader: any)
 	local storybooks, set = hooks.useState({})
 
 	local loadStorybooks = hooks.useCallback(function()

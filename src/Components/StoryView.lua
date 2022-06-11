@@ -14,12 +14,13 @@ local Dictionary = Llama.Dictionary
 local e = Roact.createElement
 
 type Props = {
+	loader: any,
 	story: ModuleScript,
 	storybook: types.Storybook,
 }
 
 local function StoryView(props: Props, hooks: any)
-	local story = useStory(hooks, props.story, props.storybook)
+	local story = useStory(hooks, props.story, props.storybook, props.loader)
 
 	return e("ScrollingFrame", Dictionary.copy(styles.ScrollingFrame), {
 		UIListLayout = e("UIListLayout", {
