@@ -4,7 +4,7 @@ local loadStoryModule = require(script.Parent.Parent.Story.loadStoryModule)
 
 local loader = ModuleLoader.new()
 
-local function useStory(hooks: any, module: ModuleScript, _storybook: types.Storybook): types.Story?
+local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook): types.Story?
 	local state, setState = hooks.useState({
 		story = nil,
 		err = nil,
@@ -13,9 +13,23 @@ local function useStory(hooks: any, module: ModuleScript, _storybook: types.Stor
 	local loadStory = hooks.useCallback(function()
 		loader:clear()
 
+		if storybook.roact then
+			for cachedModule: ModuleScript in pairs(loader._cache) do
+				print(cachedModule.Name)
+				if cachedModule.Name:match("Roact") then
+					loader:cache(cachedModule, storybook.roact)
+				end
+			end
+		end
+
 		local story, err = loadStoryModule(loader, module)
 
-		assert(story.roact, "no Roact found for " .. module:GetFullName())
+		print(story.roact ~= nil)
+		print(story.roact == storybook.roact)
+
+		print(story)
+
+		story.roact = if story.roact then story.roact else storybook.roact
 
 		setState({
 			story = story,
