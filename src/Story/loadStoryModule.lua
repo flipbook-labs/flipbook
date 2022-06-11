@@ -3,8 +3,8 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Llama = require(flipbook.Packages.Llama)
 local enums = require(flipbook.enums)
 local types = require(flipbook.types)
-local isStory = require(flipbook.Modules.isStory)
-local isHoarcekatStory = require(flipbook.Modules.isHoarcekatStory)
+local isStory = require(flipbook.Story.isStory)
+local isHoarcekatStory = require(flipbook.Story.isHoarcekatStory)
 
 local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?, string?)
 	if not module then

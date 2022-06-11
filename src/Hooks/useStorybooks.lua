@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local constants = require(flipbook.constants)
-local isStorybookModule = require(flipbook.Modules.isStorybookModule)
+local isStorybookModule = require(flipbook.Story.isStorybookModule)
 
 local internalStorybook = flipbook["init.storybook"]
 

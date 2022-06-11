@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local types = require(flipbook.types)
-local loadStoryModule = require(flipbook.Modules.loadStoryModule)
+local loadStoryModule = require(flipbook.Story.loadStoryModule)
 
 local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook, loader: any): types.Story?
 	local state, setState = hooks.useState({
