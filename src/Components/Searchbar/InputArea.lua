@@ -3,7 +3,7 @@ local Llama = require(script.Parent.Parent.Parent.Packages.Llama)
 local mapRanges = require(script.Parent.Parent.Parent.Modules.mapRanges)
 local Roact = require(script.Parent.Parent.Parent.Packages.Roact)
 local styles = require(script.Parent.Parent.Parent.styles)
-local useTheme = require(script.Parent.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Parent.Hooks.useTheme)
 local WrappingTextbox = require(script.Parent.Parent.WrappingTextbox)
 
 local e = Roact.createElement

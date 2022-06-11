@@ -6,7 +6,7 @@ local Roact = require(script.Parent.Parent.Parent.Parent.Packages.Roact)
 local RoactSpring = require(script.Parent.Parent.Parent.Parent.Packages.RoactSpring)
 local styles = require(script.Parent.Parent.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
-local useTheme = require(script.Parent.Parent.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Parent.Parent.Hooks.useTheme)
 
 local e = Roact.createElement
 

@@ -4,7 +4,7 @@ local Icon = require(script.Parent.Icon)
 local InputArea = require(script.InputArea)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local RoactSpring = require(script.Parent.Parent.Packages.RoactSpring)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 local e = Roact.createElement
 

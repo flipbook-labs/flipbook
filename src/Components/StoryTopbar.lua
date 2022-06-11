@@ -1,6 +1,6 @@
 local hook = require(script.Parent.Parent.hook)
 local Roact = require(script.Parent.Parent.Packages.Roact)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 local e = Roact.createElement
 local defaultProps = {

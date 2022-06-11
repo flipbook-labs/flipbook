@@ -5,7 +5,7 @@ local RoactHooks = require(script.Parent.Parent.Packages.RoactHooks)
 local Sidebar = require(script.Parent.Sidebar)
 local styles = require(script.Parent.Parent.styles)
 local useStorybooks = require(script.Parent.Parent.Hooks.useStorybooks)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 local loader = ModuleLoader.new()
 

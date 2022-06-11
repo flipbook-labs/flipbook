@@ -3,7 +3,7 @@ local Llama = require(script.Parent.Parent.Packages.Llama)
 local Roact = require(script.Parent.Parent.Packages.Roact)
 local styles = require(script.Parent.Parent.styles)
 local types = require(script.Parent.Parent.types)
-local useTheme = require(script.Parent.Parent.Hooks.useThemeNew)
+local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 local MAX_SUMMARY_SIZE = 600
 
