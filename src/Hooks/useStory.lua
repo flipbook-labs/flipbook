@@ -12,7 +12,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 	local loadStory = hooks.useCallback(function()
 		local story, err = loadStoryModule(loader, module)
 
-		story.roact = story.roact or storybook.roact
+		story.roact = if story.roact then story.roact else storybook.roact
 
 		setState({
 			story = story,

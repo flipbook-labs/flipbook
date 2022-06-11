@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Roact = require(script.Parent.Packages.Roact)
-local isStoryModule = require(script.Parent.Modules.isStoryModule)
-local getStoryElement = require(script.Parent.Modules.getStoryElement)
+local isStoryModule = require(script.Parent.Story.isStoryModule)
+local getStoryElement = require(script.Parent.Story.getStoryElement)
 
 return function()
 	Roact.setGlobalConfig({
