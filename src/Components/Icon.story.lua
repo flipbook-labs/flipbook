@@ -1,6 +1,8 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local themes = require(flipbook.themes)
 local Icon = require(script.Parent.Icon)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local themes = require(script.Parent.Parent.themes)
 
 local function deriveIconSize(icon: string): UDim2?
 	if icon == "folder" then

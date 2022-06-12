@@ -1,9 +1,11 @@
-local assets = require(script.Parent.Parent.assets)
-local hook = require(script.Parent.Parent.hook)
-local Llama = require(script.Parent.Parent.Packages.Llama)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
-local useTheme = require(script.Parent.Parent.Hooks.useTheme)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local Roact = require(flipbook.Packages.Roact)
+local assets = require(flipbook.assets)
+local hook = require(flipbook.hook)
+local styles = require(flipbook.styles)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local function NoStorySelected(_, hooks: any)
 	local theme = useTheme(hooks)

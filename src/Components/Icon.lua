@@ -1,7 +1,9 @@
-local assets = require(script.Parent.Parent.assets)
-local Llama = require(script.Parent.Parent.Packages.Llama)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local styles = require(script.Parent.Parent.styles)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Llama = require(flipbook.Packages.Llama)
+local Roact = require(flipbook.Packages.Roact)
+local assets = require(flipbook.assets)
+local styles = require(flipbook.styles)
 
 type Props = {
 	anchorPoint: Vector2,

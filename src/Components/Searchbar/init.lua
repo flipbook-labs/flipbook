@@ -1,10 +1,12 @@
-local constants = require(script.Parent.Parent.constants)
-local hook = require(script.Parent.Parent.hook)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
+local RoactSpring = require(flipbook.Packages.RoactSpring)
+local constants = require(flipbook.constants)
+local hook = require(flipbook.hook)
+local useTheme = require(flipbook.Hooks.useTheme)
 local Icon = require(script.Parent.Icon)
 local InputArea = require(script.InputArea)
-local Roact = require(script.Parent.Parent.Packages.Roact)
-local RoactSpring = require(script.Parent.Parent.Packages.RoactSpring)
-local useTheme = require(script.Parent.Parent.Hooks.useTheme)
 
 local e = Roact.createElement
 

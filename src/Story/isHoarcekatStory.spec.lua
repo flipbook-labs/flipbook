@@ -1,5 +1,7 @@
 return function()
-	local Roact = require(script.Parent.Parent.Packages.Roact)
+	local flipbook = script:FindFirstAncestor("flipbook")
+
+	local Roact = require(flipbook.Packages.Roact)
 	local isHoarcekatStory = require(script.Parent.isHoarcekatStory)
 
 	local hoarcekat = function(_target: Instance)

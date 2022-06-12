@@ -1,7 +1,9 @@
-local constants = require(script.Parent.Parent.constants)
-local isStorybookModule = require(script.Parent.Parent.Story.isStorybookModule)
+local flipbook = script:FindFirstAncestor("flipbook")
 
-local internalStorybook = script.Parent.Parent["init.storybook"]
+local constants = require(flipbook.constants)
+local isStorybookModule = require(flipbook.Story.isStorybookModule)
+
+local internalStorybook = flipbook["init.storybook"]
 
 local function hasPermission(instance: Instance)
 	local success = pcall(function()
@@ -15,8 +17,6 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 
 	local loadStorybooks = hooks.useCallback(function()
 		local newStorybooks = {}
-
-		loader:clear()
 
 		for _, descendant in ipairs(parent:GetDescendants()) do
 			-- Skip over flipbook's internal storybook

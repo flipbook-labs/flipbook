@@ -1,4 +1,6 @@
-local Roact = require(script.Parent.Parent.Packages.Roact)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local Roact = require(flipbook.Packages.Roact)
 local StoryMeta = require(script.Parent.StoryMeta)
 
 local e = Roact.createElement
