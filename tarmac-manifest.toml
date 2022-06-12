@@ -18,6 +18,11 @@ hash = "bb8d672dd1e6a5ae1ea884a7ffaf8b26cbc06ce08bdbd7c6b947dddb3a2d942f"
 id = 8500157719
 packable = false
 
+[inputs."img/flipbook.png"]
+hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
+id = 9884429367
+packable = false
+
 [inputs."img/folder.png"]
 hash = "7587a57a567d6b5bc8480b26f9efe6a20c5b58d1dfe0110129870f7d29cf828f"
 id = 9039499168

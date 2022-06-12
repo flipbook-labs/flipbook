@@ -6,12 +6,12 @@
 
 	@return () -> () -- Returns a callback for disconnecting button events
 ]]
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local assets = require(flipbook.assets)
+
 local function createToggleButton(toolbar: PluginToolbar, widget: DockWidgetPluginGui)
-	local button = toolbar:CreateButton(
-		widget.Name,
-		"Open story view",
-		"" -- TODO: Add an icon
-	)
+	local button = toolbar:CreateButton(widget.Name, "Open story view", assets.flipbook)
 
 	local click = button.Click:Connect(function()
 		widget.Enabled = not widget.Enabled
