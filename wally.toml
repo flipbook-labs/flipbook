@@ -8,7 +8,7 @@ exclude = ["*"]
 
 [dependencies]
 Roact = "roblox/roact@1.4.2"
-RoactHooks = "kampfkarren/roact-hooks@0.3.0"
+RoactHooks = "kampfkarren/roact-hooks@0.4.1"
 Flipper = "reselim/flipper@2.0.0"
 Llama = "freddylist/llama@1.1.1"
 t = "osyrisrblx/t@3.0.0"
