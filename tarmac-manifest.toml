@@ -1,44 +1,34 @@
-[inputs."img/checkmark.png"]
-hash = "30338bd2331a45091fb153dc87c52922a0c1b658959b28183a254080153f8120"
-id = 8484527786
+[inputs."img/ChevronRight.png"]
+hash = "4c91853652b4e0a6317804c54db6397ac0c710c819b282f7be2179e3abdc879c"
+id = 9890893056
 packable = false
 
-[inputs."img/chevron-right.png"]
-hash = "6bbe0ac0953ab0e14004bc7457f78e875b6219f1c097b4c124058aa77d8e71e4"
-id = 9040299846
+[inputs."img/Component.png"]
+hash = "155c430b5591a859322766f633a9ecac82e018bb9819298247fd831415873fdf"
+id = 9890893228
 packable = false
 
-[inputs."img/double-arrow.png"]
-hash = "491acb0782b16b465643ad565f5d1d350e857899d7df68de3af65695c18cb80c"
-id = 8492343246
+[inputs."img/IconLight.png"]
+hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
+id = 9890893444
 packable = false
 
-[inputs."img/explore.png"]
-hash = "bb8d672dd1e6a5ae1ea884a7ffaf8b26cbc06ce08bdbd7c6b947dddb3a2d942f"
-id = 8500157719
+[inputs."img/Magnify.png"]
+hash = "c09c7f9770c8c174ae1d4b6d6f10aa804577f7b093ee94418194b116becea31b"
+id = 9890893599
 packable = false
 
-[inputs."img/folder.png"]
-hash = "7587a57a567d6b5bc8480b26f9efe6a20c5b58d1dfe0110129870f7d29cf828f"
-id = 9039499168
+[inputs."img/Minify.png"]
+hash = "044c653da2fa63585aec7a26d9855f274bea925b25ab495332ae6fc6fc9bcf11"
+id = 9890893765
 packable = false
 
-[inputs."img/magnifying-glass.png"]
-hash = "1e656da513ba1d180e0fe92c61843feff506cb58ab1f0be4dc8e1e7dd5ef8f93"
-id = 9048167374
+[inputs."img/Search.png"]
+hash = "0ab89c0309f577f3ccae0e03b45292f6e2bca51cc9b8250f56ad756e04231c57"
+id = 9890893911
 packable = false
 
-[inputs."img/story.png"]
-hash = "bf01c962637ef3a285b9e17962bed4e43dc7ede86065bf9f21f5fe467394c37e"
-id = 9040299928
-packable = false
-
-[inputs."img/storybook.png"]
-hash = "2146ce46cabdbb7688db72aa6c87a46b45919a5908228c6031e808ddc9f30f00"
-id = 8472668370
-packable = false
-
-[inputs."img/viewport.png"]
-hash = "8d328c1ddae15c2f49d24e7a5b28ac82cf80ab3d5182b6572c582d0ad89f9fbe"
-id = 8500158048
+[inputs."img/Storybook.png"]
+hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
+id = 9890894089
 packable = false

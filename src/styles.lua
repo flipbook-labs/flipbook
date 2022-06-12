@@ -1,16 +1,18 @@
-local Llama = require(script.Parent.Packages.Llama)
-
 local styles = {}
 
-styles.PADDING = UDim.new(0, 10)
-styles.LARGE_PADDING = UDim.new(0, 20)
-styles.XL_PADDING = UDim.new(0, 30)
-styles.SMALL_PADDING = UDim.new(0, 5)
+styles.CORNER_SM = UDim.new(0, 2)
+styles.CORNER_MD = UDim.new(0, 6)
+styles.CORNER_FL = UDim.new(0.5, 0)
+
+styles.PADDING_SM = UDim.new(0, 10)
+styles.PADDING_MD = UDim.new(0, 16)
+styles.PADDING_LG = UDim.new(0, 20)
+styles.PADDING_XL = UDim.new(0, 30)
 
 styles.TextLabel = {
 	AutomaticSize = Enum.AutomaticSize.XY,
 	BackgroundTransparency = 1,
-	Font = Enum.Font.Gotham,
+	Font = Enum.Font.GothamMedium,
 	LineHeight = 1.25,
 	RichText = true,
 	Size = UDim2.fromScale(0, 0),
@@ -19,11 +21,6 @@ styles.TextLabel = {
 	TextXAlignment = Enum.TextXAlignment.Left,
 	TextYAlignment = Enum.TextYAlignment.Top,
 }
-
-styles.Header = Llama.Dictionary.join(styles.TextLabel, {
-	Font = Enum.Font.GothamBold,
-	TextSize = styles.TextLabel.TextSize * 1.25,
-})
 
 styles.Icon = {
 	BackgroundTransparency = 1,
