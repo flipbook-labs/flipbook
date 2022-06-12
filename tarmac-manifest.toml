@@ -4,8 +4,13 @@ id = 9890893056
 packable = false
 
 [inputs."img/Component.png"]
-hash = "155c430b5591a859322766f633a9ecac82e018bb9819298247fd831415873fdf"
-id = 9890893228
+hash = "d51b19d5f35ac87fd8156500828f3e217b6fc420b70fee5d97b3577e4e6a8843"
+id = 9893239390
+packable = false
+
+[inputs."img/Folder.png"]
+hash = "4c0e80a363d36a4d127d410795cb13eec74d55871b70174636c0c962c242835c"
+id = 9892599667
 packable = false
 
 [inputs."img/IconLight.png"]
@@ -14,13 +19,13 @@ id = 9890893444
 packable = false
 
 [inputs."img/Magnify.png"]
-hash = "c09c7f9770c8c174ae1d4b6d6f10aa804577f7b093ee94418194b116becea31b"
-id = 9890893599
+hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
+id = 9894466110
 packable = false
 
 [inputs."img/Minify.png"]
-hash = "044c653da2fa63585aec7a26d9855f274bea925b25ab495332ae6fc6fc9bcf11"
-id = 9890893765
+hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
+id = 9894466289
 packable = false
 
 [inputs."img/Search.png"]
