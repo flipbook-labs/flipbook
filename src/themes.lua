@@ -1,27 +1,33 @@
-local types = require(script.Parent.types)
-
 return {
-	Brand = Color3.fromHex("9333EA"),
-
 	Light = {
-		background = Color3.fromHex("F3F4F6"),
-		brand = Color3.fromHex("9333EA"),
-		canvas = Color3.fromHex("FFFFFF"),
-		component = Color3.fromHex("4ADE80"),
-		stroke = Color3.fromHex("D1D5DB"),
-		strokeSecondary = Color3.fromHex("B9BDC2"),
-		text = Color3.fromHex("111228"),
-		textSecondary = Color3.fromHex("FFFFFF"),
-	} :: types.Theme,
+		Background = Color3.fromHex("F1F3F4"),
+		Canvas = Color3.fromHex("FFFFFF"),
+
+		Text = Color3.fromHex("FFFFFF"),
+		TextSecondary = Color3.fromHex("111228"),
+		TextTertiary = Color3.fromHex("4B5563"),
+
+		Stroke = Color3.fromHex("E2E3E7"),
+		StrokeSecondary = Color3.fromHex("CCCFD6"),
+		StrokeTertiary = Color3.fromHex("606674"),
+
+		Selection = Color3.fromHex("5D54E7"),
+		Component = Color3.fromHex("4ADE80"),
+	},
 
 	Dark = {
-		background = Color3.fromHex("171717"),
-		brand = Color3.fromHex("9333EA"),
-		canvas = Color3.fromHex("1E1E1E"),
-		component = Color3.fromHex("4ADE80"),
-		stroke = Color3.fromHex("353535"),
-		strokeSecondary = Color3.fromHex("505050"),
-		text = Color3.fromHex("FFFFFF"),
-		textSecondary = Color3.fromHex("111228"),
-	} :: types.Theme,
+		Background = Color3.fromHex("F1F3F4"),
+		Canvas = Color3.fromHex("FFFFFF"),
+
+		Text = Color3.fromHex("FFFFFF"),
+		TextSecondary = Color3.fromHex("111228"),
+		TextTertiary = Color3.fromHex("4B5563"),
+
+		Stroke = Color3.fromHex("E2E3E7"),
+		StrokeSecondary = Color3.fromHex("CCCFD6"),
+		StrokeTertiary = Color3.fromHex("606674"),
+
+		Selection = Color3.fromHex("5D54E7"),
+		Component = Color3.fromHex("4ADE80"),
+	},
 }
