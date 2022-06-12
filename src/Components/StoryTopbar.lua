@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 local defaultProps = {

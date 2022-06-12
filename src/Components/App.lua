@@ -5,7 +5,7 @@ local Roact = require(flipbook.Packages.Roact)
 local RoactHooks = require(flipbook.Packages.RoactHooks)
 local styles = require(flipbook.styles)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 local Canvas = require(script.Parent.Canvas)
 local Sidebar = require(script.Parent.Sidebar)
 

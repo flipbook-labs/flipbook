@@ -4,7 +4,7 @@ local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
 local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 local NoStorySelected = require(script.Parent.NoStorySelected)
 local StoryView = require(script.Parent.StoryView)
 

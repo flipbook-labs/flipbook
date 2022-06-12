@@ -1,7 +1,10 @@
+local themes = require(script.Parent.Parent.themes)
+local types = require(script.Parent.Parent.types)
+
 local MOCK_STUDIO = {
 	ThemeChanged = Instance.new("BindableEvent").Event,
 	Theme = {
-		GetColor = function() end,
+		Name = "Light",
 	},
 }
 
@@ -14,11 +17,11 @@ local function useTheme(hooks: any)
 		return if success then result else MOCK_STUDIO
 	end, {})
 
-	local theme: StudioTheme, set = hooks.useState(studio.Theme)
+	local theme: types.Theme, set = hooks.useState(themes[studio.Theme.Name])
 
 	hooks.useEffect(function()
 		local conn = studio.ThemeChanged:Connect(function()
-			set(studio.Theme)
+			set(themes[studio.Theme.Name])
 		end)
 
 		return function()

@@ -5,7 +5,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local MAX_SUMMARY_SIZE = 600
 

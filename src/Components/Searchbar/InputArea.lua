@@ -5,7 +5,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local styles = require(flipbook.styles)
 local mapRanges = require(flipbook.Modules.mapRanges)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 local WrappingTextbox = require(flipbook.Components.WrappingTextbox)
 
 local e = Roact.createElement

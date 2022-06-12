@@ -5,7 +5,7 @@ local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local styles = require(flipbook.styles)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local function NoStorySelected(_, hooks: any)
 	local theme = useTheme(hooks)

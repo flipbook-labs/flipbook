@@ -4,7 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
-local useTheme = require(flipbook.Hooks.useThemeNew)
+local useTheme = require(flipbook.Hooks.useTheme)
 local Icon = require(script.Parent.Icon)
 local InputArea = require(script.InputArea)
 
