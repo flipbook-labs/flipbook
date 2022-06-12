@@ -1,4 +1,7 @@
 local colors = {
+	white = Color3.fromHex("FFFFFF"),
+	black = Color3.fromHex("000000"),
+
 	["slate-50"] = Color3.fromHex("F8FAFC"),
 	["slate-100"] = Color3.fromHex("F1F5F9"),
 	["slate-200"] = Color3.fromHex("E2E8F0"),
@@ -242,13 +245,13 @@ local colors = {
 	["rose-900"] = Color3.fromHex("881337"),
 }
 
-local function useTailwind(light: string, dark: string?, isDarkTheme: boolean): Color3
+local function useTailwind(light: string, dark: string?, isDarkTheme: boolean?): Color3
 	if isDarkTheme and dark and colors[dark] then
-		return dark
+		return colors[dark]
 	end
 
 	if colors[light] then
-		return light
+		return colors[light]
 	end
 
 	return Color3.new(0, 0, 0)
