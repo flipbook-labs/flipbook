@@ -37,30 +37,12 @@ local storybookNode = {
 	},
 }
 
-return function(target)
-	local handle = Roact.mount(
-		Roact.createElement("Frame", {
-			BackgroundColor3 = useTailwind("gray-200"),
-			Size = UDim2.fromScale(1, 1),
-		}, {
-			Container = Roact.createElement("Frame", {
-				AnchorPoint = Vector2.new(0.5, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				Position = UDim2.new(0.5, 0, 0, 100),
-				Size = UDim2.fromOffset(236, 0),
-			}, {
-				Node = Roact.createElement(Component, {
-					activeNode = nil,
-					node = storybookNode,
-					onClick = function() end,
-				}),
-			}),
-		}),
-		target
-	)
-
-	return function()
-		Roact.unmount(handle)
-	end
-end
+return {
+	summary = "Component as storybook with children",
+	controls = {},
+	story = Roact.createElement(Component, {
+		activeNode = nil,
+		node = storybookNode,
+		onClick = function() end,
+	}),
+}

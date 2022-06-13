@@ -23,7 +23,7 @@ local function Story(props: Props, hooks: any)
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if not props.active then if hover then 0 else 1 else 0,
-		color = if not props.active then useTailwind("gray-300") else useTailwind("purple-500"),
+		color = if not props.active then useTailwind("gray-200") else useTailwind("purple-500"),
 		textColor = if not props.active then useTailwind("gray-600") else useTailwind("white"),
 		config = constants.SPRING_CONFIG,
 	})
