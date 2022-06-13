@@ -53,22 +53,6 @@ local function StoryMeta(props: Props, hooks: any)
 				MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
 			}),
 		}),
-
-		-- Summary = props.story.summary and e(
-		-- 	"TextLabel",
-		-- 	Dictionary.join(styles.TextLabel, {
-		-- 		LayoutOrder = 2,
-		-- 		Text = props.story.summary,
-		-- 		TextColor3 = theme.text,
-		-- 		TextWrapped = true,
-		-- 		TextXAlignment = Enum.TextXAlignment.Center,
-		-- 	}),
-		-- 	{
-		-- 		UISizeConstraint = e("UISizeConstraint", {
-		-- 			MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
-		-- 		}),
-		-- 	}
-		-- ),
 	})
 end
 

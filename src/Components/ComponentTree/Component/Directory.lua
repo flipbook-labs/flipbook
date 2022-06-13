@@ -24,13 +24,13 @@ local function Directory(props: Props, hooks: any)
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if hover then 0 else 1,
-		rotation = if props.expanded then 90 else 0,
+		rotation = if props.expanded then 90 else -90,
 		config = constants.SPRING_CONFIG,
 	})
 
 	return e("TextButton", {
 		AutoButtonColor = false,
-		BackgroundColor3 = useTailwind("gray-300", "gray-300", dark),
+		BackgroundColor3 = useTailwind("gray-200", "gray-200", dark),
 		BackgroundTransparency = styles.alpha,
 		LayoutOrder = 0,
 		Size = UDim2.new(1, 0, 0, 36),

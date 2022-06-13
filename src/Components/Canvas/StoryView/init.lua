@@ -3,6 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local hook = require(flipbook.hook)
 local Navbar = require(script.Navbar)
 local Roact = require(flipbook.Packages.Roact)
+local StoryControls = require(script.StoryControls)
 local StoryMeta = require(script.StoryMeta)
 local StoryPreview = require(script.StoryPreview)
 local types = require(flipbook.types)
@@ -28,10 +29,13 @@ local function StoryView(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Navbar = story and e(Navbar),
+		Navbar = story and e(Navbar, {
+			layoutOrder = 1,
+		}),
 
-		Content = story and e("ScrollingFrame", {
+		Content = story and e("Frame", {
 			Size = UDim2.fromScale(1, 0),
+			BorderSizePixel = 0,
 			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,
 			LayoutOrder = 2,
@@ -42,15 +46,19 @@ local function StoryView(props: Props, hooks: any)
 			}),
 
 			StoryMeta = story and e(StoryMeta, {
-				layoutOrder = 1,
+				layoutOrder = 2,
 				story = story,
 				storyModule = props.story,
 			}),
 
 			StoryPreview = story and e(StoryPreview, {
-				layoutOrder = 2,
+				layoutOrder = 3,
 				story = story,
 				storyModule = props.story,
+			}),
+
+			StoryControls = story and e(StoryControls, {
+				layoutOrder = 4,
 			}),
 		}),
 	})

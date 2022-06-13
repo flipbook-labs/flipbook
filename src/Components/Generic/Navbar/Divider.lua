@@ -1,11 +1,16 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 
 local e = Roact.createElement
 
-local function VerticalDivider(props)
+type Props = {
+	layoutOrder: number,
+}
+
+local function Divider(props: Props)
 	return e("Frame", {
 		BackgroundColor3 = useTailwind("gray-300"),
 		BorderSizePixel = 0,
@@ -14,4 +19,4 @@ local function VerticalDivider(props)
 	})
 end
 
-return VerticalDivider
+return hook(Divider)

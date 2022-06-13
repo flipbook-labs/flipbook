@@ -23,7 +23,7 @@ local function App(_props, hooks: any)
 	end, { setStory })
 
 	return Roact.createElement("Frame", {
-		BackgroundColor3 = useTailwind("gray-200"),
+		BackgroundColor3 = useTailwind("gray-100"),
 		Size = UDim2.fromScale(1, 1),
 	}, {
 		UIListLayout = Roact.createElement("UIListLayout", {
