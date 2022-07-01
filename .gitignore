@@ -10,7 +10,8 @@ sourcemap.json
 
 # Wally
 /DevPackages
-/Packages
+/Packages/**
+!/Packages/.luaurc
 /wally.lock
 
 # Moonwave
