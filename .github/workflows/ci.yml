@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           mv .github/workflows/.luaurc Packages
-          luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+          luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --formatter=gnu src/
 
   tests:
     runs-on: windows-latest
