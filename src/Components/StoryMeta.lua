@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 
 local MAX_SUMMARY_SIZE = 600

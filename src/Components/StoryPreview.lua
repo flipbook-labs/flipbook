@@ -2,11 +2,10 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
-local mountStory = require(flipbook.Story.mountStory)
-local styles = require(flipbook.styles)
-local types = require(flipbook.types)
-local unmountStory = require(flipbook.Story.unmountStory)
+local types = require(script.Parent.Parent.types)
 local usePrevious = require(flipbook.Hooks.usePrevious)
+local mountStory = require(flipbook.Story.mountStory)
+local unmountStory = require(flipbook.Story.unmountStory)
 
 local e = Roact.createElement
 

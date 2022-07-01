@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 
 export type Node = {
 	name: string,

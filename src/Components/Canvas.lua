@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
-local types = require(flipbook.types)
+local types = require(script.Parent.Parent.types)
 local NoStorySelected = require(flipbook.Components.NoStorySelected)
 local StoryView = require(flipbook.Components.StoryView)
 local useTailwind = require(flipbook.Hooks.useTailwind)
@@ -10,10 +10,10 @@ local useTailwind = require(flipbook.Hooks.useTailwind)
 local e = Roact.createElement
 
 type Props = {
-	layoutOrder: number,
-	loader: any,
 	story: ModuleScript,
+	loader: any,
 	storybook: types.Storybook,
+	layoutOrder: number?,
 }
 
 local function Canvas(props: Props, hooks: any)
