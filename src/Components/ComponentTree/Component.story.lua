@@ -2,7 +2,6 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Component = require(script.Parent.Component)
 local Roact = require(flipbook.Packages.Roact)
-local useTailwind = require(flipbook.Hooks.useTailwind)
 
 local childNode1 = {
 	name = "Button",

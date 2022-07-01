@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 
@@ -14,7 +13,7 @@ export type Props = {
 	story: types.Story,
 }
 
-local function StoryMeta(props: Props, hooks: any)
+local function StoryMeta(props: Props)
 	return e("Frame", {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
@@ -56,4 +55,4 @@ local function StoryMeta(props: Props, hooks: any)
 	})
 end
 
-return hook(StoryMeta)
+return StoryMeta

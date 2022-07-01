@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local NoStorySelected = require(flipbook.Components.NoStorySelected)
 local StoryView = require(flipbook.Components.StoryView)
@@ -16,7 +15,7 @@ type Props = {
 	layoutOrder: number?,
 }
 
-local function Canvas(props: Props, hooks: any)
+local function Canvas(props: Props)
 	return e("Frame", {
 		BackgroundColor3 = useTailwind("white"),
 		BorderSizePixel = 0,
@@ -50,4 +49,4 @@ local function Canvas(props: Props, hooks: any)
 	})
 end
 
-return hook(Canvas)
+return Canvas
