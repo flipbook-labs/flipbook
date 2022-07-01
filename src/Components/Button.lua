@@ -6,8 +6,13 @@ local hook = require(flipbook.hook)
 local e = Roact.createElement
 
 type Props = {
-	anchorPoint: Vector2?,
+	style: "contain" | "stroke",
+	text: string,
+	textColor: Color3,
+	textSize: number,
 	color: Color3,
+
+	anchorPoint: Vector2?,
 	endIcon: any?,
 	highlight: { base: Color3?, text: Color3? }?,
 	layoutOrder: number?,
@@ -15,10 +20,6 @@ type Props = {
 	padding: { x: number, y: number },
 	position: UDim2?,
 	startIcon: any?,
-	style: "contain" | "stroke",
-	text: string,
-	textColor: Color3,
-	textSize: number,
 }
 
 local function Button(props: Props, hooks: any)
