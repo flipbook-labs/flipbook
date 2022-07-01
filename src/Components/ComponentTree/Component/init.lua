@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Directory = require(script.Directory)
-local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
+local hook = require(flipbook.hook)
+local Directory = require(script.Directory)
 local Story = require(script.Story)
 local types = require(script.Parent.types)
 

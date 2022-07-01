@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
-local Roact = require(flipbook.Packages.Roact)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 
 local e = Roact.createElement

@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
-local Roact = require(flipbook.Packages.Roact)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
 local StoryPreview = require(flipbook.Components.StoryPreview)

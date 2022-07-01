@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Component = require(script.Component)
 local Roact = require(flipbook.Packages.Roact)
+local Component = require(script.Component)
 local types = require(script.types)
 
 local e = Roact.createElement

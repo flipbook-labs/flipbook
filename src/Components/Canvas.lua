@@ -1,10 +1,10 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local hook = require(flipbook.hook)
-local NoStorySelected = require(flipbook.Components.NoStorySelected)
 local Roact = require(flipbook.Packages.Roact)
-local StoryView = require(flipbook.Components.StoryView)
+local hook = require(flipbook.hook)
 local types = require(flipbook.types)
+local NoStorySelected = require(flipbook.Components.NoStorySelected)
+local StoryView = require(flipbook.Components.StoryView)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 
 local e = Roact.createElement

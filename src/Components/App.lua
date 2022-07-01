@@ -1,13 +1,13 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Canvas = require(script.Parent.Canvas)
-local hook = require(flipbook.hook)
-local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local Roact = require(flipbook.Packages.Roact)
-local Sidebar = require(script.Parent.Sidebar)
+local ModuleLoader = require(flipbook.Packages.ModuleLoader)
+local hook = require(flipbook.hook)
 local types = require(flipbook.types)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTailwind = require(flipbook.Hooks.useTailwind)
+local Sidebar = require(script.Parent.Sidebar)
+local Canvas = require(script.Parent.Canvas)
 
 local loader = ModuleLoader.new()
 
