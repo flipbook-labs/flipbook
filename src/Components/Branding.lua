@@ -12,7 +12,7 @@ type Props = {
 	layoutOrder: number?,
 }
 
-local function Brand(props: Props, hooks: any)
+local function Branding(props: Props, hooks: any)
 	local dark = useDark(hooks)
 
 	return e("Frame", {
@@ -56,4 +56,4 @@ local function Brand(props: Props, hooks: any)
 	})
 end
 
-return hook(Brand)
+return hook(Branding)

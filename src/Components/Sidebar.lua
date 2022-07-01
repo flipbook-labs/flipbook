@@ -4,7 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local constants = require(flipbook.constants)
 local createStoryNodes = require(flipbook.Story.createStoryNodes)
-local Brand = require(flipbook.Components.Brand)
+local Branding = require(flipbook.Components.Branding)
 local ComponentTree = require(flipbook.Components.ComponentTree)
 local Searchbar = require(flipbook.Components.Searchbar)
 local types = require(script.Parent.Parent.types)
@@ -65,7 +65,7 @@ local function Sidebar(props: Props, hooks: any)
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
-			Brand = e(Brand, {
+			Branding = e(Branding, {
 				layoutOrder = 0,
 			}),
 
