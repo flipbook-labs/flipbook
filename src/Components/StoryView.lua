@@ -1,11 +1,11 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local hook = require(flipbook.hook)
-local Navbar = require(script.Navbar)
+local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local Roact = require(flipbook.Packages.Roact)
-local StoryControls = require(script.StoryControls)
-local StoryMeta = require(script.StoryMeta)
-local StoryPreview = require(script.StoryPreview)
+local StoryControls = require(flipbook.Components.StoryControls)
+local StoryMeta = require(flipbook.Components.StoryMeta)
+local StoryPreview = require(flipbook.Components.StoryPreview)
 local types = require(flipbook.types)
 local useStory = require(flipbook.Hooks.useStory)
 
@@ -29,7 +29,7 @@ local function StoryView(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Navbar = story and e(Navbar, {
+		StoryViewNavbar = story and e(StoryViewNavbar, {
 			layoutOrder = 1,
 		}),
 

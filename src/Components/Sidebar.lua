@@ -1,12 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Brand = require(script.Brand)
+local Brand = require(flipbook.Components.Brand)
 local ComponentTree = require(flipbook.Components.ComponentTree)
 local constants = require(flipbook.constants)
 local createStoryNodes = require(flipbook.Story.createStoryNodes)
 local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
-local Searchbar = require(script.Searchbar)
+local Searchbar = require(flipbook.Components.Searchbar)
 local types = require(flipbook.types)
 
 local e = Roact.createElement

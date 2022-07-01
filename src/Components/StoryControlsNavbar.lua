@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local hook = require(flipbook.hook)
-local Navbar = require(flipbook.Components.Generic.Navbar)
+local Navbar = require(flipbook.Components.Navbar)
 local Roact = require(flipbook.Packages.Roact)
 local useTailwind = require(flipbook.Hooks.useTailwind)
 

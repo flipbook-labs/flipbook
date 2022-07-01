@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local hook = require(flipbook.hook)
-local Navbar = require(script.Navbar)
+local StoryControlsNavbar = require(flipbook.Components.StoryControlsNavbar)
 local Roact = require(flipbook.Packages.Roact)
 
 local e = Roact.createElement
@@ -16,7 +16,7 @@ local function StoryControls(props: Props)
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
 	}, {
-		Navbar = e(Navbar, {
+		StoryControlsNavbar = e(StoryControlsNavbar, {
 			layoutOrder = 1,
 		}),
 	})
