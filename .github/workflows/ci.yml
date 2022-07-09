@@ -44,13 +44,19 @@ jobs:
 
       - name: Download global Roblox types
         shell: bash
-        run: curl -O https://raw.githubusercontent.com/JohnnyMorganz/luau-analyze-rojo/master/globalTypes.d.lua
+        run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
+
+      - name: Generate sourcemap for LSP
+        shell: bash
+        run: rojo sourcemap dev.project.json -o sourcemap.json
+
+      - name: Ignore packages in analysis
+        shell: bash
+        run: mv .github/workflows/.luaurc Packages
 
       - name: Analyze
         shell: bash
-        run: |
-          mv .github/workflows/.luaurc Packages
-          luau-analyze --project=dev.project.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
+        run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --formatter=gnu src/
 
   tests:
     runs-on: windows-latest
