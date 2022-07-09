@@ -8,4 +8,5 @@ return {
 	Minify = "rbxassetid://9894466289",
 	Search = "rbxassetid://9890893911",
 	Storybook = "rbxassetid://9890894089",
+	flipbook = "rbxassetid://9884429367",
 }

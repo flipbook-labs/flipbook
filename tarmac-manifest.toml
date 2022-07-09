@@ -37,3 +37,8 @@ packable = false
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
 id = 9890894089
 packable = false
+
+[inputs."img/flipbook.png"]
+hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
+id = 9884429367
+packable = false
