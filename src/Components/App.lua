@@ -17,7 +17,7 @@ local function App(_props, hooks: any)
 	local storybook, selectStorybook = hooks.useState(nil)
 
 	local selectStory = hooks.useCallback(function(newStory: ModuleScript)
-		setStory(function(prevStory: types.Story)
+		setStory(function(prevStory: ModuleScript)
 			return if prevStory ~= newStory then newStory else nil
 		end)
 	end, { setStory })
