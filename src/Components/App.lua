@@ -5,7 +5,6 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTailwind = require(flipbook.Hooks.useTailwind)
-local types = require(script.Parent.Parent.types)
 local Canvas = require(script.Parent.Canvas)
 local Sidebar = require(script.Parent.Sidebar)
 
