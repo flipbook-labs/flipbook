@@ -7,6 +7,7 @@ local createStoryNodes = require(flipbook.Story.createStoryNodes)
 local Branding = require(flipbook.Components.Branding)
 local ComponentTree = require(flipbook.Components.ComponentTree)
 local Searchbar = require(flipbook.Components.Searchbar)
+local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -36,6 +37,11 @@ local function Sidebar(props: Props, hooks: any)
 		return createStoryNodes(props.storybooks)
 	end, { props.storybooks })
 
+	local headerHeight, setHeaderHeight = hooks.useState(0)
+	local onHeaderSizeChanged = hooks.useCallback(function(rbx: Frame)
+		setHeaderHeight(rbx.AbsoluteSize.Y)
+	end, { setHeaderHeight })
+
 	return e("Frame", {
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -55,10 +61,11 @@ local function Sidebar(props: Props, hooks: any)
 		}),
 
 		Header = e("Frame", {
-			AutomaticSize = Enum.AutomaticSize.XY,
+			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,
 			LayoutOrder = 0,
-			Size = UDim2.fromScale(0, 0),
+			Size = UDim2.fromScale(1, 0),
+			[Roact.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
 			UIListLayout = e("UIListLayout", {
 				Padding = UDim.new(0, 20),
@@ -74,11 +81,15 @@ local function Sidebar(props: Props, hooks: any)
 			}),
 		}),
 
-		ComponentTree = e(ComponentTree, {
-			activeNode = activeNode,
-			layoutOrder = 1,
-			nodes = storybookNodes,
-			onClick = onClick,
+		ScrollingFrame = e(ScrollingFrame, {
+			LayoutOrder = 1,
+			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
+		}, {
+			ComponentTree = e(ComponentTree, {
+				activeNode = activeNode,
+				nodes = storybookNodes,
+				onClick = onClick,
+			}),
 		}),
 	})
 end
