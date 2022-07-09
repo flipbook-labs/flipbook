@@ -24,7 +24,7 @@ local function Directory(props: Props, hooks: any)
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if hover then 0 else 1,
-		rotation = if props.expanded then 90 else -90,
+		rotation = if props.expanded then 90 else 0,
 		config = constants.SPRING_CONFIG,
 	})
 
