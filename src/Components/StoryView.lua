@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local useStory = require(flipbook.Hooks.useStory)
+local useTheme = require(flipbook.Hooks.useTheme)
 local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
@@ -18,6 +19,7 @@ type Props = {
 }
 
 local function StoryView(props: Props, hooks: any)
+	local theme = useTheme(hooks)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
 
 	return e("Frame", {
@@ -25,7 +27,7 @@ local function StoryView(props: Props, hooks: any)
 		BackgroundTransparency = 1,
 	}, {
 		UIListLayout = e("UIListLayout", {
-			Padding = UDim.new(0, 50),
+			Padding = theme.paddingLarge,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
@@ -41,7 +43,7 @@ local function StoryView(props: Props, hooks: any)
 			LayoutOrder = 2,
 		}, {
 			UIListLayout = e("UIListLayout", {
-				Padding = UDim.new(0, 20),
+				Padding = theme.padding,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 

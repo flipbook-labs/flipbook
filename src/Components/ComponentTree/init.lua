@@ -21,13 +21,6 @@ local function ComponentTree(props: Props)
 		SortOrder = Enum.SortOrder.Name,
 	})
 
-	-- children.UIPadding = e("UIPadding", {
-	-- 	PaddingBottom = UDim.new(0, 0),
-	-- 	PaddingLeft = UDim.new(0, 0),
-	-- 	PaddingRight = UDim.new(0, 5),
-	-- 	PaddingTop = UDim.new(0, 0),
-	-- })
-
 	for index, node in ipairs(props.nodes) do
 		children[node.name .. index] = e(Component, {
 			activeNode = props.activeNode,

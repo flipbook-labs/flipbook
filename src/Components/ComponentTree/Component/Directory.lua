@@ -49,10 +49,10 @@ local function Directory(props: Props, hooks: any)
 		}),
 
 		UIPadding = e("UIPadding", {
-			PaddingBottom = UDim.new(0, 10),
-			PaddingLeft = UDim.new(0, 8 * (props.indent + 1)),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 10),
+			PaddingBottom = theme.padding,
+			PaddingLeft = UDim.new(0, theme.paddingSmall.Offset * (props.indent + 1)),
+			PaddingRight = theme.paddingSmall,
+			PaddingTop = theme.padding,
 		}),
 
 		Detail = e("Frame", {
@@ -61,7 +61,7 @@ local function Directory(props: Props, hooks: any)
 		}, {
 			UIListLayout = e("UIListLayout", {
 				FillDirection = Enum.FillDirection.Horizontal,
-				Padding = UDim.new(0, 8),
+				Padding = theme.paddingSmall,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			}),

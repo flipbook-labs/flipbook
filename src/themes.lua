@@ -19,11 +19,14 @@ return {
 
 		story = tailwind.green500,
 		directory = tailwind.purple500,
+
+		padding = UDim.new(0, 12),
+		paddingSmall = UDim.new(0, 6),
+		paddingLarge = UDim.new(0, 24),
 	} :: types.Theme,
 
 	Dark = {
 		background = tailwind.white,
-		brand = tailwind.purple500,
 		sidebar = tailwind.gray800,
 		canvas = tailwind.white,
 		scrollbar = tailwind.gray800,
@@ -38,5 +41,9 @@ return {
 
 		story = tailwind.green500,
 		directory = tailwind.purple500,
+
+		padding = UDim.new(0, 12),
+		paddingSmall = UDim.new(0, 6),
+		paddingLarge = UDim.new(0, 24),
 	} :: types.Theme,
 }

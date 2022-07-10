@@ -2,6 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -23,6 +24,7 @@ type Props = {
 }
 
 local function Button(props: Props, hooks: any)
+	local theme = useTheme(hooks)
 	local hover, setHover = hooks.useState(false)
 
 	local paddingX = UDim.new(0, props.padding.x)
@@ -48,7 +50,7 @@ local function Button(props: Props, hooks: any)
 		[Roact.Event.Activated] = props.onClick,
 	}, {
 		UICorner = e("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = theme.paddingSmall,
 		}),
 
 		UIPadding = e("UIPadding", {
@@ -71,7 +73,7 @@ local function Button(props: Props, hooks: any)
 			then e("UIListLayout", {
 				FillDirection = Enum.FillDirection.Horizontal,
 				HorizontalAlignment = Enum.HorizontalAlignment.Center,
-				Padding = UDim.new(0, 4),
+				Padding = theme.paddingSmall,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			})

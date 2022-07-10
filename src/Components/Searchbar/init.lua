@@ -24,10 +24,10 @@ local function Searchbar(props: Props, hooks: any)
 		}),
 
 		UIPadding = e("UIPadding", {
-			PaddingBottom = UDim.new(0, 10),
-			PaddingLeft = UDim.new(0, 10),
-			PaddingRight = UDim.new(0, 10),
-			PaddingTop = UDim.new(0, 10),
+			PaddingBottom = theme.padding,
+			PaddingLeft = theme.padding,
+			PaddingRight = theme.padding,
+			PaddingTop = theme.padding,
 		}),
 
 		UIStroke = e("UIStroke", {

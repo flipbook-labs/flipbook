@@ -37,7 +37,7 @@ local function Canvas(props: Props, hooks: any)
 			BackgroundTransparency = 1,
 		}, {
 			UIListLayout = e("UIListLayout", {
-				Padding = UDim.new(0, 50),
+				Padding = theme.paddingLarge,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 

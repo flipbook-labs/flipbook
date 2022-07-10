@@ -25,7 +25,7 @@ local function StoryMeta(props: Props, hooks: any)
 	}, {
 		UIListLayout = e("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = UDim.new(0, 12),
+			Padding = theme.padding,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 

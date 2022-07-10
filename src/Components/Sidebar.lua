@@ -8,6 +8,7 @@ local Branding = require(flipbook.Components.Branding)
 local ComponentTree = require(flipbook.Components.ComponentTree)
 local Searchbar = require(flipbook.Components.Searchbar)
 local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
+local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -20,6 +21,8 @@ type Props = {
 }
 
 local function Sidebar(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	local activeNode, setActiveNode = hooks.useState(nil)
 	local onClick = hooks.useCallback(function(node: ComponentTree.Node)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
@@ -49,15 +52,15 @@ local function Sidebar(props: Props, hooks: any)
 		Size = UDim2.new(0, 267, 1, 0),
 	}, {
 		UIListLayout = e("UIListLayout", {
-			Padding = UDim.new(0, 10),
+			Padding = theme.padding,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
 		UIPadding = e("UIPadding", {
-			PaddingBottom = UDim.new(0, 16),
-			PaddingLeft = UDim.new(0, 16),
-			PaddingRight = UDim.new(0, 16),
-			PaddingTop = UDim.new(0, 16),
+			PaddingBottom = theme.padding,
+			PaddingLeft = theme.padding,
+			PaddingRight = theme.padding,
+			PaddingTop = theme.padding,
 		}),
 
 		Header = e("Frame", {
@@ -68,7 +71,7 @@ local function Sidebar(props: Props, hooks: any)
 			[Roact.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
 			UIListLayout = e("UIListLayout", {
-				Padding = UDim.new(0, 20),
+				Padding = theme.paddingLarge,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 

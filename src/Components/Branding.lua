@@ -22,13 +22,13 @@ local function Branding(props: Props, hooks: any)
 	}, {
 		UIListLayout = e("UIListLayout", {
 			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = UDim.new(0, 10),
+			Padding = theme.padding,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
 		UIPadding = e("UIPadding", {
-			PaddingLeft = UDim.new(0, -5),
+			PaddingLeft = -theme.paddingSmall,
 		}),
 
 		Icon = e("ImageLabel", {
@@ -49,7 +49,7 @@ local function Branding(props: Props, hooks: any)
 			TextSize = 20,
 		}, {
 			UIPadding = e("UIPadding", {
-				PaddingBottom = UDim.new(0, 5),
+				PaddingBottom = theme.paddingSmall,
 			}),
 		}),
 	})

@@ -30,10 +30,10 @@ local function Element(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 1),
 		}, {
 			UIPadding = e("UIPadding", {
-				PaddingBottom = UDim.new(0, 10),
-				PaddingLeft = UDim.new(0, 20),
-				PaddingRight = UDim.new(0, 20),
-				PaddingTop = UDim.new(0, 10),
+				PaddingBottom = theme.padding,
+				PaddingLeft = theme.paddingLarge,
+				PaddingRight = theme.paddingLarge,
+				PaddingTop = theme.padding,
 			}),
 
 			Children = Roact.createFragment(props[Roact.Children] or {}),

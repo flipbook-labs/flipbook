@@ -28,7 +28,6 @@ local function App(_props, hooks: any)
 	}, {
 		UIListLayout = Roact.createElement("UIListLayout", {
 			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = UDim.new(0, 0),
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),

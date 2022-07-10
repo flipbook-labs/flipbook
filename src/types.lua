@@ -31,7 +31,6 @@ export type HoarcekatStory = (GuiObject) -> () -> ()
 
 export type Theme = {
 	background: Color3,
-	brand: Color3,
 	sidebar: Color3,
 	canvas: Color3,
 	scrollbar: Color3,
@@ -46,6 +45,10 @@ export type Theme = {
 
 	story: Color3,
 	directory: Color3,
+
+	padding: UDim,
+	paddingSmall: UDim,
+	paddingLarge: UDim,
 }
 
 return {}
