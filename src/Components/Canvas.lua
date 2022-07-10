@@ -1,12 +1,11 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local hook = require(flipbook.hook)
 local Roact = require(flipbook.Packages.Roact)
-local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
+local NoStorySelected = require(flipbook.Components.NoStorySelected)
+local StoryView = require(flipbook.Components.StoryView)
 local useTheme = require(flipbook.Hooks.useTheme)
-local NoStorySelected = require(script.Parent.NoStorySelected)
-local StoryView = require(script.Parent.StoryView)
+local hook = require(flipbook.hook)
 
 local e = Roact.createElement
 
@@ -14,35 +13,32 @@ type Props = {
 	story: ModuleScript,
 	loader: any,
 	storybook: types.Storybook,
+	layoutOrder: number?,
 }
 
 local function Canvas(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	return e("Frame", {
-		BackgroundTransparency = 1,
-		LayoutOrder = 2,
-		Size = UDim2.new(1, -260, 1, -20),
+		BackgroundColor3 = theme.canvas,
+		BorderSizePixel = 0,
+		LayoutOrder = props.layoutOrder,
+		Size = UDim2.new(1, -267, 1, 0),
 	}, {
-		Dropshadow = e("ImageLabel", {
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundTransparency = 1,
-			Image = "rbxassetid://6150493168",
-			ImageColor3 = Color3.new(0, 0, 0),
-			ImageTransparency = 0.95,
-			Position = UDim2.fromScale(0.5, 0.5),
-			ScaleType = Enum.ScaleType.Slice,
-			Size = UDim2.new(1, 40, 1, 40),
-			SliceCenter = Rect.new(100, 100, 100, 100),
-			SliceScale = 0.3,
+		Divider = e("Frame", {
+			AnchorPoint = Vector2.new(1, 0),
+			BackgroundColor3 = theme.divider,
+			BorderSizePixel = 0,
+			Size = UDim2.new(0, 1, 1, 0),
 		}),
 
-		Container = e("Frame", {
-			BackgroundColor3 = theme.canvas,
+		Content = e("Frame", {
 			Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1,
 		}, {
-			UICorner = e("UICorner", {
-				CornerRadius = styles.SMALL_PADDING,
+			UIListLayout = e("UIListLayout", {
+				Padding = theme.paddingLarge,
+				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
 			StoryView = props.story and e(StoryView, {

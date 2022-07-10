@@ -3,15 +3,11 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local StoryMeta = require(script.Parent.StoryMeta)
 
-local e = Roact.createElement
-
 return {
-	story = e(StoryMeta, {
+	story = Roact.createElement(StoryMeta, {
 		story = {
-			name = "Sample.story",
-			summary = "A summary of the current story",
+			name = "Story",
+			summary = "Story summary",
 		},
-		storyModule = script.Parent,
-		storyParent = workspace,
 	}),
 }

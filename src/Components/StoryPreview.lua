@@ -2,9 +2,9 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
-local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
 local usePrevious = require(flipbook.Hooks.usePrevious)
+local useTheme = require(flipbook.Hooks.useTheme)
 local mountStory = require(flipbook.Story.mountStory)
 local unmountStory = require(flipbook.Story.unmountStory)
 
@@ -18,6 +18,7 @@ type Props = {
 }
 
 local function StoryPreview(props: Props, hooks: any)
+	local theme = useTheme(hooks)
 	local tree = hooks.useValue(nil)
 	local storyParent = Roact.createRef()
 	local prevStory = usePrevious(hooks, props.story)
@@ -45,10 +46,8 @@ local function StoryPreview(props: Props, hooks: any)
 		[Roact.Ref] = storyParent,
 	}, {
 		UIPadding = e("UIPadding", {
-			PaddingBottom = styles.PADDING,
-			PaddingLeft = styles.PADDING,
-			PaddingRight = styles.PADDING,
-			PaddingTop = styles.PADDING,
+			PaddingLeft = theme.padding,
+			PaddingRight = theme.padding,
 		}),
 	})
 end

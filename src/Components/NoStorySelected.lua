@@ -1,43 +1,46 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
-local styles = require(flipbook.styles)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local function NoStorySelected(_, hooks: any)
+local e = Roact.createElement
+
+local function NoStorySelected(_props, hooks: any)
 	local theme = useTheme(hooks)
 
-	return Roact.createElement("Frame", {
+	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
 	}, {
-		Layout = Roact.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
+		UIListLayout = e("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			Padding = theme.padding,
+			SortOrder = Enum.SortOrder.LayoutOrder,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
-			Padding = styles.PADDING,
 		}),
 
-		Icon = Roact.createElement("ImageLabel", {
+		Icon = e("ImageLabel", {
 			BackgroundTransparency = 1,
-			Image = assets.storybook,
+			Image = assets.Storybook,
 			ImageColor3 = theme.text,
 			LayoutOrder = 1,
-			Size = UDim2.fromOffset(64, 64),
+			Size = UDim2.fromOffset(32, 32),
 		}),
 
-		Message = Roact.createElement(
-			"TextLabel",
-			Llama.Dictionary.join(styles.TextLabel, {
-				LayoutOrder = 2,
-				Text = "Select a story to preview it",
-				TextColor3 = theme.text,
-				TextSize = styles.TextLabel.TextSize * 1.5,
-			})
-		),
+		Message = e("TextLabel", {
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			Font = theme.font,
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(0, 0),
+			Text = "Select a story to preview it",
+			TextColor3 = theme.text,
+			TextSize = theme.headerTextSize,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
+		}),
 	})
 end
 

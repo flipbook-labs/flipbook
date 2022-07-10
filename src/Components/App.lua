@@ -2,8 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local Roact = require(flipbook.Packages.Roact)
-local RoactHooks = require(flipbook.Packages.RoactHooks)
-local styles = require(flipbook.styles)
+local hook = require(flipbook.hook)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTheme = require(flipbook.Hooks.useTheme)
 local Canvas = require(script.Parent.Canvas)
@@ -14,8 +13,14 @@ local loader = ModuleLoader.new()
 local function App(_props, hooks: any)
 	local theme = useTheme(hooks)
 	local storybooks = useStorybooks(hooks, game, loader)
-	local story, selectStory = hooks.useState(nil)
+	local story, setStory = hooks.useState(nil)
 	local storybook, selectStorybook = hooks.useState(nil)
+
+	local selectStory = hooks.useCallback(function(newStory: ModuleScript)
+		setStory(function(prevStory: ModuleScript)
+			return if prevStory ~= newStory then newStory else nil
+		end)
+	end, { setStory })
 
 	return Roact.createElement("Frame", {
 		BackgroundColor3 = theme.background,
@@ -23,7 +28,6 @@ local function App(_props, hooks: any)
 	}, {
 		UIListLayout = Roact.createElement("UIListLayout", {
 			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = styles.LARGE_PADDING,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
@@ -36,6 +40,7 @@ local function App(_props, hooks: any)
 		}),
 
 		Canvas = Roact.createElement(Canvas, {
+			layoutOrder = 2,
 			loader = loader,
 			story = story,
 			storybook = storybook,
@@ -43,4 +48,4 @@ local function App(_props, hooks: any)
 	})
 end
 
-return RoactHooks.new(Roact)(App)
+return hook(App)

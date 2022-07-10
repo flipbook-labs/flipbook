@@ -1,15 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
-local styles = require(flipbook.styles)
 local types = require(script.Parent.Parent.types)
 local useTheme = require(flipbook.Hooks.useTheme)
+local hook = require(flipbook.hook)
 
 local MAX_SUMMARY_SIZE = 600
 
-local Dictionary = Llama.Dictionary
 local e = Roact.createElement
 
 export type Props = {
@@ -28,35 +25,36 @@ local function StoryMeta(props: Props, hooks: any)
 	}, {
 		UIListLayout = e("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = styles.PADDING,
+			Padding = theme.padding,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Title = e(
-			"TextLabel",
-			Dictionary.join(styles.Header, {
-				Font = Enum.Font.GothamBlack,
-				LayoutOrder = 1,
-				Text = props.story.name,
-				TextColor3 = theme.text,
-			})
-		),
+		Title = e("TextLabel", {
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			Font = theme.headerFont,
+			Size = UDim2.fromScale(0, 0),
+			Text = props.story.name:sub(1, #props.story.name - 6),
+			TextColor3 = theme.text,
+			TextSize = theme.headerTextSize,
+		}),
 
-		Summary = props.story.summary and e(
-			"TextLabel",
-			Dictionary.join(styles.TextLabel, {
-				LayoutOrder = 2,
-				Text = props.story.summary,
-				TextColor3 = theme.text,
-				TextWrapped = true,
-				TextXAlignment = Enum.TextXAlignment.Center,
+		Summary = props.story.summary and e("TextLabel", {
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			Font = theme.font,
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(0, 0),
+			Text = props.story.summary,
+			TextColor3 = theme.textFaded,
+			TextSize = theme.textSize,
+			TextWrapped = true,
+			TextXAlignment = Enum.TextXAlignment.Center,
+		}, {
+			UISizeConstraint = e("UISizeConstraint", {
+				MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
 			}),
-			{
-				UISizeConstraint = e("UISizeConstraint", {
-					MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
-				}),
-			}
-		),
+		}),
 	})
 end
 

@@ -1,27 +1,57 @@
-local types = require(script.Parent.types)
+local flipbook = script:FindFirstAncestor("flipbook")
+local types = require(flipbook.types)
+local tailwind = require(flipbook.tailwind)
 
 return {
-	Brand = Color3.fromHex("9333EA"),
-
 	Light = {
-		background = Color3.fromHex("F3F4F6"),
-		brand = Color3.fromHex("9333EA"),
-		canvas = Color3.fromHex("FFFFFF"),
-		component = Color3.fromHex("4ADE80"),
-		stroke = Color3.fromHex("D1D5DB"),
-		strokeSecondary = Color3.fromHex("B9BDC2"),
-		text = Color3.fromHex("111228"),
-		textSecondary = Color3.fromHex("FFFFFF"),
+		textSize = 14,
+		font = Enum.Font.GothamMedium,
+		headerTextSize = 20,
+		headerFont = Enum.Font.GothamBlack,
+
+		background = tailwind.white,
+		sidebar = tailwind.gray100,
+		canvas = tailwind.white,
+		scrollbar = tailwind.gray800,
+		button = tailwind.gray800,
+		buttonText = tailwind.white,
+		divider = tailwind.gray300,
+		text = tailwind.gray800,
+		textFaded = tailwind.gray600,
+		selection = tailwind.purple500,
+		story = tailwind.green500,
+		directory = tailwind.purple500,
+
+		padding = UDim.new(0, 12),
+		paddingSmall = UDim.new(0, 6),
+		paddingLarge = UDim.new(0, 24),
+
+		corner = UDim.new(0, 6),
 	} :: types.Theme,
 
 	Dark = {
-		background = Color3.fromHex("171717"),
-		brand = Color3.fromHex("9333EA"),
-		canvas = Color3.fromHex("1E1E1E"),
-		component = Color3.fromHex("4ADE80"),
-		stroke = Color3.fromHex("353535"),
-		strokeSecondary = Color3.fromHex("505050"),
-		text = Color3.fromHex("FFFFFF"),
-		textSecondary = Color3.fromHex("111228"),
+		textSize = 14,
+		font = Enum.Font.GothamMedium,
+		headerTextSize = 20,
+		headerFont = Enum.Font.GothamBlack,
+
+		background = tailwind.zinc800,
+		sidebar = tailwind.zinc900,
+		canvas = tailwind.zinc800,
+		scrollbar = tailwind.zinc100,
+		button = tailwind.zinc300,
+		buttonText = tailwind.zinc900,
+		divider = tailwind.zinc700,
+		text = tailwind.zinc200,
+		textFaded = tailwind.zinc300,
+		selection = tailwind.purple500,
+		story = tailwind.green500,
+		directory = tailwind.purple500,
+
+		padding = UDim.new(0, 12),
+		paddingSmall = UDim.new(0, 6),
+		paddingLarge = UDim.new(0, 24),
+
+		corner = UDim.new(0, 6),
 	} :: types.Theme,
 }

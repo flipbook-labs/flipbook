@@ -1,86 +1,58 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
-local styles = require(flipbook.styles)
-local themes = require(flipbook.themes)
+local assets = require(flipbook.assets)
+local hook = require(flipbook.hook)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
 type Props = {
-	anchorPoint: Vector2?,
 	layoutOrder: number?,
-	position: UDim2?,
-	size: number?,
-	tag: string?,
-	tagColor: Color3?,
-	tagSize: number?,
 }
 
-local function Branding(props: Props)
-	if props.tag then
-		return e("Frame", {
-			AnchorPoint = props.anchorPoint,
+local function Branding(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
+	return e("Frame", {
+		AutomaticSize = Enum.AutomaticSize.XY,
+		BackgroundTransparency = 1,
+		LayoutOrder = props.layoutOrder,
+		Size = UDim2.fromScale(0, 0),
+	}, {
+		UIListLayout = e("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			Padding = theme.padding,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+		}),
+
+		UIPadding = e("UIPadding", {
+			PaddingLeft = -theme.paddingSmall,
+		}),
+
+		Icon = e("ImageLabel", {
+			BackgroundTransparency = 1,
+			Image = assets.IconLight,
+			LayoutOrder = 0,
+			Size = UDim2.fromOffset(42, 42),
+		}),
+
+		Typography = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			LayoutOrder = props.layoutOrder,
-			Position = props.position,
+			Font = theme.headerFont,
+			LayoutOrder = 1,
 			Size = UDim2.fromOffset(0, 0),
+			Text = "flipbook",
+			TextColor3 = theme.text,
+			TextSize = theme.headerTextSize,
 		}, {
-			UIListLayout = e("UIListLayout", {
-				FillDirection = Enum.FillDirection.Horizontal,
-				Padding = UDim.new(0, 10),
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				VerticalAlignment = Enum.VerticalAlignment.Center,
+			UIPadding = e("UIPadding", {
+				PaddingBottom = theme.paddingSmall,
 			}),
-
-			Branding = e(Branding, {
-				layoutOrder = 0,
-				size = props.size,
-			}),
-
-			Tag = e("Frame", {
-				LayoutOrder = 1,
-				AutomaticSize = Enum.AutomaticSize.XY,
-				Size = UDim2.fromOffset(0, 0),
-				BackgroundColor3 = props.tagColor,
-			}, {
-				UICorner = e("UICorner", {
-					CornerRadius = UDim.new(0, 2),
-				}),
-
-				UIPadding = e("UIPadding", {
-					PaddingBottom = UDim.new(0, 4),
-					PaddingLeft = UDim.new(0, 6),
-					PaddingRight = UDim.new(0, 6),
-					PaddingTop = UDim.new(0, 4),
-				}),
-
-				Tag = e(
-					"TextLabel",
-					Llama.Dictionary.join(styles.TextLabel, {
-						Font = Enum.Font.GothamBlack,
-						Text = props.tag,
-						TextColor3 = Color3.new(1, 1, 1),
-						TextSize = props.tagSize,
-					})
-				),
-			}),
-		})
-	else
-		return e(
-			"TextLabel",
-			Llama.Dictionary.join(styles.TextLabel, {
-				AnchorPoint = props.anchorPoint,
-				Font = Enum.Font.GothamBlack,
-				LayoutOrder = props.layoutOrder,
-				Position = props.position,
-				Text = "flipbook",
-				TextColor3 = themes.Light.brand,
-				TextSize = props.size,
-			})
-		)
-	end
+		}),
+	})
 end
 
-return Branding
+return hook(Branding)
