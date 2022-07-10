@@ -33,7 +33,7 @@ local function ButtonLink(props: Props, hooks: any)
 		Size = UDim2.fromScale(0, 0),
 	}, {
 		UICorner = e("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = theme.paddingSmall,
 		}),
 
 		UIPadding = e("UIPadding", {
