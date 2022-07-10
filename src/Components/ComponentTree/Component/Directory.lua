@@ -29,7 +29,7 @@ local function Directory(props: Props, hooks: any)
 
 	return e("TextButton", {
 		AutoButtonColor = false,
-		BackgroundColor3 = theme.button,
+		BackgroundColor3 = theme.divider,
 		BackgroundTransparency = styles.alpha,
 		LayoutOrder = 0,
 		Size = UDim2.new(1, 0, 0, 36),
