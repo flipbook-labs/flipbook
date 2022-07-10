@@ -46,6 +46,8 @@ export type Theme = {
 	padding: UDim,
 	paddingSmall: UDim,
 	paddingLarge: UDim,
+
+	corner: UDim,
 }
 
 return {}

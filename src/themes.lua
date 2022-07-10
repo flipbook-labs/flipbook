@@ -20,6 +20,8 @@ return {
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),
 		paddingLarge = UDim.new(0, 24),
+
+		corner = UDim.new(0, 6),
 	} :: types.Theme,
 
 	Dark = {
@@ -39,5 +41,7 @@ return {
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),
 		paddingLarge = UDim.new(0, 24),
+
+		corner = UDim.new(0, 6),
 	} :: types.Theme,
 }

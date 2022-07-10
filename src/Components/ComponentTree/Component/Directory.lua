@@ -45,7 +45,7 @@ local function Directory(props: Props, hooks: any)
 		end,
 	}, {
 		UICorner = e("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = theme.corner,
 		}),
 
 		UIPadding = e("UIPadding", {

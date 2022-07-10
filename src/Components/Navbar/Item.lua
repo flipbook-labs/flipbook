@@ -41,17 +41,15 @@ local function Item(props: Props, hooks: any)
 			setHover(false)
 		end,
 	}, {
-		UIPadding = if props.padding
-			then e("UIPadding", {
-				PaddingBottom = props.padding.y,
-				PaddingLeft = props.padding.x,
-				PaddingRight = props.padding.x,
-				PaddingTop = props.padding.y,
-			})
-			else nil,
+		UIPadding = e("UIPadding", {
+			PaddingBottom = theme.padding,
+			PaddingLeft = theme.padding,
+			PaddingRight = theme.padding,
+			PaddingTop = theme.padding,
+		}),
 
 		UICorner = e("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = theme.corner,
 		}),
 
 		Children = Roact.createFragment(props[Roact.Children] or {}),

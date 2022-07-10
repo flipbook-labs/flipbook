@@ -52,7 +52,7 @@ local function Button(props: Props, hooks: any)
 		[Roact.Event.Activated] = props.onClick,
 	}, {
 		UICorner = e("UICorner", {
-			CornerRadius = theme.paddingSmall,
+			CornerRadius = theme.corner,
 		}),
 
 		UIPadding = e("UIPadding", {
