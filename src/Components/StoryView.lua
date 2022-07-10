@@ -5,6 +5,7 @@ local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local useStory = require(flipbook.Hooks.useStory)
 local useTheme = require(flipbook.Hooks.useTheme)
+local useZoom = require(flipbook.Hooks.useZoom)
 local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
@@ -21,6 +22,7 @@ type Props = {
 local function StoryView(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
+	local zoom = useZoom(hooks, props.story)
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -33,6 +35,8 @@ local function StoryView(props: Props, hooks: any)
 
 		StoryViewNavbar = story and e(StoryViewNavbar, {
 			layoutOrder = 1,
+			onZoomIn = zoom.zoomIn,
+			onZoomOut = zoom.zoomOut,
 		}),
 
 		Content = story and e("Frame", {
@@ -55,6 +59,7 @@ local function StoryView(props: Props, hooks: any)
 
 			StoryPreview = story and e(StoryPreview, {
 				layoutOrder = 3,
+				zoom = zoom.value,
 				story = story,
 				storyModule = props.story,
 			}),

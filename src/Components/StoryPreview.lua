@@ -10,7 +10,11 @@ local unmountStory = require(flipbook.Story.unmountStory)
 
 local e = Roact.createElement
 
-type Props = {
+local defaultProps = {
+	zoom = 0,
+}
+
+type Props = typeof(defaultProps) & {
 	layoutOrder: number,
 	prevStory: types.Story,
 	story: types.Story,
@@ -49,7 +53,13 @@ local function StoryPreview(props: Props, hooks: any)
 			PaddingLeft = theme.padding,
 			PaddingRight = theme.padding,
 		}),
+
+		Scale = e("UIScale", {
+			Scale = 1 + props.zoom,
+		}),
 	})
 end
 
-return hook(StoryPreview)
+return hook(StoryPreview, {
+	defaultProps = defaultProps,
+})

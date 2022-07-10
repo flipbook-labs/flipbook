@@ -11,6 +11,8 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
+	onZoomIn: (() -> ())?,
+	onZoomOut: (() -> ())?,
 }
 
 local function NavbarRoot(props: Props, hooks: any)
@@ -32,7 +34,6 @@ local function NavbarRoot(props: Props, hooks: any)
 					active = true,
 					layoutOrder = 1,
 					onClick = function() end,
-					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,
@@ -48,10 +49,8 @@ local function NavbarRoot(props: Props, hooks: any)
 				}),
 
 				Documentation = e(Navbar.Item, {
-					active = false,
 					layoutOrder = 2,
 					onClick = function() end,
-					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,
@@ -73,13 +72,10 @@ local function NavbarRoot(props: Props, hooks: any)
 
 			Zoom = e(Navbar.Items, {
 				layoutOrder = 3,
-				padding = UDim.new(0, 0),
 			}, {
 				Magnify = e(Navbar.Item, {
-					active = false,
 					layoutOrder = 1,
-					onClick = function() end,
-					padding = { x = UDim.new(0, 6), y = UDim.new(0, 10) },
+					onClick = props.onZoomIn,
 				}, {
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
@@ -90,10 +86,8 @@ local function NavbarRoot(props: Props, hooks: any)
 				}),
 
 				Minify = e(Navbar.Item, {
-					active = false,
 					layoutOrder = 2,
-					onClick = function() end,
-					padding = { x = UDim.new(0, 6), y = UDim.new(0, 10) },
+					onClick = props.onZoomOut,
 				}, {
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
@@ -110,13 +104,10 @@ local function NavbarRoot(props: Props, hooks: any)
 
 			Mount = e(Navbar.Items, {
 				layoutOrder = 4,
-				padding = UDim.new(0, 0),
 			}, {
 				ViewCode = e(Navbar.Item, {
-					active = false,
 					layoutOrder = 1,
 					onClick = function() end,
-					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,
@@ -132,10 +123,8 @@ local function NavbarRoot(props: Props, hooks: any)
 				}),
 
 				Mount = e(Navbar.Item, {
-					active = false,
 					layoutOrder = 2,
 					onClick = function() end,
-					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,
