@@ -41,7 +41,7 @@ local function StoryControls(props: Props, hooks: any)
 						Text = e("TextLabel", {
 							AutomaticSize = Enum.AutomaticSize.XY,
 							BackgroundTransparency = 1,
-							Font = Enum.Font.GothamMedium,
+							Font = Enum.Font.GothamBlack,
 							Size = UDim2.fromScale(0, 0),
 							Text = "Controls",
 							TextColor3 = theme.text,

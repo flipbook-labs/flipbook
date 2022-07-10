@@ -27,7 +27,7 @@ local function Item(props: Props, hooks: any)
 	return e("TextButton", {
 		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
-		BackgroundColor3 = theme.button,
+		BackgroundColor3 = theme.divider,
 		BackgroundTransparency = styles.alpha,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(0, 0),
