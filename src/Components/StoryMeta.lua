@@ -32,22 +32,22 @@ local function StoryMeta(props: Props, hooks: any)
 		Title = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = Enum.Font.GothamBold,
+			Font = theme.headerFont,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.story.name:sub(1, #props.story.name - 6),
 			TextColor3 = theme.text,
-			TextSize = 24,
+			TextSize = theme.headerTextSize,
 		}),
 
 		Summary = props.story.summary and e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = Enum.Font.Gotham,
+			Font = theme.font,
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.story.summary,
 			TextColor3 = theme.textFaded,
-			TextSize = 16,
+			TextSize = theme.textSize,
 			TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Center,
 		}, {

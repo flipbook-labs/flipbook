@@ -77,13 +77,13 @@ local function Directory(props: Props, hooks: any)
 			Typography = e("TextLabel", {
 				AutomaticSize = Enum.AutomaticSize.XY,
 				BackgroundTransparency = 1,
-				Font = Enum.Font.GothamMedium,
+				Font = theme.font,
 				LayoutOrder = 1,
 				Size = UDim2.fromOffset(0, 0),
 				-- TODO: Do string parsing to get rid of `.storybook`
 				Text = props.node.name,
 				TextColor3 = theme.textFaded,
-				TextSize = 14,
+				TextSize = theme.textSize,
 			}),
 		}),
 

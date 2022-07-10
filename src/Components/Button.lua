@@ -14,7 +14,6 @@ end
 local defaultProps = {
 	style = "contain",
 	text = "Button",
-	textSize = 14,
 }
 
 type Props = typeof(defaultProps) & {
@@ -81,12 +80,12 @@ local function Button(props: Props, hooks: any)
 		Text = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = Enum.Font.GothamMedium,
+			Font = theme.font,
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.text,
 			TextColor3 = if hover then shift(theme.buttonText, 0.2) else theme.buttonText,
-			TextSize = props.textSize,
+			TextSize = theme.textSize,
 		}),
 	})
 end

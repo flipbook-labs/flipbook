@@ -4,6 +4,11 @@ local tailwind = require(flipbook.tailwind)
 
 return {
 	Light = {
+		textSize = 14,
+		font = Enum.Font.GothamMedium,
+		headerTextSize = 20,
+		headerFont = Enum.Font.GothamBlack,
+
 		background = tailwind.white,
 		sidebar = tailwind.gray100,
 		canvas = tailwind.white,
@@ -25,6 +30,11 @@ return {
 	} :: types.Theme,
 
 	Dark = {
+		textSize = 14,
+		font = Enum.Font.GothamMedium,
+		headerTextSize = 20,
+		headerFont = Enum.Font.GothamBlack,
+
 		background = tailwind.zinc800,
 		sidebar = tailwind.zinc900,
 		canvas = tailwind.zinc800,

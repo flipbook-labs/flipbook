@@ -41,12 +41,12 @@ local function Branding(props: Props, hooks: any)
 		Typography = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = Enum.Font.GothamBlack,
+			Font = theme.headerFont,
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(0, 0),
 			Text = "flipbook",
 			TextColor3 = theme.text,
-			TextSize = 20,
+			TextSize = theme.headerTextSize,
 		}, {
 			UIPadding = e("UIPadding", {
 				PaddingBottom = theme.paddingSmall,

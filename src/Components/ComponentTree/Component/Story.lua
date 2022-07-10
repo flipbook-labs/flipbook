@@ -77,12 +77,12 @@ local function Story(props: Props, hooks: any)
 			Typography = e("TextLabel", {
 				AutomaticSize = Enum.AutomaticSize.XY,
 				BackgroundTransparency = 1,
-				Font = Enum.Font.GothamMedium,
+				Font = theme.font,
 				LayoutOrder = 1,
 				Size = UDim2.fromOffset(0, 0),
 				Text = props.node.name:sub(1, #props.node.name - 6),
 				TextColor3 = theme.text,
-				TextSize = 14,
+				TextSize = theme.textSize,
 			}),
 		}),
 	})
