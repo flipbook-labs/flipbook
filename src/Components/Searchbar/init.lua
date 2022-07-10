@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
+local Sprite = require(flipbook.Components.Sprite)
 
 local e = Roact.createElement
 
@@ -34,11 +35,10 @@ local function Searchbar(props: Props, hooks: any)
 			Color = theme.divider,
 		}),
 
-		Icon = e("ImageLabel", {
-			BackgroundTransparency = 1,
-			Image = assets.Search,
-			Size = UDim2.fromOffset(16, 16),
-			ImageColor3 = theme.divider,
+		Icon = e(Sprite, {
+			image = assets.Search,
+			color = theme.divider,
+			size = UDim2.fromOffset(16, 16),
 		}),
 	})
 end

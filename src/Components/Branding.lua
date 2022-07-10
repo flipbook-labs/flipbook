@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
+local Sprite = require(flipbook.Components.Sprite)
 
 local e = Roact.createElement
 
@@ -31,11 +32,10 @@ local function Branding(props: Props, hooks: any)
 			PaddingLeft = -theme.paddingSmall,
 		}),
 
-		Icon = e("ImageLabel", {
-			BackgroundTransparency = 1,
-			Image = assets.IconLight,
-			LayoutOrder = 0,
-			Size = UDim2.fromOffset(42, 42),
+		Icon = e(Sprite, {
+			layoutOrder = 0,
+			image = assets.IconLight,
+			size = UDim2.fromOffset(42, 42),
 		}),
 
 		Typography = e("TextLabel", {

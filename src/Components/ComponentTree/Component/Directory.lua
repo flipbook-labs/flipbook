@@ -6,6 +6,7 @@ local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
+local Sprite = require(flipbook.Components.Sprite)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -66,13 +67,12 @@ local function Directory(props: Props, hooks: any)
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			}),
 
-			Icon = e("ImageLabel", {
-				BackgroundTransparency = 1,
-				Image = if props.node.icon == "folder" then assets.Folder else assets.Storybook,
-				ImageColor3 = if props.node.icon == "folder" then theme.directory else theme.textFaded,
-				LayoutOrder = 0,
-				Size = UDim2.fromOffset(16, 16),
-			}),
+			-- Icon = e(Sprite, {
+			-- 	layoutOrder = 0,
+			-- 	image = if props.node.icon == "folder" then assets.Folder else assets.Storybook,
+			-- 	color = if props.node.icon == "folder" then theme.directory else theme.textFaded,
+			-- 	size = UDim2.fromOffset(16, 16),
+			-- }),
 
 			Typography = e("TextLabel", {
 				AutomaticSize = Enum.AutomaticSize.XY,
@@ -87,14 +87,18 @@ local function Directory(props: Props, hooks: any)
 			}),
 		}),
 
-		Chevron = e("ImageLabel", {
+		ChevronWrapper = e("Frame", {
 			AnchorPoint = Vector2.new(1, 0.5),
 			BackgroundTransparency = 1,
-			Image = assets.ChevronRight,
-			ImageColor3 = theme.text,
 			Position = UDim2.fromScale(1, 0.5),
 			Rotation = styles.rotation,
 			Size = UDim2.fromOffset(16, 16),
+		}, {
+			Chevron = e(Sprite, {
+				image = assets.ChevronRight,
+				color = theme.text,
+				size = UDim2.fromScale(1, 1),
+			}),
 		}),
 	})
 end

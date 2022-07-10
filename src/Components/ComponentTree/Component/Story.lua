@@ -6,6 +6,7 @@ local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
+local Sprite = require(flipbook.Components.Sprite)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -66,12 +67,11 @@ local function Story(props: Props, hooks: any)
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			}),
 
-			Icon = e("ImageLabel", {
-				BackgroundTransparency = 1,
-				Image = assets.Component,
-				ImageColor3 = theme.story,
-				LayoutOrder = 0,
-				Size = UDim2.fromOffset(16, 16),
+			Icon = e(Sprite, {
+				image = assets.Component,
+				color = theme.story,
+				layoutOrder = 0,
+				size = UDim2.fromOffset(16, 16),
 			}),
 
 			Typography = e("TextLabel", {

@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
+local Sprite = require(flipbook.Components.Sprite)
 
 local e = Roact.createElement
 
@@ -21,12 +22,11 @@ local function NoStorySelected(_props, hooks: any)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
-		Icon = e("ImageLabel", {
-			BackgroundTransparency = 1,
-			Image = assets.Storybook,
-			ImageColor3 = theme.text,
-			LayoutOrder = 1,
-			Size = UDim2.fromOffset(32, 32),
+		Icon = e(Sprite, {
+			image = assets.Storybook,
+			layoutOrder = 1,
+			color = theme.text,
+			size = UDim2.fromOffset(32, 32),
 		}),
 
 		Message = e("TextLabel", {
