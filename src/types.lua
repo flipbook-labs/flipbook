@@ -32,12 +32,20 @@ export type HoarcekatStory = (GuiObject) -> () -> ()
 export type Theme = {
 	background: Color3,
 	brand: Color3,
+	sidebar: Color3,
 	canvas: Color3,
-	component: Color3,
-	stroke: Color3,
-	strokeSecondary: Color3,
+	scrollbar: Color3,
+	divider: Color3,
+
 	text: Color3,
-	textSecondary: Color3,
+	textFaded: Color3,
+
+	button: Color3,
+
+	selection: Color3,
+
+	story: Color3,
+	directory: Color3,
 }
 
 return {}

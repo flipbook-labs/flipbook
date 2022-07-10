@@ -3,8 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
-local useDark = require(flipbook.Hooks.useDark)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -13,10 +12,10 @@ type Props = {
 }
 
 local function Searchbar(props: Props, hooks: any)
-	local dark = useDark(hooks)
+	local theme = useTheme(hooks)
 
 	return e("Frame", {
-		BackgroundColor3 = useTailwind("white", "white", dark),
+		BackgroundColor3 = theme.background,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromOffset(236, 36),
 	}, {
@@ -32,14 +31,14 @@ local function Searchbar(props: Props, hooks: any)
 		}),
 
 		UIStroke = e("UIStroke", {
-			Color = useTailwind("gray-300", "gray-300", dark),
+			Color = theme.divider,
 		}),
 
 		Icon = e("ImageLabel", {
 			BackgroundTransparency = 1,
 			Image = assets.Search,
 			Size = UDim2.fromOffset(16, 16),
-			ImageColor3 = useTailwind("gray-300", "gray-300", dark),
+			ImageColor3 = theme.divider,
 		}),
 	})
 end

@@ -4,7 +4,8 @@ local Roact = require(flipbook.Packages.Roact)
 local types = require(script.Parent.Parent.types)
 local NoStorySelected = require(flipbook.Components.NoStorySelected)
 local StoryView = require(flipbook.Components.StoryView)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
+local hook = require(flipbook.hook)
 
 local e = Roact.createElement
 
@@ -15,16 +16,18 @@ type Props = {
 	layoutOrder: number?,
 }
 
-local function Canvas(props: Props)
+local function Canvas(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	return e("Frame", {
-		BackgroundColor3 = useTailwind("white"),
+		BackgroundColor3 = theme.canvas,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(1, -267, 1, 0),
 	}, {
 		Divider = e("Frame", {
 			AnchorPoint = Vector2.new(1, 0),
-			BackgroundColor3 = useTailwind("gray-300"),
+			BackgroundColor3 = theme.divider,
 			BorderSizePixel = 0,
 			Size = UDim2.new(0, 1, 1, 0),
 		}),
@@ -49,4 +52,4 @@ local function Canvas(props: Props)
 	})
 end
 
-return Canvas
+return hook(Canvas)

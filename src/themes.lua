@@ -1,38 +1,42 @@
 local flipbook = script:FindFirstAncestor("flipbook")
-local assets = require(flipbook.assets)
+local types = require(flipbook.types)
+local tailwind = require(flipbook.tailwind)
 
 return {
 	Light = {
-		Background = Color3.fromHex("F1F3F4"),
-		BrandIcon = assets.IconLight,
-		Canvas = Color3.fromHex("FFFFFF"),
+		background = tailwind.white,
+		sidebar = tailwind.gray800,
+		canvas = tailwind.white,
+		scrollbar = tailwind.gray800,
+		divider = tailwind.gray300,
 
-		Text = Color3.fromHex("111228"),
-		TextSecondary = Color3.fromHex("FFFFFF"),
-		TextTertiary = Color3.fromHex("4B5563"),
+		text = tailwind.gray800,
+		textFaded = tailwind.gray600,
 
-		Stroke = Color3.fromHex("E2E3E7"),
-		StrokeSecondary = Color3.fromHex("CCCFD6"),
-		StrokeTertiary = Color3.fromHex("606674"),
+		button = tailwind.gray100,
 
-		Selection = Color3.fromHex("5D54E7"),
-		Component = Color3.fromHex("4ADE80"),
-	},
+		selection = tailwind.purple500,
+
+		story = tailwind.green500,
+		directory = tailwind.purple500,
+	} :: types.Theme,
 
 	Dark = {
-		Background = Color3.fromHex("F1F3F4"),
-		BrandIcon = assets.IconLight,
-		Canvas = Color3.fromHex("FFFFFF"),
+		background = tailwind.white,
+		brand = tailwind.purple500,
+		sidebar = tailwind.gray800,
+		canvas = tailwind.white,
+		scrollbar = tailwind.gray800,
+		divider = tailwind.gray300,
 
-		Text = Color3.fromHex("111228"),
-		TextSecondary = Color3.fromHex("FFFFFF"),
-		TextTertiary = Color3.fromHex("4B5563"),
+		text = tailwind.gray800,
+		textFaded = tailwind.gray600,
 
-		Stroke = Color3.fromHex("E2E3E7"),
-		StrokeSecondary = Color3.fromHex("CCCFD6"),
-		StrokeTertiary = Color3.fromHex("606674"),
+		button = tailwind.gray100,
 
-		Selection = Color3.fromHex("5D54E7"),
-		Component = Color3.fromHex("4ADE80"),
-	},
+		selection = tailwind.purple500,
+
+		story = tailwind.green500,
+		directory = tailwind.purple500,
+	} :: types.Theme,
 }

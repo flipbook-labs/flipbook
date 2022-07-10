@@ -4,13 +4,14 @@ local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 local Canvas = require(script.Parent.Canvas)
 local Sidebar = require(script.Parent.Sidebar)
 
 local loader = ModuleLoader.new()
 
 local function App(_props, hooks: any)
+	local theme = useTheme(hooks)
 	local storybooks = useStorybooks(hooks, game, loader)
 	local story, setStory = hooks.useState(nil)
 	local storybook, selectStorybook = hooks.useState(nil)
@@ -22,7 +23,7 @@ local function App(_props, hooks: any)
 	end, { setStory })
 
 	return Roact.createElement("Frame", {
-		BackgroundColor3 = useTailwind("gray-100"),
+		BackgroundColor3 = theme.background,
 		Size = UDim2.fromScale(1, 1),
 	}, {
 		UIListLayout = Roact.createElement("UIListLayout", {

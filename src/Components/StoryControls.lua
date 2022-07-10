@@ -3,7 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local Navbar = require(flipbook.Components.Navbar)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -11,7 +11,9 @@ type Props = {
 	layoutOrder: number,
 }
 
-local function StoryControls(props: Props)
+local function StoryControls(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	return e("Frame", {
 		BackgroundTransparency = 1,
 		LayoutOrder = props.layoutOrder,
@@ -42,7 +44,7 @@ local function StoryControls(props: Props)
 							Font = Enum.Font.GothamMedium,
 							Size = UDim2.fromScale(0, 0),
 							Text = "Controls",
-							TextColor3 = useTailwind("gray-800"),
+							TextColor3 = theme.text,
 							TextSize = 14,
 							TextXAlignment = Enum.TextXAlignment.Left,
 							TextYAlignment = Enum.TextYAlignment.Top,
@@ -61,7 +63,7 @@ local function StoryControls(props: Props)
 							Font = Enum.Font.GothamMedium,
 							Size = UDim2.fromScale(0, 0),
 							Text = "Story",
-							TextColor3 = useTailwind("gray-600"),
+							TextColor3 = theme.textFaded,
 							TextSize = 14,
 							TextXAlignment = Enum.TextXAlignment.Left,
 							TextYAlignment = Enum.TextYAlignment.Top,

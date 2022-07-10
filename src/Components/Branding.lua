@@ -3,8 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
-local useDark = require(flipbook.Hooks.useDark)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -13,7 +12,7 @@ type Props = {
 }
 
 local function Branding(props: Props, hooks: any)
-	local dark = useDark(hooks)
+	local theme = useTheme(hooks)
 
 	return e("Frame", {
 		AutomaticSize = Enum.AutomaticSize.XY,
@@ -46,7 +45,7 @@ local function Branding(props: Props, hooks: any)
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(0, 0),
 			Text = "flipbook",
-			TextColor3 = useTailwind("gray-800", "gray-800", dark),
+			TextColor3 = theme.text,
 			TextSize = 20,
 		}, {
 			UIPadding = e("UIPadding", {

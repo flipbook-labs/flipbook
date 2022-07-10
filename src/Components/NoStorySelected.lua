@@ -3,11 +3,13 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
-local function NoStorySelected()
+local function NoStorySelected(_props, hooks: any)
+	local theme = useTheme(hooks)
+
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
@@ -22,7 +24,7 @@ local function NoStorySelected()
 		Icon = e("ImageLabel", {
 			BackgroundTransparency = 1,
 			Image = assets.Storybook,
-			ImageColor3 = useTailwind("gray-800"),
+			ImageColor3 = theme.text,
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(32, 32),
 		}),
@@ -34,7 +36,7 @@ local function NoStorySelected()
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = "Select a story to preview it",
-			TextColor3 = useTailwind("gray-800"),
+			TextColor3 = theme.text,
 			TextSize = 18,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextYAlignment = Enum.TextYAlignment.Top,

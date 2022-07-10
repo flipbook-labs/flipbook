@@ -2,19 +2,22 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
+local hook = require(flipbook.hook)
 
 export type Props = {
 	[string]: any,
 }
 
-local function ScrollingFrame(props: Props)
+local function ScrollingFrame(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	props = Llama.Dictionary.join({
 		Size = UDim2.fromScale(1, 1),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		CanvasSize = UDim2.fromScale(1, 0),
 		ScrollingDirection = Enum.ScrollingDirection.Y,
-		ScrollBarImageColor3 = useTailwind("gray-800"),
+		ScrollBarImageColor3 = theme.scrollbar,
 		ScrollBarThickness = 4,
 		ScrollBarImageTransparency = 0.2,
 		VerticalScrollBarInset = Enum.ScrollBarInset.None,
@@ -25,4 +28,4 @@ local function ScrollingFrame(props: Props)
 	return Roact.createElement("ScrollingFrame", props)
 end
 
-return ScrollingFrame
+return hook(ScrollingFrame)

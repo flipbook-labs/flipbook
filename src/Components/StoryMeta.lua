@@ -2,7 +2,8 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local types = require(script.Parent.Parent.types)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
+local hook = require(flipbook.hook)
 
 local MAX_SUMMARY_SIZE = 600
 
@@ -13,7 +14,9 @@ export type Props = {
 	story: types.Story,
 }
 
-local function StoryMeta(props: Props)
+local function StoryMeta(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	return e("Frame", {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
@@ -32,7 +35,7 @@ local function StoryMeta(props: Props)
 			Font = Enum.Font.GothamBold,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.story.name:sub(1, #props.story.name - 6),
-			TextColor3 = useTailwind("gray-800"),
+			TextColor3 = theme.text,
 			TextSize = 24,
 		}),
 
@@ -43,7 +46,7 @@ local function StoryMeta(props: Props)
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.story.summary,
-			TextColor3 = useTailwind("gray-800"),
+			TextColor3 = theme.textFaded,
 			TextSize = 16,
 			TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Center,
@@ -55,4 +58,4 @@ local function StoryMeta(props: Props)
 	})
 end
 
-return StoryMeta
+return hook(StoryMeta)

@@ -5,8 +5,7 @@ local RoactSpring = require(flipbook.Packages.RoactSpring)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
-local useDark = require(flipbook.Hooks.useDark)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -20,7 +19,7 @@ type Props = {
 }
 
 local function Directory(props: Props, hooks: any)
-	local dark = useDark(hooks)
+	local theme = useTheme(hooks)
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if hover then 0 else 1,
@@ -30,7 +29,7 @@ local function Directory(props: Props, hooks: any)
 
 	return e("TextButton", {
 		AutoButtonColor = false,
-		BackgroundColor3 = useTailwind("gray-200", "gray-200", dark),
+		BackgroundColor3 = theme.button,
 		BackgroundTransparency = styles.alpha,
 		LayoutOrder = 0,
 		Size = UDim2.new(1, 0, 0, 36),
@@ -70,9 +69,7 @@ local function Directory(props: Props, hooks: any)
 			Icon = e("ImageLabel", {
 				BackgroundTransparency = 1,
 				Image = if props.node.icon == "folder" then assets.Folder else assets.Storybook,
-				ImageColor3 = if props.node.icon == "folder"
-					then useTailwind("purple-500")
-					else useTailwind("gray-600", "gray-600", dark),
+				ImageColor3 = if props.node.icon == "folder" then theme.directory else theme.textFaded,
 				LayoutOrder = 0,
 				Size = UDim2.fromOffset(16, 16),
 			}),
@@ -85,7 +82,7 @@ local function Directory(props: Props, hooks: any)
 				Size = UDim2.fromOffset(0, 0),
 				-- TODO: Do string parsing to get rid of `.storybook`
 				Text = props.node.name,
-				TextColor3 = useTailwind("gray-600", "gray-600", dark),
+				TextColor3 = theme.textFaded,
 				TextSize = 14,
 			}),
 		}),
@@ -94,7 +91,7 @@ local function Directory(props: Props, hooks: any)
 			AnchorPoint = Vector2.new(1, 0.5),
 			BackgroundTransparency = 1,
 			Image = assets.ChevronRight,
-			ImageColor3 = useTailwind("gray-800", "gray-800", dark),
+			ImageColor3 = theme.text,
 			Position = UDim2.fromScale(1, 0.5),
 			Rotation = styles.rotation,
 			Size = UDim2.fromOffset(16, 16),

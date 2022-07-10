@@ -5,7 +5,7 @@ local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local Navbar = require(flipbook.Components.Navbar)
 local Button = require(flipbook.Components.Button)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -13,7 +13,9 @@ type Props = {
 	layoutOrder: number,
 }
 
-local function NavbarRoot(props: Props)
+local function NavbarRoot(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	return e(Navbar.Element, {
 		height = 55,
 		layoutOrder = props.layoutOrder,
@@ -38,7 +40,7 @@ local function NavbarRoot(props: Props)
 						Font = Enum.Font.GothamMedium,
 						Size = UDim2.fromScale(0, 0),
 						Text = "Canvas",
-						TextColor3 = useTailwind("gray-800"),
+						TextColor3 = theme.text,
 						TextSize = 14,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						TextYAlignment = Enum.TextYAlignment.Top,
@@ -57,7 +59,7 @@ local function NavbarRoot(props: Props)
 						Font = Enum.Font.GothamMedium,
 						Size = UDim2.fromScale(0, 0),
 						Text = "Documentation",
-						TextColor3 = useTailwind("gray-600"),
+						TextColor3 = theme.textFaded,
 						TextSize = 14,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						TextYAlignment = Enum.TextYAlignment.Top,
@@ -82,7 +84,7 @@ local function NavbarRoot(props: Props)
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
 						Image = assets.Magnify,
-						ImageColor3 = useTailwind("gray-600"),
+						ImageColor3 = theme.textFaded,
 						Size = UDim2.fromOffset(24, 24),
 					}),
 				}),
@@ -96,7 +98,7 @@ local function NavbarRoot(props: Props)
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
 						Image = assets.Minify,
-						ImageColor3 = useTailwind("gray-600"),
+						ImageColor3 = theme.textFaded,
 						Size = UDim2.fromOffset(24, 24),
 					}),
 				}),
@@ -122,7 +124,7 @@ local function NavbarRoot(props: Props)
 						Font = Enum.Font.GothamMedium,
 						Size = UDim2.fromScale(0, 0),
 						Text = "View Code",
-						TextColor3 = useTailwind("gray-800"),
+						TextColor3 = theme.text,
 						TextSize = 14,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						TextYAlignment = Enum.TextYAlignment.Top,
@@ -141,7 +143,7 @@ local function NavbarRoot(props: Props)
 						Font = Enum.Font.GothamMedium,
 						Size = UDim2.fromScale(0, 0),
 						Text = "Preview in Viewport",
-						TextColor3 = useTailwind("gray-800"),
+						TextColor3 = theme.text,
 						TextSize = 14,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						TextYAlignment = Enum.TextYAlignment.Top,

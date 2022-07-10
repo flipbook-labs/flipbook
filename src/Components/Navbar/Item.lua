@@ -4,7 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
@@ -16,6 +16,8 @@ type Props = {
 }
 
 local function Item(props: Props, hooks: any)
+	local theme = useTheme(hooks)
+
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if not props.active and hover then 0 else 1,
@@ -25,7 +27,7 @@ local function Item(props: Props, hooks: any)
 	return e("TextButton", {
 		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
-		BackgroundColor3 = useTailwind("gray-100"),
+		BackgroundColor3 = theme.button,
 		BackgroundTransparency = styles.alpha,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(0, 0),

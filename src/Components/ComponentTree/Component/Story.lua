@@ -5,8 +5,7 @@ local RoactSpring = require(flipbook.Packages.RoactSpring)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
--- local useDark = require(flipbook.Hooks.useDark)
-local useTailwind = require(flipbook.Hooks.useTailwind)
+local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
@@ -19,12 +18,12 @@ type Props = {
 }
 
 local function Story(props: Props, hooks: any)
-	-- local dark = useDark(hooks)
+	local theme = useTheme(hooks)
 	local hover, setHover = hooks.useState(false)
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if not props.active then if hover then 0 else 1 else 0,
-		color = if not props.active then useTailwind("gray-200") else useTailwind("purple-500"),
-		textColor = if not props.active then useTailwind("gray-600") else useTailwind("white"),
+		color = if not props.active then theme.divider else theme.selection,
+		textColor = if not props.active then theme.textFaded else theme.background,
 		config = constants.SPRING_CONFIG,
 	})
 
@@ -70,7 +69,7 @@ local function Story(props: Props, hooks: any)
 			Icon = e("ImageLabel", {
 				BackgroundTransparency = 1,
 				Image = assets.Component,
-				ImageColor3 = useTailwind("green-500"),
+				ImageColor3 = theme.story,
 				LayoutOrder = 0,
 				Size = UDim2.fromOffset(16, 16),
 			}),
@@ -82,7 +81,7 @@ local function Story(props: Props, hooks: any)
 				LayoutOrder = 1,
 				Size = UDim2.fromOffset(0, 0),
 				Text = props.node.name:sub(1, #props.node.name - 6),
-				TextColor3 = styles.textColor,
+				TextColor3 = theme.text,
 				TextSize = 14,
 			}),
 		}),
