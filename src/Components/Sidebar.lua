@@ -46,7 +46,7 @@ local function Sidebar(props: Props, hooks: any)
 	end, { setHeaderHeight })
 
 	return e("Frame", {
-		BackgroundTransparency = 1,
+		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(0, 267, 1, 0),
