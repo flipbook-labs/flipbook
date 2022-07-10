@@ -5,18 +5,15 @@ local tailwind = require(flipbook.tailwind)
 return {
 	Light = {
 		background = tailwind.white,
-		sidebar = tailwind.gray800,
+		sidebar = tailwind.gray100,
 		canvas = tailwind.white,
 		scrollbar = tailwind.gray800,
+		button = tailwind.gray800,
+		buttonText = tailwind.white,
 		divider = tailwind.gray300,
-
 		text = tailwind.gray800,
 		textFaded = tailwind.gray600,
-
-		button = tailwind.gray100,
-
 		selection = tailwind.purple500,
-
 		story = tailwind.green500,
 		directory = tailwind.purple500,
 
@@ -27,18 +24,15 @@ return {
 
 	Dark = {
 		background = tailwind.white,
-		sidebar = tailwind.gray800,
+		sidebar = tailwind.gray100,
 		canvas = tailwind.white,
 		scrollbar = tailwind.gray800,
+		button = tailwind.gray800,
+		buttonText = tailwind.white,
 		divider = tailwind.gray300,
-
 		text = tailwind.gray800,
 		textFaded = tailwind.gray600,
-
-		button = tailwind.gray100,
-
 		selection = tailwind.purple500,
-
 		story = tailwind.green500,
 		directory = tailwind.purple500,
 

@@ -6,37 +6,39 @@ local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
 
-type Props = {
-	style: "contain" | "stroke",
+local function shift(color: Color3, percent: number): Color3
+	local h, s, v = color:ToHSV()
+	return Color3.fromHSV(h, s, math.clamp(v * (1 + percent), 0, 1))
+end
+
+local defaultProps = {
+	style = "contain",
+	text = "Button",
+	textSize = 14,
+}
+
+type Props = typeof(defaultProps) & {
 	text: string,
-	textColor: Color3,
-	textSize: number,
-	color: Color3,
+	style: "contain" | "stroke",
 
 	anchorPoint: Vector2?,
-	endIcon: any?,
-	highlight: { base: Color3?, text: Color3? }?,
-	layoutOrder: number?,
-	onClick: () -> ()?,
-	padding: { x: number, y: number },
 	position: UDim2?,
+	layoutOrder: number?,
+	endIcon: any?,
 	startIcon: any?,
+
+	onClick: (() -> ())?,
 }
 
 local function Button(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local hover, setHover = hooks.useState(false)
 
-	local paddingX = UDim.new(0, props.padding.x)
-	local paddingY = UDim.new(0, props.padding.y)
-
 	return e("ImageButton", {
 		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
 		AnchorPoint = props.anchorPoint,
-		BackgroundColor3 = if props.highlight and props.highlight.base
-			then if hover then props.highlight.base else props.color
-			else props.color,
+		BackgroundColor3 = if hover then shift(theme.button, 0.2) else theme.button,
 		BackgroundTransparency = if props.style == "stroke" then if hover then 0 else 1 else 0,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
@@ -54,30 +56,27 @@ local function Button(props: Props, hooks: any)
 		}),
 
 		UIPadding = e("UIPadding", {
-			PaddingBottom = paddingY,
-			PaddingLeft = paddingX,
-			PaddingRight = paddingX,
-			PaddingTop = paddingY,
+			PaddingBottom = theme.padding,
+			PaddingLeft = theme.paddingLarge,
+			PaddingRight = theme.paddingLarge,
+			PaddingTop = theme.padding,
 		}),
 
-		UIStroke = if props.style == "stroke"
-			then e("UIStroke", {
-				Color = props.color,
-			})
-			else nil,
+		UIStroke = props.style == "stroke" and e("UIStroke", {
+			Color = theme.button,
+		}),
 
-		EndIcon = if props.endIcon then props.endIcon else nil,
-		StartIcon = if props.startIcon then props.startIcon else nil,
+		EndIcon = props.endIcon,
 
-		UIListLayout = if props.startIcon or props.endIcon
-			then e("UIListLayout", {
-				FillDirection = Enum.FillDirection.Horizontal,
-				HorizontalAlignment = Enum.HorizontalAlignment.Center,
-				Padding = theme.paddingSmall,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				VerticalAlignment = Enum.VerticalAlignment.Center,
-			})
-			else nil,
+		StartIcon = props.startIcon,
+
+		UIListLayout = props.startIcon or props.endIcon and e("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			Padding = theme.paddingSmall,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+		}),
 
 		Text = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
@@ -86,25 +85,12 @@ local function Button(props: Props, hooks: any)
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.text,
-			TextColor3 = if props.highlight and props.highlight.text
-				then if hover then props.highlight.text else props.textColor
-				else props.textColor,
+			TextColor3 = if hover then shift(theme.buttonText, 0.2) else theme.buttonText,
 			TextSize = props.textSize,
 		}),
 	})
 end
 
 return hook(Button, {
-	defaultProps = {
-		color = Color3.fromHex("1F2937"),
-		highlight = {
-			base = Color3.fromHex("374151"),
-		},
-		layoutOrder = 0,
-		padding = { x = 20, y = 10 },
-		style = "contain",
-		text = "Button",
-		textColor = Color3.new(1, 1, 1),
-		textSize = 14,
-	},
+	defaultProps = defaultProps,
 })

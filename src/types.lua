@@ -34,15 +34,12 @@ export type Theme = {
 	sidebar: Color3,
 	canvas: Color3,
 	scrollbar: Color3,
+	button: Color3,
+	buttonText: Color3,
 	divider: Color3,
-
 	text: Color3,
 	textFaded: Color3,
-
-	button: Color3,
-
 	selection: Color3,
-
 	story: Color3,
 	directory: Color3,
 
