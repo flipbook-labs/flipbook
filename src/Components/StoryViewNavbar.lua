@@ -11,6 +11,7 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
+	onPreviewInViewport: (() -> ())?,
 }
 
 local function NavbarRoot(props: Props, hooks: any)
@@ -131,10 +132,10 @@ local function NavbarRoot(props: Props, hooks: any)
 					}),
 				}),
 
-				Mount = e(Navbar.Item, {
+				ViewportPreview = e(Navbar.Item, {
 					active = false,
 					layoutOrder = 2,
-					onClick = function() end,
+					onClick = props.onPreviewInViewport,
 					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
 					Text = e("TextLabel", {

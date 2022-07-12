@@ -22,6 +22,12 @@ local function StoryView(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
 
+	local isMountedInViewport, setIsMountedInViewport = hooks.useState(false)
+
+	local onPreviewInViewport = hooks.useCallback(function()
+		setIsMountedInViewport(not isMountedInViewport)
+	end, { isMountedInViewport, setIsMountedInViewport })
+
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
@@ -33,6 +39,7 @@ local function StoryView(props: Props, hooks: any)
 
 		StoryViewNavbar = story and e(StoryViewNavbar, {
 			layoutOrder = 1,
+			onPreviewInViewport = onPreviewInViewport,
 		}),
 
 		Content = story and e("Frame", {
@@ -57,6 +64,7 @@ local function StoryView(props: Props, hooks: any)
 				layoutOrder = 3,
 				story = story,
 				storyModule = props.story,
+				isMountedInViewport = isMountedInViewport,
 			}),
 
 			StoryControls = story and e(StoryControls, {
