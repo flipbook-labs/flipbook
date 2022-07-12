@@ -23,10 +23,12 @@ local SEARCH_ICON_SIZE = 16 -- px
 
 local function Searchbar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
+	local search, setSearch = hooks.useState("")
 	local isFocused, setIsFocused = hooks.useState(false)
+	local isExpanded = isFocused or search ~= ""
 
 	local styles = RoactSpring.useSpring(hooks, {
-		alpha = if isFocused then 1 else 0,
+		alpha = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
 
@@ -37,6 +39,10 @@ local function Searchbar(props: Props, hooks: any)
 	local onFocusLost = hooks.useCallback(function()
 		setIsFocused(false)
 	end, { setIsFocused })
+
+	local onTextChange = hooks.useCallback(function(new: string)
+		setSearch(new)
+	end, {})
 
 	return e("ImageButton", {
 		AutoButtonColor = false,
@@ -65,7 +71,6 @@ local function Searchbar(props: Props, hooks: any)
 		Layout = e("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = theme.paddingSmall,
 		}),
 
 		InputFieldWrapper = e("Frame", {
@@ -74,18 +79,19 @@ local function Searchbar(props: Props, hooks: any)
 				-- This represents the width taken up by the Icon element and
 				-- the layout's padding. We need to subtract it from the full
 				-- width to make sure everything fits perfectly
-				local remainingWidth = UDim2.fromOffset(SEARCH_ICON_SIZE + theme.paddingSmall.Offset, 0)
+				local remainingWidth = UDim2.fromOffset(SEARCH_ICON_SIZE, 0)
 				local goal = UDim2.fromScale(1, 1) - remainingWidth
 
 				return UDim2.fromScale(0, 1):Lerp(goal, alpha)
 			end),
 			BackgroundTransparency = 1,
 		}, {
-			InputField = isFocused and e(InputField, {
+			InputField = isExpanded and e(InputField, {
 				placeholder = "Enter component name...",
 				autoFocus = true,
 				onFocus = onFocus,
 				onFocusLost = onFocusLost,
+				onTextChange = onTextChange,
 			}),
 		}),
 
