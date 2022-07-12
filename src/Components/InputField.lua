@@ -44,7 +44,7 @@ local function InputField(props: Props, hooks: any)
 	local onTextChanged = hooks.useCallback(function(rbx: TextBox)
 		local newText = rbx.Text
 
-		if newText == text then
+		if newText == text and newText ~= "" then
 			return
 		end
 
@@ -84,7 +84,6 @@ local function InputField(props: Props, hooks: any)
 		PlaceholderColor3 = theme.textFaded,
 		ClearTextOnFocus = false,
 		Text = text,
-		ClipsDescendants = true,
 		[Roact.Change.Text] = onTextChanged,
 		[Roact.Event.Focused] = props.onFocus,
 		[Roact.Event.FocusLost] = onFocusLost,
