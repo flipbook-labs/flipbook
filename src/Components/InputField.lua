@@ -7,6 +7,7 @@ local useTheme = require(flipbook.Hooks.useTheme)
 local e = Roact.createElement
 
 local defaultProps = {
+	size = UDim2.fromScale(1, 1),
 	placeholder = "Input...",
 	autoFocus = false,
 }
@@ -14,6 +15,8 @@ local defaultProps = {
 export type Props = typeof(defaultProps) & {
 	layoutOrder: number?,
 	onSubmit: ((text: string) -> ()),
+	onFocus: (() -> ())?,
+	onFocusLost: (() -> ())?,
 	onTextChange: ((new: string, old: string) -> ())?,
 	validate: ((text: string) -> boolean)?,
 	transform: ((newText: string, oldText: string) -> string)?,
@@ -26,6 +29,10 @@ local function InputField(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	local onFocusLost = hooks.useCallback(function(_rbx: TextBox, enterPressed: boolean)
+		if props.onFocusLost then
+			props.onFocusLost()
+		end
+
 		if enterPressed and isValid and props.onSubmit then
 			props.onSubmit(text)
 		end
@@ -67,32 +74,21 @@ local function InputField(props: Props, hooks: any)
 	return e("TextBox", {
 		LayoutOrder = props.layoutOrder,
 		PlaceholderText = props.placeholder,
+		Size = props.size,
 		TextSize = theme.textSize,
 		TextColor3 = theme.text,
 		Font = theme.font,
-		-- LineHeight = 1.25,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Top,
-		AutomaticSize = Enum.AutomaticSize.XY,
 		BackgroundTransparency = 1,
-		Size = UDim2.fromScale(0.5, 0),
 		PlaceholderColor3 = theme.textFaded,
 		ClearTextOnFocus = false,
 		Text = text,
+		ClipsDescendants = true,
 		[Roact.Change.Text] = onTextChanged,
+		[Roact.Event.Focused] = props.onFocus,
 		[Roact.Event.FocusLost] = onFocusLost,
 		[Roact.Ref] = ref,
-	}, {
-		Padding = e("UIPadding", {
-			PaddingTop = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-		}),
-
-		Corner = e("UICorner", {
-			CornerRadius = UDim.new(1 / 4, 0),
-		}),
 	})
 end
 
