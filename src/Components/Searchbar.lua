@@ -17,6 +17,7 @@ local defaultProps = {
 
 type Props = typeof(defaultProps) & {
 	layoutOrder: number?,
+	onSearchChanged: ((value: string) -> ())?,
 }
 
 local SEARCH_ICON_SIZE = 16 -- px
@@ -41,6 +42,10 @@ local function Searchbar(props: Props, hooks: any)
 	end, { setIsFocused })
 
 	local onTextChange = hooks.useCallback(function(new: string)
+		if props.onSearchChanged then
+			props.onSearchChanged(new)
+		end
+
 		setSearch(new)
 	end, {})
 

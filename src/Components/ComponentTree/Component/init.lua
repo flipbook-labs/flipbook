@@ -8,20 +8,25 @@ local types = require(script.Parent.types)
 
 local e = Roact.createElement
 
-type Props = {
-	activeNode: types.Node?,
-	indent: number,
+local defaultProps = {
+	indent = 0,
+}
+
+type Props = typeof(defaultProps) & {
 	node: types.Node,
-	onClick: (types.Node) -> (),
+	filter: string?,
+	activeNode: types.Node?,
+	onClick: ((types.Node) -> ())?,
 }
 
 local function Component(props: Props, hooks: any)
-	local indent = props.indent or 0
 	local hasChildren = props.node.children and #props.node.children > 0
 
 	local expanded, setExpanded = hooks.useState(false)
 	local onClick = hooks.useCallback(function()
-		props.onClick(props.node)
+		if props.onClick then
+			props.onClick(props.node)
+		end
 
 		if hasChildren then
 			setExpanded(function(prev)
@@ -41,11 +46,20 @@ local function Component(props: Props, hooks: any)
 	if hasChildren and props.node.children then
 		for idx, child in ipairs(props.node.children) do
 			children[child.name .. idx] = Roact.createElement(Component, {
-				activeNode = props.activeNode,
-				indent = indent + 1,
 				node = child,
+				indent = props.indent + 1,
+				filter = props.filter,
+				activeNode = props.activeNode,
 				onClick = props.onClick,
 			})
+		end
+	end
+
+	if props.filter and props.node.icon ~= "storybook" then
+		local match = props.node.name:match(props.filter)
+
+		if not match then
+			return
 		end
 	end
 
@@ -63,13 +77,13 @@ local function Component(props: Props, hooks: any)
 			then e(Directory, {
 				expanded = expanded,
 				hasChildren = hasChildren,
-				indent = indent,
+				indent = props.indent,
 				node = props.node,
 				onClick = onClick,
 			})
 			else e(Story, {
 				active = props.activeNode == props.node,
-				indent = indent,
+				indent = props.indent,
 				node = props.node,
 				onClick = onClick,
 			}),
@@ -85,6 +99,8 @@ local function Component(props: Props, hooks: any)
 	})
 end
 
-Component = hook(Component)
+Component = hook(Component, {
+	defaultProps = defaultProps,
+})
 
 return Component

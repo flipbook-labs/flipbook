@@ -45,6 +45,15 @@ local function Sidebar(props: Props, hooks: any)
 		setHeaderHeight(rbx.AbsoluteSize.Y)
 	end, { setHeaderHeight })
 
+	local search, setSearch = hooks.useState(nil)
+	local onSearchChanged = hooks.useCallback(function(value: string)
+		if value == "" then
+			setSearch(nil)
+		else
+			setSearch(value)
+		end
+	end, {})
+
 	return e("Frame", {
 		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
@@ -81,6 +90,7 @@ local function Sidebar(props: Props, hooks: any)
 
 			Searchbar = e(Searchbar, {
 				layoutOrder = 1,
+				onSearchChanged = onSearchChanged,
 			}),
 		}),
 
@@ -89,6 +99,7 @@ local function Sidebar(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
 		}, {
 			ComponentTree = e(ComponentTree, {
+				filter = search,
 				activeNode = activeNode,
 				nodes = storybookNodes,
 				onClick = onClick,
