@@ -1,5 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local Selection = game:GetService("Selection")
+
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
@@ -10,6 +12,7 @@ local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
 local StoryPreview = require(flipbook.Components.StoryPreview)
+local PluginContext = require(flipbook.Plugin.PluginContext)
 
 local e = Roact.createElement
 
@@ -23,6 +26,12 @@ local function StoryView(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
 	local zoom = useZoom(hooks, props.story)
+	local plugin = hooks.useContext(PluginContext.Context)
+
+	local viewCode = hooks.useCallback(function()
+		Selection:Set({ props.story })
+		plugin:OpenScript(props.story)
+	end, { plugin, props.story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -37,6 +46,7 @@ local function StoryView(props: Props, hooks: any)
 			layoutOrder = 1,
 			onZoomIn = zoom.zoomIn,
 			onZoomOut = zoom.zoomOut,
+			onViewCode = viewCode,
 		}),
 
 		Content = story and e("Frame", {

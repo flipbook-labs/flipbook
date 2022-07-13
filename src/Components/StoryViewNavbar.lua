@@ -13,6 +13,7 @@ type Props = {
 	layoutOrder: number,
 	onZoomIn: (() -> ())?,
 	onZoomOut: (() -> ())?,
+	onViewCode: (() -> ())?,
 }
 
 local function NavbarRoot(props: Props, hooks: any)
@@ -24,11 +25,9 @@ local function NavbarRoot(props: Props, hooks: any)
 	}, {
 		LeftNav = e(Navbar.Items, {
 			layoutOrder = 1,
-			padding = UDim.new(0, 12),
 		}, {
 			Pages = e(Navbar.Items, {
 				layoutOrder = 1,
-				padding = UDim.new(0, 0),
 			}, {
 				Canvas = e(Navbar.Item, {
 					active = true,
@@ -107,7 +106,7 @@ local function NavbarRoot(props: Props, hooks: any)
 			}, {
 				ViewCode = e(Navbar.Item, {
 					layoutOrder = 1,
-					onClick = function() end,
+					onClick = props.onViewCode,
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,
