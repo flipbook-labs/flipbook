@@ -8,10 +8,11 @@ local e = Roact.createElement
 
 export type Node = types.Node
 export type Props = {
-	activeNode: types.Node?,
-	layoutOrder: number,
 	nodes: { types.Node },
-	onClick: (types.Node) -> (),
+	activeNode: types.Node?,
+	layoutOrder: number?,
+	filter: string?,
+	onClick: ((types.Node) -> ())?,
 }
 
 local function ComponentTree(props: Props)
@@ -23,8 +24,9 @@ local function ComponentTree(props: Props)
 
 	for index, node in ipairs(props.nodes) do
 		children[node.name .. index] = e(Component, {
-			activeNode = props.activeNode,
 			node = node,
+			activeNode = props.activeNode,
+			filter = props.filter,
 			onClick = props.onClick,
 		})
 	end

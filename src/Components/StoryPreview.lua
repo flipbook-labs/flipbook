@@ -14,6 +14,7 @@ local e = Roact.createElement
 
 local defaultProps = {
 	isMountedInViewport = false,
+	zoom = 0,
 }
 
 type Props = typeof(defaultProps) & {
@@ -63,6 +64,10 @@ local function StoryPreview(props: Props, hooks: any)
 			UIPadding = e("UIPadding", {
 				PaddingLeft = theme.padding,
 				PaddingRight = theme.padding,
+			}),
+
+			Scale = e("UIScale", {
+				Scale = 1 + props.zoom,
 			}),
 		})
 	end
