@@ -1,5 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local Selection = game:GetService("Selection")
+
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
@@ -9,6 +11,7 @@ local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
 local StoryPreview = require(flipbook.Components.StoryPreview)
+local PluginContext = require(flipbook.Plugin.PluginContext)
 
 local e = Roact.createElement
 
@@ -21,6 +24,12 @@ type Props = {
 local function StoryView(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local story = useStory(hooks, props.story, props.storybook, props.loader)
+	local plugin = hooks.useContext(PluginContext.Context)
+
+	local viewCode = hooks.useCallback(function()
+		Selection:Set({ props.story })
+		plugin:OpenScript(props.story)
+	end, { plugin, props.story })
 
 	local isMountedInViewport, setIsMountedInViewport = hooks.useState(false)
 
@@ -40,6 +49,7 @@ local function StoryView(props: Props, hooks: any)
 		StoryViewNavbar = story and e(StoryViewNavbar, {
 			layoutOrder = 1,
 			onPreviewInViewport = onPreviewInViewport,
+			onViewCode = viewCode,
 		}),
 
 		Content = story and e("Frame", {

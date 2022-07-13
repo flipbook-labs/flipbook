@@ -23,6 +23,13 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
+local function mount(widget: DockWidgetPluginGui)
+	local app = Roact.createElement(App, {
+		plugin = plugin,
+	})
+	return Roact.mount(app, widget, "App")
+end
+
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
 local disconnectButton = createToggleButton(toolbar, widget)
@@ -31,7 +38,7 @@ local handle: any
 
 local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 	if widget.Enabled then
-		handle = Roact.mount(Roact.createElement(App), widget, "App")
+		handle = mount(widget)
 	else
 		Roact.unmount(handle)
 		handle = nil
@@ -39,7 +46,7 @@ local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 end)
 
 if widget.Enabled then
-	handle = Roact.mount(Roact.createElement(App), widget, "App")
+	handle = mount(widget)
 end
 
 plugin.Unloading:Connect(function()
