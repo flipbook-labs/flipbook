@@ -11,6 +11,7 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
+	onPreviewInViewport: (() -> ())?,
 	onZoomIn: (() -> ())?,
 	onZoomOut: (() -> ())?,
 	onViewCode: (() -> ())?,
@@ -121,9 +122,9 @@ local function NavbarRoot(props: Props, hooks: any)
 					}),
 				}),
 
-				Mount = e(Navbar.Item, {
+				ViewportPreview = e(Navbar.Item, {
 					layoutOrder = 2,
-					onClick = function() end,
+					onClick = props.onPreviewInViewport,
 				}, {
 					Text = e("TextLabel", {
 						AutomaticSize = Enum.AutomaticSize.XY,

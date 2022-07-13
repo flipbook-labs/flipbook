@@ -1,3 +1,5 @@
+local CoreGui = game:GetService("CoreGui")
+
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
@@ -11,6 +13,7 @@ local unmountStory = require(flipbook.Story.unmountStory)
 local e = Roact.createElement
 
 local defaultProps = {
+	isMountedInViewport = false,
 	zoom = 0,
 }
 
@@ -42,22 +45,32 @@ local function StoryPreview(props: Props, hooks: any)
 		end
 	end, { props.story, unmount, storyParent })
 
-	return e("Frame", {
-		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundTransparency = 1,
-		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 0),
-		[Roact.Ref] = storyParent,
-	}, {
-		UIPadding = e("UIPadding", {
-			PaddingLeft = theme.padding,
-			PaddingRight = theme.padding,
-		}),
+	if props.isMountedInViewport then
+		return e(Roact.Portal, {
+			target = CoreGui,
+		}, {
+			Story = e("ScreenGui", {
+				[Roact.Ref] = storyParent,
+			}),
+		})
+	else
+		return e("Frame", {
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			LayoutOrder = props.layoutOrder,
+			Size = UDim2.fromScale(1, 0),
+			[Roact.Ref] = storyParent,
+		}, {
+			UIPadding = e("UIPadding", {
+				PaddingLeft = theme.padding,
+				PaddingRight = theme.padding,
+			}),
 
-		Scale = e("UIScale", {
-			Scale = 1 + props.zoom,
-		}),
-	})
+			Scale = e("UIScale", {
+				Scale = 1 + props.zoom,
+			}),
+		})
+	end
 end
 
 return hook(StoryPreview, {

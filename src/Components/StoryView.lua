@@ -33,6 +33,12 @@ local function StoryView(props: Props, hooks: any)
 		plugin:OpenScript(props.story)
 	end, { plugin, props.story })
 
+	local isMountedInViewport, setIsMountedInViewport = hooks.useState(false)
+
+	local onPreviewInViewport = hooks.useCallback(function()
+		setIsMountedInViewport(not isMountedInViewport)
+	end, { isMountedInViewport, setIsMountedInViewport })
+
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
@@ -44,6 +50,7 @@ local function StoryView(props: Props, hooks: any)
 
 		StoryViewNavbar = story and e(StoryViewNavbar, {
 			layoutOrder = 1,
+			onPreviewInViewport = onPreviewInViewport,
 			onZoomIn = zoom.zoomIn,
 			onZoomOut = zoom.zoomOut,
 			onViewCode = viewCode,
@@ -72,6 +79,7 @@ local function StoryView(props: Props, hooks: any)
 				zoom = zoom.value,
 				story = story,
 				storyModule = props.story,
+				isMountedInViewport = isMountedInViewport,
 			}),
 
 			StoryControls = story and e(StoryControls, {
