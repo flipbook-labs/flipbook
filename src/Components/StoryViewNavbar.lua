@@ -11,6 +11,8 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
+	onZoomIn: (() -> ())?,
+	onZoomOut: (() -> ())?,
 	onViewCode: (() -> ())?,
 }
 
@@ -72,7 +74,7 @@ local function NavbarRoot(props: Props, hooks: any)
 			}, {
 				Magnify = e(Navbar.Item, {
 					layoutOrder = 1,
-					onClick = function() end,
+					onClick = props.onZoomIn,
 				}, {
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
@@ -84,7 +86,7 @@ local function NavbarRoot(props: Props, hooks: any)
 
 				Minify = e(Navbar.Item, {
 					layoutOrder = 2,
-					onClick = function() end,
+					onClick = props.onZoomOut,
 				}, {
 					Icon = e("ImageLabel", {
 						BackgroundTransparency = 1,
