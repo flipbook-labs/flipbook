@@ -30,7 +30,8 @@ local function Searchbar(props: Props, hooks: any)
 
 	local styles = RoactSpring.useSpring(hooks, {
 		alpha = if isExpanded then 1 else 0,
-		config = constants.SPRING_CONFIG,
+		-- config = constants.SPRING_CONFIG,
+		config = { frequency = 0.1 },
 	})
 
 	local onFocus = hooks.useCallback(function()
@@ -73,9 +74,10 @@ local function Searchbar(props: Props, hooks: any)
 			end),
 		}),
 
-		Layout = e("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
+		UIListLayout = e("UIListLayout", {
 			FillDirection = Enum.FillDirection.Horizontal,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
 		InputFieldWrapper = e("Frame", {
