@@ -27,51 +27,26 @@ local function NavbarRoot(props: Props, hooks: any)
 		LeftNav = e(Navbar.Items, {
 			layoutOrder = 1,
 		}, {
-			Pages = e(Navbar.Items, {
+			Canvas = e(Navbar.Item, {
+				active = true,
 				layoutOrder = 1,
+				onClick = function() end,
 			}, {
-				Canvas = e(Navbar.Item, {
-					active = true,
-					layoutOrder = 1,
-					onClick = function() end,
-				}, {
-					Text = e("TextLabel", {
-						AutomaticSize = Enum.AutomaticSize.XY,
-						BackgroundTransparency = 1,
-						Font = theme.headerFont,
-						Size = UDim2.fromScale(0, 0),
-						Text = "Canvas",
-						TextColor3 = theme.text,
-						TextSize = theme.headerTextSize,
-						TextXAlignment = Enum.TextXAlignment.Left,
-						TextYAlignment = Enum.TextYAlignment.Top,
-					}),
+				Text = e("TextLabel", {
+					AutomaticSize = Enum.AutomaticSize.XY,
+					BackgroundTransparency = 1,
+					Font = theme.headerFont,
+					Size = UDim2.fromScale(0, 0),
+					Text = "Canvas",
+					TextColor3 = theme.text,
+					TextSize = theme.headerTextSize,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					TextYAlignment = Enum.TextYAlignment.Top,
 				}),
-
-				Documentation = e(Navbar.Item, {
-					layoutOrder = 2,
-					onClick = function() end,
-				}, {
-					Text = e("TextLabel", {
-						AutomaticSize = Enum.AutomaticSize.XY,
-						BackgroundTransparency = 1,
-						Font = theme.font,
-						Size = UDim2.fromScale(0, 0),
-						Text = "Documentation",
-						TextColor3 = theme.textFaded,
-						TextSize = theme.textSize,
-						TextXAlignment = Enum.TextXAlignment.Left,
-						TextYAlignment = Enum.TextYAlignment.Top,
-					}),
-				}),
-			}),
-
-			PageSplit = e(Navbar.Divider, {
-				layoutOrder = 2,
 			}),
 
 			Zoom = e(Navbar.Items, {
-				layoutOrder = 3,
+				layoutOrder = 2,
 			}, {
 				Magnify = e(Navbar.Item, {
 					layoutOrder = 1,
@@ -98,7 +73,7 @@ local function NavbarRoot(props: Props, hooks: any)
 				}),
 			}),
 
-			ZoomSplit = e(Navbar.Divider, {
+			Divider = e(Navbar.Divider, {
 				layoutOrder = 3,
 			}),
 
