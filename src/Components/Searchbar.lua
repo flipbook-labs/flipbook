@@ -8,6 +8,7 @@ local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local mapRanges = require(flipbook.Modules.mapRanges)
 local InputField = require(flipbook.Components.InputField)
+local Sprite = require(flipbook.Components.Sprite)
 
 local e = Roact.createElement
 
@@ -100,14 +101,13 @@ local function Searchbar(props: Props, hooks: any)
 			}),
 		}),
 
-		Icon = e("ImageLabel", {
-			LayoutOrder = 2,
-			Image = assets.Search,
-			ImageTransparency = styles.alpha:map(function(alpha: number)
+		Icon = e(Sprite, {
+			layoutOrder = 2,
+			image = assets.Search,
+			transparency = styles.alpha:map(function(alpha: number)
 				return mapRanges(alpha, 0, 1, 0.5, 0)
 			end),
-			Size = UDim2.fromOffset(SEARCH_ICON_SIZE, SEARCH_ICON_SIZE),
-			BackgroundTransparency = 1,
+			size = UDim2.fromOffset(SEARCH_ICON_SIZE, SEARCH_ICON_SIZE),
 		}),
 	})
 end

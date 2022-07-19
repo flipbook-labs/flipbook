@@ -5,6 +5,7 @@ local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local Navbar = require(flipbook.Components.Navbar)
 local Button = require(flipbook.Components.Button)
+local Sprite = require(flipbook.Components.Sprite)
 local useTheme = require(flipbook.Hooks.useTheme)
 
 local e = Roact.createElement
@@ -77,11 +78,10 @@ local function NavbarRoot(props: Props, hooks: any)
 					layoutOrder = 1,
 					onClick = props.onZoomIn,
 				}, {
-					Icon = e("ImageLabel", {
-						BackgroundTransparency = 1,
-						Image = assets.Magnify,
-						ImageColor3 = theme.textFaded,
-						Size = UDim2.fromOffset(24, 24),
+					Icon = e(Sprite, {
+						image = assets.Magnify,
+						color = theme.textFaded,
+						size = UDim2.fromOffset(24, 24),
 					}),
 				}),
 
@@ -89,11 +89,10 @@ local function NavbarRoot(props: Props, hooks: any)
 					layoutOrder = 2,
 					onClick = props.onZoomOut,
 				}, {
-					Icon = e("ImageLabel", {
-						BackgroundTransparency = 1,
-						Image = assets.Minify,
-						ImageColor3 = theme.textFaded,
-						Size = UDim2.fromOffset(24, 24),
+					Icon = e(Sprite, {
+						image = assets.Minify,
+						color = theme.textFaded,
+						size = UDim2.fromOffset(24, 24),
 					}),
 				}),
 			}),

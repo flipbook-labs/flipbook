@@ -5,3 +5,4 @@ glob = "img/**/*.png"
 codegen = true
 codegen-path = "src/assets.lua"
 codegen-base-path = "img"
+packable = true
