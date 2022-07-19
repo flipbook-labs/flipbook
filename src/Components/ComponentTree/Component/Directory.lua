@@ -67,12 +67,12 @@ local function Directory(props: Props, hooks: any)
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			}),
 
-			-- Icon = e(Sprite, {
-			-- 	layoutOrder = 0,
-			-- 	image = if props.node.icon == "folder" then assets.Folder else assets.Storybook,
-			-- 	color = if props.node.icon == "folder" then theme.directory else theme.textFaded,
-			-- 	size = UDim2.fromOffset(16, 16),
-			-- }),
+			Icon = e(Sprite, {
+				layoutOrder = 0,
+				image = if props.node.icon == "folder" then assets.Folder else assets.Storybook,
+				color = if props.node.icon == "folder" then theme.directory else theme.textFaded,
+				size = UDim2.fromOffset(16, 16),
+			}),
 
 			Typography = e("TextLabel", {
 				AutomaticSize = Enum.AutomaticSize.XY,
