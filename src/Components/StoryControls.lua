@@ -28,46 +28,22 @@ local function StoryControls(props: Props, hooks: any)
 				layoutOrder = 1,
 				padding = UDim.new(0, 12),
 			}, {
-				Pages = e(Navbar.Items, {
+				Controls = e(Navbar.Item, {
+					active = true,
 					layoutOrder = 1,
-					padding = UDim.new(0, 0),
+					onClick = function() end,
+					padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
 				}, {
-					Controls = e(Navbar.Item, {
-						active = true,
-						layoutOrder = 1,
-						onClick = function() end,
-						padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
-					}, {
-						Text = e("TextLabel", {
-							AutomaticSize = Enum.AutomaticSize.XY,
-							BackgroundTransparency = 1,
-							Font = theme.headerFont,
-							Size = UDim2.fromScale(0, 0),
-							Text = "Controls",
-							TextColor3 = theme.text,
-							TextSize = theme.headerTextSize,
-							TextXAlignment = Enum.TextXAlignment.Left,
-							TextYAlignment = Enum.TextYAlignment.Top,
-						}),
-					}),
-
-					Story = e(Navbar.Item, {
-						active = false,
-						layoutOrder = 2,
-						onClick = function() end,
-						padding = { x = UDim.new(0, 10), y = UDim.new(0, 10) },
-					}, {
-						Text = e("TextLabel", {
-							AutomaticSize = Enum.AutomaticSize.XY,
-							BackgroundTransparency = 1,
-							Font = theme.font,
-							Size = UDim2.fromScale(0, 0),
-							Text = "Story",
-							TextColor3 = theme.textFaded,
-							TextSize = theme.textSize,
-							TextXAlignment = Enum.TextXAlignment.Left,
-							TextYAlignment = Enum.TextYAlignment.Top,
-						}),
+					Text = e("TextLabel", {
+						AutomaticSize = Enum.AutomaticSize.XY,
+						BackgroundTransparency = 1,
+						Font = theme.headerFont,
+						Size = UDim2.fromScale(0, 0),
+						Text = "Controls",
+						TextColor3 = theme.text,
+						TextSize = theme.headerTextSize,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextYAlignment = Enum.TextYAlignment.Top,
 					}),
 				}),
 			}),
