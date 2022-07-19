@@ -7,7 +7,7 @@ realm = "shared"
 exclude = ["*"]
 
 [dependencies]
-Roact = "roblox/roact@1.4.2"
+Roact = "roblox/roact@1.4.4"
 RoactHooks = "kampfkarren/roact-hooks@0.4.1"
 Flipper = "reselim/flipper@2.0.0"
 Llama = "freddylist/llama@1.1.1"
