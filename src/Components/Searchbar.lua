@@ -104,7 +104,6 @@ local function Searchbar(props: Props, hooks: any)
 		Icon = e(Sprite, {
 			layoutOrder = 2,
 			image = assets.Search,
-			color = theme.divider,
 			transparency = styles.alpha:map(function(alpha: number)
 				return mapRanges(alpha, 0, 1, 0.5, 0)
 			end),
