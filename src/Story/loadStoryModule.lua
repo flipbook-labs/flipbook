@@ -7,7 +7,7 @@ local isStory = require(flipbook.Story.isStory)
 local isHoarcekatStory = require(flipbook.Story.isHoarcekatStory)
 
 local Errors = {
-	MalformedStory = "Story is malformed. Check the source of %q and make sure it has the correct properties",
+	MalformedStory = "Story is malformed. Check the source of %q and make sure its properties are correct",
 	Generic = "Failed to load story %q. Error: %s",
 }
 
