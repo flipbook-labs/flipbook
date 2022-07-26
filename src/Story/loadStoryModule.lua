@@ -6,6 +6,11 @@ local types = require(script.Parent.Parent.types)
 local isStory = require(flipbook.Story.isStory)
 local isHoarcekatStory = require(flipbook.Story.isHoarcekatStory)
 
+local Errors = {
+	MalformedStory = "Story is malformed. Check the source of %q and make sure it has the correct properties",
+	Generic = "Failed to load story %q. Error: %s",
+}
+
 local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?, string?)
 	if not module then
 		return nil, "Did not receive a module to load"
@@ -16,7 +21,7 @@ local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?
 	end)
 
 	if not success then
-		return nil, result
+		return nil, Errors.Generic:format(module:GetFullName(), tostring(result))
 	end
 
 	if isStory(result) then
@@ -35,7 +40,7 @@ local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?
 
 		return story, nil
 	else
-		return nil, ("Could not select story %s"):format(module:GetFullName())
+		return nil, Errors.MalformedStory:format(module:GetFullName())
 	end
 end
 

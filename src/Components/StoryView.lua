@@ -24,7 +24,7 @@ type Props = {
 
 local function StoryView(props: Props, hooks: any)
 	local theme = useTheme(hooks)
-	local story = useStory(hooks, props.story, props.storybook, props.loader)
+	local story, storyErr = useStory(hooks, props.story, props.storybook, props.loader)
 	local zoom = useZoom(hooks, props.story)
 	local plugin = hooks.useContext(PluginContext.Context)
 
@@ -54,6 +54,26 @@ local function StoryView(props: Props, hooks: any)
 			onZoomIn = zoom.zoomIn,
 			onZoomOut = zoom.zoomOut,
 			onViewCode = viewCode,
+		}),
+
+		Error = storyErr and e("TextLabel", {
+			BackgroundTransparency = 1,
+			Font = theme.font,
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(1, 1),
+			Text = storyErr,
+			TextColor3 = theme.text,
+			TextWrapped = true,
+			TextSize = theme.textSize,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
+		}, {
+			Padding = e("UIPadding", {
+				PaddingTop = theme.padding,
+				PaddingRight = theme.padding,
+				PaddingBottom = theme.padding,
+				PaddingLeft = theme.padding,
+			}),
 		}),
 
 		Content = story and e("Frame", {
