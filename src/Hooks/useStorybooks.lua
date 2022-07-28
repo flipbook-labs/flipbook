@@ -81,7 +81,6 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 			added:Disconnect()
 			removing:Disconnect()
 
-			print(nameChangeListeners.value)
 			for _, conn in ipairs(nameChangeListeners.value) do
 				conn:Disconnect()
 			end
