@@ -18,7 +18,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 			story = story,
 			err = err,
 		})
-	end, { module })
+	end, { loader, module, storybook })
 
 	hooks.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStory)
@@ -28,7 +28,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 		return function()
 			conn:Disconnect()
 		end
-	end, { module })
+	end, { module, loadStory, loader })
 
 	return state.story, state.err
 end
