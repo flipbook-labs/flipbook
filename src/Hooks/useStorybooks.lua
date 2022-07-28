@@ -14,6 +14,7 @@ end
 
 local function useStorybooks(hooks: any, parent: Instance, loader: any)
 	local storybooks, set = hooks.useState({})
+	local nameChangeListeners: { value: { RBXScriptConnection } } = hooks.useValue({})
 
 	local loadStorybooks = hooks.useCallback(function()
 		local newStorybooks = {}
@@ -42,9 +43,23 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		set(newStorybooks)
 	end, { set, parent, loader })
 
+	local listenForNameChange = hooks.useCallback(function(module: ModuleScript)
+		local conn = module:GetPropertyChangedSignal("Name"):Connect(function()
+			if module.Name:match(constants.STORYBOOK_NAME_PATTERN) then
+				loadStorybooks()
+			end
+		end)
+
+		table.insert(nameChangeListeners.value, conn)
+	end, { loadStorybooks })
+
 	local onDataModelChanged = hooks.useCallback(function(instance: Instance)
-		if hasPermission(instance) and isStorybookModule(instance) then
-			loadStorybooks()
+		if hasPermission(instance) then
+			if isStorybookModule(instance) then
+				loadStorybooks()
+			elseif instance:IsA("ModuleScript") then
+				listenForNameChange(instance)
+			end
 		end
 	end, { loadStorybooks })
 
@@ -56,7 +71,7 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		return function()
 			conn:Disconnect()
 		end
-	end, { loadStorybooks })
+	end, { loadStorybooks, loader })
 
 	hooks.useEffect(function()
 		local added = parent.DescendantAdded:Connect(onDataModelChanged)
@@ -65,8 +80,13 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		return function()
 			added:Disconnect()
 			removing:Disconnect()
+
+			print(nameChangeListeners.value)
+			for _, conn in ipairs(nameChangeListeners.value) do
+				conn:Disconnect()
+			end
 		end
-	end, { set, loadStorybooks })
+	end, { set, loadStorybooks, onDataModelChanged })
 
 	return storybooks
 end
