@@ -1,6 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local constants = require(flipbook.constants)
+local isStorybook = require(flipbook.Story.isStorybook)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
 
 local internalStorybook = flipbook["init.storybook"]
@@ -29,7 +30,7 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 					return loader:require(descendant)
 				end)
 
-				if success and typeof(result) == "table" and result.storyRoots then
+				if success and isStorybook(result) then
 					result.name = if result.name
 						then result.name
 						else descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
