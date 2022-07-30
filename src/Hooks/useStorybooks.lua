@@ -3,6 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local constants = require(flipbook.constants)
 local isStorybook = require(flipbook.Story.isStorybook)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
+local useDescendants = require(flipbook.Hooks.useDescendants)
 
 local internalStorybook = flipbook["init.storybook"]
 
@@ -15,39 +16,34 @@ end
 
 local function useStorybooks(hooks: any, parent: Instance, loader: any)
 	local storybooks, set = hooks.useState({})
+	local modules = useDescendants(hooks, game, function(descendant)
+		return hasPermission(descendant) and isStorybookModule(descendant)
+	end)
 
 	local loadStorybooks = hooks.useCallback(function()
 		local newStorybooks = {}
 
-		for _, descendant in ipairs(parent:GetDescendants()) do
+		for _, module in modules do
 			-- Skip over flipbook's internal storybook
-			if descendant == internalStorybook and not constants.IS_DEV_MODE then
+			if module == internalStorybook and not constants.IS_DEV_MODE then
 				continue
 			end
 
-			if isStorybookModule(descendant) then
-				local success, result = pcall(function()
-					return loader:require(descendant)
-				end)
+			local success, result = pcall(function()
+				return loader:require(module)
+			end)
 
-				if success and isStorybook(result) then
-					result.name = if result.name
-						then result.name
-						else descendant.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+			if success and isStorybook(result) then
+				result.name = if result.name
+					then result.name
+					else module.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
 
-					table.insert(newStorybooks, result)
-				end
+				table.insert(newStorybooks, result)
 			end
 		end
 
 		set(newStorybooks)
-	end, { set, parent, loader })
-
-	local onDataModelChanged = hooks.useCallback(function(instance: Instance)
-		if hasPermission(instance) and isStorybookModule(instance) then
-			loadStorybooks()
-		end
-	end, { loadStorybooks })
+	end, { set, parent, loader, modules })
 
 	hooks.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStorybooks)
@@ -57,17 +53,7 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		return function()
 			conn:Disconnect()
 		end
-	end, { loadStorybooks })
-
-	hooks.useEffect(function()
-		local added = parent.DescendantAdded:Connect(onDataModelChanged)
-		local removing = parent.DescendantRemoving:Connect(onDataModelChanged)
-
-		return function()
-			added:Disconnect()
-			removing:Disconnect()
-		end
-	end, { set, loadStorybooks })
+	end, { loadStorybooks, loader })
 
 	return storybooks
 end

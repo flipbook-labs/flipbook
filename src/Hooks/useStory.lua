@@ -12,13 +12,15 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 	local loadStory = hooks.useCallback(function()
 		local story, err = loadStoryModule(loader, module)
 
-		story.roact = if story.roact then story.roact else storybook.roact
+		if story and not story.roact then
+			story.roact = storybook.roact
+		end
 
 		setState({
 			story = story,
 			err = err,
 		})
-	end, { module })
+	end, { loader, module, storybook })
 
 	hooks.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStory)
@@ -28,7 +30,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 		return function()
 			conn:Disconnect()
 		end
-	end, { module })
+	end, { module, loadStory, loader })
 
 	return state.story, state.err
 end
