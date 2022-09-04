@@ -29,16 +29,22 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 				continue
 			end
 
-			local success, result = pcall(function()
+			local wasRequired, result = pcall(function()
 				return loader:require(module)
 			end)
 
-			if success and isStorybook(result) then
-				result.name = if result.name
-					then result.name
-					else module.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+			if wasRequired then
+				local success, message = isStorybook(result)
 
-				table.insert(newStorybooks, result)
+				if success then
+					result.name = if result.name
+						then result.name
+						else module.Name:gsub(constants.STORYBOOK_NAME_PATTERN, "")
+
+					table.insert(newStorybooks, result)
+				else
+					warn(("Failed to load storybook %s. Error: %s"):format(module:GetFullName(), message))
+				end
 			end
 		end
 
