@@ -88,22 +88,29 @@ local function StoryView(props: Props, hooks: any)
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
-			StoryMeta = story and e(StoryMeta, {
+			StoryMeta = e(StoryMeta, {
 				layoutOrder = 2,
 				story = story,
 				storyModule = props.story,
 			}),
 
-			StoryPreview = story and e(StoryPreview, {
-				layoutOrder = 3,
+			Divider = e("Frame", {
+				LayoutOrder = 3,
+				BackgroundColor3 = theme.divider,
+				Size = UDim2.new(1, 0, 0, 1),
+				BorderSizePixel = 0,
+			}),
+
+			StoryPreview = e(StoryPreview, {
+				layoutOrder = 4,
 				zoom = zoom.value,
 				story = story,
 				storyModule = props.story,
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = story and e(StoryControls, {
-				layoutOrder = 4,
+			StoryControls = e(StoryControls, {
+				layoutOrder = 5,
 			}),
 		}),
 	})
