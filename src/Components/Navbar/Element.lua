@@ -31,8 +31,8 @@ local function Element(props: Props, hooks: any)
 		}, {
 			UIPadding = e("UIPadding", {
 				PaddingBottom = theme.padding,
-				PaddingLeft = theme.paddingLarge,
-				PaddingRight = theme.paddingLarge,
+				PaddingLeft = theme.padding,
+				PaddingRight = theme.padding,
 				PaddingTop = theme.padding,
 			}),
 
