@@ -13,7 +13,7 @@ type Props = {
 local function Divider(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	return e("Frame", {
-		BackgroundColor3 = theme.diver,
+		BackgroundColor3 = theme.divider,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(0, 1, 1, 0),
