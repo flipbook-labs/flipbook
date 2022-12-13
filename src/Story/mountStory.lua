@@ -8,8 +8,7 @@ local function mountStory(story: types.Story, parent: Instance)
 	local handle
 
 	if story.format == enums.Format.Default then
-		--TODO: Reintroduce controls in here.
-		local element = getStoryElement(story, {})
+		local element = getStoryElement(story)
 
 		xpcall(function()
 			handle = story.roact.mount(element, parent, story.name)

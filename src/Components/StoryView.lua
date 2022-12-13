@@ -88,22 +88,23 @@ local function StoryView(props: Props, hooks: any)
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
-			StoryMeta = story and e(StoryMeta, {
-				layoutOrder = 2,
+			StoryMeta = e(StoryMeta, {
+				layoutOrder = 1,
 				story = story,
 				storyModule = props.story,
 			}),
 
-			StoryPreview = story and e(StoryPreview, {
-				layoutOrder = 3,
+			StoryPreview = e(StoryPreview, {
+				layoutOrder = 2,
 				zoom = zoom.value,
 				story = story,
 				storyModule = props.story,
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = story and e(StoryControls, {
-				layoutOrder = 4,
+			StoryControls = e(StoryControls, {
+				layoutOrder = 3,
+				story = story,
 			}),
 		}),
 	})
