@@ -102,9 +102,9 @@ local function StoryView(props: Props, hooks: any)
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = e(StoryControls, {
+			StoryControls = story.controls and e(StoryControls, {
 				layoutOrder = 3,
-				story = story,
+				controls = story.controls,
 			}),
 		}),
 	})
