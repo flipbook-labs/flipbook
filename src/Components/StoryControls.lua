@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(flipbook.types)
+local Checkbox = require(flipbook.Components.Fields.Checkbox)
 
 local e = Roact.createElement
 
@@ -21,6 +22,13 @@ local function StoryControls(props: Props, hooks: any)
 		Padding = theme.padding,
 	})
 	for index, control in props.controls do
+		local option
+		if typeof(control.value) == "boolean" then
+			option = Roact.createElement(Checkbox, {
+				initialState = control.value,
+			})
+		end
+
 		controls[control.name] = e("Frame", {
 			LayoutOrder = index,
 			BackgroundTransparency = 1,
@@ -40,10 +48,11 @@ local function StoryControls(props: Props, hooks: any)
 			}),
 
 			Option = e("Frame", {
+				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1 / 2, 0),
 				Position = UDim2.fromScale(1 / 2, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
-			}, {}),
+			}, option),
 		})
 	end
 
