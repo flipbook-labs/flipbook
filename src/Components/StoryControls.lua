@@ -2,7 +2,6 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
-local Navbar = require(flipbook.Components.Navbar)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(flipbook.types)
 
@@ -22,20 +21,29 @@ local function StoryControls(props: Props, hooks: any)
 		Padding = theme.padding,
 	})
 	for index, control in props.controls do
-		controls[control.name] = e("Frame", {}, {
+		controls[control.name] = e("Frame", {
+			LayoutOrder = index,
+			BackgroundTransparency = 1,
+			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+		}, {
 			Name = e("TextLabel", {
-				LayoutOrder = index,
 				Text = control.name,
-				AutomaticSize = Enum.AutomaticSize.XY,
+				Size = UDim2.fromScale(1 / 2, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundTransparency = 1,
 				Font = theme.font,
 				TextColor3 = theme.text,
-				TextSize = theme.headerTextSize,
+				TextSize = theme.textSize,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextYAlignment = Enum.TextYAlignment.Top,
 			}),
 
-			Option = e("TextLabel"),
+			Option = e("Frame", {
+				Size = UDim2.fromScale(1 / 2, 0),
+				Position = UDim2.fromScale(1 / 2, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+			}, {}),
 		})
 	end
 
@@ -45,48 +53,29 @@ local function StoryControls(props: Props, hooks: any)
 		Size = UDim2.fromScale(1, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
-		Navbar = e(Navbar.Element, {
-			height = 55,
-			layoutOrder = props.layoutOrder,
-			topDivider = true,
-		}, {
-			Content = e(Navbar.Items, {
-				layoutOrder = 1,
-				padding = theme.padding,
-			}, {
-				Controls = e(Navbar.Item, {
-					active = true,
-					layoutOrder = 1,
-					onClick = function() end,
-					padding = { x = theme.padding, y = theme.padding },
-				}, {
-					Layout = e("UIListLayout", {
-						SortOrder = Enum.SortOrder.LayoutOrder,
-						Padding = theme.padding,
-					}),
-
-					Title = e("TextLabel", {
-						LayoutOrder = 1,
-						AutomaticSize = Enum.AutomaticSize.XY,
-						BackgroundTransparency = 1,
-						Font = theme.headerFont,
-						Size = UDim2.fromScale(0, 0),
-						Text = "Controls",
-						TextColor3 = theme.text,
-						TextSize = theme.headerTextSize,
-						TextXAlignment = Enum.TextXAlignment.Left,
-						TextYAlignment = Enum.TextYAlignment.Top,
-					}),
-
-					Controls = e("Frame", {
-						LayoutOrder = 2,
-						Size = UDim2.fromScale(1, 0),
-						AutomaticSize = Enum.AutomaticSize.Y,
-						BackgroundTransparency = 1,
-					}, controls),
-				}),
-			}),
+		Layout = e("UIListLayout", {
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = theme.padding,
 		}),
+
+		Title = e("TextLabel", {
+			LayoutOrder = 1,
+			Text = "Controls",
+			Font = theme.headerFont,
+			TextColor3 = theme.text,
+			TextSize = theme.headerTextSize,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+		}),
+
+		Controls = e("Frame", {
+			LayoutOrder = 2,
+			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+		}, controls),
 	})
 end
 
