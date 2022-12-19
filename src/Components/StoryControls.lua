@@ -43,6 +43,7 @@ local function StoryControls(props: Props, hooks: any)
 		BackgroundTransparency = 1,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
 		Navbar = e(Navbar.Element, {
 			height = 55,
