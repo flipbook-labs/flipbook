@@ -8,6 +8,7 @@ export type Props = {
 	initialState: boolean,
 	onStateChange: ((newState: boolean) -> ())?,
 }
+
 local function Checkbox(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 	local isChecked, setIsChecked = hooks.useState(props.initialState)
