@@ -13,7 +13,7 @@ You should be using [Visual Studio Code](https://code.visualstudio.com/) as your
 - [Rojo](https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo)
 - [Selene](https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode)
 - [StyLua](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua)
-- [Roblox LSP](https://marketplace.visualstudio.com/items?itemName=Nightrains.robloxlsp)
+- [Luau LSP](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp)
 
 Once the Rojo extension is installed a welcome screen will be displayed. Scroll down to the section for the Roblox Studio plugin and select "Manage it for me." Next time you open a place in Studio you will have the Rojo plugin ready to go.
 
@@ -28,7 +28,7 @@ To make the tools that Foreman installs avialable on your system you will need t
   - Open Terminal
   - Open the corresponding file for your terminal
     - Bash: `nano ~/.bash_profile`
-    - ZSH: `nano ~/.zshrc`
+    - ZSH: `nano ~/.zshenv`
   - Append `export PATH="$PATH:~/.foreman/bin` to the end of the file
 
 ## Development
