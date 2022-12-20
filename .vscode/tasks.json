@@ -11,8 +11,7 @@
     {
       "label": "Build and watch (MacOS)",
       "type": "shell",
-      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
-      "problemMatcher": []
+      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch"
     },
     {
       "label": "Build (Windows)",
