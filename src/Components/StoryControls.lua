@@ -3,7 +3,6 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
-local types = require(flipbook.types)
 local InputField = require(flipbook.Components.InputField)
 local Checkbox = require(flipbook.Components.Fields.Checkbox)
 local Dropdown = require(flipbook.Components.Fields.Dropdown)
@@ -12,43 +11,45 @@ local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
-	controls: { types.StoryControl },
-	setControls: (key: string, value: any) -> (),
+	controls: { [string]: any },
+	setControl: (key: string, value: any) -> (),
 }
 
 local function StoryControls(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	local controls = {}
-	controls.Layout = e("UIListLayout", {
-		SortOrder = Enum.SortOrder.LayoutOrder,
-		Padding = theme.padding,
-	})
-	for index, control in props.controls do
+	for key, value in props.controls do
+		local function setControl(newValue: any)
+			props.setControl(key, newValue)
+		end
+
 		local option
-		if typeof(control.value) == "boolean" then
+		if typeof(value) == "boolean" then
 			option = Roact.createElement(Checkbox, {
-				initialState = control.value,
+				initialState = value,
+				onStateChange = setControl,
 			})
-		elseif typeof(control.value) == "table" then
+		elseif typeof(value) == "table" then
 			option = Roact.createElement(Dropdown, {
-				default = control.value[1],
-				options = control.value,
+				default = value[1],
+				options = value,
+				onOptionChange = setControl,
 			})
 		else
 			option = Roact.createElement(InputField, {
-				placeholder = control.value,
+				placeholder = value,
+				onTextChange = setControl,
 			})
 		end
 
-		controls[control.name] = e("Frame", {
-			LayoutOrder = index,
+		controls[key] = e("Frame", {
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 		}, {
 			Name = e("TextLabel", {
-				Text = control.name,
+				Text = key,
 				Size = UDim2.fromScale(1 / 2, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundTransparency = 1,
@@ -96,7 +97,14 @@ local function StoryControls(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,
-		}, controls),
+		}, {
+			Layout = e("UIListLayout", {
+				SortOrder = Enum.SortOrder.Name,
+				Padding = theme.padding,
+			}),
+
+			ControlsFragment = Roact.createFragment(controls),
+		}),
 	})
 end
 

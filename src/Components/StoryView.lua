@@ -2,6 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Selection = game:GetService("Selection")
 
+local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
@@ -27,6 +28,14 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story, props.storybook, props.loader)
 	local zoom = useZoom(hooks, props.story)
 	local plugin = hooks.useContext(PluginContext.Context)
+	local controls, setControls = hooks.useState(story.controls)
+
+	local setControl = hooks.useCallback(function(control: string, newValue: any)
+		local newControls = Llama.Dictionary.join(controls, {
+			[control] = newValue,
+		})
+		setControls(newControls)
+	end, { controls })
 
 	local viewCode = hooks.useCallback(function()
 		Selection:Set({ props.story })
@@ -104,7 +113,8 @@ local function StoryView(props: Props, hooks: any)
 
 			StoryControls = story.controls and e(StoryControls, {
 				layoutOrder = 3,
-				controls = story.controls,
+				controls = controls,
+				setControl = setControl,
 			}),
 		}),
 	})

@@ -7,21 +7,12 @@ return {
 	summary = "Panel for configuring the controls of a story",
 	story = Roact.createElement(StoryControls, {
 		controls = {
-			{
-				name = "Foo",
-				value = "bar",
-			},
-			{
-				name = "Checkbox",
-				value = false,
-			},
-			{
-				name = "Dropdown Selection",
-				value = {
-					"Option 1",
-					"Option 2",
-					"Option 3",
-				},
+			foo = "bar",
+			checkbox = false,
+			dropdown = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
 			},
 		},
 	}),
