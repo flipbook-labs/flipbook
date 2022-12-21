@@ -4,6 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(flipbook.types)
+local InputField = require(flipbook.Components.InputField)
 local Checkbox = require(flipbook.Components.Fields.Checkbox)
 local Dropdown = require(flipbook.Components.Fields.Dropdown)
 
@@ -33,6 +34,10 @@ local function StoryControls(props: Props, hooks: any)
 			option = Roact.createElement(Dropdown, {
 				default = control.value[1],
 				options = control.value,
+			})
+		else
+			option = Roact.createElement(InputField, {
+				placeholder = control.value,
 			})
 		end
 
