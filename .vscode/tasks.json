@@ -1,0 +1,27 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build (MacOS)",
+      "type": "shell",
+      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
+    },
+    {
+      "label": "Build and watch (MacOS)",
+      "type": "shell",
+      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch"
+    },
+    {
+      "label": "Build (Windows)",
+      "type": "shell",
+      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
+    },
+    {
+      "label": "Build and watch (Windows)",
+      "type": "shell",
+      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch"
+    }
+  ]
+}
