@@ -5,12 +5,14 @@ local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(flipbook.types)
 local Checkbox = require(flipbook.Components.Fields.Checkbox)
+local Dropdown = require(flipbook.Components.Fields.Dropdown)
 
 local e = Roact.createElement
 
 type Props = {
 	layoutOrder: number,
 	controls: { types.StoryControl },
+	setControls: (key: string, value: any) -> (),
 }
 
 local function StoryControls(props: Props, hooks: any)
@@ -26,6 +28,11 @@ local function StoryControls(props: Props, hooks: any)
 		if typeof(control.value) == "boolean" then
 			option = Roact.createElement(Checkbox, {
 				initialState = control.value,
+			})
+		elseif typeof(control.value) == "table" then
+			option = Roact.createElement(Dropdown, {
+				default = control.value[1],
+				options = control.value,
 			})
 		end
 
