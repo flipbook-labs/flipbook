@@ -6,7 +6,6 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local usePrevious = require(flipbook.Hooks.usePrevious)
-local useTheme = require(flipbook.Hooks.useTheme)
 local mountStory = require(flipbook.Story.mountStory)
 local unmountStory = require(flipbook.Story.unmountStory)
 
