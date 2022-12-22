@@ -26,7 +26,6 @@ type Props = typeof(defaultProps) & {
 }
 
 local function StoryPreview(props: Props, hooks: any)
-	local theme = useTheme(hooks)
 	local tree = hooks.useValue(nil)
 	local storyParent = Roact.createRef()
 	local prevStory = usePrevious(hooks, props.story)
