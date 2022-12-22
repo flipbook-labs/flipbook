@@ -5,7 +5,7 @@ return {
 	-- Enabling dev mode will add flipbook's storybook to the list of available
 	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
 	-- plugin
-	IS_DEV_MODE = true,
+	IS_DEV_MODE = false,
 
 	SPRING_CONFIG = {
 		clamp = true,
