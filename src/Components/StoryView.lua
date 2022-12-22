@@ -103,6 +103,11 @@ local function StoryView(props: Props, hooks: any)
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
+			Padding = e("UIPadding", {
+				PaddingLeft = theme.padding,
+				PaddingRight = theme.padding,
+			}),
+
 			StoryMeta = e(StoryMeta, {
 				layoutOrder = 1,
 				story = story,

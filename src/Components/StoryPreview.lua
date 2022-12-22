@@ -62,11 +62,6 @@ local function StoryPreview(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 0),
 			[Roact.Ref] = storyParent,
 		}, {
-			UIPadding = e("UIPadding", {
-				PaddingLeft = theme.padding,
-				PaddingRight = theme.padding,
-			}),
-
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
 			}),
