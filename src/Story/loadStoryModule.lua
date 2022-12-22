@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Llama = require(flipbook.Packages.Llama)
+local Sift = require(flipbook.Packages.Sift)
 local enums = require(flipbook.enums)
 local types = require(script.Parent.Parent.types)
 local isStory = require(flipbook.Story.isStory)
@@ -25,7 +25,7 @@ local function loadStoryModule(loader: any, module: ModuleScript): (types.Story?
 	end
 
 	if isStory(result) then
-		local story: types.Story = Llama.Dictionary.join({
+		local story: types.Story = Sift.Dictionary.merge({
 			name = module.Name,
 			format = enums.Format.Default,
 		}, result)
