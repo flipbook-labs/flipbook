@@ -30,6 +30,8 @@ local function StoryView(props: Props, hooks: any)
 	local plugin = hooks.useContext(PluginContext.Context)
 	local controls, setControls = hooks.useState(nil)
 
+	local showControls = controls and not Llama.isEmpty(controls)
+
 	local setControl = hooks.useCallback(function(control: string, newValue: any)
 		local newControls = Llama.Dictionary.join(controls, {
 			[control] = newValue,
@@ -116,8 +118,15 @@ local function StoryView(props: Props, hooks: any)
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = controls and not Llama.isEmpty(controls) and e(StoryControls, {
-				layoutOrder = 3,
+			Divider = showControls and e("Frame", {
+				LayoutOrder = 3,
+				Size = UDim2.new(1, 0, 0, 1),
+				BackgroundColor3 = theme.divider,
+				BorderSizePixel = 0,
+			}),
+
+			StoryControls = showControls and e(StoryControls, {
+				layoutOrder = 4,
 				controls = controls,
 				setControl = setControl,
 			}),
