@@ -21,6 +21,7 @@ type Props = typeof(defaultProps) & {
 	layoutOrder: number,
 	prevStory: types.Story,
 	story: types.Story,
+	controls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
@@ -41,7 +42,7 @@ local function StoryPreview(props: Props, hooks: any)
 		unmount()
 
 		if props.story then
-			tree.value = mountStory(props.story, storyParent:getValue())
+			tree.value = mountStory(props.story, props.controls, storyParent:getValue())
 		end
 	end, { props.story, unmount, storyParent })
 

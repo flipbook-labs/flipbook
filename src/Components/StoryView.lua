@@ -28,7 +28,7 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story, props.storybook, props.loader)
 	local zoom = useZoom(hooks, props.story)
 	local plugin = hooks.useContext(PluginContext.Context)
-	local controls, setControls = hooks.useState(story.controls)
+	local controls, setControls = hooks.useState(nil)
 
 	local setControl = hooks.useCallback(function(control: string, newValue: any)
 		local newControls = Llama.Dictionary.join(controls, {
@@ -47,6 +47,10 @@ local function StoryView(props: Props, hooks: any)
 	local onPreviewInViewport = hooks.useCallback(function()
 		setIsMountedInViewport(not isMountedInViewport)
 	end, { isMountedInViewport, setIsMountedInViewport })
+
+	hooks.useEffect(function()
+		setControls(if story then story.controls else nil)
+	end, { story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -107,11 +111,12 @@ local function StoryView(props: Props, hooks: any)
 				layoutOrder = 2,
 				zoom = zoom.value,
 				story = story,
+				controls = controls,
 				storyModule = props.story,
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = story.controls and e(StoryControls, {
+			StoryControls = controls and not Llama.isEmpty(controls) and e(StoryControls, {
 				layoutOrder = 3,
 				controls = controls,
 				setControl = setControl,
