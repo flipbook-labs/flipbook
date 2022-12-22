@@ -33,11 +33,12 @@ local function StoryView(props: Props, hooks: any)
 	local showControls = controls and not Llama.isEmpty(controls)
 
 	local setControl = hooks.useCallback(function(control: string, newValue: any)
-		local newControls = Llama.Dictionary.join(controls, {
-			[control] = newValue,
-		})
-		setControls(newControls)
-	end, { controls })
+		setControls(function(prevControls)
+			return Llama.Dictionary.join(prevControls, {
+				[control] = newValue,
+			})
+		end)
+	end, {})
 
 	local viewCode = hooks.useCallback(function()
 		Selection:Set({ props.story })
