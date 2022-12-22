@@ -3,15 +3,27 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local Dropdown = require(flipbook.Components.Fields.Dropdown)
 
+local controls = {
+	useDefault = true,
+	numOptions = 3,
+}
+
+type Props = {
+	controls: typeof(controls),
+}
+
 return {
-	story = function()
+	controls = controls,
+	story = function(props: Props)
+		local options = {}
+		for i = 1, props.controls.numOptions do
+			table.insert(options, "Option " .. i)
+		end
+
 		return Roact.createElement(Dropdown, {
-			default = "Option 1",
-			options = {
-				"Option 1",
-				"Option 2",
-				"Option 3",
-			},
+			placeholder = "Select an option",
+			default = if props.controls.useDefault then options[1] else nil,
+			options = options,
 			onOptionChange = function(option)
 				print("Selected", option)
 			end,
