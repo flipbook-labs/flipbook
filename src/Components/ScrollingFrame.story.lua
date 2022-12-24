@@ -17,7 +17,6 @@ return {
 	story = function(props: Props)
 		local children = {}
 
-		print(props.controls.useGradient)
 		children.Layout = Roact.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			Padding = UDim.new(0, 16),
