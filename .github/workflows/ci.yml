@@ -58,16 +58,16 @@ jobs:
         shell: bash
         run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --formatter=gnu src/
 
-    test-commands:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
+  test-commands:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-        - name: Ensure each binary can be run
-          run: |
-            for f in ./*.doc; do
-                $f
-            done
+      - name: Ensure each binary can be run
+        run: |
+          for f in ./*.doc; do
+              $f
+          done
 
   # Running unit tests in CI has historically been cumbersome, and presently
   # there is no way to run Roblox Studio from a GitHub workflow. As such, our
