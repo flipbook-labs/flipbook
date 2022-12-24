@@ -2,6 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Selection = game:GetService("Selection")
 
+local Llama = require(flipbook.Packages.Llama)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
@@ -27,6 +28,17 @@ local function StoryView(props: Props, hooks: any)
 	local story, storyErr = useStory(hooks, props.story, props.storybook, props.loader)
 	local zoom = useZoom(hooks, props.story)
 	local plugin = hooks.useContext(PluginContext.Context)
+	local controls, setControls = hooks.useState(nil)
+
+	local showControls = controls and not Llama.isEmpty(controls)
+
+	local setControl = hooks.useCallback(function(control: string, newValue: any)
+		setControls(function(prevControls)
+			return Llama.Dictionary.join(prevControls, {
+				[control] = newValue,
+			})
+		end)
+	end, {})
 
 	local viewCode = hooks.useCallback(function()
 		Selection:Set({ props.story })
@@ -38,6 +50,10 @@ local function StoryView(props: Props, hooks: any)
 	local onPreviewInViewport = hooks.useCallback(function()
 		setIsMountedInViewport(not isMountedInViewport)
 	end, { isMountedInViewport, setIsMountedInViewport })
+
+	hooks.useEffect(function()
+		setControls(if story then story.controls else nil)
+	end, { story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -88,22 +104,37 @@ local function StoryView(props: Props, hooks: any)
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
-			StoryMeta = story and e(StoryMeta, {
-				layoutOrder = 2,
+			Padding = e("UIPadding", {
+				PaddingLeft = theme.padding,
+				PaddingRight = theme.padding,
+			}),
+
+			StoryMeta = e(StoryMeta, {
+				layoutOrder = 1,
 				story = story,
 				storyModule = props.story,
 			}),
 
-			StoryPreview = story and e(StoryPreview, {
-				layoutOrder = 3,
+			StoryPreview = e(StoryPreview, {
+				layoutOrder = 2,
 				zoom = zoom.value,
 				story = story,
+				controls = controls,
 				storyModule = props.story,
 				isMountedInViewport = isMountedInViewport,
 			}),
 
-			StoryControls = story and e(StoryControls, {
+			Divider = showControls and e("Frame", {
+				LayoutOrder = 3,
+				Size = UDim2.new(1, 0, 0, 1),
+				BackgroundColor3 = theme.divider,
+				BorderSizePixel = 0,
+			}),
+
+			StoryControls = showControls and e(StoryControls, {
 				layoutOrder = 4,
+				controls = controls,
+				setControl = setControl,
 			}),
 		}),
 	})
