@@ -65,7 +65,7 @@ jobs:
 
       - name: Ensure each binary can be run
         run: |
-          for f in ./*.doc; do
+          for f in ./bin/*; do
               $f
           done
 
