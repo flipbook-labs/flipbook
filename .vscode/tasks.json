@@ -4,28 +4,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build (MacOS)",
+      "label": "Build",
       "type": "shell",
-      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "windows": {
+        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
+      },
+      "osx": {
+        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
-      "label": "Build and watch (MacOS)",
+      "label": "Build and watch",
       "type": "shell",
-      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build (Windows)",
-      "type": "shell",
-      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build and watch (Windows)",
-      "type": "shell",
-      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "windows": {
+        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch"
+      },
+      "osx": {
+        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
+      }
     }
   ]
 }

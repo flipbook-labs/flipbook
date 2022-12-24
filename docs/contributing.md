@@ -53,9 +53,13 @@ rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
 rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm
 ```
 
-Once built, open up a Baseplate to start interacting with the plugin.
-
 You can also run `rojo build` with the `--watch` flag while developing so that the plugin gets rebuilt when changes are made. Once rebuilt, simply reload to a new Baseplate for the changes to take effect.
+
+:::tip
+When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the flipbook plugin for your OS.
+:::
+
+Once built, open up a Baseplate to start interacting with the plugin.
 
 ## Using flipbook to develop flipbook
 
