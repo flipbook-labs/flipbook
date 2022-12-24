@@ -58,12 +58,12 @@ jobs:
         shell: bash
         run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --formatter=gnu src/
 
-  test-commands:
+  scripts:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Ensure each binary can be run
+      - name: Ensure each script can be run
         run: |
           for f in ./bin/*; do
               $f
