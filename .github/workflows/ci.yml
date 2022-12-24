@@ -63,10 +63,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Ensure each script can be run
+      - name: Ensure each script is executable
         run: |
           for f in ./bin/*; do
-              $f
+              if [[ ! -x "$f" ]]; then
+                  echo "Script '$f' is not executable"
+                  exit 1
+              fi
           done
 
   # Running unit tests in CI has historically been cumbersome, and presently
