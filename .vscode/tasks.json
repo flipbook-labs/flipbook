@@ -42,6 +42,12 @@
       "osx": {
         "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
       }
+    },
+    {
+      "label": "Serve docs",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "npx moonwave dev"
     }
   ]
 }
