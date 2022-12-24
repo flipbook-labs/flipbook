@@ -1,6 +1,8 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Example = script:FindFirstAncestor("Example")
 
-type Props = {
+local Roact = require(Example.Parent.Packages.Roact)
+
+export type Props = {
 	text: string,
 	isDisabled: boolean?,
 	onActivated: (() -> ())?,

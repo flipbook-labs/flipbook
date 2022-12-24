@@ -47,10 +47,10 @@ Next use Rojo to build the plugin:
 
 ```sh
 # Windows
-rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
+rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
 
 # MacOS
-rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm
+rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm
 ```
 
 You can also run `rojo build` with the `--watch` flag while developing so that the plugin gets rebuilt when changes are made. Once rebuilt, simply reload to a new Baseplate for the changes to take effect.

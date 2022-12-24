@@ -1,4 +1,6 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Example = script:FindFirstAncestor("Example")
+
+local Roact = require(Example.Parent.Packages.Roact)
 
 local Counter = Roact.Component:extend("Counter")
 
@@ -12,9 +14,9 @@ export type State = {
 }
 
 function Counter:init()
-	self.state = {
+	self:setState({
 		count = 0,
-	}
+	})
 end
 
 function Counter:render()
