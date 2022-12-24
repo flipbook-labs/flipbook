@@ -6,22 +6,26 @@
     {
       "label": "Build (MacOS)",
       "type": "shell",
-      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
+      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm",
+      "problemMatcher": []
     },
     {
       "label": "Build and watch (MacOS)",
       "type": "shell",
-      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch"
+      "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
+      "problemMatcher": []
     },
     {
       "label": "Build (Windows)",
       "type": "shell",
-      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
+      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm",
+      "problemMatcher": []
     },
     {
       "label": "Build and watch (Windows)",
       "type": "shell",
-      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch"
+      "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch",
+      "problemMatcher": []
     }
   ]
 }

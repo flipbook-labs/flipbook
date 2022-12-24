@@ -14,7 +14,7 @@ return function()
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)
-				local element = getStoryElement(story)
+				local element = getStoryElement(story, story.controls)
 
 				local handle
 				expect(function()
