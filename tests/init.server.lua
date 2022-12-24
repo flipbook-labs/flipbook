@@ -1,8 +1,19 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local flipbook = script:FindFirstAncestor("flipbook")
 
-local runTests = require(ReplicatedStorage.flipbook.TestHelpers.runTests)
+local TestEZ = require(flipbook.Packages.TestEZ)
 
-local success = runTests()
+-- Prune any tests that we don't own
+for _, descendant in ipairs(flipbook.Packages:GetDescendants()) do
+	if descendant.Name:match("%.spec$") then
+		descendant:Destroy()
+	end
+end
+
+local results = TestEZ.TestBootstrap:run({
+	flipbook,
+}, TestEZ.Reporters.TextReporterQuiet)
+
+local success = results.failureCount == 0
 
 if success then
 	print("✔️ All tests passed")
