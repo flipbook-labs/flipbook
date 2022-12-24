@@ -65,12 +65,11 @@ Once built, open up a Baseplate to start interacting with the plugin.
 
 flipbook is made up of Roact components, each of which has a story file. This means you can use flipbook itself for developing it.
 
-Once you have flipbook built you can make the following changes to have the internal storybook shown in the sidebar:
+Once you have flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
 
-1. In the Studio settings turn on "Plugin Debugging Enabled"
-2. Edit `constants.lua` and set `IS_DEV_MODE = true`. Make sure not to commit this change.
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](/plugin-debugging-enabled.png)
 
-Then load a new Baseplate and open the flipbook plugin to view the stories
+Then load a new Baseplate and open the flipbook plugin. Its storybook should now appear in the sidebar.
 
 ## Testing
 
