@@ -10,7 +10,7 @@ return function()
 		elementTracing = true,
 	})
 
-	for _, descendant in ipairs(script.Parent:GetDescendants()) do
+	for _, descendant in ipairs(script.Parent.Components:GetDescendants()) do
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)

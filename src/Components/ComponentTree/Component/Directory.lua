@@ -7,7 +7,7 @@ local constants = require(flipbook.constants)
 local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local Sprite = require(flipbook.Components.Sprite)
-local types = require(script.Parent.Parent.types)
+local types = require(script.Parent.Parent.Parent.Parent.types)
 
 local e = Roact.createElement
 
@@ -15,8 +15,8 @@ type Props = {
 	expanded: boolean,
 	hasChildren: boolean,
 	indent: number,
-	node: types.Node,
-	onClick: (types.Node) -> (),
+	node: types.ComponentTreeNode,
+	onClick: (types.ComponentTreeNode) -> (),
 }
 
 local function Directory(props: Props, hooks: any)
