@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Llama = require(flipbook.Packages.Llama)
+local Sift = require(flipbook.Packages.Sift)
 
 local function useDescendants(hooks: any, parent: Instance, predicate: (descendant: Instance) -> boolean): { Instance }
 	local descendants: { Instance }, setDescendants = hooks.useState({})
@@ -13,11 +13,11 @@ local function useDescendants(hooks: any, parent: Instance, predicate: (descenda
 				-- module uses a new name now
 				setDescendants(table.clone(descendants))
 			else
-				setDescendants(Llama.List.append(descendants, descendant))
+				setDescendants(Sift.Array.push(descendants, descendant))
 			end
 		else
 			if exists then
-				setDescendants(Llama.List.filter(descendants, function(other: Instance)
+				setDescendants(Sift.Array.filter(descendants, function(other: Instance)
 					return descendant ~= other
 				end))
 			end
@@ -26,7 +26,7 @@ local function useDescendants(hooks: any, parent: Instance, predicate: (descenda
 
 	-- Setup the initial list of descendants for the current parent
 	hooks.useEffect(function()
-		setDescendants(Llama.List.filter(parent:GetDescendants(), predicate))
+		setDescendants(Sift.Array.filter(parent:GetDescendants(), predicate))
 	end, { parent })
 
 	hooks.useEffect(function()
