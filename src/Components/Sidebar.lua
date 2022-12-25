@@ -24,7 +24,7 @@ local function Sidebar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	local activeNode, setActiveNode = hooks.useState(nil)
-	local onClick = hooks.useCallback(function(node: ComponentTree.Node)
+	local onClick = hooks.useCallback(function(node: types.ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
 				props.selectStorybook(node.storybook)

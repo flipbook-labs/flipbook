@@ -5,8 +5,6 @@ local isStorybook = require(flipbook.Story.isStorybook)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
 local useDescendants = require(flipbook.Hooks.useDescendants)
 
-local internalStorybook = flipbook["init.storybook"]
-
 local function hasPermission(instance: Instance)
 	local success = pcall(function()
 		return instance.Name
@@ -24,11 +22,6 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		local newStorybooks = {}
 
 		for _, module in modules do
-			-- Skip over flipbook's internal storybook
-			if module == internalStorybook and not constants.IS_DEV_MODE then
-				continue
-			end
-
 			local wasRequired, result = pcall(function()
 				return loader:require(module)
 			end)

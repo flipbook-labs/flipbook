@@ -4,7 +4,7 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local Directory = require(script.Directory)
 local Story = require(script.Story)
-local types = require(script.Parent.types)
+local types = require(script.Parent.Parent.Parent.types)
 
 local e = Roact.createElement
 
@@ -13,10 +13,10 @@ local defaultProps = {
 }
 
 type Props = typeof(defaultProps) & {
-	node: types.Node,
+	node: types.ComponentTreeNode,
 	filter: string?,
-	activeNode: types.Node?,
-	onClick: ((types.Node) -> ())?,
+	activeNode: types.ComponentTreeNode?,
+	onClick: ((types.ComponentTreeNode) -> ())?,
 }
 
 local function Component(props: Props, hooks: any)

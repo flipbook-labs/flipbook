@@ -1,4 +1,6 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Example = script:FindFirstAncestor("Example")
+
+local Roact = require(Example.Parent.Packages.Roact)
 
 return function(target: Instance)
 	local root = Roact.createElement("TextLabel", {
