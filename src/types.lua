@@ -55,4 +55,12 @@ export type Theme = {
 	corner: UDim,
 }
 
+export type ComponentTreeNode = {
+	name: string,
+	children: { ComponentTreeNode },
+	icon: string?,
+	instance: Instance?,
+	storybook: Storybook?,
+}
+
 return {}

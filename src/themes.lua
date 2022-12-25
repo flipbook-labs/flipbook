@@ -1,5 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
-local types = require(flipbook.types)
+
+local types = require(script.Parent.types)
 local tailwind = require(flipbook.tailwind)
 
 return {

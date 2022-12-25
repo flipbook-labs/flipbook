@@ -2,17 +2,17 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Roact = require(flipbook.Packages.Roact)
 local Component = require(script.Component)
-local types = require(script.types)
+local types = require(script.Parent.Parent.types)
 
 local e = Roact.createElement
 
-export type Node = types.Node
+export type Node = types.ComponentTreeNode
 export type Props = {
-	nodes: { types.Node },
-	activeNode: types.Node?,
+	nodes: { types.ComponentTreeNode },
+	activeNode: types.ComponentTreeNode?,
 	layoutOrder: number?,
 	filter: string?,
-	onClick: ((types.Node) -> ())?,
+	onClick: ((types.ComponentTreeNode) -> ())?,
 }
 
 local function ComponentTree(props: Props)
