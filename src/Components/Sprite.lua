@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 
 export type Props = {
 	image: {
@@ -19,7 +19,7 @@ local function Sprite(props: Props)
 		then props.size
 		else UDim2.fromOffset(props.image.ImageRectSize.X, props.image.ImageRectSize.Y)
 
-	return Roact.createElement("ImageLabel", {
+	return React.createElement("ImageLabel", {
 		LayoutOrder = props.layoutOrder,
 		Image = props.image.Image,
 		ImageRectOffset = props.image.ImageRectOffset,

@@ -1,7 +1,7 @@
 return function()
 	local flipbook = script:FindFirstAncestor("flipbook")
 
-	local Roact = require(flipbook.Packages.Roact)
+	local React = require(flipbook.Packages.React)
 	local isHoarcekatStory = require(script.Parent.isHoarcekatStory)
 
 	local hoarcekat = function(_target: Instance)
@@ -11,7 +11,7 @@ return function()
 	end
 
 	local story = {
-		story = Roact.createElement("Frame"),
+		story = React.createElement("Frame"),
 	}
 
 	it("should return true for hoarcekat stories", function()

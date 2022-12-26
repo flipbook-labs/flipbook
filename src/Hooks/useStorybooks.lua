@@ -1,5 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
 local isStorybook = require(flipbook.Story.isStorybook)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
@@ -12,13 +13,13 @@ local function hasPermission(instance: Instance)
 	return success
 end
 
-local function useStorybooks(hooks: any, parent: Instance, loader: any)
-	local storybooks, set = hooks.useState({})
-	local modules = useDescendants(hooks, game, function(descendant)
+local function useStorybooks(parent: Instance, loader: any)
+	local storybooks, set = React.useState({})
+	local modules = useDescendants(game, function(descendant)
 		return hasPermission(descendant) and isStorybookModule(descendant)
 	end)
 
-	local loadStorybooks = hooks.useCallback(function()
+	local loadStorybooks = React.useCallback(function()
 		local newStorybooks = {}
 
 		for _, module in modules do
@@ -44,7 +45,7 @@ local function useStorybooks(hooks: any, parent: Instance, loader: any)
 		set(newStorybooks)
 	end, { set, parent, loader, modules })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStorybooks)
 
 		loadStorybooks()

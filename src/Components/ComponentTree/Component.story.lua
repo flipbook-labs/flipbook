@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Component = require(script.Parent.Component)
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 
 local childNode1 = {
 	name = "Button",
@@ -39,7 +39,7 @@ local storybookNode = {
 return {
 	summary = "Component as storybook with children",
 	controls = {},
-	story = Roact.createElement(Component, {
+	story = React.createElement(Component, {
 		activeNode = nil,
 		node = storybookNode,
 		onClick = function() end,

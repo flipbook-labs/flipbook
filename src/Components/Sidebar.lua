@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local constants = require(flipbook.constants)
 local createStoryNodes = require(flipbook.Story.createStoryNodes)
 local Branding = require(flipbook.Components.Branding)
@@ -11,7 +11,7 @@ local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
@@ -20,11 +20,11 @@ type Props = {
 	storybooks: { types.Storybook },
 }
 
-local function Sidebar(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Sidebar(props: Props)
+	local theme = useTheme()
 
-	local activeNode, setActiveNode = hooks.useState(nil)
-	local onClick = hooks.useCallback(function(node: types.ComponentTreeNode)
+	local activeNode, setActiveNode = React.useState(nil)
+	local onClick = React.useCallback(function(node: types.ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
 				props.selectStorybook(node.storybook)
@@ -36,17 +36,17 @@ local function Sidebar(props: Props, hooks: any)
 		end
 	end, {})
 
-	local storybookNodes = hooks.useMemo(function()
+	local storybookNodes = React.useMemo(function()
 		return createStoryNodes(props.storybooks)
 	end, { props.storybooks })
 
-	local headerHeight, setHeaderHeight = hooks.useState(0)
-	local onHeaderSizeChanged = hooks.useCallback(function(rbx: Frame)
+	local headerHeight, setHeaderHeight = React.useState(0)
+	local onHeaderSizeChanged = React.useCallback(function(rbx: Frame)
 		setHeaderHeight(rbx.AbsoluteSize.Y)
 	end, { setHeaderHeight })
 
-	local search, setSearch = hooks.useState(nil)
-	local onSearchChanged = hooks.useCallback(function(value: string)
+	local search, setSearch = React.useState(nil)
+	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
 			setSearch(nil)
 		else
@@ -77,7 +77,7 @@ local function Sidebar(props: Props, hooks: any)
 			BackgroundTransparency = 1,
 			LayoutOrder = 0,
 			Size = UDim2.fromScale(1, 0),
-			[Roact.Change.AbsoluteSize] = onHeaderSizeChanged,
+			[ReactRoblox.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
 			UIListLayout = e("UIListLayout", {
 				Padding = theme.paddingLarge,
@@ -108,4 +108,4 @@ local function Sidebar(props: Props, hooks: any)
 	})
 end
 
-return hook(Sidebar)
+return Sidebar

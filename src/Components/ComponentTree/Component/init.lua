@@ -1,12 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+local Sift = require(flipbook.Packages.Sift)
 local Directory = require(script.Directory)
 local Story = require(script.Story)
 local types = require(script.Parent.Parent.Parent.types)
 
-local e = Roact.createElement
+local e = React.createElement
 
 local defaultProps = {
 	indent = 0,
@@ -19,11 +19,13 @@ type Props = typeof(defaultProps) & {
 	onClick: ((types.ComponentTreeNode) -> ())?,
 }
 
-local function Component(props: Props, hooks: any)
+local function Component(props: Props)
+	props = Sift.Dictionary.merge(defaultProps, props)
+
 	local hasChildren = props.node.children and #props.node.children > 0
 
-	local expanded, setExpanded = hooks.useState(false)
-	local onClick = hooks.useCallback(function()
+	local expanded, setExpanded = React.useState(false)
+	local onClick = React.useCallback(function()
 		if props.onClick then
 			props.onClick(props.node)
 		end
@@ -45,7 +47,7 @@ local function Component(props: Props, hooks: any)
 
 	if hasChildren and props.node.children then
 		for idx, child in ipairs(props.node.children) do
-			children[child.name .. idx] = Roact.createElement(Component, {
+			children[child.name .. idx] = React.createElement(Component, {
 				node = child,
 				indent = props.indent + 1,
 				filter = props.filter,
@@ -98,9 +100,5 @@ local function Component(props: Props, hooks: any)
 			else nil,
 	})
 end
-
-Component = hook(Component, {
-	defaultProps = defaultProps,
-})
 
 return Component

@@ -1,19 +1,20 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local React = require(flipbook.Packages.React)
 local types = require(script.Parent.Parent.types)
 local loadStoryModule = require(flipbook.Story.loadStoryModule)
 
-local function useStory(hooks: any, module: ModuleScript, storybook: types.Storybook, loader: any): types.Story?
-	local state, setState = hooks.useState({
+local function useStory(module: ModuleScript, storybook: types.Storybook, loader: any): types.Story?
+	local state, setState = React.useState({
 		story = nil,
 		err = nil,
 	})
 
-	local loadStory = hooks.useCallback(function()
+	local loadStory = React.useCallback(function()
 		local story, err = loadStoryModule(loader, module)
 
-		if story and not story.roact then
-			story.roact = storybook.roact
+		if story and not story.React then
+			story.React = storybook.roact
 		end
 
 		setState({
@@ -22,7 +23,7 @@ local function useStory(hooks: any, module: ModuleScript, storybook: types.Story
 		})
 	end, { loader, module, storybook })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		local conn = loader.loadedModuleChanged:Connect(loadStory)
 
 		loadStory()

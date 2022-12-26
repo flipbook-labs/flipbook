@@ -1,10 +1,10 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local Component = require(script.Component)
 local types = require(script.Parent.Parent.types)
 
-local e = Roact.createElement
+local e = React.createElement
 
 export type Node = types.ComponentTreeNode
 export type Props = {

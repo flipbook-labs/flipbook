@@ -1,10 +1,10 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local InputField = require(script.Parent.InputField)
 
 return {
-	story = Roact.createElement(InputField, {
+	story = React.createElement(InputField, {
 		placeholder = "Enter information...",
 		autoFocus = true,
 		onSubmit = function(text)

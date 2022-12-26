@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
 local DragHandle = require(flipbook.Components.DragHandle)
 local types = require(script.Parent.Parent.types)
 
@@ -19,14 +19,15 @@ export type Props = typeof(defaultProps) & {
 	hoverIconX: string?,
 	hoverIconY: string?,
 	onResize: ((newSize: Vector2) -> ())?,
+	children: any,
 }
 
-local function ResizablePanel(props: Props, hooks: any)
+local function ResizablePanel(props: Props)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local absoluteSize, setAbsoluteSize = hooks.useState(nil)
+	local absoluteSize, setAbsoluteSize = React.useState(nil)
 
-	local clampedAbsoluteSize = hooks.useMemo(function()
+	local clampedAbsoluteSize = React.useMemo(function()
 		return if absoluteSize
 			then Vector2.new(
 				math.clamp(absoluteSize.X, props.minSize.X, props.maxSize.X),
@@ -35,31 +36,31 @@ local function ResizablePanel(props: Props, hooks: any)
 			else nil
 	end, { absoluteSize })
 
-	local isWidthResizable = hooks.useMemo(function()
+	local isWidthResizable = React.useMemo(function()
 		return Sift.Array.includes(props.dragHandles, "Left") or Sift.Array.includes(props.dragHandles, "Right")
 	end, { props.dragHandles })
 
-	local isHeightResizable = hooks.useMemo(function()
+	local isHeightResizable = React.useMemo(function()
 		return Sift.Array.includes(props.dragHandles, "Top") or Sift.Array.includes(props.dragHandles, "Bottom")
 	end, { props.dragHandles })
 
-	local width = hooks.useMemo(function()
+	local width = React.useMemo(function()
 		return if clampedAbsoluteSize and isWidthResizable
 			then UDim.new(0, clampedAbsoluteSize.X)
 			else props.initialSize.Width
 	end, { clampedAbsoluteSize })
 
-	local height = hooks.useMemo(function()
+	local height = React.useMemo(function()
 		return if clampedAbsoluteSize and isHeightResizable
 			then UDim.new(0, clampedAbsoluteSize.Y)
 			else props.initialSize.Height
 	end, { clampedAbsoluteSize, props.initialSize })
 
-	local onAbsoluteSizeChanged = hooks.useCallback(function(rbx: Frame)
+	local onAbsoluteSizeChanged = React.useCallback(function(rbx: Frame)
 		setAbsoluteSize(rbx.AbsoluteSize)
 	end, {})
 
-	local onHandleDragged = hooks.useCallback(function(handle: types.DragHandle, delta: Vector2)
+	local onHandleDragged = React.useCallback(function(handle: types.DragHandle, delta: Vector2)
 		setAbsoluteSize(function(prev: Vector2)
 			local x = prev.X + delta.X
 			local y = prev.Y - delta.Y
@@ -74,7 +75,7 @@ local function ResizablePanel(props: Props, hooks: any)
 		end)
 	end, { props.minSize, props.maxSize })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		if clampedAbsoluteSize and props.onResize then
 			props.onResize(clampedAbsoluteSize)
 		end
@@ -83,7 +84,7 @@ local function ResizablePanel(props: Props, hooks: any)
 	local dragHandles = {}
 	if props.dragHandles then
 		for _, handle in props.dragHandles do
-			dragHandles[handle] = Roact.createElement(DragHandle, {
+			dragHandles[handle] = React.createElement(DragHandle, {
 				handle = handle,
 				hoverIconX = props.hoverIconX,
 				hoverIconY = props.hoverIconY,
@@ -97,19 +98,19 @@ local function ResizablePanel(props: Props, hooks: any)
 		end
 	end
 
-	return Roact.createElement("Frame", {
+	return React.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(width, height),
 		BackgroundTransparency = 1,
-		[Roact.Change.AbsoluteSize] = onAbsoluteSizeChanged,
+		[ReactRoblox.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
-		DragHandles = Roact.createFragment(dragHandles),
+		DragHandles = React.createFragment(dragHandles),
 
-		Children = Roact.createElement("Frame", {
+		Children = React.createElement("Frame", {
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 1),
-		}, (props :: any)[Roact.Children]),
+		}, props.children),
 	})
 end
 
-return hook(ResizablePanel)
+return ResizablePanel

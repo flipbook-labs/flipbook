@@ -2,14 +2,14 @@ local CoreGui = game:GetService("CoreGui")
 
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+local Sift = require(flipbook.Packages.Sift)
 local types = require(script.Parent.Parent.types)
 local usePrevious = require(flipbook.Hooks.usePrevious)
 local mountStory = require(flipbook.Story.mountStory)
 local unmountStory = require(flipbook.Story.unmountStory)
 
-local e = Roact.createElement
+local e = React.createElement
 
 local defaultProps = {
 	isMountedInViewport = false,
@@ -24,19 +24,21 @@ type Props = typeof(defaultProps) & {
 	storyModule: ModuleScript,
 }
 
-local function StoryPreview(props: Props, hooks: any)
-	local tree = hooks.useValue(nil)
-	local storyParent = Roact.createRef()
-	local prevStory = usePrevious(hooks, props.story)
+local function StoryPreview(props: Props)
+	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local unmount = hooks.useCallback(function()
+	local tree = React.useValue(nil)
+	local storyParent = React.createRef()
+	local prevStory = usePrevious(props.story)
+
+	local unmount = React.useCallback(function()
 		if tree.value and prevStory then
 			unmountStory(prevStory, tree.value)
 			tree.value = nil
 		end
 	end, { prevStory })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		unmount()
 
 		if props.story then
@@ -45,11 +47,11 @@ local function StoryPreview(props: Props, hooks: any)
 	end, { props.story, unmount, storyParent })
 
 	if props.isMountedInViewport then
-		return e(Roact.Portal, {
+		return e(React.Portal, {
 			target = CoreGui,
 		}, {
 			Story = e("ScreenGui", {
-				[Roact.Ref] = storyParent,
+				[React.Ref] = storyParent,
 			}),
 		})
 	else
@@ -58,7 +60,7 @@ local function StoryPreview(props: Props, hooks: any)
 			BackgroundTransparency = 1,
 			LayoutOrder = props.layoutOrder,
 			Size = UDim2.fromScale(1, 0),
-			[Roact.Ref] = storyParent,
+			[React.Ref] = storyParent,
 		}, {
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
@@ -67,6 +69,4 @@ local function StoryPreview(props: Props, hooks: any)
 	end
 end
 
-return hook(StoryPreview, {
-	defaultProps = defaultProps,
-})
+return StoryPreview

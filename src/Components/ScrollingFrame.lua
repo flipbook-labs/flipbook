@@ -1,16 +1,15 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Sift = require(flipbook.Packages.Sift)
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local useTheme = require(flipbook.Hooks.useTheme)
-local hook = require(flipbook.hook)
 
 export type Props = {
 	[string]: any,
 }
 
-local function ScrollingFrame(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function ScrollingFrame(props: Props)
+	local theme = useTheme()
 
 	props = Sift.Dictionary.merge({
 		Size = UDim2.fromScale(1, 1),
@@ -25,7 +24,7 @@ local function ScrollingFrame(props: Props, hooks: any)
 		BackgroundTransparency = 1,
 	}, props)
 
-	return Roact.createElement("ScrollingFrame", props)
+	return React.createElement("ScrollingFrame", props)
 end
 
-return hook(ScrollingFrame)
+return ScrollingFrame

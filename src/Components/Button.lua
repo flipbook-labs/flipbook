@@ -1,10 +1,11 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
+local Sift = require(flipbook.Packages.Sift)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 local function shift(color: Color3, percent: number): Color3
 	local h, s, v = color:ToHSV()
@@ -29,9 +30,11 @@ type Props = typeof(defaultProps) & {
 	onClick: (() -> ())?,
 }
 
-local function Button(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local hover, setHover = hooks.useState(false)
+local function Button(props: Props)
+	props = Sift.Dictionary.join(defaultProps, props)
+
+	local theme = useTheme()
+	local hover, setHover = React.useState(false)
 
 	return e("ImageButton", {
 		AutoButtonColor = false,
@@ -42,13 +45,13 @@ local function Button(props: Props, hooks: any)
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Position = props.position,
-		[Roact.Event.MouseEnter] = function()
+		[ReactRoblox.Event.MouseEnter] = function()
 			setHover(true)
 		end,
-		[Roact.Event.MouseLeave] = function()
+		[ReactRoblox.Event.MouseLeave] = function()
 			setHover(false)
 		end,
-		[Roact.Event.Activated] = props.onClick,
+		[ReactRoblox.Event.Activated] = props.onClick,
 	}, {
 		UICorner = e("UICorner", {
 			CornerRadius = theme.corner,
@@ -90,6 +93,4 @@ local function Button(props: Props, hooks: any)
 	})
 end
 
-return hook(Button, {
-	defaultProps = defaultProps,
-})
+return Button

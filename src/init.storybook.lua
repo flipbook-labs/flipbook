@@ -1,9 +1,11 @@
-local Roact = require(script.Parent.Packages.Roact)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local React = require(flipbook.Packages.React)
 
 return {
-	name = script.Parent.Name,
+	name = flipbook.Name,
 	storyRoots = {
-		script.Parent.Components,
+		flipbook.Components,
 	},
-	roact = Roact,
+	roact = React,
 }

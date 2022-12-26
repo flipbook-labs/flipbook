@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local Button = require(script.Parent.Button)
 
 local controls = {
@@ -15,7 +15,7 @@ return {
 	summary = "A generic button component that can be used anywhere",
 	controls = controls,
 	story = function(props: Props)
-		return Roact.createElement(Button, {
+		return React.createElement(Button, {
 			text = props.controls.text,
 			onClick = function()
 				print("click")

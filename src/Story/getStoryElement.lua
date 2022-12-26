@@ -1,14 +1,14 @@
 --[[
-    Given a Story, this function will return a Roact element.
+    Given a Story, this function will return a React element.
 
-    A story can either be the result of Roact.createElement(), or a component
+    A story can either be the result of React.createElement(), or a component
     that accepts props containing the `controls` table.
 
     As an element:
 
     ```lua
     return {
-        story = Roact.createElement("TextLabel", {
+        story = React.createElement("TextLabel", {
             Text = "Hello, World!"
         })
     }
@@ -22,7 +22,7 @@
             body = "Hello, World!"
         },
         story = function(props)
-            return Roact.createElement("TextLabel", {
+            return React.createElement("TextLabel", {
                 Text = props.controls.body
             })
         end

@@ -1,17 +1,18 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 
-local PluginContext = Roact.createContext()
+local PluginContext = React.createContext()
 
 export type Props = {
 	plugin: Plugin,
+	children: any,
 }
 
 local function PluginProvider(props: Props)
-	return Roact.createElement(PluginContext.Provider, {
+	return React.createElement(PluginContext.Provider, {
 		value = props.plugin,
-	}, props[Roact.Children])
+	}, props.children)
 end
 
 return {

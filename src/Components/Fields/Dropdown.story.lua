@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local Dropdown = require(flipbook.Components.Fields.Dropdown)
 
 local controls = {
@@ -20,7 +20,7 @@ return {
 			table.insert(options, "Option " .. i)
 		end
 
-		return Roact.createElement(Dropdown, {
+		return React.createElement(Dropdown, {
 			placeholder = "Select an option",
 			default = if props.controls.useDefault then options[1] else nil,
 			options = options,
