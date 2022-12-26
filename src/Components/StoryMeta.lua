@@ -29,13 +29,6 @@ local function StoryMeta(props: Props, hooks: any)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Padding = e("UIPadding", {
-			PaddingTop = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-		}),
-
 		Title = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
