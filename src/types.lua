@@ -63,4 +63,6 @@ export type ComponentTreeNode = {
 	storybook: Storybook?,
 }
 
+export type DragHandle = "Top" | "Right" | "Bottom" | "Left"
+
 return {}
