@@ -25,7 +25,7 @@ return function()
 				local element = getStoryElement(story, story.controls)
 
 				expect(function()
-					root:mount(element)
+					root:render(element)
 				end).to.never.throw()
 
 				expect(function()

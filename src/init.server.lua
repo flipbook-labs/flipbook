@@ -30,14 +30,14 @@ local app = React.createElement(App, {
 
 local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 	if widget.Enabled then
-		root:mount(app)
+		root:render(app)
 	else
 		root:unmount()
 	end
 end)
 
 if widget.Enabled then
-	root:mount(app)
+	root:render(app)
 end
 
 plugin.Unloading:Connect(function()
