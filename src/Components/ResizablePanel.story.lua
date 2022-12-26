@@ -21,7 +21,7 @@ return {
 			initialSize = UDim2.fromOffset(props.controls.maxWidth - props.controls.minWidth, 300),
 			maxSize = Vector2.new(props.controls.maxWidth, props.controls.maxHeight),
 			minSize = Vector2.new(props.controls.minWidth, props.controls.minHeight),
-			dragHandles = { "Right" },
+			dragHandles = { "Right", "Bottom" },
 		}, {
 			Content = Roact.createElement("Frame", {
 				Size = UDim2.fromScale(1, 1),
