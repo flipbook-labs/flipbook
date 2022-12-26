@@ -26,12 +26,34 @@ local function ResizablePanel(props: Props, hooks: any)
 
 	local absoluteSize, setAbsoluteSize = hooks.useState(nil)
 
-	local clampedAbsoluteSize = if absoluteSize
-		then Vector2.new(
-			math.clamp(absoluteSize.X, props.minSize.X, props.maxSize.X),
-			math.clamp(absoluteSize.Y, props.minSize.Y, props.maxSize.Y)
-		)
-		else nil
+	local clampedAbsoluteSize = hooks.useMemo(function()
+		return if absoluteSize
+			then Vector2.new(
+				math.clamp(absoluteSize.X, props.minSize.X, props.maxSize.X),
+				math.clamp(absoluteSize.Y, props.minSize.Y, props.maxSize.Y)
+			)
+			else nil
+	end, { absoluteSize })
+
+	local isWidthResizable = hooks.useMemo(function()
+		return Sift.Array.includes(props.dragHandles, "Left") or Sift.Array.includes(props.dragHandles, "Right")
+	end, { props.dragHandles })
+
+	local isHeightResizable = hooks.useMemo(function()
+		return Sift.Array.includes(props.dragHandles, "Top") or Sift.Array.includes(props.dragHandles, "Bottom")
+	end, { props.dragHandles })
+
+	local width = hooks.useMemo(function()
+		return if clampedAbsoluteSize and isWidthResizable
+			then UDim.new(0, clampedAbsoluteSize.X)
+			else props.initialSize.Width
+	end, { clampedAbsoluteSize })
+
+	local height = hooks.useMemo(function()
+		return if clampedAbsoluteSize and isHeightResizable
+			then UDim.new(0, clampedAbsoluteSize.Y)
+			else props.initialSize.Height
+	end, { clampedAbsoluteSize, props.initialSize })
 
 	local onAbsoluteSizeChanged = hooks.useCallback(function(rbx: Frame)
 		setAbsoluteSize(rbx.AbsoluteSize)
@@ -77,9 +99,7 @@ local function ResizablePanel(props: Props, hooks: any)
 
 	return Roact.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
-		Size = if clampedAbsoluteSize
-			then UDim2.fromOffset(clampedAbsoluteSize.X, clampedAbsoluteSize.Y)
-			else props.initialSize,
+		Size = UDim2.new(width, height),
 		BackgroundTransparency = 1,
 		[Roact.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
