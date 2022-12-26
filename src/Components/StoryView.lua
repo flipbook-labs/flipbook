@@ -142,13 +142,6 @@ local function StoryView(props: Props, hooks: any)
 				}),
 			}),
 
-			Divider = e("Frame", {
-				LayoutOrder = 2,
-				Size = UDim2.new(1, 0, 0, 1),
-				BackgroundColor3 = theme.divider,
-				BorderSizePixel = 0,
-			}),
-
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
 				layoutOrder = 3,
 				initialSize = UDim2.new(1, 0, 0, constants.CONTROLS_INITIAL_HEIGHT),
@@ -159,6 +152,8 @@ local function StoryView(props: Props, hooks: any)
 			}, {
 				ScrollingFrame = e(ScrollingFrame, {
 					LayoutOrder = 2,
+					BackgroundTransparency = 0.4,
+					BackgroundColor3 = theme.sidebar,
 				}, {
 					Padding = e("UIPadding", {
 						PaddingTop = theme.padding,
