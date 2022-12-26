@@ -48,6 +48,10 @@ local function StoryControls(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 		}, {
+			Layout = Roact.createElement("UIListLayout", {
+				FillDirection = Enum.FillDirection.Horizontal,
+			}),
+
 			Name = e("TextLabel", {
 				Text = key,
 				Size = UDim2.fromScale(1 / 2, 0),
@@ -63,7 +67,6 @@ local function StoryControls(props: Props, hooks: any)
 			Option = e("Frame", {
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1 / 2, 0),
-				Position = UDim2.fromScale(1 / 2, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
 			}, option),
 		})

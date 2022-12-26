@@ -51,7 +51,7 @@ local function Story(props: Props, hooks: any)
 
 		UIPadding = e("UIPadding", {
 			PaddingBottom = theme.padding,
-			PaddingLeft = UDim.new(0, theme.paddingSmall.Offset * (props.indent + 1)),
+			PaddingLeft = theme.paddingSmall + UDim.new(0, theme.padding.Offset * props.indent),
 			PaddingRight = theme.paddingSmall,
 			PaddingTop = theme.padding,
 		}),
