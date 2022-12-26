@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Selection = game:GetService("Selection")
 
-local Llama = require(flipbook.Packages.Llama)
+local Sift = require(flipbook.Packages.Sift)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
@@ -30,11 +30,11 @@ local function StoryView(props: Props, hooks: any)
 	local plugin = hooks.useContext(PluginContext.Context)
 	local controls, setControls = hooks.useState(nil)
 
-	local showControls = controls and not Llama.isEmpty(controls)
+	local showControls = controls and not Sift.isEmpty(controls)
 
 	local setControl = hooks.useCallback(function(control: string, newValue: any)
 		setControls(function(prevControls)
-			return Llama.Dictionary.join(prevControls, {
+			return Sift.Dictionary.merge(prevControls, {
 				[control] = newValue,
 			})
 		end)
