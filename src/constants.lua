@@ -2,6 +2,10 @@ return {
 	STORY_NAME_PATTERN = "%.story$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
+	SIDEBAR_INITIAL_WIDTH = 260, -- px
+	SIDEBAR_MIN_WIDTH = 140, -- px
+	SIDEBAR_MAX_WIDTH = 500, -- px
+
 	-- Enabling dev mode will add flipbook's storybook to the list of available
 	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
 	-- plugin
