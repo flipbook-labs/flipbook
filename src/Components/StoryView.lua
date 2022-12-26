@@ -99,7 +99,7 @@ local function StoryView(props: Props, hooks: any)
 
 			ScrollingFrame = e(ScrollingFrame, {
 				LayoutOrder = 1,
-				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, controlsHeight),
+				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, if showControls then controlsHeight else 0),
 			}, {
 				Layout = e("UIListLayout", {
 					Padding = theme.padding,
