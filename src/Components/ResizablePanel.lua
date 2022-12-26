@@ -7,7 +7,6 @@ local DragHandle = require(flipbook.Components.DragHandle)
 local types = require(script.Parent.Parent.types)
 
 local defaultProps = {
-	hoverIcon = "",
 	dragHandleSize = 8, -- px
 	minSize = Vector2.new(0, 0),
 	maxSize = Vector2.new(math.huge, math.huge),
@@ -17,6 +16,8 @@ export type Props = typeof(defaultProps) & {
 	initialSize: UDim2,
 	layoutOrder: number?,
 	dragHandles: { types.DragHandle }?,
+	hoverIconX: string?,
+	hoverIconY: string?,
 	onResize: ((newSize: Vector2) -> ())?,
 }
 
@@ -62,7 +63,8 @@ local function ResizablePanel(props: Props, hooks: any)
 		for _, handle in props.dragHandles do
 			dragHandles[handle] = Roact.createElement(DragHandle, {
 				handle = handle,
-				hoverIcon = props.hoverIcon,
+				hoverIconX = props.hoverIconX,
+				hoverIconY = props.hoverIconY,
 				onDrag = function(delta: Vector2)
 					onHandleDragged(handle, delta)
 				end,

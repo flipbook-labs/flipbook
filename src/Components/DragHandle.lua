@@ -5,11 +5,13 @@ local RunService = game:GetService("RunService")
 local Sift = require(flipbook.Packages.Sift)
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
+local PluginContext = require(flipbook.Plugin.PluginContext)
 local types = require(script.Parent.Parent.types)
 
 local defaultProps = {
 	size = 8, -- px
-	hoverIcon = "",
+	hoverIconX = "rbxasset://textures/StudioUIEditor/icon_resize2.png",
+	hoverIconY = "rbxasset://textures/StudioUIEditor/icon_resize4.png",
 }
 
 export type Props = typeof(defaultProps) & {
@@ -21,7 +23,9 @@ export type Props = typeof(defaultProps) & {
 local function DragHandle(props: Props, hooks: any)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
+	local plugin = hooks.useContext(PluginContext.Context)
 	local isDragging, setIsDragging = hooks.useState(false)
+	local isHovered, setIsHovered = hooks.useState(false)
 	local mouseInput: InputObject, setMouseInput = hooks.useState(nil)
 
 	local getHandleProperties = hooks.useCallback(function()
@@ -58,6 +62,7 @@ local function DragHandle(props: Props, hooks: any)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			setIsDragging(true)
 		elseif input.UserInputType == Enum.UserInputType.MouseMovement then
+			setIsHovered(true)
 			setMouseInput(input)
 		end
 	end, { isDragging })
@@ -72,6 +77,14 @@ local function DragHandle(props: Props, hooks: any)
 			end
 		end
 	end, { props.onDragEnd })
+
+	local onMouseEnter = hooks.useCallback(function()
+		setIsHovered(true)
+	end, {})
+
+	local onMouseLeave = hooks.useCallback(function()
+		setIsHovered(false)
+	end, {})
 
 	local size, position, anchorPoint = getHandleProperties()
 
@@ -96,6 +109,22 @@ local function DragHandle(props: Props, hooks: any)
 		end
 	end, { mouseInput, isDragging })
 
+	hooks.useEffect(function()
+		if plugin then
+			local mouse = plugin:GetMouse()
+
+			if isHovered or isDragging then
+				if props.handle == "Left" or props.handle == "Right" then
+					mouse.Icon = props.hoverIconX
+				elseif props.handle == "Top" or props.handle == "Bottom" then
+					mouse.Icon = props.hoverIconY
+				end
+			else
+				mouse.Icon = ""
+			end
+		end
+	end, { plugin, isDragging, isHovered })
+
 	return Roact.createElement("ImageButton", {
 		Size = size,
 		Position = position,
@@ -103,6 +132,8 @@ local function DragHandle(props: Props, hooks: any)
 		BackgroundTransparency = 1,
 		[Roact.Event.InputBegan] = onInputBegan,
 		[Roact.Event.InputEnded] = onInputEnded,
+		[Roact.Event.MouseEnter] = onMouseEnter,
+		[Roact.Event.MouseLeave] = onMouseLeave,
 	})
 end
 
