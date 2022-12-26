@@ -24,7 +24,7 @@ local function StoryMeta(props: Props, hooks: any)
 		Size = UDim2.fromScale(1, 0),
 	}, {
 		UIListLayout = e("UIListLayout", {
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			HorizontalAlignment = Enum.HorizontalAlignment.Left,
 			Padding = theme.padding,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
@@ -49,7 +49,8 @@ local function StoryMeta(props: Props, hooks: any)
 			TextColor3 = theme.textFaded,
 			TextSize = theme.textSize,
 			TextWrapped = true,
-			TextXAlignment = Enum.TextXAlignment.Center,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
 		}, {
 			UISizeConstraint = e("UISizeConstraint", {
 				MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),

@@ -29,13 +29,6 @@ local function Element(props: Props, hooks: any)
 			LayoutOrder = 1,
 			Size = UDim2.fromScale(1, 1),
 		}, {
-			UIPadding = e("UIPadding", {
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.paddingLarge,
-				PaddingRight = theme.paddingLarge,
-				PaddingTop = theme.padding,
-			}),
-
 			Children = Roact.createFragment(props[Roact.Children] or {}),
 		}),
 

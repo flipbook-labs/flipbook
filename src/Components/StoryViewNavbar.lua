@@ -4,7 +4,6 @@ local Roact = require(flipbook.Packages.Roact)
 local assets = require(flipbook.assets)
 local hook = require(flipbook.hook)
 local Navbar = require(flipbook.Components.Navbar)
-local Button = require(flipbook.Components.Button)
 local Sprite = require(flipbook.Components.Sprite)
 local useTheme = require(flipbook.Hooks.useTheme)
 
@@ -28,24 +27,6 @@ local function NavbarRoot(props: Props, hooks: any)
 		LeftNav = e(Navbar.Items, {
 			layoutOrder = 1,
 		}, {
-			Canvas = e(Navbar.Item, {
-				active = true,
-				layoutOrder = 1,
-				onClick = function() end,
-			}, {
-				Text = e("TextLabel", {
-					AutomaticSize = Enum.AutomaticSize.XY,
-					BackgroundTransparency = 1,
-					Font = theme.headerFont,
-					Size = UDim2.fromScale(0, 0),
-					Text = "Canvas",
-					TextColor3 = theme.text,
-					TextSize = theme.headerTextSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
-				}),
-			}),
-
 			Zoom = e(Navbar.Items, {
 				layoutOrder = 2,
 			}, {
@@ -113,12 +94,6 @@ local function NavbarRoot(props: Props, hooks: any)
 					}),
 				}),
 			}),
-		}),
-
-		Help = e(Button, {
-			text = "Help",
-			anchorPoint = Vector2.new(1, 0),
-			position = UDim2.new(1, 0, 0, 0),
 		}),
 	})
 end

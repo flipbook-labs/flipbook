@@ -102,7 +102,7 @@ local function StoryView(props: Props, hooks: any)
 				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, if showControls then controlsHeight else 0),
 			}, {
 				Layout = e("UIListLayout", {
-					Padding = theme.padding,
+					Padding = theme.paddingLarge,
 					SortOrder = Enum.SortOrder.LayoutOrder,
 				}),
 
@@ -125,8 +125,15 @@ local function StoryView(props: Props, hooks: any)
 					storyModule = props.story,
 				}),
 
+				Divider = e("Frame", {
+					LayoutOrder = 3,
+					BackgroundColor3 = theme.divider,
+					Size = UDim2.new(1, 0, 0, 1),
+					BorderSizePixel = 0,
+				}),
+
 				StoryPreview = e(StoryPreview, {
-					layoutOrder = 3,
+					layoutOrder = 4,
 					zoom = zoom.value,
 					story = story,
 					controls = controls,
