@@ -1,11 +1,13 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Example = script:FindFirstAncestor("Example")
 
-type Props = {
+local Roact = require(Example.Parent.Packages.Roact)
+
+export type Props = {
 	text: string,
 	onActivated: () -> (),
 }
 
-local function Button(props)
+local function Button(props: Props)
 	return Roact.createElement("TextButton", {
 		Text = props.text,
 		TextSize = 16,

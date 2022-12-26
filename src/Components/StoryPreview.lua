@@ -6,7 +6,6 @@ local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
 local usePrevious = require(flipbook.Hooks.usePrevious)
-local useTheme = require(flipbook.Hooks.useTheme)
 local mountStory = require(flipbook.Story.mountStory)
 local unmountStory = require(flipbook.Story.unmountStory)
 
@@ -21,11 +20,11 @@ type Props = typeof(defaultProps) & {
 	layoutOrder: number,
 	prevStory: types.Story,
 	story: types.Story,
+	controls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
 local function StoryPreview(props: Props, hooks: any)
-	local theme = useTheme(hooks)
 	local tree = hooks.useValue(nil)
 	local storyParent = Roact.createRef()
 	local prevStory = usePrevious(hooks, props.story)
@@ -41,7 +40,7 @@ local function StoryPreview(props: Props, hooks: any)
 		unmount()
 
 		if props.story then
-			tree.value = mountStory(props.story, storyParent:getValue())
+			tree.value = mountStory(props.story, props.controls, storyParent:getValue())
 		end
 	end, { props.story, unmount, storyParent })
 
@@ -61,11 +60,6 @@ local function StoryPreview(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 0),
 			[Roact.Ref] = storyParent,
 		}, {
-			UIPadding = e("UIPadding", {
-				PaddingLeft = theme.padding,
-				PaddingRight = theme.padding,
-			}),
-
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
 			}),

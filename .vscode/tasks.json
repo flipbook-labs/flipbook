@@ -1,0 +1,53 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build (Development)",
+      "type": "shell",
+      "problemMatcher": [],
+      "windows": {
+        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
+      },
+      "osx": {
+        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Build (Production)",
+      "type": "shell",
+      "problemMatcher": [],
+      "windows": {
+        "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
+      },
+      "osx": {
+        "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
+      },
+      "group": {
+        "kind": "build",
+      }
+    },
+    {
+      "label": "Build and watch",
+      "type": "shell",
+      "problemMatcher": [],
+      "windows": {
+        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch"
+      },
+      "osx": {
+        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
+      }
+    },
+    {
+      "label": "Serve docs",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "npx moonwave dev"
+    }
+  ]
+}

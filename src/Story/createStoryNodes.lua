@@ -1,6 +1,3 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local ComponentTree = require(flipbook.Components.ComponentTree)
 local isStoryModule = require(script.Parent.isStoryModule)
 local types = require(script.Parent.Parent.types)
 
@@ -13,13 +10,13 @@ local function hasStories(instance: Instance): boolean
 	return false
 end
 
-local function createChildNodes(parent: ComponentTree.Node, instance: Instance, storybook: types.Storybook)
+local function createChildNodes(parent: types.ComponentTreeNode, instance: Instance, storybook: types.Storybook)
 	for _, child in ipairs(instance:GetChildren()) do
 		local isStory = isStoryModule(child)
 		local isContainer = hasStories(child)
 
 		if isStory or isContainer then
-			local node: ComponentTree.Node = {
+			local node: types.ComponentTreeNode = {
 				name = child.Name,
 				instance = child,
 				children = {},
@@ -37,11 +34,11 @@ local function createChildNodes(parent: ComponentTree.Node, instance: Instance, 
 	end
 end
 
-local function createStoryNodes(storybooks: { types.Storybook }): { ComponentTree.Node }
-	local nodes: { ComponentTree.Node } = {}
+local function createStoryNodes(storybooks: { types.Storybook }): { types.ComponentTreeNode }
+	local nodes: { types.ComponentTreeNode } = {}
 
 	for _, storybook in ipairs(storybooks) do
-		local node: ComponentTree.Node = {
+		local node: types.ComponentTreeNode = {
 			name = storybook.name,
 			icon = "storybook",
 			children = {},

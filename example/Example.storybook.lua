@@ -1,8 +1,10 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Example = script:FindFirstAncestor("Example")
+
+local Roact = require(Example.Parent.Packages.Roact)
 
 return {
-	roact = Roact,
 	storyRoots = {
 		script.Parent,
 	},
+	roact = Roact,
 }

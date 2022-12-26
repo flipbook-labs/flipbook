@@ -23,7 +23,7 @@ local function Canvas(props: Props, hooks: any)
 		BackgroundColor3 = theme.canvas,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.new(1, -267, 1, 0),
+		Size = UDim2.fromScale(1, 1),
 	}, {
 		Divider = e("Frame", {
 			AnchorPoint = Vector2.new(1, 0),

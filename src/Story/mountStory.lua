@@ -4,12 +4,11 @@ local enums = require(flipbook.enums)
 local types = require(script.Parent.Parent.types)
 local getStoryElement = require(script.Parent.getStoryElement)
 
-local function mountStory(story: types.Story, parent: Instance)
+local function mountStory(story: types.Story, controls: types.Controls, parent: Instance)
 	local handle
 
 	if story.format == enums.Format.Default then
-		--TODO: Reintroduce controls in here.
-		local element = getStoryElement(story, {})
+		local element = getStoryElement(story, controls)
 
 		xpcall(function()
 			handle = story.roact.mount(element, parent, story.name)

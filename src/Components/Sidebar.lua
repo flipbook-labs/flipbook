@@ -24,7 +24,7 @@ local function Sidebar(props: Props, hooks: any)
 	local theme = useTheme(hooks)
 
 	local activeNode, setActiveNode = hooks.useState(nil)
-	local onClick = hooks.useCallback(function(node: ComponentTree.Node)
+	local onClick = hooks.useCallback(function(node: types.ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
 				props.selectStorybook(node.storybook)
@@ -58,7 +58,7 @@ local function Sidebar(props: Props, hooks: any)
 		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.new(0, 267, 1, 0),
+		Size = UDim2.fromScale(1, 1),
 	}, {
 		UIListLayout = e("UIListLayout", {
 			Padding = theme.padding,

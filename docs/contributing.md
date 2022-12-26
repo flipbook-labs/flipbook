@@ -13,7 +13,7 @@ You should be using [Visual Studio Code](https://code.visualstudio.com/) as your
 - [Rojo](https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo)
 - [Selene](https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode)
 - [StyLua](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua)
-- [Roblox LSP](https://marketplace.visualstudio.com/items?itemName=Nightrains.robloxlsp)
+- [Luau LSP](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp)
 
 Once the Rojo extension is installed a welcome screen will be displayed. Scroll down to the section for the Roblox Studio plugin and select "Manage it for me." Next time you open a place in Studio you will have the Rojo plugin ready to go.
 
@@ -28,7 +28,7 @@ To make the tools that Foreman installs avialable on your system you will need t
   - Open Terminal
   - Open the corresponding file for your terminal
     - Bash: `nano ~/.bash_profile`
-    - ZSH: `nano ~/.zshrc`
+    - ZSH: `nano ~/.zshenv`
   - Append `export PATH="$PATH:~/.foreman/bin` to the end of the file
 
 ## Development
@@ -47,15 +47,29 @@ Next use Rojo to build the plugin:
 
 ```sh
 # Windows
-rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
+rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm
 
 # MacOS
-rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm
+rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm
 ```
+
+You can also run `rojo build` with the `--watch` flag while developing so that the plugin gets rebuilt when changes are made. Once rebuilt, simply reload to a new Baseplate for the changes to take effect.
+
+:::tip
+When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the flipbook plugin for your OS.
+:::
 
 Once built, open up a Baseplate to start interacting with the plugin.
 
-You can also run `rojo build` with the `--watch` flag while developing so that the plugin gets rebuilt when changes are made. Once rebuilt, simply reload to a new Baseplate for the changes to take effect.
+## Using flipbook to develop flipbook
+
+flipbook is made up of Roact components, each of which has a story file. This means you can use flipbook itself for developing it.
+
+Once you have flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
+
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](/plugin-debugging-enabled.png)
+
+Then load a new Baseplate and open the flipbook plugin. Its storybook should now appear in the sidebar.
 
 ## Testing
 

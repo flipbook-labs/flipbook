@@ -55,4 +55,14 @@ export type Theme = {
 	corner: UDim,
 }
 
+export type ComponentTreeNode = {
+	name: string,
+	children: { ComponentTreeNode },
+	icon: string?,
+	instance: Instance?,
+	storybook: Storybook?,
+}
+
+export type DragHandle = "Top" | "Right" | "Bottom" | "Left"
+
 return {}
