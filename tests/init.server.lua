@@ -1,4 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
+local ServerScriptService = game:GetService("ServerScriptService")
+
+local flipbook = script:FindFirstAncestor("flipbook") or ServerScriptService:FindFirstChild("flipbook")
 
 local TestEZ = require(flipbook.Packages.TestEZ)
 
