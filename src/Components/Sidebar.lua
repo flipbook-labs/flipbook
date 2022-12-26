@@ -58,7 +58,7 @@ local function Sidebar(props: Props, hooks: any)
 		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.new(0, 267, 1, 0),
+		Size = UDim2.fromScale(1, 1),
 	}, {
 		UIListLayout = e("UIListLayout", {
 			Padding = theme.padding,

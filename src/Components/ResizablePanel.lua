@@ -52,7 +52,7 @@ local function ResizablePanel(props: Props, hooks: any)
 	end, { props.minSize, props.maxSize })
 
 	hooks.useEffect(function()
-		if props.onResize then
+		if clampedAbsoluteSize and props.onResize then
 			props.onResize(clampedAbsoluteSize)
 		end
 	end, { clampedAbsoluteSize })
@@ -74,10 +74,11 @@ local function ResizablePanel(props: Props, hooks: any)
 	end
 
 	return Roact.createElement("Frame", {
+		LayoutOrder = props.layoutOrder,
 		Size = if clampedAbsoluteSize
 			then UDim2.fromOffset(clampedAbsoluteSize.X, clampedAbsoluteSize.Y)
 			else props.initialSize,
-		BackgroundTransparency = 1,
+		-- BackgroundTransparency = 1,
 		[Roact.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
 		DragHandles = Roact.createFragment(dragHandles),
