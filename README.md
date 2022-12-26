@@ -5,6 +5,8 @@
 
 With flipbook you can quickly iterate on Roact components in an isolated, sandboxed environment to streamline the process of creating reusable UI components.
 
+![Screenshot of flipbook showing off the ButtonWithControls story](.moonwave/static/main-screenshot.png)
+
 ## Download
 
 You can install the latest version of flipbook from the [Roblox marketplace](https://www.roblox.com/library/8517129161).
