@@ -100,7 +100,7 @@ local function DragHandle(props: Props, hooks: any)
 		Size = size,
 		Position = position,
 		AnchorPoint = anchorPoint,
-		-- BackgroundTransparency = 1,
+		BackgroundTransparency = 1,
 		[Roact.Event.InputBegan] = onInputBegan,
 		[Roact.Event.InputEnded] = onInputEnded,
 	})
