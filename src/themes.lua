@@ -7,7 +7,7 @@ return {
 	Light = {
 		textSize = 14,
 		font = Enum.Font.GothamMedium,
-		headerTextSize = 20,
+		headerTextSize = 24,
 		headerFont = Enum.Font.GothamBlack,
 
 		background = tailwind.white,
@@ -33,7 +33,7 @@ return {
 	Dark = {
 		textSize = 14,
 		font = Enum.Font.GothamMedium,
-		headerTextSize = 20,
+		headerTextSize = 24,
 		headerFont = Enum.Font.GothamBlack,
 
 		background = tailwind.zinc800,
