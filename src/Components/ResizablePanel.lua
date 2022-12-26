@@ -39,7 +39,7 @@ local function ResizablePanel(props: Props, hooks: any)
 	local onHandleDragged = hooks.useCallback(function(handle: types.DragHandle, delta: Vector2)
 		setAbsoluteSize(function(prev: Vector2)
 			local x = prev.X + delta.X
-			local y = prev.Y + delta.Y
+			local y = prev.Y - delta.Y
 
 			if handle == "Top" or handle == "Bottom" then
 				x = prev.X
@@ -78,12 +78,15 @@ local function ResizablePanel(props: Props, hooks: any)
 		Size = if clampedAbsoluteSize
 			then UDim2.fromOffset(clampedAbsoluteSize.X, clampedAbsoluteSize.Y)
 			else props.initialSize,
-		-- BackgroundTransparency = 1,
+		BackgroundTransparency = 1,
 		[Roact.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
 		DragHandles = Roact.createFragment(dragHandles),
 
-		Children = Roact.createFragment((props :: any)[Roact.Children]),
+		Children = Roact.createElement("Frame", {
+			BackgroundTransparency = 1,
+			Size = UDim2.fromScale(1, 1),
+		}, (props :: any)[Roact.Children]),
 	})
 end
 
