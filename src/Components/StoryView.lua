@@ -33,6 +33,7 @@ local function StoryView(props: Props, hooks: any)
 	local plugin = hooks.useContext(PluginContext.Context)
 	local controls, setControls = hooks.useState(nil)
 	local controlsHeight, setControlsHeight = hooks.useState(constants.CONTROLS_INITIAL_HEIGHT)
+	local topbarHeight, setTopbarHeight = hooks.useState(0)
 
 	local showControls = controls and not Sift.isEmpty(controls)
 
@@ -59,6 +60,10 @@ local function StoryView(props: Props, hooks: any)
 		setControlsHeight(newSize.Y)
 	end, {})
 
+	local onTopbarSizeChanged = hooks.useCallback(function(rbx: Frame)
+		setTopbarHeight(rbx.AbsoluteSize.Y)
+	end, {})
+
 	hooks.useEffect(function()
 		setControls(if story then story.controls else nil)
 	end, { story })
@@ -70,7 +75,6 @@ local function StoryView(props: Props, hooks: any)
 		Error = storyErr and e("TextLabel", {
 			BackgroundTransparency = 1,
 			Font = theme.font,
-			LayoutOrder = 2,
 			Size = UDim2.fromScale(1, 1),
 			Text = storyErr,
 			TextColor3 = theme.text,
@@ -89,17 +93,32 @@ local function StoryView(props: Props, hooks: any)
 
 		Content = story and e("Frame", {
 			Size = UDim2.fromScale(1, 1),
-			BorderSizePixel = 0,
 			BackgroundTransparency = 1,
-			LayoutOrder = 2,
 		}, {
 			Layout = e("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
-			ScrollingFrame = e(ScrollingFrame, {
+			TopbarWrapper = e("Frame", {
 				LayoutOrder = 1,
-				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, if showControls then controlsHeight else 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+				Size = UDim2.fromScale(1, 0),
+				BackgroundTransparency = 1,
+				[Roact.Change.AbsoluteSize] = onTopbarSizeChanged,
+			}, {
+				StoryViewNavbar = e(StoryViewNavbar, {
+					onPreviewInViewport = onPreviewInViewport,
+					onZoomIn = zoom.zoomIn,
+					onZoomOut = zoom.zoomOut,
+					onViewCode = viewCode,
+				}),
+			}),
+
+			ScrollingFrame = e(ScrollingFrame, {
+				LayoutOrder = 2,
+				Size = UDim2.fromScale(1, 1)
+					- UDim2.fromOffset(0, if showControls then controlsHeight else 0)
+					- UDim2.fromOffset(0, topbarHeight),
 			}, {
 				Layout = e("UIListLayout", {
 					Padding = theme.paddingLarge,
@@ -107,33 +126,27 @@ local function StoryView(props: Props, hooks: any)
 				}),
 
 				Padding = e("UIPadding", {
-					PaddingLeft = theme.padding,
+					PaddingTop = theme.paddingLarge,
 					PaddingRight = theme.padding,
-				}),
-
-				StoryViewNavbar = e(StoryViewNavbar, {
-					layoutOrder = 1,
-					onPreviewInViewport = onPreviewInViewport,
-					onZoomIn = zoom.zoomIn,
-					onZoomOut = zoom.zoomOut,
-					onViewCode = viewCode,
+					PaddingBottom = theme.padding,
+					PaddingLeft = theme.padding,
 				}),
 
 				StoryMeta = e(StoryMeta, {
-					layoutOrder = 2,
+					layoutOrder = 1,
 					story = story,
 					storyModule = props.story,
 				}),
 
 				Divider = e("Frame", {
-					LayoutOrder = 3,
+					LayoutOrder = 2,
 					BackgroundColor3 = theme.divider,
 					Size = UDim2.new(1, 0, 0, 1),
 					BorderSizePixel = 0,
 				}),
 
 				StoryPreview = e(StoryPreview, {
-					layoutOrder = 4,
+					layoutOrder = 3,
 					zoom = zoom.value,
 					story = story,
 					controls = controls,
