@@ -32,20 +32,16 @@
 
 local types = require(script.Parent.Parent.types)
 
-local function getStoryElement(story: types.Story, controls: types.Controls)
+local function getStoryElement(story: types.RoactStory, props: types.StoryProps)
 	if typeof(story.story) == "function" then
 		local success, result = pcall(function()
-			return story.story({
-				controls = controls,
-			})
+			return story.roact.createElement(story.story, props)
 		end)
 
-		if success then
-			return result
-		end
+		return if success then result else nil
+	else
+		return story.story
 	end
-
-	return story.story
 end
 
 return getStoryElement

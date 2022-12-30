@@ -1,10 +1,25 @@
-export type RoactElement = { [string]: any }
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local t = require(flipbook.Packages.t)
+
+local types = {}
+
+export type StoryProps = {
+	controls: { [string]: any },
+}
 
 export type Storybook = {
 	storyRoots: { Instance },
 	name: string?,
 	roact: any,
 }
+
+types.Storybook = t.strictInterface({
+	storyRoots = t.array(t.Instance),
+
+	name = t.optional(t.string),
+	roact = t.optional(t.table),
+})
 
 export type StoryControl = {
 	name: string?,
@@ -16,18 +31,53 @@ export type Controls = {
 	[string]: StoryControl,
 }
 
-export type Story = {
-	name: string,
-	roact: any,
+export type RoactElement = { [string]: any }
+export type ReactElement = { [string]: any }
+
+export type StoryMeta = {
+	name: string?,
 	summary: string?,
 	controls: Controls?,
-	story: RoactElement | ({ [string]: any }) -> RoactElement,
-	format: string?,
 }
 
--- Hoarcekat stories are functions that take a GuiObject to mount to and return
--- another function which acts as the cleanup step.
-export type HoarcekatStory = (GuiObject) -> () -> ()
+export type RoactStory = StoryMeta & {
+	story: (props: StoryProps) -> RoactElement,
+	roact: {
+		createElement: (...any) -> any,
+		mount: (...any) -> any,
+		unmount: (...any) -> (),
+	},
+}
+
+types.RoactStory = t.interface({
+	story = t.union(t.table, t.callback),
+	roact = t.interface({
+		createElement = t.callback,
+		mount = t.callback,
+	}),
+
+	name = t.optional(t.string),
+	summary = t.optional(t.string),
+	controls = t.optional(t.table),
+})
+
+export type FunctionalStory = StoryMeta & {
+	story: (target: GuiObject, props: StoryProps) -> (() -> ())?,
+}
+
+types.FunctionalStory = t.interface({
+	story = t.callback,
+
+	name = t.optional(t.string),
+	summary = t.optional(t.string),
+	controls = t.optional(t.table),
+})
+
+export type HoarcekatStory = (target: GuiObject, props: StoryProps) -> (() -> ()?)
+
+types.HoarcekatStory = t.callback
+
+export type Story = RoactStory | FunctionalStory | HoarcekatStory
 
 export type Theme = {
 	textSize: number,
@@ -65,4 +115,4 @@ export type ComponentTreeNode = {
 
 export type DragHandle = "Top" | "Right" | "Bottom" | "Left"
 
-return {}
+return types
