@@ -15,8 +15,9 @@ return function()
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)
 
+				local cleanup
 				expect(function()
-					local cleanup = mountStory(story, story.controls, ReplicatedStorage)
+					cleanup = mountStory(story, story.controls, ReplicatedStorage)
 				end).to.never.throw()
 
 				if cleanup then
