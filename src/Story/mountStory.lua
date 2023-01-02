@@ -1,7 +1,7 @@
 local types = require(script.Parent.Parent.types)
 
 local function mountFunctionalStory(story: types.FunctionalStory, props: types.StoryProps, parent: GuiObject)
-	local cleanup: (() -> ()?)
+	local cleanup: (() -> ())?
 
 	xpcall(function()
 		cleanup = story.story(parent, props)
@@ -44,7 +44,7 @@ local function mountRoactStory(story: types.RoactStory, props: types.StoryProps,
 	end
 end
 
-local function mountStory(story: types.Story, controls: types.Controls, parent: GuiObject)
+local function mountStory(story: types.Story, controls: types.Controls, parent: GuiObject): (() -> ())?
 	local props: types.StoryProps = {
 		controls = controls,
 	}
