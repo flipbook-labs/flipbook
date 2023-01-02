@@ -4,21 +4,42 @@ local t = require(flipbook.Packages.t)
 
 local types = {}
 
+export type Renderer = { [string]: any }
+types.Renderer = t.map(t.string, t.any)
+
+export type Roact = {
+	createElement: (...any) -> any,
+	mount: (...any) -> any,
+	unmount: (...any) -> (),
+}
+
+types.Roact = t.interface({
+	createElement = t.callback,
+	mount = t.callback,
+	unmount = t.callback,
+})
+
 export type StoryProps = {
 	controls: { [string]: any },
 }
 
+export type StoryFormat = "Roact" | "Functional" | "Hoarcekat"
+
 export type Storybook = {
 	storyRoots: { Instance },
 	name: string?,
-	roact: any,
+
+	-- The `roact` prop is deprecated. Use `renderer` for new work
+	roact: Roact?,
+	renderer: Renderer?,
 }
 
-types.Storybook = t.strictInterface({
+types.Storybook = t.interface({
 	storyRoots = t.array(t.Instance),
 
 	name = t.optional(t.string),
-	roact = t.optional(t.table),
+	roact = t.optional(types.Roact),
+	renderer = t.optional(types.Renderer),
 })
 
 export type StoryControl = {
@@ -32,52 +53,27 @@ export type Controls = {
 }
 
 export type RoactElement = { [string]: any }
-export type ReactElement = { [string]: any }
 
 export type StoryMeta = {
 	name: string?,
 	summary: string?,
 	controls: Controls?,
+
+	-- The `roact` prop is deprecated. Use `renderer` for new work
+	roact: Roact?,
+	renderer: Renderer?,
 }
 
 export type RoactStory = StoryMeta & {
 	story: (props: StoryProps) -> RoactElement,
-	roact: {
-		createElement: (...any) -> any,
-		mount: (...any) -> any,
-		unmount: (...any) -> (),
-	},
+	renderer: Roact,
 }
-
-types.RoactStory = t.interface({
-	story = t.union(t.table, t.callback),
-	roact = t.interface({
-		createElement = t.callback,
-		mount = t.callback,
-	}),
-
-	name = t.optional(t.string),
-	summary = t.optional(t.string),
-	controls = t.optional(t.table),
-})
 
 export type FunctionalStory = StoryMeta & {
 	story: (target: GuiObject, props: StoryProps) -> (() -> ())?,
 }
 
-types.FunctionalStory = t.interface({
-	story = t.callback,
-
-	name = t.optional(t.string),
-	summary = t.optional(t.string),
-	controls = t.optional(t.table),
-})
-
-export type HoarcekatStory = (target: GuiObject, props: StoryProps) -> (() -> ()?)
-
-types.HoarcekatStory = t.callback
-
-export type Story = RoactStory | FunctionalStory | HoarcekatStory
+export type Story = FunctionalStory | RoactStory
 
 export type Theme = {
 	textSize: number,

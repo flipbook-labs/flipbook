@@ -5,5 +5,5 @@ return {
 	storyRoots = {
 		script.Parent.Components,
 	},
-	roact = Roact,
+	renderer = Roact,
 }

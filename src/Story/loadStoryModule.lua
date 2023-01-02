@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Sift = require(flipbook.Packages.Sift)
-local enums = require(flipbook.enums)
 local types = require(script.Parent.Parent.types)
 
 local Errors = {
@@ -28,14 +27,17 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 			name = module.Name,
 			story = result,
 		}
-	elseif typeof(result) == "table" then
-		if not result.roact then
-			result.roact = storybook.roact
-		end
-
-		story = Sift.Dictionary.merge({
-			name = module.Name,
-		}, result)
+	else
+		story = Sift.Dictionary.merge(
+			{
+				name = module.Name,
+				renderer = result.roact or storybook.renderer or storybook.roact,
+			},
+			result,
+			{
+				roact = Sift.None,
+			}
+		)
 	end
 
 	if story then
