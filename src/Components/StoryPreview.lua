@@ -22,27 +22,20 @@ type Props = typeof(defaultProps) & {
 }
 
 local function StoryPreview(props: Props, hooks: any)
-	local unmountCallback = hooks.useValue(nil)
 	local storyParent = Roact.createRef()
 
-	local unmount = hooks.useCallback(function()
-		if unmountCallback.value then
-			unmountCallback.value()
-			unmountCallback.value = nil
-		end
-	end, { unmountCallback })
-
 	hooks.useEffect(function()
-		unmount()
-
+		local cleanup
 		if props.story then
-			unmountCallback.value = mountStory(props.story, props.controls, storyParent:getValue())
+			cleanup = mountStory(props.story, props.controls, storyParent:getValue())
 		end
 
 		return function()
-			unmount()
+			if cleanup then
+				cleanup()
+			end
 		end
-	end, { props.story, unmountCallback, storyParent })
+	end, { props.story, storyParent })
 
 	if props.isMountedInViewport then
 		return e(Roact.Portal, {
