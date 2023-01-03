@@ -55,7 +55,7 @@ export type Controls = {
 export type RoactElement = { [string]: any }
 
 export type StoryMeta = {
-	name: string?,
+	name: string,
 	summary: string?,
 	controls: Controls?,
 
