@@ -8,7 +8,7 @@ exclude = ["*"]
 
 [dependencies]
 Roact = "roblox/roact@1.4.4"
-React = "core-packages/roact-compat@17.0.1-rc.16"
+React = "core-packages/react@17.0.1-rc.16"
 ReactRoblox = "core-packages/react-roblox@17.0.1-rc.16"
 Sift = "csqrl/sift@0.0.4"
 t = "osyrisrblx/t@3.0.0"
