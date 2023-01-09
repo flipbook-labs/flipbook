@@ -106,7 +106,7 @@ local function StoryControls(props: Props)
 				Padding = theme.padding,
 			}),
 
-			ControlsFragment = React.createFragment(controls),
+			ControlsFragment = React.createElement(React.Fragment, nil, controls),
 		}),
 	})
 end

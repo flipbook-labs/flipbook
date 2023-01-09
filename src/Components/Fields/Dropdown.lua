@@ -93,7 +93,7 @@ local function Dropdown(props: Props)
 				Thickness = 2,
 			}),
 
-			Options = React.createFragment(options),
+			Options = React.createElement(React.Fragment, nil, options),
 		}),
 	})
 end

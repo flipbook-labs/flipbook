@@ -104,7 +104,7 @@ local function ResizablePanel(props: Props)
 		BackgroundTransparency = 1,
 		[ReactRoblox.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
-		DragHandles = React.createFragment(dragHandles),
+		DragHandles = React.createElement(React.Fragment, nil, dragHandles),
 
 		Children = React.createElement("Frame", {
 			BackgroundTransparency = 1,

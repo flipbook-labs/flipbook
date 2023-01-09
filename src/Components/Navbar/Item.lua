@@ -53,7 +53,7 @@ local function Item(props: Props)
 			CornerRadius = theme.corner,
 		}),
 
-		Children = React.createFragment(props.children or {}),
+		Children = React.createElement(React.Fragment, nil, props.children or {}),
 	})
 end
 

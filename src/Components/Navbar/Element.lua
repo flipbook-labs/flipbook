@@ -29,7 +29,7 @@ local function Element(props: Props)
 			LayoutOrder = 1,
 			Size = UDim2.fromScale(1, 1),
 		}, {
-			Children = React.createFragment(props.children or {}),
+			Children = React.createElement(React.Fragment, nil, props.children or {}),
 		}),
 
 		TopDivider = props.topDivider and e("Frame", {

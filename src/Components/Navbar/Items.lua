@@ -24,7 +24,7 @@ local function Items(props: Props)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
-		Children = React.createFragment(props.children or {}),
+		Children = React.createElement(React.Fragment, nil, props.children or {}),
 	})
 end
 
