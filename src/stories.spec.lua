@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Roact = require(script.Parent.Packages.Roact)
 local isStoryModule = require(script.Parent.Story.isStoryModule)
-local getStoryElement = require(script.Parent.Story.getStoryElement)
+local mountStory = require(script.Parent.Story.mountStory)
 
 return function()
 	Roact.setGlobalConfig({
@@ -14,16 +14,15 @@ return function()
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)
-				local element = getStoryElement(story, story.controls)
 
-				local handle
+				local cleanup
 				expect(function()
-					handle = Roact.mount(element, ReplicatedStorage)
+					cleanup = mountStory(story, story.controls, ReplicatedStorage)
 				end).to.never.throw()
 
-				expect(function()
-					Roact.unmount(handle)
-				end).to.never.throw()
+				if cleanup then
+					expect(cleanup).to.never.throw()
+				end
 			end)
 		end
 	end

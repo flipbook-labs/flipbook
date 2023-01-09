@@ -15,6 +15,7 @@ type Props = {
 return {
 	summary = "A simple counter that increments every second",
 	controls = controls,
+	renderer = Roact,
 	story = function(props: Props)
 		return Roact.createElement(Counter, {
 			increment = props.controls.increment,

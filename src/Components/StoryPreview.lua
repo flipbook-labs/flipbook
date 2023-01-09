@@ -5,9 +5,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Roact = require(flipbook.Packages.Roact)
 local hook = require(flipbook.hook)
 local types = require(script.Parent.Parent.types)
-local usePrevious = require(flipbook.Hooks.usePrevious)
 local mountStory = require(flipbook.Story.mountStory)
-local unmountStory = require(flipbook.Story.unmountStory)
 
 local e = Roact.createElement
 
@@ -18,31 +16,26 @@ local defaultProps = {
 
 type Props = typeof(defaultProps) & {
 	layoutOrder: number,
-	prevStory: types.Story,
 	story: types.Story,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
 local function StoryPreview(props: Props, hooks: any)
-	local tree = hooks.useValue(nil)
 	local storyParent = Roact.createRef()
-	local prevStory = usePrevious(hooks, props.story)
-
-	local unmount = hooks.useCallback(function()
-		if tree.value and prevStory then
-			unmountStory(prevStory, tree.value)
-			tree.value = nil
-		end
-	end, { prevStory })
 
 	hooks.useEffect(function()
-		unmount()
-
+		local cleanup
 		if props.story then
-			tree.value = mountStory(props.story, props.controls, storyParent:getValue())
+			cleanup = mountStory(props.story, props.controls, storyParent:getValue())
 		end
-	end, { props.story, unmount, storyParent })
+
+		return function()
+			if cleanup then
+				cleanup()
+			end
+		end
+	end, { props.story, storyParent })
 
 	if props.isMountedInViewport then
 		return e(Roact.Portal, {
