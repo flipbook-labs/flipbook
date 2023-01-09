@@ -5,9 +5,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
 local types = require(script.Parent.Parent.types)
-local usePrevious = require(flipbook.Hooks.usePrevious)
 local mountStory = require(flipbook.Story.mountStory)
-local unmountStory = require(flipbook.Story.unmountStory)
 
 local e = React.createElement
 
@@ -18,7 +16,6 @@ local defaultProps = {
 
 type Props = typeof(defaultProps) & {
 	layoutOrder: number,
-	prevStory: types.Story,
 	story: types.Story,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
@@ -27,24 +24,20 @@ type Props = typeof(defaultProps) & {
 local function StoryPreview(props: Props)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local tree = React.useValue(nil)
 	local storyParent = React.createRef()
-	local prevStory = usePrevious(props.story)
-
-	local unmount = React.useCallback(function()
-		if tree.value and prevStory then
-			unmountStory(prevStory, tree.value)
-			tree.value = nil
-		end
-	end, { prevStory })
 
 	React.useEffect(function()
-		unmount()
-
+		local cleanup
 		if props.story then
-			tree.value = mountStory(props.story, props.controls, storyParent:getValue())
+			cleanup = mountStory(props.story, props.controls, storyParent:getValue())
 		end
-	end, { props.story, unmount, storyParent })
+
+		return function()
+			if cleanup then
+				cleanup()
+			end
+		end
+	end, { props.story, storyParent })
 
 	if props.isMountedInViewport then
 		return e(React.Portal, {

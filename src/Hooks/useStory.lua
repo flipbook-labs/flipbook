@@ -11,11 +11,7 @@ local function useStory(module: ModuleScript, storybook: types.Storybook, loader
 	})
 
 	local loadStory = React.useCallback(function()
-		local story, err = loadStoryModule(loader, module)
-
-		if story and not story.React then
-			story.React = storybook.roact
-		end
+		local story, err = loadStoryModule(loader, module, storybook)
 
 		setState({
 			story = story,

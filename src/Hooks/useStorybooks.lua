@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
-local isStorybook = require(flipbook.Story.isStorybook)
+local types = require(script.Parent.Parent.types)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
 local useDescendants = require(flipbook.Hooks.useDescendants)
 
@@ -28,7 +28,7 @@ local function useStorybooks(parent: Instance, loader: any)
 			end)
 
 			if wasRequired then
-				local success, message = isStorybook(result)
+				local success, message = types.Storybook(result)
 
 				if success then
 					result.name = if result.name

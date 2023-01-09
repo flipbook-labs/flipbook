@@ -7,5 +7,5 @@ return {
 	storyRoots = {
 		flipbook.Components,
 	},
-	roact = React,
+	renderer = React,
 }
