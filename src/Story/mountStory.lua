@@ -1,3 +1,6 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local types = require(script.Parent.Parent.types)
 
 local function mountFunctionalStory(story: types.FunctionalStory, props: types.StoryProps, parent: GuiObject)
@@ -44,6 +47,30 @@ local function mountRoactStory(story: types.RoactStory, props: types.StoryProps,
 	end
 end
 
+local function mountReactStory(story: types.ReactStory, props: types.StoryProps, parent: GuiObject)
+	local React = story.renderer
+	local root = ReactRoblox.createRoot(parent)
+
+	local element
+	if typeof(story.story) == "function" then
+		local success, result = pcall(function()
+			return React.createElement(story.story, props)
+		end)
+
+		element = if success then result else nil
+	else
+		element = story.story
+	end
+
+	xpcall(function()
+		root:render(element, parent, story.name)
+	end, debug.traceback)
+
+	return function()
+		root:unmount()
+	end
+end
+
 local function mountStory(story: types.Story, controls: types.Controls, parent: GuiObject): (() -> ())?
 	local props: types.StoryProps = {
 		controls = controls,
@@ -52,6 +79,8 @@ local function mountStory(story: types.Story, controls: types.Controls, parent: 
 	if story.renderer then
 		if types.Roact(story.renderer) then
 			return mountRoactStory(story :: types.RoactStory, props, parent)
+		elseif types.React(story.renderer) then
+			return mountReactStory(story :: types.ReactStory, props, parent)
 		end
 	elseif typeof(story.story) == "function" then
 		return mountFunctionalStory(story :: types.FunctionalStory, props, parent)

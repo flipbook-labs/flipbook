@@ -7,6 +7,7 @@ local types = {}
 export type Renderer = { [string]: any }
 types.Renderer = t.map(t.string, t.any)
 
+export type RoactElement = { [string]: any }
 export type Roact = {
 	createElement: (...any) -> any,
 	mount: (...any) -> any,
@@ -19,11 +20,24 @@ types.Roact = t.interface({
 	unmount = t.callback,
 })
 
+export type ReactElement = { [string]: any }
+export type React = {
+	createElement: (...any) -> any,
+}
+
+types.React = t.interface({
+	createElement = t.callback,
+
+	-- Roact doesn't have these keys so we use them to differentiate the two
+	useCallback = t.callback,
+	useEffect = t.callback,
+})
+
 export type StoryProps = {
 	controls: { [string]: any },
 }
 
-export type StoryFormat = "Roact" | "Functional" | "Hoarcekat"
+export type StoryFormat = "Roact" | "React" | "Functional" | "Hoarcekat"
 
 export type Storybook = {
 	storyRoots: { Instance },
@@ -52,8 +66,6 @@ export type Controls = {
 	[string]: StoryControl,
 }
 
-export type RoactElement = { [string]: any }
-
 export type StoryMeta = {
 	name: string,
 	summary: string?,
@@ -65,8 +77,13 @@ export type StoryMeta = {
 }
 
 export type RoactStory = StoryMeta & {
-	story: (props: StoryProps) -> RoactElement,
+	story: RoactElement | (props: StoryProps) -> RoactElement,
 	renderer: Roact,
+}
+
+export type ReactStory = StoryMeta & {
+	story: ReactElement | (props: StoryProps) -> ReactElement,
+	renderer: React,
 }
 
 export type FunctionalStory = StoryMeta & {
