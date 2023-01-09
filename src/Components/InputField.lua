@@ -87,10 +87,10 @@ local function InputField(props: Props)
 		PlaceholderColor3 = theme.textFaded,
 		ClearTextOnFocus = false,
 		Text = text,
+		ref = ref,
 		[ReactRoblox.Change.Text] = onTextChanged,
 		[ReactRoblox.Event.Focused] = props.onFocus,
 		[ReactRoblox.Event.FocusLost] = onFocusLost,
-		[React.Ref] = ref,
 	})
 end
 

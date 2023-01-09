@@ -3,6 +3,7 @@ local CoreGui = game:GetService("CoreGui")
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local types = require(script.Parent.Parent.types)
 local mountStory = require(flipbook.Story.mountStory)
@@ -44,7 +45,7 @@ local function StoryPreview(props: Props)
 			target = CoreGui,
 		}, {
 			Story = e("ScreenGui", {
-				[React.Ref] = storyParent,
+				ref = storyParent,
 			}),
 		})
 	else
@@ -53,7 +54,7 @@ local function StoryPreview(props: Props)
 			BackgroundTransparency = 1,
 			LayoutOrder = props.layoutOrder,
 			Size = UDim2.fromScale(1, 0),
-			[React.Ref] = storyParent,
+			ref = storyParent,
 		}, {
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
