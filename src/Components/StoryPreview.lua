@@ -3,7 +3,6 @@ local CoreGui = game:GetService("CoreGui")
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local types = require(script.Parent.Parent.types)
 local mountStory = require(flipbook.Story.mountStory)
