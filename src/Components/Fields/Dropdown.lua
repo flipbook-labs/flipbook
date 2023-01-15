@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local useTheme = require(flipbook.Hooks.useTheme)
 
 export type Props = {
@@ -27,7 +26,7 @@ local function Dropdown(props: Props)
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundColor3 = theme.buttonText,
 			BackgroundTransparency = if index % 2 ~= 0 then 1 else 0.9,
-			[ReactRoblox.Event.Activated] = function()
+			[React.Event.Activated] = function()
 				setSelectedOption(option)
 				setIsExpanded(false)
 			end,
@@ -51,7 +50,7 @@ local function Dropdown(props: Props)
 		BackgroundColor3 = theme.button,
 		Size = UDim2.fromOffset(0, maxHeight),
 		AutomaticSize = Enum.AutomaticSize.X,
-		[ReactRoblox.Event.Activated] = function()
+		[React.Event.Activated] = function()
 			setIsExpanded(not isExpanded)
 		end,
 	}, {

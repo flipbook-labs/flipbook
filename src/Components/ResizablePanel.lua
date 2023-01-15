@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local DragHandle = require(flipbook.Components.DragHandle)
 local types = require(script.Parent.Parent.types)
@@ -102,7 +101,7 @@ local function ResizablePanel(props: Props)
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.new(width, height),
 		BackgroundTransparency = 1,
-		[ReactRoblox.Change.AbsoluteSize] = onAbsoluteSizeChanged,
+		[React.Change.AbsoluteSize] = onAbsoluteSizeChanged,
 	}, {
 		DragHandles = React.createElement(React.Fragment, nil, dragHandles),
 

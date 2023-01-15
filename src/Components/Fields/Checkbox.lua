@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local useTheme = require(flipbook.Hooks.useTheme)
 
 export type Props = {
@@ -26,7 +25,7 @@ local function Checkbox(props: Props)
 	return React.createElement("ImageButton", {
 		BackgroundColor3 = theme.button,
 		Size = UDim2.fromOffset(theme.textSize, theme.textSize) + UDim2.new(theme.padding, theme.padding),
-		[ReactRoblox.Event.Activated] = toggle,
+		[React.Event.Activated] = toggle,
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,

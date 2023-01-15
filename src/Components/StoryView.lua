@@ -4,7 +4,6 @@ local Selection = game:GetService("Selection")
 
 local Sift = require(flipbook.Packages.Sift)
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local constants = require(flipbook.constants)
 local types = require(script.Parent.Parent.types)
 local useStory = require(flipbook.Hooks.useStory)
@@ -104,7 +103,7 @@ local function StoryView(props: Props)
 				AutomaticSize = Enum.AutomaticSize.Y,
 				Size = UDim2.fromScale(1, 0),
 				BackgroundTransparency = 1,
-				[ReactRoblox.Change.AbsoluteSize] = onTopbarSizeChanged,
+				[React.Change.AbsoluteSize] = onTopbarSizeChanged,
 			}, {
 				StoryViewNavbar = e(StoryViewNavbar, {
 					onPreviewInViewport = onPreviewInViewport,

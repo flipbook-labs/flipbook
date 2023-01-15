@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local useTheme = require(flipbook.Hooks.useTheme)
 
@@ -45,13 +44,13 @@ local function Button(props: Props)
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Position = props.position,
-		[ReactRoblox.Event.MouseEnter] = function()
+		[React.Event.MouseEnter] = function()
 			setHover(true)
 		end,
-		[ReactRoblox.Event.MouseLeave] = function()
+		[React.Event.MouseLeave] = function()
 			setHover(false)
 		end,
-		[ReactRoblox.Event.Activated] = props.onClick,
+		[React.Event.Activated] = props.onClick,
 	}, {
 		UICorner = e("UICorner", {
 			CornerRadius = theme.corner,

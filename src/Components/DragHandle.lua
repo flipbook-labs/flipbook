@@ -4,7 +4,6 @@ local RunService = game:GetService("RunService")
 
 local Sift = require(flipbook.Packages.Sift)
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local PluginContext = require(flipbook.Plugin.PluginContext)
 local types = require(script.Parent.Parent.types)
 
@@ -130,10 +129,10 @@ local function DragHandle(props: Props)
 		Position = position,
 		AnchorPoint = anchorPoint,
 		BackgroundTransparency = 1,
-		[ReactRoblox.Event.InputBegan] = onInputBegan,
-		[ReactRoblox.Event.InputEnded] = onInputEnded,
-		[ReactRoblox.Event.MouseEnter] = onMouseEnter,
-		[ReactRoblox.Event.MouseLeave] = onMouseLeave,
+		[React.Event.InputBegan] = onInputBegan,
+		[React.Event.InputEnded] = onInputEnded,
+		[React.Event.MouseEnter] = onMouseEnter,
+		[React.Event.MouseLeave] = onMouseLeave,
 	})
 end
 

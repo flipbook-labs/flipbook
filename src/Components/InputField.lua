@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local useTheme = require(flipbook.Hooks.useTheme)
 
@@ -88,9 +87,9 @@ local function InputField(props: Props)
 		ClearTextOnFocus = false,
 		Text = text,
 		ref = ref,
-		[ReactRoblox.Change.Text] = onTextChanged,
-		[ReactRoblox.Event.Focused] = props.onFocus,
-		[ReactRoblox.Event.FocusLost] = onFocusLost,
+		[React.Change.Text] = onTextChanged,
+		[React.Event.Focused] = props.onFocus,
+		[React.Event.FocusLost] = onFocusLost,
 	})
 end
 

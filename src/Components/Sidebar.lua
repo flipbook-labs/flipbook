@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local constants = require(flipbook.constants)
 local createStoryNodes = require(flipbook.Story.createStoryNodes)
 local Branding = require(flipbook.Components.Branding)
@@ -77,7 +76,7 @@ local function Sidebar(props: Props)
 			BackgroundTransparency = 1,
 			LayoutOrder = 0,
 			Size = UDim2.fromScale(1, 0),
-			[ReactRoblox.Change.AbsoluteSize] = onHeaderSizeChanged,
+			[React.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
 			UIListLayout = e("UIListLayout", {
 				Padding = theme.paddingLarge,

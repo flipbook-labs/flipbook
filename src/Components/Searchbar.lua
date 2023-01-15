@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local Sift = require(flipbook.Packages.Sift)
 local assets = require(flipbook.assets)
@@ -58,7 +57,7 @@ local function Searchbar(props: Props)
 		BackgroundColor3 = theme.background,
 		LayoutOrder = props.layoutOrder,
 		Size = props.size,
-		[ReactRoblox.Event.Activated] = onFocus,
+		[React.Event.Activated] = onFocus,
 	}, {
 		UICorner = e("UICorner", {
 			CornerRadius = theme.corner,

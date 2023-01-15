@@ -1,7 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
@@ -35,13 +34,13 @@ local function Story(props: Props)
 		LayoutOrder = 0,
 		Size = UDim2.new(1, 0, 0, 36),
 		Text = "",
-		[ReactRoblox.Event.MouseEnter] = function()
+		[React.Event.MouseEnter] = function()
 			setHover(true)
 		end,
-		[ReactRoblox.Event.MouseLeave] = function()
+		[React.Event.MouseLeave] = function()
 			setHover(false)
 		end,
-		[ReactRoblox.Event.Activated] = function()
+		[React.Event.Activated] = function()
 			props.onClick(props.node)
 		end,
 	}, {
