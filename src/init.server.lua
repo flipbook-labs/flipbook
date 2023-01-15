@@ -12,6 +12,9 @@ local constants = require(flipbook.constants)
 local PLUGIN_NAME = "flipbook"
 
 if constants.IS_DEV_MODE then
+	-- selene: allow(global_usage)
+	_G.__DEV__ = true
+
 	PLUGIN_NAME = "flipbook [DEV]"
 end
 
