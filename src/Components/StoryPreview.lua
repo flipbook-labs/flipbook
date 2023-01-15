@@ -24,7 +24,7 @@ type Props = typeof(defaultProps) & {
 local function StoryPreview(props: Props)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local storyParent = React.createRef()
+	local storyParent = React.useRef()
 
 	React.useEffect(function()
 		local cleanup
