@@ -70,6 +70,9 @@ export type StoryMeta = {
 	name: string,
 	summary: string?,
 	controls: Controls?,
+	roact: Roact?,
+	react: React?,
+	reactRoblox: ReactRoblox?,
 }
 
 export type RoactStory = StoryMeta & {

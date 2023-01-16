@@ -75,7 +75,7 @@ local function mountStory(story: types.Story, controls: types.Controls, parent: 
 
 	if story.roact then
 		return mountRoactStory(story :: types.RoactStory, props, parent)
-	elseif story.react then
+	elseif story.react and story.reactRoblox then
 		return mountReactStory(story :: types.ReactStory, props, parent)
 	elseif typeof(story.story) == "function" then
 		return mountFunctionalStory(story :: types.FunctionalStory, props, parent)
