@@ -51,7 +51,11 @@ local function StoryView(props: Props)
 	end, { plugin, props.story })
 
 	local exploreStoryParent = React.useCallback(function()
-		Selection:Set({ storyParentRef.current })
+		local current = storyParentRef.current
+		if current then
+			local firstGuiObject = current:FindFirstChildWhichIsA("GuiObject")
+			Selection:Set({ if firstGuiObject then firstGuiObject else current })
+		end
 
 		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
 	end, { storyParentRef })
