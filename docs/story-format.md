@@ -133,7 +133,7 @@ return {
 
 		local padding = Instance.new("UIPadding")
 		padding.PaddingTop = UDim.new(0, 8)
-		padding.Right = padding.PaddingTop
+		padding.PaddingRight = padding.PaddingTop
 		padding.PaddingBottom = padding.PaddingTop
 		padding.PaddingLeft = padding.PaddingTop
 		padding.Parent = label
