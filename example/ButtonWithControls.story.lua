@@ -14,7 +14,7 @@ type Props = {
 return {
 	summary = "A generic button component that can be used anywhere",
 	controls = controls,
-	renderer = Roact,
+	roact = Roact,
 	story = function(props: Props)
 		return Roact.createElement(ButtonWithControls, {
 			text = "Click me",

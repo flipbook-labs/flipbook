@@ -4,33 +4,32 @@ local t = require(flipbook.Packages.t)
 
 local types = {}
 
-export type Renderer = { [string]: any }
-types.Renderer = t.map(t.string, t.any)
-
 export type RoactElement = { [string]: any }
 export type Roact = {
 	createElement: (...any) -> any,
 	mount: (...any) -> any,
 	unmount: (...any) -> (),
 }
-
 types.Roact = t.interface({
 	createElement = t.callback,
 	mount = t.callback,
 	unmount = t.callback,
 })
 
-export type ReactElement = { [string]: any }
-export type React = {
+type ReactElement = { [string]: any }
+
+type React = {
 	createElement: (...any) -> any,
 }
-
 types.React = t.interface({
 	createElement = t.callback,
+})
 
-	-- Roact doesn't have these keys so we use them to differentiate the two
-	useCallback = t.callback,
-	useEffect = t.callback,
+type ReactRoblox = {
+	createRoot: () -> (),
+}
+types.ReactRoblox = t.interface({
+	createRoot = t.callback,
 })
 
 export type StoryProps = {
@@ -41,11 +40,11 @@ export type StoryFormat = "Roact" | "React" | "Functional" | "Hoarcekat"
 
 export type Storybook = {
 	storyRoots: { Instance },
-	name: string?,
 
-	-- The `roact` prop is deprecated. Use `renderer` for new work
+	name: string?,
 	roact: Roact?,
-	renderer: Renderer?,
+	react: React?,
+	reactRoblox: ReactRoblox?,
 }
 
 types.Storybook = t.interface({
@@ -53,7 +52,8 @@ types.Storybook = t.interface({
 
 	name = t.optional(t.string),
 	roact = t.optional(types.Roact),
-	renderer = t.optional(types.Renderer),
+	react = t.optional(types.React),
+	reactRoblox = t.optional(types.ReactRoblox),
 })
 
 export type StoryControl = {
@@ -70,27 +70,24 @@ export type StoryMeta = {
 	name: string,
 	summary: string?,
 	controls: Controls?,
-
-	-- The `roact` prop is deprecated. Use `renderer` for new work
-	roact: Roact?,
-	renderer: Renderer?,
 }
 
 export type RoactStory = StoryMeta & {
 	story: RoactElement | (props: StoryProps) -> RoactElement,
-	renderer: Roact,
+	roact: Roact,
 }
 
 export type ReactStory = StoryMeta & {
 	story: ReactElement | (props: StoryProps) -> ReactElement,
-	renderer: React,
+	react: React,
+	reactRoblox: ReactRoblox,
 }
 
 export type FunctionalStory = StoryMeta & {
 	story: (target: GuiObject, props: StoryProps) -> (() -> ())?,
 }
 
-export type Story = FunctionalStory | RoactStory
+export type Story = FunctionalStory | RoactStory | ReactStory
 
 export type Theme = {
 	textSize: number,

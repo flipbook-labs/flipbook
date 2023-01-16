@@ -37,7 +37,7 @@ Support for Roblox's [Roact](https://github.com/Roblox/roact) library is built i
 | Name     | Type                                                      | Description                                                                                                                                                                                             |
 | -------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | story    | `RoactElement    \| (props: StoryPropss) -> RoactElement` | Your story can either be a Roact element or a function that accepts props and returns a Roact element. The latter format is needed to support the use of controls. See below for an example             |
-| renderer | `Roact`                                                   | This must be set to your copy of Roact. Since Roact uses special symbols for things like children, flipbook needs to mount the story with the same copy of Roact that you used to create your elements. |
+| roact    | `Roact`                                                   | This must be set to your copy of Roact. Since Roact uses special symbols for things like children, flipbook needs to mount the story with the same copy of Roact that you used to create your elements. |
 | name     | `string?`                                                 | Optional name for the story. Defaults to the file name.                                                                                                                                                 |
 | summary  | `string?`                                                 | Optional description of the story that will appear as part of the information at the top of the preview.                                                                                                |
 | controls | `StoryControls?`                                          | Optional controls to see how your story behaves with various props.                                                                                                                                     |
@@ -53,7 +53,7 @@ local Button = require(script.Parent.Button)
 
 return {
 	summary = "A generic button component that can be used anywhere",
-	renderer = Roact,
+	roact = Roact,
 	story = Roact.createElement(Button, {
 		text = "Click me",
 		onActivated = function()
@@ -83,7 +83,7 @@ type Props = {
 return {
 	summary = "A generic button component that can be used anywhere",
 	controls = controls,
-	renderer = Roact,
+	roact = Roact,
 	story = function(props: Props)
 		return Roact.createElement(ButtonWithControls, {
 			text = "Click me",
