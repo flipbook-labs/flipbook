@@ -19,7 +19,6 @@ return {
 	react = React,
 	reactRoblox = ReactRoblox,
 	story = function(props: Props)
-		print(props)
 		return React.createElement(ReactCounter, {
 			increment = props.controls.increment,
 			waitTime = props.controls.waitTime,
