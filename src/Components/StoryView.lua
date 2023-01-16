@@ -117,7 +117,7 @@ local function StoryView(props: Props)
 					onZoomIn = zoom.zoomIn,
 					onZoomOut = zoom.zoomOut,
 					onViewCode = viewCode,
-					onExplore = exploreStoryParent,
+					onExplorer = exploreStoryParent,
 				}),
 			}),
 
