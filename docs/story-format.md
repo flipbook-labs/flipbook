@@ -12,11 +12,13 @@ Storybooks are your entypoint to flipbook and you'll need at least one to start 
 
 The only required prop is the `storyRoots` array, which tells flipbook which Instances to search the descendants of for `.story` files
 
-| Name         | Type           | Notes                                                                                             |
-| ------------ | -------------- | ------------------------------------------------------------------------------------------------- |
-| `storyRoots` | `{ Instance }` | An array of instances to search the descendants of for `.story` files.                            |
-| `name`       | `string?`      | The name to use for the storybook. This defaults to `script.Name` with `.storybook` stripped off. |
-| `roact`      | `Roact?`       | The version of Roact to use across all stories.                                                   |
+| Name          | Type           | Notes                                                                                             |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------------- |
+| `storyRoots`  | `{ Instance }` | An array of instances to search the descendants of for `.story` files.                            |
+| `name`        | `string?`      | The name to use for the storybook. This defaults to `script.Name` with `.storybook` stripped off. |
+| `roact`       | `Roact?`       | The version of Roact to use across all stories.                                                   |
+| `react`       | `React?`       | The version of React to use across all stories.                                                   |
+| `reactRoblox` | `ReactRoblox?` | The version of ReactRoblox to use when mounting React components.                                 |
 
 Example:
 
@@ -91,6 +93,54 @@ return {
 			onActivated = function()
 				print("click")
 			end,
+		})
+	end,
+}
+```
+
+## React Story
+
+Roblox's unreleased React 17 port is natively supported by flipbook, allowing you to use the React and ReactRoblox packages for mounting your components.
+
+You can find React and ReactRoblox as part of the [CorePackages](https://github.com/grilme99/CorePackages) repo on GitHub.
+
+| Name        | Type                                                      | Description                                                                                                                                                                                             |
+| ----------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| story       | `ReactElement    \| (props: StoryPropss) -> ReactElement` | Your story can either be a React element or a function that accepts props and returns a React element. The latter format is needed to support the use of controls. See below for an example             |
+| react       | `React`                                                   | This must be set to your copy of React. Since React uses special symbols for things like children, flipbook needs to mount the story with the same copy of React that you used to create your elements. |
+| reactRoblox | `ReactRoblox`                                             | This must be set to your copy of ReactRoblox that is compatible with the supplied copy of React. This is used by flipbook to mount your React components.                                               |
+| name        | `string?`                                                 | Optional name for the story. Defaults to the file name.                                                                                                                                                 |
+| summary     | `string?`                                                 | Optional description of the story that will appear as part of the information at the top of the preview.                                                                                                |
+| controls    | `StoryControls?`                                          | Optional controls to see how your story behaves with various props.                                                                                                                                     |
+
+Example:
+
+```lua
+-- example/ReactCounter.story.lua
+local Example = script:FindFirstAncestor("Example")
+
+local React = require(Example.Parent.Packages.React)
+local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
+local ReactCounter = require(script.Parent.ReactCounter)
+
+local controls = {
+	increment = 1,
+	waitTime = 1,
+}
+
+type Props = {
+	controls: typeof(controls),
+}
+
+return {
+	summary = "A simple counter that increments every second. This is a copy of the Counter component, but written with React",
+	controls = controls,
+	react = React,
+	reactRoblox = ReactRoblox,
+	story = function(props: Props)
+		return React.createElement(ReactCounter, {
+			increment = props.controls.increment,
+			waitTime = props.controls.waitTime,
 		})
 	end,
 }
