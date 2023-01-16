@@ -34,6 +34,7 @@ local function StoryView(props: Props, hooks: any)
 	local controls, setControls = hooks.useState(nil)
 	local controlsHeight, setControlsHeight = hooks.useState(constants.CONTROLS_INITIAL_HEIGHT)
 	local topbarHeight, setTopbarHeight = hooks.useState(0)
+	local storyParentRef = Roact.createRef()
 
 	local showControls = controls and not Sift.isEmpty(controls)
 
@@ -49,6 +50,12 @@ local function StoryView(props: Props, hooks: any)
 		Selection:Set({ props.story })
 		plugin:OpenScript(props.story)
 	end, { plugin, props.story })
+
+	local exploreStoryParent = hooks.useCallback(function()
+		Selection:Set({ storyParentRef.current })
+
+		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
+	end, { storyParentRef })
 
 	local isMountedInViewport, setIsMountedInViewport = hooks.useState(false)
 
@@ -111,6 +118,7 @@ local function StoryView(props: Props, hooks: any)
 					onZoomIn = zoom.zoomIn,
 					onZoomOut = zoom.zoomOut,
 					onViewCode = viewCode,
+					onExplore = exploreStoryParent,
 				}),
 			}),
 
@@ -152,6 +160,7 @@ local function StoryView(props: Props, hooks: any)
 					controls = controls,
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
+					ref = storyParentRef,
 				}),
 			}),
 

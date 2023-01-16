@@ -17,17 +17,16 @@ local defaultProps = {
 type Props = typeof(defaultProps) & {
 	layoutOrder: number,
 	story: types.Story,
+	ref: any,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
 local function StoryPreview(props: Props, hooks: any)
-	local storyParent = Roact.createRef()
-
 	hooks.useEffect(function()
 		local cleanup
 		if props.story then
-			cleanup = mountStory(props.story, props.controls, storyParent:getValue())
+			cleanup = mountStory(props.story, props.controls, props.ref:getValue())
 		end
 
 		return function()
@@ -35,14 +34,14 @@ local function StoryPreview(props: Props, hooks: any)
 				cleanup()
 			end
 		end
-	end, { props.story, storyParent })
+	end, { props.story, props.ref })
 
 	if props.isMountedInViewport then
 		return e(Roact.Portal, {
 			target = CoreGui,
 		}, {
 			Story = e("ScreenGui", {
-				[Roact.Ref] = storyParent,
+				[Roact.Ref] = props.ref,
 			}),
 		})
 	else
@@ -51,7 +50,7 @@ local function StoryPreview(props: Props, hooks: any)
 			BackgroundTransparency = 1,
 			LayoutOrder = props.layoutOrder,
 			Size = UDim2.fromScale(1, 0),
-			[Roact.Ref] = storyParent,
+			[Roact.Ref] = props.ref,
 		}, {
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
