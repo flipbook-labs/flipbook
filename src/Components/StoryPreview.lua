@@ -37,7 +37,7 @@ local function StoryPreview(props: Props)
 				cleanup()
 			end
 		end
-	end, { props.story, storyParent })
+	end, { props.story, props.controls, storyParent })
 
 	if props.isMountedInViewport then
 		return e(React.Portal, {
