@@ -2,9 +2,8 @@ name: Docs
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 env:
   REPO_URL: github.com/vocksel/flipbook
@@ -41,5 +40,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event.release }}
         run: moonwave build --publish
