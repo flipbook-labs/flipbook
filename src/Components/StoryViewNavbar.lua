@@ -14,6 +14,7 @@ type Props = {
 	onZoomIn: (() -> ())?,
 	onZoomOut: (() -> ())?,
 	onViewCode: (() -> ())?,
+	onExplorer: (() -> ())?,
 }
 
 local function NavbarRoot(props: Props)
@@ -59,6 +60,23 @@ local function NavbarRoot(props: Props)
 			Mount = e(Navbar.Items, {
 				layoutOrder = 4,
 			}, {
+				Explorer = e(Navbar.Item, {
+					layoutOrder = 1,
+					onClick = props.onExplorer,
+				}, {
+					Text = e("TextLabel", {
+						AutomaticSize = Enum.AutomaticSize.XY,
+						BackgroundTransparency = 1,
+						Font = theme.font,
+						Size = UDim2.fromScale(0, 0),
+						Text = "Explorer",
+						TextColor3 = theme.textFaded,
+						TextSize = theme.textSize,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextYAlignment = Enum.TextYAlignment.Top,
+					}),
+				}),
+
 				ViewCode = e(Navbar.Item, {
 					layoutOrder = 1,
 					onClick = props.onViewCode,
