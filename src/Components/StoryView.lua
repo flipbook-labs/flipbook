@@ -33,6 +33,7 @@ local function StoryView(props: Props)
 	local controls, setControls = React.useState(nil)
 	local controlsHeight, setControlsHeight = React.useState(constants.CONTROLS_INITIAL_HEIGHT)
 	local topbarHeight, setTopbarHeight = React.useState(0)
+	local storyParentRef = React.useRef()
 
 	local showControls = controls and not Sift.isEmpty(controls)
 
@@ -48,6 +49,16 @@ local function StoryView(props: Props)
 		Selection:Set({ props.story })
 		plugin:OpenScript(props.story)
 	end, { plugin, props.story })
+
+	local exploreStoryParent = React.useCallback(function()
+		local current = storyParentRef.current
+		if current then
+			local firstGuiObject = current:FindFirstChildWhichIsA("GuiObject")
+			Selection:Set({ if firstGuiObject then firstGuiObject else current })
+		end
+
+		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
+	end, { storyParentRef })
 
 	local isMountedInViewport, setIsMountedInViewport = React.useState(false)
 
@@ -110,6 +121,7 @@ local function StoryView(props: Props)
 					onZoomIn = zoom.zoomIn,
 					onZoomOut = zoom.zoomOut,
 					onViewCode = viewCode,
+					onExplorer = exploreStoryParent,
 				}),
 			}),
 
@@ -151,6 +163,7 @@ local function StoryView(props: Props)
 					controls = controls,
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
+					ref = storyParentRef,
 				}),
 			}),
 

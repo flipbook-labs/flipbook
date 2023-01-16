@@ -18,23 +18,23 @@ local defaultProps = {
 type Props = typeof(defaultProps) & {
 	layoutOrder: number,
 	story: types.Story,
+	ref: any,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
-local function StoryPreview(props: Props)
+local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
 	local theme = useTheme()
 	local err, setErr = React.useState(nil)
-	local storyParent = React.useRef()
 
 	React.useEffect(function()
 		setErr(nil)
 
-		if props.story then
+		if props.story and ref.current then
 			local success, result = xpcall(function()
-				return mountStory(props.story, props.controls, storyParent.current)
+				return mountStory(props.story, props.controls, ref.current)
 			end, debug.traceback)
 
 			if success then
@@ -46,7 +46,7 @@ local function StoryPreview(props: Props)
 		end
 
 		return nil
-	end, { props.story, props.controls, storyParent })
+	end, { props.story, props.controls, ref.current })
 
 	if err then
 		return e("TextLabel", {
@@ -74,7 +74,7 @@ local function StoryPreview(props: Props)
 				target = CoreGui,
 			}, {
 				Story = e("ScreenGui", {
-					ref = storyParent,
+					ref = ref,
 				}),
 			})
 		else
@@ -83,7 +83,7 @@ local function StoryPreview(props: Props)
 				BackgroundTransparency = 1,
 				LayoutOrder = props.layoutOrder,
 				Size = UDim2.fromScale(1, 0),
-				ref = storyParent,
+				ref = ref,
 			}, {
 				Scale = e("UIScale", {
 					Scale = 1 + props.zoom,
@@ -91,6 +91,6 @@ local function StoryPreview(props: Props)
 			})
 		end
 	end
-end
+end)
 
 return StoryPreview
