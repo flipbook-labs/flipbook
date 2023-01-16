@@ -22,13 +22,13 @@ type Props = typeof(defaultProps) & {
 	storyModule: ModuleScript,
 }
 
-local function StoryPreview(props: Props)
+local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
 	React.useEffect(function()
 		local cleanup
-		if props.story then
-			cleanup = mountStory(props.story, props.controls, props.ref.current)
+		if props.story and ref.current then
+			cleanup = mountStory(props.story, props.controls, ref.current)
 		end
 
 		return function()
@@ -36,14 +36,14 @@ local function StoryPreview(props: Props)
 				cleanup()
 			end
 		end
-	end, { props.story, props.controls, props.ref })
+	end, { props.story, props.controls, ref.current })
 
 	if props.isMountedInViewport then
 		return e(React.Portal, {
 			target = CoreGui,
 		}, {
 			Story = e("ScreenGui", {
-				ref = props.ref,
+				ref = ref,
 			}),
 		})
 	else
@@ -52,13 +52,13 @@ local function StoryPreview(props: Props)
 			BackgroundTransparency = 1,
 			LayoutOrder = props.layoutOrder,
 			Size = UDim2.fromScale(1, 0),
-			ref = props.ref,
+			ref = ref,
 		}, {
 			Scale = e("UIScale", {
 				Scale = 1 + props.zoom,
 			}),
 		})
 	end
-end
+end)
 
 return StoryPreview
