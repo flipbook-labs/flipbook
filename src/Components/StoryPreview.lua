@@ -4,6 +4,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
+local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
 local mountStory = require(flipbook.Story.mountStory)
 
@@ -24,41 +25,71 @@ type Props = typeof(defaultProps) & {
 local function StoryPreview(props: Props)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
+	local theme = useTheme()
+	local err, setErr = React.useState(nil)
 	local storyParent = React.useRef()
 
 	React.useEffect(function()
-		local cleanup
-		if props.story then
-			cleanup = mountStory(props.story, props.controls, storyParent:getValue())
-		end
+		setErr(nil)
 
-		return function()
-			if cleanup then
-				cleanup()
+		if props.story then
+			local success, result = xpcall(function()
+				return mountStory(props.story, props.controls, storyParent.current)
+			end, debug.traceback)
+
+			if success then
+				return result
+			else
+				setErr(result)
+				return nil
 			end
 		end
+
+		return nil
 	end, { props.story, props.controls, storyParent })
 
-	if props.isMountedInViewport then
-		return e(React.Portal, {
-			target = CoreGui,
+	if err then
+		return e("TextLabel", {
+			LayoutOrder = props.layoutOrder,
+			BackgroundTransparency = 1,
+			Font = theme.font,
+			Size = UDim2.fromScale(1, 1),
+			Text = err,
+			TextColor3 = theme.text,
+			TextWrapped = true,
+			TextSize = theme.textSize,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextYAlignment = Enum.TextYAlignment.Top,
 		}, {
-			Story = e("ScreenGui", {
-				ref = storyParent,
+			Padding = e("UIPadding", {
+				PaddingTop = theme.padding,
+				PaddingRight = theme.padding,
+				PaddingBottom = theme.padding,
+				PaddingLeft = theme.padding,
 			}),
 		})
 	else
-		return e("Frame", {
-			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundTransparency = 1,
-			LayoutOrder = props.layoutOrder,
-			Size = UDim2.fromScale(1, 0),
-			ref = storyParent,
-		}, {
-			Scale = e("UIScale", {
-				Scale = 1 + props.zoom,
-			}),
-		})
+		if props.isMountedInViewport then
+			return e(React.Portal, {
+				target = CoreGui,
+			}, {
+				Story = e("ScreenGui", {
+					ref = storyParent,
+				}),
+			})
+		else
+			return e("Frame", {
+				AutomaticSize = Enum.AutomaticSize.Y,
+				BackgroundTransparency = 1,
+				LayoutOrder = props.layoutOrder,
+				Size = UDim2.fromScale(1, 0),
+				ref = storyParent,
+			}, {
+				Scale = e("UIScale", {
+					Scale = 1 + props.zoom,
+				}),
+			})
+		end
 	end
 end
 
