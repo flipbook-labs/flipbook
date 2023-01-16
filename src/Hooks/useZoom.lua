@@ -1,17 +1,21 @@
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local React = require(flipbook.Packages.React)
+
 local ZOOM_INCREMENT = 0.25
 
-local function useZoom(hooks: any, story: ModuleScript)
-	local value, setValue = hooks.useState(0)
+local function useZoom(story: ModuleScript)
+	local value, setValue = React.useState(0)
 
-	local zoomIn = hooks.useCallback(function()
+	local zoomIn = React.useCallback(function()
 		setValue(value + ZOOM_INCREMENT)
 	end, { value, setValue })
 
-	local zoomOut = hooks.useCallback(function()
+	local zoomOut = React.useCallback(function()
 		setValue(value - ZOOM_INCREMENT)
 	end, { value, setValue })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		setValue(0)
 	end, { story })
 

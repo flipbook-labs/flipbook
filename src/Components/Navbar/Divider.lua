@@ -1,17 +1,16 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number,
 }
 
-local function Divider(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Divider(props: Props)
+	local theme = useTheme()
 	return e("Frame", {
 		BackgroundColor3 = theme.divider,
 		BorderSizePixel = 0,
@@ -20,4 +19,4 @@ local function Divider(props: Props, hooks: any)
 	})
 end
 
-return hook(Divider)
+return Divider

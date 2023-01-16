@@ -1,13 +1,13 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+
 local useTheme = require(flipbook.Hooks.useTheme)
 local InputField = require(flipbook.Components.InputField)
 local Checkbox = require(flipbook.Components.Fields.Checkbox)
 local Dropdown = require(flipbook.Components.Fields.Dropdown)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number,
@@ -15,8 +15,8 @@ type Props = {
 	setControl: (key: string, value: any) -> (),
 }
 
-local function StoryControls(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function StoryControls(props: Props)
+	local theme = useTheme()
 
 	local controls = {}
 	for key, value in props.controls do
@@ -26,18 +26,18 @@ local function StoryControls(props: Props, hooks: any)
 
 		local option
 		if typeof(value) == "boolean" then
-			option = Roact.createElement(Checkbox, {
+			option = React.createElement(Checkbox, {
 				initialState = value,
 				onStateChange = setControl,
 			})
 		elseif typeof(value) == "table" then
-			option = Roact.createElement(Dropdown, {
+			option = React.createElement(Dropdown, {
 				default = value[1],
 				options = value,
 				onOptionChange = setControl,
 			})
 		else
-			option = Roact.createElement(InputField, {
+			option = React.createElement(InputField, {
 				placeholder = value,
 				onTextChange = setControl,
 			})
@@ -48,7 +48,7 @@ local function StoryControls(props: Props, hooks: any)
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 		}, {
-			Layout = Roact.createElement("UIListLayout", {
+			Layout = React.createElement("UIListLayout", {
 				FillDirection = Enum.FillDirection.Horizontal,
 			}),
 
@@ -106,9 +106,9 @@ local function StoryControls(props: Props, hooks: any)
 				Padding = theme.padding,
 			}),
 
-			ControlsFragment = Roact.createFragment(controls),
+			ControlsFragment = React.createElement(React.Fragment, nil, controls),
 		}),
 	})
 end
 
-return hook(StoryControls)
+return StoryControls

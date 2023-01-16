@@ -1,19 +1,18 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local useTheme = require(flipbook.Hooks.useTheme)
-local hook = require(flipbook.hook)
 
 export type Props = {
 	initialState: boolean,
 	onStateChange: ((newState: boolean) -> ())?,
 }
 
-local function Checkbox(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local isChecked, setIsChecked = hooks.useState(props.initialState)
+local function Checkbox(props: Props)
+	local theme = useTheme()
+	local isChecked, setIsChecked = React.useState(props.initialState)
 
-	local toggle = hooks.useCallback(function()
+	local toggle = React.useCallback(function()
 		local newValue = not isChecked
 
 		if props.onStateChange then
@@ -23,27 +22,27 @@ local function Checkbox(props: Props, hooks: any)
 		setIsChecked(newValue)
 	end, { isChecked })
 
-	return Roact.createElement("ImageButton", {
+	return React.createElement("ImageButton", {
 		BackgroundColor3 = theme.button,
 		Size = UDim2.fromOffset(theme.textSize, theme.textSize) + UDim2.new(theme.padding, theme.padding),
-		[Roact.Event.Activated] = toggle,
+		[React.Event.Activated] = toggle,
 	}, {
-		Layout = Roact.createElement("UIListLayout", {
+		Layout = React.createElement("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
-		Corner = Roact.createElement("UICorner", {
+		Corner = React.createElement("UICorner", {
 			CornerRadius = theme.paddingSmall,
 		}),
 
-		Border = Roact.createElement("UIStroke", {
+		Border = React.createElement("UIStroke", {
 			Color = theme.buttonText,
 			Transparency = 0.4,
 			Thickness = 2,
 		}),
 
-		Check = isChecked and Roact.createElement("TextLabel", {
+		Check = isChecked and React.createElement("TextLabel", {
 			Text = "✔️",
 			TextSize = theme.textSize,
 			Font = theme.headerFont,
@@ -54,4 +53,4 @@ local function Checkbox(props: Props, hooks: any)
 	})
 end
 
-return hook(Checkbox)
+return Checkbox

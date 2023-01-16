@@ -3,8 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local RunService = game:GetService("RunService")
 
 local Sift = require(flipbook.Packages.Sift)
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 local PluginContext = require(flipbook.Plugin.PluginContext)
 local types = require(script.Parent.Parent.types)
 
@@ -20,15 +19,15 @@ export type Props = typeof(defaultProps) & {
 	onDragEnd: (() -> ())?,
 }
 
-local function DragHandle(props: Props, hooks: any)
+local function DragHandle(props: Props)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local plugin = hooks.useContext(PluginContext.Context)
-	local isDragging, setIsDragging = hooks.useState(false)
-	local isHovered, setIsHovered = hooks.useState(false)
-	local mouseInput: InputObject, setMouseInput = hooks.useState(nil)
+	local plugin = React.useContext(PluginContext.Context)
+	local isDragging, setIsDragging = React.useState(false)
+	local isHovered, setIsHovered = React.useState(false)
+	local mouseInput: InputObject, setMouseInput = React.useState(nil)
 
-	local getHandleProperties = hooks.useCallback(function()
+	local getHandleProperties = React.useCallback(function()
 		local size: UDim2
 		local position: UDim2
 		local anchorPoint: Vector2
@@ -58,7 +57,7 @@ local function DragHandle(props: Props, hooks: any)
 		return size, position, anchorPoint
 	end, { props.handle, props.size })
 
-	local onInputBegan = hooks.useCallback(function(_rbx, input: InputObject)
+	local onInputBegan = React.useCallback(function(_rbx, input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			setIsDragging(true)
 		elseif input.UserInputType == Enum.UserInputType.MouseMovement then
@@ -67,7 +66,7 @@ local function DragHandle(props: Props, hooks: any)
 		end
 	end, { isDragging })
 
-	local onInputEnded = hooks.useCallback(function(_rbx, input: InputObject)
+	local onInputEnded = React.useCallback(function(_rbx, input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			setIsDragging(false)
 			setMouseInput(nil)
@@ -78,17 +77,17 @@ local function DragHandle(props: Props, hooks: any)
 		end
 	end, { props.onDragEnd })
 
-	local onMouseEnter = hooks.useCallback(function()
+	local onMouseEnter = React.useCallback(function()
 		setIsHovered(true)
 	end, {})
 
-	local onMouseLeave = hooks.useCallback(function()
+	local onMouseLeave = React.useCallback(function()
 		setIsHovered(false)
 	end, {})
 
 	local size, position, anchorPoint = getHandleProperties()
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		if mouseInput and isDragging then
 			local lastPosition = mouseInput.Position
 			local conn = RunService.Heartbeat:Connect(function()
@@ -109,7 +108,7 @@ local function DragHandle(props: Props, hooks: any)
 		end
 	end, { mouseInput, isDragging })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		if plugin then
 			local mouse = plugin:GetMouse()
 
@@ -125,16 +124,16 @@ local function DragHandle(props: Props, hooks: any)
 		end
 	end, { plugin, isDragging, isHovered })
 
-	return Roact.createElement("ImageButton", {
+	return React.createElement("ImageButton", {
 		Size = size,
 		Position = position,
 		AnchorPoint = anchorPoint,
 		BackgroundTransparency = 1,
-		[Roact.Event.InputBegan] = onInputBegan,
-		[Roact.Event.InputEnded] = onInputEnded,
-		[Roact.Event.MouseEnter] = onMouseEnter,
-		[Roact.Event.MouseLeave] = onMouseLeave,
+		[React.Event.InputBegan] = onInputBegan,
+		[React.Event.InputEnded] = onInputEnded,
+		[React.Event.MouseEnter] = onMouseEnter,
+		[React.Event.MouseLeave] = onMouseLeave,
 	})
 end
 
-return hook(DragHandle)
+return DragHandle

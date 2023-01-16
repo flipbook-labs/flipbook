@@ -1,15 +1,14 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local assets = require(flipbook.assets)
-local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local Sprite = require(flipbook.Components.Sprite)
 
-local e = Roact.createElement
+local e = React.createElement
 
-local function NoStorySelected(_props, hooks: any)
-	local theme = useTheme(hooks)
+local function NoStorySelected(_props)
+	local theme = useTheme()
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -44,4 +43,4 @@ local function NoStorySelected(_props, hooks: any)
 	})
 end
 
-return hook(NoStorySelected)
+return NoStorySelected

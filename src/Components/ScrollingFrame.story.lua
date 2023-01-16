@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local ScrollingFrame = require(script.Parent.ScrollingFrame)
 
 local controls = {
@@ -17,13 +17,13 @@ return {
 	story = function(props: Props)
 		local children = {}
 
-		children.Layout = Roact.createElement("UIListLayout", {
+		children.Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			Padding = UDim.new(0, 16),
 		})
 
 		for i = 1, props.controls.numItems do
-			children["Box" .. i] = Roact.createElement("Frame", {
+			children["Box" .. i] = React.createElement("Frame", {
 				LayoutOrder = i,
 				Size = UDim2.fromOffset(100, 100),
 				BackgroundColor3 = if props.controls.useGradient
@@ -32,11 +32,11 @@ return {
 			})
 		end
 
-		return Roact.createElement("Frame", {
+		return React.createElement("Frame", {
 			Size = UDim2.new(1, 0, 0, 200),
 			BackgroundTransparency = 1,
 		}, {
-			ScrollingFrame = Roact.createElement(ScrollingFrame, {}, children),
+			ScrollingFrame = React.createElement(ScrollingFrame, {}, children),
 		})
 	end,
 }

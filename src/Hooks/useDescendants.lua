@@ -1,11 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
 
-local function useDescendants(hooks: any, parent: Instance, predicate: (descendant: Instance) -> boolean): { Instance }
-	local descendants: { Instance }, setDescendants = hooks.useState({})
+local function useDescendants(parent: Instance, predicate: (descendant: Instance) -> boolean): { Instance }
+	local descendants: { Instance }, setDescendants = React.useState({})
 
-	local onDescendantChanged = hooks.useCallback(function(descendant: Instance)
+	local onDescendantChanged = React.useCallback(function(descendant: Instance)
 		local exists = table.find(descendants, descendant)
 		if predicate(descendant) then
 			if exists then
@@ -25,11 +26,11 @@ local function useDescendants(hooks: any, parent: Instance, predicate: (descenda
 	end, { predicate, descendants, setDescendants })
 
 	-- Setup the initial list of descendants for the current parent
-	hooks.useEffect(function()
+	React.useEffect(function()
 		setDescendants(Sift.Array.filter(parent:GetDescendants(), predicate))
 	end, { parent })
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		local connections = {
 			parent.DescendantAdded:Connect(onDescendantChanged),
 			parent.DescendantRemoving:Connect(onDescendantChanged),

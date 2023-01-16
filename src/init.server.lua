@@ -1,56 +1,51 @@
+local flipbook = script
+
 local RunService = game:GetService("RunService")
 
-local Roact = require(script.Packages.Roact)
-local createWidget = require(script.Plugin.createWidget)
-local createToggleButton = require(script.Plugin.createToggleButton)
-local App = require(script.Components.App)
-local constants = require(script.constants)
+local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
+local createWidget = require(flipbook.Plugin.createWidget)
+local createToggleButton = require(flipbook.Plugin.createToggleButton)
+local App = require(flipbook.Components.App)
+local constants = require(flipbook.constants)
 
 local PLUGIN_NAME = "flipbook"
 
 if constants.IS_DEV_MODE then
-	PLUGIN_NAME = "flipbook [DEV]"
+	-- selene: allow(global_usage)
+	_G.__DEV__ = true
 
-	Roact.setGlobalConfig({
-		elementTracing = true,
-	})
+	PLUGIN_NAME = "flipbook [DEV]"
 end
 
 if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-local function mount(widget: DockWidgetPluginGui)
-	local app = Roact.createElement(App, {
-		plugin = plugin,
-	})
-	return Roact.mount(app, widget, "App")
-end
-
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
+local root = ReactRoblox.createRoot(widget)
 local disconnectButton = createToggleButton(toolbar, widget)
 
-local handle: any
+local app = React.createElement(App, {
+	plugin = plugin,
+})
 
 local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 	if widget.Enabled then
-		handle = mount(widget)
+		root:render(app)
 	else
-		Roact.unmount(handle)
-		handle = nil
+		root:unmount()
 	end
 end)
 
 if widget.Enabled then
-	handle = mount(widget)
+	root:render(app)
 end
 
 plugin.Unloading:Connect(function()
 	disconnectButton()
 	widgetConn:Disconnect()
 
-	if handle then
-		Roact.unmount(handle)
-	end
+	root:unmount()
 end)

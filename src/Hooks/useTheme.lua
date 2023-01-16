@@ -1,4 +1,7 @@
-local themes = require(script.Parent.Parent.themes)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local React = require(flipbook.Packages.React)
+local themes = require(flipbook.themes)
 local types = require(script.Parent.Parent.types)
 
 local MOCK_STUDIO = {
@@ -8,8 +11,8 @@ local MOCK_STUDIO = {
 	},
 }
 
-local function useTheme(hooks: any)
-	local studio = hooks.useMemo(function()
+local function useTheme()
+	local studio = React.useMemo(function()
 		local success, result = pcall(function()
 			return (settings() :: any).Studio
 		end)
@@ -17,9 +20,9 @@ local function useTheme(hooks: any)
 		return if success then result else MOCK_STUDIO
 	end, {})
 
-	local theme: types.Theme, set = hooks.useState(themes[studio.Theme.Name])
+	local theme: types.Theme, set = React.useState(themes[studio.Theme.Name])
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		local conn = studio.ThemeChanged:Connect(function()
 			set(themes[studio.Theme.Name])
 		end)

@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local NoStorySelected = require(script.Parent.NoStorySelected)
 
 return {
-	story = Roact.createElement(NoStorySelected),
+	story = React.createElement(NoStorySelected),
 }

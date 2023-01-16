@@ -1,25 +1,25 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local constants = require(flipbook.constants)
-local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	active: boolean,
 	layoutOrder: number,
 	onClick: () -> (),
 	padding: { x: number, y: number }?,
+	children: any,
 }
 
-local function Item(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Item(props: Props)
+	local theme = useTheme()
 
-	local hover, setHover = hooks.useState(false)
-	local styles = RoactSpring.useSpring(hooks, {
+	local hover, setHover = React.useState(false)
+	local styles = RoactSpring.useSpring({
 		alpha = if not props.active and hover then 0 else 1,
 		config = constants.SPRING_CONFIG,
 	})
@@ -33,11 +33,11 @@ local function Item(props: Props, hooks: any)
 		Size = UDim2.fromScale(0, 0),
 		Text = "",
 
-		[Roact.Event.Activated] = props.onClick,
-		[Roact.Event.MouseEnter] = function()
+		[React.Event.Activated] = props.onClick,
+		[React.Event.MouseEnter] = function()
 			setHover(true)
 		end,
-		[Roact.Event.MouseLeave] = function()
+		[React.Event.MouseLeave] = function()
 			setHover(false)
 		end,
 	}, {
@@ -52,8 +52,8 @@ local function Item(props: Props, hooks: any)
 			CornerRadius = theme.corner,
 		}),
 
-		Children = Roact.createFragment(props[Roact.Children] or {}),
+		Children = React.createElement(React.Fragment, nil, props.children or {}),
 	})
 end
 
-return hook(Item)
+return Item

@@ -1,21 +1,20 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local types = require(script.Parent.Parent.types)
 local useTheme = require(flipbook.Hooks.useTheme)
-local hook = require(flipbook.hook)
 
 local MAX_SUMMARY_SIZE = 600
 
-local e = Roact.createElement
+local e = React.createElement
 
 export type Props = {
 	layoutOrder: number,
 	story: types.Story,
 }
 
-local function StoryMeta(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function StoryMeta(props: Props)
+	local theme = useTheme()
 
 	return e("Frame", {
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -59,4 +58,4 @@ local function StoryMeta(props: Props, hooks: any)
 	})
 end
 
-return hook(StoryMeta)
+return StoryMeta

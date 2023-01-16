@@ -1,19 +1,18 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local assets = require(flipbook.assets)
-local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local Sprite = require(flipbook.Components.Sprite)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
 }
 
-local function Branding(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Branding(props: Props)
+	local theme = useTheme()
 
 	return e("Frame", {
 		AutomaticSize = Enum.AutomaticSize.XY,
@@ -55,4 +54,4 @@ local function Branding(props: Props, hooks: any)
 	})
 end
 
-return hook(Branding)
+return Branding

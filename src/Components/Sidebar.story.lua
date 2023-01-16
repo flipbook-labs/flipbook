@@ -1,13 +1,13 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local internalStorybook = require(flipbook["init.storybook"])
 local Sidebar = require(script.Parent.Sidebar)
 
 return {
 	summary = "Sidebar containing brand, searchbar, and component tree",
 	controls = {},
-	story = Roact.createElement(Sidebar, {
+	story = React.createElement(Sidebar, {
 		storybooks = {
 			internalStorybook,
 		},

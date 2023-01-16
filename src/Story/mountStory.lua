@@ -19,7 +19,7 @@ local function mountFunctionalStory(story: types.FunctionalStory, props: types.S
 end
 
 local function mountRoactStory(story: types.RoactStory, props: types.StoryProps, parent: GuiObject)
-	local Roact = story.renderer
+	local Roact = story.roact
 
 	local element
 	if typeof(story.story) == "function" then
@@ -44,20 +44,44 @@ local function mountRoactStory(story: types.RoactStory, props: types.StoryProps,
 	end
 end
 
+local function mountReactStory(story: types.ReactStory, props: types.StoryProps, parent: GuiObject)
+	local React = story.react
+	local ReactRoblox = story.reactRoblox
+
+	local root = ReactRoblox.createRoot(parent)
+
+	local element
+	if typeof(story.story) == "function" then
+		xpcall(function()
+			element = React.createElement(story.story, props)
+		end, debug.traceback)
+	else
+		element = story.story
+	end
+
+	xpcall(function()
+		root:render(element)
+	end, debug.traceback)
+
+	return function()
+		root:unmount()
+	end
+end
+
 local function mountStory(story: types.Story, controls: types.Controls, parent: GuiObject): (() -> ())?
 	local props: types.StoryProps = {
 		controls = controls,
 	}
 
-	if story.renderer then
-		if types.Roact(story.renderer) then
-			return mountRoactStory(story :: types.RoactStory, props, parent)
-		end
+	if story.roact then
+		return mountRoactStory(story :: types.RoactStory, props, parent)
+	elseif story.react and story.reactRoblox then
+		return mountReactStory(story :: types.ReactStory, props, parent)
 	elseif typeof(story.story) == "function" then
 		return mountFunctionalStory(story :: types.FunctionalStory, props, parent)
+	else
+		return nil
 	end
-
-	return nil
 end
 
 return mountStory

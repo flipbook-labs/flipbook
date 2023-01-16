@@ -1,13 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local types = require(script.Parent.Parent.types)
 local NoStorySelected = require(flipbook.Components.NoStorySelected)
 local StoryView = require(flipbook.Components.StoryView)
 local useTheme = require(flipbook.Hooks.useTheme)
-local hook = require(flipbook.hook)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	story: ModuleScript,
@@ -16,8 +15,8 @@ type Props = {
 	layoutOrder: number?,
 }
 
-local function Canvas(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Canvas(props: Props)
+	local theme = useTheme()
 
 	return e("Frame", {
 		BackgroundColor3 = theme.canvas,
@@ -52,4 +51,4 @@ local function Canvas(props: Props, hooks: any)
 	})
 end
 
-return hook(Canvas)
+return Canvas
