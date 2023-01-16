@@ -28,13 +28,19 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 			story = result,
 		}
 	else
-		story = Sift.Dictionary.merge({
-			name = module.Name,
-		}, {
-			react = storybook.react,
-			reactRoblox = storybook.reactRoblox,
-			roact = storybook.roact,
-		}, result)
+		local isValid, message = types.StoryMeta(result)
+
+		if isValid then
+			story = Sift.Dictionary.merge({
+				name = module.Name,
+			}, {
+				react = storybook.react,
+				reactRoblox = storybook.reactRoblox,
+				roact = storybook.roact,
+			}, result)
+		else
+			return nil, Errors.Generic:format(module:GetFullName(), message)
+		end
 	end
 
 	if story then
