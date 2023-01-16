@@ -50,13 +50,9 @@ jobs:
         shell: bash
         run: rojo sourcemap dev.project.json -o sourcemap.json
 
-      - name: Ignore packages in analysis
-        shell: bash
-        run: mv .github/workflows/.luaurc Packages
-
       - name: Analyze
         shell: bash
-        run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --formatter=gnu src/
+        run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --ignore=**/_Index/** src/
 
   scripts:
     runs-on: ubuntu-latest
