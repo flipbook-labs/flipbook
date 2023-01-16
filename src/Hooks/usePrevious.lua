@@ -1,7 +1,11 @@
-local function usePrevious(hooks: any, value: any)
-	local previous = hooks.useValue(nil)
+local flipbook = script:FindFirstAncestor("flipbook")
 
-	hooks.useEffect(function()
+local React = require(flipbook.Packages.React)
+
+local function usePrevious(value: any)
+	local previous = React.useValue(nil)
+
+	React.useEffect(function()
 		previous.value = value
 	end, { value })
 

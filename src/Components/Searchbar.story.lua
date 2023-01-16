@@ -1,10 +1,10 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local Searchbar = require(script.Parent.Searchbar)
 
 return {
 	summary = "Searchbar used to search for components",
 	controls = {},
-	story = Roact.createElement(Searchbar),
+	story = React.createElement(Searchbar),
 }

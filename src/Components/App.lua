@@ -1,8 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local ModuleLoader = require(flipbook.Packages.ModuleLoader)
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTheme = require(flipbook.Hooks.useTheme)
@@ -17,37 +16,37 @@ export type Props = {
 	plugin: Plugin,
 }
 
-local function App(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local storybooks = useStorybooks(hooks, game, loader)
-	local story, setStory = hooks.useState(nil)
-	local storybook, selectStorybook = hooks.useState(nil)
-	local sidebarWidth, setSidebarWidth = hooks.useState(constants.SIDEBAR_INITIAL_WIDTH)
+local function App(props: Props)
+	local theme = useTheme()
+	local storybooks = useStorybooks(game, loader)
+	local story, setStory = React.useState(nil)
+	local storybook, selectStorybook = React.useState(nil)
+	local sidebarWidth, setSidebarWidth = React.useState(constants.SIDEBAR_INITIAL_WIDTH)
 
-	local selectStory = hooks.useCallback(function(newStory: ModuleScript)
+	local selectStory = React.useCallback(function(newStory: ModuleScript)
 		setStory(function(prevStory: ModuleScript)
 			return if prevStory ~= newStory then newStory else nil
 		end)
 	end, { setStory })
 
-	local onSidebarResized = hooks.useCallback(function(newSize: Vector2)
+	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
 	end, {})
 
-	return Roact.createElement(PluginContext.Provider, {
+	return React.createElement(PluginContext.Provider, {
 		plugin = props.plugin,
 	}, {
-		Background = Roact.createElement("Frame", {
+		Background = React.createElement("Frame", {
 			BackgroundColor3 = theme.background,
 			Size = UDim2.fromScale(1, 1),
 		}, {
-			Layout = Roact.createElement("UIListLayout", {
+			Layout = React.createElement("UIListLayout", {
 				FillDirection = Enum.FillDirection.Horizontal,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 			}),
 
-			SidebarWrapper = Roact.createElement(ResizablePanel, {
+			SidebarWrapper = React.createElement(ResizablePanel, {
 				layoutOrder = 1,
 				initialSize = UDim2.new(0, constants.SIDEBAR_INITIAL_WIDTH, 1, 0),
 				dragHandles = { "Right" },
@@ -55,18 +54,18 @@ local function App(props: Props, hooks: any)
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 				onResize = onSidebarResized,
 			}, {
-				Sidebar = Roact.createElement(Sidebar, {
+				Sidebar = React.createElement(Sidebar, {
 					selectStory = selectStory,
 					selectStorybook = selectStorybook,
 					storybooks = storybooks,
 				}),
 			}),
 
-			MainWrapper = Roact.createElement("Frame", {
+			MainWrapper = React.createElement("Frame", {
 				LayoutOrder = 2,
 				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
 			}, {
-				Canvas = Roact.createElement(Canvas, {
+				Canvas = React.createElement(Canvas, {
 					loader = loader,
 					story = story,
 					storybook = storybook,
@@ -76,4 +75,4 @@ local function App(props: Props, hooks: any)
 	})
 end
 
-return hook(App)
+return App

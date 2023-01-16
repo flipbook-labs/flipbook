@@ -1,10 +1,10 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
+local Sift = require(flipbook.Packages.Sift)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 local defaultProps = {
 	size = UDim2.fromScale(1, 1),
@@ -22,13 +22,15 @@ export type Props = typeof(defaultProps) & {
 	transform: ((newText: string, oldText: string) -> string)?,
 }
 
-local function InputField(props: Props, hooks: any)
-	local ref = Roact.createRef()
-	local text, setText = hooks.useState("")
-	local isValid, setIsValid = hooks.useState(false)
-	local theme = useTheme(hooks)
+local function InputField(props: Props)
+	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local onFocusLost = hooks.useCallback(function(_rbx: TextBox, enterPressed: boolean)
+	local ref = React.createRef()
+	local text, setText = React.useState("")
+	local isValid, setIsValid = React.useState(false)
+	local theme = useTheme()
+
+	local onFocusLost = React.useCallback(function(_rbx: TextBox, enterPressed: boolean)
 		if props.onFocusLost then
 			props.onFocusLost()
 		end
@@ -41,7 +43,7 @@ local function InputField(props: Props, hooks: any)
 		props.onSubmit,
 	})
 
-	local onTextChanged = hooks.useCallback(function(rbx: TextBox)
+	local onTextChanged = React.useCallback(function(rbx: TextBox)
 		local newText = rbx.Text
 
 		if newText == text and newText ~= "" then
@@ -63,7 +65,7 @@ local function InputField(props: Props, hooks: any)
 		end
 	end, {})
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		if props.autoFocus then
 			ref:getValue():CaptureFocus()
 		end
@@ -84,13 +86,11 @@ local function InputField(props: Props, hooks: any)
 		PlaceholderColor3 = theme.textFaded,
 		ClearTextOnFocus = false,
 		Text = text,
-		[Roact.Change.Text] = onTextChanged,
-		[Roact.Event.Focused] = props.onFocus,
-		[Roact.Event.FocusLost] = onFocusLost,
-		[Roact.Ref] = ref,
+		ref = ref,
+		[React.Change.Text] = onTextChanged,
+		[React.Event.Focused] = props.onFocus,
+		[React.Event.FocusLost] = onFocusLost,
 	})
 end
 
-return hook(InputField, {
-	defaultProps = defaultProps,
-})
+return InputField

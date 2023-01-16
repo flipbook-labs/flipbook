@@ -1,13 +1,12 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local assets = require(flipbook.assets)
-local hook = require(flipbook.hook)
 local Navbar = require(flipbook.Components.Navbar)
 local Sprite = require(flipbook.Components.Sprite)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number,
@@ -18,8 +17,8 @@ type Props = {
 	onExplore: (() -> ())?,
 }
 
-local function NavbarRoot(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function NavbarRoot(props: Props)
+	local theme = useTheme()
 
 	return e(Navbar.Element, {
 		height = 55,
@@ -116,4 +115,4 @@ local function NavbarRoot(props: Props, hooks: any)
 	})
 end
 
-return hook(NavbarRoot)
+return NavbarRoot

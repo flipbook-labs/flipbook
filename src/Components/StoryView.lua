@@ -3,8 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local Selection = game:GetService("Selection")
 
 local Sift = require(flipbook.Packages.Sift)
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
 local types = require(script.Parent.Parent.types)
 local useStory = require(flipbook.Hooks.useStory)
@@ -18,7 +17,7 @@ local ResizablePanel = require(flipbook.Components.ResizablePanel)
 local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local PluginContext = require(flipbook.Plugin.PluginContext)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	loader: any,
@@ -26,19 +25,19 @@ type Props = {
 	storybook: types.Storybook,
 }
 
-local function StoryView(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local story, storyErr = useStory(hooks, props.story, props.storybook, props.loader)
-	local zoom = useZoom(hooks, props.story)
-	local plugin = hooks.useContext(PluginContext.Context)
-	local controls, setControls = hooks.useState(nil)
-	local controlsHeight, setControlsHeight = hooks.useState(constants.CONTROLS_INITIAL_HEIGHT)
-	local topbarHeight, setTopbarHeight = hooks.useState(0)
-	local storyParentRef = Roact.createRef()
+local function StoryView(props: Props)
+	local theme = useTheme()
+	local story, storyErr = useStory(props.story, props.storybook, props.loader)
+	local zoom = useZoom(props.story)
+	local plugin = React.useContext(PluginContext.Context)
+	local controls, setControls = React.useState(nil)
+	local controlsHeight, setControlsHeight = React.useState(constants.CONTROLS_INITIAL_HEIGHT)
+	local topbarHeight, setTopbarHeight = React.useState(0)
+	local storyParentRef = React.useRef()
 
 	local showControls = controls and not Sift.isEmpty(controls)
 
-	local setControl = hooks.useCallback(function(control: string, newValue: any)
+	local setControl = React.useCallback(function(control: string, newValue: any)
 		setControls(function(prevControls)
 			return Sift.Dictionary.merge(prevControls, {
 				[control] = newValue,
@@ -46,32 +45,32 @@ local function StoryView(props: Props, hooks: any)
 		end)
 	end, {})
 
-	local viewCode = hooks.useCallback(function()
+	local viewCode = React.useCallback(function()
 		Selection:Set({ props.story })
 		plugin:OpenScript(props.story)
 	end, { plugin, props.story })
 
-	local exploreStoryParent = hooks.useCallback(function()
+	local exploreStoryParent = React.useCallback(function()
 		Selection:Set({ storyParentRef.current })
 
 		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
 	end, { storyParentRef })
 
-	local isMountedInViewport, setIsMountedInViewport = hooks.useState(false)
+	local isMountedInViewport, setIsMountedInViewport = React.useState(false)
 
-	local onPreviewInViewport = hooks.useCallback(function()
+	local onPreviewInViewport = React.useCallback(function()
 		setIsMountedInViewport(not isMountedInViewport)
 	end, { isMountedInViewport, setIsMountedInViewport })
 
-	local onControlsResized = hooks.useCallback(function(newSize: Vector2)
+	local onControlsResized = React.useCallback(function(newSize: Vector2)
 		setControlsHeight(newSize.Y)
 	end, {})
 
-	local onTopbarSizeChanged = hooks.useCallback(function(rbx: Frame)
+	local onTopbarSizeChanged = React.useCallback(function(rbx: Frame)
 		setTopbarHeight(rbx.AbsoluteSize.Y)
 	end, {})
 
-	hooks.useEffect(function()
+	React.useEffect(function()
 		setControls(if story then story.controls else nil)
 	end, { story })
 
@@ -111,7 +110,7 @@ local function StoryView(props: Props, hooks: any)
 				AutomaticSize = Enum.AutomaticSize.Y,
 				Size = UDim2.fromScale(1, 0),
 				BackgroundTransparency = 1,
-				[Roact.Change.AbsoluteSize] = onTopbarSizeChanged,
+				[React.Change.AbsoluteSize] = onTopbarSizeChanged,
 			}, {
 				StoryViewNavbar = e(StoryViewNavbar, {
 					onPreviewInViewport = onPreviewInViewport,
@@ -194,4 +193,4 @@ local function StoryView(props: Props, hooks: any)
 	})
 end
 
-return hook(StoryView)
+return StoryView

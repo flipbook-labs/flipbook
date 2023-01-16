@@ -1,19 +1,19 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 local useTheme = require(flipbook.Hooks.useTheme)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	height: number,
 	layoutOrder: number,
 	topDivider: boolean?,
+	children: any,
 }
 
-local function Element(props: Props, hooks: any)
-	local theme = useTheme(hooks)
+local function Element(props: Props)
+	local theme = useTheme()
 
 	return e("Frame", {
 		BackgroundTransparency = 1,
@@ -29,7 +29,7 @@ local function Element(props: Props, hooks: any)
 			LayoutOrder = 1,
 			Size = UDim2.fromScale(1, 1),
 		}, {
-			Children = Roact.createFragment(props[Roact.Children] or {}),
+			Children = React.createElement(React.Fragment, nil, props.children or {}),
 		}),
 
 		TopDivider = props.topDivider and e("Frame", {
@@ -48,4 +48,4 @@ local function Element(props: Props, hooks: any)
 	})
 end
 
-return hook(Element)
+return Element

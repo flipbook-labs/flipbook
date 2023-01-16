@@ -1,15 +1,14 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
-local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local Sprite = require(flipbook.Components.Sprite)
 local types = require(script.Parent.Parent.Parent.Parent.types)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	active: boolean,
@@ -18,10 +17,10 @@ type Props = {
 	onClick: (types.ComponentTreeNode) -> (),
 }
 
-local function Story(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local hover, setHover = hooks.useState(false)
-	local styles = RoactSpring.useSpring(hooks, {
+local function Story(props: Props)
+	local theme = useTheme()
+	local hover, setHover = React.useState(false)
+	local styles = RoactSpring.useSpring({
 		alpha = if not props.active then if hover then 0 else 1 else 0,
 		color = if not props.active then theme.divider else theme.selection,
 		textColor = if not props.active then theme.textFaded else theme.background,
@@ -35,13 +34,13 @@ local function Story(props: Props, hooks: any)
 		LayoutOrder = 0,
 		Size = UDim2.new(1, 0, 0, 36),
 		Text = "",
-		[Roact.Event.MouseEnter] = function()
+		[React.Event.MouseEnter] = function()
 			setHover(true)
 		end,
-		[Roact.Event.MouseLeave] = function()
+		[React.Event.MouseLeave] = function()
 			setHover(false)
 		end,
-		[Roact.Event.Activated] = function()
+		[React.Event.Activated] = function()
 			props.onClick(props.node)
 		end,
 	}, {
@@ -88,4 +87,4 @@ local function Story(props: Props, hooks: any)
 	})
 end
 
-return hook(Story)
+return Story

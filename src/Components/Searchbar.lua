@@ -1,16 +1,16 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
+local React = require(flipbook.Packages.React)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
+local Sift = require(flipbook.Packages.Sift)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
-local hook = require(flipbook.hook)
 local useTheme = require(flipbook.Hooks.useTheme)
 local mapRanges = require(flipbook.Modules.mapRanges)
 local InputField = require(flipbook.Components.InputField)
 local Sprite = require(flipbook.Components.Sprite)
 
-local e = Roact.createElement
+local e = React.createElement
 
 local defaultProps = {
 	size = UDim2.new(1, 0, 0, 36),
@@ -23,26 +23,28 @@ type Props = typeof(defaultProps) & {
 
 local SEARCH_ICON_SIZE = 16 -- px
 
-local function Searchbar(props: Props, hooks: any)
-	local theme = useTheme(hooks)
-	local search, setSearch = hooks.useState("")
-	local isFocused, setIsFocused = hooks.useState(false)
+local function Searchbar(props: Props)
+	props = Sift.Dictionary.merge(defaultProps, props)
+
+	local theme = useTheme()
+	local search, setSearch = React.useState("")
+	local isFocused, setIsFocused = React.useState(false)
 	local isExpanded = isFocused or search ~= ""
 
-	local styles = RoactSpring.useSpring(hooks, {
+	local styles = RoactSpring.useSpring({
 		alpha = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
 
-	local onFocus = hooks.useCallback(function()
+	local onFocus = React.useCallback(function()
 		setIsFocused(true)
 	end, { setIsFocused })
 
-	local onFocusLost = hooks.useCallback(function()
+	local onFocusLost = React.useCallback(function()
 		setIsFocused(false)
 	end, { setIsFocused })
 
-	local onTextChange = hooks.useCallback(function(new: string)
+	local onTextChange = React.useCallback(function(new: string)
 		if props.onSearchChanged then
 			props.onSearchChanged(new)
 		end
@@ -55,7 +57,7 @@ local function Searchbar(props: Props, hooks: any)
 		BackgroundColor3 = theme.background,
 		LayoutOrder = props.layoutOrder,
 		Size = props.size,
-		[Roact.Event.Activated] = onFocus,
+		[React.Event.Activated] = onFocus,
 	}, {
 		UICorner = e("UICorner", {
 			CornerRadius = theme.corner,
@@ -112,6 +114,4 @@ local function Searchbar(props: Props, hooks: any)
 	})
 end
 
-return hook(Searchbar, {
-	defaultProps = defaultProps,
-})
+return Searchbar

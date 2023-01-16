@@ -1,13 +1,13 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local Roact = require(flipbook.Packages.Roact)
-local hook = require(flipbook.hook)
+local React = require(flipbook.Packages.React)
 
-local e = Roact.createElement
+local e = React.createElement
 
 type Props = {
 	layoutOrder: number,
 	padding: UDim,
+	children: any,
 }
 
 local function Items(props: Props)
@@ -24,8 +24,8 @@ local function Items(props: Props)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
-		Children = Roact.createFragment(props[Roact.Children] or {}),
+		Children = React.createElement(React.Fragment, nil, props.children or {}),
 	})
 end
 
-return hook(Items)
+return Items
