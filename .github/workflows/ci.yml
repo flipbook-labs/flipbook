@@ -27,8 +27,19 @@ jobs:
       - name: Install dependencies
         run: wally install
 
+      - name: Get model file name
+        run: |
+          name=$(jq -r .name default.project.json)
+          sha=${GITHUB_SHA:0:7}
+          echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
+
       - name: Build
-        run: rojo build -o build.rbxm
+        run: rojo build -o ${{ env.MODEL_FILE }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ${{ env.MODEL_FILE }}
 
   analyze:
     runs-on: ubuntu-latest
