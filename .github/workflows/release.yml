@@ -5,9 +5,6 @@ on:
   release:
     types: [published]
 
-env:
-  OUTPUT_NAME: "flipbook.rbxm"
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -24,12 +21,17 @@ jobs:
       - name: Install packages
         run: wally install
 
+      - name: Get model file name
+        run: |
+          name=$(jq -r .name default.project.json)
+          echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
+
       - name: Build
-        run: rojo build -o ${{ env.OUTPUT_NAME }}
+        run: rojo build -o ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
         with:
-          files: ${{ env.OUTPUT_NAME }}
+          files: ${{ env.MODEL_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
