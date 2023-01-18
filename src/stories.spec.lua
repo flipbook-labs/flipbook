@@ -15,8 +15,6 @@ return function()
 				story.react = React
 				story.reactRoblox = ReactRoblox
 
-				print(story)
-
 				local cleanup
 				expect(function()
 					cleanup = mountStory(story, story.controls, CoreGui)
