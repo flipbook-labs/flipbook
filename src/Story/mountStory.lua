@@ -1,20 +1,12 @@
 local types = require(script.Parent.Parent.types)
 
 local function mountFunctionalStory(story: types.FunctionalStory, props: types.StoryProps, parent: GuiObject)
-	local cleanup: (() -> ())?
-
-	xpcall(function()
-		cleanup = story.story(parent, props)
-	end, debug.traceback)
+	local cleanup = story.story(parent, props)
 
 	return function()
 		if typeof(cleanup) == "function" then
 			cleanup()
 		end
-
-		-- TODO: First find a way to ensure the UIScale in `parent` won't be
-		-- destroyed by calling this
-		-- parent:ClearAllChildren()
 	end
 end
 
@@ -23,24 +15,15 @@ local function mountRoactStory(story: types.RoactStory, props: types.StoryProps,
 
 	local element
 	if typeof(story.story) == "function" then
-		local success, result = pcall(function()
-			return Roact.createElement(story.story, props)
-		end)
-
-		element = if success then result else nil
+		element = Roact.createElement(story.story, props)
 	else
 		element = story.story
 	end
 
-	local handle
-	xpcall(function()
-		handle = Roact.mount(element, parent, story.name)
-	end, debug.traceback)
+	local handle = Roact.mount(element, parent, story.name)
 
 	return function()
-		if handle then
-			Roact.unmount(handle)
-		end
+		Roact.unmount(handle)
 	end
 end
 
@@ -52,16 +35,12 @@ local function mountReactStory(story: types.ReactStory, props: types.StoryProps,
 
 	local element
 	if typeof(story.story) == "function" then
-		xpcall(function()
-			element = React.createElement(story.story, props)
-		end, debug.traceback)
+		element = React.createElement(story.story, props)
 	else
 		element = story.story
 	end
 
-	xpcall(function()
-		root:render(element)
-	end, debug.traceback)
+	root:render(element)
 
 	return function()
 		root:unmount()
