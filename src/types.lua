@@ -32,14 +32,11 @@ types.ReactRoblox = t.interface({
 	createRoot = t.callback,
 })
 
-export type Controls = {
-	[string]: string | number | boolean,
-}
-types.Controls = t.map(t.string, t.union(t.string, t.number, t.boolean))
-
 export type StoryProps = {
-	controls: Controls,
+	controls: { [string]: any },
 }
+
+export type StoryFormat = "Roact" | "React" | "Functional" | "Hoarcekat"
 
 export type Storybook = {
 	storyRoots: { Instance },
@@ -49,6 +46,7 @@ export type Storybook = {
 	react: React?,
 	reactRoblox: ReactRoblox?,
 }
+
 types.Storybook = t.interface({
 	storyRoots = t.array(t.Instance),
 
@@ -58,6 +56,16 @@ types.Storybook = t.interface({
 	reactRoblox = t.optional(types.ReactRoblox),
 })
 
+export type StoryControl = {
+	name: string?,
+	type: string?,
+	value: any,
+}
+
+export type Controls = {
+	[string]: StoryControl,
+}
+
 export type StoryMeta = {
 	name: string,
 	summary: string?,
@@ -66,14 +74,6 @@ export type StoryMeta = {
 	react: React?,
 	reactRoblox: ReactRoblox?,
 }
-types.StoryMeta = t.interface({
-	name = t.optional(t.string),
-	summary = t.optional(t.string),
-	controls = t.optional(types.Controls),
-	roact = t.optional(types.Roact),
-	react = t.optional(types.React),
-	reactRoblox = t.optional(types.ReactRoblox),
-})
 
 export type RoactStory = StoryMeta & {
 	story: RoactElement | (props: StoryProps) -> RoactElement,
