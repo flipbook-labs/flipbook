@@ -1,1 +1,4 @@
 std = "roblox+testez"
+
+[config]
+global_usage = "allow"
