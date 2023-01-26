@@ -1,31 +1,64 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 return function()
-	local testHook = require(flipbook.TestHelpers.testHook)
+	local React = require(flipbook.Packages.React)
+	local ReactRoblox = require(flipbook.Packages.ReactRoblox)
+	local useEvent = require(flipbook.Hooks.useEvent)
 	local usePrevious = require(script.Parent.usePrevious)
 
+	local container = Instance.new("ScreenGui")
+	local root = ReactRoblox.createRoot(container)
+
+	local toggleState = Instance.new("BindableEvent")
+
+	local function HookTester()
+		local state, setState = React.useState(false)
+		local prev = usePrevious(state)
+
+		useEvent(toggleState.Event, function()
+			setState(not state)
+		end)
+
+		return React.createElement("TextLabel", {
+			Text = tostring(prev),
+		})
+	end
+
+	afterEach(function()
+		ReactRoblox.act(function()
+			root:unmount()
+		end)
+	end)
+
 	it("should use the last value", function()
-		local state = nil
-		local prevState = nil
+		local element = React.createElement(HookTester)
 
-		testHook(function()
-			prevState = usePrevious(state)
+		ReactRoblox.act(function()
+			root:render(element)
 		end)
 
-		expect(prevState).to.equal(nil)
+		local result = container:FindFirstChildWhichIsA("TextLabel") :: TextLabel
 
-		state = true
-		testHook(function()
-			prevState = usePrevious(state)
+		expect(result.Text).to.equal("nil")
+
+		ReactRoblox.act(function()
+			toggleState:Fire()
 		end)
 
-		expect(prevState).to.equal(true)
-
-		state = false
-		testHook(function()
-			prevState = usePrevious(state)
+		ReactRoblox.act(function()
+			task.wait()
 		end)
 
-		expect(prevState).to.equal(false)
+		expect(result.Text).to.equal("false")
+
+		ReactRoblox.act(function()
+			toggleState:Fire()
+		end)
+
+		ReactRoblox.act(function()
+			task.wait()
+		end)
+
+		expect(result.Text).to.equal("true")
 	end)
 end
