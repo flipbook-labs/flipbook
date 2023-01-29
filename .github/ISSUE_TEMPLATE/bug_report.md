@@ -13,7 +13,10 @@ A clear and concise description of what the bug is
 
 # Steps to reproduce
 
-Steps to reproduce the bug
+Steps to reproduce the behavior:
+1.
+2.
+3.
 
 # Expected behavior
 
@@ -21,4 +24,4 @@ A clear and concise description of what you expected to happen
 
 # Screenshots
 
-If applicable, add screenshots to help explain your problem
+Include any error messages or screenshots that help explain the bug
