@@ -1,4 +1,4 @@
 std = "roblox+testez"
 
-[config]
+[lints]
 global_usage = "allow"
