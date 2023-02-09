@@ -3,6 +3,7 @@ local CoreGui = game:GetService("CoreGui")
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local useTheme = require(flipbook.Hooks.useTheme)
 local types = require(script.Parent.Parent.types)
@@ -46,7 +47,7 @@ local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 		end
 
 		return nil
-	end, { props.story, props.controls, ref.current })
+	end, { props.story, props.controls, props.isMountedInViewport, ref.current })
 
 	if err then
 		return e("TextLabel", {
@@ -70,13 +71,11 @@ local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 		})
 	else
 		if props.isMountedInViewport then
-			return e(React.Portal, {
-				target = CoreGui,
-			}, {
+			return ReactRoblox.createPortal({
 				Story = e("ScreenGui", {
 					ref = ref,
 				}),
-			})
+			}, CoreGui)
 		else
 			return e("Frame", {
 				AutomaticSize = Enum.AutomaticSize.Y,
