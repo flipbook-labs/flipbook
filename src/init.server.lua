@@ -2,6 +2,10 @@ local flipbook = script
 
 local RunService = game:GetService("RunService")
 
+if RunService:IsRunning() or not RunService:IsEdit() then
+	return
+end
+
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local createWidget = require(flipbook.Plugin.createWidget)
@@ -12,14 +16,7 @@ local constants = require(flipbook.constants)
 local PLUGIN_NAME = "flipbook"
 
 if constants.IS_DEV_MODE then
-	_G.__DEV__ = true
-	_G.__ROACT_17_MOCK_SCHEDULER__ = true
-
 	PLUGIN_NAME = "flipbook [DEV]"
-end
-
-if RunService:IsRunning() or not RunService:IsEdit() then
-	return
 end
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
