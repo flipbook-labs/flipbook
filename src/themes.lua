@@ -22,6 +22,7 @@ return {
 		selection = tailwind.purple500,
 		story = tailwind.green500,
 		directory = tailwind.purple500,
+		alert = tailwind.rose500,
 
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),
@@ -48,6 +49,7 @@ return {
 		selection = tailwind.purple500,
 		story = tailwind.green500,
 		directory = tailwind.purple500,
+		alert = tailwind.rose500,
 
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),

@@ -13,6 +13,7 @@ local StoryViewNavbar = require(flipbook.Components.StoryViewNavbar)
 local StoryControls = require(flipbook.Components.StoryControls)
 local StoryMeta = require(flipbook.Components.StoryMeta)
 local StoryPreview = require(flipbook.Components.StoryPreview)
+local StoryError = require(flipbook.Components.StoryError)
 local ResizablePanel = require(flipbook.Components.ResizablePanel)
 local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local PluginContext = require(flipbook.Plugin.PluginContext)
@@ -82,23 +83,8 @@ local function StoryView(props: Props)
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
 	}, {
-		Error = storyErr and e("TextLabel", {
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			Size = UDim2.fromScale(1, 1),
-			Text = storyErr,
-			TextColor3 = theme.text,
-			TextWrapped = true,
-			TextSize = theme.textSize,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
-		}, {
-			Padding = e("UIPadding", {
-				PaddingTop = theme.padding,
-				PaddingRight = theme.padding,
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.padding,
-			}),
+		Error = storyErr and e(StoryError, {
+			err = storyErr,
 		}),
 
 		Content = story and e("Frame", {

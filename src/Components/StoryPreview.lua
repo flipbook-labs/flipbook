@@ -5,7 +5,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
-local useTheme = require(flipbook.Hooks.useTheme)
+local StoryError = require(flipbook.Components.StoryError)
 local types = require(script.Parent.Parent.types)
 local mountStory = require(flipbook.Story.mountStory)
 
@@ -27,12 +27,13 @@ type Props = typeof(defaultProps) & {
 local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 	props = Sift.Dictionary.merge(defaultProps, props)
 
-	local theme = useTheme()
 	local err, setErr = React.useState(nil)
 
 	React.useEffect(function()
 		setErr(nil)
+	end, { props.story, ref })
 
+	React.useEffect(function()
 		if props.story and ref.current then
 			local success, result = xpcall(function()
 				return mountStory(props.story, props.controls, ref.current)
@@ -50,24 +51,9 @@ local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 	end, { props.story, props.controls, props.isMountedInViewport, ref.current })
 
 	if err then
-		return e("TextLabel", {
-			LayoutOrder = props.layoutOrder,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			Size = UDim2.fromScale(1, 1),
-			Text = err,
-			TextColor3 = theme.text,
-			TextWrapped = true,
-			TextSize = theme.textSize,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
-		}, {
-			Padding = e("UIPadding", {
-				PaddingTop = theme.padding,
-				PaddingRight = theme.padding,
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.padding,
-			}),
+		return e(StoryError, {
+			layoutOrder = props.layoutOrder,
+			err = err,
 		})
 	else
 		if props.isMountedInViewport then
