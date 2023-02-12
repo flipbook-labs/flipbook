@@ -1,6 +1,5 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
@@ -10,15 +9,14 @@ local ResizablePanel = require(script.Parent.ResizablePanel)
 local Canvas = require(script.Parent.Canvas)
 local Sidebar = require(script.Parent.Sidebar)
 
-local loader = ModuleLoader.new()
-
 export type Props = {
 	plugin: Plugin,
+	loader: any,
 }
 
 local function App(props: Props)
 	local theme = useTheme()
-	local storybooks = useStorybooks(game, loader)
+	local storybooks = useStorybooks(game, props.loader)
 	local story, setStory = React.useState(nil)
 	local storybook, selectStorybook = React.useState(nil)
 	local sidebarWidth, setSidebarWidth = React.useState(constants.SIDEBAR_INITIAL_WIDTH)
@@ -66,7 +64,7 @@ local function App(props: Props)
 				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
 			}, {
 				Canvas = React.createElement(Canvas, {
-					loader = loader,
+					loader = props.loader,
 					story = story,
 					storybook = storybook,
 				}),
