@@ -7,9 +7,6 @@
     "Example": {
       "$path": "example"
     },
-    "TestRunner": {
-      "$path": "tests"
-    },
     "$path": "src"
   }
 }

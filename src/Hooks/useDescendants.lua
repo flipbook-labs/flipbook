@@ -23,7 +23,7 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 				end))
 			end
 		end
-	end, { predicate, descendants, setDescendants })
+	end, { predicate, descendants })
 
 	-- Setup the initial list of descendants for the current parent
 	React.useEffect(function()
