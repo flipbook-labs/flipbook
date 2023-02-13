@@ -6,6 +6,7 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
+local ModuleLoader = require(flipbook.Packages.ModuleLoader)
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local createWidget = require(flipbook.Plugin.createWidget)
@@ -24,8 +25,11 @@ local widget = createWidget(plugin, PLUGIN_NAME)
 local root = ReactRoblox.createRoot(widget)
 local disconnectButton = createToggleButton(toolbar, widget)
 
+local loader = ModuleLoader.new()
+
 local app = React.createElement(App, {
 	plugin = plugin,
+	loader = loader,
 })
 
 local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
@@ -33,6 +37,7 @@ local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 		root:render(app)
 	else
 		root:unmount()
+		loader:clear()
 	end
 end)
 
@@ -45,4 +50,5 @@ plugin.Unloading:Connect(function()
 	widgetConn:Disconnect()
 
 	root:unmount()
+	loader:clear()
 end)
