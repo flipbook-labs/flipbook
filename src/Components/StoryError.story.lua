@@ -6,7 +6,7 @@ local StoryError = require(script.Parent.StoryError)
 return {
 	summary = "Component for displaying error messages to the user",
 	story = function()
-		local success, result = xpcall(function()
+		local _, result = xpcall(function()
 			error("Oops!")
 		end, debug.traceback)
 
