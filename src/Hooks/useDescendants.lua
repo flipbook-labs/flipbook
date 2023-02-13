@@ -7,22 +7,27 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 	local descendants: { Instance }, setDescendants = React.useState({})
 
 	local onDescendantChanged = React.useCallback(function(descendant: Instance)
-		local exists = table.find(descendants, descendant)
-		if predicate(descendant) then
-			if exists then
-				-- Force a re-render. Nothing about the state changed, but the
-				-- module uses a new name now
-				setDescendants(table.clone(descendants))
+		setDescendants(function(prev)
+			local exists = table.find(prev, descendant)
+
+			if predicate(descendant) then
+				if exists then
+					-- Force a re-render. Nothing about the state changed, but the
+					-- module uses a new name now
+					return table.clone(prev)
+				else
+					return Sift.Array.push(prev, descendant)
+				end
 			else
-				setDescendants(Sift.Array.push(descendants, descendant))
+				if exists then
+					return Sift.Array.filter(prev, function(other: Instance)
+						return descendant ~= other
+					end)
+				end
 			end
-		else
-			if exists then
-				setDescendants(Sift.Array.filter(descendants, function(other: Instance)
-					return descendant ~= other
-				end))
-			end
-		end
+
+			return prev
+		end)
 	end, { predicate, descendants })
 
 	-- Setup the initial list of descendants for the current parent
