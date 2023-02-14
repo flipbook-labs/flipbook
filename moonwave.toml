@@ -1,12 +1,12 @@
 [docusaurus]
-tagline = "Storybook plugin for Roact development"
+tagline = "A storybook plugin for Roblox"
 
 [home]
 enabled = true
 
 [[home.features]]
-title = "Build UI faster"
-description = "With flipbook you can quickly iterate on Roact components in an isolated, sandboxed environment to streamline the process of creating reusable UI components."
+title = "Isolate your UI"
+description = "With flipbook you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI"
 # image=""
 
 [[home.features]]
