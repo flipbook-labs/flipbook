@@ -148,7 +148,7 @@ return {
 
 ## Functional Story
 
-A Functional story uses a function to create and mount its UI. This is the most flexible story format and is useful when using a UI library that is not yet natively supported by flipbook. You simply parent your UI elements to the supplied `target` instance. You can optionally return a function that gets called to cleanup the story.
+A Functional story uses a function to create and mount UI. This is the most flexible story format and is useful when using a UI library that is not yet natively supported by flipbook. You simply parent your UI elements to the `target` argument and optionally return a function that gets called to cleanup the story.
 
 | Name     | Type                                                     | Description                                                                                                                                                                                                                                  |
 | -------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -189,6 +189,10 @@ return {
 		padding.Parent = label
 
 		label.Parent = parent
+
+		return function()
+			label:Destroy()
+		end
 	end,
 }
 ```
