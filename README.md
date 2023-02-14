@@ -1,23 +1,26 @@
-# flipbook
+# ![plugin icon](img/flipbook.png) flipbook
 
 [![CI](https://github.com/vocksel/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/vocksel/flipbook/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/badge/docs-website-brightgreen)](https://vocksel.github.io/flipbook)
+[![Docs](https://img.shields.io/badge/learn-Documentation-brightgreen)](https://vocksel.github.io/flipbook)
+[![Install](https://img.shields.io/badge/install-Roblox%20Marketplace-informational)](https://www.roblox.com/library/8517129161)
 
-With flipbook you can quickly iterate on Roact components in an isolated, sandboxed environment to streamline the process of creating reusable UI components.
+flipbook is a storybook plugin that previews UI components in a sandboxed environment. With it you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI.
+
+With native support for popular UI libraries like [Roact](https://github.com/roblox/roact), [Fusion](https://github.com/Elttob/Fusion), and [Roact 17](https://github.com/grilme99/CorePackages#roact17), no matter how you create UI you can write a story for it in flipbook
 
 ![Screenshot of flipbook showing off the ButtonWithControls story](.moonwave/static/main-screenshot.png)
 
-## Download
+## Installation
 
-You can install the latest version of flipbook from the [Roblox marketplace](https://www.roblox.com/library/8517129161).
+You can install flipbook from the [Roblox marketplace](https://www.roblox.com/library/8517129161) or from the [GitHub releases](https://github.com/vocksel/flipbook/releases) page.
 
 ## Documentation
 
-Learn how to use flipbook [here](https://vocksel.github.io/flipbook).
+Learn how to use flipbook on the [documentation site](https://vocksel.github.io/flipbook).
 
 ## Contributing
 
-Interested in contributing? Check out our [contributing guide](https://vocksel.github.io/flipbook/docs/contributing).
+Before opening a pull request, check out our [contributing guide](https://vocksel.github.io/flipbook/docs/contributing) to learn how we develop the plugin.
 
 ## License
 
