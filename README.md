@@ -1,4 +1,4 @@
-# ![plugin icon](img/flipbook.png) flipbook
+# <img src="img/flipbook.png" alt="Plugin icon" height="32" /> flipbook
 
 [![CI](https://github.com/vocksel/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/vocksel/flipbook/actions/workflows/ci.yml)
 [![Docs](https://img.shields.io/badge/learn-Documentation-brightgreen)](https://vocksel.github.io/flipbook)
