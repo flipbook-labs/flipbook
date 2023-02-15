@@ -4,15 +4,16 @@ sidebar_position: 1
 
 # Getting Started
 
-flipbook is a Roblox plugin for previewing Roact components in real-time to speed up development and help you break down your components into small, reusable parts of your app.
+flipbook is a storybook plugin that previews UI components in a sandboxed environment. With it you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI.
+
+With native support for popular UI libraries like [Roact](https://github.com/roblox/roact), [Fusion](https://github.com/Elttob/Fusion), and [Roact 17](https://github.com/grilme99/CorePackages#roact17), no matter how you create UI you can write a story for it in flipbook
 
 ![Screenshot of flipbook showing off the ButtonWithControls story](/main-screenshot.png)
 
-## Download
+## Installation
 
-To install flipbook, head on over to the [Roblox marketplace](https://www.roblox.com/library/8517129161) and click "Install" to get the latest version.
-
+To install flipbook, visit the [Roblox marketplace](https://www.roblox.com/library/8517129161) and click "Install" to get the latest version.
 
 ## Writing Stories
 
-With flipbook installed, it's time to create your first storybook and accompanying story files. Head over to [Writing Stories](writing-stories.md) to learn more.
+Learn how to create a storybook and stories on the [Writing Stories](writing-stories.md) page.
