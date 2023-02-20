@@ -4,7 +4,7 @@ local React = require(Example.Parent.Packages.React)
 local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
 
 return {
-	summary = "",
+	summary = "ScrollingFrame test for the story preview",
 	react = React,
 	reactRoblox = ReactRoblox,
 	story = function()

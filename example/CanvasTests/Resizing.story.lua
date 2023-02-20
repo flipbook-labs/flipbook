@@ -35,7 +35,7 @@ local function Story()
 end
 
 return {
-	summary = "",
+	summary = "Resizing test for the story preview",
 	react = React,
 	reactRoblox = ReactRoblox,
 	story = function()
