@@ -102,6 +102,11 @@ local function StoryView(props: Props)
 				BackgroundTransparency = 1,
 				[React.Change.AbsoluteSize] = onTopbarSizeChanged,
 			}, {
+				Layout = e("UIListLayout", {
+					Padding = theme.paddingLarge,
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				}),
+
 				StoryViewNavbar = e(StoryViewNavbar, {
 					onPreviewInViewport = onPreviewInViewport,
 					onZoomIn = zoom.zoomIn,
@@ -109,23 +114,9 @@ local function StoryView(props: Props)
 					onViewCode = viewCode,
 					onExplorer = exploreStoryParent,
 				}),
-			}),
-
-			ScrollingFrame = e(ScrollingFrame, {
-				LayoutOrder = 2,
-				Size = UDim2.fromScale(1, 1)
-					- UDim2.fromOffset(0, if showControls then controlsHeight else 0)
-					- UDim2.fromOffset(0, topbarHeight),
-			}, {
-				Layout = e("UIListLayout", {
-					Padding = theme.paddingLarge,
-					SortOrder = Enum.SortOrder.LayoutOrder,
-				}),
 
 				Padding = e("UIPadding", {
-					PaddingTop = theme.paddingLarge,
 					PaddingRight = theme.padding,
-					PaddingBottom = theme.padding,
 					PaddingLeft = theme.padding,
 				}),
 
@@ -141,9 +132,23 @@ local function StoryView(props: Props)
 					Size = UDim2.new(1, 0, 0, 1),
 					BorderSizePixel = 0,
 				}),
+			}),
+
+			StoryWrapper = e("Frame", {
+				LayoutOrder = 2,
+				BackgroundTransparency = 1,
+				Size = UDim2.fromScale(1, 1)
+					- UDim2.fromOffset(0, if showControls then controlsHeight else 0)
+					- UDim2.fromOffset(0, topbarHeight),
+			}, {
+				Padding = e("UIPadding", {
+					PaddingTop = theme.paddingLarge,
+					PaddingRight = theme.padding,
+					PaddingBottom = theme.padding,
+					PaddingLeft = theme.padding,
+				}),
 
 				StoryPreview = e(StoryPreview, {
-					layoutOrder = 3,
 					zoom = zoom.value,
 					story = story,
 					controls = controls,
