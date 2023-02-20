@@ -9,19 +9,32 @@ assignees: ''
 
 ## Describe the bug
 
-A clear and concise description of what the bug is
+<!-- What's the bug you're encountering? -->
+
+## Expected behavior
+
+<!-- What was supposed to happen instead? -->
 
 ## Steps to reproduce
 
-Steps to reproduce the behavior:
+<!--
+    What were the steps you took that caused the issue?
+
+    If we're able to reliably reproduce the issue ourselves from these steps it
+	becomes a lot easier to fix. So the more details the better!
+-->
+
 1.
 2.
 3.
 
-## Expected behavior
+## Error message, screenshots, and extra context
 
-A clear and concise description of what you expected to happen
+<!--
+    Error messages are a big help as it allows us to see where something may be
+    going wrong. Similarly, any screenshots can help us narrow down what state
+    the plugin is in which can provide necessary context to fixing the issue.
 
-## Screenshots
-
-Include any error messages or screenshots that help explain the bug
+	Feel free to include any extra context you feel could help with resolving
+	the issue as well.
+-->
