@@ -6,6 +6,7 @@ local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local StoryError = require(flipbook.Components.StoryError)
+local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local types = require(script.Parent.Parent.types)
 local mountStory = require(flipbook.Story.mountStory)
 
@@ -63,11 +64,13 @@ local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 				}),
 			}, CoreGui)
 		else
-			return e("Frame", {
-				AutomaticSize = Enum.AutomaticSize.Y,
+			return e(ScrollingFrame, {
 				BackgroundTransparency = 1,
 				LayoutOrder = props.layoutOrder,
-				Size = UDim2.fromScale(1, 0),
+				ScrollingDirection = Enum.ScrollingDirection.XY,
+				AutomaticCanvasSize = Enum.AutomaticSize.XY,
+				CanvasSize = UDim2.new(),
+				Size = UDim2.fromScale(1, 1),
 				ref = ref,
 			}, {
 				Scale = e("UIScale", {

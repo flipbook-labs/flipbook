@@ -8,7 +8,7 @@ export type Props = {
 	[string]: any,
 }
 
-local function ScrollingFrame(props: Props)
+local ScrollingFrame = React.forwardRef(function(props: Props, ref: any)
 	local theme = useTheme()
 
 	props = Sift.Dictionary.merge({
@@ -22,9 +22,10 @@ local function ScrollingFrame(props: Props)
 		VerticalScrollBarInset = Enum.ScrollBarInset.None,
 		BorderSizePixel = 0,
 		BackgroundTransparency = 1,
+		ref = ref,
 	}, props)
 
 	return React.createElement("ScrollingFrame", props)
-end
+end)
 
 return ScrollingFrame
