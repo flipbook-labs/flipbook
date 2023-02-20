@@ -31,16 +31,17 @@ local function StoryView(props: Props)
 	local story, storyErr = useStory(props.story, props.storybook, props.loader)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
-	local controls, setControls = React.useState(nil)
+	local extraControls, setExtraControls = React.useState({})
 	local controlsHeight, setControlsHeight = React.useState(constants.CONTROLS_INITIAL_HEIGHT)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef()
 
+	local controls = if story and story.controls then Sift.Dictionary.merge(story.controls, extraControls) else nil
 	local showControls = controls and not Sift.isEmpty(controls)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
-		setControls(function(prevControls)
-			return Sift.Dictionary.merge(prevControls, {
+		setExtraControls(function(prev)
+			return Sift.Dictionary.merge(prev, {
 				[control] = newValue,
 			})
 		end)
@@ -74,10 +75,6 @@ local function StoryView(props: Props)
 	local onTopbarSizeChanged = React.useCallback(function(rbx: Frame)
 		setTopbarHeight(rbx.AbsoluteSize.Y)
 	end, {})
-
-	React.useEffect(function()
-		setControls(if story then story.controls else nil)
-	end, { story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
