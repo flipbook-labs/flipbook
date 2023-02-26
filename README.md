@@ -2,6 +2,7 @@
 
 [![Install](https://img.shields.io/badge/install-Roblox%20Marketplace-informational)](https://www.roblox.com/library/8517129161)
 [![Docs](https://img.shields.io/badge/learn-Documentation-brightgreen)](https://vocksel.github.io/flipbook)
+[![Discussion](https://img.shields.io/badge/discussion-DevForum-brightgreen)](https://devforum.roblox.com/t/flipbook-%E2%80%94-storybook-plugin-for-roblox-ui/2184387)
 [![CI](https://github.com/vocksel/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/vocksel/flipbook/actions/workflows/ci.yml)
 
 
