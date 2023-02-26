@@ -1,5 +1,5 @@
 local function createWidget(plugin: Plugin, name: string): DockWidgetPluginGui
-	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Left, true)
+	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
 
 	local widget = plugin:CreateDockWidgetPluginGui(name, info)
 	widget.Name = name
