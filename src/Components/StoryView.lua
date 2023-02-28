@@ -40,12 +40,17 @@ local function StoryView(props: Props)
 	local showControls = controls and not Sift.isEmpty(controls)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
-		setExtraControls(function(prev)
-			return Sift.Dictionary.merge(prev, {
-				[control] = newValue,
-			})
-		end)
-	end, {})
+		if story and story.fusion then
+			local thisControl = controls[control]
+			thisControl:set(newValue)
+		else
+			setExtraControls(function(prev)
+				return Sift.Dictionary.merge(prev, {
+					[control] = newValue,
+				})
+			end)
+		end
+	end, { extraControls, story })
 
 	local viewCode = React.useCallback(function()
 		Selection:Set({ props.story })

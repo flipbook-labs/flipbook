@@ -73,6 +73,7 @@ types.StoryMeta = t.interface({
 	roact = t.optional(types.Roact),
 	react = t.optional(types.React),
 	reactRoblox = t.optional(types.ReactRoblox),
+	fusion = t.optional(t.any),
 })
 
 export type RoactStory = StoryMeta & {
@@ -127,5 +128,51 @@ export type ComponentTreeNode = {
 }
 
 export type DragHandle = "Top" | "Right" | "Bottom" | "Left"
+
+-- Fusion Types
+-- https://github.com/Elttob/Fusion
+export type SpecialKey = {
+	type: "SpecialKey",
+	kind: string,
+	stage: "self" | "descendants" | "ancestor" | "observer",
+	apply: (SpecialKey, value: any, applyTo: Instance, cleanupTasks: { Task }) -> (),
+}
+
+export type Task =
+	Instance
+	| RBXScriptConnection
+	| () -> () | { destroy: (any) -> () } | { Destroy: (any) -> () } | { Task }
+
+export type PropertyTable = { [string | SpecialKey]: any }
+type Set<T> = { [T]: any }
+
+export type Dependency = {
+	dependentSet: Set<Dependent>,
+}
+
+export type Dependent = {
+	update: (Dependent) -> boolean,
+	dependencySet: Set<Dependency>,
+}
+
+export type StateObject<T> = Dependency & {
+	type: "State",
+	kind: string,
+}
+
+export type Value<T> = StateObject<T> & {
+	kind: "State",
+	set: (Value<T>, newValue: any, force: boolean?) -> (),
+}
+
+export type Fusion = {
+	New: (className: string) -> ((propertyTable: PropertyTable) -> Instance),
+	Value: <T>(initialValue: T) -> Value<T>,
+}
+
+types.Fusion = t.interface({
+	New = t.callback,
+	Value = t.callback,
+})
 
 return types

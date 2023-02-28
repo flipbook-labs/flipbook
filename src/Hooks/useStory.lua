@@ -13,6 +13,14 @@ local function useStory(module: ModuleScript, storybook: types.Storybook, loader
 	local loadStory = React.useCallback(function()
 		local story, err = loadStoryModule(loader, module, storybook)
 
+		if story and story.controls and story.fusion then
+			local newControls = {}
+			for k, v in story.controls do
+				newControls[k] = story.fusion.Value(v)
+			end
+			story.controls = newControls
+		end
+
 		setState({
 			story = story,
 			err = err,
