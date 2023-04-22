@@ -46,7 +46,11 @@ local function useStorybooks(parent: Instance, loader: any)
 	end, { set, parent, loader, modules })
 
 	React.useEffect(function()
-		local conn = loader.loadedModuleChanged:Connect(loadStorybooks)
+		local conn = loader.loadedModuleChanged:Connect(function(other)
+			if types.Storybook(other) then
+				loadStorybooks()
+			end
+		end)
 
 		loadStorybooks()
 
