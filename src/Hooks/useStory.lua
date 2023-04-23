@@ -20,15 +20,10 @@ local function useStory(module: ModuleScript, storybook: types.Storybook, loader
 	end, { loader, module, storybook })
 
 	React.useEffect(function()
-		local conn = loader.loadedModuleChanged:Connect(function()
-			-- ModuleLoader will call _clearConsumerFromCache on the module that
-			-- was changed, but that doesn't remove the story module from the
-			-- cache. This leads to an issue where loading the story again is
-			-- returning nil, so we have to manually remove the story module
-			-- from the cache to get everything working
-			loader:_clearConsumerFromCache(module:GetFullName())
-
-			loadStory()
+		local conn = loader.loadedModuleChanged:Connect(function(other)
+			if other == module then
+				loadStory()
+			end
 		end)
 
 		loadStory()
