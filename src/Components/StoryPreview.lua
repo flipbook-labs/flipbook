@@ -60,6 +60,7 @@ local StoryPreview = React.forwardRef(function(props: Props, ref: any)
 		if props.isMountedInViewport then
 			return ReactRoblox.createPortal({
 				Story = e("ScreenGui", {
+					ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 					ref = ref,
 				}),
 			}, CoreGui)
