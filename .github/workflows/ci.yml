@@ -107,12 +107,15 @@ jobs:
       - name: Install Mullvad
         run: choco install mullvad-app
 
-      - name: Connect to Mullvad
+      - name: Update path with Mullvad executable
         shell: bash
+        run: echo "C:\Program Files\Mullvad VPN\resources" >> $GITHUB_PATH
+
+      - name: Connect to Mullvad
         run: |
-          mullvad account login ${{ secrets.MULLVAD_ACCOUNT }}
-          mullvad relay set hostname us-sjc-ovpn-001
-          mullvad connect
+          mullvad.exe account login ${{ secrets.MULLVAD_ACCOUNT }}
+          mullvad.exe relay set hostname us-sjc-ovpn-001
+          mullvad.exe connect
 
       - name: Install Roblox Studio
         uses: OrbitalOwen/roblox-win-installer-action@1.1
