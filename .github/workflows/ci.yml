@@ -108,8 +108,7 @@ jobs:
         run: choco install mullvad-app
 
       - name: Update path with Mullvad executable
-        shell: bash
-        run: echo "C:\Program Files\Mullvad VPN\resources" >> $GITHUB_PATH
+        run: Add-Content $env:GITHUB_PATH "C:\Program Files\Mullvad VPN\resources"
 
       - name: Connect to Mullvad
         run: |
