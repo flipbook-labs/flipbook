@@ -107,7 +107,6 @@ jobs:
       - name: Install Mullvad
         run: choco install mullvad-app
 
-
       - name: Connect to Mullvad
         shell: bash
         run: |
