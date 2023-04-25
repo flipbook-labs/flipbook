@@ -117,7 +117,7 @@ jobs:
           mullvad.exe connect
 
       - name: Install Roblox Studio
-        run:
+        run: |
           Invoke-WebRequest -Uri "https://github.com/OrbitalOwen/roblox-win-installer/archive/0.5.zip" -OutFile roblox-win-installer.zip;
           Expand-Archive -LiteralPath roblox-win-installer.zip -DestinationPath .;
           cd roblox-win-installer-0.5;
