@@ -130,6 +130,10 @@ jobs:
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
 
+      - name: Disconnect from Mullvad
+        if: always()
+        run: mullvad.exe disconnect
+
       - name: Screenshot
         if: failure()
         uses: OrbitalOwen/desktop-screenshot-action@0.1
