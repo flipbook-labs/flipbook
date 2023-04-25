@@ -110,11 +110,14 @@ jobs:
       - name: Update path with Mullvad executable
         run: Add-Content $env:GITHUB_PATH "C:\Program Files\Mullvad VPN\resources"
 
-      - name: Connect to Mullvad
-        run: |
-          mullvad.exe account login ${{ secrets.MULLVAD_ACCOUNT }}
-          mullvad.exe relay set hostname us-sjc-ovpn-001
-          mullvad.exe connect
+      - name: Login to Mullvad account
+        run: mullvad.exe account login ${{ secrets.MULLVAD_ACCOUNT }}
+
+      - name: Set server to connect to
+        run: mullvad.exe relay set hostname us-sjc-ovpn-001
+
+      - name: Connect to VPN
+        run: mullvad.exe connect
 
       - name: Install Roblox Studio
         run: |
