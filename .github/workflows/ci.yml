@@ -79,10 +79,6 @@ jobs:
               fi
           done
 
-  # Running unit tests in CI has historically been cumbersome, and presently
-  # there is no way to run Roblox Studio from a GitHub workflow. As such, our
-  # job for tests has been commented out so we can get the nice green checkmark
-  # in CI again
 
   tests:
     runs-on: windows-latest
@@ -111,7 +107,9 @@ jobs:
       - name: Install Mullvad
         run: choco install mullvad-app
 
+
       - name: Connect to Mullvad
+        shell: bash
         run: |
           mullvad account login ${{ secrets.MULLVAD_ACCOUNT }}
           mullvad relay set hostname us-sjc-ovpn-001
