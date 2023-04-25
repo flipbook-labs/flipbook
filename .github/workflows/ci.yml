@@ -119,7 +119,7 @@ jobs:
       - name: Install Roblox Studio
         uses: OrbitalOwen/roblox-win-installer-action@1.1
         with:
-          cookie: ${{ env.ROBLOSECURITY }}
+          cookie: ${{ secrets.ROBLOSECURITY }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add RBXID to the Windows registry
