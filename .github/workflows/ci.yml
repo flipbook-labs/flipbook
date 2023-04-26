@@ -118,7 +118,10 @@ jobs:
 
       - name: Update path with Mullvad executable
         shell: bash
-        run: export PATH="C:\Program Files\Mullvad VPN\resources:$PATH"
+        run: |
+         export PATH="C:\Program Files\Mullvad VPN\resources:$PATH"
+         ls -al "C:\Program Files\Mullvad VPN\resources"
+         echo $PATH
 
       - name: Login to Mullvad account
         shell: bash
