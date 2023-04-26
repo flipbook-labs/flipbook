@@ -121,10 +121,12 @@ jobs:
         run: export PATH=$PATH:"C:\Program Files\Mullvad VPN\resources"
 
       - name: Login to Mullvad account
-        run: mullvad.exe account login ${{ secrets.MULLVAD_ACCOUNT }}
+        shell: bash
+        run: mullvad account login ${{ secrets.MULLVAD_ACCOUNT }}
 
       - name: Set server to connect to
-        run: mullvad.exe relay set hostname us-sjc-ovpn-001
+        shell: bash
+        run: mullvad relay set hostname us-sjc-ovpn-001
 
       - name: Export IP before connecting to VPN
         shell: bash
@@ -134,7 +136,8 @@ jobs:
           echo "RUNNER_IP=$ip" >> $GITHUB_ENV
 
       - name: Connect to VPN
-        run: mullvad.exe connect
+        shell: bash
+        run: mullvad connect
 
       - name: Poll for IP change
         uses: nick-fields/retry@v2.8.3
@@ -156,7 +159,7 @@ jobs:
       - name: Export device name
         shell: bash
         run: |
-          deviceName=$(mullvad.exe account get | grep  "Device name" | cut -d : -f 2 | xargs)
+          deviceName=$(mullvad account get | grep  "Device name" | cut -d : -f 2 | xargs)
           echo "Device name: $deviceName"
           echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
 
@@ -165,9 +168,10 @@ jobs:
 
       - name: Disconnect from VPN
         if: always()
+        shell: bash
         run: |
-          mullvad.exe disconnect
-          mullvad.exe account revoke-device "${{ env.DEVICE_NAME }}"
+          mullvad disconnect
+          mullvad account revoke-device "${{ env.DEVICE_NAME }}"
 
       - name: Screenshot
         if: failure()
