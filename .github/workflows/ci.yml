@@ -133,6 +133,7 @@ jobs:
         shell: bash
         run: |
           ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
+          echo "Current IP address: $ip"
           echo "RUNNER_IP=$ip" >> $GITHUB_ENV
 
       - name: Connect to VPN
@@ -159,6 +160,7 @@ jobs:
         shell: bash
         run: |
           deviceName=$(mullvad.exe account get | grep  "Device name" | cut -d : -f 2 | xargs)
+          echo "Device name: $deviceName"
           echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
 
       - name: Run tests
