@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+env:
+  MULLVAD_IP:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -126,8 +129,31 @@ jobs:
       - name: Set server to connect to
         run: mullvad.exe relay set hostname us-sjc-ovpn-001
 
+      - name: Export IP before connecting to VPN
+        shell: bash
+        run: |
+          ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
+          echo "RUNNER_IP=$ip" >> $GITHUB_ENV
+
       - name: Connect to VPN
         run: mullvad.exe connect
+
+      - name: Poll for IP change
+        uses: nick-fields/retry@v2.8.3
+        with:
+          max_attempts: 5
+          timeout_minutes: 2
+          shell: bash
+          command: |
+            ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
+            echo "${{ env.RUNNER_IP }} | $ip"
+            if [ "${{ env.RUNNER_IP }}" != "$ip" ]; then
+              echo "IPs don't match, assuming we're connected to VPN now"
+              exit 0
+            else
+              echo "IPs match. exiting to retry..."
+              exit 1
+            fi
 
       - name: Export device name
         shell: bash
