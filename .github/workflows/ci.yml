@@ -116,9 +116,9 @@ jobs:
       - name: Install Mullvad
         run: choco install mullvad-app
 
-      # TODO: Test if CI works without this
       - name: Update path with Mullvad executable
-        run: Add-Content $env:GITHUB_PATH "C:\Program Files\Mullvad VPN\resources"
+        shell: bash
+        run: export PATH=$PATH:"C:\Program Files\Mullvad VPN\resources"
 
       - name: Login to Mullvad account
         run: mullvad.exe account login ${{ secrets.MULLVAD_ACCOUNT }}
