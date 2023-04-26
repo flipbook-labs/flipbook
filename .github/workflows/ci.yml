@@ -153,15 +153,19 @@ jobs:
         with:
           max_attempts: 5
           timeout_minutes: 2
+          retry_wait_seconds: 2
           shell: bash
           command: |
             ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
-            echo "${{ env.RUNNER_IP }} | $ip"
+
+            echo "Original IP: ${{ env.RUNNER_IP }}"
+            echo "Current IP: $ip"
+
             if [[ $ip != "" && "${{ env.RUNNER_IP }}" != "$ip" ]]; then
-              echo "IPs don't match, assuming we're connected to VPN now"
+              echo "IP changed, assuming we're connected now to the VPN"
               exit 0
             else
-              echo "IPs match. exiting to retry..."
+              echo "IP has not changed yet. Retrying...."
               exit 1
             fi
 
