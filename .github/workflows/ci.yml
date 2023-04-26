@@ -120,6 +120,12 @@ jobs:
       - name: Connect to VPN
         run: mullvad.exe connect
 
+      - name: Export device name
+        shell: bash
+        run: |
+          deviceName=$(mullvad.exe account get | grep  "Device name" | cut -d : -f 2 | xargs)
+          echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
+
       - name: Install Roblox Studio
         uses: OrbitalOwen/roblox-win-installer-action@1.1
         with:
@@ -135,7 +141,9 @@ jobs:
 
       - name: Disconnect from VPN
         if: always()
-        run: mullvad.exe factory-reset
+        run: |
+          mullvad.exe disconnect
+          mullvad.exe revoke-device ${{ env.DEVICE_NAME }}
 
       - name: Screenshot
         if: failure()
