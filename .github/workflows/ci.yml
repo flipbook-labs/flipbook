@@ -107,6 +107,7 @@ jobs:
       - name: Install Mullvad
         run: choco install mullvad-app
 
+      # TODO: Test if CI works without this
       - name: Update path with Mullvad executable
         run: Add-Content $env:GITHUB_PATH "C:\Program Files\Mullvad VPN\resources"
 
@@ -120,18 +121,21 @@ jobs:
         run: mullvad.exe connect
 
       - name: Install Roblox Studio
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/OrbitalOwen/roblox-win-installer/archive/0.5.zip" -OutFile roblox-win-installer.zip;
-          Expand-Archive -LiteralPath roblox-win-installer.zip -DestinationPath .;
-          cd roblox-win-installer-0.5;
-          pip install --requirement requirements.txt;
-          python install.py "${{ secrets.ROBLOSECURITY }}"
+        uses: OrbitalOwen/roblox-win-installer-action@1.1
+        with:
+          cookie: ${{ secrets.ROBLOSECURITY }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
+      # TODO: Test if CI works without this
       - name: Add RBXID to the Windows registry
         run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
+
+      - name: Disconnect from VPN
+        if: always()
+        run: mullvad.exe factory-reset
 
       - name: Screenshot
         if: failure()
@@ -139,6 +143,3 @@ jobs:
         with:
           file-name: 'roblox-studio-${{ github.run_id }}.jpg'
 
-      - name: Disconnect from VPN
-        if: always()
-        run: mullvad.exe disconnect
