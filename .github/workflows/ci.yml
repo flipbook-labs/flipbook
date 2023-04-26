@@ -120,7 +120,7 @@ jobs:
         shell: bash
         run: |
           BIN="c/Program Files/Mullvad VPN/resources"
-          cp $BIN/mullvad.exe $BIN/mullvad
+          cp "$BIN/mullvad.exe" "$BIN/mullvad"
           export PATH="$BIN:$PATH"
           ls -al "C:\Program Files\Mullvad VPN\resources"
           echo $PATH
