@@ -6,9 +6,6 @@ on:
       - main
   pull_request:
 
-env:
-  MULLVAD_IP:
-
 jobs:
   build:
     runs-on: ubuntu-latest
