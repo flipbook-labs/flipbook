@@ -143,7 +143,7 @@ jobs:
         if: always()
         run: |
           mullvad.exe disconnect
-          mullvad.exe revoke-device ${{ env.DEVICE_NAME }}
+          mullvad.exe account revoke-device "${{ env.DEVICE_NAME }}"
 
       - name: Screenshot
         if: failure()
