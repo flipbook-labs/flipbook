@@ -104,15 +104,14 @@ jobs:
       - name: Build place file
         run: rojo build dev.project.json -o studio-tests.rbxl
 
+      - name: Add RBXID to the Windows registry
+        run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
+
       - name: Install Roblox Studio
         uses: OrbitalOwen/roblox-win-installer-action@1.1
         with:
           cookie: ${{ secrets.ROBLOSECURITY }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      # TODO: Test if CI works without this
-      - name: Add RBXID to the Windows registry
-        run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
 
       - name: Install Mullvad
         run: choco install mullvad-app
@@ -136,7 +135,6 @@ jobs:
           deviceName=$(mullvad.exe account get | grep  "Device name" | cut -d : -f 2 | xargs)
           echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
 
-
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
 
@@ -151,4 +149,3 @@ jobs:
         uses: OrbitalOwen/desktop-screenshot-action@0.1
         with:
           file-name: 'roblox-studio-${{ github.run_id }}.jpg'
-
