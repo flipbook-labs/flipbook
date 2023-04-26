@@ -119,9 +119,11 @@ jobs:
       - name: Update path with Mullvad executable
         shell: bash
         run: |
-         export PATH="/c/Program Files/Mullvad VPN/resources:$PATH"
-         ls -al "C:\Program Files\Mullvad VPN\resources"
-         echo $PATH
+          BIN="c/Program Files/Mullvad VPN/resources"
+          cp $BIN/mullvad.exe $BIN/mullvad
+          export PATH="$BIN:$PATH"
+          ls -al "C:\Program Files\Mullvad VPN\resources"
+          echo $PATH
 
       - name: Login to Mullvad account
         shell: bash
@@ -142,6 +144,13 @@ jobs:
         shell: bash
         run: mullvad connect
 
+      - name: Export device name
+        shell: bash
+        run: |
+          deviceName=$(mullvad account get | grep  "Device name" | cut -d : -f 2 | xargs)
+          echo "Device name: $deviceName"
+          echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
+
       - name: Poll for IP change
         uses: nick-fields/retry@v2.8.3
         with:
@@ -158,13 +167,6 @@ jobs:
               echo "IPs match. exiting to retry..."
               exit 1
             fi
-
-      - name: Export device name
-        shell: bash
-        run: |
-          deviceName=$(mullvad account get | grep  "Device name" | cut -d : -f 2 | xargs)
-          echo "Device name: $deviceName"
-          echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
 
       # - name: Run tests
       #   run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
