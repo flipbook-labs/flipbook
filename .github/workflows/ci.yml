@@ -120,11 +120,7 @@ jobs:
         shell: bash
         run: |
           BIN="/c/Program Files/Mullvad VPN/resources"
-          cp "$BIN/mullvad.exe" "$BIN/mullvad"
-          export PATH="$BIN:$PATH"
           echo "$BIN" >> $GITHUB_PATH
-          ls -al "C:\Program Files\Mullvad VPN\resources"
-          echo $PATH
 
       - name: Login to Mullvad account
         shell: bash
