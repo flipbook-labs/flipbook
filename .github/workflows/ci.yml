@@ -160,6 +160,10 @@ jobs:
               exit 1
             fi
 
+      - name: Log Mullvad status
+        shell: bash
+        run: mullvad status -v
+
       - name: Add RBXID to the Windows registry
         run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
 
