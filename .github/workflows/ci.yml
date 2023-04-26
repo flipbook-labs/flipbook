@@ -157,7 +157,7 @@ jobs:
           command: |
             ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
             echo "${{ env.RUNNER_IP }} | $ip"
-            if [ $ip != "" && "${{ env.RUNNER_IP }}" != "$ip"]; then
+            if [[ $ip != "" && "${{ env.RUNNER_IP }}" != "$ip" ]]; then
               echo "IPs don't match, assuming we're connected to VPN now"
               exit 0
             else
