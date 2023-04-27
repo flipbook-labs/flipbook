@@ -119,7 +119,7 @@ jobs:
 
       - name: Set server to connect to
         shell: bash
-        run: mullvad relay set hostname us-sjc-ovpn-001
+        run: mullvad relay set hostname us-sjc-wg-001
 
       - name: Export IP before connecting to VPN
         shell: bash
