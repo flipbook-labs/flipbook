@@ -164,14 +164,17 @@ jobs:
         shell: bash
         run: mullvad status -v
 
-      - name: Add RBXID to the Windows registry
-        run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
+      - uses: actions/checkout@v3
+        with:
+          repository: vocksel/roblox-win-installer
+          path: roblox-win-installer
 
       - name: Install Roblox Studio
-        uses: OrbitalOwen/roblox-win-installer-action@1.1
-        with:
-          cookie: ${{ secrets.ROBLOSECURITY }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          cd roblox-win-installer
+          pip install --requirement requirements.txt;
+          python install.py "${{ secrets.ROBLOSECURITY }}"
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
