@@ -79,6 +79,7 @@ local function Searchbar(props: Props)
 		Layout = e("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			FillDirection = Enum.FillDirection.Horizontal,
+			Padding = theme.padding,
 		}),
 
 		InputFieldWrapper = e("Frame", {
@@ -103,14 +104,20 @@ local function Searchbar(props: Props)
 			}),
 		}),
 
-		Icon = e(Sprite, {
-			layoutOrder = 2,
-			image = assets.Search,
-			transparency = styles.alpha:map(function(alpha: number)
-				return mapRanges(alpha, 0, 1, 0.5, 0)
-			end),
-			size = UDim2.fromOffset(SEARCH_ICON_SIZE, SEARCH_ICON_SIZE),
-		}),
+		Icon = e("Frame", {
+			Size = UDim2.fromOffset(SEARCH_ICON_SIZE, SEARCH_ICON_SIZE),
+			BackgroundTransparency = 1,
+		}, {
+			Sprite = e(Sprite, {
+				layoutOrder = 2,
+				image = assets.Search,
+				transparency = styles.alpha:map(function(alpha: number)
+					return mapRanges(alpha, 0, 1, 0.5, 0)
+				end),
+				size = UDim2.new(1, 0, 1, 0),
+				position = UDim2.fromOffset(0, -(SEARCH_ICON_SIZE * 0.2)),
+			})
+		})
 	})
 end
 
