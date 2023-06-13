@@ -22,7 +22,7 @@ Learn how to use flipbook on the [documentation site](https://flipbook-labs.gith
 
 ## Contributing
 
-Before opening a pull request, check out our [contributing guide](https://vocksel.github.io/flipbook/docs/contributing) to learn how we develop the plugin.
+Before opening a pull request, check out our [contributing guide](https://flipbook-labs.github.io/flipbook/docs/contributing/) to learn how we develop the plugin.
 
 ## License
 
