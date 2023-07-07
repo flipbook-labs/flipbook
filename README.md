@@ -18,11 +18,11 @@ You can install flipbook from the [Roblox marketplace](https://www.roblox.com/li
 
 ## Documentation
 
-Learn how to use flipbook on the [documentation site](https://flipbook-labs.github.io/flipbook).
+Learn how to use flipbook on the [documentation site](https://flipbook-labs.github.io/flipbook/).
 
 ## Contributing
 
-Before opening a pull request, check out our [contributing guide](https://flipbook-labs.github.io/flipbook/docs/contributing) to learn how we develop the plugin.
+Before opening a pull request, check out our [contributing guide](https://flipbook-labs.github.io/flipbook/docs/contributing/) to learn how we develop the plugin.
 
 ## License
 
