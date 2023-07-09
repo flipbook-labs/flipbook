@@ -8,6 +8,7 @@ export type Props = {
 		ImageRectOffset: Vector2,
 		ImageRectSize: Vector2,
 	},
+	position: UDim2?,
 	transparency: number?,
 	layoutOrder: number?,
 	size: UDim2?,
@@ -27,6 +28,7 @@ local function Sprite(props: Props)
 		ImageTransparency = props.transparency,
 		ScaleType = Enum.ScaleType.Slice,
 		ImageColor3 = props.color,
+		Position = props.position,
 		Size = size,
 		BackgroundTransparency = 1,
 	})
