@@ -29,6 +29,10 @@ local function Dropdown(props: Props)
 			[React.Event.Activated] = function()
 				setSelectedOption(option)
 				setIsExpanded(false)
+
+				if props.onOptionChange then
+					props.onOptionChange(option)
+				end
 			end,
 		}, {
 			Padding = React.createElement("UIPadding", {
