@@ -35,7 +35,7 @@ types.ReactRoblox = t.interface({
 export type Controls = {
 	[string]: string | number | boolean,
 }
-types.Controls = t.map(t.string, t.union(t.string, t.number, t.boolean))
+types.Controls = t.map(t.string, t.union(t.string, t.number, t.boolean, t.map(t.number, t.string)))
 
 export type StoryProps = {
 	controls: Controls,
