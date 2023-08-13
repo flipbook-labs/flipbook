@@ -19,7 +19,7 @@ local function Dropdown(props: Props)
 	for index, option in props.options do
 		options["Option" .. index] = React.createElement("TextButton", {
 			LayoutOrder = index,
-			Text = option,
+			Text = tostring(option),
 			Font = theme.font,
 			TextSize = theme.textSize,
 			TextColor3 = theme.buttonText,
@@ -47,7 +47,7 @@ local function Dropdown(props: Props)
 	local maxHeight = theme.textSize + (theme.padding.Offset * 2)
 
 	return React.createElement("TextButton", {
-		Text = if selectedOption then selectedOption else props.placeholder,
+		Text = tostring(if selectedOption then selectedOption else props.placeholder),
 		Font = theme.font,
 		TextSize = theme.textSize,
 		TextColor3 = theme.buttonText,
