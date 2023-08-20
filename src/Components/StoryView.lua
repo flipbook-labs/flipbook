@@ -40,7 +40,7 @@ local function StoryView(props: Props)
 	if story and story.controls then
 		controls = {}
 
-		for key, value in next, story.controls do
+		for key, value in story.controls do
 			local override = extraControls[key]
 
 			if override ~= nil and typeof(value) ~= "table" then
