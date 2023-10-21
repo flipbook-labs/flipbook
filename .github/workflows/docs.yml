@@ -6,7 +6,7 @@ on:
     types: [published]
 
 env:
-  REPO_URL: github.com/vocksel/flipbook
+  REPO_URL: github.com/flipbook-labs/flipbook
 
 jobs:
   build:

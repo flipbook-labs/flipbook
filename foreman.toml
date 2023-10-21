@@ -1,9 +1,9 @@
 [tools]
 rojo = { source = "rojo-rbx/rojo", version = "7.2.1" }
-selene = { source = "kampfkarren/selene", version = "0.23.1" }
-stylua = { source = "JohnnyMorganz/StyLua", version = "0.15.3" }
 run-in-roblox = { source = "rojo-rbx/run-in-roblox", version = "0.3.0" }
+selene = { source = "kampfkarren/selene", version = "0.25.0" }
+stylua = { source = "JohnnyMorganz/StyLua", version = "0.17.1" }
 tarmac = { source = "Roblox/tarmac", version = "0.7.0" }
-wally = { source = "UpliftGames/wally", version = "0.3.1" }
+wally = { source = "UpliftGames/wally", version = "0.3.2" }
 moonwave-extractor = { source = "UpliftGames/moonwave", version = "1.0.0" }
 luau-lsp = { source = "JohnnyMorganz/luau-lsp", version = "1.x" }
