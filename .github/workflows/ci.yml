@@ -86,13 +86,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check for ROBLOSECURITY token
+      - name: Check for ROBLOSECURITY secret
         shell: bash
         run: ./.github/workflows/validate-secret.sh ROBLOSECURITY "${{ secrets.ROBLOSECURITY }}"
 
-      - name: Check for RBXID token
+      - name: Check for MULLVAD_ACCOUNT secret
         shell: bash
-        run: ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
+        run: ./.github/workflows/validate-secret.sh MULLVAD_ACCOUNT "${{ secrets.MULLVAD_ACCOUNT }}"
 
       - uses: Roblox/setup-foreman@v1
         with:
@@ -164,18 +164,6 @@ jobs:
         shell: bash
         run: mullvad status -v
 
-      - uses: actions/checkout@v3
-        with:
-          repository: vocksel/roblox-win-installer
-          path: roblox-win-installer
-
-      - name: Install Roblox Studio
-        shell: bash
-        run: |
-          cd roblox-win-installer
-          pip install --requirement requirements.txt;
-          python install.py "${{ secrets.ROBLOSECURITY }}"
-
       - name: List tokens
         shell: bash
         run: cmdkey /list:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth*"
@@ -187,6 +175,18 @@ jobs:
       - name: List tokens
         shell: bash
         run: cmdkey /list:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth*"
+
+      - uses: actions/checkout@v3
+        with:
+          repository: vocksel/roblox-win-installer
+          path: roblox-win-installer
+
+      - name: Install Roblox Studio
+        shell: bash
+        run: |
+          cd roblox-win-installer
+          pip install --requirement requirements.txt;
+          python install.py "${{ secrets.ROBLOSECURITY }}"
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
