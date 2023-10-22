@@ -178,8 +178,7 @@ jobs:
 
       - name: List tokens
         shell: bash
-        run: cmdkey /list:https://roblox.com:RobloxStudioAuth*
-
+        run: cmdkey /list:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth*"
 
       - name: Set .ROBLOSECURITY token
         shell: bash
@@ -187,7 +186,7 @@ jobs:
 
       - name: List tokens
         shell: bash
-        run: cmdkey /list:https://roblox.com:RobloxStudioAuth*
+        run: cmdkey /list:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth*"
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
