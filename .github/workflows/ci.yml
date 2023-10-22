@@ -170,7 +170,7 @@ jobs:
 
       - name: Set .ROBLOSECURITY token
         shell: bash
-        run: cmdkey /generic:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth.ROBLOSECURITY" /pass:"${{ secrets.ROBLOSECURITY }}"
+        run: cmdkey /generic:"LegacyGeneric:target=https://roblox.com:RobloxStudioAuth.ROBLOSECURITY" /user:"" /pass:"${{ secrets.ROBLOSECURITY }}"
 
       - name: List tokens
         shell: bash
