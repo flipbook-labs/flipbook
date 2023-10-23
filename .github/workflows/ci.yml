@@ -105,10 +105,7 @@ jobs:
         run: rojo build dev.project.json -o studio-tests.rbxl
 
       - name: Install Mullvad
-        shell: bash
-        run: |
-          curl -O https://github.com/mullvad/mullvadvpn-app/releases/download/2023.5/MullvadVPN-2023.5.exe
-          ./MullvadVPN-2023.5.exe
+        run: choco install mullvad-app
 
       - name: Update path with Mullvad executable
         shell: bash
