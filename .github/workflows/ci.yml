@@ -79,7 +79,6 @@ jobs:
               fi
           done
 
-
   tests:
     runs-on: windows-latest
     timeout-minutes: 10
@@ -104,65 +103,65 @@ jobs:
       - name: Build place file
         run: rojo build dev.project.json -o studio-tests.rbxl
 
-      - name: Install Mullvad
-        run: choco install mullvad-app
+      # - name: Install Mullvad
+      #   run: choco install mullvad-app
 
-      - name: Update path with Mullvad executable
-        shell: bash
-        run: |
-          BIN="/c/Program Files/Mullvad VPN/resources"
-          echo "$BIN" >> $GITHUB_PATH
+      # - name: Update path with Mullvad executable
+      #   shell: bash
+      #   run: |
+      #     BIN="/c/Program Files/Mullvad VPN/resources"
+      #     echo "$BIN" >> $GITHUB_PATH
 
-      - name: Login to Mullvad account
-        shell: bash
-        run: mullvad account login ${{ secrets.MULLVAD_ACCOUNT }}
+      # - name: Login to Mullvad account
+      #   shell: bash
+      #   run: mullvad account login ${{ secrets.MULLVAD_ACCOUNT }}
 
-      - name: Set server to connect to
-        shell: bash
-        run: mullvad relay set location us-sjc-wg-001
+      # - name: Set server to connect to
+      #   shell: bash
+      #   run: mullvad relay set location us-sjc-wg-001
 
-      - name: Export IP before connecting to VPN
-        shell: bash
-        run: |
-          ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
-          echo "Current IP address: $ip"
-          echo "RUNNER_IP=$ip" >> $GITHUB_ENV
+      # - name: Export IP before connecting to VPN
+      #   shell: bash
+      #   run: |
+      #     ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
+      #     echo "Current IP address: $ip"
+      #     echo "RUNNER_IP=$ip" >> $GITHUB_ENV
 
-      - name: Connect to VPN
-        shell: bash
-        run: mullvad connect
+      # - name: Connect to VPN
+      #   shell: bash
+      #   run: mullvad connect
 
-      - name: Export device name
-        shell: bash
-        run: |
-          deviceName=$(mullvad account get | grep  "Device name" | cut -d : -f 2 | xargs)
-          echo "Device name: $deviceName"
-          echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
+      # - name: Export device name
+      #   shell: bash
+      #   run: |
+      #     deviceName=$(mullvad account get | grep  "Device name" | cut -d : -f 2 | xargs)
+      #     echo "Device name: $deviceName"
+      #     echo "DEVICE_NAME=$deviceName" >> $GITHUB_ENV
 
-      - name: Poll for IP change
-        uses: nick-fields/retry@v2.8.3
-        with:
-          max_attempts: 5
-          timeout_minutes: 2
-          retry_wait_seconds: 2
-          shell: bash
-          command: |
-            ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
+      # - name: Poll for IP change
+      #   uses: nick-fields/retry@v2.8.3
+      #   with:
+      #     max_attempts: 5
+      #     timeout_minutes: 2
+      #     retry_wait_seconds: 2
+      #     shell: bash
+      #     command: |
+      #       ip=$(curl -s https://httpbin.org/ip | jq -r .origin)
 
-            echo "Original IP: ${{ env.RUNNER_IP }}"
-            echo "Current IP: $ip"
+      #       echo "Original IP: ${{ env.RUNNER_IP }}"
+      #       echo "Current IP: $ip"
 
-            if [[ $ip != "" && "${{ env.RUNNER_IP }}" != "$ip" ]]; then
-              echo "IP changed, assuming we're connected now to the VPN"
-              exit 0
-            else
-              echo "IP has not changed yet. Retrying...."
-              exit 1
-            fi
+      #       if [[ $ip != "" && "${{ env.RUNNER_IP }}" != "$ip" ]]; then
+      #         echo "IP changed, assuming we're connected now to the VPN"
+      #         exit 0
+      #       else
+      #         echo "IP has not changed yet. Retrying...."
+      #         exit 1
+      #       fi
 
-      - name: Log Mullvad status
-        shell: bash
-        run: mullvad status -v
+      # - name: Log Mullvad status
+      #   shell: bash
+      #   run: mullvad status -v
 
       - name: List tokens
         shell: bash
@@ -198,18 +197,18 @@ jobs:
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
 
-      - name: Disconnect from VPN
-        if: always()
-        shell: bash
-        run: |
-          mullvad disconnect
-          mullvad account revoke-device "${{ env.DEVICE_NAME }}"
+      # - name: Disconnect from VPN
+      #   if: always()
+      #   shell: bash
+      #   run: |
+      #     mullvad disconnect
+      #     mullvad account revoke-device "${{ env.DEVICE_NAME }}"
 
       - uses: actions/upload-artifact@v3
         # if: failure()
         with:
           name: my-artifact
-          path: ~/AppData/Local/Roblox/logs
+          path: ~/AppData/Local/Roblox/logs/**/*
 
       - name: Screenshot
         if: failure()
