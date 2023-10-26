@@ -205,13 +205,11 @@ jobs:
           mullvad disconnect
           mullvad account revoke-device "${{ env.DEVICE_NAME }}"
 
-      - name: Dump logs
-        if: failure()
-        shell: bash
-        run: |
-          LOGS=$LOCALAPPDATA\Roblox\logs
-
-          ls -al $LOGS
+      - uses: actions/upload-artifact@v3
+        # if: failure()
+        with:
+          name: my-artifact
+          path: ~/AppData/Local/Roblox/logs
 
       - name: Screenshot
         if: failure()
