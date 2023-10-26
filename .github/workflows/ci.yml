@@ -188,6 +188,13 @@ jobs:
           pip install --requirement requirements.txt;
           python install.py "${{ secrets.ROBLOSECURITY }}"
 
+      - name: Create flag overrides for successful login
+        run: |
+          $flags = @{FLogAuthTokenManager=$true; FLogKeyValueStorage=$true; FLogError=$true; FLogMultiUserKeyValueStorage=$true}
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
+          $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
+
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
 
@@ -197,6 +204,14 @@ jobs:
         run: |
           mullvad disconnect
           mullvad account revoke-device "${{ env.DEVICE_NAME }}"
+
+      - name: Dump logs
+        if: failure()
+        shell: bash
+        run: |
+          LOGS=$LOCALAPPDATA\Roblox\logs
+
+          ls -al $LOGS
 
       - name: Screenshot
         if: failure()
