@@ -170,9 +170,8 @@ jobs:
       - name: Set .ROBLOSECURITY token
         shell: bash
         run: |
-          AUTH_URL=https://www.roblox.com:RobloxStudioAuth
-          cmdkey /generic:"LegacyGeneric:target=${AUTH_URL}.ROBLOSECURITY" /user:"Roblox" /pass:"${{ secrets.ROBLOSECURITY }}"
-          cmdkey /generic:"LegacyGeneric:target=${AUTH_URL}Cookies" /user:"Roblox" /pass:".ROBLOSECURITY"
+          cmdkey /generic:"LegacyGeneric:target=$https://www.roblox.com:RobloxStudioAuth.ROBLOSECURITY" /user:"Roblox" /pass:"${{ secrets.ROBLOSECURITY }}"
+          cmdkey /generic:"LegacyGeneric:target=$https://www.roblox.com:RobloxStudioAuthCookies" /user:"Roblox" /pass:".ROBLOSECURITY"
 
       - name: List tokens
         shell: bash
