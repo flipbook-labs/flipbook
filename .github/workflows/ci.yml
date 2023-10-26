@@ -168,11 +168,11 @@ jobs:
         run: cmdkey /list:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuth*"
 
       - name: Set .ROBLOSECURITY token
-        shell: bash
+        # shell: bash
         run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuth.ROBLOSECURITY" /user:"Roblox" /pass:"${{ secrets.ROBLOSECURITY }}"
 
       - name: Set Cookies token
-        shell: bash
+        # shell: bash
         run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuthCookies" /user:"Roblox" /pass:".ROBLOSECURITY"
 
       - name: List tokens
