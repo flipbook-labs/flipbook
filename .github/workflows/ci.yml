@@ -204,13 +204,15 @@ jobs:
       #     mullvad disconnect
       #     mullvad account revoke-device "${{ env.DEVICE_NAME }}"
 
-      - uses: actions/upload-artifact@v3
-        # if: failure()
+      - name: Dump logs
+        uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          name: my-artifact
-          path: ~/AppData/Local/Roblox/logs/**/*
+          name: studio-logs
+          path: |
+            ~/AppData/Local/Roblox/logs/**/*
 
-      - name: Screenshot
+      - name: Upload screenshot
         if: failure()
         uses: OrbitalOwen/desktop-screenshot-action@0.1
         with:
