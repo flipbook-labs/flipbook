@@ -212,7 +212,7 @@ jobs:
           EOF
           )
 
-          CLIENT_APP_SETTINGS=/c/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json
+          CLIENT_APP_SETTINGS="/c/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json"
 
           cat > $CLIENT_APP_SETTINGS << $FLAGS
 
