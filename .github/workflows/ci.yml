@@ -204,6 +204,12 @@ jobs:
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
 
+      - name: Upload screenshot
+        if: failure()
+        uses: OrbitalOwen/desktop-screenshot-action@0.1
+        with:
+          file-name: 'roblox-studio-${{ github.run_id }}.jpg'
+
       - name: Disconnect from VPN
         if: always()
         shell: bash
@@ -218,9 +224,3 @@ jobs:
           name: studio-logs
           path: |
             ~/AppData/Local/Roblox/logs/**/*
-
-      - name: Upload screenshot
-        if: failure()
-        uses: OrbitalOwen/desktop-screenshot-action@0.1
-        with:
-          file-name: 'roblox-studio-${{ github.run_id }}.jpg'
