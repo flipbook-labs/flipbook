@@ -195,26 +195,11 @@ jobs:
           python install.py "${{ secrets.ROBLOSECURITY }}"
 
       - name: Create flag overrides for successful login
-        shell: bash
         run: |
-          FLAGS=$(cat <<EOF
-          {
-              "FFlagSTUDIOPLAT31379MultiAccountCookies3": true,
-              "FLogAuthTokenManager": true,
-              "FLogError": true,
-              "FLogFirstTimeLoggedInUtil": true,
-              "FLogKeyValueStorage": true,
-              "FLogLoginController": true,
-              "FLogLoginTelemetry": true,
-              "FLogMultiUserKeyValueStorage": true,
-              "FLogStudioCookieManager": true
-          }
-          EOF
-          )
-
-          CLIENT_APP_SETTINGS="/c/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json"
-
-          cat > $CLIENT_APP_SETTINGS << $FLAGS
+          $flags = @{FFlagSTUDIOPLAT31379MultiAccountCookies3=$true; FLogAuthTokenManager=$true; FLogError=$true; FLogFirstTimeLoggedInUtil=$true; FLogKeyValueStorage=$true; FLogLoginController=$true; FLogLoginTelemetry=$true; FLogMultiUserKeyValueStorage=$true; FLogStudioCookieManager=$true;}
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
+          New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
+          $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
