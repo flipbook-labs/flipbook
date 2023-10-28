@@ -172,11 +172,11 @@ jobs:
 
       - name: Set .ROBLOSECURITY token
         # shell: bash
-        run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuth.ROBLOSECURITY" /user:"Roblox" /pass:"${{ secrets.ROBLOSECURITY }}"
+        run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuth.ROBLOSECURITY1343930" /user:"Roblox" /pass:"${{ secrets.ROBLOSECURITY }}"
 
       - name: Set Cookies token
         # shell: bash
-        run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuthCookies" /user:"Roblox" /pass:".ROBLOSECURITY"
+        run: cmdkey /generic:"LegacyGeneric:target=https://www.roblox.com:RobloxStudioAuthCookies1343930" /user:"Roblox" /pass:".ROBLOSECURITY"
 
       - name: List tokens
         shell: bash
@@ -204,7 +204,7 @@ jobs:
       - name: Open Studio
         shell: bash
         run: |
-          STUDIO=$(find /c/ -type f -name RobloxStudio.exe)
+          STUDIO=$(find "/c/Program Files (x86)/Roblox" -type f -name RobloxStudio.exe)
           echo $STUDIO
           ./$STUDIO
 
