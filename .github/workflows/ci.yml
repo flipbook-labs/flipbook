@@ -201,15 +201,17 @@ jobs:
           New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
           $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
 
-      - name: Open Studio
-        shell: bash
-        run: |
-          STUDIO=$(find "/c/Program Files (x86)/Roblox" -type f -name RobloxStudio.exe)
-          echo $STUDIO
-          start $STUDIO
+      # - name: Open Studio
+      #   shell: bash
+      #   run: |
+      #     STUDIO=$(find "/c/Program Files (x86)/Roblox" -type f -name "RobloxStudio.exe")
+      #     echo $STUDIO
+      #     start $STUDIO
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
+        env:
+          RUST_BACKTRACE: 1
 
       - name: Upload screenshot
         if: failure()
