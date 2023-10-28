@@ -206,7 +206,7 @@ jobs:
         run: |
           STUDIO=$(find "/c/Program Files (x86)/Roblox" -type f -name RobloxStudio.exe)
           echo $STUDIO
-          ./$STUDIO
+          start $STUDIO
 
       - name: Run tests
         run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
