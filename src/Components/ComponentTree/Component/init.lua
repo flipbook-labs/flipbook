@@ -58,7 +58,7 @@ local function Component(props: Props)
 	end
 
 	if props.filter and props.node.icon ~= "storybook" then
-		local match = props.node.name:match(props.filter)
+		local match = props.node.name:lower():match(props.filter:lower())
 
 		if not match then
 			return
