@@ -79,6 +79,7 @@ local function Searchbar(props: Props)
 		Layout = e("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
 		}),
 
 		InputFieldWrapper = e("Frame", {
