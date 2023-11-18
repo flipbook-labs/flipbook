@@ -8,10 +8,10 @@ exclude = ["*"]
 
 [dependencies]
 Roact = "roblox/roact@1.4.4"
-React = "core-packages/react@17.0.1-rc.16"
-ReactRoblox = "core-packages/react-roblox@17.0.1-rc.16"
+React = "jsdotlua/react@17.0.2"
+ReactRoblox = "jsdotlua/react-roblox@17.0.1"
 Sift = "csqrl/sift@0.0.4"
 t = "osyrisrblx/t@3.0.0"
 ModuleLoader = "flipbook-labs/module-loader@0.6.1"
 TestEZ = "roblox/testez@0.4.1"
-RoactSpring = "chriscerie/react-spring@1.1.3"
+RoactSpring = "chriscerie/react-spring@2.0.0"
