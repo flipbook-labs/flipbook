@@ -1,4 +1,6 @@
 return function()
+	local CoreGui = game:GetService("CoreGui")
+
 	local isStorybookModule = require(script.Parent.isStorybookModule)
 
 	it("should return true for ModuleScripts with the .storybook extension", function()
@@ -27,5 +29,15 @@ return function()
 		storybook.Name = "Foo.storybook.extra"
 
 		expect(isStorybookModule(storybook)).to.equal(false)
+	end)
+
+	it("should return false for storybooks in CoreGui", function()
+		local storybook = Instance.new("ModuleScript")
+		storybook.Name = "Foo.storybook"
+		storybook.Parent = CoreGui
+
+		expect(isStorybookModule(storybook)).to.equal(false)
+
+		storybook:Destroy()
 	end)
 end
