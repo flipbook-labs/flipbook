@@ -37,6 +37,7 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 				react = storybook.react,
 				reactRoblox = storybook.reactRoblox,
 				roact = storybook.roact,
+				fusion = storybook.fusion,
 			}, result)
 		else
 			return nil, Errors.Generic:format(module:GetFullName(), message)

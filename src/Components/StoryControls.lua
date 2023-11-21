@@ -25,6 +25,10 @@ local function StoryControls(props: Props)
 		end
 
 		local option
+		if typeof(value) == "table" and value.type == "State" then
+			value = value:get()
+		end
+
 		if typeof(value) == "boolean" then
 			option = React.createElement(Checkbox, {
 				initialState = value,
