@@ -10,6 +10,9 @@ return {
 	CONTROLS_MIN_HEIGHT = 100, -- px
 	CONTROLS_MAX_HEIGHT = 400, -- px
 
+	STORYBOOK_ANALYSIS_NAME = "StorybookAnalysis",
+	STORYBOOK_ANALYSIS_PRIORITY = 1,
+
 	-- Enabling dev mode will add flipbook's storybook to the list of available
 	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
 	-- plugin
