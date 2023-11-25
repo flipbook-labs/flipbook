@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 local isStorybookModule = require(flipbook.Story.isStorybookModule)
 local useDescendants = require(flipbook.Hooks.useDescendants)
 
