@@ -19,7 +19,7 @@ local function Item(props: Props)
 	local theme = useTheme()
 
 	local hover, setHover = React.useState(false)
-	local styles = RoactSpring.useSpring({
+	local styles = (RoactSpring.useSpring :: any)({
 		alpha = if not props.active and hover then 0 else 1,
 		config = constants.SPRING_CONFIG,
 	})

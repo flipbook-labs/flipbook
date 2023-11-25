@@ -31,7 +31,7 @@ local function Searchbar(props: Props)
 	local isFocused, setIsFocused = React.useState(false)
 	local isExpanded = isFocused or search ~= ""
 
-	local styles = RoactSpring.useSpring({
+	local styles = (RoactSpring.useSpring :: any)({
 		alpha = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
