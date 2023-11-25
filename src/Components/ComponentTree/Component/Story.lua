@@ -20,7 +20,7 @@ type Props = {
 local function Story(props: Props)
 	local theme = useTheme()
 	local hover, setHover = React.useState(false)
-	local styles = RoactSpring.useSpring({
+	local styles = (RoactSpring.useSpring :: any)({
 		alpha = if not props.active then if hover then 0 else 1 else 0,
 		color = if not props.active then theme.divider else theme.selection,
 		textColor = if not props.active then theme.textFaded else theme.background,
