@@ -2,9 +2,9 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local assets = require(flipbook.assets)
-local Navbar = require(flipbook.Components.Navbar)
-local Sprite = require(flipbook.Components.Sprite)
-local useTheme = require(flipbook.Hooks.useTheme)
+local Navigation = require(flipbook.Navigation)
+local Sprite = require(flipbook.Common.Sprite)
+local useTheme = require(flipbook.Common.useTheme)
 
 local e = React.createElement
 
@@ -20,17 +20,17 @@ type Props = {
 local function NavbarRoot(props: Props)
 	local theme = useTheme()
 
-	return e(Navbar.Element, {
+	return e(Navigation.Element, {
 		height = 55,
 		layoutOrder = props.layoutOrder,
 	}, {
-		LeftNav = e(Navbar.Items, {
+		LeftNav = e(Navigation.Items, {
 			layoutOrder = 1,
 		}, {
-			Zoom = e(Navbar.Items, {
+			Zoom = e(Navigation.Items, {
 				layoutOrder = 2,
 			}, {
-				Magnify = e(Navbar.Item, {
+				Magnify = e(Navigation.Item, {
 					layoutOrder = 1,
 					onClick = props.onZoomIn,
 				}, {
@@ -41,7 +41,7 @@ local function NavbarRoot(props: Props)
 					}),
 				}),
 
-				Minify = e(Navbar.Item, {
+				Minify = e(Navigation.Item, {
 					layoutOrder = 2,
 					onClick = props.onZoomOut,
 				}, {
@@ -53,14 +53,14 @@ local function NavbarRoot(props: Props)
 				}),
 			}),
 
-			Divider = e(Navbar.Divider, {
+			Divider = e(Navigation.Divider, {
 				layoutOrder = 3,
 			}),
 
-			Mount = e(Navbar.Items, {
+			Mount = e(Navigation.Items, {
 				layoutOrder = 4,
 			}, {
-				Explorer = e(Navbar.Item, {
+				Explorer = e(Navigation.Item, {
 					layoutOrder = 1,
 					onClick = props.onExplorer,
 				}, {
@@ -77,7 +77,7 @@ local function NavbarRoot(props: Props)
 					}),
 				}),
 
-				ViewCode = e(Navbar.Item, {
+				ViewCode = e(Navigation.Item, {
 					layoutOrder = 1,
 					onClick = props.onViewCode,
 				}, {
@@ -94,7 +94,7 @@ local function NavbarRoot(props: Props)
 					}),
 				}),
 
-				ViewportPreview = e(Navbar.Item, {
+				ViewportPreview = e(Navigation.Item, {
 					layoutOrder = 2,
 					onClick = props.onPreviewInViewport,
 				}, {

@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local isStoryModule = require(flipbook.Story.isStoryModule)
+local isStoryModule = require(flipbook.Storybook.isStoryModule)
 local types = require(flipbook.types)
 
 local function hasStories(instance: Instance): boolean

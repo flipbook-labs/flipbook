@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local SelectableTextLabel = require(flipbook.Components.SelectableTextLabel)
-local useTheme = require(flipbook.Hooks.useTheme)
+local SelectableTextLabel = require(flipbook.Forms.SelectableTextLabel)
+local useTheme = require(flipbook.Common.useTheme)
 
 export type Props = {
 	err: string,

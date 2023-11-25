@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local StoryControls = require(script.Parent.StoryControls)
+local StoryControls = require(flipbook.Storybook.StoryControls)
 
 return {
 	summary = "Panel for configuring the controls of a story",

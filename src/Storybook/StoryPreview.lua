@@ -5,10 +5,10 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
-local StoryError = require(flipbook.Components.StoryError)
-local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
+local StoryError = require(flipbook.Storybook.StoryError)
+local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
 local types = require(flipbook.types)
-local mountStory = require(flipbook.Story.mountStory)
+local mountStory = require(flipbook.Storybook.mountStory)
 
 local e = React.createElement
 

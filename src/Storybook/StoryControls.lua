@@ -2,10 +2,10 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 
-local useTheme = require(flipbook.Hooks.useTheme)
-local InputField = require(flipbook.Components.InputField)
-local Checkbox = require(flipbook.Components.Fields.Checkbox)
-local Dropdown = require(flipbook.Components.Fields.Dropdown)
+local useTheme = require(flipbook.Common.useTheme)
+local InputField = require(flipbook.Forms.InputField)
+local Checkbox = require(flipbook.Forms.Checkbox)
+local Dropdown = require(flipbook.Forms.Dropdown)
 
 local e = React.createElement
 

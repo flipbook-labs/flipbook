@@ -2,12 +2,12 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
-local createStoryNodes = require(flipbook.Story.createStoryNodes)
-local Branding = require(flipbook.Components.Branding)
-local ComponentTree = require(flipbook.Components.ComponentTree)
-local Searchbar = require(flipbook.Components.Searchbar)
-local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
-local useTheme = require(flipbook.Hooks.useTheme)
+local createStoryNodes = require(flipbook.Storybook.createStoryNodes)
+local Branding = require(flipbook.Common.Branding)
+local ComponentTree = require(flipbook.Explorer)
+local Searchbar = require(flipbook.Forms.Searchbar)
+local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
+local useTheme = require(flipbook.Common.useTheme)
 local types = require(flipbook.types)
 
 local e = React.createElement

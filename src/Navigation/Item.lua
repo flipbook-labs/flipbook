@@ -3,7 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local React = require(flipbook.Packages.React)
 local RoactSpring = require(flipbook.Packages.RoactSpring)
 local constants = require(flipbook.constants)
-local useTheme = require(flipbook.Hooks.useTheme)
+local useTheme = require(flipbook.Common.useTheme)
 
 local e = React.createElement
 

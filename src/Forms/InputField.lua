@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
-local useTheme = require(flipbook.Hooks.useTheme)
+local useTheme = require(flipbook.Common.useTheme)
 
 local e = React.createElement
 
@@ -14,7 +14,7 @@ local defaultProps = {
 
 export type Props = typeof(defaultProps) & {
 	layoutOrder: number?,
-	onSubmit: ((text: string) -> ()),
+	onSubmit: (text: string) -> (),
 	onFocus: (() -> ())?,
 	onFocusLost: (() -> ())?,
 	onTextChange: ((new: string, old: string) -> ())?,

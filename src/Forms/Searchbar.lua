@@ -5,10 +5,10 @@ local RoactSpring = require(flipbook.Packages.RoactSpring)
 local Sift = require(flipbook.Packages.Sift)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
-local useTheme = require(flipbook.Hooks.useTheme)
-local mapRanges = require(flipbook.Modules.mapRanges)
-local InputField = require(flipbook.Components.InputField)
-local Sprite = require(flipbook.Components.Sprite)
+local useTheme = require(flipbook.Common.useTheme)
+local mapRanges = require(flipbook.Common.mapRanges)
+local InputField = require(flipbook.Forms.InputField)
+local Sprite = require(flipbook.Common.Sprite)
 
 local e = React.createElement
 

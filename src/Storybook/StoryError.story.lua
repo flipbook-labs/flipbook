@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local StoryError = require(script.Parent.StoryError)
+local StoryError = require(flipbook.Storybook.StoryError)
 
 return {
 	summary = "Component for displaying error messages to the user",

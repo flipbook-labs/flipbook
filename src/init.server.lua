@@ -11,7 +11,7 @@ local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local createWidget = require(flipbook.Plugin.createWidget)
 local createToggleButton = require(flipbook.Plugin.createToggleButton)
-local App = require(flipbook.Components.App)
+local PluginApp = require(flipbook.Plugin.PluginApp)
 local constants = require(flipbook.constants)
 
 local PLUGIN_NAME = "flipbook"
@@ -27,7 +27,7 @@ local disconnectButton = createToggleButton(toolbar, widget)
 
 local loader = ModuleLoader.new()
 
-local app = React.createElement(App, {
+local app = React.createElement(PluginApp, {
 	plugin = plugin,
 	loader = loader,
 })

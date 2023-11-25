@@ -3,7 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 return function()
 	local React = require(flipbook.Packages.React)
 	local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-	local useEvent = require(flipbook.Hooks.useEvent)
+	local useEvent = require(script.Parent.useEvent)
 
 	local container = Instance.new("ScreenGui")
 	local root = ReactRoblox.createRoot(container)

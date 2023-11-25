@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local Dropdown = require(flipbook.Components.Fields.Dropdown)
+local Dropdown = require(flipbook.Forms.Dropdown)
 
 local controls = {
 	useDefault = true,

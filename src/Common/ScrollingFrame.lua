@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local Sift = require(flipbook.Packages.Sift)
 local React = require(flipbook.Packages.React)
-local useTheme = require(flipbook.Hooks.useTheme)
+local useTheme = require(flipbook.Common.useTheme)
 
 export type Props = {
 	[string]: any,

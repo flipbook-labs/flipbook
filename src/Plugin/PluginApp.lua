@@ -2,12 +2,12 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
-local useStorybooks = require(flipbook.Hooks.useStorybooks)
-local useTheme = require(flipbook.Hooks.useTheme)
+local useStorybooks = require(flipbook.Storybook.useStorybooks)
+local useTheme = require(flipbook.Common.useTheme)
 local PluginContext = require(flipbook.Plugin.PluginContext)
-local ResizablePanel = require(flipbook.Components.ResizablePanel)
-local Canvas = require(flipbook.Components.Canvas)
-local Sidebar = require(flipbook.Components.Sidebar)
+local ResizablePanel = require(flipbook.Panels.ResizablePanel)
+local StoryCanvas = require(flipbook.Storybook.StoryCanvas)
+local Sidebar = require(flipbook.Panels.Sidebar)
 
 export type Props = {
 	plugin: Plugin,
@@ -63,7 +63,7 @@ local function App(props: Props)
 				LayoutOrder = 2,
 				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
 			}, {
-				Canvas = React.createElement(Canvas, {
+				StoryCanvas = React.createElement(StoryCanvas, {
 					loader = props.loader,
 					story = story,
 					storybook = storybook,
