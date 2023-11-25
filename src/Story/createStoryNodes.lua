@@ -1,5 +1,6 @@
-local isStoryModule = require(script.Parent.isStoryModule)
-local types = require(script.Parent.Parent.types)
+local flipbook = script:FindFirstAncestor("flipbook")
+
+local isStoryModule = require(flipbook.Story.isStoryModule)
 
 local function hasStories(instance: Instance): boolean
 	for _, descendant in ipairs(instance:GetDescendants()) do
