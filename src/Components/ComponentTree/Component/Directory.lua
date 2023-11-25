@@ -21,7 +21,7 @@ type Props = {
 local function Directory(props: Props)
 	local theme = useTheme()
 	local hover, setHover = React.useState(false)
-	local styles = RoactSpring.useSpring({
+	local styles = (RoactSpring.useSpring :: any)({
 		alpha = if hover then 0 else 1,
 		rotation = if props.expanded then 90 else 0,
 		config = constants.SPRING_CONFIG,
