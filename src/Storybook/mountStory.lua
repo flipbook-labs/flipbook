@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local types = require(flipbook.types)
+local types = require(flipbook.Storybook.types)
 
 local function mountFunctionalStory(story: types.FunctionalStory, props: types.StoryProps, parent: GuiObject)
 	local cleanup = story.story(parent, props)

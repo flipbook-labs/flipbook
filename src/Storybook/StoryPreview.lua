@@ -7,7 +7,7 @@ local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local Sift = require(flipbook.Packages.Sift)
 local StoryError = require(flipbook.Storybook.StoryError)
 local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
-local types = require(flipbook.types)
+local types = require(flipbook.Storybook.types)
 local mountStory = require(flipbook.Storybook.mountStory)
 
 local e = React.createElement

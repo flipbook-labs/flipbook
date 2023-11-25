@@ -6,7 +6,7 @@ local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local useTheme = require(flipbook.Common.useTheme)
 local Sprite = require(flipbook.Common.Sprite)
-local types = require(flipbook.types)
+local types = require(flipbook.Explorer.types)
 
 local e = React.createElement
 

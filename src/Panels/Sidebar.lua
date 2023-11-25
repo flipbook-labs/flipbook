@@ -8,22 +8,26 @@ local ComponentTree = require(flipbook.Explorer)
 local Searchbar = require(flipbook.Forms.Searchbar)
 local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
 local useTheme = require(flipbook.Common.useTheme)
-local types = require(flipbook.types)
+local storybookTypes = require(flipbook.Storybook.types)
+local explorerTypes = require(flipbook.Explorer.types)
+
+type Storybook = storybookTypes.Storybook
+type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
 	selectStory: (ModuleScript) -> (),
-	selectStorybook: (types.Storybook) -> (),
-	storybooks: { types.Storybook },
+	selectStorybook: (Storybook) -> (),
+	storybooks: { Storybook },
 }
 
 local function Sidebar(props: Props)
 	local theme = useTheme()
 
 	local activeNode, setActiveNode = React.useState(nil)
-	local onClick = React.useCallback(function(node: types.ComponentTreeNode)
+	local onClick = React.useCallback(function(node: ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
 				props.selectStorybook(node.storybook)

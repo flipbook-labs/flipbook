@@ -1,7 +1,7 @@
 return function()
 	local flipbook = script:FindFirstAncestor("flipbook")
 
-	local types = require(flipbook.types)
+	local types = require(flipbook.Storybook.types)
 	local newFolder = require(flipbook.Testing.newFolder)
 	local createStoryNodes = require(script.Parent.createStoryNodes)
 
