@@ -8,7 +8,7 @@ local ComponentTree = require(flipbook.Components.ComponentTree)
 local Searchbar = require(flipbook.Components.Searchbar)
 local ScrollingFrame = require(flipbook.Components.ScrollingFrame)
 local useTheme = require(flipbook.Hooks.useTheme)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 
 local e = React.createElement
 

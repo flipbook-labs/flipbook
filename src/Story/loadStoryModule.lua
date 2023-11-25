@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local Sift = require(flipbook.Packages.Sift)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 
 local Errors = {
 	MalformedStory = "Story is malformed. Check the source of %q and make sure its properties are correct",

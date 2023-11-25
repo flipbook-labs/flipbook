@@ -5,7 +5,7 @@ local RunService = game:GetService("RunService")
 local Sift = require(flipbook.Packages.Sift)
 local React = require(flipbook.Packages.React)
 local PluginContext = require(flipbook.Plugin.PluginContext)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 
 local defaultProps = {
 	size = 8, -- px

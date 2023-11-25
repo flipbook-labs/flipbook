@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local themes = require(flipbook.themes)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 
 local MOCK_STUDIO = {
 	ThemeChanged = Instance.new("BindableEvent").Event,
