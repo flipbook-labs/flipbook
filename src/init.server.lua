@@ -52,7 +52,7 @@ local function registerScriptAnalysis()
 		constants.STORYBOOK_ANALYSIS_NAME,
 		constants.STORYBOOK_ANALYSIS_PRIORITY,
 		function(request)
-			return analyzeStorybook(request.script)
+			return analyzeStorybook(request.script, loader)
 		end
 	)
 end

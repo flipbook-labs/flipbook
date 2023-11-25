@@ -16,24 +16,19 @@ local function analyzeStorybook(module: ModuleScript, loader: any): ScriptAnalys
 		local storybook = loader:require(module)
 		local success, message = types.Storybook(storybook)
 
-		print(success, message)
-
 		if not success then
 			local line = getLineFromTypecheckError(message, module.Source)
-
-			print("line", line)
 
 			if line then
 				diagnostic = {
 					range = {
-						-- TODO: Figure out how to determine which lines to highlight based off linting failures
 						start = {
 							line = line,
 							character = 0,
 						},
 						["end"] = {
 							line = line,
-							character = 1,
+							character = math.huge,
 						},
 					},
 					code = "code",
