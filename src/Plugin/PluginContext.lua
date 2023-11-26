@@ -2,7 +2,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 
-local PluginContext = React.createContext({})
+local PluginContext = React.createContext(nil :: Plugin?)
 
 export type Props = {
 	plugin: Plugin,
