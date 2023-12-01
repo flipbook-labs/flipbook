@@ -25,7 +25,7 @@ local function DragHandle(props: Props)
 	local plugin = React.useContext(PluginContext.Context)
 	local isDragging, setIsDragging = React.useState(false)
 	local isHovered, setIsHovered = React.useState(false)
-	local mouseInput: InputObject, setMouseInput = React.useState(nil)
+	local mouseInput, setMouseInput = React.useState(nil :: InputObject?)
 
 	local getHandleProperties = React.useCallback(function()
 		local size: UDim2

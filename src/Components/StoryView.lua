@@ -34,7 +34,7 @@ local function StoryView(props: Props)
 	local extraControls, setExtraControls = React.useState({})
 	local controlsHeight, setControlsHeight = React.useState(constants.CONTROLS_INITIAL_HEIGHT)
 	local topbarHeight, setTopbarHeight = React.useState(0)
-	local storyParentRef = React.useRef()
+	local storyParentRef = React.useRef(nil :: GuiObject?)
 	local controls
 
 	if story and story.controls then
