@@ -59,7 +59,7 @@ jobs:
 
       - name: Generate sourcemap for LSP
         shell: bash
-        run: rojo sourcemap dev.project.json -o sourcemap.json
+        run: rojo sourcemap tests.project.json -o sourcemap.json
 
       - name: Analyze
         shell: bash
