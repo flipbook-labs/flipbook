@@ -3,7 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
 local DragHandle = require(flipbook.Components.DragHandle)
-local types = require(script.Parent.Parent.types)
+local types = require(flipbook.types)
 
 local defaultProps = {
 	dragHandleSize = 8, -- px

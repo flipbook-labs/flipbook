@@ -5,9 +5,9 @@ local constants = require(flipbook.constants)
 local useStorybooks = require(flipbook.Hooks.useStorybooks)
 local useTheme = require(flipbook.Hooks.useTheme)
 local PluginContext = require(flipbook.Plugin.PluginContext)
-local ResizablePanel = require(script.Parent.ResizablePanel)
-local Canvas = require(script.Parent.Canvas)
-local Sidebar = require(script.Parent.Sidebar)
+local ResizablePanel = require(flipbook.Components.ResizablePanel)
+local Canvas = require(flipbook.Components.Canvas)
+local Sidebar = require(flipbook.Components.Sidebar)
 
 export type Props = {
 	plugin: Plugin,
