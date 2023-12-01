@@ -64,7 +64,7 @@ local function Component(props: Props)
 		end
 
 		local isEmpty = true
-		for _, descendant in ipairs(getTreeDescendants(props.node)) do
+		for _, descendant in getTreeDescendants(props.node) do
 			if descendant.name:lower():match(props.filter:lower()) then
 				isEmpty = false
 				break

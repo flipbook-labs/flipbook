@@ -10,7 +10,7 @@ local function getTreeDescendants(root: types.ComponentTreeNode): { types.Compon
 			table.insert(descendants, node)
 		end
 
-		for _, child in ipairs(node.children) do
+		for _, child in node.children do
 			traverse(child, false)
 		end
 	end
