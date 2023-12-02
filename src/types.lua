@@ -49,7 +49,7 @@ export type Storybook = {
 	react: React?,
 	reactRoblox: ReactRoblox?,
 }
-types.Storybook = t.interface({
+types.Storybook = t.strictInterface({
 	storyRoots = t.array(t.Instance),
 
 	name = t.optional(t.string),
