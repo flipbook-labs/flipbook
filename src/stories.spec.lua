@@ -8,7 +8,7 @@ local isStoryModule = require(flipbook.Storybook.isStoryModule)
 local mountStory = require(flipbook.Storybook.mountStory)
 
 return function()
-	for _, descendant in ipairs(flipbook.Components:GetDescendants()) do
+	for _, descendant in ipairs(flipbook:GetDescendants()) do
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)
