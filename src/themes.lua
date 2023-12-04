@@ -1,7 +1,32 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local types = require(flipbook.types)
 local tailwind = require(flipbook.tailwind)
+
+export type Theme = {
+	textSize: number,
+	font: Enum.Font,
+	headerTextSize: number,
+	headerFont: Enum.Font,
+
+	background: Color3,
+	sidebar: Color3,
+	canvas: Color3,
+	scrollbar: Color3,
+	button: Color3,
+	buttonText: Color3,
+	divider: Color3,
+	text: Color3,
+	textFaded: Color3,
+	selection: Color3,
+	story: Color3,
+	directory: Color3,
+
+	padding: UDim,
+	paddingSmall: UDim,
+	paddingLarge: UDim,
+
+	corner: UDim,
+}
 
 return {
 	Light = {
@@ -29,7 +54,7 @@ return {
 		paddingLarge = UDim.new(0, 24),
 
 		corner = UDim.new(0, 6),
-	} :: types.Theme,
+	} :: Theme,
 
 	Dark = {
 		textSize = 14,
@@ -56,5 +81,5 @@ return {
 		paddingLarge = UDim.new(0, 24),
 
 		corner = UDim.new(0, 6),
-	} :: types.Theme,
+	} :: Theme,
 }
