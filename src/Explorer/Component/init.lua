@@ -5,7 +5,7 @@ local Sift = require(flipbook.Packages.Sift)
 local Directory = require(script.Directory)
 local Story = require(script.Story)
 local types = require(flipbook.Explorer.types)
-local getTreeDescendants = require(flipbook.Common.getTreeDescendants)
+local getTreeDescendants = require(flipbook.Explorer.getTreeDescendants)
 
 local e = React.createElement
 
