@@ -4,11 +4,11 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local isStoryModule = require(script.Parent.Story.isStoryModule)
-local mountStory = require(script.Parent.Story.mountStory)
+local isStoryModule = require(flipbook.Storybook.isStoryModule)
+local mountStory = require(flipbook.Storybook.mountStory)
 
 return function()
-	for _, descendant in ipairs(flipbook.Components:GetDescendants()) do
+	for _, descendant in ipairs(flipbook:GetDescendants()) do
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)

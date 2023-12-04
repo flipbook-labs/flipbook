@@ -6,7 +6,7 @@ local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 return {
 	name = flipbook.Name,
 	storyRoots = {
-		flipbook.Components,
+		flipbook,
 	},
 	react = React,
 	reactRoblox = ReactRoblox,
