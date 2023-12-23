@@ -17,7 +17,7 @@ local defaultProps = {
 	zoom = 0,
 }
 
-type Props = typeof(defaultProps) & {
+export type Props = {
 	layoutOrder: number,
 	story: types.Story,
 	ref: any,
@@ -25,8 +25,10 @@ type Props = typeof(defaultProps) & {
 	storyModule: ModuleScript,
 }
 
-local StoryPreview = React.forwardRef(function(props: Props, ref: any)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local err, setErr = React.useState(nil)
 

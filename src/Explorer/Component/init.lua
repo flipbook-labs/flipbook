@@ -13,15 +13,17 @@ local defaultProps = {
 	indent = 0,
 }
 
-type Props = typeof(defaultProps) & {
+type Props = {
 	node: types.ComponentTreeNode,
 	filter: string?,
 	activeNode: types.ComponentTreeNode?,
 	onClick: ((types.ComponentTreeNode) -> ())?,
 }
 
-local function Component(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function Component(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local hasChildren = props.node.children and #props.node.children > 0
 

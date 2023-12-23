@@ -16,7 +16,7 @@ local defaultProps = {
 	text = "Button",
 }
 
-type Props = typeof(defaultProps) & {
+type Props = {
 	text: string,
 	style: "contain" | "stroke",
 
@@ -29,8 +29,10 @@ type Props = typeof(defaultProps) & {
 	onClick: (() -> ())?,
 }
 
-local function Button(props: Props)
-	props = Sift.Dictionary.join(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function Button(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.join(defaultProps, providedProps)
 
 	local theme = useTheme()
 	local hover, setHover = React.useState(false)
