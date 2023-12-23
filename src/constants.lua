@@ -1,5 +1,6 @@
 return {
 	STORY_NAME_PATTERN = "%.story$",
+	STORY_NAME_PATTERN_CSF = "%.stories$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
 	SIDEBAR_INITIAL_WIDTH = 260, -- px
@@ -14,6 +15,8 @@ return {
 	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
 	-- plugin
 	IS_DEV_MODE = false,
+
+	FLAG_ENABLE_COMPONENT_STORY_FORMAT = false,
 
 	SPRING_CONFIG = {
 		clamp = true,
