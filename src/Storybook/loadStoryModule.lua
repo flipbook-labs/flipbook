@@ -31,13 +31,23 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 		local isValid, message = types.StoryMeta(result)
 
 		if isValid then
+			local extraProps = {}
+			if types.ReactStorybook(storybook) then
+				local reactStorybook = storybook :: types.ReactStorybook
+				extraProps = {
+					react = reactStorybook.react,
+					reactRoblox = reactStorybook.reactRoblox,
+				}
+			elseif types.RoactStorybook(storybook) then
+				local roactStorybook = storybook :: types.RoactStorybook
+				extraProps = {
+					roact = roactStorybook.roact,
+				}
+			end
+
 			story = Sift.Dictionary.merge({
 				name = module.Name,
-			}, {
-				react = storybook.react,
-				reactRoblox = storybook.reactRoblox,
-				roact = storybook.roact,
-			}, result)
+			}, extraProps, result)
 		else
 			return nil, Errors.Generic:format(module:GetFullName(), message)
 		end
