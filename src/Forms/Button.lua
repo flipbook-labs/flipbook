@@ -11,14 +11,16 @@ local function shift(color: Color3, percent: number): Color3
 	return Color3.fromHSV(h, s, math.clamp(v * (1 + percent), 0, 1))
 end
 
+type Style = "contain" | "stroke"
+
 local defaultProps = {
-	style = "contain",
+	style = "contain" :: Style,
 	text = "Button",
 }
 
 type Props = {
 	text: string,
-	style: "contain" | "stroke",
+	style: Style?,
 
 	anchorPoint: Vector2?,
 	position: UDim2?,

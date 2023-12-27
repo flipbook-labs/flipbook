@@ -15,5 +15,6 @@ return {
 				"Option 3",
 			},
 		},
+		setControl = function() end,
 	}),
 }

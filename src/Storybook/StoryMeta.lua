@@ -9,8 +9,8 @@ local MAX_SUMMARY_SIZE = 600
 local e = React.createElement
 
 export type Props = {
-	layoutOrder: number,
 	story: types.Story,
+	layoutOrder: number?,
 }
 
 local function StoryMeta(props: Props)
