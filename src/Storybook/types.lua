@@ -60,6 +60,7 @@ types.Storybook = t.interface({
 
 export type StoryMeta = {
 	name: string,
+	story: unknown,
 	summary: string?,
 	controls: Controls?,
 	roact: Roact?,
@@ -67,6 +68,7 @@ export type StoryMeta = {
 	reactRoblox: ReactRoblox?,
 }
 types.StoryMeta = t.interface({
+	story = t.any,
 	name = t.optional(t.string),
 	summary = t.optional(t.string),
 	controls = t.optional(types.Controls),
