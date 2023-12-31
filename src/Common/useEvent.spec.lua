@@ -36,7 +36,10 @@ return function()
 
 		expect(wasFired).to.equal(false)
 
-		bindable:Fire()
+		ReactRoblox.act(function()
+			bindable:Fire()
+			task.wait()
+		end)
 
 		expect(wasFired).to.equal(true)
 	end)
@@ -54,7 +57,10 @@ return function()
 			root:unmount()
 		end)
 
-		bindable:Fire()
+		ReactRoblox.act(function()
+			bindable:Fire()
+			task.wait()
+		end)
 
 		expect(wasFired).to.equal(false)
 	end)
