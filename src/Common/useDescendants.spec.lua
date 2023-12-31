@@ -67,6 +67,7 @@ return function()
 
 		ReactRoblox.act(function()
 			folder.Parent = tree
+			task.wait()
 		end)
 
 		expect(#descendants).to.equal(2)
@@ -99,6 +100,7 @@ return function()
 
 		ReactRoblox.act(function()
 			match.Name = "Changed"
+			task.wait()
 		end)
 
 		expect(descendants).never.to.equal(prev)
