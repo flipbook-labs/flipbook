@@ -62,6 +62,7 @@ return function()
 
 		ReactRoblox.act(function()
 			zoomIn:Fire()
+			task.wait()
 		end)
 
 		expect(tonumber(result.Text)).to.equal(0.25)
@@ -80,6 +81,7 @@ return function()
 
 		ReactRoblox.act(function()
 			zoomOut:Fire()
+			task.wait()
 		end)
 
 		expect(tonumber(result.Text)).to.equal(-0.25)
@@ -98,6 +100,7 @@ return function()
 
 		ReactRoblox.act(function()
 			zoomIn:Fire()
+			task.wait()
 		end)
 
 		expect(tonumber(result.Text)).to.equal(0.25)
