@@ -22,8 +22,8 @@ return function()
 			expect(#storyErrors).to.equal(0)
 		end)
 
-		for _, story in stories do
-			it(`should mount/unmount {storybook.name} > {story.name}`, function()
+		for key, story in stories do
+			it(`should mount/unmount {storybook.name} > {story.name} {key}`, function()
 				local controls = {}
 
 				if typeof(story) == "table" and story.controls then
