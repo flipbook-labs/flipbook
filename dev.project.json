@@ -1,6 +1,12 @@
 {
   "name": "flipbook",
   "tree": {
+    "DEV_MODE": {
+      "$className": "BoolValue",
+      "$properties": {
+        "Value": true
+      }
+    },
     "Packages": {
       "$path": "Packages"
     },
