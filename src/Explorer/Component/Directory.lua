@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local RoactSpring = require(flipbook.Packages.RoactSpring)
+local ReactSpring = require(flipbook.Packages.ReactSpring)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
 local useTheme = require(flipbook.Common.useTheme)
@@ -21,7 +21,7 @@ type Props = {
 local function Directory(props: Props)
 	local theme = useTheme()
 	local hover, setHover = React.useState(false)
-	local styles = (RoactSpring.useSpring :: any)({
+	local styles = (ReactSpring.useSpring :: any)({
 		alpha = if hover then 0 else 1,
 		rotation = if props.expanded then 90 else 0,
 		config = constants.SPRING_CONFIG,

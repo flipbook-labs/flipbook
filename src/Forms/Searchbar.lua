@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local RoactSpring = require(flipbook.Packages.RoactSpring)
+local ReactSpring = require(flipbook.Packages.ReactSpring)
 local Sift = require(flipbook.Packages.Sift)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
@@ -31,7 +31,7 @@ local function Searchbar(props: Props)
 	local isFocused, setIsFocused = React.useState(false)
 	local isExpanded = isFocused or search ~= ""
 
-	local styles = (RoactSpring.useSpring :: any)({
+	local styles = (ReactSpring.useSpring :: any)({
 		alpha = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
