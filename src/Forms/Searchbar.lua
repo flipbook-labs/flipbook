@@ -16,15 +16,17 @@ local defaultProps = {
 	size = UDim2.new(1, 0, 0, 36),
 }
 
-type Props = typeof(defaultProps) & {
+export type Props = {
 	layoutOrder: number?,
 	onSearchChanged: ((value: string) -> ())?,
 }
 
+type InternalProps = Props & typeof(defaultProps)
+
 local SEARCH_ICON_SIZE = 16 -- px
 
-local function Searchbar(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+local function Searchbar(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local theme = useTheme()
 	local search, setSearch = React.useState("")
