@@ -9,5 +9,6 @@ return {
 	controls = {},
 	story = React.createElement(PluginApp, {
 		loader = ModuleLoader.new(),
+		plugin = plugin,
 	}),
 }

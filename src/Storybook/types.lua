@@ -41,13 +41,9 @@ export type StoryProps = {
 	controls: Controls,
 }
 
-export type Storybook = {
+export type StorybookMeta = {
 	storyRoots: { Instance },
-
 	name: string?,
-	roact: Roact?,
-	react: React?,
-	reactRoblox: ReactRoblox?,
 }
 types.Storybook = t.interface({
 	storyRoots = t.array(t.Instance),
@@ -57,6 +53,30 @@ types.Storybook = t.interface({
 	react = t.optional(types.React),
 	reactRoblox = t.optional(types.ReactRoblox),
 })
+
+export type RoactStorybook = StorybookMeta & {
+	roact: Roact,
+}
+types.RoactStorybook = t.union(
+	types.Storybook,
+	t.interface({
+		roact = t.optional(types.Roact),
+	})
+)
+
+export type ReactStorybook = StorybookMeta & {
+	react: React,
+	reactRoblox: ReactRoblox,
+}
+types.ReactStorybook = t.union(
+	types.Storybook,
+	t.interface({
+		react = t.optional(types.React),
+		reactRoblox = t.optional(types.ReactRoblox),
+	})
+)
+
+export type Storybook = RoactStorybook | ReactStorybook | StorybookMeta
 
 export type StoryMeta = {
 	name: string,
@@ -92,6 +112,6 @@ export type FunctionalStory = StoryMeta & {
 	story: (target: GuiObject, props: StoryProps) -> (() -> ())?,
 }
 
-export type Story = FunctionalStory | RoactStory | ReactStory
+export type Story = FunctionalStory | RoactStory | ReactStory | StoryMeta
 
 return types

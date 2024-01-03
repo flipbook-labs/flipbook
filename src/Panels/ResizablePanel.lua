@@ -11,7 +11,7 @@ local defaultProps = {
 	maxSize = Vector2.new(math.huge, math.huge),
 }
 
-export type Props = typeof(defaultProps) & {
+export type Props = {
 	initialSize: UDim2,
 	layoutOrder: number?,
 	dragHandles: { types.DragHandle }?,
@@ -21,8 +21,10 @@ export type Props = typeof(defaultProps) & {
 	children: any,
 }
 
-local function ResizablePanel(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function ResizablePanel(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local absoluteSize, setAbsoluteSize = React.useState(nil)
 

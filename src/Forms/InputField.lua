@@ -12,7 +12,7 @@ local defaultProps = {
 	autoFocus = false,
 }
 
-export type Props = typeof(defaultProps) & {
+export type Props = {
 	layoutOrder: number?,
 	onSubmit: (text: string) -> (),
 	onFocus: (() -> ())?,
@@ -22,8 +22,10 @@ export type Props = typeof(defaultProps) & {
 	transform: ((newText: string, oldText: string) -> string)?,
 }
 
-local function InputField(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function InputField(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local ref = React.createRef()
 	local text, setText = React.useState("")

@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local RoactSpring = require(flipbook.Packages.RoactSpring)
+local ReactSpring = require(flipbook.Packages.ReactSpring)
 local Sift = require(flipbook.Packages.Sift)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
@@ -16,22 +16,24 @@ local defaultProps = {
 	size = UDim2.new(1, 0, 0, 36),
 }
 
-type Props = typeof(defaultProps) & {
+export type Props = {
 	layoutOrder: number?,
 	onSearchChanged: ((value: string) -> ())?,
 }
 
+type InternalProps = Props & typeof(defaultProps)
+
 local SEARCH_ICON_SIZE = 16 -- px
 
-local function Searchbar(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+local function Searchbar(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local theme = useTheme()
 	local search, setSearch = React.useState("")
 	local isFocused, setIsFocused = React.useState(false)
 	local isExpanded = isFocused or search ~= ""
 
-	local styles = (RoactSpring.useSpring :: any)({
+	local styles = (ReactSpring.useSpring :: any)({
 		alpha = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})

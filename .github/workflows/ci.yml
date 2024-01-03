@@ -51,19 +51,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        run: wally install
+        run: ./bin/wally-install.sh
 
-      - name: Download global Roblox types
-        shell: bash
-        run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
-
-      - name: Generate sourcemap for LSP
-        shell: bash
-        run: rojo sourcemap tests.project.json -o sourcemap.json
-
-      - name: Analyze
-        shell: bash
-        run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua --ignore=**/_Index/** src/
+      - name: Run Luau analysis
+        run: ./bin/analyze.sh
 
   scripts:
     runs-on: ubuntu-latest

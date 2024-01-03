@@ -10,9 +10,9 @@ local Dropdown = require(flipbook.Forms.Dropdown)
 local e = React.createElement
 
 type Props = {
-	layoutOrder: number,
 	controls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
+	layoutOrder: number?,
 }
 
 local function StoryControls(props: Props)
@@ -40,6 +40,7 @@ local function StoryControls(props: Props)
 			option = React.createElement(InputField, {
 				placeholder = value,
 				onTextChange = setControl,
+				onSubmit = setControl,
 			})
 		end
 
