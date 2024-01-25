@@ -5,7 +5,7 @@ local Sift = require(flipbook.Packages.Sift)
 local Directory = require(script.Directory)
 local Story = require(script.Story)
 local types = require(flipbook.Explorer.types)
-local getTreeDescendants = require(flipbook.Explorer.getTreeDescendants)
+local filterComponentTreeNode = require(flipbook.Explorer.filterComponentTreeNode)
 
 local e = React.createElement
 
@@ -60,22 +60,8 @@ local function Component(providedProps: Props)
 		end
 	end
 
-	if props.filter then
-		if props.node.icon == "story" and not props.node.name:lower():match(props.filter:lower()) then
-			return
-		end
-
-		local isEmpty = true
-		for _, descendant in getTreeDescendants(props.node) do
-			if descendant.name:lower():match(props.filter:lower()) then
-				isEmpty = false
-				break
-			end
-		end
-
-		if isEmpty then
-			return
-		end
+	if props.filter and filterComponentTreeNode(props.node, props.filter) then
+		return
 	end
 
 	return e("Frame", {
