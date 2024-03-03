@@ -73,7 +73,7 @@ Then load a new Baseplate and open the flipbook plugin. Its storybook should now
 
 ## Testing
 
-While developing, you should also be writing unit tests. Unit tests are written in `.spec.lua` files. You can see examples of this throughout the repository's codebase.
+While developing, you should also be writing unit tests. Unit tests are written in `.spec.luau` files. You can see examples of this throughout the repository's codebase.
 
 To run tests, simply start the experience in Studio. You will see in the output if tests are passing or failing.
 

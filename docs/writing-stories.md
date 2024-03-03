@@ -8,17 +8,17 @@ flipbook uses the concept of "storybooks" and "stories." A storybook is used to 
 
 ## Storybook
 
-Every project needs a storybook, so to get started you will create a new `ProjectName.storybook.lua` file at the root of your project with the following contents:
+Every project needs a storybook, so to get started you will create a new `ProjectName.storybook.luau` file at the root of your project with the following contents:
 
 ```lua
--- src/ProjectName.storybook.lua
+-- src/ProjectName.storybook.luau
 
--- Make sure to adjust the path to Roact if needed 
+-- Make sure to adjust the path to Roact if needed
 local Roact = require(path.to.Roact)
 
 return {
     roact = Roact,
-    storyRoots = { 
+    storyRoots = {
         script.Parent.Components
     }
 }
@@ -30,10 +30,10 @@ Right now you should see a single entry in flipbook's sidebar for this storybook
 
 ## Story
 
-A story and its associated component should be in two separate files. Both files should share the same name, however the story will end with `.story`. To get started, let's create `Button.lua` and `Button.story.lua`:
+A story and its associated component should be in two separate files. Both files should share the same name, however the story will end with `.story`. To get started, let's create `Button.luau` and `Button.story.luau`:
 
 ```lua
--- src/Components/Button.lua
+-- src/Components/Button.luau
 
 local Roact = require(path.to.Roact)
 
@@ -68,7 +68,7 @@ return Button
 And now let's write the story to mount the Button component:
 
 ```lua
--- src/Components/Button.story.lua
+-- src/Components/Button.story.luau
 
 local Roact = require(path.to.Roact)
 local Button = require(script.Parent.Button)
