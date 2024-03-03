@@ -64,7 +64,7 @@ build target="dev":
 
 build-watch target="dev":
 	npx -y chokidar-cli "{{ source_dir }}/**/*" --initial \
-		-c "just _build {{ target }} {{ build_dir }}" \
+		-c "just _build {{ target }} {{ plugin_output }}" \
 
 build-here target="dev" filename=plugin_filename:
 	just _build {{ target }} {{ filename }}
