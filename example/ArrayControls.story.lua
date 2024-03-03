@@ -1,8 +1,6 @@
-local Example = script:FindFirstAncestor("Example")
-
-local React = require(Example.Parent.Packages.React)
-local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
-local Sift = require(Example.Parent.Packages.Sift)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local Sift = require("@pkg/Sift")
 
 local fonts = Sift.Array.sort(Enum.Font:GetEnumItems(), function(a: Enum.Font, z: Enum.Font)
 	return a.Name < z.Name

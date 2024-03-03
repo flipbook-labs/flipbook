@@ -1,6 +1,4 @@
-local Example = script:FindFirstAncestor("Example")
-
-local Roact = require(Example.Parent.Packages.Roact)
+local Roact = require("@pkg/Roact")
 
 export type Props = {
 	text: string,
