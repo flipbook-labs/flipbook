@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local Sift = require(flipbook.Packages.Sift)
-local React = require(flipbook.Packages.React)
-local useTheme = require(flipbook.Common.useTheme)
+local Sift = require("@pkg/Sift")
+local React = require("@pkg/React")
+local useTheme = require("@root/Common/useTheme")
 
 export type Props = {
 	[string]: any,

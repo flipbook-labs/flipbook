@@ -1,18 +1,16 @@
-local flipbook = script
-
 local RunService = game:GetService("RunService")
 
 if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-local ModuleLoader = require(flipbook.Packages.ModuleLoader)
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local createWidget = require(flipbook.Plugin.createWidget)
-local createToggleButton = require(flipbook.Plugin.createToggleButton)
-local PluginApp = require(flipbook.Plugin.PluginApp)
-local constants = require(flipbook.constants)
+local ModuleLoader = require("@pkg/ModuleLoader")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local createWidget = require("@root/Plugin/createWidget")
+local createToggleButton = require("@root/Plugin/createToggleButton")
+local PluginApp = require("@root/Plugin/PluginApp")
+local constants = require("@root/constants")
 
 local PLUGIN_NAME = "flipbook"
 

@@ -1,5 +1,5 @@
 return function()
-	local getTreeDescendants = require(script.Parent.getTreeDescendants)
+	local getTreeDescendants = require("./getTreeDescendants")
 
 	it("should return an empty table when the root has no children", function()
 		local root = { name = "root", children = {} }

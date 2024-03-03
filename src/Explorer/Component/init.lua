@@ -1,11 +1,9 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local Sift = require(flipbook.Packages.Sift)
-local Directory = require(script.Directory)
-local Story = require(script.Story)
-local types = require(flipbook.Explorer.types)
-local getTreeDescendants = require(flipbook.Explorer.getTreeDescendants)
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local Directory = require("./Directory")
+local Story = require("./Story")
+local types = require("@root/Explorer/types")
+local getTreeDescendants = require("@root/Explorer/getTreeDescendants")
 
 local e = React.createElement
 

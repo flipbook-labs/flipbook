@@ -1,10 +1,8 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local constants = require(flipbook.constants)
-local types = require(flipbook.Storybook.types)
-local isStorybookModule = require(flipbook.Storybook.isStorybookModule)
-local useDescendants = require(flipbook.Common.useDescendants)
+local React = require("@pkg/React")
+local constants = require("@root/constants")
+local types = require("@root/Storybook/types")
+local isStorybookModule = require("@root/Storybook/isStorybookModule")
+local useDescendants = require("@root/Common/useDescendants")
 
 local function hasPermission(instance: Instance)
 	local success = pcall(function()

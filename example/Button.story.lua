@@ -1,7 +1,7 @@
 local Example = script:FindFirstAncestor("Example")
 
 local Roact = require(Example.Parent.Packages.Roact)
-local Button = require(script.Parent.Button)
+local Button = require("./Button")
 
 return {
 	summary = "A generic button component that can be used anywhere",

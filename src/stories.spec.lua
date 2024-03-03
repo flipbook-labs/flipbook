@@ -1,14 +1,12 @@
 local CoreGui = game:GetService("CoreGui")
 
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local isStoryModule = require(flipbook.Storybook.isStoryModule)
-local mountStory = require(flipbook.Storybook.mountStory)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local isStoryModule = require("@root/Storybook/isStoryModule")
+local mountStory = require("@root/Storybook/mountStory")
 
 return function()
-	for _, descendant in ipairs(flipbook:GetDescendants()) do
+	for _, descendant in ipairs(script.Parent:GetDescendants()) do
 		if isStoryModule(descendant) then
 			it("should mount/unmount " .. descendant.Name, function()
 				local story = require(descendant)

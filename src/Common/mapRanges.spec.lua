@@ -1,5 +1,5 @@
 return function()
-	local mapRanges = require(script.Parent.mapRanges)
+	local mapRanges = require("./mapRanges")
 
 	it("should return 1.5 if we remap 0.5 from a 0 -> 1 range to a 1 -> 2 range", function()
 		expect(mapRanges(0.5, 0, 1, 1, 2)).to.equal(1.5)

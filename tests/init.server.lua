@@ -2,7 +2,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local flipbook = script:FindFirstAncestor("flipbook") or ServerScriptService:FindFirstChild("flipbook")
 
-local TestEZ = require(flipbook.Packages.TestEZ)
+local TestEZ = require("@pkg/TestEZ")
 
 _G.__DEV__ = true
 _G.__ROACT_17_MOCK_SCHEDULER__ = true

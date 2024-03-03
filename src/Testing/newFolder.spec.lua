@@ -1,5 +1,5 @@
 return function()
-	local newFolder = require(script.Parent.newFolder)
+	local newFolder = require("./newFolder")
 
 	it("should return a folder named 'Root'", function()
 		local folder = newFolder({})

@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local SelectableTextLabel = require(script.Parent.SelectableTextLabel)
+local React = require("@pkg/React")
+local SelectableTextLabel = require("./SelectableTextLabel")
 
 local controls = {
 	text = "Ad proident sit nulla incididunt do nisi amet velit velit...",

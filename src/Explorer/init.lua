@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
+local React = require("@pkg/React")
 local Component = require(script.Component)
 local types = require(script.types)
 
