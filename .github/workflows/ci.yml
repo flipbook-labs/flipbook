@@ -26,7 +26,7 @@ jobs:
 
       - run: just init
       - run: just lint
-      - run: just build-here prod {{ env.MODEL_FILE }}
+      - run: just build-here prod ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v3
         with:
