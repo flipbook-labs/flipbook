@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local InputField = require(script.Parent.InputField)
+local React = require("@pkg/React")
+local InputField = require("./InputField")
 
 return {
 	story = React.createElement(InputField, {

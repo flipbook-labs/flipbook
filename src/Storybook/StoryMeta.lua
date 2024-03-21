@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local types = require(flipbook.Storybook.types)
-local useTheme = require(flipbook.Common.useTheme)
+local React = require("@pkg/React")
+local types = require("@root/Storybook/types")
+local useTheme = require("@root/Common/useTheme")
 
 local MAX_SUMMARY_SIZE = 600
 

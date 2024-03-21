@@ -1,10 +1,8 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
 return function()
-	local React = require(flipbook.Packages.React)
-	local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-	local newFolder = require(flipbook.Testing.newFolder)
-	local useDescendants = require(script.Parent.useDescendants)
+	local React = require("@pkg/React")
+	local ReactRoblox = require("@pkg/ReactRoblox")
+	local newFolder = require("@root/Testing/newFolder")
+	local useDescendants = require("./useDescendants")
 
 	local container = Instance.new("ScreenGui")
 	local root = ReactRoblox.createRoot(container)

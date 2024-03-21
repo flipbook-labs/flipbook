@@ -3,7 +3,7 @@
 /*.rbxm*
 
 # Luau
-sourcemap.json
+sourcemap*.json
 
 # Selene
 /roblox.toml

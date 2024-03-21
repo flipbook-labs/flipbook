@@ -1,5 +1,5 @@
 return function()
-	local isStoryModule = require(script.Parent.isStoryModule)
+	local isStoryModule = require("./isStoryModule")
 
 	it("should return `true` for a ModuleScript with .story in the name", function()
 		local module = Instance.new("ModuleScript")

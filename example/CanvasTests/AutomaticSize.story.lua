@@ -1,7 +1,5 @@
-local Example = script:FindFirstAncestor("Example")
-
-local React = require(Example.Parent.Packages.React)
-local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 return {
 	summary = "AutoamticSize test for the story preview",

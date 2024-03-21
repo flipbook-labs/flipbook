@@ -1,9 +1,7 @@
 return function()
-	local flipbook = script:FindFirstAncestor("flipbook")
-
-	local types = require(flipbook.Storybook.types)
-	local newFolder = require(flipbook.Testing.newFolder)
-	local createStoryNodes = require(script.Parent.createStoryNodes)
+	local types = require("@root/Storybook/types")
+	local newFolder = require("@root/Testing/newFolder")
+	local createStoryNodes = require("./createStoryNodes")
 
 	local mockStoryModule = Instance.new("ModuleScript")
 

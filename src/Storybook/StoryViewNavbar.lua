@@ -1,10 +1,8 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local assets = require(flipbook.assets)
-local Navigation = require(flipbook.Navigation)
-local Sprite = require(flipbook.Common.Sprite)
-local useTheme = require(flipbook.Common.useTheme)
+local React = require("@pkg/React")
+local assets = require("@root/assets")
+local Navigation = require("@root/Navigation")
+local Sprite = require("@root/Common/Sprite")
+local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
 

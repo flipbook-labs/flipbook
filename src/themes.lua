@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local tailwind = require(flipbook.tailwind)
+local tailwind = require("@root/tailwind")
 
 export type Theme = {
 	textSize: number,

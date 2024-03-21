@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ResizablePanel = require(script.Parent.ResizablePanel)
+local React = require("@pkg/React")
+local ResizablePanel = require("./ResizablePanel")
 
 local controls = {
 	minWidth = 200,

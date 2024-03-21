@@ -4,16 +4,10 @@
     "$className": "DataModel",
     "ServerScriptService": {
       "flipbook": {
-        "Packages": {
-          "$path": "Packages"
-        },
-        "Example": {
-          "$path": "example"
-        },
         "TestRunner": {
           "$path": "tests"
         },
-        "$path": "src"
+        "$path": "dev.project.json"
       }
     }
   }

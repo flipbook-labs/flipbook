@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ScrollingFrame = require(script.Parent.ScrollingFrame)
+local React = require("@pkg/React")
+local ScrollingFrame = require("./ScrollingFrame")
 
 local controls = {
 	numItems = 10,

@@ -1,12 +1,10 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ReactSpring = require(flipbook.Packages.ReactSpring)
-local assets = require(flipbook.assets)
-local constants = require(flipbook.constants)
-local useTheme = require(flipbook.Common.useTheme)
-local Sprite = require(flipbook.Common.Sprite)
-local types = require(flipbook.Explorer.types)
+local React = require("@pkg/React")
+local ReactSpring = require("@pkg/ReactSpring")
+local assets = require("@root/assets")
+local constants = require("@root/constants")
+local useTheme = require("@root/Common/useTheme")
+local Sprite = require("@root/Common/Sprite")
+local types = require("@root/Explorer/types")
 
 local e = React.createElement
 

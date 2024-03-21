@@ -1,6 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
+local storybookTypes = require("@root/Storybook/types")
 
-local storybookTypes = require(flipbook.Storybook.types)
 type Storybook = storybookTypes.Storybook
 
 export type ComponentTreeNode = {

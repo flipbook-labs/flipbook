@@ -1,15 +1,13 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local constants = require(flipbook.constants)
-local createStoryNodes = require(flipbook.Storybook.createStoryNodes)
-local Branding = require(flipbook.Common.Branding)
-local ComponentTree = require(flipbook.Explorer)
-local Searchbar = require(flipbook.Forms.Searchbar)
-local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
-local useTheme = require(flipbook.Common.useTheme)
-local storybookTypes = require(flipbook.Storybook.types)
-local explorerTypes = require(flipbook.Explorer.types)
+local React = require("@pkg/React")
+local constants = require("@root/constants")
+local createStoryNodes = require("@root/Storybook/createStoryNodes")
+local Branding = require("@root/Common/Branding")
+local ComponentTree = require("@root/Explorer")
+local Searchbar = require("@root/Forms/Searchbar")
+local ScrollingFrame = require("@root/Common/ScrollingFrame")
+local useTheme = require("@root/Common/useTheme")
+local storybookTypes = require("@root/Storybook/types")
+local explorerTypes = require("@root/Explorer/types")
 
 type Storybook = storybookTypes.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode

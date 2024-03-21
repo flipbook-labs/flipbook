@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local themes = require(flipbook.themes)
+local React = require("@pkg/React")
+local themes = require("@root/themes")
 
 local MOCK_STUDIO = {
 	ThemeChanged = Instance.new("BindableEvent").Event,

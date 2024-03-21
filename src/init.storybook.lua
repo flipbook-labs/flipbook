@@ -1,12 +1,10 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 return {
-	name = flipbook.Name,
+	name = script.Parent.Name,
 	storyRoots = {
-		flipbook,
+		script.Parent,
 	},
 	react = React,
 	reactRoblox = ReactRoblox,

@@ -1,7 +1,7 @@
 return function()
 	local CoreGui = game:GetService("CoreGui")
 
-	local isStorybookModule = require(script.Parent.isStorybookModule)
+	local isStorybookModule = require("./isStorybookModule")
 
 	it("should return true for ModuleScripts with the .storybook extension", function()
 		local storybook = Instance.new("ModuleScript")
