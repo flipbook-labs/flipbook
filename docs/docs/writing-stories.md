@@ -10,15 +10,13 @@ flipbook uses the concept of "storybooks" and "stories." A storybook is used to 
 
 Every project needs a storybook, so to get started you will create a new `ProjectName.storybook.lua` file at the root of your project with the following contents:
 
-```lua
--- src/ProjectName.storybook.lua
-
--- Make sure to adjust the path to Roact if needed 
+```lua title="src/ProjectName.storybook.lua"
+-- Make sure to adjust the path to Roact if needed
 local Roact = require(path.to.Roact)
 
 return {
     roact = Roact,
-    storyRoots = { 
+    storyRoots = {
         script.Parent.Components
     }
 }
@@ -32,34 +30,32 @@ Right now you should see a single entry in flipbook's sidebar for this storybook
 
 A story and its associated component should be in two separate files. Both files should share the same name, however the story will end with `.story`. To get started, let's create `Button.lua` and `Button.story.lua`:
 
-```lua
--- src/Components/Button.lua
-
+```lua title="src/Components/Button.lua"
 local Roact = require(path.to.Roact)
 
 type Props = {
-	text: string,
-	onActivated: (() -> ())?,
+    text: string,
+    onActivated: (() -> ())?,
 }
 
 local function Button(props)
-	return Roact.createElement("TextButton", {
-		Text = props.text,
-		TextSize = 16,
-		Font = Enum.Font.GothamBold,
-		TextColor3 = Color3.fromRGB(255, 255, 255),
-		BackgroundColor3 = Color3.fromRGB(239, 31, 90),
-		BorderSizePixel = 0,
-		AutomaticSize = Enum.AutomaticSize.XY,
-		[Roact.Event.Activated] = props.onActivated,
-	}, {
-		Padding = Roact.createElement("UIPadding", {
-			PaddingTop = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
-			PaddingBottom = UDim.new(0, 8),
-			PaddingLeft = UDim.new(0, 8),
-		}),
-	})
+    return Roact.createElement("TextButton", {
+        Text = props.text,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = Color3.fromRGB(239, 31, 90),
+        BorderSizePixel = 0,
+        AutomaticSize = Enum.AutomaticSize.XY,
+        [Roact.Event.Activated] = props.onActivated,
+    }, {
+        Padding = Roact.createElement("UIPadding", {
+            PaddingTop = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 8),
+            PaddingBottom = UDim.new(0, 8),
+            PaddingLeft = UDim.new(0, 8),
+        }),
+    })
 end
 
 return Button
@@ -67,20 +63,18 @@ return Button
 
 And now let's write the story to mount the Button component:
 
-```lua
--- src/Components/Button.story.lua
-
+```lua title="src/Components/Button.story.lua"
 local Roact = require(path.to.Roact)
 local Button = require(script.Parent.Button)
 
 return {
-	summary = "A generic button component that can be used anywhere",
-	story = Roact.createElement(Button, {
-		text = "Click me",
-		onActivated = function()
-			print("click")
-		end,
-	}),
+    summary = "A generic button component that can be used anywhere",
+    story = Roact.createElement(Button, {
+        text = "Click me",
+        onActivated = function()
+            print("click")
+        end,
+    }),
 }
 ```
 
@@ -98,33 +92,33 @@ We will continue with our Button component and give it a "disabled" state for wh
 
 ```diff
 type Props = {
-	text: string,
+    text: string,
 +   isDisabled: boolean?,
-	onActivated: (() -> ())?,
+    onActivated: (() -> ())?,
 }
 
 local function Button(props)
-+ 	local color = if props.isDisabled then Color3.fromRGB(82, 82, 82) else Color3.fromRGB(239, 31, 90)
++   local color = if props.isDisabled then Color3.fromRGB(82, 82, 82) else Color3.fromRGB(239, 31, 90)
 
-	return Roact.createElement("TextButton", {
-		Text = props.text,
-		TextSize = 16,
-		Font = Enum.Font.GothamBold,
-		TextColor3 = Color3.fromRGB(255, 255, 255),
+    return Roact.createElement("TextButton", {
+        Text = props.text,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Color3.fromRGB(255, 255, 255),
 -       BackgroundColor3 = Color3.fromRGB(239, 31, 90),
-+		BackgroundColor3 = color,
-		BorderSizePixel = 0,
-		AutomaticSize = Enum.AutomaticSize.XY,
--		[Roact.Event.Activated] = props.onActivated,
-+		[Roact.Event.Activated] = if props.isDisabled then nil else props.onActivated,
-	}, {
-		Padding = Roact.createElement("UIPadding", {
-			PaddingTop = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
-			PaddingBottom = UDim.new(0, 8),
-			PaddingLeft = UDim.new(0, 8),
-		}),
-	})
++       BackgroundColor3 = color,
+        BorderSizePixel = 0,
+        AutomaticSize = Enum.AutomaticSize.XY,
+-       [Roact.Event.Activated] = props.onActivated,
++       [Roact.Event.Activated] = if props.isDisabled then nil else props.onActivated,
+    }, {
+        Padding = Roact.createElement("UIPadding", {
+            PaddingTop = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 8),
+            PaddingBottom = UDim.new(0, 8),
+            PaddingLeft = UDim.new(0, 8),
+        }),
+    })
 end
 
 return Button
@@ -137,14 +131,14 @@ local Roact = require(path.to.Roact)
 local Button = require(script.Parent.Button)
 
 return {
-	summary = "A generic button component that can be used anywhere",
-	story = Roact.createElement(Button, {
-		text = "Click me",
+    summary = "A generic button component that can be used anywhere",
+    story = Roact.createElement(Button, {
+        text = "Click me",
 +       isDisabled = true,
-		onActivated = function()
-			print("click")
-		end,
-	}),
+        onActivated = function()
+            print("click")
+        end,
+    }),
 }
 ```
 
@@ -159,21 +153,21 @@ local Roact = require(path.to.Roact)
 local Button = require(script.Parent.Button)
 
 return {
-	summary = "A generic button component that can be used anywhere",
-+	controls = {
-+		isDisabled = false,
-+	},
--	story = Roact.createElement(Button, {
-+	story = function(props)
-+		return Roact.createElement(Button, {
-			text = "Click me",
--			isDisabled = true,
-+			isDisabled = props.controls.isDisabled,
-			onActivated = function()
-				print("click")
-			end,
-		})
-+	end,
+    summary = "A generic button component that can be used anywhere",
++   controls = {
++       isDisabled = false,
++   },
+-   story = Roact.createElement(Button, {
++   story = function(props)
++       return Roact.createElement(Button, {
+            text = "Click me",
+-           isDisabled = true,
++           isDisabled = props.controls.isDisabled,
+            onActivated = function()
+                print("click")
+            end,
+        })
++   end,
 }
 ```
 
