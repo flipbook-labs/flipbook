@@ -4,6 +4,6 @@
     "Packages": {
       "$path": "Packages"
     },
-    "$path": "build"
+    "$path": "src"
   }
 }

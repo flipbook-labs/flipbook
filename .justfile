@@ -7,13 +7,14 @@ plugins_dir := if os_family() == "unix" {
 }
 
 source_dir := "src"
+example_dir := "example"
 build_dir := "build"
 testez_defs_path := "testez.d.lua"
 plugin_filename := "flipbook.rbxm"
 plugin_output := plugins_dir / plugin_filename
 
 default_project := "default.project.json"
-tests_project := "tests.project.json"
+dev_project := "dev.project.json"
 build_project := "build.project.json"
 
 tmpdir := `mktemp -d`
@@ -39,16 +40,22 @@ _prune:
 	rm -rf {{ build_dir / "**/*.storybook.lua" }}
 
 _build target output:
+	#!/usr/bin/env sh
+	set -euxo pipefail
+
 	just clean
 
 	mkdir -p {{ build_dir }}
 
-	rojo sourcemap {{ default_project }} -o sourcemap.json
+	rojo sourcemap {{ build_project }} -o sourcemap-darklua.json
 	darklua process {{ source_dir }} {{ build_dir }}
 
-	{{ if target == "prod" { `just _prune` } else { `` } }}
-
-	rojo build {{ build_project }} -o {{ output }}
+	if [[ "{{ target }}" = "prod" ]]; then
+		just _prune
+		rojo build {{ default_project }} -o {{ output }}
+	else
+		rojo build {{ dev_project }} -o {{ output }}
+	fi
 
 init:
 	foreman install
@@ -77,7 +84,7 @@ analyze:
 	curl -s -o {{ global_defs_path }} \
 		-O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
 
-	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
+	rojo sourcemap {{ dev_project }} -o {{ sourcemap_path }}
 
 	luau-lsp analyze --sourcemap={{ sourcemap_path }} \
 		--defs={{ global_defs_path }} \

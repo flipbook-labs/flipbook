@@ -7,6 +7,6 @@
     "Example": {
       "$path": "example"
     },
-    "$path": "src"
+    "$path": "build"
   }
 }

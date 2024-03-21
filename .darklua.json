@@ -11,7 +11,7 @@
       },
       "target": {
         "name": "roblox",
-        "rojo_sourcemap": "./sourcemap.json",
+        "rojo_sourcemap": "./sourcemap-darklua.json",
         "indexing_style": "property"
       }
     },
