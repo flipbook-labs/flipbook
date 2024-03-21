@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
-local Component = require(script.Component)
-local types = require(script.types)
+local Component = require("./Component")
+local types = require("./types")
 
 local e = React.createElement
 
