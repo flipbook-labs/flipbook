@@ -1,62 +1,64 @@
-return function()
-	local flipbook = script:FindFirstAncestor("flipbook")
+local flipbook = script:FindFirstAncestor("flipbook")
 
-	local types = require(flipbook.Storybook.types)
-	local newFolder = require(flipbook.Testing.newFolder)
-	local createStoryNodes = require(script.Parent.createStoryNodes)
+local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local types = require(flipbook.Storybook.types)
+local newFolder = require(flipbook.Testing.newFolder)
+local createStoryNodes = require(script.Parent.createStoryNodes)
 
-	local mockStoryModule = Instance.new("ModuleScript")
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-	local mockStoryRoot = newFolder({
-		Components = newFolder({
-			["Component"] = Instance.new("ModuleScript"),
-			["Component.story"] = mockStoryModule,
-		}),
-	})
+local mockStoryModule = Instance.new("ModuleScript")
 
-	local mockStorybook: types.Storybook = {
-		name = "MockStorybook",
-		storyRoots = { mockStoryRoot },
-	}
+local mockStoryRoot = newFolder({
+	Components = newFolder({
+		["Component"] = Instance.new("ModuleScript"),
+		["Component.story"] = mockStoryModule,
+	}),
+})
 
-	it("should use an icon for storybooks", function()
-		local nodes = createStoryNodes({ mockStorybook })
+local mockStorybook: types.Storybook = {
+	name = "MockStorybook",
+	storyRoots = { mockStoryRoot },
+}
 
-		local storybook = nodes[1]
-		expect(storybook).to.be.ok()
-		expect(storybook.icon).to.equal("storybook")
-	end)
+test("use an icon for storybooks", function()
+	local nodes = createStoryNodes({ mockStorybook })
 
-	it("should use an icon for container instances", function()
-		local nodes = createStoryNodes({ mockStorybook })
+	local storybook = nodes[1]
+	expect(storybook).to.be.ok()
+	expect(storybook.icon).to.equal("storybook")
+end)
 
-		local storybook = nodes[1]
-		local components = storybook.children[1]
+test("use an icon for container instances", function()
+	local nodes = createStoryNodes({ mockStorybook })
 
-		expect(components).to.be.ok()
-		expect(components.icon).to.equal("folder")
-	end)
+	local storybook = nodes[1]
+	local components = storybook.children[1]
 
-	it("should use an icon for stories", function()
-		local nodes = createStoryNodes({ mockStorybook })
+	expect(components).to.be.ok()
+	expect(components.icon).to.equal("folder")
+end)
 
-		local storybook = nodes[1]
-		local components = storybook.children[1]
-		local story = components.children[1]
+test("use an icon for stories", function()
+	local nodes = createStoryNodes({ mockStorybook })
 
-		expect(story).to.be.ok()
-		expect(story.icon).to.equal("story")
-	end)
+	local storybook = nodes[1]
+	local components = storybook.children[1]
+	local story = components.children[1]
 
-	it("should ignore other ModuleScripts", function()
-		local nodes = createStoryNodes({ mockStorybook })
+	expect(story).to.be.ok()
+	expect(story.icon).to.equal("story")
+end)
 
-		local storybook = nodes[1]
-		local components = storybook.children[1]
+test("ignore other ModuleScripts", function()
+	local nodes = createStoryNodes({ mockStorybook })
 
-		-- In mockStoryRoot, there is a Component module and an accompanying
-		-- story. We only want stories in the node tree, so we only expect to
-		-- get one child
-		expect(#components.children).to.equal(1)
-	end)
-end
+	local storybook = nodes[1]
+	local components = storybook.children[1]
+
+	-- In mockStoryRoot, there is a Component module and an accompanying
+	-- story. We only want stories in the node tree, so we only expect to
+	-- get one child
+	expect(#components.children).to.equal(1)
+end)
