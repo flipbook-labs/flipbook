@@ -5,40 +5,43 @@ on:
   release:
     types: [published]
 
-env:
-  REPO_URL: github.com/flipbook-labs/flipbook
-
 jobs:
-  build:
+  build-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: actions/setup-node@v4
         with:
+          node-version: 18
+
+      - uses: Roblox/setup-foreman@v3
+        with:
+          allow-external-github-orgs: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v2.5.1
-
-      - name: Install Moonwave
-        run: npm install -g moonwave
-
-      - name: Extract
-        run: moonwave-extractor extract src
+      - name: Install dependencies
+        run: npm ci
+        working-directory: docs
 
       - name: Build
-        run: moonwave build
+        run: npm run build
+        working-directory: docs
 
-      - name: Configure Git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
 
-      - name: Use GITHUB_TOKEN to allow pushing
-        run: git remote set-url origin https://github-actions[bot]:${{ env.GITHUB_TOKEN }}@${{ env.REPO_URL }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy
-        if: ${{ github.event.release }}
-        run: moonwave build --publish
+  deploy-docs:
+    needs: build-docs
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
