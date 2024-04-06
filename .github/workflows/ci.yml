@@ -10,22 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: extractions/setup-just@v1
+
+      - uses: Roblox/setup-foreman@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
-      - name: Lint
-        run: |
-          selene generate-roblox-std
-          selene src/
-
-      - name: Format
-        run: stylua --check src/
-
-      - name: Install dependencies
-        run: wally install
+      - run: just init
+      - run: just lint
 
       - name: Get model file name
         run: |
@@ -44,31 +39,17 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: extractions/setup-just@v1
+
+      - uses: Roblox/setup-foreman@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
-      - name: Install dependencies
-        run: ./bin/wally-install.sh
-
-      - name: Run Luau analysis
-        run: ./bin/analyze.sh
-
-  scripts:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Ensure each script is executable
-        run: |
-          for f in ./bin/*; do
-              if [[ ! -x "$f" ]]; then
-                  echo "Script '$f' is not executable"
-                  exit 1
-              fi
-          done
+      - run: just init
+      - run: just analyze
 
   # Running unit tests in CI has historically been cumbersome, and presently
   # there is no way to run Roblox Studio from a GitHub workflow. As such, our

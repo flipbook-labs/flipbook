@@ -2,10 +2,15 @@
   "name": "flipbook",
   "tree": {
     "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Packages": {
+        "$path": "packages.project.json"
+      }
+    },
     "ServerScriptService": {
       "flipbook": {
         "Packages": {
-          "$path": "Packages"
+          "$path": "packages.project.json"
         },
         "Example": {
           "$path": "example"

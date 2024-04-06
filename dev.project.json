@@ -2,7 +2,7 @@
   "name": "flipbook",
   "tree": {
     "Packages": {
-      "$path": "Packages"
+      "$path": "packages.project.json"
     },
     "Example": {
       "$path": "example"
