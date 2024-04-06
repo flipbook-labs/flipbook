@@ -1,0 +1,9 @@
+{
+  "name": "TestRunner",
+  "tree": {
+    "Packages": {
+      "$path": "../packages.project.json"
+    },
+    "$path": "src"
+  }
+}

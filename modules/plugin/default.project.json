@@ -1,0 +1,9 @@
+{
+  "name": "Plugin",
+  "tree": {
+    "Packages": {
+      "$path": "../packages.project.json"
+    },
+    "$path": "src"
+  }
+}

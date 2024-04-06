@@ -1,9 +1,6 @@
 {
   "name": "flipbook",
   "tree": {
-    "Packages": {
-      "$path": "Packages"
-    },
-    "$path": "src"
+    "$path": "modules/plugin"
   }
 }

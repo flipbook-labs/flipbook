@@ -1,0 +1,9 @@
+{
+  "name": "Example",
+  "tree": {
+    "Packages": {
+      "$path": "../packages.project.json"
+    },
+    "$path": "src"
+  }
+}
