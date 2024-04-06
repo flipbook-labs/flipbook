@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local React = require(flipbook.Packages.React)
 local Component = require(script.Component)
+local React = require(flipbook.Packages.React)
 local types = require(script.types)
 
 local e = React.createElement

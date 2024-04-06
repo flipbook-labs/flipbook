@@ -1,13 +1,13 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local PluginContext = require(flipbook.Plugin.PluginContext)
 local React = require(flipbook.Packages.React)
+local ResizablePanel = require(flipbook.Panels.ResizablePanel)
+local Sidebar = require(flipbook.Panels.Sidebar)
+local StoryCanvas = require(flipbook.Storybook.StoryCanvas)
 local constants = require(flipbook.constants)
 local useStorybooks = require(flipbook.Storybook.useStorybooks)
 local useTheme = require(flipbook.Common.useTheme)
-local PluginContext = require(flipbook.Plugin.PluginContext)
-local ResizablePanel = require(flipbook.Panels.ResizablePanel)
-local StoryCanvas = require(flipbook.Storybook.StoryCanvas)
-local Sidebar = require(flipbook.Panels.Sidebar)
 
 export type Props = {
 	plugin: Plugin,

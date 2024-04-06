@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
-local assets = require(flipbook.assets)
 local Sprite = require(script.Parent.Sprite)
+local assets = require(flipbook.assets)
 
 return {
 	story = React.createElement("Folder", {}, {

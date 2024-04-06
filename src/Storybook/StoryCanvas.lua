@@ -1,9 +1,9 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local React = require(flipbook.Packages.React)
-local types = require(flipbook.Storybook.types)
 local NoStorySelected = require(flipbook.Storybook.NoStorySelected)
+local React = require(flipbook.Packages.React)
 local StoryView = require(flipbook.Storybook.StoryView)
+local types = require(flipbook.Storybook.types)
 local useTheme = require(flipbook.Common.useTheme)
 
 local e = React.createElement

@@ -2,9 +2,9 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local RunService = game:GetService("RunService")
 
-local Sift = require(flipbook.Packages.Sift)
-local React = require(flipbook.Packages.React)
 local PluginContext = require(flipbook.Plugin.PluginContext)
+local React = require(flipbook.Packages.React)
+local Sift = require(flipbook.Packages.Sift)
 local types = require(flipbook.Panels.types)
 
 local defaultProps = {

@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local DragHandle = require(flipbook.Panels.DragHandle)
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
-local DragHandle = require(flipbook.Panels.DragHandle)
 local types = require(flipbook.Panels.types)
 
 local defaultProps = {

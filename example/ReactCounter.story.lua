@@ -1,8 +1,8 @@
 local Example = script:FindFirstAncestor("Example")
 
 local React = require(Example.Parent.Packages.React)
-local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
 local ReactCounter = require(script.Parent.ReactCounter)
+local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
 
 local controls = {
 	increment = 1,
