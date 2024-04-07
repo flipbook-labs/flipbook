@@ -17,7 +17,5 @@ ReactSpring = "chriscerie/react-spring@2.0.0"
 Sift = "csqrl/sift@0.0.4"
 t = "osyrisrblx/t@3.0.0"
 Roact = "roblox/roact@1.4.4"
-
-[dev-dependencies]
 Jest = "jsdotlua/jest@3.6.1-rc.2"
 JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"

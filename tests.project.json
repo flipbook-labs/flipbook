@@ -4,21 +4,10 @@
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Packages": {
-        "$path": "packages.project.json"
-      }
-    },
-    "ServerScriptService": {
+        "$path": "Packages"
+      },
       "flipbook": {
-        "Packages": {
-          "$path": "packages.project.json"
-        },
-        "Example": {
-          "$path": "example"
-        },
-        "TestRunner": {
-          "$path": "tests"
-        },
-        "$path": "src"
+        "$path": "dev.project.json"
       }
     }
   }

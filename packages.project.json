@@ -1,9 +1,0 @@
-{
-  "name": "Packages",
-  "tree": {
-    "Dev": {
-      "$path": "DevPackages"
-    },
-    "$path": "Packages"
-  }
-}

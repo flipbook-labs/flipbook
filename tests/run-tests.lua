@@ -1,13 +1,16 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Jest = require(ReplicatedStorage.Packages.Dev.Jest)
+local Jest = require(ReplicatedStorage.Packages.Jest)
 
 local processServiceExists, ProcessService = pcall(function()
 	-- selene: allow(incorrect_standard_library_use)
 	return game:GetService("ProcessService")
 end)
 
-local root = ReplicatedStorage.Packages.CSF
+local root = ReplicatedStorage.flipbook
+
+_G.__DEV__ = true
+_G.__ROACT_17_MOCK_SCHEDULER__ = true
 
 local status, result = Jest.runCLI(root, {
 	verbose = false,
