@@ -13,14 +13,16 @@ local defaultProps = {
 	hoverIconY = "rbxasset://textures/StudioUIEditor/icon_resize4.png",
 }
 
-export type Props = typeof(defaultProps) & {
+export type Props = {
 	handle: types.DragHandle,
 	onDrag: (delta: Vector2) -> (),
 	onDragEnd: (() -> ())?,
 }
 
-local function DragHandle(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function DragHandle(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local plugin = React.useContext(PluginContext.Context)
 	local isDragging, setIsDragging = React.useState(false)

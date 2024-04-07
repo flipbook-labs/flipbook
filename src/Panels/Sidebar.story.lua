@@ -11,7 +11,11 @@ return {
 		storybooks = {
 			internalStorybook,
 		},
-		selectStory = print,
-		selectStorybook = print,
+		selectStory = function(storyModule)
+			print(storyModule)
+		end,
+		selectStorybook = function(storybook)
+			print(storybook)
+		end,
 	}),
 }

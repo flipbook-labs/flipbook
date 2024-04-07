@@ -5,7 +5,7 @@ local Sift = require(flipbook.Packages.Sift)
 local Directory = require(script.Directory)
 local Story = require(script.Story)
 local types = require(flipbook.Explorer.types)
-local getTreeDescendants = require(flipbook.Explorer.getTreeDescendants)
+local filterComponentTreeNode = require(flipbook.Explorer.filterComponentTreeNode)
 
 local e = React.createElement
 
@@ -13,15 +13,17 @@ local defaultProps = {
 	indent = 0,
 }
 
-type Props = typeof(defaultProps) & {
+type Props = {
 	node: types.ComponentTreeNode,
 	filter: string?,
 	activeNode: types.ComponentTreeNode?,
 	onClick: ((types.ComponentTreeNode) -> ())?,
 }
 
-local function Component(props: Props)
-	props = Sift.Dictionary.merge(defaultProps, props)
+type InternalProps = Props & typeof(defaultProps)
+
+local function Component(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
 	local hasChildren = props.node.children and #props.node.children > 0
 
@@ -58,22 +60,8 @@ local function Component(props: Props)
 		end
 	end
 
-	if props.filter then
-		if props.node.icon == "story" and not props.node.name:lower():match(props.filter:lower()) then
-			return
-		end
-
-		local isEmpty = true
-		for _, descendant in getTreeDescendants(props.node) do
-			if descendant.name:lower():match(props.filter:lower()) then
-				isEmpty = false
-				break
-			end
-		end
-
-		if isEmpty then
-			return
-		end
+	if props.filter and filterComponentTreeNode(props.node, props.filter) then
+		return
 	end
 
 	return e("Frame", {
