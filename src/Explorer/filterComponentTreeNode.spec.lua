@@ -3,7 +3,7 @@ local flipbook = script:FindFirstAncestor("flipbook")
 local types = require(flipbook.Explorer.types)
 
 return function()
-	local queryComponentTreeNode = require(script.Parent.filterComponentTreeNode)
+	local filterComponentTreeNode = require(script.Parent.filterComponentTreeNode)
 
 	it("should return true when the query does not match the story name", function()
 		local target: types.ComponentTreeNode = {
@@ -13,7 +13,7 @@ return function()
 		}
 		local query = "other"
 
-		local result = queryComponentTreeNode(target, query)
+		local result = filterComponentTreeNode(target, query)
 		expect(result).to.equal(true)
 	end)
 
@@ -25,7 +25,7 @@ return function()
 		}
 		local query = "tes"
 
-		local result = queryComponentTreeNode(target, query)
+		local result = filterComponentTreeNode(target, query)
 		expect(result).to.equal(false)
 	end)
 
@@ -48,7 +48,7 @@ return function()
 		}
 		local query = "other"
 
-		local result = queryComponentTreeNode(target, query)
+		local result = filterComponentTreeNode(target, query)
 		expect(result).to.equal(true)
 	end)
 
@@ -71,7 +71,7 @@ return function()
 		}
 		local query = "tes"
 
-		local result = queryComponentTreeNode(target, query)
+		local result = filterComponentTreeNode(target, query)
 		expect(result).to.equal(false)
 	end)
 end
