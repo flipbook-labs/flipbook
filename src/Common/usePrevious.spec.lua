@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
@@ -44,7 +44,7 @@ test("use the last value", function()
 
 	local result = container:FindFirstChildWhichIsA("TextLabel") :: TextLabel
 
-	expect(result.Text).to.equal("nil")
+	expect(result.Text).toBe("nil")
 
 	ReactRoblox.act(function()
 		toggleState:Fire()
@@ -54,7 +54,7 @@ test("use the last value", function()
 		task.wait()
 	end)
 
-	expect(result.Text).to.equal("false")
+	expect(result.Text).toBe("false")
 
 	ReactRoblox.act(function()
 		toggleState:Fire()
@@ -64,5 +64,5 @@ test("use the last value", function()
 		task.wait()
 	end)
 
-	expect(result.Text).to.equal("true")
+	expect(result.Text).toBe("true")
 end)

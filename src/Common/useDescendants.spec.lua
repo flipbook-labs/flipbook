@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local newFolder = require(flipbook.Testing.newFolder)
@@ -38,9 +38,9 @@ test("return an initial list of descendants that match the predicate", function(
 		root:render(React.createElement(HookTester))
 	end)
 
-	expect(descendants).to.be.ok()
-	expect(#descendants).to.equal(1)
-	expect(descendants[1]).to.equal(tree:FindFirstChild("Match"))
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
+	expect(descendants[1]).toBe(tree:FindFirstChild("Match"))
 end)
 
 test("respond to changes in descendants that match the predicate", function()
@@ -62,8 +62,8 @@ test("respond to changes in descendants that match the predicate", function()
 		root:render(React.createElement(HookTester))
 	end)
 
-	expect(descendants).to.be.ok()
-	expect(#descendants).to.equal(1)
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
 
 	local folder = newFolder({
 		Match = Instance.new("Part"),
@@ -73,7 +73,7 @@ test("respond to changes in descendants that match the predicate", function()
 		folder.Parent = tree
 	end)
 
-	expect(#descendants).to.equal(2)
+	expect(#descendants).toBe(2)
 end)
 
 test("force an update when a matching descendant's name changes", function()
@@ -95,8 +95,8 @@ test("force an update when a matching descendant's name changes", function()
 		root:render(React.createElement(HookTester))
 	end)
 
-	expect(descendants).to.be.ok()
-	expect(#descendants).to.equal(1)
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
 
 	local prev = descendants
 	local match = tree:FindFirstChild("Match")
@@ -105,6 +105,6 @@ test("force an update when a matching descendant's name changes", function()
 		match.Name = "Changed"
 	end)
 
-	expect(descendants).never.to.equal(prev)
-	expect(descendants[1]).to.equal(match)
+	expect(descendants).never.toBe(prev)
+	expect(descendants[1]).toBe(match)
 end)

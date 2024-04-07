@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local types = require(flipbook.Explorer.types)
 local filterComponentTreeNode = require(script.Parent.filterComponentTreeNode)
 

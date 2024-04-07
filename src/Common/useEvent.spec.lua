@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local useEvent = require(script.Parent.useEvent)
@@ -38,11 +38,11 @@ test("listen to the given event", function()
 		root:render(element)
 	end)
 
-	expect(wasFired).to.equal(false)
+	expect(wasFired).toBe(false)
 
 	bindable:Fire()
 
-	expect(wasFired).to.equal(true)
+	expect(wasFired).toBe(true)
 end)
 
 test("never fire when unmounted", function()
@@ -52,7 +52,7 @@ test("never fire when unmounted", function()
 		root:render(element)
 	end)
 
-	expect(wasFired).to.equal(false)
+	expect(wasFired).toBe(false)
 
 	ReactRoblox.act(function()
 		root:unmount()
@@ -60,5 +60,5 @@ test("never fire when unmounted", function()
 
 	bindable:Fire()
 
-	expect(wasFired).to.equal(false)
+	expect(wasFired).toBe(false)
 end)

@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local useEvent = require(flipbook.Common.useEvent)
@@ -50,7 +50,7 @@ test("be set to 0 zoom by default", function()
 
 	local result = container:FindFirstChildWhichIsA("TextLabel") :: TextLabel
 
-	expect(tonumber(result.Text)).to.equal(0)
+	expect(tonumber(result.Text)).toBe(0)
 end)
 
 test("zoom in", function()
@@ -68,7 +68,7 @@ test("zoom in", function()
 		zoomIn:Fire()
 	end)
 
-	expect(tonumber(result.Text)).to.equal(0.25)
+	expect(tonumber(result.Text)).toBe(0.25)
 end)
 
 test("zoom out", function()
@@ -86,7 +86,7 @@ test("zoom out", function()
 		zoomOut:Fire()
 	end)
 
-	expect(tonumber(result.Text)).to.equal(-0.25)
+	expect(tonumber(result.Text)).toBe(-0.25)
 end)
 
 test("reset the zoom any time the story changes", function()
@@ -104,7 +104,7 @@ test("reset the zoom any time the story changes", function()
 		zoomIn:Fire()
 	end)
 
-	expect(tonumber(result.Text)).to.equal(0.25)
+	expect(tonumber(result.Text)).toBe(0.25)
 
 	element = React.createElement(HookTester, {
 		story = Instance.new("ModuleScript"),
@@ -116,5 +116,5 @@ test("reset the zoom any time the story changes", function()
 
 	result = container:FindFirstChildWhichIsA("TextLabel") :: TextLabel
 
-	expect(tonumber(result.Text)).to.equal(0)
+	expect(tonumber(result.Text)).toBe(0)
 end)

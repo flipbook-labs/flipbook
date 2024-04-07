@@ -2,7 +2,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local React = require(flipbook.Packages.React)
 local ReactRoblox = require(flipbook.Packages.ReactRoblox)
 local isStoryModule = require(flipbook.Storybook.isStoryModule)
@@ -26,9 +26,9 @@ test.each(storyModules)("mount/unmount %s", function(storyModule: ModuleScript)
 	local cleanup
 	expect(function()
 		cleanup = mountStory(story, story.controls, CoreGui)
-	end).to.never.throw()
+	end).never.toThrow()
 
 	if cleanup then
-		expect(cleanup).to.never.throw()
+		expect(cleanup).never.toThrow()
 	end
 end)

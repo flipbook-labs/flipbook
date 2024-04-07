@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local JestGlobals = require(flipbook.Packages.Dev.JestGlobals)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
 local newFolder = require(script.Parent.newFolder)
 
 local expect = JestGlobals.expect
@@ -8,8 +8,8 @@ local test = JestGlobals.test
 
 test("return a folder named 'Root'", function()
 	local folder = newFolder({})
-	expect(folder:IsA("Folder")).to.equal(true)
-	expect(folder.Name).to.equal("Root")
+	expect(folder:IsA("Folder")).toBe(true)
+	expect(folder.Name).toBe("Root")
 end)
 
 test("name children after the dictionary keys", function()
@@ -21,8 +21,8 @@ test("name children after the dictionary keys", function()
 		Child2 = child2,
 	})
 
-	expect(folder.Child1).to.equal(child1)
-	expect(folder.Child2).to.equal(child2)
+	expect(folder.Child1).toBe(child1)
+	expect(folder.Child2).toBe(child2)
 end)
 
 test("support nesting newFolder as children", function()
@@ -34,5 +34,5 @@ test("support nesting newFolder as children", function()
 		}),
 	})
 
-	expect(folder.Child.AnotherChild.Module).to.be.ok()
+	expect(folder.Child.AnotherChild.Module).toBeDefined()
 end)
