@@ -7,6 +7,7 @@ realm = "shared"
 exclude = ["*"]
 
 [dependencies]
+CSF = "flipbook-labs/csf@0.1.0"
 ModuleLoader = "flipbook-labs/module-loader@0.6.1"
 React = "jsdotlua/react@17.0.2"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"

@@ -1,6 +1,3 @@
 {
-  "luau-lsp.sourcemap.rojoProjectFile": "tests.project.json",
-  "luau-lsp.types.definitionFiles": [
-    "testez.d.lua"
-  ]
+  "luau-lsp.sourcemap.rojoProjectFile": "tests.project.json"
 }
