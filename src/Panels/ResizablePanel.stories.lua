@@ -14,18 +14,22 @@ type Props = {
 	controls: typeof(controls),
 }
 
+local stories = {}
+
+stories.Primary = function(props)
+	return React.createElement(ResizablePanel, {
+		initialSize = UDim2.fromOffset(props.controls.maxWidth - props.controls.minWidth, 300),
+		maxSize = Vector2.new(props.controls.maxWidth, props.controls.maxHeight),
+		minSize = Vector2.new(props.controls.minWidth, props.controls.minHeight),
+		dragHandles = { "Right", "Bottom" },
+	}, {
+		Content = React.createElement("Frame", {
+			Size = UDim2.fromScale(1, 1),
+		}),
+	})
+end
+
 return {
 	controls = controls,
-	story = function(props)
-		return React.createElement(ResizablePanel, {
-			initialSize = UDim2.fromOffset(props.controls.maxWidth - props.controls.minWidth, 300),
-			maxSize = Vector2.new(props.controls.maxWidth, props.controls.maxHeight),
-			minSize = Vector2.new(props.controls.minWidth, props.controls.minHeight),
-			dragHandles = { "Right", "Bottom" },
-		}, {
-			Content = React.createElement("Frame", {
-				Size = UDim2.fromScale(1, 1),
-			}),
-		})
-	end,
+	stories = stories,
 }
