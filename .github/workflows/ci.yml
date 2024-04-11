@@ -24,6 +24,9 @@ jobs:
       - name: Format
         run: stylua --check src/
 
+      - name: Lint file extensions
+        run: ./bin/lint.sh
+
       - name: Install dependencies
         run: wally install
 
