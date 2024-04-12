@@ -1,7 +1,7 @@
 local React = require("@pkg/React")
 local constants = require("@root/constants")
-local types = require("@root/Storybook/types")
 local isStorybookModule = require("@root/Storybook/isStorybookModule")
+local types = require("@root/Storybook/types")
 local useDescendants = require("@root/Common/useDescendants")
 
 local function hasPermission(instance: Instance)

@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
 local Branding = require("./Branding")
+local React = require("@pkg/React")
 
 return {
 	summary = "Icon and Typography for flipbook",

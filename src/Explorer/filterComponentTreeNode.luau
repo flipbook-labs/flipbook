@@ -1,5 +1,5 @@
-local types = require("./types")
 local getTreeDescendants = require("./getTreeDescendants")
+local types = require("./types")
 
 local function filterComponentTreeNode(node: types.ComponentTreeNode, filter: string): boolean
 	if node.icon == "story" then

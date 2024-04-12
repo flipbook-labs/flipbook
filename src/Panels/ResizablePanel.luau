@@ -1,6 +1,6 @@
+local DragHandle = require("@root/Panels/DragHandle")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
-local DragHandle = require("@root/Panels/DragHandle")
 local types = require("@root/Panels/types")
 
 local defaultProps = {

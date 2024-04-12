@@ -2,11 +2,11 @@ local CoreGui = game:GetService("CoreGui")
 
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
+local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Sift = require("@pkg/Sift")
 local StoryError = require("@root/Storybook/StoryError")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
-local types = require("@root/Storybook/types")
 local mountStory = require("@root/Storybook/mountStory")
+local types = require("@root/Storybook/types")
 
 local e = React.createElement
 

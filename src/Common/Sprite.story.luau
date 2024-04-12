@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
-local assets = require("@root/assets")
 local Sprite = require("./Sprite")
+local assets = require("@root/assets")
 
 return {
 	story = React.createElement("Folder", {}, {
