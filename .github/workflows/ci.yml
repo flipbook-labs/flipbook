@@ -22,6 +22,9 @@ jobs:
       - run: just init
       - run: just lint
 
+      - name: Lint file extensions
+        run: ./bin/lint.sh
+
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
