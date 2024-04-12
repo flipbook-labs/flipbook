@@ -1,8 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local types = require(flipbook.Explorer.types)
-
-local getTreeDescendants = require(script.Parent.getTreeDescendants)
+local types = require("./types")
+local getTreeDescendants = require("./getTreeDescendants")
 
 local function filterComponentTreeNode(node: types.ComponentTreeNode, filter: string): boolean
 	if node.icon == "story" then

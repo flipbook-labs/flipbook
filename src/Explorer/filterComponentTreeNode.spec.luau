@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local types = require(flipbook.Explorer.types)
+local types = require("./types")
 
 return function()
 	local filterComponentTreeNode = require(script.Parent.filterComponentTreeNode)
