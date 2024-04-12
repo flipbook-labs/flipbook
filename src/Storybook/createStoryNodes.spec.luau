@@ -1,9 +1,9 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
 local JestGlobals = require(flipbook.Packages.JestGlobals)
-local types = require(flipbook.Storybook.types)
-local newFolder = require(flipbook.Testing.newFolder)
 local createStoryNodes = require(script.Parent.createStoryNodes)
+local newFolder = require(flipbook.Testing.newFolder)
+local types = require(flipbook.Storybook.types)
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
