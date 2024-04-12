@@ -1,11 +1,11 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local Directory = require(script.Directory)
 local React = require(flipbook.Packages.React)
 local Sift = require(flipbook.Packages.Sift)
-local Directory = require(script.Directory)
 local Story = require(script.Story)
-local types = require(flipbook.Explorer.types)
 local filterComponentTreeNode = require(flipbook.Explorer.filterComponentTreeNode)
+local types = require(flipbook.Explorer.types)
 
 local e = React.createElement
 

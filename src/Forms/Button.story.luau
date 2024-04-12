@@ -1,7 +1,7 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local React = require(flipbook.Packages.React)
 local Button = require(script.Parent.Button)
+local React = require(flipbook.Packages.React)
 
 local controls = {
 	text = "Click me",

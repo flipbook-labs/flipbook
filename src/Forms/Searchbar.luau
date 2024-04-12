@@ -1,14 +1,14 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local InputField = require(flipbook.Forms.InputField)
 local React = require(flipbook.Packages.React)
 local ReactSpring = require(flipbook.Packages.ReactSpring)
 local Sift = require(flipbook.Packages.Sift)
+local Sprite = require(flipbook.Common.Sprite)
 local assets = require(flipbook.assets)
 local constants = require(flipbook.constants)
-local useTheme = require(flipbook.Common.useTheme)
 local mapRanges = require(flipbook.Common.mapRanges)
-local InputField = require(flipbook.Forms.InputField)
-local Sprite = require(flipbook.Common.Sprite)
+local useTheme = require(flipbook.Common.useTheme)
 
 local e = React.createElement
 

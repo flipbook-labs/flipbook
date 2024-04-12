@@ -1,8 +1,8 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
+local explorerTypes = require(flipbook.Explorer.types)
 local isStoryModule = require(flipbook.Storybook.isStoryModule)
 local storybookTypes = require(flipbook.Storybook.types)
-local explorerTypes = require(flipbook.Explorer.types)
 
 type Storybook = storybookTypes.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
