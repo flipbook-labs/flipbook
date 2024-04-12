@@ -1,5 +1,5 @@
 local React = require("@pkg/React")
-local internalStorybook = require("@root/init.storybook.lua")
+local internalStorybook = require("@root/init.storybook.luau")
 local Sidebar = require("./Sidebar")
 
 return {
