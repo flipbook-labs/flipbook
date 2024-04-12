@@ -3,7 +3,7 @@ local Sift = require("@pkg/Sift")
 local Directory = require("./Directory")
 local Story = require("./Story")
 local types = require("@root/Explorer/types")
-local getTreeDescendants = require("@root/Explorer/getTreeDescendants")
+local filterComponentTreeNode = require("@root/Explorer/filterComponentTreeNode")
 
 local e = React.createElement
 
@@ -58,22 +58,8 @@ local function Component(providedProps: Props)
 		end
 	end
 
-	if props.filter then
-		if props.node.icon == "story" and not props.node.name:lower():match(props.filter:lower()) then
-			return
-		end
-
-		local isEmpty = true
-		for _, descendant in getTreeDescendants(props.node) do
-			if descendant.name:lower():match(props.filter:lower()) then
-				isEmpty = false
-				break
-			end
-		end
-
-		if isEmpty then
-			return
-		end
+	if props.filter and filterComponentTreeNode(props.node, props.filter) then
+		return
 	end
 
 	return e("Frame", {

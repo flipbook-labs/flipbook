@@ -5,7 +5,7 @@ type Storybook = storybookTypes.Storybook
 export type ComponentTreeNode = {
 	name: string,
 	children: { ComponentTreeNode },
-	icon: string?,
+	icon: ("folder" | "story" | "storybook")?,
 	instance: Instance?,
 	storybook: Storybook?,
 }

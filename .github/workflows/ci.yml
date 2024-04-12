@@ -18,6 +18,9 @@ jobs:
 
       - uses: extractions/setup-just@v1
 
+      - name: Lint file extensions
+        run: ./bin/lint.sh
+
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
