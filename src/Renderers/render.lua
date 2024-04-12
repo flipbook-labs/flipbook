@@ -6,7 +6,9 @@ type Args = types.Args
 type Context = types.Context
 type Renderer = types.Renderer
 
-local function render(renderer: Renderer, target: Instance, element: any, args: Args)
+type UpdateFn = () -> ()
+
+local function render(renderer: Renderer, target: Instance, element: any, args: Args): UpdateFn
 	local handle: Instance
 	local context: Context = {
 		target = target,

@@ -29,11 +29,6 @@ local function createRobloxRenderer(): Renderer
 		end
 	end
 
-	local function render()
-		unmount()
-		mount()
-	end
-
 	return {
 		shouldUpdate = shouldUpdate,
 		mount = mount,
