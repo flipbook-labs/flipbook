@@ -2,8 +2,8 @@ local flipbook = script:FindFirstAncestor("flipbook")
 
 local React = require(flipbook.Packages.React)
 local constants = require(flipbook.constants)
-local types = require(flipbook.Storybook.types)
 local isStorybookModule = require(flipbook.Storybook.isStorybookModule)
+local types = require(flipbook.Storybook.types)
 local useDescendants = require(flipbook.Common.useDescendants)
 
 local function hasPermission(instance: Instance)
