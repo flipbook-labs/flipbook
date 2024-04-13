@@ -9,6 +9,7 @@ plugins_dir := if os_family() == "unix" {
 plugin_path := plugins_dir / project_name + ".rbxm"
 
 project_dir := absolute_path("src")
+example_dir := absolute_path("src")
 packages_dir := absolute_path("Packages")
 tests_project := "tests.project.json"
 
@@ -18,7 +19,8 @@ sourcemap_path := tmpdir / "sourcemap.json"
 
 _lint-file-extensions:
 	#!/usr/bin/env bash
-	files=$(find src example -iname "*.lua")
+	set -euo pipefail
+	files=$(find {{ project_dir }} {{ example_dir }} -iname "*.lua")
 	if [[ -n "$files" ]]; then
 		echo "Error: one or more files are using the '.lua' extension. Please update these to '.luau' and try again"
 		echo "$files"
@@ -43,7 +45,11 @@ lint:
 	just _lint-file-extensions
 
 build:
-	rojo build -o {{ plugins_dir }} / "flipbook.rbxm"
+	rojo build -o {{ plugin_path }}
+
+build-watch:
+	npx -y chokidar-cli "{{ project_dir }}/**/*" --initial \
+		-c "just build" \
 
 test:
     rojo build {{ tests_project }} -o test-place.rbxl
