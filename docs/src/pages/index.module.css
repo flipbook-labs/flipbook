@@ -11,6 +11,8 @@
 	background-image: url("/img/masthead.png");
 	background-size: cover;
 	background-position: center;
+
+	--ifm-hero-text-color: white;
 }
 
 @media screen and (max-width: 996px) {
