@@ -17,9 +17,19 @@ init:
 	foreman install
 	just wally-install
 
+_lint-file-extensions:
+	#!/usr/bin/env bash
+	files=$(find src example -iname "*.lua")
+	if [[ -n "$files" ]]; then
+		echo "Error: one or more files are using the '.lua' extension. Please update these to '.luau' and try again"
+		echo "$files"
+		exit 1
+	fi
+
 lint:
 	selene {{ project_dir }}
 	stylua --check {{ project_dir }}
+	just _lint-file-extensions
 
 wally-install:
 	wally install
