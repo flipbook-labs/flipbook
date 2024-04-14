@@ -15,6 +15,7 @@ tests_project := "tests.project.json"
 
 tmpdir := `mktemp -d`
 global_defs_path := tmpdir / "globalTypes.d.lua"
+testez_defs_path := "testez.d.luau"
 sourcemap_path := tmpdir / "sourcemap.json"
 
 _lint-file-extensions:
@@ -63,6 +64,7 @@ analyze:
 
 	luau-lsp analyze --sourcemap={{ sourcemap_path }} \
 		--defs={{ global_defs_path }} \
+		--defs={{ testez_defs_path }} \
 		--settings="./.vscode/settings.json" \
 		--ignore=**/_Index/** \
 		{{ project_dir }}
