@@ -29,7 +29,7 @@ _lint-file-extensions:
 	fi
 
 default:
-  @just --list
+	@just --list
 
 wally-install:
 	wally install
@@ -53,8 +53,8 @@ build-watch:
 		-c "just build" \
 
 test:
-    rojo build {{ tests_project }} -o test-place.rbxl
-    run-in-roblox --place test-place.rbxl --script tests/init.server.lua
+	rojo build {{ tests_project }} -o test-place.rbxl
+	run-in-roblox --place test-place.rbxl --script tests/init.server.lua
 
 analyze:
 	curl -s -o {{ global_defs_path }} \
