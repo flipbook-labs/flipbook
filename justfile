@@ -58,9 +58,9 @@ set-flags:
 	cp -R tests/ClientAppSettings.json {{ client_settings }}
 
 test:
-    just set-flags
+	just set-flags
 	rojo build {{ tests_project }} -o test-place.rbxl
-    run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
+	run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
 
 analyze:
 	curl -s -o {{ global_defs_path }} \
