@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
-local internalStorybook = require("@root/init.storybook.luau")
 local Sidebar = require("./Sidebar")
+local internalStorybook = require("@root/init.storybook.luau")
 
 return {
 	summary = "Sidebar containing brand, searchbar, and component tree",

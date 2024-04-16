@@ -1,5 +1,5 @@
-local Roact = require("@pkg/Roact")
 local ButtonWithControls = require("./ButtonWithControls")
+local Roact = require("@pkg/Roact")
 
 local controls = {
 	isDisabled = false,

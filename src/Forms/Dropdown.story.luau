@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
 local Dropdown = require("@root/Forms/Dropdown")
+local React = require("@pkg/React")
 
 local controls = {
 	useDefault = true,

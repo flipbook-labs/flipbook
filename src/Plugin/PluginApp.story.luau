@@ -1,6 +1,6 @@
-local React = require("@pkg/React")
 local ModuleLoader = require("@pkg/ModuleLoader")
 local PluginApp = require("./PluginApp")
+local React = require("@pkg/React")
 
 return {
 	summary = "The main component that handles the entire plugin",

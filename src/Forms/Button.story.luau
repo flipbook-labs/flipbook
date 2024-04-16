@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
 local Button = require("./Button")
+local React = require("@pkg/React")
 
 local controls = {
 	text = "Click me",

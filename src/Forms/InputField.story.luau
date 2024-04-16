@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
 local InputField = require("./InputField")
+local React = require("@pkg/React")
 
 return {
 	story = React.createElement(InputField, {

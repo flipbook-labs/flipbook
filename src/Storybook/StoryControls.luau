@@ -1,9 +1,9 @@
 local React = require("@pkg/React")
 
-local useTheme = require("@root/Common/useTheme")
-local InputField = require("@root/Forms/InputField")
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")
+local InputField = require("@root/Forms/InputField")
+local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
 

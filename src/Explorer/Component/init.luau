@@ -1,9 +1,9 @@
+local Directory = require("./Directory")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
-local Directory = require("./Directory")
 local Story = require("./Story")
-local types = require("@root/Explorer/types")
 local filterComponentTreeNode = require("@root/Explorer/filterComponentTreeNode")
+local types = require("@root/Explorer/types")
 
 local e = React.createElement
 

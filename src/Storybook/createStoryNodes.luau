@@ -1,6 +1,6 @@
+local explorerTypes = require("@root/Explorer/types")
 local isStoryModule = require("@root/Storybook/isStoryModule")
 local storybookTypes = require("@root/Storybook/types")
-local explorerTypes = require("@root/Explorer/types")
 
 type Storybook = storybookTypes.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode

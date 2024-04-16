@@ -5,12 +5,12 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 end
 
 local ModuleLoader = require("@pkg/ModuleLoader")
+local PluginApp = require("@root/Plugin/PluginApp")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
-local createWidget = require("@root/Plugin/createWidget")
-local createToggleButton = require("@root/Plugin/createToggleButton")
-local PluginApp = require("@root/Plugin/PluginApp")
 local constants = require("@root/constants")
+local createToggleButton = require("@root/Plugin/createToggleButton")
+local createWidget = require("@root/Plugin/createWidget")
 
 local PLUGIN_NAME = "flipbook"
 
