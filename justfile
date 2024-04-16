@@ -35,7 +35,7 @@ _lint-file-extensions:
 	fi
 
 _build target output:
-	#!/usr/bin/env sh
+	#!/usr/bin/env bash
 	set -euxo pipefail
 
 	just clean
