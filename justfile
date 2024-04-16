@@ -17,7 +17,12 @@ tmpdir := `mktemp -d`
 global_defs_path := tmpdir / "globalTypes.d.lua"
 sourcemap_path := tmpdir / "sourcemap.json"
 
-client_settings := "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
+# FIXME: Add path for Windows
+client_settings := if os_family() == "unix" {
+	"/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
+} else {
+	""
+}
 
 _lint-file-extensions:
 	#!/usr/bin/env bash
@@ -35,7 +40,7 @@ default:
 wally-install:
 	wally install
 	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
-	wally-package-types --sourcemap {{ sourcemap_path }} {{ packages_dir }}
+	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
 
 init:
 	foreman install
