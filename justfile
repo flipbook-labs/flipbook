@@ -59,8 +59,8 @@ default:
 
 wally-install:
 	wally install
-	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
-	wally-package-types --sourcemap {{ sourcemap_path }} {{ packages_dir }}
+	rojo sourcemap {{ build_project }} -o {{ sourcemap_path }}
+	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
 
 clean:
 	rm -rf {{ build_dir }}
