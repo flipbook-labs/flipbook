@@ -63,7 +63,7 @@ init:
 
 wally-install:
 	wally install
-	rojo sourcemap {{ default_project }} -o {{ sourcemap_path }}
+	rojo sourcemap {{ dev_project }} -o {{ sourcemap_path }}
 	wally-package-types --sourcemap {{ sourcemap_path }} Packages/
 
 build target="dev":
