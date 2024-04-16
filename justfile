@@ -7,10 +7,15 @@ plugins_dir := if os_family() == "unix" {
 	"$LOCALAPPDATA/Roblox/Plugins"
 }
 plugin_path := plugins_dir / project_name + ".rbxm"
+plugin_filename := file_name(plugin_path)
 
-project_dir := absolute_path("src")
-example_dir := absolute_path("src")
-packages_dir := absolute_path("Packages")
+project_dir := "src"
+example_dir := "example"
+build_dir := "build"
+packages_dir := "Packages"
+
+build_project := "build.project.json"
+dev_project := "dev.project.json"
 tests_project := "tests.project.json"
 
 tmpdir := `mktemp -d`
@@ -28,13 +33,39 @@ _lint-file-extensions:
 		exit 1
 	fi
 
+_build target output:
+	#!/usr/bin/env sh
+	set -euxo pipefail
+
+	just clean
+
+	mkdir -p {{ build_dir }}
+
+	rojo sourcemap {{ build_project }} -o sourcemap-darklua.json
+	darklua process {{ project_dir }} {{ build_dir }}
+
+	if [[ "{{ target }}" = "prod" ]]; then
+		rm -rf {{ build_dir / "**/*.spec.lua" }}
+		rm -rf {{ build_dir / "**/*.story.lua" }}
+		rm -rf {{ build_dir / "**/*.storybook.lua" }}
+
+		rojo build -o {{ output }}
+	else
+		rojo build {{ dev_project }} -o {{ output }}
+	fi
+
 default:
-	@just --list
+  @just --list
 
 wally-install:
 	wally install
 	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
 	wally-package-types --sourcemap {{ sourcemap_path }} {{ packages_dir }}
+
+clean:
+	rm -rf {{ build_dir }}
+	rm -rf {{ plugin_path }}
+	rm -rf {{ plugin_filename }}
 
 init:
 	foreman install
@@ -45,12 +76,15 @@ lint:
 	stylua --check {{ project_dir }}
 	just _lint-file-extensions
 
-build:
-	rojo build -o {{ plugin_path }}
+build target="dev":
+	just _build {{ target }} {{ plugin_path }}
 
 build-watch:
 	npx -y chokidar-cli "{{ project_dir }}/**/*" --initial \
 		-c "just build" \
+
+build-here target="dev" filename=plugin_filename:
+	just _build {{ target }} {{ filename }}
 
 test:
 	rojo build {{ tests_project }} -o test-place.rbxl
@@ -68,4 +102,3 @@ analyze:
 		--settings="./.vscode/settings.json" \
 		--ignore=**/_Index/** \
 		{{ project_dir }}
-
