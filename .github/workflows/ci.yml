@@ -34,7 +34,7 @@ jobs:
         run: just init
 
       - name: Build
-        run: rojo build -o ${{ env.MODEL_FILE }}
+        run: just build dev
 
       - uses: actions/upload-artifact@v3
         with:

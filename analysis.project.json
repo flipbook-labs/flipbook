@@ -1,0 +1,12 @@
+{
+  "name": "flipbook",
+  "tree": {
+    "TestRunner": {
+      "$path": "tests"
+    },
+    "Example": {
+      "$path": "example"
+    },
+    "$path": "build.project.json"
+  }
+}

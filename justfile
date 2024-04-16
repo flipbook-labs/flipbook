@@ -14,6 +14,7 @@ example_dir := "example"
 build_dir := "build"
 packages_dir := "Packages"
 
+analysis_project := "analysis.project.json"
 build_project := "build.project.json"
 dev_project := "dev.project.json"
 tests_project := "tests.project.json"
@@ -94,7 +95,7 @@ analyze:
 	curl -s -o {{ global_defs_path }} \
 		-O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
 
-	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
+	rojo sourcemap {{ analysis_project }} -o {{ sourcemap_path }}
 
 	luau-lsp analyze --sourcemap={{ sourcemap_path }} \
 		--defs={{ global_defs_path }} \
