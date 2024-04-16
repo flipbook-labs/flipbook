@@ -22,8 +22,11 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - run: just init
-      - run: just build-here prod ${{ env.MODEL_FILE }}
+      - name: Initialize the project
+        run: just init
+
+      - name: Build
+        run: just build-here prod ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
