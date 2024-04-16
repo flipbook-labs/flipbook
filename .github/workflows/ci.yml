@@ -14,16 +14,15 @@ jobs:
 
       - uses: extractions/setup-just@v1
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
 
-      - run: just init
-      - run: just lint
+      - name: Initialize the project
+        run: just init
 
-      - name: Lint file extensions
-        run: ./bin/lint.sh
+      - name: Lint
+        run: just lint
 
       - name: Get model file name
         run: |
@@ -46,13 +45,15 @@ jobs:
 
       - uses: extractions/setup-just@v1
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
 
-      - run: just init
-      - run: just analyze
+      - name: Initialize the project
+        run: just init
+
+      - name: Run Luau analysis
+        run: just analyze
 
   # Running unit tests in CI has historically been cumbersome, and presently
   # there is no way to run Roblox Studio from a GitHub workflow. As such, our
