@@ -23,7 +23,7 @@ The only required prop is the `storyRoots` array, which tells flipbook which Ins
 Example:
 
 ```lua
--- example/Example.storybook.lua
+-- example/Example.storybook.luau
 return {
 	name = "Example Storybook",
 	storyRoots = {
@@ -47,7 +47,7 @@ Support for Roblox's [Roact](https://github.com/Roblox/roact) library is built i
 Example:
 
 ```lua
--- example/Button.story.lua
+-- example/Button.story.luau
 local Example = script:FindFirstAncestor("Example")
 
 local Roact = require(Example.Parent.Packages.Roact)
@@ -68,7 +68,7 @@ return {
 Example with controls:
 
 ```lua
--- example/ButtonWithControls.story.lua
+-- example/ButtonWithControls.story.luau
 local Example = script:FindFirstAncestor("Example")
 
 local Roact = require(Example.Parent.Packages.Roact)
@@ -116,7 +116,7 @@ You can find React and ReactRoblox as part of the [CorePackages](https://github.
 Example:
 
 ```lua
--- example/ReactCounter.story.lua
+-- example/ReactCounter.story.luau
 local Example = script:FindFirstAncestor("Example")
 
 local React = require(Example.Parent.Packages.React)
@@ -160,7 +160,7 @@ A Functional story uses a function to create and mount UI. This is the most flex
 Example:
 
 ```lua
--- example/Functional.story.lua
+-- example/Functional.story.luau
 local controls = {
 	text = "Functional Story",
 }
@@ -206,7 +206,7 @@ See the [migration guide](migrating.md) for more info.
 Example:
 
 ```lua
--- example/Hoarcekat.story.lua
+-- example/Hoarcekat.story.luau
 local Example = script:FindFirstAncestor("Example")
 
 local Roact = require(Example.Parent.Packages.Roact)
