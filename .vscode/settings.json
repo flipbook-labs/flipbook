@@ -8,10 +8,6 @@
     "**/_Index/**",
     "**/build/**"
   ],
-  "luau-lsp.require.directoryAliases": {
-    "@root/": "src",
-    "@pkg/": "Packages"
-  },
   "files.associations": {
     "*.luau": "lua"
   }
