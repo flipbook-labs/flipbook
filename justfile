@@ -55,7 +55,7 @@ _build target output:
 	fi
 
 default:
-  @just --list
+	@just --list
 
 wally-install:
 	wally install
