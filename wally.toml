@@ -6,9 +6,6 @@ registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 exclude = ["*"]
 
-[place]
-shared-packages = "script.Parent.Parent"
-
 [dependencies]
 ModuleLoader = "flipbook-labs/module-loader@0.6.1"
 React = "jsdotlua/react@17.0.2"
@@ -16,8 +13,8 @@ ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"
 Sift = "csqrl/sift@0.0.4"
 t = "osyrisrblx/t@3.0.0"
-Roact = "roblox/roact@1.4.4"
 
 # dev dependencies
+Roact = "roblox/roact@1.4.4"
 Jest = "jsdotlua/jest@3.6.1-rc.2"
 JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"
