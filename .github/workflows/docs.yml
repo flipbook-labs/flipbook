@@ -4,6 +4,7 @@ on:
   pull_request:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-docs:
@@ -41,7 +42,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
