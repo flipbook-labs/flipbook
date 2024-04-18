@@ -35,7 +35,7 @@ flipbook is made up of Roact components, each of which has a story file. This me
 
 Once you have flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
 
-![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](/plugin-debugging-enabled.png)
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](/img/plugin-debugging-enabled.png)
 
 Then load a new Baseplate and open the flipbook plugin. Its storybook should now appear in the sidebar.
 
