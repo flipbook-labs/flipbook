@@ -8,4 +8,4 @@ Describe the solution you came up with
 
 # Checklist
 
-- [ ] Ran `./bin/test.sh` locally before merging
+- [ ] Ran `just test` locally before merging
