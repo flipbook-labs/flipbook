@@ -17,13 +17,6 @@ tmpdir := `mktemp -d`
 global_defs_path := tmpdir / "globalTypes.d.lua"
 sourcemap_path := tmpdir / "sourcemap.json"
 
-# FIXME: Add path for Windows
-client_settings := if os_family() == "unix" {
-	"/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
-} else {
-	""
-}
-
 _lint-file-extensions:
 	#!/usr/bin/env bash
 	set -euo pipefail
@@ -32,6 +25,16 @@ _lint-file-extensions:
 		echo "Error: one or more files are using the '.lua' extension. Please update these to '.luau' and try again"
 		echo "$files"
 		exit 1
+	fi
+
+_get-client-settings:
+	#!/usr/bin/env bash
+	if [[ {{ os_family() }} -eq "macos" ]]; then
+		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
+	elif [[ {{ os_family() }} -eq "windows" ]]; then
+		robloxStudioPath=$(find "$LOCALAPPDATA/Roblox/Versions/" -regex "RobloxStudio*.exe")
+		dir=$(dirname $robloxStudioPath)
+		echo "$dir/ClientSettings"
 	fi
 
 default:
@@ -59,8 +62,11 @@ build-watch:
 		-c "just build" \
 
 set-flags:
-	mkdir -p {{ client_settings }}
-	cp -R tests/ClientAppSettings.json {{ client_settings }}
+	#!/usr/bin/env bash
+	set -euo pipefail
+	clientSettings=$(just _get-client-settings)
+	mkdir -p "$clientSettings"
+	cp -R tests/ClientAppSettings.json "$clientSettings"
 
 test:
 	just set-flags
