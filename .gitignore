@@ -13,9 +13,5 @@ sourcemap*.json
 /Packages
 /wally.lock
 
-# Moonwave
-/node_modules
-build
-
 # Other
 /*.log

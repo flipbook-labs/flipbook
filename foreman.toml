@@ -6,6 +6,5 @@ selene = { source = "kampfkarren/selene", version = "0.25.0" }
 stylua = { source = "JohnnyMorganz/StyLua", version = "0.17.1" }
 tarmac = { source = "Roblox/tarmac", version = "0.7.0" }
 wally = { source = "UpliftGames/wally", version = "0.3.2" }
-moonwave-extractor = { source = "UpliftGames/moonwave", version = "1.0.0" }
 luau-lsp = { source = "JohnnyMorganz/luau-lsp", version = "1.x" }
 wally-package-types = { source = "JohnnyMorganz/wally-package-types", version = "1.2.1" }
