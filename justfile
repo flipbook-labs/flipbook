@@ -29,10 +29,14 @@ _lint-file-extensions:
 
 _get-client-settings:
 	#!/usr/bin/env bash
-	if [[ {{ os_family() }} -eq "macos" ]]; then
+	set -euxo pipefail
+
+	os={{ os_family() }}
+
+	if [[ "$os" == "macos" ]]; then
 		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
-	elif [[ {{ os_family() }} -eq "windows" ]]; then
-		robloxStudioPath=$(find "$LOCALAPPDATA/Roblox/Versions/" -regex "RobloxStudio*.exe")
+	elif [[ "$os" == "windows" ]]; then
+		robloxStudioPath=$(find "$LOCALAPPDATA/Roblox/Versions" -name "RobloxStudioBeta.exe")
 		dir=$(dirname $robloxStudioPath)
 		echo "$dir/ClientSettings"
 	fi
@@ -63,7 +67,8 @@ build-watch:
 
 set-flags:
 	#!/usr/bin/env bash
-	set -euo pipefail
+	set -euxo pipefail
+
 	clientSettings=$(just _get-client-settings)
 	mkdir -p "$clientSettings"
 	cp -R tests/ClientAppSettings.json "$clientSettings"
