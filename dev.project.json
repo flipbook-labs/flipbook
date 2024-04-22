@@ -1,9 +1,0 @@
-{
-  "name": "flipbook",
-  "tree": {
-    "Example": {
-      "$path": "example"
-    },
-    "$path": "build.project.json"
-  }
-}

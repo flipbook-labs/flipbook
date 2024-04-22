@@ -7,7 +7,7 @@
         "$path": "Packages"
       },
       "flipbook": {
-        "$path": "dev.project.json"
+        "$path": "default.project.json"
       }
     }
   }

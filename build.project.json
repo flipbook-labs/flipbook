@@ -4,6 +4,9 @@
     "Packages": {
       "$path": "Packages"
     },
+    "Example": {
+      "$path": "example"
+    },
     "$path": "src"
   }
 }

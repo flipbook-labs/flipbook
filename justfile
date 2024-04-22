@@ -16,7 +16,6 @@ packages_dir := "Packages"
 
 analysis_project := "analysis.project.json"
 build_project := "build.project.json"
-dev_project := "dev.project.json"
 tests_project := "tests.project.json"
 
 tmpdir := `mktemp -d`
@@ -47,7 +46,7 @@ _get-client-settings:
 		echo "$dir/ClientSettings"
 	fi
 
-_compile:
+_compile target:
 	#!/usr/bin/env bash
 	set -euxo pipefail
 
@@ -58,21 +57,23 @@ _compile:
 	rojo sourcemap {{ build_project }} -o sourcemap-darklua.json
 	darklua process {{ project_dir }} {{ build_dir }}
 
+	if [[ "{{ target }}" = "dev" ]]; then
+		darklua process example {{ build_dir / "Example" }}
+	fi
+
 _build target output:
 	#!/usr/bin/env bash
 	set -euxo pipefail
 
-	just _compile
+	just _compile {{ target }}
 
 	if [[ "{{ target }}" = "prod" ]]; then
 		rm -rf {{ build_dir / "**/*.spec.lua" }}
 		rm -rf {{ build_dir / "**/*.story.lua" }}
 		rm -rf {{ build_dir / "**/*.storybook.lua" }}
-
-		rojo build -o {{ output }}
-	else
-		rojo build {{ dev_project }} -o {{ output }}
 	fi
+
+	rojo build -o {{ output }}
 
 default:
 	@just --list
@@ -116,7 +117,7 @@ set-flags:
 
 test: clean
 	just set-flags
-	just _compile
+	just _compile dev
 	rojo build {{ tests_project }} -o test-place.rbxl
 	run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
 

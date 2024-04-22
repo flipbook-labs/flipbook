@@ -9,10 +9,8 @@ local mountStory = require("@root/Storybook/mountStory")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local root = script:FindFirstAncestor("flipbook")
-
 local storyModules: { ModuleScript } = {}
-for _, descendant in ipairs(root:GetDescendants()) do
+for _, descendant in ipairs(script.Parent:GetDescendants()) do
 	if isStoryModule(descendant) then
 		table.insert(storyModules, descendant)
 	end
