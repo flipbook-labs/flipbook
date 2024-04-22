@@ -3,19 +3,13 @@
 /*.rbxm*
 
 # Luau
-sourcemap.json
+sourcemap*.json
 
-# Selene
-/roblox.toml
 
 # Wally
 /DevPackages
 /Packages
 /wally.lock
-
-# Moonwave
-/node_modules
-build
 
 # Other
 /*.log
