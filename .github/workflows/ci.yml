@@ -34,7 +34,7 @@ jobs:
         run: just init
 
       - name: Build
-        run: just build-here dev
+        run: just build-here prod
 
       - uses: actions/upload-artifact@v3
         with:
