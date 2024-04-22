@@ -57,7 +57,7 @@ test("load a story module as a table", function()
 
 	local story = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 
-	expect(story.name).to.equal("Sample")
+	expect(story.name).toEqual("Sample")
 end)
 
 test("handle Hoarcekat stories", function()
@@ -75,7 +75,7 @@ test("handle Hoarcekat stories", function()
 
 	local story = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 
-	expect(story).to.be.ok()
+	expect(story).toBeDefined()
 end)
 
 test("use the name of the story module for the story name", function()
@@ -89,7 +89,7 @@ test("use the name of the story module for the story name", function()
 
 	local story = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 
-	expect(story.name).to.equal(storyModule.Name)
+	expect(story.name).toEqual(storyModule.Name)
 end)
 
 test("pass the storybook's renderer to the story", function()
@@ -102,16 +102,16 @@ test("pass the storybook's renderer to the story", function()
 
 	local story, err = loadStoryModule(loader, storyModule, MOCK_REACT_STORYBOOK)
 
-	expect(story).to.be.ok()
-	expect(err).never.to.be.ok()
-	expect(story.react).to.be.ok()
-	expect(story.reactRoblox).to.be.ok()
+	expect(story).toBeDefined()
+	expect(err).toBeNil()
+	expect(story.react).toBeDefined()
+	expect(story.reactRoblox).toBeDefined()
 
 	story, err = loadStoryModule(loader, storyModule, MOCK_ROACT_STORYBOOK)
 
-	expect(story).to.be.ok()
-	expect(err).never.to.be.ok()
-	expect(story.roact).to.be.ok()
+	expect(story).toBeDefined()
+	expect(err).toBeNil()
+	expect(story.roact).toBeDefined()
 end)
 
 test("generic failures for stories", function()
@@ -123,8 +123,8 @@ test("generic failures for stories", function()
 
 	local story, err = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 
-	expect(story).never.to.be.ok()
-	expect(err).to.be.ok()
+	expect(story).toBeNil()
+	expect(err).toBeDefined()
 end)
 
 test("malformed stories", function()
@@ -138,6 +138,6 @@ test("malformed stories", function()
 
 	local story, err = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 
-	expect(story).never.to.be.ok()
-	expect(err).to.be.ok()
+	expect(story).toBeNil()
+	expect(err).toBeDefined()
 end)

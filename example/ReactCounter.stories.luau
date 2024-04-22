@@ -1,13 +1,9 @@
 local Example = script:FindFirstAncestor("Example")
 
 local React = require(Example.Parent.Packages.React)
-<<<<<<<< HEAD:example/ReactCounter.stories.lua
-local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
-local constants = require(Example.Parent.constants)
-========
->>>>>>>> origin/main:example/ReactCounter.story.luau
 local ReactCounter = require(script.Parent.ReactCounter)
 local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
+local constants = require(Example.Parent.constants)
 
 local controls = {
 	increment = 1,
