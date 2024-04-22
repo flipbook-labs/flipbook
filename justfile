@@ -21,7 +21,6 @@ tests_project := "tests.project.json"
 
 tmpdir := `mktemp -d`
 global_defs_path := tmpdir / "globalTypes.d.lua"
-testez_defs_path := "testez.d.luau"
 sourcemap_path := tmpdir / "sourcemap.json"
 
 _lint-file-extensions:
@@ -32,6 +31,20 @@ _lint-file-extensions:
 		echo "Error: one or more files are using the '.lua' extension. Please update these to '.luau' and try again"
 		echo "$files"
 		exit 1
+	fi
+
+_get-client-settings:
+	#!/usr/bin/env bash
+	set -euxo pipefail
+
+	os={{ os_family() }}
+
+	if [[ "$os" == "macos" ]]; then
+		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
+	elif [[ "$os" == "windows" ]]; then
+		robloxStudioPath=$(find "$LOCALAPPDATA/Roblox/Versions" -name "RobloxStudioBeta.exe")
+		dir=$(dirname $robloxStudioPath)
+		echo "$dir/ClientSettings"
 	fi
 
 _build target output:
@@ -58,15 +71,15 @@ _build target output:
 default:
 	@just --list
 
-wally-install:
-	wally install
-	rojo sourcemap {{ build_project }} -o {{ sourcemap_path }}
-	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
-
 clean:
 	rm -rf {{ build_dir }}
 	rm -rf {{ plugin_path }}
 	rm -rf {{ plugin_filename }}
+
+wally-install:
+	wally install
+	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
+	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
 
 init:
 	foreman install
@@ -87,9 +100,18 @@ build-watch:
 build-here target="dev" filename=plugin_filename:
 	just _build {{ target }} {{ filename }}
 
+set-flags:
+	#!/usr/bin/env bash
+	set -euxo pipefail
+
+	clientSettings=$(just _get-client-settings)
+	mkdir -p "$clientSettings"
+	cp -R tests/ClientAppSettings.json "$clientSettings"
+
 test:
+	just set-flags
 	rojo build {{ tests_project }} -o test-place.rbxl
-	run-in-roblox --place test-place.rbxl --script tests/init.server.lua
+	run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
 
 analyze:
 	curl -s -o {{ global_defs_path }} \
@@ -99,7 +121,6 @@ analyze:
 
 	luau-lsp analyze --sourcemap={{ sourcemap_path }} \
 		--defs={{ global_defs_path }} \
-		--defs={{ testez_defs_path }} \
 		--settings="./.vscode/settings.json" \
 		--ignore=**/_Index/** \
 		{{ project_dir }}

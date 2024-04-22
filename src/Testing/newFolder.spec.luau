@@ -1,34 +1,36 @@
-return function()
-	local newFolder = require("./newFolder")
+local JestGlobals = require("@pkg/JestGlobals")
+local newFolder = require("./newFolder")
 
-	it("should return a folder named 'Root'", function()
-		local folder = newFolder({})
-		expect(folder:IsA("Folder")).to.equal(true)
-		expect(folder.Name).to.equal("Root")
-	end)
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-	it("should name children after the dictionary keys", function()
-		local child1 = Instance.new("Part")
-		local child2 = Instance.new("Model")
+test("return a folder named 'Root'", function()
+	local folder = newFolder({})
+	expect(folder:IsA("Folder")).toBe(true)
+	expect(folder.Name).toBe("Root")
+end)
 
-		local folder = newFolder({
-			Child1 = child1,
-			Child2 = child2,
-		})
+test("name children after the dictionary keys", function()
+	local child1 = Instance.new("Part")
+	local child2 = Instance.new("Model")
 
-		expect(folder.Child1).to.equal(child1)
-		expect(folder.Child2).to.equal(child2)
-	end)
+	local folder = newFolder({
+		Child1 = child1,
+		Child2 = child2,
+	})
 
-	it("should support nesting newFolder as children", function()
-		local folder = newFolder({
-			Child = newFolder({
-				AnotherChild = newFolder({
-					Module = Instance.new("ModuleScript"),
-				}),
+	expect(folder.Child1).toBe(child1)
+	expect(folder.Child2).toBe(child2)
+end)
+
+test("support nesting newFolder as children", function()
+	local folder = newFolder({
+		Child = newFolder({
+			AnotherChild = newFolder({
+				Module = Instance.new("ModuleScript"),
 			}),
-		})
+		}),
+	})
 
-		expect(folder.Child.AnotherChild.Module).to.be.ok()
-	end)
-end
+	expect(folder.Child.AnotherChild.Module).toBeDefined()
+end)

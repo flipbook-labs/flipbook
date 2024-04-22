@@ -8,8 +8,6 @@ build
 # Luau
 sourcemap*.json
 
-# Selene
-/roblox.toml
 
 # Wally
 /DevPackages

@@ -1,4 +1,4 @@
-std = "selene-requires+testez"
+std = "selene-requires"
 
 [lints]
 global_usage = "allow"

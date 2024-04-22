@@ -1,23 +1,25 @@
-return function()
-	local isStoryModule = require("./isStoryModule")
+local JestGlobals = require("@pkg/JestGlobals")
+local isStoryModule = require("./isStoryModule")
 
-	it("should return `true` for a ModuleScript with .story in the name", function()
-		local module = Instance.new("ModuleScript")
-		module.Name = "Foo.story"
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-		expect(isStoryModule(module)).to.equal(true)
-	end)
+test("return `true` for a ModuleScript with .story in the name", function()
+	local module = Instance.new("ModuleScript")
+	module.Name = "Foo.story"
 
-	it("should return `false` if the given instance is not a ModuleScript", function()
-		local folder = Instance.new("Folder")
-		folder.Name = "Folder.story"
+	expect(isStoryModule(module)).toBe(true)
+end)
 
-		expect(isStoryModule(folder)).to.equal(false)
-	end)
+test("return `false` if the given instance is not a ModuleScript", function()
+	local folder = Instance.new("Folder")
+	folder.Name = "Folder.story"
 
-	it("should return `false` if a ModuleScript does not have .story in the name", function()
-		local module = Instance.new("ModuleScript")
+	expect(isStoryModule(folder)).toBe(false)
+end)
 
-		expect(isStoryModule(module)).to.equal(false)
-	end)
-end
+test("return `false` if a ModuleScript does not have .story in the name", function()
+	local module = Instance.new("ModuleScript")
+
+	expect(isStoryModule(module)).toBe(false)
+end)
