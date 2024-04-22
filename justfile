@@ -31,7 +31,7 @@ _get-client-settings:
 	#!/usr/bin/env bash
 	set -euxo pipefail
 
-	os={{ os_family() }}
+	os={{ os() }}
 
 	if [[ "$os" == "macos" ]]; then
 		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
