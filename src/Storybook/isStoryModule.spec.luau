@@ -1,23 +1,27 @@
-return function()
-	local isStoryModule = require(script.Parent.isStoryModule)
+local flipbook = script:FindFirstAncestor("flipbook")
 
-	it("should return `true` for a ModuleScript with .story in the name", function()
-		local module = Instance.new("ModuleScript")
-		module.Name = "Foo.story"
+local JestGlobals = require(flipbook.Packages.JestGlobals)
+local isStoryModule = require(script.Parent.isStoryModule)
 
-		expect(isStoryModule(module)).to.equal(true)
-	end)
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-	it("should return `false` if the given instance is not a ModuleScript", function()
-		local folder = Instance.new("Folder")
-		folder.Name = "Folder.story"
+test("return `true` for a ModuleScript with .story in the name", function()
+	local module = Instance.new("ModuleScript")
+	module.Name = "Foo.story"
 
-		expect(isStoryModule(folder)).to.equal(false)
-	end)
+	expect(isStoryModule(module)).toBe(true)
+end)
 
-	it("should return `false` if a ModuleScript does not have .story in the name", function()
-		local module = Instance.new("ModuleScript")
+test("return `false` if the given instance is not a ModuleScript", function()
+	local folder = Instance.new("Folder")
+	folder.Name = "Folder.story"
 
-		expect(isStoryModule(module)).to.equal(false)
-	end)
-end
+	expect(isStoryModule(folder)).toBe(false)
+end)
+
+test("return `false` if a ModuleScript does not have .story in the name", function()
+	local module = Instance.new("ModuleScript")
+
+	expect(isStoryModule(module)).toBe(false)
+end)

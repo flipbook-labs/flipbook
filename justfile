@@ -15,7 +15,6 @@ tests_project := "tests.project.json"
 
 tmpdir := `mktemp -d`
 global_defs_path := tmpdir / "globalTypes.d.lua"
-testez_defs_path := "testez.d.luau"
 sourcemap_path := tmpdir / "sourcemap.json"
 
 _lint-file-extensions:
@@ -28,13 +27,27 @@ _lint-file-extensions:
 		exit 1
 	fi
 
+_get-client-settings:
+	#!/usr/bin/env bash
+	set -euxo pipefail
+
+	os={{ os_family() }}
+
+	if [[ "$os" == "macos" ]]; then
+		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
+	elif [[ "$os" == "windows" ]]; then
+		robloxStudioPath=$(find "$LOCALAPPDATA/Roblox/Versions" -name "RobloxStudioBeta.exe")
+		dir=$(dirname $robloxStudioPath)
+		echo "$dir/ClientSettings"
+	fi
+
 default:
 	@just --list
 
 wally-install:
 	wally install
 	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
-	wally-package-types --sourcemap {{ sourcemap_path }} {{ packages_dir }}
+	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
 
 init:
 	foreman install
@@ -52,9 +65,18 @@ build-watch:
 	npx -y chokidar-cli "{{ project_dir }}/**/*" --initial \
 		-c "just build" \
 
+set-flags:
+	#!/usr/bin/env bash
+	set -euxo pipefail
+
+	clientSettings=$(just _get-client-settings)
+	mkdir -p "$clientSettings"
+	cp -R tests/ClientAppSettings.json "$clientSettings"
+
 test:
+	just set-flags
 	rojo build {{ tests_project }} -o test-place.rbxl
-	run-in-roblox --place test-place.rbxl --script tests/init.server.lua
+	run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
 
 analyze:
 	curl -s -o {{ global_defs_path }} \
@@ -64,7 +86,6 @@ analyze:
 
 	luau-lsp analyze --sourcemap={{ sourcemap_path }} \
 		--defs={{ global_defs_path }} \
-		--defs={{ testez_defs_path }} \
 		--settings="./.vscode/settings.json" \
 		--ignore=**/_Index/** \
 		{{ project_dir }}

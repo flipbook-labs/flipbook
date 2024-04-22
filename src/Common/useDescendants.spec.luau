@@ -1,107 +1,110 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-return function()
-	local React = require(flipbook.Packages.React)
-	local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-	local newFolder = require(flipbook.Testing.newFolder)
-	local useDescendants = require(script.Parent.useDescendants)
+local JestGlobals = require(flipbook.Packages.JestGlobals)
+local React = require(flipbook.Packages.React)
+local ReactRoblox = require(flipbook.Packages.ReactRoblox)
+local newFolder = require(flipbook.Testing.newFolder)
+local useDescendants = require(script.Parent.useDescendants)
 
-	local container = Instance.new("ScreenGui")
-	local root = ReactRoblox.createRoot(container)
+local afterEach = JestGlobals.afterEach
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-	afterEach(function()
-		ReactRoblox.act(function()
-			root:unmount()
+local container = Instance.new("ScreenGui")
+local root = ReactRoblox.createRoot(container)
+
+afterEach(function()
+	ReactRoblox.act(function()
+		root:unmount()
+	end)
+end)
+
+test("return an initial list of descendants that match the predicate", function()
+	local tree = newFolder({
+		Match = Instance.new("Part"),
+		Foo = Instance.new("Part"),
+	})
+
+	local descendants
+	local function HookTester()
+		descendants = useDescendants(tree, function(descendant)
+			return descendant.Name == "Match"
 		end)
+
+		return nil
+	end
+
+	ReactRoblox.act(function()
+		root:render(React.createElement(HookTester))
 	end)
 
-	it("should return an initial list of descendants that match the predicate", function()
-		local tree = newFolder({
-			Match = Instance.new("Part"),
-			Foo = Instance.new("Part"),
-		})
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
+	expect(descendants[1]).toBe(tree:FindFirstChild("Match"))
+end)
 
-		local descendants
-		local function HookTester()
-			descendants = useDescendants(tree, function(descendant)
-				return descendant.Name == "Match"
-			end)
+test("respond to changes in descendants that match the predicate", function()
+	local tree = newFolder({
+		Match = Instance.new("Part"),
+		Foo = Instance.new("Part"),
+	})
 
-			return nil
-		end
-
-		ReactRoblox.act(function()
-			root:render(React.createElement(HookTester))
+	local descendants
+	local function HookTester()
+		descendants = useDescendants(tree, function(descendant)
+			return descendant.Name == "Match"
 		end)
 
-		expect(descendants).to.be.ok()
-		expect(#descendants).to.equal(1)
-		expect(descendants[1]).to.equal(tree:FindFirstChild("Match"))
+		return nil
+	end
+
+	ReactRoblox.act(function()
+		root:render(React.createElement(HookTester))
 	end)
 
-	it("should respond to changes in descendants that match the predicate", function()
-		local tree = newFolder({
-			Match = Instance.new("Part"),
-			Foo = Instance.new("Part"),
-		})
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
 
-		local descendants
-		local function HookTester()
-			descendants = useDescendants(tree, function(descendant)
-				return descendant.Name == "Match"
-			end)
+	local folder = newFolder({
+		Match = Instance.new("Part"),
+	})
 
-			return nil
-		end
-
-		ReactRoblox.act(function()
-			root:render(React.createElement(HookTester))
-		end)
-
-		expect(descendants).to.be.ok()
-		expect(#descendants).to.equal(1)
-
-		local folder = newFolder({
-			Match = Instance.new("Part"),
-		})
-
-		ReactRoblox.act(function()
-			folder.Parent = tree
-		end)
-
-		expect(#descendants).to.equal(2)
+	ReactRoblox.act(function()
+		folder.Parent = tree
 	end)
 
-	it("should force an update when a matching descendant's name changes", function()
-		local descendants
+	expect(#descendants).toBe(2)
+end)
 
-		local tree = newFolder({
-			Match = Instance.new("Part"),
-		})
+test("force an update when a matching descendant's name changes", function()
+	local descendants
 
-		local function HookTester()
-			descendants = useDescendants(tree, function(descendant)
-				return descendant:IsA("Part")
-			end)
+	local tree = newFolder({
+		Match = Instance.new("Part"),
+	})
 
-			return nil
-		end
-
-		ReactRoblox.act(function()
-			root:render(React.createElement(HookTester))
+	local function HookTester()
+		descendants = useDescendants(tree, function(descendant)
+			return descendant:IsA("Part")
 		end)
 
-		expect(descendants).to.be.ok()
-		expect(#descendants).to.equal(1)
+		return nil
+	end
 
-		local prev = descendants
-		local match = tree:FindFirstChild("Match")
-
-		ReactRoblox.act(function()
-			match.Name = "Changed"
-		end)
-
-		expect(descendants).never.to.equal(prev)
-		expect(descendants[1]).to.equal(match)
+	ReactRoblox.act(function()
+		root:render(React.createElement(HookTester))
 	end)
-end
+
+	expect(descendants).toBeDefined()
+	expect(#descendants).toBe(1)
+
+	local prev = descendants
+	local match = tree:FindFirstChild("Match")
+
+	ReactRoblox.act(function()
+		match.Name = "Changed"
+	end)
+
+	expect(descendants).never.toBe(prev)
+	expect(descendants[1]).toBe(match)
+end)
