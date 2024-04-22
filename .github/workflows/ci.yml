@@ -34,7 +34,7 @@ jobs:
         run: just init
 
       - name: Build
-        run: just build-here prod
+        run: just build-here prod  ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v3
         with:
