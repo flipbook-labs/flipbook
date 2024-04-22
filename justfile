@@ -37,7 +37,7 @@ _get-client-settings:
 	#!/usr/bin/env bash
 	set -euxo pipefail
 
-	os={{ os_family() }}
+	os={{ os() }}
 
 	if [[ "$os" == "macos" ]]; then
 		echo "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
@@ -47,7 +47,7 @@ _get-client-settings:
 		echo "$dir/ClientSettings"
 	fi
 
-_build target output:
+_compile:
 	#!/usr/bin/env bash
 	set -euxo pipefail
 
@@ -57,6 +57,12 @@ _build target output:
 
 	rojo sourcemap {{ build_project }} -o sourcemap-darklua.json
 	darklua process {{ project_dir }} {{ build_dir }}
+
+_build target output:
+	#!/usr/bin/env bash
+	set -euxo pipefail
+
+	just _compile
 
 	if [[ "{{ target }}" = "prod" ]]; then
 		rm -rf {{ build_dir / "**/*.spec.lua" }}
@@ -108,8 +114,9 @@ set-flags:
 	mkdir -p "$clientSettings"
 	cp -R tests/ClientAppSettings.json "$clientSettings"
 
-test:
+test: clean
 	just set-flags
+	just _compile
 	rojo build {{ tests_project }} -o test-place.rbxl
 	run-in-roblox --place test-place.rbxl --script tests/run-tests.luau
 
