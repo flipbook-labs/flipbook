@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local types = require(flipbook.Renderers.types)
-local createRobloxRenderer = require(flipbook.Renderers.createRobloxRenderer)
+local createRobloxRenderer = require("@root/Renderers/createRobloxRenderer")
+local types = require("@root/Renderers/types")
 
 type Renderer = types.Renderer
 

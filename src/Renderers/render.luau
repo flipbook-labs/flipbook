@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local types = require(flipbook.Renderers.types)
+local types = require("@root/Renderers/types")
 
 type Args = types.Args
 type Context = types.Context

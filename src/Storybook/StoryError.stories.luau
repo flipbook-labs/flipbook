@@ -1,6 +1,6 @@
 local flipbook = script:FindFirstAncestor("flipbook")
 
-local React = require(flipbook.Packages.React)
+local React = require("@pkg/React")
 local StoryError = require(flipbook.Storybook.StoryError)
 local constants = require(flipbook.constants)
 

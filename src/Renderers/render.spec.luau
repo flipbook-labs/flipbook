@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local types = require(flipbook.Renderers.types)
-local render = require(script.Parent.render)
+local JestGlobals = require("@pkg/JestGlobals")
+local render = require("./render")
+local types = require("@root/Renderers/types")
 
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach

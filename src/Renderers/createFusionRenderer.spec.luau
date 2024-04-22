@@ -1,7 +1,7 @@
 return function()
 	local flipbook = script:FindFirstAncestor("flipbook")
 
-	local Fusion = require(flipbook.Packages.Fusion)
+	local Fusion = require("@pkg/Fusion")
 	local createFusionRenderer = require(script.Parent.createFusionRenderer)
 
 	local New = Fusion.New

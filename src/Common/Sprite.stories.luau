@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local assets = require(flipbook.assets)
-local Sprite = require(script.Parent.Sprite)
+local React = require("@pkg/React")
+local Sprite = require("./Sprite")
+local assets = require("@root/assets")
 
 local stories = {}
 
