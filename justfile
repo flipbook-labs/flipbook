@@ -85,7 +85,7 @@ clean:
 
 wally-install:
 	wally install
-	rojo sourcemap {{ tests_project }} -o {{ sourcemap_path }}
+	rojo sourcemap {{ build_project }} -o {{ sourcemap_path }}
 	wally-package-types --sourcemap {{ sourcemap_path }} {{ absolute_path(packages_dir) }}
 
 init:
