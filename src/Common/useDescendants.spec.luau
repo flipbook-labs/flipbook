@@ -1,10 +1,8 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local newFolder = require(flipbook.Testing.newFolder)
-local useDescendants = require(script.Parent.useDescendants)
+local JestGlobals = require("@pkg/JestGlobals")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local newFolder = require("@root/Testing/newFolder")
+local useDescendants = require("./useDescendants")
 
 local afterEach = JestGlobals.afterEach
 local expect = JestGlobals.expect

@@ -1,0 +1,6 @@
+{
+	"aliases": {
+		"pkg": "./Packages",
+		"root": "./src"
+	}
+}

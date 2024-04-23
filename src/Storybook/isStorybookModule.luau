@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
 local CoreGui = game:GetService("CoreGui")
 
-local constants = require(flipbook.constants)
+local constants = require("@root/constants")
 
 local function isStorybookModule(instance: Instance): boolean
 	return instance:IsA("ModuleScript")

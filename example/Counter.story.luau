@@ -1,7 +1,5 @@
-local Example = script:FindFirstAncestor("Example")
-
-local Counter = require(script.Parent.Counter)
-local Roact = require(Example.Parent.Packages.Roact)
+local Counter = require("./Counter")
+local Roact = require("@pkg/Roact")
 
 local controls = {
 	increment = 1,

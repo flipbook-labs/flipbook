@@ -1,9 +1,7 @@
 local CoreGui = game:GetService("CoreGui")
 
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local isStorybookModule = require(script.Parent.isStorybookModule)
+local JestGlobals = require("@pkg/JestGlobals")
+local isStorybookModule = require("./isStorybookModule")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test

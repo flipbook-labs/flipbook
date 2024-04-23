@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local ModuleLoader = require(flipbook.Packages.ModuleLoader)
-local PluginApp = require(script.Parent.PluginApp)
-local React = require(flipbook.Packages.React)
+local ModuleLoader = require("@pkg/ModuleLoader")
+local PluginApp = require("./PluginApp")
+local React = require("@pkg/React")
 
 return {
 	summary = "The main component that handles the entire plugin",

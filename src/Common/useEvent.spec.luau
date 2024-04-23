@@ -1,9 +1,7 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local useEvent = require(script.Parent.useEvent)
+local JestGlobals = require("@pkg/JestGlobals")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local useEvent = require("./useEvent")
 
 local afterEach = JestGlobals.afterEach
 local expect = JestGlobals.expect

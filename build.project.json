@@ -1,9 +1,12 @@
 {
   "name": "flipbook",
   "tree": {
+    "Packages": {
+      "$path": "Packages"
+    },
     "Example": {
       "$path": "example"
     },
-    "$path": "default.project.json"
+    "$path": "src"
   }
 }

@@ -1,6 +1,4 @@
-local Example = script:FindFirstAncestor("Example")
-
-local React = require(Example.Parent.Packages.React)
+local React = require("@pkg/React")
 
 export type Props = {
 	increment: number,

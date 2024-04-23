@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local Sift = require(flipbook.Packages.Sift)
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
 local function useDescendants(parent: Instance, predicate: (descendant: Instance) -> boolean): { Instance }
 	local descendants: { Instance }, setDescendants = React.useState({})

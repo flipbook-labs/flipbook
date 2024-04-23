@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local getTreeDescendants = require(script.Parent.getTreeDescendants)
+local JestGlobals = require("@pkg/JestGlobals")
+local getTreeDescendants = require("./getTreeDescendants")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test

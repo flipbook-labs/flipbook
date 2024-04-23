@@ -1,7 +1,5 @@
-local Example = script:FindFirstAncestor("Example")
-
-local ButtonWithControls = require(script.Parent.ButtonWithControls)
-local Roact = require(Example.Parent.Packages.Roact)
+local ButtonWithControls = require("./ButtonWithControls")
+local Roact = require("@pkg/Roact")
 
 local controls = {
 	isDisabled = false,

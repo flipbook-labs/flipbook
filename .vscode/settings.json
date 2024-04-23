@@ -1,3 +1,18 @@
 {
-  "luau-lsp.sourcemap.rojoProjectFile": "tests.project.json"
+  "luau-lsp.sourcemap.rojoProjectFile": "analysis.project.json",
+  "luau-lsp.types.definitionFiles": [
+    "testez.d.lua"
+  ],
+  "luau-lsp.require.mode": "relativeToFile",
+  "luau-lsp.ignoreGlobs": [
+    "**/_Index/**",
+    "**/build/**"
+  ],
+  "luau-lsp.require.directoryAliases": {
+    "@pkg": "./Packages",
+    "@root": "./src"
+  },
+  "files.associations": {
+    "*.luau": "lua"
+  }
 }

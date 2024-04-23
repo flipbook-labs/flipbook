@@ -7,18 +7,20 @@
       "label": "Install packages",
       "type": "shell",
       "problemMatcher": [],
-      "command": "./bin/wally-install.sh"
+      "command": "just",
+      "args": [
+        "wally-install"
+      ]
     },
     {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
-      "windows": {
-        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
-      },
-      "osx": {
-        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
-      },
+      "command": "just",
+      "args": [
+        "build",
+        "dev"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -28,12 +30,11 @@
       "label": "Build (Production)",
       "type": "shell",
       "problemMatcher": [],
-      "windows": {
-        "command": "rojo build -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm"
-      },
-      "osx": {
-        "command": "rojo build -o ~/Documents/Roblox/Plugins/flipbook.rbxm"
-      },
+      "command": "just",
+      "args": [
+        "build",
+        "prod"
+      ],
       "group": {
         "kind": "build",
       }
@@ -42,12 +43,10 @@
       "label": "Build and watch",
       "type": "shell",
       "problemMatcher": [],
-      "windows": {
-        "command": "rojo build dev.project.json -o $LOCALAPPDATA/Roblox/Plugins/flipbook.rbxm --watch"
-      },
-      "osx": {
-        "command": "rojo build dev.project.json -o ~/Documents/Roblox/Plugins/flipbook.rbxm --watch",
-      }
+      "command": "just",
+      "args": [
+        "build-watch",
+      ]
     },
     {
       "label": "Serve docs",

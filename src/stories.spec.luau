@@ -1,18 +1,16 @@
 local CoreGui = game:GetService("CoreGui")
 
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local isStoryModule = require(flipbook.Storybook.isStoryModule)
-local mountStory = require(flipbook.Storybook.mountStory)
+local JestGlobals = require("@pkg/JestGlobals")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local isStoryModule = require("@root/Storybook/isStoryModule")
+local mountStory = require("@root/Storybook/mountStory")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
 local storyModules: { ModuleScript } = {}
-for _, descendant in ipairs(flipbook:GetDescendants()) do
+for _, descendant in ipairs(script.Parent:GetDescendants()) do
 	if isStoryModule(descendant) then
 		table.insert(storyModules, descendant)
 	end

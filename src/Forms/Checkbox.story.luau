@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local Checkbox = require(script.Parent.Checkbox)
-local React = require(flipbook.Packages.React)
+local Checkbox = require("./Checkbox")
+local React = require("@pkg/React")
 
 return {
 	summary = "Generic checkbox used for story controls",

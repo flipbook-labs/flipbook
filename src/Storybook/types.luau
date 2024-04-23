@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local t = require(flipbook.Packages.t)
+local t = require("@pkg/t")
 
 local types = {}
 

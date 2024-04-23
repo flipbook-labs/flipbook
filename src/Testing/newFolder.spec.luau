@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local JestGlobals = require(flipbook.Packages.JestGlobals)
-local newFolder = require(script.Parent.newFolder)
+local JestGlobals = require("@pkg/JestGlobals")
+local newFolder = require("./newFolder")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test

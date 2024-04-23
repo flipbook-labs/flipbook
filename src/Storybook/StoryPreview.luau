@@ -1,14 +1,12 @@
 local CoreGui = game:GetService("CoreGui")
 
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local ReactRoblox = require(flipbook.Packages.ReactRoblox)
-local ScrollingFrame = require(flipbook.Common.ScrollingFrame)
-local Sift = require(flipbook.Packages.Sift)
-local StoryError = require(flipbook.Storybook.StoryError)
-local mountStory = require(flipbook.Storybook.mountStory)
-local types = require(flipbook.Storybook.types)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local ScrollingFrame = require("@root/Common/ScrollingFrame")
+local Sift = require("@pkg/Sift")
+local StoryError = require("@root/Storybook/StoryError")
+local mountStory = require("@root/Storybook/mountStory")
+local types = require("@root/Storybook/types")
 
 local e = React.createElement
 

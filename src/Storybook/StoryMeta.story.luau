@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local StoryMeta = require(flipbook.Storybook.StoryMeta)
+local React = require("@pkg/React")
+local StoryMeta = require("@root/Storybook/StoryMeta")
 
 return {
 	story = React.createElement(StoryMeta, {

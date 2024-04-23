@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local Component = require(script.Parent.Component)
-local React = require(flipbook.Packages.React)
+local Component = require("./Component")
+local React = require("@pkg/React")
 
 local childNode1 = {
 	name = "Button",

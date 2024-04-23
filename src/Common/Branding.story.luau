@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local Branding = require(script.Parent.Branding)
-local React = require(flipbook.Packages.React)
+local Branding = require("./Branding")
+local React = require("@pkg/React")
 
 return {
 	summary = "Icon and Typography for flipbook",
