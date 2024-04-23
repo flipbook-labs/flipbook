@@ -1,6 +1,4 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local InputField = require(script.Parent.InputField)
+local InputField = require("./InputField")
 local React = require("@pkg/React")
 
 local stories = {}

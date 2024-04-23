@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
 local React = require("@pkg/React")
-local StoryError = require(flipbook.Storybook.StoryError)
-local constants = require(flipbook.constants)
+local StoryError = require("@root/Storybook/StoryError")
+local constants = require("@root/constants")
 
 local stories = {}
 
