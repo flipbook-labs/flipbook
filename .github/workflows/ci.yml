@@ -30,8 +30,11 @@ jobs:
           sha=${GITHUB_SHA:0:7}
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
+      - name: Initialize the project
+        run: just init
+
       - name: Build
-        run: rojo build -o ${{ env.MODEL_FILE }}
+        run: just build-here prod  ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v3
         with:

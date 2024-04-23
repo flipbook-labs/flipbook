@@ -1,11 +1,9 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
 local RunService = game:GetService("RunService")
 
-local PluginContext = require(flipbook.Plugin.PluginContext)
-local React = require(flipbook.Packages.React)
-local Sift = require(flipbook.Packages.Sift)
-local types = require(flipbook.Panels.types)
+local PluginContext = require("@root/Plugin/PluginContext")
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local types = require("@root/Panels/types")
 
 local defaultProps = {
 	size = 8, -- px

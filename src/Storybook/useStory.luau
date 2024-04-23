@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local loadStoryModule = require(flipbook.Storybook.loadStoryModule)
-local types = require(flipbook.Storybook.types)
+local React = require("@pkg/React")
+local loadStoryModule = require("@root/Storybook/loadStoryModule")
+local types = require("@root/Storybook/types")
 
 local function useStory(module: ModuleScript, storybook: types.Storybook, loader: any): (types.Story?, string?)
 	local state, setState = React.useState({

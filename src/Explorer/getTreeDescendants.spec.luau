@@ -1,31 +1,37 @@
-return function()
-	local getTreeDescendants = require(script.Parent.getTreeDescendants)
+local JestGlobals = require("@pkg/JestGlobals")
+local getTreeDescendants = require("./getTreeDescendants")
 
-	it("should return an empty table when the root has no children", function()
-		local root = { name = "root", children = {} }
+local expect = JestGlobals.expect
+local test = JestGlobals.test
 
-		local result = getTreeDescendants(root)
-		expect(result).to.be.a("table")
-		expect(#result).to.equal(0)
-	end)
+test("return an empty table when the root has no children", function()
+	local root = { name = "root", children = {} }
 
-	it("should return a table with all descendants when the root has children", function()
-		local child1 = { name = "child1", children = {} }
-		local child2 = { name = "child2", children = {} }
-		local root = { name = "root", children = { child1, child2 } }
+	local result = getTreeDescendants(root)
+	expect(result).toEqual({})
+	expect(#result).toBe(0)
+end)
 
-		local result = getTreeDescendants(root)
-		expect(result).to.be.a("table")
-		expect(#result).to.equal(2)
-	end)
+test("return a table with all descendants when the root has children", function()
+	local child1 = { name = "child1", children = {} }
+	local child2 = { name = "child2", children = {} }
+	local root = { name = "root", children = { child1, child2 } }
 
-	it("should return a table with all descendants when the tree has multiple levels", function()
-		local grandchild = { name = "grandchild", children = {} }
-		local child = { name = "child", children = { grandchild } }
-		local root = { name = "root", children = { child } }
+	local result = getTreeDescendants(root)
+	expect(result).toEqual({
+		child1,
+		child2,
+	})
+end)
 
-		local result = getTreeDescendants(root)
-		expect(result).to.be.a("table")
-		expect(#result).to.equal(2)
-	end)
-end
+test("return a table with all descendants when the tree has multiple levels", function()
+	local grandchild = { name = "grandchild", children = {} }
+	local child = { name = "child", children = { grandchild } }
+	local root = { name = "root", children = { child } }
+
+	local result = getTreeDescendants(root)
+	expect(result).toEqual({
+		child,
+		grandchild,
+	})
+end)

@@ -1,8 +1,6 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local Sidebar = require(script.Parent.Sidebar)
-local internalStorybook = require(flipbook["init.storybook"])
+local React = require("@pkg/React")
+local Sidebar = require("./Sidebar")
+local internalStorybook = require("@root/init.storybook.luau")
 
 local stories = {}
 

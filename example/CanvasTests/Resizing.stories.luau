@@ -1,10 +1,8 @@
-local Example = script:FindFirstAncestor("Example")
-
 local RunService = game:GetService("RunService")
 
-local React = require(Example.Parent.Packages.React)
-local ReactRoblox = require(Example.Parent.Packages.ReactRoblox)
-local constants = require(Example.Parent.constants)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local constants = require("@root/constants")
 
 local RESIZE_DURATIOn = 3 -- seconds
 local MAX_SIZE = 2000 -- px

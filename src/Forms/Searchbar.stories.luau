@@ -1,7 +1,5 @@
-local flipbook = script:FindFirstAncestor("flipbook")
-
-local React = require(flipbook.Packages.React)
-local Searchbar = require(script.Parent.Searchbar)
+local React = require("@pkg/React")
+local Searchbar = require("./Searchbar")
 
 local stories = {}
 
