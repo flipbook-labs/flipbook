@@ -38,7 +38,7 @@ local MOCK_REACT_STORYBOOK: types.Storybook = {
 
 local function createMockStoryModule(source: string): ModuleScript
 	local storyModule = Instance.new("ModuleScript")
-	storyModule.Name = if constants.FLAG_ENABLE_COMPONENT_STORY_FORMAT then "Foo.stories" else "Foo.story"
+	storyModule.Name = "Foo.story"
 	storyModule.Source = source
 
 	return storyModule
@@ -83,7 +83,7 @@ test("use the name of the story module for the story name", function()
 				story = function() end
 			}
 		]])
-	storyModule.Name = if constants.FLAG_ENABLE_COMPONENT_STORY_FORMAT then "SampleName.stories" else "SampleName.story"
+	storyModule.Name = "SampleName.story"
 
 	local story = loadStoryModule(loader, storyModule, MOCK_PLAIN_STORYBOOK)
 

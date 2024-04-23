@@ -1,6 +1,5 @@
 return {
 	STORY_NAME_PATTERN = "%.story$",
-	STORY_NAME_PATTERN_CSF = "%.stories$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
 	SIDEBAR_INITIAL_WIDTH = 260, -- px
