@@ -1,12 +1,7 @@
+local constants = require("./lib/constants")
 local fs = require("@lune/fs")
 local process = require("@lune/process")
-local run = require("./util/run")
-
-local FOLDERS_TO_LINT = {
-	"src",
-	".lune",
-	"example",
-}
+local run = require("./lib/run")
 
 local function findLuaFiles()
 	local matches = {}
@@ -25,18 +20,18 @@ local function findLuaFiles()
 		end
 	end
 
-	for _, folder in FOLDERS_TO_LINT do
+	for _, folder in constants.FOLDERS_TO_LINT do
 		search(folder)
 	end
 
 	return matches
 end
 
-run("selene", FOLDERS_TO_LINT)
+run("selene", constants.FOLDERS_TO_LINT)
 
 run("stylua", {
 	"--check",
-	table.unpack(FOLDERS_TO_LINT),
+	table.unpack(constants.FOLDERS_TO_LINT),
 })
 
 local files = findLuaFiles()

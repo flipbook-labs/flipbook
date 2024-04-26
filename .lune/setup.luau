@@ -1,7 +1,11 @@
-local createRunner = require("./util/createRunner")
-local wallyInstall = require("./wally-install")
+local installPackages = require("./lib/installPackages")
+local run = require("./lib/run")
 
-local run = createRunner()
+local PACKAGES_PATH = "Packages"
+local PROJECT_PATH = "build.project.json"
+local SOURCEMAP_PATH = "sourcemap.json"
 
+run("lune", { "setup" })
 run("foreman", { "install" })
-wallyInstall()
+
+installPackages(PROJECT_PATH, SOURCEMAP_PATH, PACKAGES_PATH)
