@@ -42,7 +42,7 @@ test("returns a function to trigger a re-render", function()
 		mount = mockMount,
 	}
 
-	local update = render(mockRenderer)
+	local update = render(mockRenderer, target, element)
 
 	expect(mockMount).toHaveBeenCalledTimes(1)
 
@@ -125,4 +125,31 @@ test("if unmount is not specified, implicitly destroy the handle", function()
 	update()
 
 	expect(mockDestroy).toHaveBeenCalled()
+end)
+
+test("prevContext is nil on the first render", function()
+	local renders = 0
+
+	local mockShouldUpdate = jest.fn().mockImplementation(function()
+		return true
+	end)
+
+	local mockRenderer: Renderer = {
+		shouldUpdate = mockShouldUpdate,
+		mount = function()
+			renders += 1
+			return Instance.new("Folder")
+		end,
+	}
+
+	local update = render(mockRenderer, target, element)
+
+	local context = mockShouldUpdate.mock.lastCall[1]
+	expect(context).toBeDefined()
+	expect(mockShouldUpdate.mock.lastCall[2]).toBeNil()
+
+	update()
+
+	expect(mockShouldUpdate.mock.lastCall[1]).toBeDefined()
+	expect(mockShouldUpdate.mock.lastCall[2]).toEqual(mockShouldUpdate.mock.lastCall[1])
 end)

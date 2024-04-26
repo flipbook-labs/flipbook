@@ -9,13 +9,13 @@ local function createRobloxRenderer(): Renderer
 		return true
 	end
 
-	local function mount(target, element, args)
+	local function mount(container, element, args)
 		if typeof(element) == "function" then
 			element = element(args)
 		end
 
 		if typeof(element) == "Instance" and element:IsA("GuiObject") then
-			element.Parent = target
+			element.Parent = container
 			handle = element
 		end
 		return element

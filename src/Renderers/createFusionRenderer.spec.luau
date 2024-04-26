@@ -41,11 +41,11 @@ test("unmount a Fusion component", function()
 	local gui = renderer.mount(target, Button, args)
 
 	expect(gui).toBedefined()
-	expect(gui:IsDescendantOf(game)).toBe(true)
+	expect(gui:IsDescendantOf(target)).toBe(true)
 
 	renderer.unmount()
 
-	expect(gui:IsDescendantOf(game)).toBe(false)
+	expect(gui:IsDescendantOf(target)).toBe(false)
 end)
 
 test("update the component on arg changes", function()
@@ -58,11 +58,11 @@ test("update the component on arg changes", function()
 	local gui = renderer.mount(target, Button, args)
 
 	expect(gui).toBedefined()
-	expect(gui:IsDescendantOf(game)).toBe(true)
+	expect(gui:IsDescendantOf(target)).toBe(true)
 
 	renderer.unmount()
 
-	expect(gui:IsDescendantOf(game)).toBe(false)
+	expect(gui:IsDescendantOf(target)).toBe(false)
 end)
 
 test("never re-mount on arg changes", function() end)

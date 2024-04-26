@@ -3,15 +3,15 @@ export type Args = {
 }
 
 export type Context = {
-	target: Instance,
-	element: unknown,
+	container: Instance,
 	args: Args?,
 }
 
 export type Renderer = {
+	mount: (container: Instance, element: unknown, context: Context) -> GuiObject | Folder,
+
 	transformArgs: ((args: Args, context: Context) -> Args)?,
 	shouldUpdate: ((context: Context, prevContext: Context?) -> boolean)?,
-	mount: (target: Instance, element: unknown, context: Context) -> GuiObject | Folder,
 	unmount: ((context: Context) -> ())?,
 }
 
