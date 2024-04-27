@@ -22,8 +22,8 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - name: Initialize the project
-        run: lune run setup
+      - name: Install packages
+        run: lune run wally-install
 
       - name: Build
         run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
