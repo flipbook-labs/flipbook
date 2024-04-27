@@ -1,6 +1,9 @@
 {
   "name": "flipbook",
   "tree": {
+    "Lune": {
+      "$path": ".lune"
+    },
     "TestRunner": {
       "$path": "tests"
     },

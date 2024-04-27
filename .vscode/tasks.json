@@ -7,8 +7,9 @@
       "label": "Install packages",
       "type": "shell",
       "problemMatcher": [],
-      "command": "just",
+      "command": "lune",
       "args": [
+        "run",
         "wally-install"
       ]
     },
@@ -16,10 +17,12 @@
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "just",
+      "command": "lune",
       "args": [
+        "run",
         "build",
-        "dev"
+        "--",
+        "--target dev"
       ],
       "group": {
         "kind": "build",
@@ -30,10 +33,12 @@
       "label": "Build (Production)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "just",
+      "command": "lune",
       "args": [
+        "run",
         "build",
-        "prod"
+        "--",
+        "--target prod"
       ],
       "group": {
         "kind": "build",
@@ -43,16 +48,24 @@
       "label": "Build and watch",
       "type": "shell",
       "problemMatcher": [],
-      "command": "just",
+      "command": "lune",
       "args": [
-        "build-watch",
+        "run",
+        "build",
+        "--",
+        "--target dev",
+        "--watch"
       ]
     },
     {
       "label": "Serve docs",
       "type": "shell",
       "problemMatcher": [],
-      "command": "npx moonwave dev"
+      "command": "lune",
+      "args": [
+        "run",
+        "serve-docs"
+      ]
     }
   ]
 }
