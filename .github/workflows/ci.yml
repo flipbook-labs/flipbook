@@ -45,6 +45,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup Lune typedefs
+        run: lune setup
+
       - name: Install packages
         run: lune run wally-install
 
