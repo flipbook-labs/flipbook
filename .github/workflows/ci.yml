@@ -19,10 +19,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Initialize the project
-        run: just init
+        run: lune run setup
 
       - name: Lint
-        run: just lint
+        run: lune run lint
 
       - name: Get model file name
         run: |
@@ -30,11 +30,8 @@ jobs:
           sha=${GITHUB_SHA:0:7}
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
-      - name: Initialize the project
-        run: just init
-
       - name: Build
-        run: just build-here prod  ${{ env.MODEL_FILE }}
+        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -46,14 +43,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: extractions/setup-just@v1
-
       - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Initialize the project
-        run: just init
+        run: lune run setup
 
       - name: Run Luau analysis
         run: just analyze

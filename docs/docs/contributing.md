@@ -17,10 +17,10 @@ With the above requirements satisfied, run the following commands from your clon
 
 ```sh
 # Install tools and packages that the project depends on
-just init
+lune run setup
 
 # Build the plugin to Studio
-just build
+lune run build -- --target dev
 ```
 
 :::tip

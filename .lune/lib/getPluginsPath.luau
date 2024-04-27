@@ -2,9 +2,9 @@ local run = require("./run")
 
 local function getPluginsPath(os: string)
 	if os == "macos" then
-		return run("dirname", { "$HOME/Documents/Roblox/Plugins" })
+		return run("realpath", { "$HOME/Documents/Roblox/Plugins" })
 	elseif os == "windows" then
-		return run("dirname", { "$LOCALAPPDATA/Roblox/Plugins" })
+		return run("realpath", { "$LOCALAPPDATA/Roblox/Plugins" })
 	end
 	return nil
 end
