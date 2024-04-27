@@ -6,13 +6,7 @@ local parseArgs = require("./lib/parseArgs")
 local process = require("@lune/process")
 local run = require("./lib/run")
 
-type Args = {
-	target: ("prod" | "dev")?,
-	output: string?,
-	watch: boolean?,
-}
-
-local args: Args = parseArgs(process.args)
+local args = parseArgs(process.args)
 
 local target = if args.target then args.target else "prod"
 local output = if args.output then args.output else `{getPluginsPath(process.os)}/{constants.PLUGIN_FILENAME}`

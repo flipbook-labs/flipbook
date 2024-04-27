@@ -7,7 +7,7 @@ build
 
 # Luau
 sourcemap*.json
-
+globalTypes.d.luau
 
 # Wally
 /DevPackages

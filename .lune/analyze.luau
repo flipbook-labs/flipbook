@@ -28,5 +28,3 @@ run("luau-lsp", {
 	constants.LUNE_SCRIPTS_PATH,
 	constants.EXAMPLE_PATH,
 })
-
--- TODO: Delete globalDefsPath
