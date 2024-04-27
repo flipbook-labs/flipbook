@@ -1,4 +1,5 @@
 local process = require("@lune/process")
+local stdio = require("@lune/stdio")
 
 type Options = {
 	cwd: string?,
@@ -6,7 +7,9 @@ type Options = {
 }
 
 local function run(program: string, params: { string }, options: Options?)
+	stdio.write(stdio.style("bold"))
 	print(`> {program} {table.concat(params, " ")}`)
+	stdio.write(stdio.style("reset"))
 
 	local result = process.spawn(program, params, {
 		stdio = "inherit",
