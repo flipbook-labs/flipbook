@@ -45,8 +45,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Initialize the project
-        run: lune run setup
+      - name: Install packages
+        run: lune run wally-install
 
       - name: Run Luau analysis
         run: lune run analyze
