@@ -1,7 +1,5 @@
-local installPackages = require("./lib/installPackages")
+local run = require("./lib/run")
 
-local PACKAGES_PATH = "Packages"
-local PROJECT_PATH = "build.project.json"
-local SOURCEMAP_PATH = "sourcemap.json"
-
-installPackages(PROJECT_PATH, SOURCEMAP_PATH, PACKAGES_PATH)
+run("wally", { "install" })
+run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
+run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })

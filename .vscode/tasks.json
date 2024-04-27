@@ -19,6 +19,7 @@
       "problemMatcher": [],
       "command": "lune",
       "args": [
+        "run",
         "build",
         "--",
         "--target dev"

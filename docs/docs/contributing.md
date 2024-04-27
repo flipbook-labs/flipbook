@@ -10,14 +10,19 @@ Thank you for your interest in contributing to this repository! This guide will 
 
 We use [Visual Studio Code](https://code.visualstudio.com/) to work on this project, so you'll get the best mileage from using it too. We also have several [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json) that should be installed.
 
-You will also need [Just](https://github.com/casey/just) for running commands, and [Foreman](https://github.com/Roblox/foreman/)
-for installing pinned tool versions.
+You will also need [Foreman](https://github.com/Roblox/foreman/) for installing the various command-line tools we use.
 
 With the above requirements satisfied, run the following commands from your clone of the repo to start developing:
 
 ```sh
-# Install tools and packages that the project depends on
-lune run setup
+# Install tools from Foreman (like Lune)
+foreman install
+
+# Setup lune with VSCode
+lune setup
+
+# Install packages
+lune run wally-install
 
 # Build the plugin to Studio
 lune run build -- --target dev
