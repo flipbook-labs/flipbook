@@ -12,8 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: extractions/setup-just@v1
-
       - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +49,7 @@ jobs:
         run: lune run setup
 
       - name: Run Luau analysis
-        run: just analyze
+        run: lune run analyze
 
   # Running unit tests in CI has historically been cumbersome, and presently
   # there is no way to run Roblox Studio from a GitHub workflow. As such, our
