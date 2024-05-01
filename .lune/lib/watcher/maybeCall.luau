@@ -1,4 +1,4 @@
-local function maybeCall(callback: (() -> ())?, ...)
+local function maybeCall<T>(callback: ((...T) -> ())?, ...)
 	if callback then
 		pcall(callback, ...)
 	end
