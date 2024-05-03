@@ -9,10 +9,10 @@ export type Context = {
 
 export type Renderer = {
 	mount: (container: Instance, element: unknown, context: Context) -> GuiObject | Folder,
+	unmount: (context: Context?) -> (),
 
 	transformArgs: ((args: Args, context: Context) -> Args)?,
 	shouldUpdate: ((context: Context, prevContext: Context?) -> boolean)?,
-	unmount: ((context: Context) -> ())?,
 }
 
 return nil

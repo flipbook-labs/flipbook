@@ -79,8 +79,13 @@ export type Storybook = RoactStorybook | ReactStorybook | StorybookMeta
 export type StoryMeta = {
 	name: string,
 	story: unknown,
+	source: ModuleScript,
+	storybook: Storybook,
+
 	summary: string?,
 	controls: Controls?,
+
+	-- Renderer-specific
 	roact: Roact?,
 	react: React?,
 	reactRoblox: ReactRoblox?,
