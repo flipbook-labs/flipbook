@@ -11,8 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: extractions/setup-just@v1
-
       - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -22,11 +20,11 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - name: Initialize the project
-        run: just init
+      - name: Install packages
+        run: lune run wally-install
 
       - name: Build
-        run: just build-here prod ${{ env.MODEL_FILE }}
+        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
