@@ -1,6 +1,8 @@
+local ContextStack = require("@root/Common/ContextStack")
 local PluginContext = require("@root/Plugin/PluginContext")
 local React = require("@pkg/React")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
+local SettingsContext = require("@root/UserSettings/SettingsContext")
 local Sidebar = require("@root/Panels/Sidebar")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
 local constants = require("@root/constants")
@@ -29,8 +31,13 @@ local function App(props: Props)
 		setSidebarWidth(newSize.X)
 	end, {})
 
-	return React.createElement(PluginContext.Provider, {
-		plugin = props.plugin,
+	return React.createElement(ContextStack, {
+		providers = {
+			React.createElement(PluginContext.Provider, {
+				plugin = props.plugin,
+			}),
+			React.createElement(SettingsContext.Provider),
+		},
 	}, {
 		Background = React.createElement("Frame", {
 			BackgroundColor3 = theme.background,
