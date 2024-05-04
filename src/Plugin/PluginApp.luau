@@ -32,6 +32,8 @@ local function App(props: Props)
 	return React.createElement(PluginContext.Provider, {
 		plugin = props.plugin,
 	}, {
+		ModalRoot = React.createElement(ModalRoot),
+
 		Background = React.createElement("Frame", {
 			BackgroundColor3 = theme.background,
 			Size = UDim2.fromScale(1, 1),
