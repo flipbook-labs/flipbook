@@ -5,6 +5,7 @@ local navigationEnums = require("@root/Navigation/enums")
 
 local useCallback = React.useCallback
 local useContext = React.useContext
+local useMemo = React.useMemo
 local useState = React.useState
 
 type Screen = navigationEnums.Screen
@@ -32,37 +33,33 @@ local function Provider(props: Props)
 		end)
 	end, {})
 
-	local getCurrentScreen = useCallback(function()
+	local currentScreen = useMemo(function()
 		return stack[#stack]
 	end, { stack })
 
-	local canGoBack = useCallback(function()
+	local canGoBack = useMemo(function()
 		return #stack > 1
 	end, { stack })
 
 	local goBack = useCallback(function()
-		if canGoBack() then
+		if canGoBack then
 			setStack(function(prev)
 				return Sift.Array.pop(prev)
 			end)
 		end
 	end, { canGoBack })
 
-	local getBreadcrumbs = useCallback(function()
-		return stack
-	end, { stack })
-
 	return React.createElement(Context.Provider, {
 		value = {
 			navigateTo = navigateTo,
 			goBack = goBack,
-			getBreadcrumbs = getBreadcrumbs,
-			getCurrentScreen = getCurrentScreen,
+			breadcrumbs = stack,
+			currentScreen = currentScreen,
 		},
 	}, props.children)
 end
 
-local function use()
+local function use(): NavigationContext
 	return useContext(Context)
 end
 

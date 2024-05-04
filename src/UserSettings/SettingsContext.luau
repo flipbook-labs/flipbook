@@ -6,7 +6,6 @@ local defaultSettings = require("./defaultSettings")
 
 local useCallback = React.useCallback
 local useContext = React.useContext
-local useMemo = React.useMemo
 local useState = React.useState
 
 type Settings = defaultSettings.Settings

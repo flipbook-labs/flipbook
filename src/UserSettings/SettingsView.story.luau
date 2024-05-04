@@ -1,20 +1,13 @@
 local React = require("@pkg/React")
 
-local ContextStack = require("@root/Common/ContextStack")
+local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local PluginContext = require("@root/Plugin/PluginContext")
-local SettingsContext = require("./SettingsContext")
 local SettingsView = require("./SettingsView")
 
 return {
 	story = function()
-		return React.createElement(ContextStack, {
-			providers = {
-				React.createElement(PluginContext.Provider, {
-					plugin = MockPlugin.new(),
-				}),
-				React.createElement(SettingsContext.Provider),
-			},
+		return React.createElement(ContextProviders, {
+			plugin = MockPlugin.new(),
 		}, {
 			SettingsView = React.createElement(SettingsView),
 		})

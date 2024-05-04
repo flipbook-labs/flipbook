@@ -2,55 +2,68 @@ local React = require("@pkg/React")
 
 local Navigation = require("@root/Navigation")
 local NavigationContext = require("@root/Navigation/NavigationContext")
-local Sprite = require("@root/Common/Sprite")
-local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local useCallback = React.useCallback
 
 export type Props = {
+	Size: UDim2?,
 	LayoutOrder: number?,
 }
 
-local function NavbarRoot(props: Props)
+local function Topbar(props: Props)
 	local theme = useTheme()
 	local navigation = NavigationContext.use()
 
 	local navigateToSettings = useCallback(function()
-		navigation.navigateTo("Settings")
-	end, { navigation.navigateTo })
+		if navigation.currentScreen == "Settings" then
+			navigation.goBack()
+		else
+			navigation.navigateTo("Settings")
+		end
+	end, { navigation.navigateTo, navigation.currentScreen })
 
-	return React.createElement(Navigation.Items, {
-		layoutOrder = props.LayoutOrder,
+	return React.createElement("Frame", {
+		BackgroundColor3 = theme.sidebar,
+		LayoutOrder = props.LayoutOrder,
+		Size = props.Size,
 	}, {
-		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.paddingSmall,
-			PaddingRight = theme.paddingSmall,
-			PaddingBottom = theme.paddingSmall,
-			PaddingLeft = theme.paddingSmall,
+		Layout = React.createElement("UIListLayout", {
+			HorizontalAlignment = Enum.HorizontalAlignment.Right,
 		}),
 
-		Settings = React.createElement(Navigation.Item, {
-			layoutOrder = nextLayoutOrder(),
-			onClick = navigateToSettings,
+		NavItems = React.createElement(Navigation.Items, {
+			layoutOrder = props.LayoutOrder,
 		}, {
-			Text = React.createElement("TextLabel", {
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				Size = UDim2.fromScale(0, 0),
-				Text = "Settings",
-				TextColor3 = theme.textFaded,
-				TextSize = theme.textSize,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Top,
+			Padding = React.createElement("UIPadding", {
+				PaddingTop = theme.paddingSmall,
+				PaddingRight = theme.paddingSmall,
+				PaddingBottom = theme.paddingSmall,
+				PaddingLeft = theme.paddingSmall,
+			}),
+
+			Settings = React.createElement(Navigation.Item, {
+				layoutOrder = nextLayoutOrder(),
+				onClick = navigateToSettings,
+			}, {
+				Text = React.createElement("TextLabel", {
+					AutomaticSize = Enum.AutomaticSize.XY,
+					BackgroundTransparency = 1,
+					Font = theme.font,
+					Size = UDim2.fromScale(0, 0),
+					Text = "Settings",
+					TextColor3 = theme.textFaded,
+					TextSize = theme.textSize,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					TextYAlignment = Enum.TextYAlignment.Top,
+				}),
 			}),
 		}),
 	})
 end
 
-return NavbarRoot
+return Topbar
 
 -- local function Topbar(props: Props)
 -- 	local theme = useTheme()

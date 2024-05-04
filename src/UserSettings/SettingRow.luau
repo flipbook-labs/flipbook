@@ -51,7 +51,7 @@ local function SettingRow(props: Props)
 
 	return React.createElement("Frame", {
 		BorderSizePixel = 0,
-		BackgroundColor3 = if props.layoutOrder and props.layoutOrder % 2 == 0 then theme.sidebar else theme.background,
+		BackgroundColor3 = if props.layoutOrder and props.layoutOrder % 2 == 0 then theme.background else theme.sidebar,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -75,10 +75,10 @@ local function SettingRow(props: Props)
 			}),
 
 			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.paddingSmall,
-				PaddingRight = theme.padding,
-				PaddingBottom = theme.paddingSmall,
-				PaddingLeft = theme.padding,
+				PaddingTop = theme.padding,
+				PaddingRight = theme.paddingLarge,
+				PaddingBottom = theme.padding,
+				PaddingLeft = theme.paddingLarge,
 			}),
 
 			Info = React.createElement("Frame", {

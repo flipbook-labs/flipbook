@@ -1,9 +1,11 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
+local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingRow = require("@root/UserSettings/SettingRow")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local useMemo = React.useMemo
@@ -30,16 +32,44 @@ local function SettingsView()
 		})
 	end
 
-	return React.createElement("Frame", {
-		BackgroundTransparency = 1,
-		Size = UDim2.fromScale(1, 0),
-		AutomaticSize = Enum.AutomaticSize.Y,
+	return React.createElement(ScrollingFrame, {
+		BackgroundColor3 = theme.background,
+		BackgroundTransparency = 0,
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = theme.padding,
 		}),
-	}, children)
+
+		Title = React.createElement("TextLabel", {
+			LayoutOrder = nextLayoutOrder(),
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			Font = theme.headerFont,
+			Size = UDim2.fromScale(0, 0),
+			Text = "Settings",
+			TextColor3 = theme.text,
+			TextSize = theme.headerTextSize,
+		}, {
+			Padding = React.createElement("UIPadding", {
+				PaddingTop = theme.paddingLarge,
+				PaddingRight = theme.paddingLarge,
+				PaddingBottom = theme.paddingLarge,
+				PaddingLeft = theme.paddingLarge,
+			}),
+		}),
+
+		Settings = React.createElement("Frame", {
+			LayoutOrder = nextLayoutOrder(),
+			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+		}, {
+			Layout = React.createElement("UIListLayout", {
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				Padding = theme.padding,
+			}),
+		}, children),
+	})
 end
 
 return SettingsView

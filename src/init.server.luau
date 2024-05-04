@@ -5,9 +5,11 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 end
 
 local ModuleLoader = require("@pkg/ModuleLoader")
-local PluginApp = require("@root/Plugin/PluginApp")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local PluginApp = require("@root/Plugin/PluginApp")
 local constants = require("@root/constants")
 local createToggleButton = require("@root/Plugin/createToggleButton")
 local createWidget = require("@root/Plugin/createWidget")
@@ -25,9 +27,12 @@ local disconnectButton = createToggleButton(toolbar, widget)
 
 local loader = ModuleLoader.new()
 
-local app = React.createElement(PluginApp, {
+local app = React.createElement(ContextProviders, {
 	plugin = plugin,
-	loader = loader,
+}, {
+	PluginApp = React.createElement(PluginApp, {
+		loader = loader,
+	}),
 })
 
 local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()

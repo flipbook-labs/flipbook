@@ -2,9 +2,8 @@ local JestGlobals = require("@pkg/JestGlobals")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local ContextStack = require("@root/Common/ContextStack")
+local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local PluginContext = require("@root/Plugin/PluginContext")
 local SettingsContext = require("./SettingsContext")
 local defaultSettings = require("./defaultSettings")
 local renderHook = require("@root/Testing/renderHook")
@@ -24,13 +23,8 @@ beforeEach(function()
 	mockPlugin = MockPlugin.new()
 
 	function ContextWrapper(props)
-		return React.createElement(ContextStack, {
-			providers = {
-				React.createElement(PluginContext.Provider, {
-					plugin = mockPlugin :: any,
-				}),
-				React.createElement(SettingsContext.Provider),
-			},
+		return React.createElement(ContextProviders, {
+			plugin = mockPlugin :: any,
 		}, props.children)
 	end
 
