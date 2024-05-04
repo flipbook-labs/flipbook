@@ -19,6 +19,9 @@ export type Props = {
 
 export type SettingsContext = {
 	settings: Settings,
+
+	getSettingDefault: (settingName: string) -> any,
+	isSettingDefault: (settingName: string) -> boolean,
 	setSetting: (settingName: string, newValue: any) -> (),
 }
 
@@ -41,20 +44,36 @@ local function Provider(props: Props)
 		return loadSettingsFromDisk()
 	end)
 
+	local getSettingDefault = useCallback(function(settingName: string)
+		local setting = defaultSettings[settingName]
+		if setting.settingType == "dropdown" then
+			return setting.choices[1].name
+		elseif setting.settingType == "checkbox" then
+			return setting.value
+		else
+			return nil
+		end
+	end, {})
+
+	local isSettingDefault = useCallback(function(settingName: string)
+		local defaultValue = getSettingDefault(settingName)
+		local savedValue = plugin:GetSetting(settingName)
+
+		return savedValue == nil or savedValue == defaultValue
+	end, { plugin, getSettingDefault })
+
 	local setSetting = useCallback(function(settingName: string, newValue: any)
 		plugin:SetSetting(settingName, newValue)
 		setSettings(loadSettingsFromDisk)
 	end, { plugin })
 
-	local context: SettingsContext = useMemo(function()
-		return {
-			settings = settings,
-			setSetting = setSetting,
-		}
-	end, { settings })
-
 	return React.createElement(Context.Provider, {
-		value = context,
+		value = {
+			settings = settings,
+			getSettingDefault = getSettingDefault,
+			isSettingDefault = isSettingDefault,
+			setSetting = setSetting,
+		},
 	}, props.children)
 end
 
