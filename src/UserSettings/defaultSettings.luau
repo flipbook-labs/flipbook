@@ -53,9 +53,31 @@ local rememberLastOpenedStory: Setting = {
 	value = true,
 }
 
+local theme: Setting = {
+	name = "theme",
+	displayName = "UI theme",
+	description = "Select the UI theme to use. By default, flipbook will use the same theme as Studio",
+	settingType = "dropdown",
+	choices = {
+		{
+			name = "system",
+			description = "Match the theme selected for Studio",
+		},
+		{
+			name = "dark",
+			description = "Force the theme to use dark mode",
+		},
+		{
+			name = "light",
+			description = "Force the theme to use light mode",
+		},
+	},
+}
+
 local settings = {
 	expandNodesOnStart = expandNodesOnStart,
 	rememberLastOpenedStory = rememberLastOpenedStory,
+	theme = theme,
 }
 
 export type Settings = typeof(settings)
