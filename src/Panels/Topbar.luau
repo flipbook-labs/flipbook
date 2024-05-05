@@ -24,6 +24,14 @@ local function Topbar(props: Props)
 		end
 	end, { navigation.navigateTo, navigation.currentScreen })
 
+	local navigateToAbout = useCallback(function()
+		if navigation.currentScreen == "About" then
+			navigation.goBack()
+		else
+			navigation.navigateTo("About")
+		end
+	end, { navigation.navigateTo, navigation.currentScreen })
+
 	return React.createElement("Frame", {
 		BackgroundColor3 = theme.sidebar,
 		LayoutOrder = props.LayoutOrder,
@@ -43,6 +51,21 @@ local function Topbar(props: Props)
 				PaddingLeft = theme.paddingSmall,
 			}),
 
+			About = React.createElement(Navigation.Item, {
+				layoutOrder = nextLayoutOrder(),
+				onClick = navigateToAbout,
+			}, {
+				Text = React.createElement("TextLabel", {
+					AutomaticSize = Enum.AutomaticSize.XY,
+					BackgroundTransparency = 1,
+					Font = theme.font,
+					Size = UDim2.fromScale(0, 0),
+					Text = "About",
+					TextColor3 = theme.textFaded,
+					TextSize = theme.textSize,
+				}),
+			}),
+
 			Settings = React.createElement(Navigation.Item, {
 				layoutOrder = nextLayoutOrder(),
 				onClick = navigateToSettings,
@@ -55,8 +78,6 @@ local function Topbar(props: Props)
 					Text = "Settings",
 					TextColor3 = theme.textFaded,
 					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
 				}),
 			}),
 		}),

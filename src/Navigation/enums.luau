@@ -1,9 +1,11 @@
 local enums = {}
 
-export type Screen = "Home" | "Settings"
-enums.Screen = {
-	Home = "Home" :: Screen,
-	Settings = "Settings" :: Screen,
+export type Screen = "Home" | "Settings" | "About"
+local Screen: { [string]: Screen } = {
+	Home = "Home" :: "Home",
+	Settings = "Settings" :: "Settings",
+	About = "About" :: "About",
 }
+enums.Screen = Screen
 
 return enums
