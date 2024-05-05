@@ -6,7 +6,7 @@ local useTheme = require("@root/Common/useTheme")
 local e = React.createElement
 
 type Props = {
-	active: boolean,
+	active: boolean?,
 	layoutOrder: number,
 	onClick: () -> (),
 	padding: { x: number, y: number }?,

@@ -1,8 +1,8 @@
-local order = 0
+local layoutOrder = 0
 
 local function nextLayoutOrder()
-	order += 1
-	return order
+	layoutOrder += 1
+	return layoutOrder
 end
 
 return nextLayoutOrder

@@ -22,7 +22,8 @@
         "run",
         "build",
         "--",
-        "--target dev"
+        "--target",
+        "dev"
       ],
       "group": {
         "kind": "build",
@@ -38,7 +39,8 @@
         "run",
         "build",
         "--",
-        "--target prod"
+        "--target",
+        "prod"
       ],
       "group": {
         "kind": "build",
@@ -53,7 +55,8 @@
         "run",
         "build",
         "--",
-        "--target dev",
+        "--target",
+        "dev",
         "--watch"
       ]
     },
