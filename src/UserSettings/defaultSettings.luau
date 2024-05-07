@@ -75,8 +75,8 @@ local theme: Setting = {
 }
 
 local settings = {
-	expandNodesOnStart = expandNodesOnStart,
-	rememberLastOpenedStory = rememberLastOpenedStory,
+	-- expandNodesOnStart = expandNodesOnStart,
+	-- rememberLastOpenedStory = rememberLastOpenedStory,
 	theme = theme,
 }
 
