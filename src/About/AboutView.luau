@@ -36,7 +36,7 @@ local function AboutView()
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = theme.padding,
+			Padding = theme.paddingLarge,
 		}),
 
 		Padding = React.createElement("UIPadding", {
@@ -58,21 +58,9 @@ local function AboutView()
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `flipbook`,
+			Text = `flipbook v{wally.package.version}`,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
-			TextWrapped = true,
-		}),
-
-		Version = React.createElement("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(0, 0),
-			Text = `Version: {wally.package.version}`,
-			TextColor3 = theme.text,
-			TextSize = theme.textSize,
 			TextWrapped = true,
 		}),
 
@@ -84,8 +72,6 @@ local function AboutView()
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				FillDirection = Enum.FillDirection.Horizontal,
-				HorizontalAlignment = Enum.HorizontalAlignment.Center,
-				VerticalAlignment = Enum.VerticalAlignment.Center,
 				Padding = theme.paddingSmall,
 			}),
 
@@ -115,6 +101,7 @@ local function AboutView()
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				HorizontalAlignment = Enum.HorizontalAlignment.Center,
+				Padding = theme.padding,
 			}),
 
 			Title = React.createElement("TextLabel", {
@@ -123,7 +110,7 @@ local function AboutView()
 				Font = theme.font,
 				LayoutOrder = nextLayoutOrder(),
 				Size = UDim2.fromScale(0, 0),
-				Text = `Authored by`,
+				Text = `Created by:`,
 				TextColor3 = theme.text,
 				TextSize = theme.textSize,
 				TextWrapped = true,
@@ -142,25 +129,13 @@ local function AboutView()
 			}, authors),
 		}),
 
-		License = React.createElement("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(0, 0),
-			Text = `{wally.package.license} license`,
-			TextColor3 = theme.text,
-			TextSize = theme.textSize,
-			TextWrapped = true,
-		}),
-
 		Copy = React.createElement("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `Copyright (c) {currentYear} flipbook-labs`,
+			Text = `Copyright © 2021—{currentYear} flipbook-labs`,
 			TextColor3 = theme.text,
 			TextSize = theme.textSize,
 			TextWrapped = true,

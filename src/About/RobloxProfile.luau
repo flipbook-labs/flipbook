@@ -37,13 +37,17 @@ local function RobloxProfile(props: Props)
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			Padding = theme.paddingSmall,
 		}),
 
 		Avatar = React.createElement("ImageLabel", {
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromOffset(48, 48),
-			BackgroundTransparency = 1,
+			BackgroundColor3 = theme.sidebar,
+			BackgroundTransparency = 0.6,
+			BorderSizePixel = 0,
 			Image = avatar,
 		}, {
 			Corner = React.createElement("UICorner", {
@@ -53,7 +57,7 @@ local function RobloxProfile(props: Props)
 
 		Username = React.createElement("TextLabel", {
 			LayoutOrder = nextLayoutOrder(),
-			Text = username,
+			Text = `@{username}`,
 			Font = theme.font,
 			TextColor3 = theme.text,
 			TextSize = theme.textSize,
