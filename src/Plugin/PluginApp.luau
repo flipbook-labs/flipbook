@@ -1,4 +1,6 @@
-local PluginContext = require("@root/Plugin/PluginContext")
+local Modal = require("@root/Modal/Modal")
+local ModalPortal = require("@root/Modal/ModalPortal")
+local ModalRoot = require("@root/Modal/ModalRoot")
 local React = require("@pkg/React")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Sidebar = require("@root/Panels/Sidebar")
@@ -8,7 +10,6 @@ local useStorybooks = require("@root/Storybook/useStorybooks")
 local useTheme = require("@root/Common/useTheme")
 
 export type Props = {
-	plugin: Plugin,
 	loader: any,
 }
 
@@ -29,12 +30,27 @@ local function App(props: Props)
 		setSidebarWidth(newSize.X)
 	end, {})
 
-	return React.createElement(PluginContext.Provider, {
-		plugin = props.plugin,
+	local isModalShown, setIsModalShown = React.useState(true)
+	local onCloseModal = React.useCallback(function()
+		setIsModalShown(false)
+	end, {})
+
+	return React.createElement("Frame", {
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
 	}, {
 		ModalRoot = React.createElement(ModalRoot),
 
-		Background = React.createElement("Frame", {
+		Sample = if isModalShown
+			then React.createElement(ModalPortal, {}, {
+				Modal = React.createElement(Modal, {
+					title = "Example",
+					onClose = onCloseModal,
+				}, {}),
+			})
+			else nil,
+
+		App = React.createElement("Frame", {
 			BackgroundColor3 = theme.background,
 			Size = UDim2.fromScale(1, 1),
 		}, {

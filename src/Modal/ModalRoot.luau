@@ -7,7 +7,7 @@ local function ModalRoot()
 
 	return React.createElement("Folder", {
 		[React.Tag] = modalContext.tag,
-	}, modalContext.modalContent)
+	})
 end
 
 return ModalRoot

@@ -1,8 +1,7 @@
-local CollectionService = game:GetService("CollectionService")
-
 local React = require("@pkg/React")
 
-local useCallback = React.useCallback
+local useTag = require("@root/Common/useTag")
+
 local useContext = React.useContext
 
 local MODAL_TAG = "modal-root"
@@ -20,19 +19,12 @@ export type Props = {
 }
 
 local function Provider(props: Props)
-	local getModalRoot = useCallback(function()
-		return CollectionService:GetTagged(MODAL_TAG)[1]
-	end, {})
-
-	local close = useCallback(function() end, {})
-
-	local open = useCallback(function() end, {})
+	local target = useTag(MODAL_TAG)[1]
 
 	return React.createElement(Context.Provider, {
 		value = {
 			tag = MODAL_TAG,
-			close = close,
-			open = open,
+			target = target,
 		},
 	}, props.children)
 end

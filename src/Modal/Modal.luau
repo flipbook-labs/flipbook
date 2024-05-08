@@ -4,9 +4,10 @@ local Sift = require("@pkg/Sift")
 local useTheme = require("@root/Common/useTheme")
 
 export type Props = {
-	maxSize: Vector2?,
-	content: React.Node?,
+	title: string,
 	onClose: () -> (),
+	maxSize: Vector2?,
+	children: React.Node?,
 }
 
 local defaultProps = {
@@ -21,7 +22,7 @@ local function Modal(providedProps: Props)
 
 	return React.createElement("ImageButton", {
 		Size = UDim2.fromScale(1, 1),
-		BackgroundTransparency = 0.8,
+		BackgroundTransparency = 0.6,
 		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
@@ -66,7 +67,7 @@ local function Modal(providedProps: Props)
 				BackgroundTransparency = 1,
 			}, {
 				Title = React.createElement("TextLabel", {
-					Text = "Example Modal",
+					Text = props.title,
 					Font = theme.headerFont,
 					TextColor3 = theme.text,
 					TextSize = theme.headerTextSize,
