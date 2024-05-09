@@ -24,6 +24,8 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 		story = {
 			name = module.Name,
 			story = result,
+			storybook = storybook,
+			source = module,
 		}
 	else
 		local isValid, message = types.StoryMeta(result)
@@ -45,6 +47,8 @@ local function loadStoryModule(loader: any, module: ModuleScript, storybook: typ
 
 			story = Sift.Dictionary.merge({
 				name = module.Name,
+				storybook = storybook,
+				source = module,
 			}, extraProps, result)
 		else
 			return nil, Errors.Generic:format(module:GetFullName(), message)

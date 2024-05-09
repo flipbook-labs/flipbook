@@ -7,14 +7,16 @@ realm = "shared"
 exclude = ["*"]
 
 [dependencies]
+CSF = "flipbook-labs/csf@0.1.0"
 ModuleLoader = "flipbook-labs/module-loader@0.6.1"
 React = "jsdotlua/react@17.0.2"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"
-Sift = "csqrl/sift@0.0.4"
+Sift = "csqrl/sift@0.0.8"
 t = "osyrisrblx/t@3.0.0"
 
 # dev dependencies
 Roact = "roblox/roact@1.4.4"
+Fusion = "elttob/fusion@0.2.0"
 Jest = "jsdotlua/jest@3.6.1-rc.2"
 JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"

@@ -15,6 +15,8 @@ return {
 	-- plugin
 	IS_DEV_MODE = false,
 
+	FLAG_ENABLE_COMPONENT_STORY_FORMAT = false,
+
 	SPRING_CONFIG = {
 		clamp = true,
 		mass = 0.6,
