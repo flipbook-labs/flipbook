@@ -18,8 +18,8 @@ local function Dropdown(props: Props)
 		options["Option" .. index] = React.createElement("TextButton", {
 			LayoutOrder = index,
 			Text = tostring(option),
-			Font = theme.font,
-			TextSize = theme.textSize,
+			Font = theme.buttonFont,
+			TextSize = theme.buttonTextSize,
 			TextColor3 = theme.buttonText,
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundColor3 = theme.buttonText,
@@ -34,20 +34,20 @@ local function Dropdown(props: Props)
 			end,
 		}, {
 			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.padding,
+				PaddingTop = theme.paddingSmall,
 				PaddingRight = theme.padding,
-				PaddingBottom = theme.padding,
+				PaddingBottom = theme.paddingSmall,
 				PaddingLeft = theme.padding,
 			}),
 		})
 	end
 
-	local maxHeight = theme.textSize + (theme.padding.Offset * 2)
+	local maxHeight = theme.buttonTextSize + (theme.paddingSmall.Offset * 2)
 
 	return React.createElement("TextButton", {
 		Text = tostring(if selectedOption then selectedOption else props.placeholder),
-		Font = theme.font,
-		TextSize = theme.textSize,
+		Font = theme.buttonFont,
+		TextSize = theme.buttonTextSize,
 		TextColor3 = theme.buttonText,
 		BackgroundColor3 = theme.button,
 		Size = UDim2.fromOffset(0, maxHeight),
@@ -57,20 +57,20 @@ local function Dropdown(props: Props)
 		end,
 	}, {
 		Corner = React.createElement("UICorner", {
-			CornerRadius = theme.paddingSmall,
+			CornerRadius = theme.corner,
 		}),
 
 		Border = React.createElement("UIStroke", {
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 			Color = theme.buttonText,
-			Transparency = 0.4,
-			Thickness = 2,
+			Transparency = 0.6,
+			Thickness = 1,
 		}),
 
 		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.padding,
+			PaddingTop = theme.paddingSmall,
 			PaddingRight = theme.padding,
-			PaddingBottom = theme.padding,
+			PaddingBottom = theme.paddingSmall,
 			PaddingLeft = theme.padding,
 		}),
 
@@ -85,13 +85,14 @@ local function Dropdown(props: Props)
 			}),
 
 			Corner = React.createElement("UICorner", {
-				CornerRadius = theme.paddingSmall,
+				CornerRadius = theme.corner,
 			}),
 
 			Border = React.createElement("UIStroke", {
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 				Color = theme.buttonText,
-				Transparency = 0.4,
-				Thickness = 2,
+				Transparency = 0.6,
+				Thickness = 1,
 			}),
 
 			Options = React.createElement(React.Fragment, nil, options),

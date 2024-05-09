@@ -5,6 +5,8 @@ export type Theme = {
 	font: Enum.Font,
 	headerTextSize: number,
 	headerFont: Enum.Font,
+	buttonTextSize: number,
+	buttonFont: Enum.Font,
 
 	background: Color3,
 	sidebar: Color3,
@@ -28,10 +30,12 @@ export type Theme = {
 
 return {
 	Light = {
-		textSize = 14,
-		font = Enum.Font.GothamMedium,
-		headerTextSize = 24,
-		headerFont = Enum.Font.GothamBlack,
+		textSize = 18,
+		font = Enum.Font.BuilderSansMedium,
+		headerTextSize = 32,
+		headerFont = Enum.Font.BuilderSansExtraBold,
+		buttonTextSize = 14,
+		buttonFont = Enum.Font.BuilderSansBold,
 
 		background = tailwind.white,
 		sidebar = tailwind.gray100,
@@ -42,6 +46,7 @@ return {
 		divider = tailwind.gray300,
 		text = tailwind.gray800,
 		textFaded = tailwind.gray600,
+		textSubtitle = tailwind.gray500,
 		selection = tailwind.purple500,
 		story = tailwind.green500,
 		directory = tailwind.purple500,
@@ -51,24 +56,27 @@ return {
 		paddingSmall = UDim.new(0, 6),
 		paddingLarge = UDim.new(0, 24),
 
-		corner = UDim.new(0, 6),
+		corner = UDim.new(0, 4),
 	} :: Theme,
 
 	Dark = {
-		textSize = 14,
-		font = Enum.Font.GothamMedium,
-		headerTextSize = 24,
-		headerFont = Enum.Font.GothamBlack,
+		textSize = 18,
+		font = Enum.Font.BuilderSansMedium,
+		headerTextSize = 32,
+		headerFont = Enum.Font.BuilderSansExtraBold,
+		buttonTextSize = 14,
+		buttonFont = Enum.Font.BuilderSansBold,
 
 		background = tailwind.zinc800,
 		sidebar = tailwind.zinc900,
 		canvas = tailwind.zinc800,
 		scrollbar = tailwind.zinc100,
 		button = tailwind.zinc300,
-		buttonText = tailwind.zinc900,
+		buttonText = tailwind.zinc800,
 		divider = tailwind.zinc700,
 		text = tailwind.zinc200,
 		textFaded = tailwind.zinc300,
+		textSubtitle = tailwind.zinc400,
 		selection = tailwind.purple500,
 		story = tailwind.green500,
 		directory = tailwind.purple500,

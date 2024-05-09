@@ -9,7 +9,7 @@ type Options = {
 	}>,
 }
 
-local function renderTestHook<T...>(hook: () -> T..., options: Options?): () -> T...
+local function renderHook<T...>(hook: () -> T..., options: Options?): () -> T...
 	local result = React.createRef()
 
 	local function TestComponent()
@@ -34,4 +34,4 @@ local function renderTestHook<T...>(hook: () -> T..., options: Options?): () -> 
 	end
 end
 
-return renderTestHook
+return renderHook

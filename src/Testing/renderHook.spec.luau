@@ -26,7 +26,7 @@ test("works with useState", function()
 	expect(state).toBe(2)
 end)
 
-test("able to supply a wrapper element", function()
+test("can supply a wrapper element", function()
 	local context = React.createContext({})
 
 	local function Provider(props): React.Node
