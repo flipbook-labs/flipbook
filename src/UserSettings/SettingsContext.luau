@@ -64,7 +64,11 @@ local function Provider(props: Props)
 	local setSetting = useCallback(function(settingName: string, newValue: any)
 		plugin:SetSetting(settingName, newValue)
 		setSettings(loadSettingsFromDisk)
-	end, { plugin })
+	end, { plugin, loadSettingsFromDisk })
+
+	local getSetting = useCallback(function(settingName: string)
+		return settings[settingName].value
+	end, { settings })
 
 	return React.createElement(Context.Provider, {
 		value = {
@@ -72,6 +76,7 @@ local function Provider(props: Props)
 			getSettingDefault = getSettingDefault,
 			isSettingDefault = isSettingDefault,
 			setSetting = setSetting,
+			getSetting = getSetting,
 		},
 	}, props.children)
 end
