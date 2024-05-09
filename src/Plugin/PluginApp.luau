@@ -1,5 +1,3 @@
-local Modal = require("@root/Modal/Modal")
-local ModalPortal = require("@root/Modal/ModalPortal")
 local ModalRoot = require("@root/Modal/ModalRoot")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local React = require("@pkg/React")
@@ -38,25 +36,11 @@ local function App(props: Props)
 		setSidebarWidth(newSize.X)
 	end, {})
 
-	local isModalShown, setIsModalShown = React.useState(true)
-	local onCloseModal = React.useCallback(function()
-		setIsModalShown(false)
-	end, {})
-
 	return React.createElement("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
 	}, {
 		ModalRoot = React.createElement(ModalRoot),
-
-		Sample = if isModalShown
-			then React.createElement(ModalPortal, {}, {
-				Modal = React.createElement(Modal, {
-					title = "Example",
-					onClose = onCloseModal,
-				}, {}),
-			})
-			else nil,
 
 		App = React.createElement("Frame", {
 			BackgroundColor3 = theme.background,
