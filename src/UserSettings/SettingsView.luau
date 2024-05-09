@@ -1,6 +1,8 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
+local Modal = require("@root/Modal/Modal")
+local ModalPortal = require("@root/Modal/ModalPortal")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingRow = require("@root/UserSettings/SettingRow")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
@@ -23,6 +25,11 @@ local function SettingsView()
 			return a.name < b.name
 		end)
 	end, { settingsContext.settings })
+
+	local isModalShown, setIsModalShown = React.useState(true)
+	local onCloseModal = React.useCallback(function()
+		setIsModalShown(false)
+	end, {})
 
 	local children = {}
 	for index, setting in orderedSettings do
@@ -69,6 +76,15 @@ local function SettingsView()
 				Padding = theme.padding,
 			}),
 		}, children),
+
+		Sample = if isModalShown
+			then React.createElement(ModalPortal, {}, {
+				Modal = React.createElement(Modal, {
+					title = "Example",
+					onClose = onCloseModal,
+				}, {}),
+			})
+			else nil,
 	})
 end
 
