@@ -4,7 +4,7 @@ local e = React.createElement
 
 type Props = {
 	layoutOrder: number,
-	padding: UDim,
+	padding: UDim?,
 	children: any,
 }
 

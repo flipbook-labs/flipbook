@@ -10,7 +10,7 @@ flipbook is a storybook plugin that previews UI components in a sandboxed enviro
 
 With native support for popular UI libraries like [Roact](https://github.com/roblox/roact), [Fusion](https://github.com/Elttob/Fusion), and [Roact 17](https://github.com/grilme99/CorePackages#roact17), no matter how you create UI you can write a story for it in flipbook
 
-![Screenshot of flipbook showing off the ButtonWithControls story](.moonwave/static/main-screenshot.png)
+![Screenshot of flipbook showing off the ButtonWithControls story](docs/static/img/main-screenshot.png)
 
 ## Installation
 
