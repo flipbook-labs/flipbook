@@ -17,20 +17,12 @@ local function Topbar(props: Props)
 	local navigation = NavigationContext.use()
 
 	local navigateToSettings = useCallback(function()
-		if navigation.currentScreen == "Settings" then
-			navigation.goBack()
-		else
-			navigation.navigateTo("Settings")
-		end
-	end, { navigation.navigateTo, navigation.currentScreen })
+		navigation.navigateTo("Settings")
+	end, { navigation.navigateTo })
 
 	local navigateToAbout = useCallback(function()
-		if navigation.currentScreen == "About" then
-			navigation.goBack()
-		else
-			navigation.navigateTo("About")
-		end
-	end, { navigation.navigateTo, navigation.currentScreen })
+		navigation.navigateTo("About")
+	end, { navigation.navigateTo })
 
 	return React.createElement("Frame", {
 		BackgroundColor3 = theme.sidebar,
