@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 
 local React = require("@pkg/React")
+local ReactSpring = require("@pkg/ReactSpring")
 
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
@@ -19,6 +20,12 @@ local function RobloxProfile(props: Props)
 	local theme = useTheme()
 	local avatar, setAvatar = useState(nil :: string?)
 	local username, setUsername = useState(nil :: string?)
+
+	local isLoading = avatar == nil and username == nil
+
+	local styles = ReactSpring.useSpring({
+		alpha = if isLoading then 1 else 0,
+	})
 
 	useEffect(function()
 		task.spawn(function()
@@ -47,6 +54,7 @@ local function RobloxProfile(props: Props)
 			Size = UDim2.fromOffset(48, 48),
 			BackgroundColor3 = theme.sidebar,
 			BackgroundTransparency = 0.6,
+			ImageTransparency = styles.alpha,
 			BorderSizePixel = 0,
 			Image = avatar,
 		}, {
@@ -62,6 +70,7 @@ local function RobloxProfile(props: Props)
 			TextColor3 = theme.text,
 			TextSize = theme.textSize,
 			BackgroundTransparency = 1,
+			TextTransparency = styles.alpha,
 			AutomaticSize = Enum.AutomaticSize.XY,
 		}),
 	})
