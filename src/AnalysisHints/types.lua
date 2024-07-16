@@ -2,7 +2,7 @@ export type ScriptAnalysisRequest = {
 	["script"]: LuaSourceContainer,
 }
 
-type ScriptAnalysisDiagnostic = {
+export type ScriptAnalysisDiagnostic = {
 	range: {
 		start: {
 			line: number,

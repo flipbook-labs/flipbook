@@ -1,11 +1,9 @@
-local flipbook = script:FindFirstAncestor("flipbook")
+local analysisHintsTypes = require("@root/AnalysisHints/types")
+local getLineFromTypecheckError = require("@root/AnalysisHints/getLineFromTypecheckError")
+local isStorybookModule = require("@root/Storybook/isStorybookModule")
+local storybookTypes = require("@root/Storybook/types")
 
-local types = require(flipbook.types)
-local isStorybookModule = require(flipbook.Story.isStorybookModule)
-local analysisHintsTypes = require(flipbook.AnalysisHints.types)
-local getLineFromTypecheckError = require(flipbook.AnalysisHints.getLineFromTypecheckError)
-
-type Storybook = types.Storybook
+type Storybook = storybookTypes.Storybook
 type ScriptAnalysisDiagnostic = analysisHintsTypes.ScriptAnalysisDiagnostic
 type ScriptAnalysisResponse = analysisHintsTypes.ScriptAnalysisResponse
 
@@ -14,7 +12,7 @@ local function analyzeStorybook(module: ModuleScript, loader: any): ScriptAnalys
 
 	if isStorybookModule(module) then
 		local storybook = loader:require(module)
-		local success, message = types.Storybook(storybook)
+		local success, message = storybookTypes.Storybook(storybook)
 
 		if not success then
 			local line = getLineFromTypecheckError(message, module.Source)
