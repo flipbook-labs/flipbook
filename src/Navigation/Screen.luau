@@ -29,6 +29,8 @@ local function Screen(props: Props)
 			})
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
+		else
+			return nil
 		end
 	end, { props, currentScreen })
 
