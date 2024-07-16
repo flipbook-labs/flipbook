@@ -1,21 +1,18 @@
+# Darklua
+build
+
 # Rojo
 /*.rbxl*
 /*.rbxm*
 
 # Luau
-sourcemap.json
-
-# Selene
-/roblox.toml
+sourcemap*.json
+globalTypes.d.luau
 
 # Wally
 /DevPackages
 /Packages
 /wally.lock
-
-# Moonwave
-/node_modules
-build
 
 # Other
 /*.log

@@ -15,19 +15,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Remove spec files
-        run: rm -rf **/*.spec.lua
-
-      - name: Install packages
-        run: wally install
-
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
+      - name: Install packages
+        run: lune run wally-install
+
       - name: Build
-        run: rojo build -o ${{ env.MODEL_FILE }}
+        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}

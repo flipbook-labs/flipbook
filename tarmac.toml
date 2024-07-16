@@ -3,6 +3,6 @@ name = "flipbook"
 [[inputs]]
 glob = "img/**/*.png"
 codegen = true
-codegen-path = "src/assets.lua"
+codegen-path = "src/assets.luau"
 codegen-base-path = "img"
 packable = true

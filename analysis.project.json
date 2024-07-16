@@ -1,0 +1,15 @@
+{
+  "name": "flipbook",
+  "tree": {
+    "Lune": {
+      "$path": ".lune"
+    },
+    "TestRunner": {
+      "$path": "tests"
+    },
+    "Example": {
+      "$path": "example"
+    },
+    "$path": "build.project.json"
+  }
+}
