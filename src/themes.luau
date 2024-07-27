@@ -1,3 +1,4 @@
+local assets = require("@root/assets")
 local tailwind = require("@root/tailwind")
 
 export type Theme = {
@@ -20,6 +21,8 @@ export type Theme = {
 	selection: Color3,
 	story: Color3,
 	directory: Color3,
+
+	githubIcon: string,
 
 	padding: UDim,
 	paddingSmall: UDim,
@@ -52,6 +55,8 @@ return {
 		directory = tailwind.purple500,
 		alert = tailwind.rose500,
 
+		githubIcon = assets.GitHubMark,
+
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),
 		paddingLarge = UDim.new(0, 24),
@@ -81,6 +86,8 @@ return {
 		story = tailwind.green500,
 		directory = tailwind.purple500,
 		alert = tailwind.rose500,
+
+		githubIcon = assets.GitHubMarkWhite,
 
 		padding = UDim.new(0, 12),
 		paddingSmall = UDim.new(0, 6),

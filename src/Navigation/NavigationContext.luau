@@ -15,6 +15,7 @@ export type NavigationContext = {
 	goBack: () -> (),
 	getBreadcrumbs: () -> { string },
 	canGoBack: () -> boolean,
+	currentScreen: Screen,
 }
 
 local Context = React.createContext({})
