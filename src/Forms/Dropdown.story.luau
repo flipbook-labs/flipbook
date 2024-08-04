@@ -1,5 +1,8 @@
-local Dropdown = require("@root/Forms/Dropdown")
 local React = require("@pkg/React")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local Dropdown = require("@root/Forms/Dropdown")
+local MockPlugin = require("@root/Testing/MockPlugin")
 
 local controls = {
 	useDefault = true,
@@ -18,13 +21,17 @@ return {
 			table.insert(options, "Option " .. i)
 		end
 
-		return React.createElement(Dropdown, {
-			placeholder = "Select an option",
-			default = if props.controls.useDefault then options[1] else nil,
-			options = options,
-			onOptionChange = function(option)
-				print("Selected", option)
-			end,
+		return React.createElement(ContextProviders, {
+			plugin = MockPlugin.new(),
+		}, {
+			Dropdown = React.createElement(Dropdown, {
+				placeholder = "Select an option",
+				default = if props.controls.useDefault then options[1] else nil,
+				options = options,
+				onOptionChange = function(option)
+					print("Selected", option)
+				end,
+			}),
 		})
 	end,
 }
