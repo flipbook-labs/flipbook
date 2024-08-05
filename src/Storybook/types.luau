@@ -78,14 +78,20 @@ export type Storybook = RoactStorybook | ReactStorybook | StorybookMeta
 
 export type StoryMeta = {
 	name: string,
-	story: any,
+	story: unknown,
+	source: ModuleScript,
+	storybook: Storybook,
+
 	summary: string?,
 	controls: Controls?,
+
+	-- Renderer-specific
 	roact: Roact?,
 	react: React?,
 	reactRoblox: ReactRoblox?,
 }
 types.StoryMeta = t.interface({
+	story = t.any,
 	name = t.optional(t.string),
 	summary = t.optional(t.string),
 	controls = t.optional(types.Controls),
