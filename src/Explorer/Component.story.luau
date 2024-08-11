@@ -1,5 +1,8 @@
-local Component = require("./Component")
 local React = require("@pkg/React")
+
+local Component = require("./Component")
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 
 local childNode1 = {
 	name = "Button",
@@ -37,9 +40,13 @@ local storybookNode = {
 return {
 	summary = "Component as storybook with children",
 	controls = {},
-	story = React.createElement(Component, {
-		activeNode = nil,
-		node = storybookNode,
-		onClick = function() end,
+	story = React.createElement(ContextProviders, {
+		plugin = MockPlugin.new(),
+	}, {
+		Component = React.createElement(Component, {
+			activeNode = nil,
+			node = storybookNode,
+			onClick = function() end,
+		}),
 	}),
 }
