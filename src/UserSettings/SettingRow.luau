@@ -52,8 +52,6 @@ local function SettingRow(props: Props)
 			return React.createElement(InputField, {
 				placeholder = props.setting.value,
 				onSubmit = function(newValue, isValidOnSubmit)
-					print("newValue", newValue)
-					print("isValidOnSubmit", isValidOnSubmit)
 					if newValue == "" then
 						setSetting(nil)
 					else
