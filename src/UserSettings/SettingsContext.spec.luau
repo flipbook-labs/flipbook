@@ -58,7 +58,7 @@ describe("hook", function()
 		expect(settingsContext.settings.rememberLastOpenedStory.value).toBe(false)
 	end)
 
-	test.only("set setting value via context", function()
+	test("set setting value via context", function()
 		local get = renderHook(function()
 			return SettingsContext.use()
 		end, {
