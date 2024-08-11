@@ -25,9 +25,9 @@ type InternalProps = Props & typeof(defaultProps)
 local function InputField(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
-	local ref = React.createRef()
+	local ref = React.useRef(nil :: TextBox?)
 	local text, setText = React.useState("")
-	local isValid, setIsValid = React.useState(false)
+	local isValid, setIsValid = React.useState(true)
 	local theme = useTheme()
 
 	local onFocusLost = React.useCallback(function(_rbx: TextBox, enterPressed: boolean)
@@ -39,14 +39,18 @@ local function InputField(providedProps: Props)
 			props.onSubmit(text)
 		end
 	end, {
+		text,
 		isValid,
+		props.onFocusLost,
 		props.onSubmit,
 	})
 
 	local onTextChanged = React.useCallback(function(rbx: TextBox)
 		local newText = rbx.Text
 
-		if newText == text and newText ~= "" then
+		newText = newText:gsub("$%s+", ""):gsub("%s+^", "")
+
+		if newText == text or newText == "" then
 			return
 		end
 
@@ -66,8 +70,8 @@ local function InputField(providedProps: Props)
 	end, { text, props.transform, props.validate, props.onTextChange })
 
 	React.useEffect(function()
-		if props.autoFocus then
-			ref:getValue():CaptureFocus()
+		if props.autoFocus and ref.current then
+			ref.current:CaptureFocus()
 		end
 	end, {
 		props.autoFocus,
