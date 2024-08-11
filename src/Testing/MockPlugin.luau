@@ -17,4 +17,10 @@ function MockPlugin:SetSetting(settingName: string, newValue: any)
 	self._settings[settingName] = newValue
 end
 
+function MockPlugin:GetMouse()
+	return {
+		Icon = "rbxassetid://-1",
+	}
+end
+
 return MockPlugin
