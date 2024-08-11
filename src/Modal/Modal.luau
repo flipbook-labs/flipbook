@@ -95,7 +95,7 @@ local function Modal(providedProps: Props)
 				Size = UDim2.fromScale(1, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundTransparency = 1,
-			}, props.content),
+			}, props.children),
 		}),
 	})
 end

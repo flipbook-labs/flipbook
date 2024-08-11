@@ -1,7 +1,8 @@
 local React = require("@pkg/React")
 
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 local Modal = require("./Modal")
--- local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local function ExampleContent()
@@ -37,12 +38,18 @@ local function ExampleContent()
 end
 
 return {
-	story = function(props: Props)
-		return React.createElement(Modal, {
-			content = React.createElement(ExampleContent),
-			onClose = function()
-				print("close")
-			end,
+	story = function()
+		return React.createElement(ContextProviders, {
+			plugin = MockPlugin.new(),
+		}, {
+			Model = React.createElement(Modal, {
+				title = "Example Modal",
+				onClose = function()
+					print("close")
+				end,
+			}, {
+				Content = React.createElement(ExampleContent),
+			}),
 		})
 	end,
 }

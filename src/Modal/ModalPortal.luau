@@ -10,7 +10,11 @@ export type Props = {
 local function ModalPortal(props: Props)
 	local modalContext = ModalContext.use()
 
-	return if modalContext.target then ReactRoblox.createPortal(props.children, modalContext.target) else nil
+	if modalContext.target then
+		return ReactRoblox.createPortal(props.children, modalContext.target)
+	else
+		return nil
+	end
 end
 
 return ModalPortal
