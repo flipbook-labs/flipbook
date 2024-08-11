@@ -63,7 +63,7 @@ local function InputField(providedProps: Props)
 		if props.validate then
 			setIsValid(props.validate(newText))
 		end
-	end, {})
+	end, { text, props.transform, props.validate, props.onTextChange })
 
 	React.useEffect(function()
 		if props.autoFocus then
