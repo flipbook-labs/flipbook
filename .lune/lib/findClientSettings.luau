@@ -15,8 +15,6 @@ local function findClientSettings(os: string)
 		})
 
 		return `{dir}/ClientSettings`
-	else
-		return nil
 	end
 end
 
