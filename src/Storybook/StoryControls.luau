@@ -63,9 +63,17 @@ local function StoryControls(props: Props)
 				onSubmit = setControl,
 			})
 		else
-			warn(
-				`Controls with type "{controlType}" are unsupported. Please update "{control.name}" to be either a string, number, boolean, or table`
-			)
+			option = React.createElement("TextLabel", {
+				Text = `ERR: Controls of type "{controlType}" are unsupported`,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BackgroundTransparency = 1,
+				Font = theme.font,
+				TextColor3 = theme.alert,
+				TextSize = theme.textSize,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				TextYAlignment = Enum.TextYAlignment.Center,
+				TextTruncate = Enum.TextTruncate.AtEnd,
+			})
 		end
 
 		controlElements[control.name] = e("Frame", {
@@ -106,10 +114,11 @@ local function StoryControls(props: Props)
 			Option = e("Frame", {
 				LayoutOrder = 2,
 				BackgroundTransparency = 1,
-				AutomaticSize = Enum.AutomaticSize.XY,
+				Size = UDim2.fromScale(1, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
 			}, {
 				Flex = e("UIFlexItem", {
-					FlexMode = Enum.UIFlexMode.Grow,
+					FlexMode = Enum.UIFlexMode.Shrink,
 				}),
 			}, option),
 		})
@@ -121,7 +130,6 @@ local function StoryControls(props: Props)
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
 		Size = UDim2.fromScale(1, 1),
-		-- AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
 		Layout = e("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
