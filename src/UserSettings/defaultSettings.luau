@@ -30,7 +30,7 @@ type NumberSetting = BaseSetting & {
 	value: number,
 }
 
-export type Setting = CheckboxSetting | DropdownSetting
+export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 
 -- local expandNodesOnStart: Setting = {
 -- 	name = "expandNodesOnStart",
