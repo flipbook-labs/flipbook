@@ -62,9 +62,12 @@ local function Provider(props: Props)
 	end, { plugin, getSettingDefault })
 
 	local setSetting = useCallback(function(settingName: string, newValue: any)
+		if newValue == nil then
+			newValue = getSettingDefault(settingName)
+		end
 		plugin:SetSetting(settingName, newValue)
 		setSettings(loadSettingsFromDisk)
-	end, { plugin, loadSettingsFromDisk })
+	end, { plugin, loadSettingsFromDisk, getSettingDefault })
 
 	local getSetting = useCallback(function(settingName: string)
 		return settings[settingName].value
