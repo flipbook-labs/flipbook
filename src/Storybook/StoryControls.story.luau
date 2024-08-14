@@ -19,6 +19,8 @@ return {
 						"Option 2",
 						"Option 3",
 					},
+					onlyTwentyCharacters = "OnlyTwentyCharacters",
+					badControlType = function() end,
 				},
 				setControl = function() end,
 			}),
