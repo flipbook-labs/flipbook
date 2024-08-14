@@ -18,6 +18,13 @@ end
 
 test.each(storyModules)("mount/unmount %s", function(storyModule: ModuleScript)
 	local story = require(storyModule)
+	if typeof(story) == "function" then
+		story = {
+			name = storyModule.Name,
+			story = story,
+		}
+	end
+
 	story.react = React
 	story.reactRoblox = ReactRoblox
 
