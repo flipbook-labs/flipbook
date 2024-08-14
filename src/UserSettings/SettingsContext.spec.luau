@@ -45,7 +45,7 @@ describe("hook", function()
 	end)
 
 	test("local plugin settings override defaults", function()
-		mockPlugin:SetSetting("rememberLastOpenedStory", false)
+		mockPlugin:SetSetting("sidebarWidth", 400)
 
 		local get = renderHook(function()
 			return SettingsContext.use()
@@ -55,7 +55,7 @@ describe("hook", function()
 
 		local settingsContext = get()
 
-		expect(settingsContext.settings.rememberLastOpenedStory.value).toBe(false)
+		expect(settingsContext.settings.sidebarWidth.value).toBe(400)
 	end)
 
 	test("set setting value via context", function()
@@ -67,14 +67,14 @@ describe("hook", function()
 
 		local settingsContext = get()
 
-		expect(settingsContext.settings.rememberLastOpenedStory.value).toBe(true)
+		expect(settingsContext.settings.sidebarWidth.value).toBe(260)
 
 		act(function()
-			settingsContext.setSetting("rememberLastOpenedStory", false)
+			settingsContext.setSetting("sidebarWidth", 400)
 		end)
 
 		settingsContext = get()
 
-		expect(settingsContext.settings.rememberLastOpenedStory.value).toBe(false)
+		expect(settingsContext.settings.sidebarWidth.value).toBe(400)
 	end)
 end)

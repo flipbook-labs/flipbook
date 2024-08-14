@@ -12,7 +12,7 @@ local defaultProps = {
 
 export type Props = {
 	layoutOrder: number?,
-	onSubmit: (text: string) -> (),
+	onSubmit: (text: string, isValid: boolean) -> (),
 	onFocus: (() -> ())?,
 	onFocusLost: (() -> ())?,
 	onTextChange: ((new: string, old: string) -> ())?,
@@ -35,8 +35,8 @@ local function InputField(providedProps: Props)
 			props.onFocusLost()
 		end
 
-		if enterPressed and isValid and props.onSubmit then
-			props.onSubmit(text)
+		if enterPressed and props.onSubmit then
+			props.onSubmit(text, isValid)
 		end
 	end, {
 		isValid,

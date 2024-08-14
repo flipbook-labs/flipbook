@@ -1,8 +1,10 @@
+local React = require("@pkg/React")
+
 local ModalRoot = require("@root/Modal/ModalRoot")
 local NavigationContext = require("@root/Navigation/NavigationContext")
-local React = require("@pkg/React")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
+local SettingsContext = require("@root/UserSettings/SettingsContext")
 local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local constants = require("@root/constants")
@@ -18,10 +20,12 @@ export type Props = {
 
 local function App(props: Props)
 	local theme = useTheme()
+	local settingsContext = SettingsContext.use()
 	local storybooks = useStorybooks(game, props.loader)
 	local story, setStory = React.useState(nil)
 	local storybook, selectStorybook = React.useState(nil)
-	local sidebarWidth, setSidebarWidth = React.useState(constants.SIDEBAR_INITIAL_WIDTH)
+	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
+	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
 	local selectStory = React.useCallback(function(newStory: ModuleScript)
@@ -54,7 +58,7 @@ local function App(props: Props)
 
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				layoutOrder = nextLayoutOrder(),
-				initialSize = UDim2.new(0, constants.SIDEBAR_INITIAL_WIDTH, 1, 0),
+				initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
 				dragHandles = { "Right" },
 				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),

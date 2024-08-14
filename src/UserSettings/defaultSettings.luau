@@ -1,4 +1,6 @@
-export type SettingType = "checkbox" | "dropdown"
+local constants = require("@root/constants")
+
+export type SettingType = "checkbox" | "dropdown" | "number"
 
 export type SettingChoice = {
 	name: string,
@@ -22,7 +24,13 @@ type DropdownSetting = BaseSetting & {
 	choices: { SettingChoice },
 }
 
-export type Setting = CheckboxSetting | DropdownSetting
+type NumberSetting = BaseSetting & {
+	settingType: "number",
+	range: NumberRange?,
+	value: number,
+}
+
+export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 
 -- local expandNodesOnStart: Setting = {
 -- 	name = "expandNodesOnStart",
@@ -74,10 +82,30 @@ local theme: Setting = {
 	},
 }
 
+local sidebarWidth: NumberSetting = {
+	name = "sidebarWidth",
+	displayName = "Sidebar panel width",
+	description = `The default width (in pixels) of the sidebar. This can be between {constants.SIDEBAR_MIN_WIDTH}-{constants.SIDEBAR_MAX_WIDTH} px`,
+	settingType = "number",
+	range = NumberRange.new(constants.SIDEBAR_MIN_WIDTH, constants.SIDEBAR_MAX_WIDTH),
+	value = constants.SIDEBAR_INITIAL_WIDTH,
+}
+
+local controlsHeight: NumberSetting = {
+	name = "controlsHeight",
+	displayName = "Controls panel height",
+	description = `The default height (in pixels) of the 'Controls' panel. This can be between {constants.CONTROLS_MIN_HEIGHT}-{constants.CONTROLS_MAX_HEIGHT} px`,
+	settingType = "number",
+	range = NumberRange.new(constants.CONTROLS_MIN_HEIGHT, constants.CONTROLS_MAX_HEIGHT),
+	value = constants.CONTROLS_INITIAL_HEIGHT,
+}
+
 local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
 	-- rememberLastOpenedStory = rememberLastOpenedStory,
 	theme = theme,
+	sidebarWidth = sidebarWidth,
+	controlsHeight = controlsHeight,
 }
 
 export type Settings = typeof(settings)
