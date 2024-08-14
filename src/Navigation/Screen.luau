@@ -33,7 +33,7 @@ local function Screen(props: Props)
 		elseif currentScreen == "About" then
 			return React.createElement(AboutView)
 		else
-			return nil
+			return nil :: never
 		end
 	end, { props, currentScreen })
 
