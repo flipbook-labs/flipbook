@@ -22,6 +22,8 @@ export type SettingsContext = {
 	getSettingDefault: (settingName: string) -> any,
 	isSettingDefault: (settingName: string) -> boolean,
 	setSetting: (settingName: string, newValue: any) -> (),
+	getSetting: (settingName: string) -> any,
+	resetAllSettings: () -> (),
 }
 
 local function Provider(props: Props)
@@ -70,14 +72,23 @@ local function Provider(props: Props)
 		return settings[settingName].value
 	end, { settings })
 
+	local resetAllSettings = useCallback(function()
+		for settingName in settings do
+			setSetting(settingName, getSettingDefault(settingName))
+		end
+	end, { settings })
+
+	local context: SettingsContext = {
+		settings = settings,
+		getSettingDefault = getSettingDefault,
+		isSettingDefault = isSettingDefault,
+		setSetting = setSetting,
+		getSetting = getSetting,
+		resetAllSettings = resetAllSettings,
+	}
+
 	return React.createElement(Context.Provider, {
-		value = {
-			settings = settings,
-			getSettingDefault = getSettingDefault,
-			isSettingDefault = isSettingDefault,
-			setSetting = setSetting,
-			getSetting = getSetting,
-		},
+		value = context,
 	}, props.children)
 end
 
