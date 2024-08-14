@@ -3,6 +3,7 @@ local Sift = require("@pkg/Sift")
 
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")
+local InputField = require("@root/Forms/InputField")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -10,6 +11,7 @@ local useTheme = require("@root/Common/useTheme")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useState = React.useState
 
 local CHANGE_INDICATOR_WIDTH_PX = 2
 
@@ -22,8 +24,9 @@ export type Props = {
 }
 
 local function SettingRow(props: Props)
-	local settingsContext = SettingsContext.use()
 	local theme = useTheme()
+	local settingsContext = SettingsContext.use()
+	local isValid, setIsValid = useState(true)
 
 	local setSetting = useCallback(function(newValue: any)
 		settingsContext.setSetting(props.setting.name, newValue)
@@ -43,6 +46,34 @@ local function SettingRow(props: Props)
 				end),
 				onOptionChange = setSetting,
 			})
+		elseif props.setting.settingType == "number" then
+			local range = props.setting.range
+
+			return React.createElement(InputField, {
+				placeholder = props.setting.value,
+				onSubmit = function(newValue, isValidOnSubmit)
+					if newValue == "" then
+						setSetting(nil)
+					else
+						setIsValid(isValidOnSubmit)
+						setSetting(tonumber(newValue))
+					end
+				end,
+				validate = function(text)
+					local n = tonumber(text)
+					if n == nil then
+						return false
+					end
+
+					if range then
+						if n < range.Min or n > range.Max then
+							return false
+						end
+					end
+
+					return true
+				end,
+			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)
 	end, { props.setting, setSetting })
@@ -60,7 +91,7 @@ local function SettingRow(props: Props)
 			then React.createElement("Frame", {
 				Size = UDim2.new(0, CHANGE_INDICATOR_WIDTH_PX, 1, 0),
 				BorderSizePixel = 0,
-				BackgroundColor3 = theme.selection,
+				BackgroundColor3 = if isValid then theme.selection else theme.alert,
 			})
 			else nil,
 
@@ -103,6 +134,7 @@ local function SettingRow(props: Props)
 					TextSize = theme.textSize,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Top,
+					TextTruncate = Enum.TextTruncate.AtEnd,
 				}),
 
 				Description = React.createElement("TextLabel", {
@@ -116,6 +148,7 @@ local function SettingRow(props: Props)
 					TextSize = theme.textSize,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Top,
+					TextWrapped = true,
 				}),
 			}),
 
