@@ -4,6 +4,7 @@ local PluginContext = require("@root/Plugin/PluginContext")
 local React = require("@pkg/React")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
+local SettingsContext = require("@root/UserSettings/SettingsContext")
 local Sift = require("@pkg/Sift")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
@@ -26,11 +27,13 @@ type Props = {
 
 local function StoryView(props: Props)
 	local theme = useTheme()
+	local settingsContext = SettingsContext.use()
 	local story, storyErr = useStory(props.story, props.storybook, props.loader)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
 	local extraControls, setExtraControls = React.useState({})
-	local controlsHeight, setControlsHeight = React.useState(constants.CONTROLS_INITIAL_HEIGHT)
+	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
+	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 	local controls
@@ -168,7 +171,7 @@ local function StoryView(props: Props)
 
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
 				layoutOrder = 3,
-				initialSize = UDim2.new(1, 0, 0, constants.CONTROLS_INITIAL_HEIGHT),
+				initialSize = UDim2.new(1, 0, 0, initialControlsHeight),
 				dragHandles = { "Top" },
 				minSize = Vector2.new(0, constants.CONTROLS_MIN_HEIGHT),
 				maxSize = Vector2.new(math.huge, constants.CONTROLS_MAX_HEIGHT),
