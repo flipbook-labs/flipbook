@@ -77,7 +77,8 @@ local function AboutView()
 
 			Icon = React.createElement(Sprite, {
 				layoutOrder = nextLayoutOrder(),
-				image = theme.githubIcon,
+				color = theme.github,
+				image = assets.GitHubMark,
 				size = UDim2.fromOffset(theme.textSize, theme.textSize),
 			}),
 
