@@ -4,6 +4,9 @@
     "Packages": {
       "$path": "Packages"
     },
+    "wally.toml": {
+      "$path": "wally.toml"
+    },
     "$path": "build"
   }
 }
