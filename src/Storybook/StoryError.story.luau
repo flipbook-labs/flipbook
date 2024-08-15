@@ -1,4 +1,7 @@
 local React = require("@pkg/React")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 local StoryError = require("@root/Storybook/StoryError")
 local constants = require("@root/constants")
 
@@ -9,8 +12,12 @@ stories.Primary = function()
 		error("Oops!")
 	end, debug.traceback)
 
-	return React.createElement(StoryError, {
-		err = result,
+	return React.createElement(ContextProviders, {
+		plugin = MockPlugin.new(),
+	}, {
+		StoryError = React.createElement(StoryError, {
+			err = result,
+		}),
 	})
 end
 

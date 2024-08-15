@@ -1,4 +1,7 @@
 local React = require("@pkg/React")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 local SelectableTextLabel = require("./SelectableTextLabel")
 
 local controls = {
@@ -12,8 +15,12 @@ type Props = {
 local stories = {}
 
 stories.Primary = function(props: Props)
-	return React.createElement(SelectableTextLabel, {
-		Text = props.controls.text,
+	return React.createElement(ContextProviders, {
+		plugin = MockPlugin.new(),
+	}, {
+		SelectableTextLabel = React.createElement(SelectableTextLabel, {
+			Text = props.controls.text,
+		}),
 	})
 end
 

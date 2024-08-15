@@ -1,19 +1,26 @@
 local React = require("@pkg/React")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 local StoryControls = require("@root/Storybook/StoryControls")
 
 local stories = {}
 
-stories.Primary = React.createElement(StoryControls, {
-	controls = {
-		foo = "bar",
-		checkbox = false,
-		dropdown = {
-			"Option 1",
-			"Option 2",
-			"Option 3",
+stories.Primary = React.createElement(ContextProviders, {
+	plugin = MockPlugin.new(),
+}, {
+	StoryControls = React.createElement(StoryControls, {
+		controls = {
+			foo = "bar",
+			checkbox = false,
+			dropdown = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
 		},
-	},
-	setControl = function() end,
+		setControl = function() end,
+	}),
 })
 
 return {
