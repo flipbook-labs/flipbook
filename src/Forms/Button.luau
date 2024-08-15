@@ -90,12 +90,12 @@ local function Button(providedProps: Props)
 		Text = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = theme.font,
+			Font = theme.buttonFont,
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.text,
 			TextColor3 = if hover then shift(props.textColor, 0.2) else props.textColor,
-			TextSize = theme.textSize,
+			TextSize = theme.buttonTextSize,
 		}),
 	})
 end

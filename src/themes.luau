@@ -36,7 +36,7 @@ return {
 		headerTextSize = 32,
 		headerFont = Enum.Font.BuilderSansExtraBold,
 		buttonTextSize = 14,
-		buttonFont = Enum.Font.BuilderSansBold,
+		buttonFont = Enum.Font.BuilderSansMedium,
 
 		background = tailwind.white,
 		modal = tailwind.gray100,
