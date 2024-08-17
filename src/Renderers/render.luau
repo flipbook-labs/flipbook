@@ -4,32 +4,38 @@ type Args = types.Args
 type Context = types.Context
 type Renderer = types.Renderer
 
-type UpdateFn = () -> ()
+local function render<T>(renderer: Renderer, container: Instance, element: T, initialArgs: Args?)
+	local prevContext: Context?
 
-local function render<T>(renderer: Renderer, container: Instance, element: T, args: Args?): UpdateFn
-	local handle: Instance
-	local context: Context = {
-		container = container,
-		args = args,
-	}
-	local prevContext: Context? = nil
+	local function renderOnce(args: Args?)
+		local context: Context = {
+			container = container,
+			args = args,
+		}
 
-	if not renderer.shouldUpdate or renderer.shouldUpdate(context, prevContext) then
-		if renderer.unmount then
-			renderer.unmount(context)
-		else
-			handle:Destroy()
+		if not renderer.shouldUpdate or renderer.shouldUpdate(context, prevContext) then
+			renderer.mount(container, element, context)
+			prevContext = context
 		end
-
-		handle = renderer.mount(container, element, context)
-		prevContext = context
 	end
 
-	local function rerender(newArgs: Args?)
-		render(renderer, container, element, newArgs)
+	local function update(newArgs: Args?)
+		renderOnce(newArgs)
 	end
 
-	return rerender
+	local function unmount()
+		if renderer.unmount then
+			renderer.unmount(prevContext)
+		end
+		container:ClearAllChildren()
+	end
+
+	renderOnce(initialArgs)
+
+	return {
+		update = update,
+		unmount = unmount,
+	}
 end
 
 return render

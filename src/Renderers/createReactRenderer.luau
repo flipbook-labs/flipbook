@@ -12,15 +12,26 @@ local function createReactRenderer(packages: Packages): Renderer
 	local ReactRoblox = packages.ReactRoblox
 
 	local root
+	local currentElement
+
+	local function reactRender(element, context)
+		local props = if context then context.args else nil
+
+		currentElement = element
+
+		element = React.createElement(element, props)
+		root:render(element)
+	end
 
 	local function mount(container, element, context)
 		root = ReactRoblox.createRoot(container)
+		reactRender(element, context)
+	end
 
-		if typeof(element) == "function" then
-			element = React.createElement(element, context.args)
+	local function update(newContext)
+		if currentElement then
+			reactRender(currentElement, newContext)
 		end
-
-		root:render(element)
 	end
 
 	local function unmount()
@@ -29,6 +40,7 @@ local function createReactRenderer(packages: Packages): Renderer
 
 	return {
 		mount = mount,
+		update = update,
 		unmount = unmount,
 	}
 end

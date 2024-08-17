@@ -5,20 +5,15 @@ type Renderer = types.Renderer
 local function createRobloxRenderer(): Renderer
 	local handle
 
-	local function shouldUpdate()
-		return true
-	end
-
-	local function mount(container, element, args)
+	local function mount(container, element, context)
 		if typeof(element) == "function" then
-			element = element(args)
+			element = element(context.args)
 		end
 
 		if typeof(element) == "Instance" and element:IsA("GuiObject") then
-			element.Parent = container
 			handle = element
+			element.Parent = container
 		end
-		return element
 	end
 
 	local function unmount()
@@ -28,7 +23,6 @@ local function createRobloxRenderer(): Renderer
 	end
 
 	return {
-		shouldUpdate = shouldUpdate,
 		mount = mount,
 		unmount = unmount,
 	}
