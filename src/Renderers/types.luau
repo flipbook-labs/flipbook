@@ -18,7 +18,7 @@ export type Renderer = {
 
 	unmount: ((context: Context?) -> ())?,
 	update: ((context: Context?) -> ())?,
-	transformArgs: ((args: Args, context: Context) -> Args)?,
+	transformContext: ((context: Context, prevContext: Context?) -> Context)?,
 	shouldUpdate: ((context: Context, prevContext: Context?) -> boolean)?,
 }
 

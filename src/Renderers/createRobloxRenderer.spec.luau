@@ -1,24 +1,17 @@
 local JestGlobals = require("@pkg/JestGlobals")
-local Roact = require("@pkg/Roact")
-local createRoactRenderer = require("./createRoactRenderer")
+
+local createRobloxRenderer = require("./createRobloxRenderer")
 local render = require("./render")
 
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function Button(props: { isDisabled: boolean? })
-	return Roact.createElement("TextButton", {
-		Text = if props.isDisabled then "Disabled" else "Enabled",
-	})
-end
+local function Button(args: { isDisabled: boolean? })
+	local button = Instance.new("TextButton")
+	button.Text = if args.isDisabled then "Disabled" else "Enabled"
 
-local ButtonClassComponent = Roact.Component:extend("ButtonClassComponent")
-
-function ButtonClassComponent:render()
-	return Roact.createElement("TextButton", {
-		Text = if self.props.isDisabled then "Disabled" else "Enabled",
-	})
+	return button
 end
 
 local container
@@ -26,46 +19,30 @@ local renderer
 
 beforeEach(function()
 	container = Instance.new("Folder")
-
-	renderer = createRoactRenderer({
-		Roact = Roact,
-	})
+	renderer = createRobloxRenderer()
 end)
 
-test("render a functional componnet", function()
-	render(renderer, container, Button)
+test("render a GuiObject", function()
+	render(renderer, container, Instance.new("TextLabel"))
 
 	local element = container:GetChildren()[1]
 
 	assert(element, "no element found")
 	expect(typeof(element)).toBe("Instance")
-	assert(element:IsA("TextButton"), "not a TextButton")
-	expect(element.Text).toBe("Enabled")
+	assert(element:IsA("TextLabel"), "not a TextButton")
 end)
 
-test("render a class component", function()
-	render(renderer, container, ButtonClassComponent)
-
-	local element = container:GetChildren()[1]
-
-	assert(element, "no element found")
-	expect(typeof(element)).toBe("Instance")
-	assert(element:IsA("TextButton"), "not a TextButton")
-	expect(element.Text).toBe("Enabled")
-end)
-
-test("pass args as props", function()
+test("render a GuiObject with args", function()
 	render(renderer, container, Button, {
 		isDisabled = true,
 	})
 
-	local button = container:FindFirstChildWhichIsA("TextButton")
-
-	expect(button).toBeDefined()
-	expect(button.Text).toBe("Disabled")
+	local element = container:FindFirstChildWhichIsA("TextButton")
+	assert(element, "no element found")
+	expect(element.Text).toBe("Disabled")
 end)
 
-test("update the component on arg changes", function()
+test("update the GuiObject on arg changes", function()
 	local lifecycle = render(renderer, container, Button, {
 		isDisabled = true,
 	})
@@ -79,6 +56,8 @@ test("update the component on arg changes", function()
 		isDisabled = false,
 	})
 
+	button = container:FindFirstChildWhichIsA("TextButton")
+
 	expect(button.Text).toBe("Enabled")
 end)
 
@@ -86,7 +65,9 @@ test("lifecycle", function()
 	expect(#container:GetChildren()).toBe(0)
 
 	local lifecycle = render(renderer, container, Button, {
-		isDisabled = false,
+		args = {
+			isDisabled = false,
+		},
 	})
 
 	expect(#container:GetChildren()).toBe(1)
@@ -104,7 +85,7 @@ test("lifecycle", function()
 	local prevElement = element
 	element = container:FindFirstChildWhichIsA("TextButton")
 	assert(element, "no TextButton found")
-	expect(element).toBe(prevElement)
+	expect(element).never.toBe(prevElement)
 	expect(element.Text).toBe("Disabled")
 
 	lifecycle.unmount()

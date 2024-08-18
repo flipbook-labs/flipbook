@@ -1,7 +1,9 @@
 local JestGlobals = require("@pkg/JestGlobals")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
+
 local createReactRenderer = require("./createReactRenderer")
+local render = require("./render")
 
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
@@ -36,7 +38,7 @@ beforeEach(function()
 end)
 
 test("render a functional componnet", function()
-	renderer.mount(container, Button)
+	render(renderer, container, Button)
 
 	act(function()
 		task.wait()
@@ -51,7 +53,7 @@ test("render a functional componnet", function()
 end)
 
 test("render a class component", function()
-	renderer.mount(container, ButtonClassComponent)
+	render(renderer, container, ButtonClassComponent)
 
 	act(function()
 		task.wait()
@@ -65,13 +67,51 @@ test("render a class component", function()
 	expect(element.Text).toBe("Enabled")
 end)
 
+test("pass args as props", function()
+	render(renderer, container, Button, {
+		isDisabled = true,
+	})
+
+	act(function()
+		task.wait()
+	end)
+
+	local button = container:FindFirstChildWhichIsA("TextButton")
+
+	expect(button).toBeDefined()
+	expect(button.Text).toBe("Disabled")
+end)
+
+test("update the component on arg changes", function()
+	local lifecycle = render(renderer, container, Button, {
+		isDisabled = true,
+	})
+
+	act(function()
+		task.wait()
+	end)
+
+	local button = container:FindFirstChildWhichIsA("TextButton")
+
+	expect(button).toBeDefined()
+	expect(button.Text).toBe("Disabled")
+
+	lifecycle.update({
+		isDisabled = false,
+	})
+
+	act(function()
+		task.wait()
+	end)
+
+	expect(button.Text).toBe("Enabled")
+end)
+
 test("lifecycle", function()
 	expect(#container:GetChildren()).toBe(0)
 
-	renderer.mount(container, Button, {
-		args = {
-			isDisabled = false,
-		},
+	local lifecycle = render(renderer, container, Button, {
+		isDisabled = false,
 	})
 
 	act(function()
@@ -84,10 +124,8 @@ test("lifecycle", function()
 	assert(element, "no TextButton found")
 	expect(element.Text).toBe("Enabled")
 
-	renderer.update({
-		args = {
-			isDisabled = true,
-		},
+	lifecycle.update({
+		isDisabled = true,
 	})
 
 	act(function()
@@ -102,55 +140,11 @@ test("lifecycle", function()
 	expect(element).toBe(prevElement)
 	expect(element.Text).toBe("Disabled")
 
-	renderer.unmount()
+	lifecycle.unmount()
 
 	act(function()
 		task.wait()
 	end)
 
 	expect(#container:GetChildren()).toBe(0)
-end)
-
-test("pass args as props", function()
-	renderer.mount(container, Button, {
-		args = {
-			isDisabled = true,
-		},
-	})
-
-	act(function()
-		task.wait()
-	end)
-
-	local button = container:FindFirstChildWhichIsA("TextButton")
-
-	expect(button).toBeDefined()
-	expect(button.Text).toBe("Disabled")
-end)
-
-test("update the component on arg changes", function()
-	renderer.mount(container, Button, {
-		args = {
-			isDisabled = true,
-		},
-	})
-
-	act(function()
-		task.wait()
-	end)
-
-	local button = container:FindFirstChildWhichIsA("TextButton")
-
-	expect(button).toBeDefined()
-	expect(button.Text).toBe("Disabled")
-
-	renderer.update({
-		isDisabled = false,
-	})
-
-	act(function()
-		task.wait()
-	end)
-
-	expect(button.Text).toBe("Enabled")
 end)

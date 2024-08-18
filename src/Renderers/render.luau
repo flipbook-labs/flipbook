@@ -1,3 +1,5 @@
+local Sift = require("@pkg/Sift")
+
 local types = require("@root/Renderers/types")
 
 type Args = types.Args
@@ -13,14 +15,26 @@ local function render<T>(renderer: Renderer, container: Instance, element: T, in
 			args = args,
 		}
 
+		if renderer.transformContext then
+			context = renderer.transformContext(context, prevContext)
+		end
+
 		if not renderer.shouldUpdate or renderer.shouldUpdate(context, prevContext) then
 			renderer.mount(container, element, context)
-			prevContext = context
 		end
+
+		prevContext = context
 	end
 
 	local function update(newArgs: Args?)
-		renderOnce(newArgs)
+		if renderer.update then
+			local context = Sift.Dictionary.join(prevContext, {
+				args = newArgs,
+			})
+			renderer.update(context)
+		else
+			renderOnce(newArgs)
+		end
 	end
 
 	local function unmount()

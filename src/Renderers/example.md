@@ -12,8 +12,8 @@ exports.Primary = {
 
         return label
     end
-```
 }
+```
 
 Fusion
 
