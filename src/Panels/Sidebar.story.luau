@@ -5,22 +5,26 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 local Sidebar = require("./Sidebar")
 local internalStorybook = require("@root/init.storybook.luau")
 
+local stories = {}
+
+stories.Primary = React.createElement(ContextProviders, {
+	plugin = MockPlugin.new(),
+}, {
+	Sidebar = React.createElement(Sidebar, {
+		storybooks = {
+			internalStorybook,
+		},
+		selectStory = function(storyModule)
+			print(storyModule)
+		end,
+		selectStorybook = function(storybook)
+			print(storybook)
+		end,
+	}),
+})
+
 return {
 	summary = "Sidebar containing brand, searchbar, and component tree",
 	controls = {},
-	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
-	}, {
-		Sidebar = React.createElement(Sidebar, {
-			storybooks = {
-				internalStorybook,
-			},
-			selectStory = function(storyModule)
-				print(storyModule)
-			end,
-			selectStorybook = function(storybook)
-				print(storybook)
-			end,
-		}),
-	}),
+	stories = stories,
 }
