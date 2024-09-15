@@ -1,3 +1,4 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -14,7 +15,7 @@ local useTheme = require("@root/Common/useTheme")
 local TOPBAR_HEIGHT_PX = 32
 
 export type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 }
 
 local function App(props: Props)

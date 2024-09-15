@@ -1,11 +1,13 @@
 local Selection = game:GetService("Selection")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+
+local PluginContext = require("@root/Plugin/PluginContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
-local Sift = require("@pkg/Sift")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryMeta = require("@root/Storybook/StoryMeta")
@@ -20,7 +22,7 @@ local useZoom = require("@root/Common/useZoom")
 local e = React.createElement
 
 type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 	story: ModuleScript,
 	storybook: types.Storybook,
 }

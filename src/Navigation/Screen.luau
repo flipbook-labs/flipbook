@@ -1,3 +1,4 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -11,7 +12,7 @@ type Story = storybookTypes.Story
 type Storybook = storybookTypes.Storybook
 
 export type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 	story: ModuleScript?,
 	storybook: Storybook?,
 }

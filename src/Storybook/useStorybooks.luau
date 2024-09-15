@@ -1,4 +1,6 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+
 local constants = require("@root/constants")
 local isStorybookModule = require("@root/Storybook/isStorybookModule")
 local types = require("@root/Storybook/types")
@@ -11,7 +13,7 @@ local function hasPermission(instance: Instance)
 	return success
 end
 
-local function useStorybooks(parent: Instance, loader: any)
+local function useStorybooks(parent: Instance, loader: ModuleLoader.ModuleLoader)
 	local storybooks, set = React.useState({})
 	local modules = useDescendants(game, function(descendant)
 		return hasPermission(descendant) and isStorybookModule(descendant)
@@ -22,7 +24,7 @@ local function useStorybooks(parent: Instance, loader: any)
 
 		for _, module in modules do
 			local wasRequired, result = pcall(function()
-				return loader:require(module)
+				return loader:require(module :: ModuleScript)
 			end)
 
 			if wasRequired then
@@ -55,7 +57,7 @@ local function useStorybooks(parent: Instance, loader: any)
 		return function()
 			conn:Disconnect()
 		end
-	end, { loadStorybooks, loader })
+	end, { loadStorybooks, loader } :: { unknown })
 
 	return storybooks
 end
