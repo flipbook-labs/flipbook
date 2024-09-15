@@ -25,7 +25,7 @@ local function DragHandle(providedProps: Props)
 	local plugin = React.useContext(PluginContext.Context)
 	local isDragging, setIsDragging = React.useState(false)
 	local isHovered, setIsHovered = React.useState(false)
-	local mouseInput, setMouseInput = React.useState(nil :: InputObject?)
+	local mouseInput: InputObject?, setMouseInput = React.useState(nil :: InputObject?)
 
 	local getHandleProperties = React.useCallback(function()
 		local size: UDim2
@@ -55,7 +55,7 @@ local function DragHandle(providedProps: Props)
 		end
 
 		return size, position, anchorPoint
-	end, { props.handle, props.size })
+	end, { props.handle, props.size } :: { unknown })
 
 	local onInputBegan = React.useCallback(function(_rbx, input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -87,7 +87,7 @@ local function DragHandle(providedProps: Props)
 
 	local size, position, anchorPoint = getHandleProperties()
 
-	React.useEffect(function()
+	React.useEffect(function(): any
 		if mouseInput and isDragging then
 			local lastPosition = mouseInput.Position
 			local conn = RunService.Heartbeat:Connect(function()
@@ -106,7 +106,7 @@ local function DragHandle(providedProps: Props)
 		else
 			return nil
 		end
-	end, { mouseInput, isDragging })
+	end, { mouseInput, isDragging } :: { unknown })
 
 	React.useEffect(function()
 		if plugin then
@@ -122,7 +122,7 @@ local function DragHandle(providedProps: Props)
 				mouse.Icon = ""
 			end
 		end
-	end, { plugin, isDragging, isHovered })
+	end, { plugin, isDragging, isHovered } :: { unknown })
 
 	return React.createElement("ImageButton", {
 		Size = size,
@@ -131,8 +131,8 @@ local function DragHandle(providedProps: Props)
 		BackgroundTransparency = 1,
 		[React.Event.InputBegan] = onInputBegan,
 		[React.Event.InputEnded] = onInputEnded,
-		[React.Event.MouseEnter] = onMouseEnter,
-		[React.Event.MouseLeave] = onMouseLeave,
+		[React.Event.MouseEnter] = onMouseEnter :: any,
+		[React.Event.MouseLeave] = onMouseLeave :: any,
 	})
 end
 

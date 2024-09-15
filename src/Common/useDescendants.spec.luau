@@ -97,7 +97,7 @@ test("force an update when a matching descendant's name changes", function()
 	expect(#descendants).toBe(1)
 
 	local prev = descendants
-	local match = tree:FindFirstChild("Match")
+	local match = tree:FindFirstChild("Match") :: Instance
 
 	ReactRoblox.act(function()
 		match.Name = "Changed"

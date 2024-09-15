@@ -1,5 +1,4 @@
 local React = require("@pkg/React")
-local Sift = require("@pkg/Sift")
 
 local navigationEnums = require("@root/Navigation/enums")
 
@@ -14,10 +13,10 @@ export type NavigationContext = {
 	navigateTo: (newScreen: Screen) -> (),
 	goBack: () -> (),
 	getBreadcrumbs: () -> { string },
-	canGoBack: () -> boolean,
+	currentScreen: Screen,
 }
 
-local Context = React.createContext({})
+local Context = React.createContext({} :: NavigationContext)
 
 export type Props = {
 	defaultScreen: Screen,
@@ -27,9 +26,11 @@ export type Props = {
 local function Provider(props: Props)
 	local stack: { Screen }, setStack = useState({ props.defaultScreen })
 
-	local navigateTo = useCallback(function(newScreen: string)
+	local navigateTo = useCallback(function(newScreen: Screen)
 		setStack(function(prev)
-			return Sift.Array.push(prev, newScreen)
+			local new = table.clone(prev)
+			table.insert(new, newScreen)
+			return new
 		end)
 	end, {})
 
@@ -44,7 +45,9 @@ local function Provider(props: Props)
 	local goBack = useCallback(function()
 		if canGoBack then
 			setStack(function(prev)
-				return Sift.Array.pop(prev)
+				local new = table.clone(prev)
+				table.remove(new)
+				return new
 			end)
 		end
 	end, { canGoBack })

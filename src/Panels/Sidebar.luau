@@ -24,7 +24,7 @@ type Props = {
 local function Sidebar(props: Props)
 	local theme = useTheme()
 
-	local activeNode, setActiveNode = React.useState(nil)
+	local activeNode, setActiveNode = React.useState(nil :: ComponentTreeNode?)
 	local onClick = React.useCallback(function(node: ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
@@ -46,7 +46,7 @@ local function Sidebar(props: Props)
 		setHeaderHeight(rbx.AbsoluteSize.Y)
 	end, { setHeaderHeight })
 
-	local search, setSearch = React.useState(nil)
+	local search: string?, setSearch = React.useState(nil :: string?)
 	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
 			setSearch(nil)

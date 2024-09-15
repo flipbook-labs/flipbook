@@ -26,7 +26,7 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 
 			return prev
 		end)
-	end, { predicate, descendants })
+	end, { predicate, descendants } :: { unknown })
 
 	-- Setup the initial list of descendants for the current parent
 	React.useEffect(function()
@@ -54,7 +54,7 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 				conn:Disconnect()
 			end
 		end
-	end, { parent, onDescendantChanged })
+	end, { parent, onDescendantChanged } :: { unknown })
 
 	return descendants
 end

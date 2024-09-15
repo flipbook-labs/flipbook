@@ -3,16 +3,16 @@ local RunService = game:GetService("RunService")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local RESIZE_DURATIOn = 3 -- seconds
+local RESIZE_DURATION = 3 -- seconds
 local MAX_SIZE = 2000 -- px
 
 local function Story()
 	local alpha, setAlpha = React.useState(0)
 
 	React.useEffect(function()
-		local conn = RunService.Heartbeat:Connect(function(dt)
+		local conn = RunService.Heartbeat:Connect(function(dt: number)
 			setAlpha(function(prev)
-				local newAlpha = prev + (dt / RESIZE_DURATIOn)
+				local newAlpha = prev + (dt / RESIZE_DURATION)
 				return if newAlpha > 1 then 0 else newAlpha
 			end)
 		end)

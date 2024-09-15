@@ -9,7 +9,7 @@ return {
 	summary = "Sidebar containing brand, searchbar, and component tree",
 	controls = {},
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		Sidebar = React.createElement(Sidebar, {
 			storybooks = {

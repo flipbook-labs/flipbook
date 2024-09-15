@@ -16,7 +16,7 @@ export type Props = {
 	hoverIconX: string?,
 	hoverIconY: string?,
 	onResize: ((newSize: Vector2) -> ())?,
-	children: any,
+	children: { [string]: React.Node }?,
 }
 
 type InternalProps = Props & typeof(defaultProps)
@@ -24,7 +24,7 @@ type InternalProps = Props & typeof(defaultProps)
 local function ResizablePanel(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
-	local absoluteSize, setAbsoluteSize = React.useState(nil)
+	local absoluteSize, setAbsoluteSize = React.useState(nil :: Vector2?)
 
 	local clampedAbsoluteSize = React.useMemo(function()
 		return if absoluteSize
@@ -39,14 +39,14 @@ local function ResizablePanel(providedProps: Props)
 		if props.dragHandles then
 			return Sift.Array.includes(props.dragHandles, "Left") or Sift.Array.includes(props.dragHandles, "Right")
 		end
-		return nil
+		return false
 	end, { props.dragHandles })
 
 	local isHeightResizable = React.useMemo(function()
 		if props.dragHandles then
 			return Sift.Array.includes(props.dragHandles, "Top") or Sift.Array.includes(props.dragHandles, "Bottom")
 		end
-		return nil
+		return false
 	end, { props.dragHandles })
 
 	local width = React.useMemo(function()
@@ -59,7 +59,7 @@ local function ResizablePanel(providedProps: Props)
 		return if clampedAbsoluteSize and isHeightResizable
 			then UDim.new(0, clampedAbsoluteSize.Y)
 			else props.initialSize.Height
-	end, { clampedAbsoluteSize, props.initialSize })
+	end, { clampedAbsoluteSize, props.initialSize } :: { unknown })
 
 	local onAbsoluteSizeChanged = React.useCallback(function(rbx: Frame)
 		setAbsoluteSize(rbx.AbsoluteSize)
@@ -86,10 +86,11 @@ local function ResizablePanel(providedProps: Props)
 		end
 	end, { clampedAbsoluteSize })
 
-	local dragHandles = {}
+	local dragHandles: { [string]: React.Node } = {}
 	if props.dragHandles then
-		for _, handle in props.dragHandles do
+		for _, handle: types.DragHandle in props.dragHandles do
 			dragHandles[handle] = React.createElement(DragHandle, {
+
 				handle = handle,
 				hoverIconX = props.hoverIconX,
 				hoverIconY = props.hoverIconY,
@@ -97,7 +98,9 @@ local function ResizablePanel(providedProps: Props)
 					onHandleDragged(handle, delta)
 				end,
 				onDragEnd = function()
-					setAbsoluteSize(clampedAbsoluteSize)
+					if clampedAbsoluteSize then
+						setAbsoluteSize(clampedAbsoluteSize)
+					end
 				end,
 			})
 		end
