@@ -3,9 +3,9 @@ local loadStoryModule = require("@root/Storybook/loadStoryModule")
 local types = require("@root/Storybook/types")
 
 local function useStory(module: ModuleScript, storybook: types.Storybook, loader: any): (types.Story?, string?)
-	local state, setState = React.useState({
-		story = nil,
-		err = nil,
+	local state, setState = React.useState({} :: {
+		story: types.Story?,
+		err: string?,
 	})
 
 	local loadStory = React.useCallback(function()
@@ -29,7 +29,7 @@ local function useStory(module: ModuleScript, storybook: types.Storybook, loader
 		return function()
 			conn:Disconnect()
 		end
-	end, { module, loadStory, loader })
+	end, { module, loadStory, loader } :: { unknown })
 
 	return state.story, state.err
 end

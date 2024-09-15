@@ -16,13 +16,13 @@ type Props = {
 local function StoryControls(props: Props)
 	local theme = useTheme()
 
-	local controls = {}
+	local controls: { [string]: React.Node } = {}
 	for key, value in props.controls do
 		local function setControl(newValue: any)
 			props.setControl(key, newValue)
 		end
 
-		local option
+		local option: React.Node
 		if typeof(value) == "boolean" then
 			option = React.createElement(Checkbox, {
 				initialState = value,

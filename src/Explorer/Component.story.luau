@@ -41,7 +41,7 @@ return {
 	summary = "Component as storybook with children",
 	controls = {},
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		Component = React.createElement(Component, {
 			activeNode = nil,

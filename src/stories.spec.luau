@@ -17,7 +17,7 @@ for _, descendant in ipairs(script.Parent:GetDescendants()) do
 end
 
 test.each(storyModules)("mount/unmount %s", function(storyModule: ModuleScript)
-	local story = require(storyModule)
+	local story = (require :: any)(storyModule)
 	if typeof(story) == "function" then
 		story = {
 			name = storyModule.Name,

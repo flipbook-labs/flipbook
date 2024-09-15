@@ -4,7 +4,7 @@ local PluginContext = React.createContext(nil :: Plugin?)
 
 export type Props = {
 	plugin: Plugin,
-	children: any,
+	children: { [string]: React.Node }?,
 }
 
 local function PluginProvider(props: Props)

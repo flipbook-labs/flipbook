@@ -12,7 +12,7 @@ type Storybook = storybookTypes.Storybook
 
 export type Props = {
 	loader: any,
-	story: Story?,
+	story: ModuleScript?,
 	storybook: Storybook?,
 }
 
@@ -32,7 +32,7 @@ local function Screen(props: Props)
 		else
 			return nil :: never
 		end
-	end, { props, currentScreen })
+	end, { props, currentScreen } :: { unknown })
 
 	return screenElement
 end

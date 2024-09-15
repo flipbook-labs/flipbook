@@ -49,7 +49,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		end
 
 		return nil
-	end, { props.story, props.controls, props.isMountedInViewport, ref.current })
+	end, { props.story, props.controls, props.isMountedInViewport, ref.current } :: { unknown })
 
 	if err then
 		return e(StoryError, {

@@ -64,7 +64,7 @@ local function StoryView(props: Props)
 	local viewCode = React.useCallback(function()
 		Selection:Set({ props.story })
 		plugin:OpenScript(props.story)
-	end, { plugin, props.story })
+	end, { plugin, props.story } :: { unknown })
 
 	local exploreStoryParent = React.useCallback(function()
 		local current = storyParentRef.current
@@ -80,7 +80,7 @@ local function StoryView(props: Props)
 
 	local onPreviewInViewport = React.useCallback(function()
 		setIsMountedInViewport(not isMountedInViewport)
-	end, { isMountedInViewport, setIsMountedInViewport })
+	end, { isMountedInViewport, setIsMountedInViewport } :: { unknown })
 
 	local onControlsResized = React.useCallback(function(newSize: Vector2)
 		setControlsHeight(newSize.Y)
@@ -172,7 +172,10 @@ local function StoryView(props: Props)
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
 				layoutOrder = 3,
 				initialSize = UDim2.new(1, 0, 0, initialControlsHeight),
-				dragHandles = { "Top" },
+				dragHandles = {
+					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+					"Top" :: any,
+				},
 				minSize = Vector2.new(0, constants.CONTROLS_MIN_HEIGHT),
 				maxSize = Vector2.new(math.huge, constants.CONTROLS_MAX_HEIGHT),
 				onResize = onControlsResized,

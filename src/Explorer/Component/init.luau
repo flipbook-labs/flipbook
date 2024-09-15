@@ -38,7 +38,7 @@ local function Component(providedProps: Props)
 		end
 	end, { setExpanded })
 
-	local children = {
+	local children: { [string]: React.Node } = {
 		UIListLayout = if hasChildren
 			then e("UIListLayout", {
 				SortOrder = Enum.SortOrder.Name,

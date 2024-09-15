@@ -7,11 +7,11 @@ local function useZoom(story: ModuleScript)
 
 	local zoomIn = React.useCallback(function()
 		setValue(value + ZOOM_INCREMENT)
-	end, { value, setValue })
+	end, { value, setValue } :: { unknown })
 
 	local zoomOut = React.useCallback(function()
 		setValue(value - ZOOM_INCREMENT)
-	end, { value, setValue })
+	end, { value, setValue } :: { unknown })
 
 	React.useEffect(function()
 		setValue(0)

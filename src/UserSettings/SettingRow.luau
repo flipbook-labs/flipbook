@@ -30,9 +30,9 @@ local function SettingRow(props: Props)
 
 	local setSetting = useCallback(function(newValue: any)
 		settingsContext.setSetting(props.setting.name, newValue)
-	end, { settingsContext.setSetting, props.setting })
+	end, { settingsContext.setSetting, props.setting } :: { unknown })
 
-	local optionElement = useMemo(function()
+	local optionElement = useMemo(function(): React.Node
 		if props.setting.settingType == "checkbox" then
 			return React.createElement(Checkbox, {
 				initialState = props.setting.value,
@@ -76,7 +76,7 @@ local function SettingRow(props: Props)
 			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)
-	end, { props.setting, setSetting })
+	end, { props.setting, setSetting } :: { unknown })
 
 	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
 
