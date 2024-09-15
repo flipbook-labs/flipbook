@@ -6,22 +6,25 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 
 local childNode1 = {
 	name = "Button",
-	icon = "story",
+	icon = "story" :: "story",
+	children = {},
 }
 
 local childNode2 = {
 	name = "Toggle",
-	icon = "story",
+	icon = "story" :: "story",
+	children = {},
 }
 
 local childNode3 = {
 	name = "Radio",
-	icon = "story",
+	icon = "story" :: "story",
+	children = {},
 }
 
 local directoryNode1 = {
 	name = "Files",
-	icon = "folder",
+	icon = "folder" :: "folder",
 	children = {
 		childNode1,
 		childNode2,
@@ -31,7 +34,7 @@ local directoryNode1 = {
 
 local storybookNode = {
 	name = "Storybook",
-	icon = "storybook",
+	icon = "storybook" :: "storybook",
 	children = {
 		directoryNode1,
 	},

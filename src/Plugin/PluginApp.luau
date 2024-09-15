@@ -52,7 +52,10 @@ local function App(props: Props)
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
 			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
-			dragHandles = { "Right" },
+			dragHandles = {
+				-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+				"Right" :: any,
+			},
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			onResize = onSidebarResized,

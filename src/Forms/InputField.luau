@@ -91,8 +91,8 @@ local function InputField(providedProps: Props)
 		Text = text,
 		ref = ref,
 		[React.Change.Text] = onTextChanged,
-		[React.Event.Focused] = props.onFocus,
-		[React.Event.FocusLost] = onFocusLost,
+		[React.Event.Focused] = props.onFocus :: any,
+		[React.Event.FocusLost] = onFocusLost :: any,
 	})
 end
 

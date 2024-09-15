@@ -20,18 +20,19 @@ local function Screen(props: Props)
 	local navigation = NavigationContext.use()
 	local currentScreen = navigation.currentScreen
 
-	local screenElement = useMemo(function()
+	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then
-			return React.createElement(StoryCanvas, {
-				loader = props.loader,
-				story = props.story,
-				storybook = props.storybook,
-			})
+			if props.story and props.storybook then
+				return React.createElement(StoryCanvas, {
+					loader = props.loader,
+					story = props.story,
+					storybook = props.storybook,
+				})
+			end
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
-		else
-			return nil :: never
 		end
+		return nil
 	end, { props, currentScreen } :: { unknown })
 
 	return screenElement

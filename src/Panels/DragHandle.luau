@@ -131,8 +131,8 @@ local function DragHandle(providedProps: Props)
 		BackgroundTransparency = 1,
 		[React.Event.InputBegan] = onInputBegan,
 		[React.Event.InputEnded] = onInputEnded,
-		[React.Event.MouseEnter] = onMouseEnter,
-		[React.Event.MouseLeave] = onMouseLeave,
+		[React.Event.MouseEnter] = onMouseEnter :: any,
+		[React.Event.MouseLeave] = onMouseLeave :: any,
 	})
 end
 

@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
 
-local PluginContext = React.createContext(nil :: Plugin?)
+local PluginContext = React.createContext((nil :: any) :: Plugin)
 
 export type Props = {
 	plugin: Plugin,

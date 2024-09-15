@@ -43,8 +43,8 @@ local function createStoryNodes(storybooks: { Storybook }): { ComponentTreeNode 
 
 	for _, storybook in ipairs(storybooks) do
 		local node: ComponentTreeNode = {
-			name = storybook.name,
-			icon = "storybook",
+			name = if storybook.name then storybook.name else "Unnamed Storybook",
+			icon = "storybook" :: "storybook",
 			children = {},
 		}
 
