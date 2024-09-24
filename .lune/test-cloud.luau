@@ -18,8 +18,8 @@ local output, success = run("python3", {
 	"tests/run-tests.luau",
 }, {
 	env = {
-		ROBLOX_UNIVERSE_ID = 6548431902,
-		ROBLOX_PLACE_ID = 114070117184786,
+		ROBLOX_UNIVERSE_ID = "6548431902",
+		ROBLOX_PLACE_ID = "114070117184786",
 		ROBLOX_API_KEY = apiKey,
 	},
 })
