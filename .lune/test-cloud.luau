@@ -1,11 +1,14 @@
 local process = require("@lune/process")
 
+local compile = require("./lib/compile")
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
 
 local args = parseArgs(process.args)
 
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
+
+compile("dev")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
