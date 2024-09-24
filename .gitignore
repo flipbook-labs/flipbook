@@ -16,3 +16,4 @@ globalTypes.d.luau
 
 # Other
 /*.log
+__pycache__
