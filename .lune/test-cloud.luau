@@ -12,7 +12,7 @@ compile("dev")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
-local success, output = run("python3", {
+local output, success = run("python3", {
 	".lune/python/upload_and_run_task.py",
 	"tests.rbxl",
 	"tests/run-tests.luau",

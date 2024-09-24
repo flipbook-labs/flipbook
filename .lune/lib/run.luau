@@ -27,7 +27,7 @@ local function run(program: string, params: { string }, options: Options?)
 
 	out = out:gsub("\n$", "")
 
-	return result.ok, out
+	return out, result.ok
 end
 
 return run
