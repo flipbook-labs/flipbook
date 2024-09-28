@@ -18,13 +18,13 @@ local function run(program: string, params: { string }, options: Options?)
 		env = if options then options.env else nil,
 	})
 
-	if result.code > 0 then
-		process.exit(result.code)
-	end
-
 	local output = if result.ok then result.stdout else result.stderr
 
 	output = output:gsub("\n$", "")
+
+	if not result.ok or result.code > 0 then
+		error(output)
+	end
 
 	return output
 end
