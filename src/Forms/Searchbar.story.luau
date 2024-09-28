@@ -8,7 +8,7 @@ return {
 	summary = "Searchbar used to search for components",
 	controls = {},
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		Searchbar = React.createElement(Searchbar),
 	}),

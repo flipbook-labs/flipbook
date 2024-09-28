@@ -14,12 +14,16 @@ type Props = {
 
 return {
 	controls = controls,
-	story = function(props)
+	story = function(props: Props)
 		return React.createElement(ResizablePanel, {
 			initialSize = UDim2.fromOffset(props.controls.maxWidth - props.controls.minWidth, 300),
 			maxSize = Vector2.new(props.controls.maxWidth, props.controls.maxHeight),
 			minSize = Vector2.new(props.controls.minWidth, props.controls.minHeight),
-			dragHandles = { "Right", "Bottom" },
+			dragHandles = {
+				-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+				"Right" :: any,
+				"Bottom" :: any,
+			},
 		}, {
 			Content = React.createElement("Frame", {
 				Size = UDim2.fromScale(1, 1),

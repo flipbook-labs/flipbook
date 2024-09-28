@@ -52,7 +52,7 @@ local function Button(providedProps: Props)
 		[React.Event.MouseLeave] = function()
 			setHover(false)
 		end,
-		[React.Event.Activated] = props.onClick,
+		[React.Event.Activated] = props.onClick :: any,
 	}, {
 		UICorner = e("UICorner", {
 			CornerRadius = theme.corner,

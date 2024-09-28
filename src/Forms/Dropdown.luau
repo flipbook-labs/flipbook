@@ -13,7 +13,7 @@ local function Dropdown(props: Props)
 	local isExpanded, setIsExpanded = React.useState(false)
 	local selectedOption, setSelectedOption = React.useState(props.default)
 
-	local options = {}
+	local options: { [string]: React.Node } = {}
 	for index, option in props.options do
 		options["Option" .. index] = React.createElement("TextButton", {
 			LayoutOrder = index,

@@ -1,4 +1,3 @@
---!strict
 local React = require("@pkg/React")
 
 export type Props = {

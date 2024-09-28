@@ -16,7 +16,7 @@ type Props = {
 return {
 	controls = controls,
 	story = function(props: Props)
-		local children = {}
+		local children: { [string]: React.Node } = {}
 
 		children.Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
@@ -34,7 +34,7 @@ return {
 		end
 
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			Wrapper = React.createElement("Frame", {
 				Size = UDim2.new(1, 0, 0, 200),

@@ -8,7 +8,7 @@ return {
 	summary = "Icon and Typography for flipbook",
 	controls = {},
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		Branding = React.createElement(Branding),
 	}),

@@ -12,7 +12,7 @@ return {
 		end, debug.traceback)
 
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			StoryError = React.createElement(StoryError, {
 				err = result,

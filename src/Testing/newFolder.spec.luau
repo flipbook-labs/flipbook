@@ -14,7 +14,7 @@ test("name children after the dictionary keys", function()
 	local child1 = Instance.new("Part")
 	local child2 = Instance.new("Model")
 
-	local folder = newFolder({
+	local folder: any = newFolder({
 		Child1 = child1,
 		Child2 = child2,
 	})
@@ -24,7 +24,7 @@ test("name children after the dictionary keys", function()
 end)
 
 test("support nesting newFolder as children", function()
-	local folder = newFolder({
+	local folder: any = newFolder({
 		Child = newFolder({
 			AnotherChild = newFolder({
 				Module = Instance.new("ModuleScript"),
