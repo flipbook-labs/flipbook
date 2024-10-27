@@ -16,6 +16,10 @@ return {
 	controls = controls,
 	react = React,
 	reactRoblox = ReactRoblox,
+	packages = {
+		React = React,
+		ReactRoblox = ReactRoblox,
+	},
 	story = function(props: Props)
 		return React.createElement(ReactCounter, {
 			increment = props.controls.increment,

@@ -2,10 +2,11 @@ local CoreGui = game:GetService("CoreGui")
 
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Sift = require("@pkg/Sift")
+local Storyteller = require("@pkg/Storyteller")
+
+local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local StoryError = require("@root/Storybook/StoryError")
-local mountStory = require("@root/Storybook/mountStory")
 local types = require("@root/Storybook/types")
 
 local e = React.createElement
@@ -20,6 +21,7 @@ export type Props = {
 	story: types.Story,
 	ref: any,
 	controls: { [string]: any },
+	changedControls: { [string]: any },
 	storyModule: ModuleScript,
 }
 
@@ -34,20 +36,25 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		setErr(nil)
 	end, { props.story, ref })
 
-	React.useEffect(function()
+	React.useEffect(function(): (() -> ())?
 		if props.story and ref.current then
+			local renderer = Storyteller.createRendererForStory(props.story)
+			local lifecycle
+
 			local success, result = xpcall(function()
-				return mountStory(props.story, props.controls, ref.current)
+				lifecycle = Storyteller.render(renderer, ref.current, props.story, props.controls)
 			end, debug.traceback)
 
-			if success then
-				return result
-			else
+			if not success then
 				setErr(result)
-				return nil
+			end
+
+			if lifecycle then
+				return function()
+					lifecycle.unmount()
+				end
 			end
 		end
-
 		return nil
 	end, { props.story, props.controls, props.isMountedInViewport, ref.current } :: { unknown })
 

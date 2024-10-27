@@ -3,39 +3,38 @@ local CoreGui = game:GetService("CoreGui")
 local JestGlobals = require("@pkg/JestGlobals")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
-local isStoryModule = require("@root/Storybook/isStoryModule")
-local mountStory = require("@root/Storybook/mountStory")
+local Sift = require("@pkg/Sift")
+local Storyteller = require("@pkg/Storyteller")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
+local testEach = test.each :: any
 
-local storyModules: { ModuleScript } = {}
-for _, descendant in ipairs(script.Parent:GetDescendants()) do
-	if isStoryModule(descendant) then
-		table.insert(storyModules, descendant)
+testEach({
+	Storyteller.findStoryModules(script.Parent),
+})("mount/unmount %s", function(storyModule)
+	local story = (require :: any)(storyModule)
+
+	if typeof(story) == "function" then
+		story = {
+			name = storyModule.Name,
+			story = story,
+		}
 	end
-end
 
-for _, storyModule in storyModules do
-	test(`mount/unmount {storyModule:GetFullName()}`, function()
-		local story = (require :: any)(storyModule)
-		if typeof(story) == "function" then
-			story = {
-				name = storyModule.Name,
-				story = story,
-			}
-		end
+	if story.packages then
+		story.packages = Sift.Dictionary.join(story.packages or {}, {
+			React = React,
+			ReactRoblox = ReactRoblox,
+		})
+	end
 
-		story.react = React
-		story.reactRoblox = ReactRoblox
+	local renderer = Storyteller.createRendererForStory(story)
+	local lifecycle
 
-		local cleanup
-		expect(function()
-			cleanup = mountStory(story, story.controls, CoreGui)
-		end).never.toThrow()
+	expect(function()
+		lifecycle = Storyteller.render(renderer, CoreGui, story, story.controls)
+	end).never.toThrow()
 
-		if cleanup then
-			expect(cleanup).never.toThrow()
-		end
-	end)
-end
+	expect(lifecycle.unmount).never.toThrow()
+end)

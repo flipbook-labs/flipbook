@@ -12,6 +12,10 @@ return {
 			story = {
 				name = "Story",
 				summary = "Story summary",
+				source = Instance.new("ModuleScript"),
+				storybook = {
+					storyRoots = {},
+				},
 			},
 		}),
 	}),
