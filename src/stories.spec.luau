@@ -1,40 +1,67 @@
 local CoreGui = game:GetService("CoreGui")
 
 local JestGlobals = require("@pkg/JestGlobals")
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
+local afterEach = JestGlobals.afterEach
+local beforeEach = JestGlobals.beforeEach
+local describe = JestGlobals.describe
+local describeEach = describe.each :: any
 local expect = JestGlobals.expect
 local test = JestGlobals.test
-local testEach = test.each :: any
 
-testEach({
-	Storyteller.findStoryModules(script.Parent),
-})("mount/unmount %s", function(storyModule)
-	local story = (require :: any)(storyModule)
+local container
 
-	if typeof(story) == "function" then
-		story = {
-			name = storyModule.Name,
-			story = story,
-		}
-	end
+beforeEach(function()
+	container = Instance.new("Folder")
+	container.Parent = CoreGui
+end)
 
-	if story.packages then
-		story.packages = Sift.Dictionary.join(story.packages or {}, {
-			React = React,
-			ReactRoblox = ReactRoblox,
-		})
-	end
+afterEach(function()
+	container:Destroy()
+end)
 
-	local renderer = Storyteller.createRendererForStory(story)
-	local lifecycle
+describeEach({
+	Storyteller.findStorybookModules(script.Parent),
+})("%s", function(storybookModule)
+	-- FIXME: This is needed to get around a bug with React renders. I'm hoping
+	-- to keep this for now, but in the future this should really be a
+	-- ModuleLoader instance
+	local mockModuleLoader = (
+		{
+			require = function(_self, path)
+				return (require :: any)(path)
+			end,
+		} :: any
+	) :: ModuleLoader.ModuleLoader
 
-	expect(function()
-		lifecycle = Storyteller.render(renderer, CoreGui, story, story.controls)
-	end).never.toThrow()
+	local storybook = Storyteller.loadStorybookModule(mockModuleLoader, storybookModule)
 
-	expect(lifecycle.unmount).never.toThrow()
+	describeEach({
+		Storyteller.findStoryModulesForStorybook(storybook),
+	})("%s", function(storyModule)
+		test("basic mount/unmount lifecycle", function()
+			local story = Storyteller.loadStoryModule(mockModuleLoader, storyModule, storybook)
+			local renderer = Storyteller.createRendererForStory(story)
+
+			if story.packages then
+				story.packages = Sift.Dictionary.join(story.packages, {
+					React = React,
+					ReactRoblox = ReactRoblox,
+				})
+			end
+
+			local lifecycle = Storyteller.render(renderer, container, story)
+
+			expect(#container:GetChildren()).toBe(1)
+
+			lifecycle.unmount()
+
+			expect(#container:GetChildren()).toBe(0)
+		end)
+	end)
 end)
