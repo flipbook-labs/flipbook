@@ -42,7 +42,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 			local lifecycle
 
 			local success, result = xpcall(function()
-				lifecycle = Storyteller.render(renderer, ref.current, props.story, props.controls)
+				lifecycle = Storyteller.render(renderer, ref.current, props.story)
 			end, debug.traceback)
 
 			if not success then
