@@ -37,7 +37,6 @@ local function StoryControls(props: Props)
 		else
 			option = React.createElement(InputField, {
 				placeholder = value,
-				onTextChange = setControl,
 				onSubmit = setControl,
 			})
 		end

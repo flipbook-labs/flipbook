@@ -38,23 +38,9 @@ local function StoryView(props: Props)
 	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
-	local controls
+	local controlsWithUserOverrides = Sift.Dictionary.join(if story then story.controls else nil, extraControls)
+	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
 
-	if story and story.controls then
-		controls = {}
-
-		for key, value in story.controls do
-			local override = extraControls[key]
-
-			if override ~= nil and typeof(value) ~= "table" then
-				controls[key] = override
-			else
-				controls[key] = value
-			end
-		end
-	end
-
-	local showControls = controls and not Sift.isEmpty(controls)
 	local setControl = React.useCallback(function(control: string, newValue: any)
 		setExtraControls(function(prev)
 			return Sift.Dictionary.merge(prev, {
@@ -91,6 +77,10 @@ local function StoryView(props: Props)
 	local onTopbarSizeChanged = React.useCallback(function(rbx: Frame)
 		setTopbarHeight(rbx.AbsoluteSize.Y)
 	end, {})
+
+	React.useEffect(function()
+		setExtraControls({})
+	end, { story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -164,7 +154,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = Sift.Dictionary.merge(controls, extraControls),
+					controls = controlsWithUserOverrides,
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,
@@ -195,7 +185,7 @@ local function StoryView(props: Props)
 					}),
 
 					StoryControls = e(StoryControls, {
-						controls = controls,
+						controls = controlsWithUserOverrides,
 						setControl = setControl,
 					}),
 				}),

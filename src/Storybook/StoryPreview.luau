@@ -21,42 +21,45 @@ export type Props = {
 	story: types.Story,
 	ref: any,
 	controls: { [string]: any },
-	changedControls: { [string]: any },
-	storyModule: ModuleScript,
 }
 
 type InternalProps = Props & typeof(defaultProps)
 
 local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
-
-	local err, setErr = React.useState(nil)
+	local lifecycle = React.useRef(nil :: Storyteller.RenderLifecycle?)
+	local err, setErr = React.useState(nil :: string?)
 
 	React.useEffect(function()
 		setErr(nil)
 	end, { props.story, ref })
 
+	React.useEffect(function()
+		local areControlsDifferent = props.story.controls
+			and not Sift.Dictionary.equals(props.controls, props.story.controls)
+
+		if lifecycle.current and areControlsDifferent then
+			lifecycle.current.update(props.controls)
+		end
+	end, { props.controls, props.story })
+
 	React.useEffect(function(): (() -> ())?
 		if props.story and ref.current then
-			local renderer = Storyteller.createRendererForStory(props.story)
-			local lifecycle
-
 			local success, result = xpcall(function()
-				lifecycle = Storyteller.render(renderer, ref.current, props.story)
+				lifecycle.current = Storyteller.render(ref.current, props.story)
 			end, debug.traceback)
 
 			if not success then
 				setErr(result)
 			end
+		end
 
-			if lifecycle then
-				return function()
-					lifecycle.unmount()
-				end
+		return function()
+			if lifecycle.current then
+				lifecycle.current.unmount()
 			end
 		end
-		return nil
-	end, { props.story, props.controls, props.isMountedInViewport, ref.current } :: { unknown })
+	end, { props.story, props.isMountedInViewport } :: { unknown })
 
 	if err then
 		return e(StoryError, {
