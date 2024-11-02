@@ -31,7 +31,7 @@ local function StoryMeta(props: Props)
 			BackgroundTransparency = 1,
 			Font = theme.headerFont,
 			Size = UDim2.fromScale(0, 0),
-			Text = props.story.name:sub(1, #props.story.name - 6),
+			Text = props.story.name,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 		}),
