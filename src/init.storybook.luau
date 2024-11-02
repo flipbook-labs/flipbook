@@ -6,8 +6,6 @@ return {
 	storyRoots = {
 		script.Parent,
 	},
-	packages = {
-		React = React,
-		ReactRoblox = ReactRoblox,
-	},
+	react = React,
+	reactRoblox = ReactRoblox,
 }

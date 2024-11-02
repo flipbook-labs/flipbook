@@ -14,7 +14,7 @@ export type Props = {
 	layoutOrder: number?,
 	onSubmit: (text: string, isValid: boolean) -> (),
 	onFocus: (() -> ())?,
-	onFocusLost: (text: string, isValid: boolean) -> (),
+	onFocusLost: (() -> ())?,
 	onTextChange: ((new: string, old: string) -> ())?,
 	validate: ((text: string) -> boolean)?,
 	transform: ((newText: string, oldText: string) -> string)?,
@@ -33,7 +33,7 @@ local function InputField(providedProps: Props)
 	local onFocusLost = React.useCallback(
 		function(_rbx: TextBox, enterPressed: boolean)
 			if props.onFocusLost then
-				props.onFocusLost(text, isValid)
+				props.onFocusLost()
 			end
 
 			if enterPressed and props.onSubmit then
