@@ -71,6 +71,7 @@ local function App(props: Props)
 		MainWrapper = React.createElement("Frame", {
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
+			BackgroundTransparency = 1,
 		}, {
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
