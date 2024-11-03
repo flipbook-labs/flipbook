@@ -46,7 +46,6 @@ describeEach({
 	})("%s", function(storyModule)
 		test("basic mount/unmount lifecycle", function()
 			local story = Storyteller.loadStoryModule(mockModuleLoader, storyModule, storybook)
-			local renderer = Storyteller.createRendererForStory(story)
 
 			if story.packages then
 				story.packages = Sift.Dictionary.join(story.packages, {
@@ -55,7 +54,7 @@ describeEach({
 				})
 			end
 
-			local lifecycle = Storyteller.render(renderer, container, story)
+			local lifecycle = Storyteller.render(container, story)
 
 			expect(#container:GetChildren()).toBe(1)
 
