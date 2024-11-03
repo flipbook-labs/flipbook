@@ -16,7 +16,7 @@ type Options = {
 }
 
 local function watch(options: Options)
-	local prevWatchedFileMetadata: { [string]: string } = {}
+	local prevWatchedFileMetadata: { [string]: fs.Metadata } = {}
 	local watchedFiles = getWatchedFiles(options.filePatterns)
 	local prevWatchedFiles
 

@@ -1,12 +1,23 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
+local function hasPermission(instance: Instance)
+	local success = pcall(function()
+		return instance.Name
+	end)
+	return success
+end
+
 local function useDescendants(parent: Instance, predicate: (descendant: Instance) -> boolean): { Instance }
 	local descendants: { Instance }, setDescendants = React.useState({})
 
 	local onDescendantChanged = React.useCallback(function(descendant: Instance)
 		setDescendants(function(prev)
 			local exists = table.find(prev, descendant)
+
+			if not hasPermission(descendant) then
+				return prev
+			end
 
 			if predicate(descendant) then
 				if exists then
@@ -26,7 +37,7 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 
 			return prev
 		end)
-	end, { predicate, descendants })
+	end, { predicate, descendants } :: { unknown })
 
 	-- Setup the initial list of descendants for the current parent
 	React.useEffect(function()
@@ -41,6 +52,10 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 
 		-- Listen for name changes and update the list of descendants
 		for _, descendant in parent:GetDescendants() do
+			if not hasPermission(descendant) then
+				continue
+			end
+
 			table.insert(
 				connections,
 				descendant:GetPropertyChangedSignal("Name"):Connect(function()
@@ -54,7 +69,7 @@ local function useDescendants(parent: Instance, predicate: (descendant: Instance
 				conn:Disconnect()
 			end
 		end
-	end, { parent, onDescendantChanged })
+	end, { parent, onDescendantChanged } :: { unknown })
 
 	return descendants
 end

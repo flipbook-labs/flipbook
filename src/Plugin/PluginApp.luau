@@ -1,3 +1,4 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -14,15 +15,15 @@ local useTheme = require("@root/Common/useTheme")
 local TOPBAR_HEIGHT_PX = 32
 
 export type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 }
 
 local function App(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
 	local storybooks = useStorybooks(game, props.loader)
-	local story, setStory = React.useState(nil)
-	local storybook, selectStorybook = React.useState(nil)
+	local story: ModuleScript?, setStory = React.useState(nil :: ModuleScript?)
+	local storybook, selectStorybook = React.useState(nil :: ModuleScript?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
 	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
@@ -30,10 +31,10 @@ local function App(props: Props)
 	local selectStory = React.useCallback(function(newStory: ModuleScript)
 		navigation.navigateTo("Home")
 
-		setStory(function(prevStory: ModuleScript)
+		setStory(function(prevStory)
 			return if prevStory ~= newStory then newStory else nil
 		end)
-	end, { setStory, navigation.navigateTo })
+	end, { setStory, navigation.navigateTo } :: { unknown })
 
 	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
@@ -52,7 +53,10 @@ local function App(props: Props)
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
 			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
-			dragHandles = { "Right" },
+			dragHandles = {
+				-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+				"Right" :: any,
+			},
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			onResize = onSidebarResized,

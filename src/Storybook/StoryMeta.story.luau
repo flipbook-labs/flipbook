@@ -6,7 +6,7 @@ local StoryMeta = require("@root/Storybook/StoryMeta")
 
 return {
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		StoryMeta = React.createElement(StoryMeta, {
 			story = {

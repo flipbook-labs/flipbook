@@ -1,3 +1,4 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
 local AboutView = require("@root/About/AboutView")
@@ -12,8 +13,8 @@ type Story = storybookTypes.Story
 type Storybook = storybookTypes.Storybook
 
 export type Props = {
-	loader: any,
-	story: Story?,
+	loader: ModuleLoader.ModuleLoader,
+	story: ModuleScript?,
 	storybook: Storybook?,
 }
 
@@ -21,21 +22,22 @@ local function Screen(props: Props)
 	local navigation = NavigationContext.use()
 	local currentScreen = navigation.currentScreen
 
-	local screenElement = useMemo(function()
+	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then
-			return React.createElement(StoryCanvas, {
-				loader = props.loader,
-				story = props.story,
-				storybook = props.storybook,
-			})
+			if props.story and props.storybook then
+				return React.createElement(StoryCanvas, {
+					loader = props.loader,
+					story = props.story,
+					storybook = props.storybook,
+				})
+			end
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
 		elseif currentScreen == "About" then
 			return React.createElement(AboutView)
-		else
-			return nil :: never
 		end
-	end, { props, currentScreen })
+		return nil :: never
+	end, { props, currentScreen } :: { unknown })
 
 	return screenElement
 end

@@ -6,7 +6,7 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 
 return {
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		InputField = React.createElement(InputField, {
 			placeholder = "Enter information...",

@@ -16,11 +16,12 @@ local defaultProps = {
 }
 
 export type Props = {
-	layoutOrder: number,
 	story: types.Story,
-	ref: any,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
+
+	ref: any,
+	layoutOrder: number?,
 }
 
 type InternalProps = Props & typeof(defaultProps)
@@ -49,7 +50,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		end
 
 		return nil
-	end, { props.story, props.controls, props.isMountedInViewport, ref.current })
+	end, { props.story, props.controls, props.isMountedInViewport, ref.current } :: { unknown })
 
 	if err then
 		return e(StoryError, {

@@ -48,7 +48,7 @@ local function useTheme()
 		end
 	end, { themeOverride, prevThemeOverride, themeName })
 
-	useEffect(function()
+	useEffect(function(): any
 		if themeOverride == "system" then
 			local conn = studio.ThemeChanged:Connect(function()
 				set(themes[studio.Theme.Name])

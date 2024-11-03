@@ -24,7 +24,10 @@ types.React = t.interface({
 })
 
 type ReactRoblox = {
-	createRoot: () -> (),
+	createRoot: (Instance) -> {
+		render: (any, any) -> (),
+		unmount: (any) -> (),
+	},
 }
 types.ReactRoblox = t.interface({
 	createRoot = t.callback,

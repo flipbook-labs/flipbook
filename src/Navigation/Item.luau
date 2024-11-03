@@ -7,10 +7,10 @@ local e = React.createElement
 
 type Props = {
 	active: boolean?,
-	layoutOrder: number,
-	onClick: () -> (),
+	layoutOrder: number?,
+	onClick: (() -> ())?,
 	padding: { x: number, y: number }?,
-	children: any,
+	children: { [string]: React.Node }?,
 }
 
 local function Item(props: Props)

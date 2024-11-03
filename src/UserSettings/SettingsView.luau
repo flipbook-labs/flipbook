@@ -24,7 +24,7 @@ local function SettingsView()
 		end)
 	end, { settingsContext.settings })
 
-	local children = {}
+	local children: { [string]: React.Node } = {}
 	for index, setting in orderedSettings do
 		children[setting.name] = React.createElement(SettingRow, {
 			setting = setting,

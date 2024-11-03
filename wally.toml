@@ -1,13 +1,13 @@
 [package]
 name = "flipbook-labs/flipbook"
-version = "1.5.0"
+version = "1.5.1"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 exclude = ["*"]
 
 [dependencies]
-ModuleLoader = "flipbook-labs/module-loader@0.6.1"
+ModuleLoader = "flipbook-labs/module-loader@0.6.2"
 React = "jsdotlua/react@17.0.2"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"

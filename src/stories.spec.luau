@@ -16,24 +16,26 @@ for _, descendant in ipairs(script.Parent:GetDescendants()) do
 	end
 end
 
-test.each(storyModules)("mount/unmount %s", function(storyModule: ModuleScript)
-	local story = require(storyModule)
-	if typeof(story) == "function" then
-		story = {
-			name = storyModule.Name,
-			story = story,
-		}
-	end
+for _, storyModule in storyModules do
+	test(`mount/unmount {storyModule:GetFullName()}`, function()
+		local story = (require :: any)(storyModule)
+		if typeof(story) == "function" then
+			story = {
+				name = storyModule.Name,
+				story = story,
+			}
+		end
 
-	story.react = React
-	story.reactRoblox = ReactRoblox
+		story.react = React
+		story.reactRoblox = ReactRoblox
 
-	local cleanup
-	expect(function()
-		cleanup = mountStory(story, story.controls, CoreGui)
-	end).never.toThrow()
+		local cleanup
+		expect(function()
+			cleanup = mountStory(story, story.controls, CoreGui)
+		end).never.toThrow()
 
-	if cleanup then
-		expect(cleanup).never.toThrow()
-	end
-end)
+		if cleanup then
+			expect(cleanup).never.toThrow()
+		end
+	end)
+end

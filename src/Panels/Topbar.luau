@@ -77,33 +77,3 @@ local function Topbar(props: Props)
 end
 
 return Topbar
-
--- local function Topbar(props: Props)
--- 	local theme = useTheme()
--- 	local navigation = NavigationContext.use()
-
--- 	return React.createElement("Frame", {
--- 		Size = UDim2.fromScale(1, 1),
--- 		BackgroundColor3 = theme.sidebar,
--- 		BorderSizePixel = 0,
--- 	}, {
--- 		LayoutOrder = React.createElement("UIListLayout", {
--- 			SortOrder = Enum.SortOrder.LayoutOrder,
--- 			HorizontalAlignment = Enum.HorizontalAlignment.Right,
--- 		}),
-
--- 		Navbar = React.createElement("Frame", {}, {
--- 			LayoutOrder = React.createElement("UIListLayout", {
--- 				SortOrder = Enum.SortOrder.LayoutOrder,
--- 				HorizontalAlignment = Enum.HorizontalAlignment.Right,
--- 			}),
-
--- 			Settings = React.createElement(Button, {
--- 				layoutOrder = nextLayoutOrder(),
--- 				text = "Settings",
--- 			}),
--- 		}),
--- 	})
--- end
-
--- return Topbar

@@ -1,11 +1,13 @@
 local Selection = game:GetService("Selection")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+
+local PluginContext = require("@root/Plugin/PluginContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
-local Sift = require("@pkg/Sift")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryMeta = require("@root/Storybook/StoryMeta")
@@ -20,7 +22,7 @@ local useZoom = require("@root/Common/useZoom")
 local e = React.createElement
 
 type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 	story: ModuleScript,
 	storybook: types.Storybook,
 }
@@ -64,7 +66,7 @@ local function StoryView(props: Props)
 	local viewCode = React.useCallback(function()
 		Selection:Set({ props.story })
 		plugin:OpenScript(props.story)
-	end, { plugin, props.story })
+	end, { plugin, props.story } :: { unknown })
 
 	local exploreStoryParent = React.useCallback(function()
 		local current = storyParentRef.current
@@ -80,7 +82,7 @@ local function StoryView(props: Props)
 
 	local onPreviewInViewport = React.useCallback(function()
 		setIsMountedInViewport(not isMountedInViewport)
-	end, { isMountedInViewport, setIsMountedInViewport })
+	end, { isMountedInViewport, setIsMountedInViewport } :: { unknown })
 
 	local onControlsResized = React.useCallback(function(newSize: Vector2)
 		setControlsHeight(newSize.Y)
@@ -172,23 +174,18 @@ local function StoryView(props: Props)
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
 				layoutOrder = 3,
 				initialSize = UDim2.new(1, 0, 0, initialControlsHeight),
-				dragHandles = { "Top" },
+				dragHandles = {
+					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+					"Top" :: any,
+				},
 				minSize = Vector2.new(0, constants.CONTROLS_MIN_HEIGHT),
 				maxSize = Vector2.new(math.huge, constants.CONTROLS_MAX_HEIGHT),
 				onResize = onControlsResized,
 			}, {
 				ScrollingFrame = e(ScrollingFrame, {
-					LayoutOrder = 2,
-					BackgroundTransparency = 0.4,
+					BackgroundTransparency = 1,
 					BackgroundColor3 = theme.sidebar,
 				}, {
-					Padding = e("UIPadding", {
-						PaddingTop = theme.padding,
-						PaddingRight = theme.padding,
-						PaddingBottom = theme.padding,
-						PaddingLeft = theme.padding,
-					}),
-
 					StoryControls = e(StoryControls, {
 						controls = controls,
 						setControl = setControl,

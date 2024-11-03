@@ -8,7 +8,7 @@ return {
 	summary = "Panel for configuring the controls of a story",
 	story = function()
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			StoryControls = React.createElement(StoryControls, {
 				controls = {
@@ -19,6 +19,8 @@ return {
 						"Option 2",
 						"Option 3",
 					},
+					onlyTwentyCharacters = "OnlyTwentyCharacters",
+					badControlType = function() end,
 				},
 				setControl = function() end,
 			}),
