@@ -27,7 +27,7 @@ local function InputField(providedProps: Props)
 
 	local ref = React.useRef(nil :: TextBox?)
 	local text, setText = React.useState("")
-	local isValid, setIsValid = React.useState(false)
+	local isValid, setIsValid = React.useState(true)
 	local theme = useTheme()
 
 	local onFocusLost = React.useCallback(
@@ -41,7 +41,9 @@ local function InputField(providedProps: Props)
 			end
 		end,
 		{
+			text,
 			isValid,
+			props.onFocusLost,
 			props.onSubmit,
 		} :: { unknown }
 	)
@@ -49,7 +51,9 @@ local function InputField(providedProps: Props)
 	local onTextChanged = React.useCallback(function(rbx: TextBox)
 		local newText = rbx.Text
 
-		if newText == text and newText ~= "" then
+		newText = newText:gsub("$%s+", ""):gsub("%s+^", "")
+
+		if newText == text or newText == "" then
 			return
 		end
 

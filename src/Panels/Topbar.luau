@@ -17,12 +17,12 @@ local function Topbar(props: Props)
 	local navigation = NavigationContext.use()
 
 	local navigateToSettings = useCallback(function()
-		if navigation.currentScreen == "Settings" then
-			navigation.goBack()
-		else
-			navigation.navigateTo("Settings")
-		end
-	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
+		navigation.navigateTo("Settings")
+	end, { navigation.navigateTo })
+
+	local navigateToAbout = useCallback(function()
+		navigation.navigateTo("About")
+	end, { navigation.navigateTo })
 
 	return React.createElement("Frame", {
 		BackgroundColor3 = theme.sidebar,
@@ -43,6 +43,21 @@ local function Topbar(props: Props)
 				PaddingLeft = theme.paddingSmall,
 			}),
 
+			About = React.createElement(Navigation.Item, {
+				layoutOrder = nextLayoutOrder(),
+				onClick = navigateToAbout,
+			}, {
+				Text = React.createElement("TextLabel", {
+					AutomaticSize = Enum.AutomaticSize.XY,
+					BackgroundTransparency = 1,
+					Font = theme.font,
+					Size = UDim2.fromScale(0, 0),
+					Text = "About",
+					TextColor3 = theme.textFaded,
+					TextSize = theme.textSize,
+				}),
+			}),
+
 			Settings = React.createElement(Navigation.Item, {
 				layoutOrder = nextLayoutOrder(),
 				onClick = navigateToSettings,
@@ -55,8 +70,6 @@ local function Topbar(props: Props)
 					Text = "Settings",
 					TextColor3 = theme.textFaded,
 					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
 				}),
 			}),
 		}),
@@ -64,33 +77,3 @@ local function Topbar(props: Props)
 end
 
 return Topbar
-
--- local function Topbar(props: Props)
--- 	local theme = useTheme()
--- 	local navigation = NavigationContext.use()
-
--- 	return React.createElement("Frame", {
--- 		Size = UDim2.fromScale(1, 1),
--- 		BackgroundColor3 = theme.sidebar,
--- 		BorderSizePixel = 0,
--- 	}, {
--- 		LayoutOrder = React.createElement("UIListLayout", {
--- 			SortOrder = Enum.SortOrder.LayoutOrder,
--- 			HorizontalAlignment = Enum.HorizontalAlignment.Right,
--- 		}),
-
--- 		Navbar = React.createElement("Frame", {}, {
--- 			LayoutOrder = React.createElement("UIListLayout", {
--- 				SortOrder = Enum.SortOrder.LayoutOrder,
--- 				HorizontalAlignment = Enum.HorizontalAlignment.Right,
--- 			}),
-
--- 			Settings = React.createElement(Button, {
--- 				layoutOrder = nextLayoutOrder(),
--- 				text = "Settings",
--- 			}),
--- 		}),
--- 	})
--- end
-
--- return Topbar

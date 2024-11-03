@@ -183,17 +183,9 @@ local function StoryView(props: Props)
 				onResize = onControlsResized,
 			}, {
 				ScrollingFrame = e(ScrollingFrame, {
-					LayoutOrder = 2,
-					BackgroundTransparency = 0.4,
+					BackgroundTransparency = 1,
 					BackgroundColor3 = theme.sidebar,
 				}, {
-					Padding = e("UIPadding", {
-						PaddingTop = theme.padding,
-						PaddingRight = theme.padding,
-						PaddingBottom = theme.padding,
-						PaddingLeft = theme.padding,
-					}),
-
 					StoryControls = e(StoryControls, {
 						controls = controls,
 						setControl = setControl,
