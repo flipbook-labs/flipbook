@@ -16,7 +16,9 @@ return {
 	summary = "A generic button component that can be used anywhere",
 	controls = controls,
 	story = function(props: Props)
-		return React.createElement(ContextProviders, { plugin = MockPlugin.new() }, {
+		return React.createElement(ContextProviders, {
+			plugin = MockPlugin.new() :: any,
+		}, {
 			Button = React.createElement(Button, {
 				text = props.controls.text,
 				onClick = function()

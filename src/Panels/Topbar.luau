@@ -22,7 +22,7 @@ local function Topbar(props: Props)
 		else
 			navigation.navigateTo("Settings")
 		end
-	end, { navigation.navigateTo, navigation.currentScreen })
+	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
 
 	return React.createElement("Frame", {
 		BackgroundColor3 = theme.sidebar,

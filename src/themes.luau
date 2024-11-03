@@ -18,9 +18,11 @@ export type Theme = {
 	divider: Color3,
 	text: Color3,
 	textFaded: Color3,
+	textSubtitle: Color3,
 	selection: Color3,
 	story: Color3,
 	directory: Color3,
+	alert: Color3,
 
 	padding: UDim,
 	paddingSmall: UDim,

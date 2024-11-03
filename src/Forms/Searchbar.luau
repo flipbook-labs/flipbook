@@ -101,6 +101,7 @@ local function Searchbar(providedProps: Props)
 				onFocus = onFocus,
 				onFocusLost = onFocusLost,
 				onTextChange = onTextChange,
+				onSubmit = function() end,
 			}),
 		}),
 

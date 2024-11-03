@@ -5,9 +5,9 @@ local e = React.createElement
 
 type Props = {
 	height: number,
-	layoutOrder: number,
+	layoutOrder: number?,
 	topDivider: boolean?,
-	children: any,
+	children: { [string]: React.Node }?,
 }
 
 local function Element(props: Props)

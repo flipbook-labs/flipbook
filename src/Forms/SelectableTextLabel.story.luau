@@ -17,7 +17,7 @@ return {
 	controls = controls,
 	story = function(props: Props)
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			SelectableTextLabel = React.createElement(SelectableTextLabel, {
 				Text = props.controls.text,

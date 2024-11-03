@@ -1,4 +1,6 @@
+local ModuleLoader = require("@pkg/ModuleLoader")
 local Sift = require("@pkg/Sift")
+
 local types = require("@root/Storybook/types")
 
 local Errors = {
@@ -6,7 +8,11 @@ local Errors = {
 	Generic = "Failed to load story %q. Error: %s",
 }
 
-local function loadStoryModule(loader: any, module: ModuleScript, storybook: types.Storybook): (types.Story?, string?)
+local function loadStoryModule(
+	loader: ModuleLoader.ModuleLoader,
+	module: ModuleScript,
+	storybook: types.Storybook
+): (types.Story?, string?)
 	if not module then
 		return nil, "Did not receive a module to load"
 	end
