@@ -30,20 +30,23 @@ local function InputField(providedProps: Props)
 	local isValid, setIsValid = React.useState(true)
 	local theme = useTheme()
 
-	local onFocusLost = React.useCallback(function(_rbx: TextBox, enterPressed: boolean)
-		if props.onFocusLost then
-			props.onFocusLost()
-		end
+	local onFocusLost = React.useCallback(
+		function(_rbx: TextBox, enterPressed: boolean)
+			if props.onFocusLost then
+				props.onFocusLost()
+			end
 
-		if enterPressed and props.onSubmit then
-			props.onSubmit(text, isValid)
-		end
-	end, {
-		text,
-		isValid,
-		props.onFocusLost,
-		props.onSubmit,
-	})
+			if enterPressed and props.onSubmit then
+				props.onSubmit(text, isValid)
+			end
+		end,
+		{
+			text,
+			isValid,
+			props.onFocusLost,
+			props.onSubmit,
+		} :: { unknown }
+	)
 
 	local onTextChanged = React.useCallback(function(rbx: TextBox)
 		local newText = rbx.Text
@@ -67,10 +70,10 @@ local function InputField(providedProps: Props)
 		if props.validate then
 			setIsValid(props.validate(newText))
 		end
-	end, { text, props.transform, props.validate, props.onTextChange })
+	end, { text, props.transform, props.validate, props.onTextChange } :: { unknown })
 
 	React.useEffect(function()
-		if props.autoFocus and ref.current then
+		if ref.current and props.autoFocus then
 			ref.current:CaptureFocus()
 		end
 	end, {
@@ -92,8 +95,8 @@ local function InputField(providedProps: Props)
 		Text = text,
 		ref = ref,
 		[React.Change.Text] = onTextChanged,
-		[React.Event.Focused] = props.onFocus,
-		[React.Event.FocusLost] = onFocusLost,
+		[React.Event.Focused] = props.onFocus :: any,
+		[React.Event.FocusLost] = onFocusLost :: any,
 	})
 end
 

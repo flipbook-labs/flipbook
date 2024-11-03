@@ -9,7 +9,7 @@ return {
 	summary = "The main component that handles the entire plugin",
 	controls = {},
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		PluginApp = React.createElement(PluginApp, {
 			loader = ModuleLoader.new(),

@@ -14,7 +14,7 @@ export type Props = {
 }
 
 local function ComponentTree(props: Props)
-	local children = {}
+	local children: { [string]: React.Node } = {}
 
 	children.UIListLayoutLayout = e("UIListLayout", {
 		SortOrder = Enum.SortOrder.Name,

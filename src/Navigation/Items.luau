@@ -3,9 +3,9 @@ local React = require("@pkg/React")
 local e = React.createElement
 
 type Props = {
-	layoutOrder: number,
+	layoutOrder: number?,
 	padding: UDim?,
-	children: any,
+	children: { [string]: React.Node }?,
 }
 
 local function Items(props: Props)

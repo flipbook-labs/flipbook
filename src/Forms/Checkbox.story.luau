@@ -7,7 +7,7 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 return {
 	summary = "Generic checkbox used for story controls",
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		Checkbox = React.createElement(Checkbox, {
 			initialState = true,

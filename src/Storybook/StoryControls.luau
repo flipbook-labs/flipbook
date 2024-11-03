@@ -45,7 +45,7 @@ local function StoryControls(props: Props)
 		end
 
 		local controlType = typeof(control.value)
-		local option
+		local option: React.Node
 		if controlType == "boolean" then
 			option = React.createElement(Checkbox, {
 				initialState = control.value,

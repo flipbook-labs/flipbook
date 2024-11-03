@@ -22,7 +22,7 @@ return {
 		end
 
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			Dropdown = React.createElement(Dropdown, {
 				placeholder = "Select an option",

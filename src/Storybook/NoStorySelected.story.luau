@@ -6,7 +6,7 @@ local NoStorySelected = require("./NoStorySelected")
 
 return {
 	story = React.createElement(ContextProviders, {
-		plugin = MockPlugin.new(),
+		plugin = MockPlugin.new() :: any,
 	}, {
 		NoStorySelected = React.createElement(NoStorySelected),
 	}),

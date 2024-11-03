@@ -7,7 +7,7 @@ local useTheme = require("@root/Common/useTheme")
 local e = React.createElement
 
 type Props = {
-	layoutOrder: number,
+	layoutOrder: number?,
 	onPreviewInViewport: (() -> ())?,
 	onZoomIn: (() -> ())?,
 	onZoomOut: (() -> ())?,
