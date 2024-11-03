@@ -15,16 +15,18 @@ local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local constants = require("@root/constants")
-local types = require("@root/Storybook/types")
 local useTheme = require("@root/Common/useTheme")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
 
+type ModuleLoader = ModuleLoader.ModuleLoader
+type Storybook = Storyteller.Storybook
+
 type Props = {
-	loader: ModuleLoader.ModuleLoader,
+	loader: ModuleLoader,
 	story: ModuleScript,
-	storybook: types.Storybook,
+	storybook: Storybook,
 }
 
 local function StoryView(props: Props)

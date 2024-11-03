@@ -1,17 +1,20 @@
 local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local StoryView = require("@root/Storybook/StoryView")
-local types = require("@root/Storybook/types")
 local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
 
+type ModuleLoader = ModuleLoader.ModuleLoader
+type Storybook = Storyteller.Storybook
+
 type Props = {
 	story: ModuleScript,
-	loader: ModuleLoader.ModuleLoader,
-	storybook: types.Storybook,
+	loader: ModuleLoader,
+	storybook: Storybook,
 	layoutOrder: number?,
 }
 

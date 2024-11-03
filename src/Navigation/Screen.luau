@@ -1,18 +1,18 @@
 local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
-local storybookTypes = require("@root/Storybook/types")
 
 local useMemo = React.useMemo
 
-type Story = storybookTypes.Story
-type Storybook = storybookTypes.Storybook
+type ModuleLoader = ModuleLoader.ModuleLoader
+type Storybook = Storyteller.Storybook
 
 export type Props = {
-	loader: ModuleLoader.ModuleLoader,
+	loader: ModuleLoader,
 	story: ModuleScript?,
 	storybook: Storybook?,
 }

@@ -1,9 +1,8 @@
 local Storyteller = require("@pkg/Storyteller")
 
 local explorerTypes = require("@root/Explorer/types")
-local storybookTypes = require("@root/Storybook/types")
 
-type Storybook = storybookTypes.Storybook
+type Storybook = Storyteller.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local function hasStories(instance: Instance): boolean

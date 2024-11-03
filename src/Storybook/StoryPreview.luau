@@ -7,7 +7,6 @@ local Storyteller = require("@pkg/Storyteller")
 
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local StoryError = require("@root/Storybook/StoryError")
-local types = require("@root/Storybook/types")
 
 local e = React.createElement
 
@@ -16,9 +15,11 @@ local defaultProps = {
 	zoom = 0,
 }
 
+type Story = Storyteller.Story<unknown>
+
 export type Props = {
-	layoutOrder: number,
-	story: types.Story,
+	layoutOrder: number?,
+	story: Story,
 	ref: any,
 	controls: { [string]: any },
 }

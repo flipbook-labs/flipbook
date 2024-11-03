@@ -1,13 +1,16 @@
 local React = require("@pkg/React")
-local types = require("@root/Storybook/types")
+local Storyteller = require("@pkg/Storyteller")
+
 local useTheme = require("@root/Common/useTheme")
 
 local MAX_SUMMARY_SIZE = 600
 
 local e = React.createElement
 
+type Story = Storyteller.Story<unknown>
+
 export type Props = {
-	story: types.Story,
+	story: Story,
 	layoutOrder: number?,
 }
 
