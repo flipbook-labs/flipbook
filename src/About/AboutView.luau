@@ -20,7 +20,7 @@ local function AboutView()
 		return (DateTime.now():ToUniversalTime() :: any).Year
 	end, {})
 
-	local authors = {}
+	local authors: { [string]: React.Node } = {}
 	for _, userId in AUTHOR_USER_IDS do
 		authors[`Author{userId}`] = React.createElement(RobloxProfile, {
 			userId = userId,

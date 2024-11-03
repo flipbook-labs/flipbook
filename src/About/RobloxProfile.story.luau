@@ -14,11 +14,13 @@ type Props = {
 return {
 	controls = controls,
 	story = function(props: Props)
+		local userId = assert(tonumber(props.controls.userId))
+
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
 		}, {
 			RobloxProfiler = React.createElement(RobloxProfile, {
-				userId = tonumber(props.controls.userId),
+				userId = userId,
 			}),
 		})
 	end,
