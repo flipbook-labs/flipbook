@@ -1,6 +1,7 @@
 local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
+local AboutView = require("@root/About/AboutView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
@@ -32,8 +33,10 @@ local function Screen(props: Props)
 			end
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
+		elseif currentScreen == "About" then
+			return React.createElement(AboutView)
 		end
-		return nil
+		return nil :: never
 	end, { props, currentScreen } :: { unknown })
 
 	return screenElement

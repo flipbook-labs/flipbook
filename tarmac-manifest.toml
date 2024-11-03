@@ -1,53 +1,59 @@
 [inputs."img/ChevronRight.png"]
 hash = "4c91853652b4e0a6317804c54db6397ac0c710c819b282f7be2179e3abdc879c"
-id = 10175334645
-slice = [[65, 49], [97, 81]]
+id = 18940815650
+slice = [[49, 226], [81, 258]]
 packable = true
 
 [inputs."img/Component.png"]
 hash = "d51b19d5f35ac87fd8156500828f3e217b6fc420b70fee5d97b3577e4e6a8843"
-id = 10175334645
-slice = [[0, 114], [32, 146]]
+id = 18940815650
+slice = [[0, 275], [32, 307]]
 packable = true
 
 [inputs."img/Folder.png"]
 hash = "4c0e80a363d36a4d127d410795cb13eec74d55871b70174636c0c962c242835c"
-id = 10175334645
-slice = [[157, 0], [189, 32]]
+id = 18940815650
+slice = [[345, 0], [377, 32]]
+packable = true
+
+[inputs."img/GitHubMark.png"]
+hash = "a0fb973cd9bf0c1123dbe783f7a4093dbcf9b4910d6e385c16a837a04a02306c"
+id = 18940815650
+slice = [[0, 0], [230, 225]]
 packable = true
 
 [inputs."img/IconLight.png"]
 hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
-id = 10175334645
-slice = [[114, 0], [156, 42]]
+id = 18940815650
+slice = [[231, 65], [273, 107]]
 packable = true
 
 [inputs."img/Magnify.png"]
 hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
-id = 10175334645
-slice = [[65, 0], [113, 48]]
+id = 18940815650
+slice = [[0, 226], [48, 274]]
 packable = true
 
 [inputs."img/Minify.png"]
 hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
-id = 10175334645
-slice = [[0, 65], [48, 113]]
+id = 18940815650
+slice = [[296, 0], [344, 48]]
 packable = true
 
 [inputs."img/Search.png"]
 hash = "0ab89c0309f577f3ccae0e03b45292f6e2bca51cc9b8250f56ad756e04231c57"
-id = 10175334645
-slice = [[114, 43], [146, 75]]
+id = 18940815650
+slice = [[296, 49], [328, 81]]
 packable = true
 
 [inputs."img/Storybook.png"]
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
-id = 10175334645
-slice = [[65, 82], [97, 114]]
+id = 18940815650
+slice = [[231, 108], [263, 140]]
 packable = true
 
 [inputs."img/flipbook.png"]
 hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
-id = 10175334645
-slice = [[0, 0], [64, 64]]
+id = 18940815650
+slice = [[231, 0], [295, 64]]
 packable = true
