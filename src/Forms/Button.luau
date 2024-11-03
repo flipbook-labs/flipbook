@@ -25,6 +25,8 @@ type Props = {
 	layoutOrder: number?,
 	endIcon: any?,
 	startIcon: any?,
+	textColor: Color3?,
+	backgroundColor: Color3?,
 
 	onClick: (() -> ())?,
 }
@@ -32,16 +34,20 @@ type Props = {
 type InternalProps = Props & typeof(defaultProps)
 
 local function Button(providedProps: Props)
-	local props: InternalProps = Sift.Dictionary.join(defaultProps, providedProps)
-
 	local theme = useTheme()
+
+	local props: InternalProps = Sift.Dictionary.join(defaultProps, {
+		backgroundColor = theme.button,
+		textColor = theme.buttonText,
+	}, providedProps)
+
 	local hover, setHover = React.useState(false)
 
 	return e("ImageButton", {
 		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
 		AnchorPoint = props.anchorPoint,
-		BackgroundColor3 = if hover then shift(theme.button, 0.2) else theme.button,
+		BackgroundColor3 = if hover then shift(props.backgroundColor, 0.2) else props.backgroundColor,
 		BackgroundTransparency = if props.style == "stroke" then if hover then 0 else 1 else 0,
 		BorderSizePixel = 0,
 		LayoutOrder = props.layoutOrder,
@@ -84,12 +90,12 @@ local function Button(providedProps: Props)
 		Text = e("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
-			Font = theme.font,
+			Font = theme.buttonFont,
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(0, 0),
 			Text = props.text,
-			TextColor3 = if hover then shift(theme.buttonText, 0.2) else theme.buttonText,
-			TextSize = theme.textSize,
+			TextColor3 = if hover then shift(props.textColor, 0.2) else props.textColor,
+			TextSize = theme.buttonTextSize,
 		}),
 	})
 end

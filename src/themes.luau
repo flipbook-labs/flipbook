@@ -9,6 +9,7 @@ export type Theme = {
 	buttonFont: Enum.Font,
 
 	background: Color3,
+	modal: Color3,
 	sidebar: Color3,
 	canvas: Color3,
 	scrollbar: Color3,
@@ -37,9 +38,10 @@ return {
 		headerTextSize = 32,
 		headerFont = Enum.Font.BuilderSansExtraBold,
 		buttonTextSize = 14,
-		buttonFont = Enum.Font.BuilderSansBold,
+		buttonFont = Enum.Font.BuilderSansMedium,
 
 		background = tailwind.white,
+		modal = tailwind.gray100,
 		sidebar = tailwind.gray100,
 		canvas = tailwind.white,
 		scrollbar = tailwind.gray800,
@@ -70,6 +72,7 @@ return {
 		buttonFont = Enum.Font.BuilderSansBold,
 
 		background = tailwind.zinc800,
+		modal = tailwind.zinc800,
 		sidebar = tailwind.zinc900,
 		canvas = tailwind.zinc800,
 		scrollbar = tailwind.zinc100,
