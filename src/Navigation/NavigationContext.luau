@@ -13,6 +13,7 @@ export type NavigationContext = {
 	navigateTo: (newScreen: Screen) -> (),
 	goBack: () -> (),
 	getBreadcrumbs: () -> { string },
+	canGoBack: () -> boolean,
 	currentScreen: Screen,
 }
 

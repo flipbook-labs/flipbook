@@ -18,10 +18,13 @@ local defaultProps = {
 type Story = Storyteller.Story<unknown>
 
 export type Props = {
-	layoutOrder: number?,
 	story: Story,
-	ref: any,
 	controls: { [string]: any },
+
+	isMountedInViewport: boolean?,
+	layoutOrder: number?,
+	zoom: number?,
+	ref: any,
 }
 
 type InternalProps = Props & typeof(defaultProps)
