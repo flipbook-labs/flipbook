@@ -16,11 +16,12 @@ local defaultProps = {
 }
 
 export type Props = {
-	layoutOrder: number,
 	story: types.Story,
-	ref: any,
 	controls: { [string]: any },
 	storyModule: ModuleScript,
+
+	ref: any,
+	layoutOrder: number?,
 }
 
 type InternalProps = Props & typeof(defaultProps)
