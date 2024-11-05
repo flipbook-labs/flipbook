@@ -40,7 +40,23 @@ local function StoryView(props: Props)
 	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
-	local controlsWithUserOverrides = Sift.Dictionary.join(if story then story.controls else nil, extraControls)
+
+	local controlsWithUserOverrides = React.useMemo(function()
+		local controls = {}
+		if story and story.controls then
+			for key, value in story.controls do
+				local override = extraControls[key]
+
+				if override ~= nil and typeof(value) ~= "table" then
+					controls[key] = override
+				else
+					controls[key] = value
+				end
+			end
+		end
+		return controls
+	end, { story, extraControls } :: { unknown })
+
 	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
@@ -156,7 +172,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = controlsWithUserOverrides,
+					controls = Sift.Dictionary.merge(controlsWithUserOverrides, extraControls),
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,

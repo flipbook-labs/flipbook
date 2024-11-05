@@ -7,6 +7,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local StoryError = require("@root/Storybook/StoryError")
+local usePrevious = require("@root/Common/usePrevious")
 
 local e = React.createElement
 
@@ -33,22 +34,32 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 	local lifecycle = React.useRef(nil :: Storyteller.RenderLifecycle?)
 	local err, setErr = React.useState(nil :: string?)
+	local prevControls = usePrevious(props.controls)
+	local prevStory = usePrevious(props.story)
 
 	React.useEffect(function()
 		setErr(nil)
 	end, { props.story, ref })
 
 	React.useEffect(function()
-		local areControlsDifferent = props.story.controls
-			and not Sift.Dictionary.equals(props.controls, props.story.controls)
+		if props.story == prevStory then
+			local areControlsDifferent = prevControls and not Sift.Dictionary.equals(props.controls, prevControls)
 
-		if lifecycle.current and areControlsDifferent then
-			lifecycle.current.update(props.controls)
+			if lifecycle.current and areControlsDifferent then
+				local success, result = xpcall(function()
+					lifecycle.current.update(props.controls)
+				end, debug.traceback)
+
+				if not success then
+					setErr(result)
+				end
+			end
 		end
-	end, { props.controls, props.story })
+	end, { props.controls, prevControls, props.story, prevStory } :: { unknown })
 
 	React.useEffect(function(): (() -> ())?
 		if props.story and ref.current then
+			-- TODO: Rendering before controls are applied
 			local success, result = xpcall(function()
 				lifecycle.current = Storyteller.render(ref.current, props.story)
 			end, debug.traceback)
