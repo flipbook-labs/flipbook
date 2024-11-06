@@ -19,3 +19,6 @@ t = "osyrisrblx/t@3.0.0"
 Roact = "roblox/roact@1.4.4"
 Jest = "jsdotlua/jest@3.6.1-rc.2"
 JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"
+
+# ModuleLoader dependencies
+Janitor = "howmanysmall/janitor@1.13.15"

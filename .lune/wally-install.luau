@@ -1,23 +1,30 @@
+local process = require("@lune/process")
+
 local run = require("./lib/run")
 
 run("wally", { "install" })
 
-do
-	local process = require("@lune/process")
-
+local function installPackageFromDisk(packageName: string, packagePath: string, build: ((packagePath: string) -> ())?)
 	local homePath = process.env.HOME
 	assert(homePath, "no $HOME env var")
 
-	local storytellerPath = run("realpath", { "../storyteller" })
+	local absPackagePath = run("realpath", { packagePath })
 
-	run("rm", { `Packages/Storyteller.lua` })
+	run("rm", { `Packages/{packageName}.lua` })
 
-	run("lune", { "run", "build" }, {
-		cwd = storytellerPath,
+	run("lune", { "run", "wally-install" }, {
+		cwd = absPackagePath,
 	})
 
-	run("ln", { "-s", `{storytellerPath}/dist`, `Packages/Storyteller` })
+	run("lune", { "run", "build" }, {
+		cwd = absPackagePath,
+	})
+
+	run("ln", { "-s", `{absPackagePath}/dist`, `Packages/{packageName}` })
 end
+
+installPackageFromDisk("Storyteller", "../storyteller")
+installPackageFromDisk("ModuleLoader", "../module-loader")
 
 run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
 run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })
