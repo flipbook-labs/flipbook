@@ -23,6 +23,7 @@ return {
 	react = React,
 	reactRoblox = ReactRoblox,
 	story = function(props: Props)
+		print(props.controls)
 		return React.createElement("TextLabel", {
 			Text = props.controls.font.Name,
 			Font = props.controls.font,
