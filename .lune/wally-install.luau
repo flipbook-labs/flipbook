@@ -4,7 +4,7 @@ local run = require("./lib/run")
 
 run("wally", { "install" })
 
-local function installPackageFromDisk(packageName: string, packagePath: string, build: ((packagePath: string) -> ())?)
+local function installPackageFromDisk(packageName: string, packagePath: string)
 	local homePath = process.env.HOME
 	assert(homePath, "no $HOME env var")
 
