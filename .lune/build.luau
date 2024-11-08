@@ -44,7 +44,7 @@ local function build()
 		local builtInPlugins = run("find", { engineBuildPath, "-name", "BuiltInPlugins", "-print", "-quit" })
 		assert(fs.isDir(builtInPlugins), `failed to find built-in plugins under {engineBuildPath}`)
 
-		output = `{builtInPlugins}/{constants.PLUGIN_FILENAME}`
+		output = `{builtInPlugins}/Optimized_Embedded_Signature/{constants.PLUGIN_FILENAME}`
 	end
 
 	run("rojo", { "build", "-o", output })
