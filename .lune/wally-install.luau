@@ -11,15 +11,6 @@ local function installPackageFromDisk(packageName: string, packagePath: string)
 	local absPackagePath = run("realpath", { packagePath })
 
 	run("rm", { `Packages/{packageName}.lua` })
-
-	run("lune", { "run", "wally-install" }, {
-		cwd = absPackagePath,
-	})
-
-	run("lune", { "run", "build" }, {
-		cwd = absPackagePath,
-	})
-
 	run("ln", { "-s", `{absPackagePath}/dist`, `Packages/{packageName}` })
 end
 
