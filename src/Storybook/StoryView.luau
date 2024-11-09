@@ -34,7 +34,6 @@ local function StoryView(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
-	local prevStory = usePrevious(story)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
 	local changedControls, setChangedControls = React.useState({})
@@ -44,7 +43,6 @@ local function StoryView(props: Props)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 
 	React.useEffect(function()
-		print("setChangedControls({})")
 		setChangedControls({})
 	end, { story })
 
@@ -64,13 +62,9 @@ local function StoryView(props: Props)
 		return controls
 	end, { story, changedControls } :: { unknown })
 
-	print("changedControls", changedControls)
-	print("controlsWithUserOverrides", controlsWithUserOverrides)
-
 	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
-		print("setControl", control, newValue)
 		setChangedControls(function(prev)
 			return Sift.Dictionary.merge(prev, {
 				[control] = newValue,

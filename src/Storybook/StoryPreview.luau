@@ -43,12 +43,10 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 
 	React.useEffect(function()
 		if props.story == prevStory and props.controls ~= prevControls then
-			print("story or controls changed")
 			local areControlsDifferent = prevControls and not Sift.Dictionary.equals(props.controls, prevControls)
 
 			if lifecycle.current and areControlsDifferent then
 				local success, result = xpcall(function()
-					print("update", props.controls)
 					lifecycle.current.update(props.controls)
 				end, debug.traceback)
 
@@ -63,7 +61,6 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		if props.story and ref.current then
 			-- TODO: Rendering before controls are applied
 			local success, result = xpcall(function()
-				print("render")
 				lifecycle.current = Storyteller.render(ref.current, props.story)
 			end, debug.traceback)
 
@@ -74,7 +71,6 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 
 		return function()
 			if lifecycle.current then
-				print("unmount")
 				lifecycle.current.unmount()
 				lifecycle.current = nil
 			end
