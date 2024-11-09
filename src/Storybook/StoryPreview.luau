@@ -59,7 +59,6 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 
 	React.useEffect(function(): (() -> ())?
 		if props.story and ref.current then
-			-- TODO: Rendering before controls are applied
 			local success, result = xpcall(function()
 				lifecycle.current = Storyteller.render(ref.current, props.story)
 			end, debug.traceback)
