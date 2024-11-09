@@ -15,7 +15,6 @@ local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local constants = require("@root/constants")
-local usePrevious = require("@root/Common/usePrevious")
 local useTheme = require("@root/Common/useTheme")
 local useZoom = require("@root/Common/useZoom")
 
