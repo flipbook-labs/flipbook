@@ -1,15 +1,16 @@
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
 local Branding = require("@root/Common/Branding")
 local ComponentTree = require("@root/Explorer")
-local React = require("@pkg/React")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local constants = require("@root/constants")
 local createStoryNodes = require("@root/Storybook/createStoryNodes")
 local explorerTypes = require("@root/Explorer/types")
-local storybookTypes = require("@root/Storybook/types")
 local useTheme = require("@root/Common/useTheme")
 
-type Storybook = storybookTypes.Storybook
+type Storybook = Storyteller.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local e = React.createElement

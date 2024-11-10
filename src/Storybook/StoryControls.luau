@@ -111,7 +111,7 @@ local function StoryControls(props: Props)
 				TextTruncate = Enum.TextTruncate.AtEnd,
 			}),
 
-			Option = e("Frame", {
+			OptionWrapper = e("Frame", {
 				LayoutOrder = 2,
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 0),
@@ -120,7 +120,12 @@ local function StoryControls(props: Props)
 				Flex = e("UIFlexItem", {
 					FlexMode = Enum.UIFlexMode.Shrink,
 				}),
-			}, option),
+			}, {
+				-- Keying by the identity of sortedControls fixes a bug where
+				-- the options visually do not update when two stories have the
+				-- exact same controls
+				[`Option_{sortedControls}`] = option,
+			}),
 		})
 	end
 
