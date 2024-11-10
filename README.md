@@ -18,7 +18,7 @@ You can install flipbook from the [Roblox marketplace](https://www.roblox.com/li
 
 ## Documentation
 
-Learn how to use flipbook on the [documentation site](https://flipbook-labs.github.io/flipbook/).
+Learn how to use flipbook on the [official documentation site](https://flipbook-labs.github.io/flipbook/).
 
 ## Contributing
 
@@ -26,4 +26,4 @@ Before opening a pull request, check out our [contributing guide](https://flipbo
 
 ## License
 
-[MIT License](LICENSE)
+flipbook is licensed under [MIT License](LICENSE).

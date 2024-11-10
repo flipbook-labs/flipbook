@@ -1,13 +1,16 @@
 local React = require("@pkg/React")
-local types = require("@root/Storybook/types")
+local Storyteller = require("@pkg/Storyteller")
+
 local useTheme = require("@root/Common/useTheme")
 
 local MAX_SUMMARY_SIZE = 600
 
 local e = React.createElement
 
+type Story = Storyteller.Story<unknown>
+
 export type Props = {
-	story: types.Story,
+	story: Story,
 	layoutOrder: number?,
 }
 
@@ -31,7 +34,7 @@ local function StoryMeta(props: Props)
 			BackgroundTransparency = 1,
 			Font = theme.headerFont,
 			Size = UDim2.fromScale(0, 0),
-			Text = props.story.name:sub(1, #props.story.name - 6),
+			Text = props.story.name,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 		}),

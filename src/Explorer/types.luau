@@ -1,6 +1,6 @@
-local storybookTypes = require("@root/Storybook/types")
+local Storyteller = require("@pkg/Storyteller")
 
-type Storybook = storybookTypes.Storybook
+type Storybook = Storyteller.Storybook
 
 export type ComponentTreeNode = {
 	name: string,

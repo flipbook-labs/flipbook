@@ -3,6 +3,7 @@ local Selection = game:GetService("Selection")
 local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local Storyteller = require("@pkg/Storyteller")
 
 local PluginContext = require("@root/Plugin/PluginContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
@@ -14,49 +15,56 @@ local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local constants = require("@root/constants")
-local types = require("@root/Storybook/types")
-local useStory = require("@root/Storybook/useStory")
 local useTheme = require("@root/Common/useTheme")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
 
+type ModuleLoader = ModuleLoader.ModuleLoader
+type Storybook = Storyteller.Storybook
+
 type Props = {
-	loader: ModuleLoader.ModuleLoader,
+	loader: ModuleLoader,
 	story: ModuleScript,
-	storybook: types.Storybook,
+	storybook: Storybook,
 }
 
 local function StoryView(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local story, storyErr = useStory(props.story, props.storybook, props.loader)
+	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
-	local extraControls, setExtraControls = React.useState({})
+	local changedControls, setChangedControls = React.useState({})
 	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
 	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
-	local controls
 
-	if story and story.controls then
-		controls = {}
+	React.useEffect(function()
+		setChangedControls({})
+	end, { story })
 
-		for key, value in story.controls do
-			local override = extraControls[key]
+	local controlsWithUserOverrides = React.useMemo(function()
+		local controls = {}
+		if story and story.controls then
+			for key, value in story.controls do
+				local override = changedControls[key]
 
-			if override ~= nil and typeof(value) ~= "table" then
-				controls[key] = override
-			else
-				controls[key] = value
+				if override ~= nil and typeof(value) ~= "table" then
+					controls[key] = override
+				else
+					controls[key] = value
+				end
 			end
 		end
-	end
+		return controls
+	end, { story, changedControls } :: { unknown })
 
-	local showControls = controls and not Sift.isEmpty(controls)
+	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
+
 	local setControl = React.useCallback(function(control: string, newValue: any)
-		setExtraControls(function(prev)
+		setChangedControls(function(prev)
 			return Sift.Dictionary.merge(prev, {
 				[control] = newValue,
 			})
@@ -164,7 +172,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = Sift.Dictionary.merge(controls, extraControls),
+					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,
@@ -183,19 +191,11 @@ local function StoryView(props: Props)
 				onResize = onControlsResized,
 			}, {
 				ScrollingFrame = e(ScrollingFrame, {
-					LayoutOrder = 2,
-					BackgroundTransparency = 0.4,
+					BackgroundTransparency = 1,
 					BackgroundColor3 = theme.sidebar,
 				}, {
-					Padding = e("UIPadding", {
-						PaddingTop = theme.padding,
-						PaddingRight = theme.padding,
-						PaddingBottom = theme.padding,
-						PaddingLeft = theme.padding,
-					}),
-
 					StoryControls = e(StoryControls, {
-						controls = controls,
+						controls = controlsWithUserOverrides,
 						setControl = setControl,
 					}),
 				}),
