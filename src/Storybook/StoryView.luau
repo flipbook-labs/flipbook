@@ -35,17 +35,21 @@ local function StoryView(props: Props)
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
-	local extraControls, setExtraControls = React.useState({})
+	local changedControls, setChangedControls = React.useState({})
 	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
 	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
 	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 
+	React.useEffect(function()
+		setChangedControls({})
+	end, { story })
+
 	local controlsWithUserOverrides = React.useMemo(function()
 		local controls = {}
 		if story and story.controls then
 			for key, value in story.controls do
-				local override = extraControls[key]
+				local override = changedControls[key]
 
 				if override ~= nil and typeof(value) ~= "table" then
 					controls[key] = override
@@ -55,12 +59,12 @@ local function StoryView(props: Props)
 			end
 		end
 		return controls
-	end, { story, extraControls } :: { unknown })
+	end, { story, changedControls } :: { unknown })
 
 	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
-		setExtraControls(function(prev)
+		setChangedControls(function(prev)
 			return Sift.Dictionary.merge(prev, {
 				[control] = newValue,
 			})
@@ -97,7 +101,7 @@ local function StoryView(props: Props)
 	end, {})
 
 	React.useEffect(function()
-		setExtraControls({})
+		setChangedControls({})
 	end, { story })
 
 	return e("Frame", {
@@ -172,7 +176,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = Sift.Dictionary.merge(controlsWithUserOverrides, extraControls),
+					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,

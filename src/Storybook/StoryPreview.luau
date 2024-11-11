@@ -42,7 +42,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	end, { props.story, ref })
 
 	React.useEffect(function()
-		if props.story == prevStory then
+		if props.story == prevStory and props.controls ~= prevControls then
 			local areControlsDifferent = prevControls and not Sift.Dictionary.equals(props.controls, prevControls)
 
 			if lifecycle.current and areControlsDifferent then
@@ -72,6 +72,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		return function()
 			if lifecycle.current then
 				lifecycle.current.unmount()
+				lifecycle.current = nil
 			end
 		end
 	end, { props.story, props.isMountedInViewport } :: { unknown })
