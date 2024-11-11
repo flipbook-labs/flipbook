@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # Story Format
 
 Stories can be written in several different formats to accomodate different workflows. This document outlines those formats with examples of how to use them.

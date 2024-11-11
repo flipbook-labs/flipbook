@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Writing Stories
 
 flipbook uses the concept of "storybooks" and "stories." A storybook is used to tell flipbook where to look for stories, and a story tells flipbook what Roact component should be mounted, along with an optional summary and controls to help you with writing different states for your components.

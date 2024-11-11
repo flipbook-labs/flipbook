@@ -1,0 +1,104 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Roact
+
+<Tabs groupId="main">
+    <TabItem value="default" label="Default" default>
+        ```lua title="Project/Roact.storybook.luau"
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        local Roact = require(ReplicatedStorage.Packages.Roact)
+
+        return {
+            storyRoots = {
+                script.Parent.Components
+            },
+            packages = {
+                Roact = Roact,
+            }
+        }
+        ```
+    </TabItem>
+
+    <TabItem value="storyteller" label="Storyteller">
+        ```lua title="Project/Roact.storybook.luau"
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        local Roact = require(ReplicatedStorage.Packages.Roact)
+        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
+
+        local storybook: Storyteller.Storybook = {
+            storyRoots = {
+                script.Parent.Components
+            },
+            packages = {
+                Roact = Roact,
+            }
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+
+```lua title="Project/Components/Button.luau"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Roact = require(ReplicatedStorage.Packages.Roact)
+
+local Button = Roact.Component:extend("Button")
+
+function Button:render()
+    return Roact.createElement("TextButton", {
+        Text = self.props.text,
+        [Roact.Event.Activated] = self.props.onActivated
+    })
+end
+
+return Button
+```
+
+<Tabs groupId="main">
+    <TabItem value="default" label="Default" default>
+        ```lua title="Project/Components/Button.story.luau"
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        local Roact = require(ReplicatedStorage.Packages.Roact)
+        local Button = require(script.Parent.Button)
+
+        return {
+            story = function()
+                return Roact.createElement(Button, {
+                    text = "Click Me",
+                    onActivated = function()
+                        print("click")
+                    end
+                })
+            end
+        }
+        ```
+    </TabItem>
+
+    <TabItem value="storyteller" label="Storyteller">
+        ```lua title="Project/Components/Button.story.luau"
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        local Roact = require(ReplicatedStorage.Packages.Roact)
+        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
+        local Button = require(script.Parent.Button)
+
+        local story: Storyteller.Story<any> = {
+            story = function()
+                return Roact.createElement(Button, {
+                    text = "Click Me",
+                    onActivated = function()
+                        print("click")
+                    end
+                })
+            end
+        }
+
+        return story
+        ```
+    </TabItem>
+</Tabs>

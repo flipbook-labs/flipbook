@@ -1,9 +1,4 @@
----
-sidebar_position: 4
----
-
-
-# Migrating from Hoarcekat
+# Hoarcekat
 
 [Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like flipbook. Because of its popularity, its story format is supported by flipbook so that you have an easier time migrating.
 
