@@ -1,104 +1,43 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import ReactStorybook from "!!raw-loader!/docs/code-samples/react-storybook.luau";
+import ReactStorybookStoryteller from "!!raw-loader!/docs/code-samples/react-storybook-storyteller.luau";
+import ReactButton from "!!raw-loader!/docs/code-samples/react-button.luau";
+import ReactButtonStory from "!!raw-loader!/docs/code-samples/react-button-story.luau";
+import ReactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/react-button-story-storyteller.luau";
 
 # React
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/React.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local React = require(ReplicatedStorage.Packages.React)
-        local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
-
-        return {
-            storyRoots = {
-                script.Parent.Components,
-            },
-            packages = {
-                React = React,
-                ReactRoblox = ReactRoblox,
-            },
-        }
-        ```
+        <CodeBlock language="lua" title="Project/React.storybook.luau" showLineNumbers>
+			{ReactStorybook}
+		</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/React.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local React = require(ReplicatedStorage.Packages.React)
-        local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-        local storybook: Storyteller.Storybook = {
-            storyRoots = {
-                script.Parent.Components,
-            },
-            packages = {
-                React = React,
-                ReactRoblox = ReactRoblox,
-            },
-        }
-
-        return storybook
-        ```
+		<CodeBlock language="lua" title="Project/React.storybook.luau" showLineNumbers>
+			{ReactStorybookStoryteller}
+		</CodeBlock>
     </TabItem>
 </Tabs>
 
-```lua title="Project/Components/Button.luau"
-local Roact = require(ReplicatedStorage.Packages.Roact)
-
-local Button = Roact.Component:extend("Button")
-
-function Button:render()
-    return Roact.createElement("TextButton", {
-        Text = self.props.text,
-        AutomaticSize = Enum.AutomaticSize.XY,
-        [Roact.Event.Activated] = self.props.onActivated
-    })
-end
-
-return Button
-```
+<CodeBlock language="lua" title="Project/Components/Button.luau" showLineNumbers>
+	{ReactButton}
+</CodeBlock>
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/Components/Button.story.luau"
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-        local Button = require(script.Parent.Button)
-
-        return {
-            story = function()
-                return Roact.createElement(Button, {
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-        ```
+        <CodeBlock language="lua" title="Project/Components/Button.story.luau" showLineNumbers>
+			{ReactButtonStory}
+		</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/Components/Button.story.luau"
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-        local Button = require(script.Parent.Button)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-        local story: Storyteller.Story<any> = {
-            story = function()
-                return Roact.createElement(Button, {
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-
-        return story
-        ```
+        <CodeBlock language="lua" title="Project/Components/Button.story.luau" showLineNumbers>
+			{ReactButtonStoryStoryteller}
+		</CodeBlock>
     </TabItem>
 </Tabs>

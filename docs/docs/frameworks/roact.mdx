@@ -1,104 +1,43 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import RoactStorybook from "!!raw-loader!/docs/code-samples/roact-storybook.luau";
+import RoactStorybookStoryteller from "!!raw-loader!/docs/code-samples/roact-storybook-storyteller.luau";
+import RoactButton from "!!raw-loader!/docs/code-samples/roact-button.luau";
+import RoactButtonStory from "!!raw-loader!/docs/code-samples/roact-button-story.luau";
+import RoactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/roact-button-story-storyteller.luau";
 
 # Roact
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/Roact.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-
-        return {
-            storyRoots = {
-                script.Parent.Components
-            },
-            packages = {
-                Roact = Roact,
-            }
-        }
-        ```
+        <CodeBlock language="lua" title="Project/Roact.storybook.luau" showLineNumbers>
+			{RoactStorybook}
+		</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/Roact.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-        local storybook: Storyteller.Storybook = {
-            storyRoots = {
-                script.Parent.Components
-            },
-            packages = {
-                Roact = Roact,
-            }
-        }
-        ```
+		<CodeBlock language="lua" title="Project/Roact.storybook.luau" showLineNumbers>
+			{RoactStorybookStoryteller}
+		</CodeBlock>
     </TabItem>
 </Tabs>
 
-
-```lua title="Project/Components/Button.luau"
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Roact = require(ReplicatedStorage.Packages.Roact)
-
-local Button = Roact.Component:extend("Button")
-
-function Button:render()
-    return Roact.createElement("TextButton", {
-        Text = self.props.text,
-        [Roact.Event.Activated] = self.props.onActivated
-    })
-end
-
-return Button
-```
+<CodeBlock language="lua" title="Project/Components/Button.luau" showLineNumbers>
+	{RoactButton}
+</CodeBlock>
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/Components/Button.story.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-        local Button = require(script.Parent.Button)
-
-        return {
-            story = function()
-                return Roact.createElement(Button, {
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-        ```
+        <CodeBlock language="lua" title="Project/Components/Button.story.luau" showLineNumbers>
+			{RoactButtonStory}
+		</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/Components/Button.story.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Roact = require(ReplicatedStorage.Packages.Roact)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-        local Button = require(script.Parent.Button)
-
-        local story: Storyteller.Story<any> = {
-            story = function()
-                return Roact.createElement(Button, {
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-
-        return story
-        ```
+        <CodeBlock language="lua" title="Project/Components/Button.story.luau" showLineNumbers>
+			{RoactButtonStoryStoryteller}
+		</CodeBlock>
     </TabItem>
 </Tabs>

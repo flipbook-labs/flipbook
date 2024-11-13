@@ -1,110 +1,35 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import FusionStorybook from "!!raw-loader!/docs/code-samples/fusion-storybook.luau";
+import FusionStorybookStoryteller from "!!raw-loader!/docs/code-samples/fusion-storybook-storyteller.luau";
+import FusionButton from "!!raw-loader!/docs/code-samples/fusion-button.luau";
+import FusionButtonStory from "!!raw-loader!/docs/code-samples/fusion-button-story.luau";
+import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/fusion-button-story-storyteller.luau";
 
 # Fusion
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/Fusion.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Fusion = require(ReplicatedStorage.Packages.Fusion)
-
-        return {
-            storyRoots = {
-                script.Parent.Components
-            },
-            packages = {
-                Fusion = Fusion,
-            }
-        }
-        ```
+		<CodeBlock className="language-lua" title="Project/Fusion.storybook.luau">{FusionStorybook}</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/Fusion.storybook.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Fusion = require(ReplicatedStorage.Packages.Fusion)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-        local storybook: Storyteller.Storybook = {
-            storyRoots = {
-                script.Parent.Components
-            },
-            packages = {
-                Fusion = Fusion,
-            }
-        }
-
-		return storybook
-        ```
+    	<CodeBlock className="language-lua" title="Project/Fusion.storybook.luau">{FusionStorybookStoryteller}</CodeBlock>
     </TabItem>
 </Tabs>
 
-
-```lua title="Project/Components/Button.luau"
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-
-local New = Fusion.New
-local OnEvent = Fusion.OnEvent
-
-local function Button(props: {
-    text: string,
-    onActivated: () -> (),
-})
-    return New("TextButton")({
-        Text = props.text,
-        [OnEvent "Activated"] = props.onActivated,
-    })
-end
-
-return Button
-```
+<CodeBlock className="language-lua" title="Project/Components/Button.luau">
+	{FusionButton}
+</CodeBlock>
 
 <Tabs groupId="main">
     <TabItem value="default" label="Default" default>
-        ```lua title="Project/Components/Button.story.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Fusion = require(ReplicatedStorage.Packages.Fusion)
-        local Button = require(script.Parent.Button)
-
-        return {
-            story = function()
-                return Button({
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-        ```
+		<CodeBlock className="language-lua" title="Project/Components/Button.story.luau">{FusionButtonStory}</CodeBlock>
     </TabItem>
 
     <TabItem value="storyteller" label="Storyteller">
-        ```lua title="Project/Components/Button.story.luau"
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-        local Fusion = require(ReplicatedStorage.Packages.Fusion)
-        local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-        local Button = require(script.Parent.Button)
-
-        local story: Storyteller.Story<any> {
-            story = function()
-                return Button({
-                    text = "Click Me",
-                    onActivated = function()
-                        print("click")
-                    end
-                })
-            end
-        }
-
-        return story
-        ```
+    	<CodeBlock className="language-lua" title="Project/Components/Button.story.luau">{FusionButtonStoryStoryteller}</CodeBlock>
     </TabItem>
 </Tabs>
