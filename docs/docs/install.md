@@ -1,6 +1,3 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Install
 
 ## Creator Store
@@ -10,9 +7,6 @@ Install flipbook with one click from the [Creator Store](https://create.roblox.c
 ## GitHub Releases
 
 Manually install versions of flipbook from the [GitHub Releases](https://github.com/flipbook-labs/flipbook/releases) page. All releases include an rbxm of flipbook under the "Assets" tab which can be downloaded and copied to Roblox Studio's plugins folder.
-
-* MacOS: `~/Documents/Roblox/Plugins`
-* Windows: `%LOCALAPPDATA%/Roblox/Plugins`
 
 ## Building from source
 
