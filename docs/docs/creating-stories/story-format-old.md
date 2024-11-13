@@ -192,7 +192,7 @@ return {
 
 [Hoarcekat](https://github.com/Kampfkarren/hoarcekat) stories are supported to make migration to flipbook easier.
 
-See the [migration guide](migrating.md) for more info.
+See the migration guide for more info.
 
 Example:
 

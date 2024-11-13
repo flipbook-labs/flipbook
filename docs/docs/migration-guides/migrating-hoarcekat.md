@@ -128,8 +128,3 @@ You will now have a "Controls" section with an input field. Try changing the val
 <!-- TODO: Add image of the story -->
 
 You are now equipped to migrate your other Hoarcekat stories over to flipbook!
-
-## Further Reading
-
-- [Writing Stories](writing-stories.md)
-- [Story Format](story-format.md)
