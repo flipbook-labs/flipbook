@@ -21,6 +21,7 @@ const sidebars: SidebarsConfig = {
 		{
 			type: 'category',
 			label: 'Frameworks',
+			collapsed: false,
 			link: {
 				type: 'generated-index',
 			},
@@ -34,6 +35,7 @@ const sidebars: SidebarsConfig = {
 		{
 			type: 'category',
 			label: 'Migration Guides',
+			collapsed: false,
 			link: {
 				type: 'generated-index',
 			},
