@@ -82,9 +82,11 @@ local Roact = require(script.Parent.Parent.Roact)
 local HelloWorld = require(script.Parent.HelloWorld)
 
 return {
-    story = Roact.createElement(HelloWorld, {
-        name = "flipbook"
-    })
+    story = function()
+		return Roact.createElement(HelloWorld, {
+			name = "flipbook"
+		})
+	end
 }
 ```
 
@@ -115,7 +117,7 @@ return {
 +   controls = {
 +       name = "flipbook"
 +   }
-+   story = return function(props)
++   story = function(props)
 +       return Roact.createElement(HelloWorld, {
 +           name = props.controls.name
 +       })

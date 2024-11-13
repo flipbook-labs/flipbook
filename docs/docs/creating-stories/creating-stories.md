@@ -16,9 +16,7 @@ Here's how this looks in Studio:
 
 ![Screenshot of Studio showing the hierarchy of ReplicatedStorage](./first-storybook.png)
 
-
 such as ReplicatedStorage and set the `storyRoots` array to point to at least one Instance that contains your Stories.
-
 
 And the contents of the Storybook is:
 
@@ -32,11 +30,9 @@ return {
 
 ![Screenshot of flipbook with the new Storybook in the sidebar](./first-storybook-in-sidebar.png)
 
-
 :::info
 For React and Roact projects it is common to have a "Components" folder where all UI components and their Stories are stored. We follow this convention in our docs.
 :::
-
 
 ## Discovering stories
 
@@ -64,9 +60,11 @@ local React = require(ReplicatedStorage.Packages.React)
 local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
 
 return {
-    story = React.createElement("TextLabel", {
-        label.Text = "Hello, World!"
-    }),
+    story = function()
+		return React.createElement("TextLabel", {
+			label.Text = "Hello, World!"
+		})
+	end,
     packages = {
         React = React,
         ReactRoblox = ReactRoblox
@@ -82,9 +80,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local React = require(ReplicatedStorage.Packages.React)
 
 return {
-    story = React.createElement("TextLabel", {
-        label.Text = "Hello, World!"
-    }),
+    story = function()
+		return React.createElement("TextLabel", {
+			label.Text = "Hello, World!"
+		})
+	end,
 }
 ```
 
@@ -95,7 +95,9 @@ local React = require(ReplicatedStorage.Packages.React)
 local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
 
 return {
-    storyRoots = { script.Parent.Components },
+    storyRoots = {
+		script.Parent.Components
+	},
     packages = {
         React = React,
         ReactRoblox = ReactRoblox
