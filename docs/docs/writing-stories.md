@@ -78,7 +78,7 @@ In the sidebar for flipbook you should now see your newly created Button story. 
 
 <!-- TODO: Add image of the button in flipbook -->
 
-Writing stories can significantly improve your experience while developing Roact components.It's recommended that you create a story for each component so that you work on them in isolation to build up a strong foundation for your app.
+Writing stories can significantly improve your experience while developing Roact components. It's recommended that you create a story for each component so that you work on them in isolation to build up a strong foundation for your app.
 
 ### Controls
 

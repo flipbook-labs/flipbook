@@ -2,7 +2,7 @@
 
 ## Creator Store
 
-Install flipbook with one click from the [Creator Store](https://create.roblox.com/store/asset/8517129161/flipbook) and receive updates as new versions are released.
+Install flipbook from the [Creator Store](https://create.roblox.com/store/asset/8517129161/flipbook) and receive updates as new versions are released.
 
 ## GitHub Releases
 

@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Writing Stories
 
 Before flipbook can discover your Stories, you need a Storybook. A Storybook is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project.
@@ -20,7 +24,7 @@ such as ReplicatedStorage and set the `storyRoots` array to point to at least on
 
 And the contents of the Storybook is:
 
-```lua
+```lua title="ProjectName.storybook.luau"
 return {
     storyRoots = {
         script.Parent.Components
@@ -40,7 +44,7 @@ The `storyRoots` array is the only required property in a Storybook and can mana
 
 By default, flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. The following is all you need to write your first Story:
 
-```lua
+```lua title="TextLabel.story.luau"
 return {
     story = function()
       local label = Instance.new("TextLabel")
@@ -53,7 +57,7 @@ return {
 
 flipbook also has built-in support for UI libraries like [React](/frameworks/react) and [Fusion](/frameworks/fusion). You can tell flipbook to use a particular UI library by supplying the `packages` object.
 
-```lua
+```lua title="ReactTextLabel.story.luau"
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local React = require(ReplicatedStorage.Packages.React)
@@ -72,23 +76,13 @@ return {
 }
 ```
 
-It can be tedious to supply the `packages` object in each Story module, which is why it’s more common to add them globally in the Storybook module so that all Stories can render with the UI library you use across your project.
+It can be tedious to supply the `packages` object in each Story module, which is why it’s more common to add them globally in the Storybook so that all Stories can render with the UI library you use across your project.
 
-```lua
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local React = require(ReplicatedStorage.Packages.React)
 
-return {
-    story = function()
-		return React.createElement("TextLabel", {
-			label.Text = "Hello, World!"
-		})
-	end,
-}
-```
+Here's the Storybook from earlier updated to use React as its renderer:
 
-```lua
+```lua title="ProjectName.storybook.luau"
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local React = require(ReplicatedStorage.Packages.React)
@@ -104,6 +98,26 @@ return {
     }
 }
 ```
+
+And the Story updated to match:
+
+```lua title="ReactTextLabel.story.luau"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local React = require(ReplicatedStorage.Packages.React)
+
+return {
+    story = function()
+		return React.createElement("TextLabel", {
+			label.Text = "Hello, World!"
+		})
+	end,
+}
+```
+
+:::tip
+Stories can individually override the global `packages` so if you need to use another UI library for a particular Story, you can do that.
+:::
 
 ## Manual story
 

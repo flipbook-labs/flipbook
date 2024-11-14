@@ -16,15 +16,14 @@ The properties that can be used in the module are as follows:
 | `name`       | `string?`            | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`. |
 | `packages`   | `{ [string]: any }?` | An optional dictionary used for supplying the Storybook with the packages to use when rendering its Stories.                          |
 
-This dictionary can also be supplied per-Story to change the renderer used, but it can be convenient to define your packages globally to avoid repetition. |
+This dictionary can also be supplied per-Story to change the renderer used, but it can be convenient to define your packages globally to avoid repetition.
 
-Example Storybook module:
+The most basic Storybook module can be represented as:
 
-```lua
--- Sample.storybook
+```lua title="Plain.storybook.luau"
 return {
     storyRoots = {
-        script.Parent.Components
+        script.Parent,
     },
 }
 ```
@@ -54,6 +53,24 @@ return {
     story = function(props)
 
     end
+}
+```
+
+## StoryProps
+
+A Story's `story` function is passed in a `StoryProps` object that contains the following.
+
+| **Property** | **Type**        | **Description**                                        |
+| ------------ | --------------- | ------------------------------------------------------ |
+| `container`  | `Instance`      |                                                        |
+| `theme`      | `string`        | A string representing the current Roblox Studio theme. |
+| `controls`   | `StoryControls` | Defaults to an empty table.                            |
+
+Example of using `StoryProps`:
+
+```lua title="Sample.story.luau"
+return {
+	story = function(props)
 }
 ```
 
