@@ -1,5 +1,6 @@
 local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
@@ -9,7 +10,6 @@ local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useStorybooks = require("@root/Storybook/useStorybooks")
 local useTheme = require("@root/Common/useTheme")
 
 local TOPBAR_HEIGHT_PX = 32
@@ -21,7 +21,7 @@ export type Props = {
 local function App(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local storybooks = useStorybooks(game, props.loader)
+	local storybooks = Storyteller.useStorybooks(game, props.loader)
 	local story: ModuleScript?, setStory = React.useState(nil :: ModuleScript?)
 	local storybook, selectStorybook = React.useState(nil :: ModuleScript?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
@@ -71,6 +71,7 @@ local function App(props: Props)
 		MainWrapper = React.createElement("Frame", {
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
+			BackgroundTransparency = 1,
 		}, {
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,

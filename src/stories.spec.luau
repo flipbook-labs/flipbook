@@ -1,41 +1,66 @@
 local CoreGui = game:GetService("CoreGui")
 
 local JestGlobals = require("@pkg/JestGlobals")
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
-local isStoryModule = require("@root/Storybook/isStoryModule")
-local mountStory = require("@root/Storybook/mountStory")
+local Sift = require("@pkg/Sift")
+local Storyteller = require("@pkg/Storyteller")
 
+local afterEach = JestGlobals.afterEach
+local beforeEach = JestGlobals.beforeEach
+local describe = JestGlobals.describe
+local describeEach = describe.each :: any
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local storyModules: { ModuleScript } = {}
-for _, descendant in ipairs(script.Parent:GetDescendants()) do
-	if isStoryModule(descendant) then
-		table.insert(storyModules, descendant)
-	end
-end
+local container
 
-for _, storyModule in storyModules do
-	test(`mount/unmount {storyModule:GetFullName()}`, function()
-		local story = (require :: any)(storyModule)
-		if typeof(story) == "function" then
-			story = {
-				name = storyModule.Name,
-				story = story,
-			}
-		end
+beforeEach(function()
+	container = Instance.new("Folder")
+	container.Parent = CoreGui
+end)
 
-		story.react = React
-		story.reactRoblox = ReactRoblox
+afterEach(function()
+	container:Destroy()
+end)
 
-		local cleanup
-		expect(function()
-			cleanup = mountStory(story, story.controls, CoreGui)
-		end).never.toThrow()
+describeEach({
+	Storyteller.findStorybookModules(script.Parent),
+})("%s", function(storybookModule)
+	-- FIXME: This is needed to get around a bug with React renders. I'm hoping
+	-- to keep this for now, but in the future this should really be a
+	-- ModuleLoader instance
+	local mockModuleLoader = (
+		{
+			require = function(_self, path)
+				return (require :: any)(path)
+			end,
+		} :: any
+	) :: ModuleLoader.ModuleLoader
 
-		if cleanup then
-			expect(cleanup).never.toThrow()
-		end
+	local storybook = Storyteller.loadStorybookModule(mockModuleLoader, storybookModule)
+
+	describeEach({
+		Storyteller.findStoryModulesForStorybook(storybook),
+	})("%s", function(storyModule)
+		test("basic mount/unmount lifecycle", function()
+			local story = Storyteller.loadStoryModule(mockModuleLoader, storyModule, storybook)
+
+			if story.packages then
+				story.packages = Sift.Dictionary.join(story.packages, {
+					React = React,
+					ReactRoblox = ReactRoblox,
+				})
+			end
+
+			local lifecycle = Storyteller.render(container, story)
+
+			expect(#container:GetChildren()).toBe(1)
+
+			lifecycle.unmount()
+
+			expect(#container:GetChildren()).toBe(0)
+		end)
 	end)
-end
+end)

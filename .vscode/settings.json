@@ -1,13 +1,13 @@
 {
   "luau-lsp.sourcemap.rojoProjectFile": "analysis.project.json",
   "luau-lsp.require.mode": "relativeToFile",
-  "luau-lsp.ignoreGlobs": ["**/_Index/**", "**/build/**"],
+  "luau-lsp.ignoreGlobs": [
+    "**/_Index/**",
+    "**/build/**"
+  ],
   "luau-lsp.require.directoryAliases": {
     "@pkg": "./Packages",
     "@root": "./src",
     "@lune/": "~/.lune/.typedefs/0.8.3/"
-  },
-  "files.associations": {
-    "*.luau": "luau"
   }
 }

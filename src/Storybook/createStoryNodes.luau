@@ -1,13 +1,13 @@
-local explorerTypes = require("@root/Explorer/types")
-local isStoryModule = require("@root/Storybook/isStoryModule")
-local storybookTypes = require("@root/Storybook/types")
+local Storyteller = require("@pkg/Storyteller")
 
-type Storybook = storybookTypes.Storybook
+local explorerTypes = require("@root/Explorer/types")
+
+type Storybook = Storyteller.Storybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local function hasStories(instance: Instance): boolean
 	for _, descendant in ipairs(instance:GetDescendants()) do
-		if isStoryModule(descendant) then
+		if Storyteller.isStoryModule(descendant) then
 			return true
 		end
 	end
@@ -16,7 +16,7 @@ end
 
 local function createChildNodes(parent: ComponentTreeNode, instance: Instance, storybook: Storybook)
 	for _, child in ipairs(instance:GetChildren()) do
-		local isStory = isStoryModule(child)
+		local isStory = Storyteller.isStoryModule(child)
 		local isContainer = hasStories(child)
 
 		if isStory or isContainer then
