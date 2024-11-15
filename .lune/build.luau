@@ -15,14 +15,20 @@ assert(target == "dev" or target == "prod", `bad value for target (must be one o
 local output = if args.output then args.output else `{getPluginsPath(process.os)}/{constants.PLUGIN_FILENAME}`
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
+local PRUNED_FILES = {
+	"*.spec.luau",
+	"*.story.luau",
+	"*.storybook.luau",
+}
+
 local function build()
 	clean()
 	compile(target)
 
 	if target == "prod" then
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.spec.luau` })
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.story.luau` })
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.storybook.luau` })
+		for _, pattern in PRUNED_FILES do
+			run("find", { constants.BUILD_PATH, "-type", "f", "-name", pattern, "-delete" })
+		end
 	end
 
 	run("rojo", { "build", "-o", output })
