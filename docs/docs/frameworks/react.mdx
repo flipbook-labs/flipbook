@@ -10,41 +10,36 @@ import ReactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/ReactSt
 
 # React
 
+Flipbook supports Roblox's transpilation of React 17 through the use of [jsdotlua's React fork](https://github.com/jsdotlua/react-lua). Pass in your installation of React and ReactRoblox to your Storybook and all stories will be rendered with it.
+
+## Storybook
+
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock
-			language="lua"
-			title="Project/React.storybook.luau"
-			showLineNumbers
-		>
+		<CodeBlock language="lua" title="Project/React.storybook.luau">
 			{ReactStorybook}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock
-			language="lua"
-			title="Project/React.storybook.luau"
-			showLineNumbers
-		>
+		<CodeBlock language="lua" title="Project/React.storybook.luau">
 			{ReactStorybookStoryteller}
 		</CodeBlock>
 	</TabItem>
 </Tabs>
 
-<CodeBlock
-	language="lua"
-	title="Project/Components/Button.luau"
-	showLineNumbers
->
+## Component
+
+<CodeBlock language="lua" title="Project/Components/Button.luau">
 	{ReactButton}
 </CodeBlock>
+
+## Story
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
 		<CodeBlock
 			language="lua"
 			title="Project/Components/Button.story.luau"
-			showLineNumbers
 		>
 			{ReactButtonStory}
 		</CodeBlock>
@@ -53,7 +48,6 @@ import ReactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/ReactSt
 		<CodeBlock
 			language="lua"
 			title="Project/Components/Button.story.luau"
-			showLineNumbers
 		>
 			{ReactButtonStoryStoryteller}
 		</CodeBlock>

@@ -1,14 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local React = require(ReplicatedStorage.Packages.React)
-local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
+local Roact = require(ReplicatedStorage.Packages.Roact)
 
 return {
 	storyRoots = {
 		script.Parent.Components,
 	},
 	packages = {
-		React = React,
-		ReactRoblox = ReactRoblox,
+		Roact = Roact,
 	},
 }

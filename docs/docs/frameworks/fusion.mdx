@@ -10,45 +10,35 @@ import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/Fusion
 
 # Fusion
 
-[Fusion](https://elttob.uk/Fusion/0.3/) is a reactive UI library created and maintained by Daniel P H Fox. Flipbook supports Fusion v0.3 via the `packages` object. Pass in your installation of Fusion to your Storybook and all stories will be rendered with it.
+[Fusion](https://elttob.uk/Fusion/0.3/) is a reactive UI library created and maintained by Daniel P H Fox. Flipbook supports Fusion via the `packages` object. Pass in your installation of Fusion to your Storybook and all stories will be rendered with it.
 
-Example project structure:
-
-```
-Project/
-	Components/
-		Button.luau
-		Button.story.luau
-	FusionStorybook.storybook.luau
-```
-
-Storybook:
+## Storybook
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock className="language-lua" title="Project/Fusion.storybook.luau">
+		<CodeBlock language="lua" title="Project/Fusion.storybook.luau">
 			{FusionStorybook}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock className="language-lua" title="Project/Fusion.storybook.luau">
+		<CodeBlock language="lua" title="Project/Fusion.storybook.luau">
 			{FusionStorybookStoryteller}
 		</CodeBlock>
 	</TabItem>
 </Tabs>
 
-Example Button component made with Fusion:
+## Component
 
-<CodeBlock className="language-lua" title="Project/Components/Button.luau">
+<CodeBlock language="lua" title="Project/Components/Button.luau">
 	{FusionButton}
 </CodeBlock>
 
-Story to render the Button component:
+## Story
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
 		<CodeBlock
-			className="language-lua"
+			language="lua"
 			title="Project/Components/Button.story.luau"
 		>
 			{FusionButtonStory}
@@ -56,7 +46,7 @@ Story to render the Button component:
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
 		<CodeBlock
-			className="language-lua"
+			language="lua"
 			title="Project/Components/Button.story.luau"
 		>
 			{FusionButtonStoryStoryteller}

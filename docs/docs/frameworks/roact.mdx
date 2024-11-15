@@ -10,41 +10,40 @@ import RoactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/RoactSt
 
 # Roact
 
+Flipbook supports Roblox's legacy [Roact](https://github.com/roblox/roact) library. Pass in your installation of Roact to your Storybook and all stories will be rendered with it.
+
+:::info
+Roact is an archived repository that we consider to be legacy software. We recommend the use of [React](/docs/frameworks/react) for new work. Flipbook aims to support Roact for the forseeable future, but reserves the option to remove support in future major versions.
+:::
+
+## Storybook
+
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock
-			language="lua"
-			title="Project/Roact.storybook.luau"
-			showLineNumbers
-		>
+		<CodeBlock language="lua" title="Project/Roact.storybook.luau">
 			{RoactStorybook}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock
-			language="lua"
-			title="Project/Roact.storybook.luau"
-			showLineNumbers
-		>
+		<CodeBlock language="lua" title="Project/Roact.storybook.luau">
 			{RoactStorybookStoryteller}
 		</CodeBlock>
 	</TabItem>
 </Tabs>
 
-<CodeBlock
-	language="lua"
-	title="Project/Components/Button.luau"
-	showLineNumbers
->
+## Component
+
+<CodeBlock language="lua" title="Project/Components/Button.luau">
 	{RoactButton}
 </CodeBlock>
+
+## Story
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
 		<CodeBlock
 			language="lua"
 			title="Project/Components/Button.story.luau"
-			showLineNumbers
 		>
 			{RoactButtonStory}
 		</CodeBlock>
@@ -53,7 +52,6 @@ import RoactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/RoactSt
 		<CodeBlock
 			language="lua"
 			title="Project/Components/Button.story.luau"
-			showLineNumbers
 		>
 			{RoactButtonStoryStoryteller}
 		</CodeBlock>
