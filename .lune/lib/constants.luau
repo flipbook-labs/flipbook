@@ -19,6 +19,6 @@ return {
 		"src",
 		".lune",
 		"example",
-		"code-samples",
+		"code-samples/src",
 	},
 }
