@@ -35,3 +35,7 @@
 	--ifm-color-primary-lightest: hsl(var(--color-primary), calc(var(--color-primary-lightness) + 8));
 	--docusaurus-highlighted-code-line-bg: # rgba(0, 0, 0, 0.3);
 }
+
+code {
+	tab-size: 4;
+}
