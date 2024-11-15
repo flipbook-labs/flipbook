@@ -4,10 +4,6 @@
 
 Any ModuleScript with a `.storybook` extension will be picked up as a Storybook.
 
-:::warning
-Storybooks that do not have a `storyRoots` array will not be shown in the flipbook UI.
-:::
-
 The properties that can be used in the module are as follows:
 
 | **Property** | **Type**             | **Description**                                                                                                                       |
@@ -43,18 +39,6 @@ The only required member of a Story definition is the `story` property.
 | `packages`   | `{ [string]: any }?`            | An optional dictionary used for supplying the Story with the packages to use when rendering. The Story inherits the packages defined by the Storybook, so this is mostly used in cases where  Story needs to deviate from the usual renderer |
 
 The type of the `story` property is dependent on what kind of Story is being rendered. flipbook does not prescribe one particular way of writing Stories, or even a particular UI library that must be used.
-
-Stories can be written for React, Fusion, legacy Roact, plain Roblox Instances, and anything you can think of with [Manual Stories](https://www.notion.so/Story-format-12f95b7912f880068da6d74c472bf186?pvs=21).
-
-Example Story module:
-
-```lua
-return {
-    story = function(props)
-
-    end
-}
-```
 
 ## StoryProps
 
