@@ -1,12 +1,12 @@
 {
-  "name": "Examples",
+  "name": "CodeSamples",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Packages": {
         "$path": "Packages"
       },
-      "Examples": {
+      "CodeSamples": {
         "$path": "src"
       }
     }

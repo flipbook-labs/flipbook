@@ -4,14 +4,16 @@
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Packages": {
-        "$path": "Packages"
+        "$path": "code-samples/Packages"
       },
       "CodeSamples": {
-        "$path": "docs/docs/code-samples"
+        "$path": "code-samples"
       },
+
       "Lune": {
         "$path": ".lune"
       },
+
       "Flipbook": {
         "TestRunner": {
           "$path": "tests"

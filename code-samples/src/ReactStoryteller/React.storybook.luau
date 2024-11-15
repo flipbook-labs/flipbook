@@ -5,8 +5,9 @@ local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
 local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
 
 local storybook: Storyteller.Storybook = {
+	name = "React (Storyteller)",
 	storyRoots = {
-		script.Parent.Components,
+		script.Parent,
 	},
 	packages = {
 		React = React,

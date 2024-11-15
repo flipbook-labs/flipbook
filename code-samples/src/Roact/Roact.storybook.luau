@@ -3,8 +3,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.Roact)
 
 return {
+	name = "Roact",
 	storyRoots = {
-		script.Parent.Components,
+		script.Parent,
 	},
 	packages = {
 		Roact = Roact,

@@ -4,8 +4,9 @@ local React = require(ReplicatedStorage.Packages.React)
 local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
 
 return {
+	name = "React",
 	storyRoots = {
-		script.Parent.Components,
+		script.Parent,
 	},
 	packages = {
 		React = React,

@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local React = require(ReplicatedStorage.Packages.React)
 
-local ReactButton = require(script.Parent.ReactButton)
+local ReactButtonControls = require(script.Parent.ReactButtonControls)
 
 local controls = {
 	text = "Click Me",
@@ -16,7 +16,7 @@ type Props = {
 return {
 	controls = controls,
 	story = function(props: Props)
-		return React.createElement(ReactButton, {
+		return React.createElement(ReactButtonControls, {
 			text = props.controls.text,
 			isDisabled = props.controls.isDisabled,
 			onActivated = function()

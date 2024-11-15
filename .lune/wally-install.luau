@@ -1,15 +1,19 @@
 local run = require("./lib/run")
 
-run("wally", { "install" })
-run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
-run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })
+do
+	run("wally", { "install" })
+	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
+	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })
+end
 
-run("wally", { "install" }, {
-	cwd = "code-samples",
-})
-run("rojo", { "sourcemap", "default.project.json", "-o", "sourcemap.json" }, {
-	cwd = "code-samples",
-})
-run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-	cwd = "code-samples",
-})
+do
+	run("wally", { "install" }, {
+		cwd = "code-samples",
+	})
+	run("rojo", { "sourcemap", "default.project.json", "-o", "sourcemap.json" }, {
+		cwd = "code-samples",
+	})
+	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+		cwd = "code-samples",
+	})
+end

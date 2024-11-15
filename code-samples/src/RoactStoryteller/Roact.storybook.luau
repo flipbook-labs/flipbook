@@ -4,8 +4,9 @@ local Roact = require(ReplicatedStorage.Packages.Roact)
 local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
 
 local storybook: Storyteller.Storybook = {
+	name = "Roact (Storyteller)",
 	storyRoots = {
-		script.Parent.Components,
+		script.Parent,
 	},
 	packages = {
 		Roact = Roact,
