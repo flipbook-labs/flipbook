@@ -21,12 +21,12 @@ local useZoom = require("@root/Common/useZoom")
 local e = React.createElement
 
 type ModuleLoader = ModuleLoader.ModuleLoader
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
 	loader: ModuleLoader,
 	story: ModuleScript,
-	storybook: Storybook,
+	storybook: LoadedStorybook,
 }
 
 local function StoryView(props: Props)

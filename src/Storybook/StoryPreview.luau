@@ -16,10 +16,10 @@ local defaultProps = {
 	zoom = 0,
 }
 
-type Story = Storyteller.Story<unknown>
+type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
-	story: Story,
+	story: LoadedStory,
 	controls: { [string]: any },
 
 	isMountedInViewport: boolean?,
