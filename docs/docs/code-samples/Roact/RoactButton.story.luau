@@ -1,13 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Roact = require(ReplicatedStorage.Packages.Roact)
-local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
 
-local Button = require(script.Parent.Button)
+local RoactButton = require(script.Parent.RoactButton)
 
-local story: Storyteller.Story<any> = {
+return {
 	story = function()
-		return Roact.createElement(Button, {
+		return Roact.createElement(RoactButton, {
 			text = "Click Me",
 			onActivated = function()
 				print("click")
@@ -15,5 +14,3 @@ local story: Storyteller.Story<any> = {
 		})
 	end,
 }
-
-return story

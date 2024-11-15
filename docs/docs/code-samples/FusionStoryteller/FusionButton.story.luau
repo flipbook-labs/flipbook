@@ -2,11 +2,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
 
-local Button = require(script.Parent.Button)
+local FusionButton = require(script.Parent.FusionButton)
 
 local story: Storyteller.Story<any> = {
 	story = function()
-		return Button({
+		return FusionButton({
 			text = "Click Me",
 			onActivated = function()
 				print("click")

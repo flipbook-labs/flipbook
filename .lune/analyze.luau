@@ -27,4 +27,5 @@ run("luau-lsp", {
 	constants.SOURCE_PATH,
 	constants.LUNE_SCRIPTS_PATH,
 	constants.EXAMPLE_PATH,
+	constants.CODE_SAMPLES_PATH,
 })

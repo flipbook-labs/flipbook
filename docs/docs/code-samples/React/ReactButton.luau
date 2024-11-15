@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local React = require(ReplicatedStorage.Packages.React)
 
-local function Button(props: {
+local function ReactButton(props: {
 	text: string,
 	onActivated: () -> (),
 })
@@ -13,4 +13,4 @@ local function Button(props: {
 	})
 end
 
-return Button
+return ReactButton

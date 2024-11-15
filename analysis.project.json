@@ -1,15 +1,27 @@
 {
-  "name": "flipbook",
+  "name": "Analysis",
   "tree": {
-    "Lune": {
-      "$path": ".lune"
-    },
-    "TestRunner": {
-      "$path": "tests"
-    },
-    "Example": {
-      "$path": "example"
-    },
-    "$path": "build.project.json"
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Packages": {
+        "$path": "Packages"
+      },
+      "CodeSamples": {
+        "$path": "docs/docs/code-samples"
+      },
+      "Lune": {
+        "$path": ".lune"
+      },
+      "Flipbook": {
+        "TestRunner": {
+          "$path": "tests"
+        },
+        "Example": {
+          "$path": "example"
+        },
+
+        "$path": "build.project.json"
+      }
+    }
   }
 }

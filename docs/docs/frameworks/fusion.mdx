@@ -2,13 +2,27 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
-import FusionStorybook from "!!raw-loader!/docs/code-samples/fusion-storybook.luau";
-import FusionStorybookStoryteller from "!!raw-loader!/docs/code-samples/fusion-storybook-storyteller.luau";
-import FusionButton from "!!raw-loader!/docs/code-samples/fusion-button.luau";
-import FusionButtonStory from "!!raw-loader!/docs/code-samples/fusion-button-story.luau";
-import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/fusion-button-story-storyteller.luau";
+import FusionStorybook from "!!raw-loader!/docs/code-samples/Fusion/Fusion.storybook.luau";
+import FusionStorybookStoryteller from "!!raw-loader!/docs/code-samples/FusionStoryteller/Fusion.storybook.luau";
+import FusionButton from "!!raw-loader!/docs/code-samples/Fusion/FusionButton.luau";
+import FusionButtonStory from "!!raw-loader!/docs/code-samples/Fusion/FusionButton.story.luau";
+import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/FusionStoryteller/FusionButton.story.luau";
 
 # Fusion
+
+[Fusion](https://elttob.uk/Fusion/0.3/) is a reactive UI library created and maintained by Daniel P H Fox. Flipbook supports Fusion v0.3 via the `packages` object. Pass in your installation of Fusion to your Storybook and all stories will be rendered with it.
+
+Example project structure:
+
+```
+Project/
+	Components/
+		Button.luau
+		Button.story.luau
+	FusionStorybook.storybook.luau
+```
+
+Storybook:
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
@@ -23,9 +37,13 @@ import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/fusion
 	</TabItem>
 </Tabs>
 
+Example Button component made with Fusion:
+
 <CodeBlock className="language-lua" title="Project/Components/Button.luau">
 	{FusionButton}
 </CodeBlock>
+
+Story to render the Button component:
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>

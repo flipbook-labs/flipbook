@@ -1,12 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Roact = require(ReplicatedStorage.Packages.Roact)
+local React = require(ReplicatedStorage.Packages.React)
 
-local Button = require(script.Parent.Button)
+local ReactButton = require(script.Parent.ReactButton)
 
 return {
 	story = function()
-		return Roact.createElement(Button, {
+		return React.createElement(ReactButton, {
 			text = "Click Me",
 			onActivated = function()
 				print("click")

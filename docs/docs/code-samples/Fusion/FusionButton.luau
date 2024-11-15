@@ -5,7 +5,7 @@ local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local New = Fusion.New
 local OnEvent = Fusion.OnEvent
 
-local function Button(props: {
+local function FusionButton(props: {
 	text: string,
 	onActivated: () -> (),
 })
@@ -15,4 +15,4 @@ local function Button(props: {
 	})
 end
 
-return Button
+return FusionButton
