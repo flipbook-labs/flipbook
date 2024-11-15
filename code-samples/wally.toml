@@ -1,0 +1,14 @@
+[package]
+name = "flipbook-labs/flipbook-examples"
+version = "0.1.0"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = ["*"]
+
+[dependencies]
+Fusion = "elttob/fusion@0.2.0"
+React = "jsdotlua/react@17.0.2"
+ReactRoblox = "jsdotlua/react-roblox@17.0.2"
+Roact = "roblox/roact@1.4.4"
+Storyteller = "flipbook-labs/storyteller@0.4.2"

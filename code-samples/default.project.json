@@ -1,0 +1,14 @@
+{
+  "name": "Examples",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Packages": {
+        "$path": "Packages"
+      },
+      "Examples": {
+        "$path": "src"
+      }
+    }
+  }
+}

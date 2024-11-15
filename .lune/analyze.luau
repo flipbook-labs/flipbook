@@ -11,21 +11,41 @@ run("curl", {
 	"https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua",
 })
 
-run("rojo", {
-	"sourcemap",
-	constants.ROJO_ANALYSIS_PROJECT,
-	"-o",
-	constants.SOURCEMAP_PATH,
-})
+do
+	run("rojo", {
+		"sourcemap",
+		constants.ROJO_ANALYSIS_PROJECT,
+		"-o",
+		constants.SOURCEMAP_PATH,
+	})
 
-run("luau-lsp", {
-	"analyze",
-	`--sourcemap={constants.SOURCEMAP_PATH}`,
-	`--defs={globalDefsPath}`,
-	"--settings=./.vscode/settings.json",
-	"--ignore=**/_Index/**",
-	constants.SOURCE_PATH,
-	constants.LUNE_SCRIPTS_PATH,
-	constants.EXAMPLE_PATH,
-	constants.CODE_SAMPLES_PATH,
-})
+	run("luau-lsp", {
+		"analyze",
+		`--sourcemap={constants.SOURCEMAP_PATH}`,
+		`--defs={globalDefsPath}`,
+		"--settings=./.vscode/settings.json",
+		"--ignore=**/_Index/**",
+		constants.SOURCE_PATH,
+		constants.LUNE_SCRIPTS_PATH,
+		constants.EXAMPLE_PATH,
+	})
+end
+
+do
+	run("cd", { "code-samples" })
+	run("rojo", {
+		"sourcemap",
+		"default.project.json",
+		"-o",
+		constants.SOURCEMAP_PATH,
+	})
+
+	run("luau-lsp", {
+		"analyze",
+		`--sourcemap={constants.SOURCEMAP_PATH}`,
+		`--defs={globalDefsPath}`,
+		"--settings=./.vscode/settings.json",
+		"--ignore=**/_Index/**",
+		".",
+	})
+end

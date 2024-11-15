@@ -20,6 +20,6 @@ return {
 		"src",
 		".lune",
 		"example",
-		"docs/docs/code-samples",
+		"code-samples",
 	},
 }
