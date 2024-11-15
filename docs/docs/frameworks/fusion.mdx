@@ -2,11 +2,11 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
-import FusionStorybook from "!!raw-loader!/docs/code-samples/Fusion/Fusion.storybook.luau";
-import FusionStorybookStoryteller from "!!raw-loader!/docs/code-samples/FusionStoryteller/Fusion.storybook.luau";
-import FusionButton from "!!raw-loader!/docs/code-samples/Fusion/FusionButton.luau";
-import FusionButtonStory from "!!raw-loader!/docs/code-samples/Fusion/FusionButton.story.luau";
-import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/FusionStoryteller/FusionButton.story.luau";
+import FusionStorybook from "!!raw-loader!@site/../code-samples/src/Fusion/Fusion.storybook.luau";
+import FusionStorybookStoryteller from "!!raw-loader!@site/../code-samples/src/FusionStoryteller/Fusion.storybook.luau";
+import FusionButton from "!!raw-loader!@site/../code-samples/src/Fusion/FusionButton.luau";
+import FusionButtonStory from "!!raw-loader!@site/../code-samples/src/Fusion/FusionButton.story.luau";
+import FusionButtonStoryStoryteller from "!!raw-loader!@site/../code-samples/src/FusionStoryteller/FusionButton.story.luau";
 
 # Fusion
 
@@ -37,18 +37,12 @@ import FusionButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/Fusion
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{FusionButtonStory}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{FusionButtonStoryStoryteller}
 		</CodeBlock>
 	</TabItem>

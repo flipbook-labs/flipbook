@@ -2,11 +2,11 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
-import ReactStorybook from "!!raw-loader!/docs/code-samples/React/React.storybook.luau";
-import ReactStorybookStoryteller from "!!raw-loader!/docs/code-samples/ReactStoryteller/React.storybook.luau";
-import ReactButton from "!!raw-loader!/docs/code-samples/React/ReactButton.luau";
-import ReactButtonStory from "!!raw-loader!/docs/code-samples/React/ReactButton.story.luau";
-import ReactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/ReactStoryteller/ReactButton.story.luau";
+import ReactStorybook from "!!raw-loader!@site/../code-samples/src/React/React.storybook.luau";
+import ReactStorybookStoryteller from "!!raw-loader!@site/../code-samples/src/ReactStoryteller/React.storybook.luau";
+import ReactButton from "!!raw-loader!@site/../code-samples/src/React/ReactButton.luau";
+import ReactButtonStory from "!!raw-loader!@site/../code-samples/src/React/ReactButton.story.luau";
+import ReactButtonStoryStoryteller from "!!raw-loader!@site/../code-samples/src/ReactStoryteller/ReactButton.story.luau";
 
 # React
 
@@ -37,18 +37,12 @@ Flipbook supports Roblox's transpilation of React 17 through the use of [jsdotlu
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{ReactButtonStory}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{ReactButtonStoryStoryteller}
 		</CodeBlock>
 	</TabItem>

@@ -2,11 +2,11 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
-import RoactStorybook from "!!raw-loader!/docs/code-samples/Roact/Roact.storybook.luau";
-import RoactStorybookStoryteller from "!!raw-loader!/docs/code-samples/RoactStoryteller/Roact.storybook.luau";
-import RoactButton from "!!raw-loader!/docs/code-samples/Roact/RoactButton.luau";
-import RoactButtonStory from "!!raw-loader!/docs/code-samples/Roact/RoactButton.story.luau";
-import RoactButtonStoryStoryteller from "!!raw-loader!/docs/code-samples/RoactStoryteller/RoactButton.story.luau";
+import RoactStorybook from "!!raw-loader!@site/../code-samples/src/Roact/Roact.storybook.luau";
+import RoactStorybookStoryteller from "!!raw-loader!@site/../code-samples/src/RoactStoryteller/Roact.storybook.luau";
+import RoactButton from "!!raw-loader!@site/../code-samples/src/Roact/RoactButton.luau";
+import RoactButtonStory from "!!raw-loader!@site/../code-samples/src/Roact/RoactButton.story.luau";
+import RoactButtonStoryStoryteller from "!!raw-loader!@site/../code-samples/src/RoactStoryteller/RoactButton.story.luau";
 
 # Roact
 
@@ -41,18 +41,12 @@ Roact is an archived repository that we consider to be legacy software. We recom
 
 <Tabs groupId="main">
 	<TabItem value="default" label="Default" default>
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{RoactButtonStory}
 		</CodeBlock>
 	</TabItem>
 	<TabItem value="storyteller" label="Storyteller">
-		<CodeBlock
-			language="lua"
-			title="Project/Components/Button.story.luau"
-		>
+		<CodeBlock language="lua" title="Project/Components/Button.story.luau">
 			{RoactButtonStoryStoryteller}
 		</CodeBlock>
 	</TabItem>
