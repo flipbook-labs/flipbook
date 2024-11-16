@@ -15,7 +15,9 @@ type Controls = {
 	isDisabled: boolean,
 }
 
-type Props = Storyteller.StoryProps<Controls>
+type Props = {
+	controls: typeof(controls),
+}
 
 local story: Storyteller.Story<any> = {
 	controls = controls,
