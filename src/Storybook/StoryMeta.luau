@@ -7,10 +7,10 @@ local MAX_SUMMARY_SIZE = 600
 
 local e = React.createElement
 
-type Story = Storyteller.Story<unknown>
+type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
-	story: Story,
+	story: LoadedStory,
 	layoutOrder: number?,
 }
 
