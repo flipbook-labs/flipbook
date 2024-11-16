@@ -2,7 +2,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local explorerTypes = require("@root/Explorer/types")
 
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local function hasStories(instance: Instance): boolean
@@ -14,7 +14,7 @@ local function hasStories(instance: Instance): boolean
 	return false
 end
 
-local function createChildNodes(parent: ComponentTreeNode, instance: Instance, storybook: Storybook)
+local function createChildNodes(parent: ComponentTreeNode, instance: Instance, storybook: LoadedStorybook)
 	for _, child in ipairs(instance:GetChildren()) do
 		local isStory = Storyteller.isStoryModule(child)
 		local isContainer = hasStories(child)
@@ -38,7 +38,7 @@ local function createChildNodes(parent: ComponentTreeNode, instance: Instance, s
 	end
 end
 
-local function createStoryNodes(storybooks: { Storybook }): { ComponentTreeNode }
+local function createStoryNodes(storybooks: { LoadedStorybook }): { ComponentTreeNode }
 	local nodes: { ComponentTreeNode } = {}
 
 	for _, storybook in ipairs(storybooks) do
