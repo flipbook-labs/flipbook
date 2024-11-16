@@ -16,7 +16,7 @@ local mockStoryRoot = newFolder({
 	}),
 })
 
-local mockStorybook: Storyteller.Storybook = {
+local mockStorybook: Storyteller.LoadedStorybook = {
 	name = "MockStorybook",
 	storyRoots = { mockStoryRoot },
 }
