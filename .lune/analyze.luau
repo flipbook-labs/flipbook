@@ -28,3 +28,12 @@ run("luau-lsp", {
 	constants.LUNE_SCRIPTS_PATH,
 	constants.EXAMPLE_PATH,
 })
+
+run("luau-lsp", {
+	"analyze",
+	`--sourcemap={constants.SOURCEMAP_PATH}`,
+	`--defs={globalDefsPath}`,
+	"--settings=./.vscode/settings.json",
+	"--ignore=**/_Index/**",
+	"code-samples/src",
+})
