@@ -1,12 +1,12 @@
 {
-  "name": "flipbook",
+  "name": "Flipbook",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Packages": {
         "$path": "Packages"
       },
-      "flipbook": {
+      "Flipbook": {
         "$path": "default.project.json"
       }
     }

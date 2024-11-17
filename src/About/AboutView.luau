@@ -58,7 +58,7 @@ local function AboutView()
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `flipbook v{wally.package.version}`,
+			Text = `Flipbook v{wally.package.version}`,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 			TextWrapped = true,

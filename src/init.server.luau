@@ -14,10 +14,10 @@ local constants = require("@root/constants")
 local createToggleButton = require("@root/Plugin/createToggleButton")
 local createWidget = require("@root/Plugin/createWidget")
 
-local PLUGIN_NAME = "flipbook"
+local PLUGIN_NAME = "Flipbook"
 
 if constants.IS_DEV_MODE then
-	PLUGIN_NAME = "flipbook [DEV]"
+	PLUGIN_NAME = "Flipbook [DEV]"
 end
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)

@@ -10,7 +10,7 @@ return {
 	CONTROLS_MIN_HEIGHT = 100, -- px
 	CONTROLS_MAX_HEIGHT = 400, -- px
 
-	-- Enabling dev mode will add flipbook's storybook to the list of available
+	-- Enabling dev mode will add Flipbook's storybook to the list of available
 	-- storybooks to make localy testing easier. It also adds a [DEV] tag to the
 	-- plugin
 	IS_DEV_MODE = false,

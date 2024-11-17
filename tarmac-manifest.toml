@@ -52,7 +52,7 @@ id = 18940815650
 slice = [[231, 108], [263, 140]]
 packable = true
 
-[inputs."img/flipbook.png"]
+[inputs."img/Flipbook.png"]
 hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
 id = 18940815650
 slice = [[231, 0], [295, 64]]
