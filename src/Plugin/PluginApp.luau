@@ -1,35 +1,40 @@
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
+local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
+local SettingsContext = require("@root/UserSettings/SettingsContext")
 local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useStorybooks = require("@root/Storybook/useStorybooks")
 local useTheme = require("@root/Common/useTheme")
 
 local TOPBAR_HEIGHT_PX = 32
 
 export type Props = {
-	loader: any,
+	loader: ModuleLoader.ModuleLoader,
 }
 
 local function App(props: Props)
 	local theme = useTheme()
-	local storybooks = useStorybooks(game, props.loader)
-	local story, setStory = React.useState(nil)
-	local storybook, selectStorybook = React.useState(nil)
-	local sidebarWidth, setSidebarWidth = React.useState(constants.SIDEBAR_INITIAL_WIDTH)
+	local settingsContext = SettingsContext.use()
+	local storybooks = Storyteller.useStorybooks(game, props.loader)
+	local story: ModuleScript?, setStory = React.useState(nil :: ModuleScript?)
+	local storybook, selectStorybook = React.useState(nil :: ModuleScript?)
+	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
+	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
 	local selectStory = React.useCallback(function(newStory: ModuleScript)
 		navigation.navigateTo("Home")
 
-		setStory(function(prevStory: ModuleScript)
+		setStory(function(prevStory)
 			return if prevStory ~= newStory then newStory else nil
 		end)
-	end, { setStory, navigation.navigateTo })
+	end, { setStory, navigation.navigateTo } :: { unknown })
 
 	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
@@ -47,8 +52,11 @@ local function App(props: Props)
 
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
-			initialSize = UDim2.new(0, constants.SIDEBAR_INITIAL_WIDTH, 1, 0),
-			dragHandles = { "Right" },
+			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
+			dragHandles = {
+				-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
+				"Right" :: any,
+			},
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			onResize = onSidebarResized,
@@ -63,6 +71,7 @@ local function App(props: Props)
 		MainWrapper = React.createElement("Frame", {
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
+			BackgroundTransparency = 1,
 		}, {
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,

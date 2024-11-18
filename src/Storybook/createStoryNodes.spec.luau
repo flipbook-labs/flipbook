@@ -1,7 +1,8 @@
 local JestGlobals = require("@pkg/JestGlobals")
+local Storyteller = require("@pkg/Storyteller")
+
 local createStoryNodes = require("./createStoryNodes")
 local newFolder = require("@root/Testing/newFolder")
-local types = require("@root/Storybook/types")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -15,7 +16,7 @@ local mockStoryRoot = newFolder({
 	}),
 })
 
-local mockStorybook: types.Storybook = {
+local mockStorybook: Storyteller.LoadedStorybook = {
 	name = "MockStorybook",
 	storyRoots = { mockStoryRoot },
 }

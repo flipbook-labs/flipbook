@@ -1,8 +1,9 @@
 local FLAG_PATTERN = "%-%-(%w+)"
 local FLAG_ALL_IN_ONE_PATTERN = `{FLAG_PATTERN}=(%w+)`
 
-local function parseArgs(args: { string }): { [string]: string | boolean | number }
-	local parsedArgs: { [string]: string } = {}
+local function parseArgs(args: { string })
+	local parsedArgs: { [string]: string | boolean | number } = {}
+
 	local skipNextToken = false
 
 	for index, token in args do
@@ -28,16 +29,14 @@ local function parseArgs(args: { string }): { [string]: string | boolean | numbe
 			if nextToken then
 				-- When processing `--foo` in `--foo --bar` treat it like a boolean
 				if nextToken:match(FLAG_PATTERN) then
-					flagValue = true
+					parsedArgs[flagName] = true
 				else
-					flagValue = nextToken
+					parsedArgs[flagName] = nextToken
 					skipNextToken = true
 				end
 			else
-				flagValue = true
+				parsedArgs[flagName] = true
 			end
-
-			parsedArgs[flagName] = flagValue
 		else
 			error(`something went wrong: {token}`)
 		end

@@ -1,4 +1,7 @@
 local React = require("@pkg/React")
+
+local ContextProviders = require("@root/Common/ContextProviders")
+local MockPlugin = require("@root/Testing/MockPlugin")
 local ScrollingFrame = require("./ScrollingFrame")
 
 local controls = {
@@ -13,7 +16,7 @@ type Props = {
 return {
 	controls = controls,
 	story = function(props: Props)
-		local children = {}
+		local children: { [string]: React.Node } = {}
 
 		children.Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
@@ -30,11 +33,15 @@ return {
 			})
 		end
 
-		return React.createElement("Frame", {
-			Size = UDim2.new(1, 0, 0, 200),
-			BackgroundTransparency = 1,
+		return React.createElement(ContextProviders, {
+			plugin = MockPlugin.new() :: any,
 		}, {
-			ScrollingFrame = React.createElement(ScrollingFrame, {}, children),
+			Wrapper = React.createElement("Frame", {
+				Size = UDim2.new(1, 0, 0, 200),
+				BackgroundTransparency = 1,
+			}, {
+				ScrollingFrame = React.createElement(ScrollingFrame, {}, children),
+			}),
 		})
 	end,
 }

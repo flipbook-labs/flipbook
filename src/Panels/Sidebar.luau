@@ -1,15 +1,16 @@
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
 local Branding = require("@root/Common/Branding")
 local ComponentTree = require("@root/Explorer")
-local React = require("@pkg/React")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local constants = require("@root/constants")
 local createStoryNodes = require("@root/Storybook/createStoryNodes")
 local explorerTypes = require("@root/Explorer/types")
-local storybookTypes = require("@root/Storybook/types")
 local useTheme = require("@root/Common/useTheme")
 
-type Storybook = storybookTypes.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local e = React.createElement
@@ -17,14 +18,14 @@ local e = React.createElement
 type Props = {
 	layoutOrder: number?,
 	selectStory: (ModuleScript) -> (),
-	selectStorybook: (Storybook) -> (),
-	storybooks: { Storybook },
+	selectStorybook: (LoadedStorybook) -> (),
+	storybooks: { LoadedStorybook },
 }
 
 local function Sidebar(props: Props)
 	local theme = useTheme()
 
-	local activeNode, setActiveNode = React.useState(nil)
+	local activeNode, setActiveNode = React.useState(nil :: ComponentTreeNode?)
 	local onClick = React.useCallback(function(node: ComponentTreeNode)
 		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
 			if node.storybook then
@@ -46,7 +47,7 @@ local function Sidebar(props: Props)
 		setHeaderHeight(rbx.AbsoluteSize.Y)
 	end, { setHeaderHeight })
 
-	local search, setSearch = React.useState(nil)
+	local search: string?, setSearch = React.useState(nil :: string?)
 	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
 			setSearch(nil)

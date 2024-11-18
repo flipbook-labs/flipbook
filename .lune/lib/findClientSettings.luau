@@ -1,6 +1,6 @@
 local run = require("./run")
 
-local function findClientSettings(os: string)
+local function findClientSettings(os: string): string?
 	if os == "macos" then
 		return "/Applications/RobloxStudio.app/Contents/MacOS/ClientSettings"
 	elseif os == "windows" then
@@ -15,6 +15,8 @@ local function findClientSettings(os: string)
 		})
 
 		return `{dir}/ClientSettings`
+	else
+		return nil
 	end
 end
 

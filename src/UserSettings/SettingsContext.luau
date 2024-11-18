@@ -10,7 +10,7 @@ local useState = React.useState
 
 type Settings = defaultSettings.Settings
 
-local Context = React.createContext({})
+local Context = React.createContext({} :: SettingsContext)
 
 export type Props = {
 	children: React.Node?,
@@ -19,6 +19,7 @@ export type Props = {
 export type SettingsContext = {
 	settings: Settings,
 
+	getSetting: (settingName: string) -> any,
 	getSettingDefault: (settingName: string) -> any,
 	isSettingDefault: (settingName: string) -> boolean,
 	setSetting: (settingName: string, newValue: any) -> (),
@@ -29,14 +30,14 @@ local function Provider(props: Props)
 
 	local loadSettingsFromDisk = useCallback(function()
 		local settings = {}
-		for settingName, setting in defaultSettings do
+		for settingName, setting in pairs(defaultSettings) do
 			local savedValue = plugin:GetSetting(settingName)
 
 			settings[settingName] = Sift.Dictionary.join(setting, {
 				value = savedValue,
 			})
 		end
-		return settings :: Settings
+		return settings
 	end, { plugin })
 
 	local settings, setSettings = useState(function()
@@ -59,12 +60,15 @@ local function Provider(props: Props)
 		local savedValue = plugin:GetSetting(settingName)
 
 		return savedValue == nil or savedValue == defaultValue
-	end, { plugin, getSettingDefault })
+	end, { plugin, getSettingDefault } :: { unknown })
 
 	local setSetting = useCallback(function(settingName: string, newValue: any)
+		if newValue == nil then
+			newValue = getSettingDefault(settingName)
+		end
 		plugin:SetSetting(settingName, newValue)
 		setSettings(loadSettingsFromDisk)
-	end, { plugin, loadSettingsFromDisk })
+	end, { plugin, loadSettingsFromDisk, getSettingDefault } :: { unknown })
 
 	local getSetting = useCallback(function(settingName: string)
 		return settings[settingName].value

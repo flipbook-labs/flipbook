@@ -1,22 +1,22 @@
-local explorerTypes = require("@root/Explorer/types")
-local isStoryModule = require("@root/Storybook/isStoryModule")
-local storybookTypes = require("@root/Storybook/types")
+local Storyteller = require("@pkg/Storyteller")
 
-type Storybook = storybookTypes.Storybook
+local explorerTypes = require("@root/Explorer/types")
+
+type LoadedStorybook = Storyteller.LoadedStorybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local function hasStories(instance: Instance): boolean
 	for _, descendant in ipairs(instance:GetDescendants()) do
-		if isStoryModule(descendant) then
+		if Storyteller.isStoryModule(descendant) then
 			return true
 		end
 	end
 	return false
 end
 
-local function createChildNodes(parent: ComponentTreeNode, instance: Instance, storybook: Storybook)
+local function createChildNodes(parent: ComponentTreeNode, instance: Instance, storybook: LoadedStorybook)
 	for _, child in ipairs(instance:GetChildren()) do
-		local isStory = isStoryModule(child)
+		local isStory = Storyteller.isStoryModule(child)
 		local isContainer = hasStories(child)
 
 		if isStory or isContainer then
@@ -38,13 +38,13 @@ local function createChildNodes(parent: ComponentTreeNode, instance: Instance, s
 	end
 end
 
-local function createStoryNodes(storybooks: { Storybook }): { ComponentTreeNode }
+local function createStoryNodes(storybooks: { LoadedStorybook }): { ComponentTreeNode }
 	local nodes: { ComponentTreeNode } = {}
 
 	for _, storybook in ipairs(storybooks) do
 		local node: ComponentTreeNode = {
-			name = storybook.name,
-			icon = "storybook",
+			name = if storybook.name then storybook.name else "Unnamed Storybook",
+			icon = "storybook" :: "storybook",
 			children = {},
 		}
 

@@ -7,7 +7,7 @@ local SettingsView = require("./SettingsView")
 return {
 	story = function()
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+			plugin = MockPlugin.new() :: any,
 		}, {
 			SettingsView = React.createElement(SettingsView),
 		})
