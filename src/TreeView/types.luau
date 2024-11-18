@@ -2,6 +2,7 @@ export type TreeNode = {
 	id: string,
 	label: string,
 	icon: string?,
+	isExpanded: boolean?,
 	children: { TreeNode }?,
 	parent: TreeNode?,
 }

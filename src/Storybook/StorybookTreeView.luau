@@ -1,11 +1,11 @@
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
-local TreeView = require("@root/TreeView/Treeview")
-local storybookTypes = require("@root/Storybook/types")
+local TreeView = require("@root/TreeView/TreeView")
 local treeViewTypes = require("@root/TreeView/types")
 
 type TreeNode = treeViewTypes.TreeNode
-type Storybook = storybookTypes.Storybook
+type Storybook = Storyteller.Storybook
 
 local useMemo = React.useMemo
 
@@ -21,7 +21,7 @@ local function StorybookTreeView(props: Props)
 	local leafNodes = useMemo(function()
 		local nodes: { TreeNode } = {}
 		for _, storyModule in storyModules do
-			table.insert(nodes, {})
+			-- table.insert(nodes, {})
 		end
 		return nodes
 	end, { storyModules })
