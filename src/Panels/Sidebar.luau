@@ -10,7 +10,7 @@ local createStoryNodes = require("@root/Storybook/createStoryNodes")
 local explorerTypes = require("@root/Explorer/types")
 local useTheme = require("@root/Common/useTheme")
 
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local e = React.createElement
@@ -18,8 +18,8 @@ local e = React.createElement
 type Props = {
 	layoutOrder: number?,
 	selectStory: (ModuleScript) -> (),
-	selectStorybook: (Storybook) -> (),
-	storybooks: { Storybook },
+	selectStorybook: (LoadedStorybook) -> (),
+	storybooks: { LoadedStorybook },
 }
 
 local function Sidebar(props: Props)

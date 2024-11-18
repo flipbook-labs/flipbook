@@ -10,12 +10,12 @@ local StoryCanvas = require("@root/Storybook/StoryCanvas")
 local useMemo = React.useMemo
 
 type ModuleLoader = ModuleLoader.ModuleLoader
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 
 export type Props = {
 	loader: ModuleLoader,
 	story: ModuleScript?,
-	storybook: Storybook?,
+	storybook: LoadedStorybook?,
 }
 
 local function Screen(props: Props)

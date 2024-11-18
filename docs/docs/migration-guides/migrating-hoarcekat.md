@@ -1,9 +1,4 @@
----
-sidebar_position: 4
----
-
-
-# Migrating from Hoarcekat
+# Hoarcekat
 
 [Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like flipbook. Because of its popularity, its story format is supported by flipbook so that you have an easier time migrating.
 
@@ -87,9 +82,11 @@ local Roact = require(script.Parent.Parent.Roact)
 local HelloWorld = require(script.Parent.HelloWorld)
 
 return {
-    story = Roact.createElement(HelloWorld, {
-        name = "flipbook"
-    })
+    story = function()
+		return Roact.createElement(HelloWorld, {
+			name = "flipbook"
+		})
+	end
 }
 ```
 
@@ -120,7 +117,7 @@ return {
 +   controls = {
 +       name = "flipbook"
 +   }
-+   story = return function(props)
++   story = function(props)
 +       return Roact.createElement(HelloWorld, {
 +           name = props.controls.name
 +       })
@@ -133,8 +130,3 @@ You will now have a "Controls" section with an input field. Try changing the val
 <!-- TODO: Add image of the story -->
 
 You are now equipped to migrate your other Hoarcekat stories over to flipbook!
-
-## Further Reading
-
-- [Writing Stories](writing-stories.md)
-- [Story Format](story-format.md)

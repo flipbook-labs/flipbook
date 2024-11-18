@@ -9,12 +9,12 @@ local useTheme = require("@root/Common/useTheme")
 local e = React.createElement
 
 type ModuleLoader = ModuleLoader.ModuleLoader
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
 	story: ModuleScript,
 	loader: ModuleLoader,
-	storybook: Storybook,
+	storybook: LoadedStorybook,
 	layoutOrder: number?,
 }
 
