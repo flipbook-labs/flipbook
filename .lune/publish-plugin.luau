@@ -8,11 +8,14 @@ local project = require("../project")
 
 local args = parseArgs(process.args)
 
+local target = if args.target then args.target else "dev"
+assert(target == "dev" or target == "prod", `bad value for target (must be one of "dev" or "prod", got "{target}")`)
+
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
 
 clean()
-compile("dev")
+compile("prod")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
@@ -23,7 +26,9 @@ do -- mini darklua for swapping out globals in the task with real values
 
 	local GLOBAL_SUBSTITUTIONS = {
 		ROBLOX_CREATOR_ID = project.ROBLOX_ASSET_CREATOR_ID,
-		ROBLOX_ASSET_ID = project.ROBLOX_PLUGIN_ASSET_ID_DEV,
+		ROBLOX_ASSET_ID = if target == "dev"
+			then project.ROBLOX_PLUGIN_ASSET_ID_DEV
+			else project.ROBLOX_PLUGIN_ASSET_ID_PROD,
 	}
 
 	for global, value in GLOBAL_SUBSTITUTIONS do
