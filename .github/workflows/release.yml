@@ -32,3 +32,19 @@ jobs:
           files: ${{ env.MODEL_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-plugin-nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install packages
+        run: lune run wally-install
+
+      - name: Run tests
+        run: lune run publish-plugin -- --apiKey ${{ secrets.ROBLOX_API_KEY }}
