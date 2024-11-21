@@ -1,11 +1,11 @@
 local React = require("@pkg/React")
 
 local RobloxProfile = require("@root/About/RobloxProfile")
+local BuildInfo = require("@root/About/BuildInfo")
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
-local wally = require(script.Parent.Parent["wally.toml"])
 
 local useMemo = React.useMemo
 
@@ -58,7 +58,7 @@ local function AboutView()
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `flipbook v{wally.package.version}`,
+			Text = `flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 			TextWrapped = true,
@@ -130,6 +130,10 @@ local function AboutView()
 			}, authors),
 		}),
 
+		BuildInfo = React.createElement(BuildInfo, {
+			layoutOrder = nextLayoutOrder(),
+		}),
+
 		Copy = React.createElement("TextLabel", {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BackgroundTransparency = 1,
@@ -137,7 +141,7 @@ local function AboutView()
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
 			Text = `Copyright © 2021—{currentYear} flipbook-labs`,
-			TextColor3 = theme.text,
+			TextColor3 = theme.textSubtitle,
 			TextSize = theme.textSize,
 			TextWrapped = true,
 		}),
