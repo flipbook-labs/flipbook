@@ -34,6 +34,7 @@ jobs:
           path: docs/build
 
   deploy-docs:
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     needs: build-docs
     permissions:
       pages: write
@@ -42,7 +43,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
