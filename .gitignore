@@ -14,5 +14,8 @@ DevPackages
 Packages
 wally.lock
 
+# Python
+__pycache__
+
 # Other
 /*.log
