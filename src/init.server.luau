@@ -10,15 +10,10 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
-local constants = require("@root/constants")
 local createToggleButton = require("@root/Plugin/createToggleButton")
 local createWidget = require("@root/Plugin/createWidget")
 
 local PLUGIN_NAME = "flipbook"
-
-if constants.IS_DEV_MODE then
-	PLUGIN_NAME = "flipbook [DEV]"
-end
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)

@@ -1,6 +1,9 @@
 local constants = require("./constants")
 local fs = require("@lune/fs")
+local serde = require("@lune/serde")
 local run = require("./run")
+
+local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
 type Target = "prod" | "dev"
 
@@ -13,6 +16,14 @@ local PRUNED_FILES = {
 local function compile(target: Target)
 	fs.writeDir(constants.BUILD_PATH)
 
+	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
+
+	local env = {
+		BUILD_VERSION = wallyToml.package.version,
+		BUILD_CHANNEL = if target == "prod" then "production" else "development",
+		BUILD_HASH = commitHash,
+	}
+
 	run("rojo", {
 		"sourcemap",
 		constants.ROJO_BUILD_PROJECT,
@@ -20,10 +31,14 @@ local function compile(target: Target)
 		constants.DARKLUA_SOURCEMAP_PATH,
 	})
 
+	print("substituting globals", env)
+
 	run("darklua", {
 		"process",
 		constants.SOURCE_PATH,
 		constants.BUILD_PATH,
+	}, {
+		env = env,
 	})
 
 	if target == "dev" then
@@ -31,6 +46,8 @@ local function compile(target: Target)
 			"process",
 			"example",
 			`{constants.BUILD_PATH}/Example`,
+		}, {
+			env = env,
 		})
 	end
 

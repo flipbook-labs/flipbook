@@ -15,6 +15,21 @@
         "indexing_style": "property"
       }
     },
+    {
+      "rule": "inject_global_value",
+      "identifier": "BUILD_VERSION",
+      "env": "BUILD_VERSION"
+    },
+    {
+      "rule": "inject_global_value",
+      "identifier": "BUILD_CHANNEL",
+      "env": "BUILD_CHANNEL"
+    },
+    {
+      "rule": "inject_global_value",
+      "identifier": "BUILD_HASH",
+      "env": "BUILD_HASH"
+    },
     "compute_expression",
     "remove_unused_if_branch",
     "remove_unused_while",
