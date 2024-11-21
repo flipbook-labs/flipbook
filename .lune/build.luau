@@ -23,12 +23,6 @@ assert(
 	`bad value for gameEnginePath (string expected, got {typeof(output)}`
 )
 
-local PRUNED_FILES = {
-	"*.spec.luau",
-	"*.story.luau",
-	"*.storybook.luau",
-}
-
 local function build()
 	if not fs.isDir("Packages") then
 		run("lune", { "run", "wally-install" })
@@ -36,12 +30,6 @@ local function build()
 
 	clean()
 	compile(target)
-
-	if target == "prod" then
-		for _, pattern in PRUNED_FILES do
-			run("find", { constants.BUILD_PATH, "-type", "f", "-name", pattern, "-delete" })
-		end
-	end
 
 	if gameEnginePath then
 		local engineBuildPath = run("find", { `{gameEnginePath}/build`, "-name", "optimized" })

@@ -1,6 +1,6 @@
 [package]
 name = "flipbook-labs/flipbook"
-version = "1.5.1"
+version = "2.0.0"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
