@@ -25,8 +25,6 @@ local widget = createWidget(plugin, PLUGIN_NAME)
 local root = ReactRoblox.createRoot(widget)
 local disconnectButton = createToggleButton(toolbar, widget)
 
-print("This was deployed from GitHub!")
-
 local loader = ModuleLoader.new()
 
 local app = React.createElement(ContextProviders, {

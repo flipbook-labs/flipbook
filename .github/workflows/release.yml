@@ -35,6 +35,7 @@ jobs:
 
   publish-plugin-nightly:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
