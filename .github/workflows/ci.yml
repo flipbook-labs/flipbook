@@ -16,6 +16,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install pesde
+        uses: ./.github/actions/setup-pesde
+
       - name: Install packages
         run: pesde install --prod
 
@@ -44,6 +47,9 @@ jobs:
       - uses: Roblox/setup-foreman@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pesde
+        uses: ./.github/actions/setup-pesde
 
       - name: Setup Lune typedefs
         run: lune setup
