@@ -27,7 +27,7 @@ jobs:
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install packages
-        run: pesde install --prod
+        run: pesde install
 
       - name: Build
         run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/setup-pesde
 
       - name: Install packages
-        run: pesde install --prod
+        run: pesde install
 
       - name: Publish to Creator Store
         if: ${{ github.event.release }}

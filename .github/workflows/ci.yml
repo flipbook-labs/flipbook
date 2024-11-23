@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-pesde
 
       - name: Install packages
-        run: pesde install --prod
+        run: pesde install
 
       - name: Lint
         run: lune run lint
