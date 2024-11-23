@@ -2,7 +2,7 @@ return {
 	-- All paths are relative to the root of the repo
 	SOURCE_PATH = "src",
 	BUILD_PATH = "build",
-	PACKAGES_PATH = "Packages",
+	PACKAGES_PATH = "roblox_packages",
 	LUNE_SCRIPTS_PATH = ".lune",
 	EXAMPLE_PATH = "example",
 
