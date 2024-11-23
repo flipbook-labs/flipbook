@@ -1,14 +1,16 @@
 local React = require("@pkg/React")
 
 local Sprite = require("@root/Common/Sprite")
-local treeViewTypes = require("@root/TreeView/types")
+local types = require("@root/TreeView/types")
+local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 local useTheme = require("@root/Common/useTheme")
 local assets = require("@root/assets")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useState = React.useState
 
-type TreeNode = treeViewTypes.TreeNode
+type TreeNode = types.TreeNode
 
 export type Props = {
 	node: TreeNode,
@@ -18,12 +20,15 @@ export type Props = {
 
 local function TreeNode(props: Props)
 	local theme = useTheme()
+	local icon, iconColor = useTreeNodeIcon(props.node.icon)
+
+	local isExpanded, setIsExpanded = useState(props.node.isExpanded)
 
 	local children = useMemo(function()
 		local elements: { [string]: React.Node } = {}
 		if props.node.children then
 			for index, child in props.node.children do
-				elements[child.id] = React.createElement(TreeNode, {
+				elements[child.label] = React.createElement(TreeNode, {
 					layoutOrder = index,
 					node = child,
 				})
@@ -36,18 +41,23 @@ local function TreeNode(props: Props)
 		if props.onActivated then
 			props.onActivated()
 		end
+
+		setIsExpanded(function(prev)
+			return not prev
+		end)
 	end, { props.onActivated })
 
 	return React.createElement("ImageButton", {
 		LayoutOrder = props.layoutOrder,
 		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
+		ClipsDescendants = true,
+
 		BackgroundTransparency = 1,
 		[React.Event.Activated] = onActivated,
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = theme.paddingSmall,
 		}),
 
 		Node = React.createElement("Frame", {
@@ -62,9 +72,14 @@ local function TreeNode(props: Props)
 				HorizontalFlex = Enum.UIFlexAlignment.Fill,
 			}),
 
+			Padding = React.createElement("UIPadding", {
+				PaddingTop = theme.paddingSmall,
+				PaddingBottom = theme.paddingSmall,
+			}),
+
 			Icon = React.createElement(Sprite, {
-				image = assets.Component,
-				color = theme.story,
+				image = icon,
+				color = iconColor,
 				layoutOrder = 1,
 				size = UDim2.fromOffset(16, 16),
 			}),
@@ -85,35 +100,43 @@ local function TreeNode(props: Props)
 				}),
 			}),
 
-			Toggle = if props.node.children
-				then React.createElement("ImageButton", {
+			Toggle = if #props.node.children > 0
+				then React.createElement("Frame", {
 					LayoutOrder = 3,
 					BackgroundTransparency = 1,
-					Size = UDim2.fromOffset(16, 16),
+					AutomaticSize = Enum.AutomaticSize.XY,
 				}, {
-					Icon = React.createElement(Sprite, {
-						image = assets.ChevronRight,
-						color = theme.text,
-						size = UDim2.fromScale(1, 1),
+					RotationWrapper = React.createElement("Frame", {
+						BackgroundTransparency = 1,
+						AutomaticSize = Enum.AutomaticSize.XY,
+						Rotation = if isExpanded then 90 else 0,
+					}, {
+						Icon = React.createElement(Sprite, {
+							image = assets.ChevronRight,
+							color = theme.text,
+							size = UDim2.fromOffset(16, 16),
+						}),
 					}),
 				})
 				else nil,
 		}),
 
-		Children = React.createElement("Frame", {
-			LayoutOrder = 2,
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-		}, {
-			Padding = React.createElement("UIPadding", {
-				PaddingLeft = theme.padding,
-			}),
+		Children = if isExpanded
+			then React.createElement("Frame", {
+				LayoutOrder = 2,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BackgroundTransparency = 1,
+			}, {
 
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = theme.paddingSmall,
-			}),
-		}, children),
+				Padding = React.createElement("UIPadding", {
+					PaddingLeft = theme.padding,
+				}),
+
+				Layout = React.createElement("UIListLayout", {
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				}),
+			}, children)
+			else nil,
 	})
 end
 

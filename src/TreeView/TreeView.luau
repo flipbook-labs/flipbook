@@ -1,28 +1,27 @@
 local React = require("@pkg/React")
 
-local useTheme = require("@root/Common/useTheme")
-local treeViewTypes = require("@root/TreeView/types")
+local types = require("@root/TreeView/types")
 local TreeNode = require("@root/TreeView/TreeNode")
+local createTreeNodesFromPartials = require("@root/TreeView/createTreeNodesFromPartials")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 
-type TreeNode = treeViewTypes.TreeNode
-type Tree = treeViewTypes.Tree
+type PartialTreeNode = types.PartialTreeNode
+type TreeNode = types.TreeNode
+type Tree = types.Tree
 
 export type Props = {
-	roots: { TreeNode },
+	roots: { PartialTreeNode },
 	expandedNodes: { TreeNode }?,
 	onActivated: ((node: TreeNode) -> ())?,
 	filter: ((node: TreeNode) -> boolean)?,
 }
 
 local function TreeView(props: Props)
-	local theme = useTheme()
-
-	local nodesById = useMemo(function() end, { props.roots })
-
-	local leafNodes = useMemo(function() end, { props.roots })
+	local roots = useMemo(function(): { TreeNode }
+		return createTreeNodesFromPartials(props.roots)
+	end, { props.roots })
 
 	local onNodeActivated = useCallback(function(node: TreeNode)
 		if props.onActivated then
@@ -31,7 +30,7 @@ local function TreeView(props: Props)
 	end, { props.onActivated })
 
 	local children: { [string]: React.Node } = {}
-	for index, node in props.roots do
+	for index, node in roots do
 		children[node.label] = React.createElement(TreeNode, {
 			layoutOrder = index,
 			node = node,
@@ -47,7 +46,6 @@ local function TreeView(props: Props)
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = theme.paddingSmall,
 		}),
 	}, children)
 end

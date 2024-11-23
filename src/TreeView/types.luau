@@ -1,16 +1,33 @@
-export type TreeNode = {
-	id: string,
+local types = {}
+
+export type TreeNodeIcon = "none" | "story" | "storybook" | "folder"
+
+types.TreeNodeIcon = {
+	None = "none" :: "none",
+	Story = "story" :: "story",
+	Storybook = "storybook" :: "storybook",
+	Folder = "folder" :: "folder",
+}
+
+export type PartialTreeNode = {
 	label: string,
-	icon: string?,
+	icon: TreeNodeIcon?,
 	isExpanded: boolean?,
-	children: { TreeNode }?,
+	children: { PartialTreeNode }?,
+}
+
+export type TreeNode = {
+	label: string,
+	icon: TreeNodeIcon,
+	isExpanded: boolean,
+	children: { TreeNode },
 	parent: TreeNode?,
 }
 
 export type Tree = {
-	root: TreeNode,
+	root: { PartialTreeNode },
 	leafNodes: { TreeNode },
 	nodesById: { [string]: TreeNode },
 }
 
-return nil
+return types
