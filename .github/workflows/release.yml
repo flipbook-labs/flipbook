@@ -24,7 +24,7 @@ jobs:
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install --prod
 
       - name: Build
         run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
@@ -48,7 +48,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install --prod
 
       - name: Publish to Creator Store
         if: ${{ github.event.release }}
@@ -66,7 +66,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install
 
       - name: Publish to Creator Store
         run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}

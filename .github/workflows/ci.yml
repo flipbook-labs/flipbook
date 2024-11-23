@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install --prod
 
       - name: Lint
         run: lune run lint
@@ -49,7 +49,7 @@ jobs:
         run: lune setup
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install
 
       - name: Run Luau analysis
         run: lune run analyze

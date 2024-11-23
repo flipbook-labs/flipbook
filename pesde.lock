@@ -72,6 +72,21 @@ wally = "wally#elttob/fusion"
 version = "0.2.0"
 index_url = "https://github.com/UpliftGames/wally-index"
 
+[graph."wally#elttob/fusion"."0.3.0 roblox"]
+direct = ["fusion", { wally = "wally#elttob/fusion", version = "^0.3.0" }, "dev"]
+resolved_ty = "dev"
+
+[graph."wally#elttob/fusion"."0.3.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#elttob/fusion"."0.3.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#elttob/fusion"
+version = "0.3.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
 [graph."wally#evaera/promise"."4.0.0 roblox"]
 resolved_ty = "standard"
 
