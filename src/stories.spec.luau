@@ -1,11 +1,11 @@
 local CoreGui = game:GetService("CoreGui")
 
-local JestGlobals = require("@pkg/JestGlobals")
-local ModuleLoader = require("@pkg/ModuleLoader")
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
-local Sift = require("@pkg/Sift")
-local Storyteller = require("@pkg/Storyteller")
+local JestGlobals = require("@pkg/jest-globals")
+local ModuleLoader = require("@pkg/module-loader")
+local React = require("@pkg/react")
+local ReactRoblox = require("@pkg/react-roblox")
+local Sift = require("@pkg/sift")
+local Storyteller = require("@pkg/storyteller")
 
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach

@@ -1,4 +1,4 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 
 local function usePrevious(value: any)
 	local previous = React.useRef(nil)

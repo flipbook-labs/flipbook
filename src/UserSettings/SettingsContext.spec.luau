@@ -1,6 +1,6 @@
-local JestGlobals = require("@pkg/JestGlobals")
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
+local JestGlobals = require("@pkg/jest-globals")
+local React = require("@pkg/react")
+local ReactRoblox = require("@pkg/react-roblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")

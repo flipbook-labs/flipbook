@@ -1,4 +1,4 @@
-local JestGlobals = require("@pkg/JestGlobals")
+local JestGlobals = require("@pkg/jest-globals")
 local mapRanges = require("./mapRanges")
 
 local expect = JestGlobals.expect

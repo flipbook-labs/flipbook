@@ -1,6 +1,6 @@
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
-local Sift = require("@pkg/Sift")
+local React = require("@pkg/react")
+local ReactRoblox = require("@pkg/react-roblox")
+local Sift = require("@pkg/sift")
 
 local fonts = Sift.Array.sort(Enum.Font:GetEnumItems(), function(a: Enum.Font, z: Enum.Font)
 	return a.Name < z.Name

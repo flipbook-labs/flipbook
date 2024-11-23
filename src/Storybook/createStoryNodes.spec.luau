@@ -1,5 +1,5 @@
-local JestGlobals = require("@pkg/JestGlobals")
-local Storyteller = require("@pkg/Storyteller")
+local JestGlobals = require("@pkg/jest-globals")
+local Storyteller = require("@pkg/storyteller")
 
 local createStoryNodes = require("./createStoryNodes")
 local newFolder = require("@root/Testing/newFolder")

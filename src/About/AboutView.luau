@@ -1,7 +1,7 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 
-local RobloxProfile = require("@root/About/RobloxProfile")
 local BuildInfo = require("@root/About/BuildInfo")
+local RobloxProfile = require("@root/About/RobloxProfile")
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")

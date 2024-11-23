@@ -1,9 +1,9 @@
 local CoreGui = game:GetService("CoreGui")
 
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
-local Sift = require("@pkg/Sift")
-local Storyteller = require("@pkg/Storyteller")
+local React = require("@pkg/react")
+local ReactRoblox = require("@pkg/react-roblox")
+local Sift = require("@pkg/sift")
+local Storyteller = require("@pkg/storyteller")
 
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local StoryError = require("@root/Storybook/StoryError")

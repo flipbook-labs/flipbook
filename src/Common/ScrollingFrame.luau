@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
-local Sift = require("@pkg/Sift")
+local React = require("@pkg/react")
+local Sift = require("@pkg/sift")
 local useTheme = require("@root/Common/useTheme")
 
 export type Props = {

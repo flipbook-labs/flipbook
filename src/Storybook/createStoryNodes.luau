@@ -1,4 +1,4 @@
-local Storyteller = require("@pkg/Storyteller")
+local Storyteller = require("@pkg/storyteller")
 
 local explorerTypes = require("@root/Explorer/types")
 

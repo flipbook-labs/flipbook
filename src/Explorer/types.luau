@@ -1,4 +1,4 @@
-local Storyteller = require("@pkg/Storyteller")
+local Storyteller = require("@pkg/storyteller")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 
