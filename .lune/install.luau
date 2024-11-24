@@ -11,7 +11,7 @@ local function toPascalCase(filename: string)
 	end
 
 	if name and ext then
-		name = filename:gsub("(%a)(%w+)", upperFirstLetter :: any):gsub("%-", "")
+		name = name:gsub("(%a)(%w+)", upperFirstLetter :: any):gsub("%-", "")
 
 		return name .. ext
 	else
