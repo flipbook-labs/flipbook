@@ -7,9 +7,6 @@
     "Example": {
       "$path": "example"
     },
-    "wally.toml": {
-      "$path": "wally.toml"
-    },
     "$path": "src"
   }
 }
