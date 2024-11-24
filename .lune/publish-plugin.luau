@@ -1,10 +1,10 @@
 local process = require("@lune/process")
 
-local parseArgs = require("./lib/parseArgs")
-local run = require("./lib/run")
 local clean = require("./lib/clean")
 local compile = require("./lib/compile")
+local parseArgs = require("./lib/parseArgs")
 local project = require("../project")
+local run = require("./lib/run")
 
 local args = parseArgs(process.args)
 
@@ -36,7 +36,7 @@ do -- mini darklua for swapping out globals in the task with real values
 	end
 end
 
-local output, success = run("python3", {
+run("python3", {
 	".lune/open-cloud/upload_and_run_task.py",
 	"tests.rbxl",
 	publishPluginAssetTask,
@@ -47,10 +47,3 @@ local output, success = run("python3", {
 		ROBLOX_API_KEY = apiKey,
 	},
 })
-
-run("rm", { "tests.rbxl" })
-
-if not success then
-	print(output)
-	process.exit(1)
-end
