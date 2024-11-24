@@ -19,7 +19,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install pesde
-        uses: ./.github/actions/setup-pesde
+        uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
 
       - name: Get model file name
         run: |
@@ -51,7 +51,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install pesde
-        uses: ./.github/actions/setup-pesde
+        uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
 
       - name: Install packages
         run: lune run install
@@ -72,7 +72,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install pesde
-        uses: ./.github/actions/setup-pesde
+        uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
 
       - name: Install packages
         run: lune run install
