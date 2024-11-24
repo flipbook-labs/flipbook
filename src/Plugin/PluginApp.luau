@@ -1,6 +1,6 @@
-local ModuleLoader = require("@pkg/module-loader")
-local React = require("@pkg/react")
-local Storyteller = require("@pkg/storyteller")
+local ModuleLoader = require("@pkg/ModuleLoader")
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")

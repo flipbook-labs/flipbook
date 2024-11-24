@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local themes = require("@root/themes")

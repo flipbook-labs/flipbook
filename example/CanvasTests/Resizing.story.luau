@@ -1,7 +1,7 @@
 local RunService = game:GetService("RunService")
 
-local React = require("@pkg/react")
-local ReactRoblox = require("@pkg/react-roblox")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 local RESIZE_DURATION = 3 -- seconds
 local MAX_SIZE = 2000 -- px

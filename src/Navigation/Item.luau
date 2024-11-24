@@ -1,5 +1,5 @@
-local React = require("@pkg/react")
-local ReactSpring = require("@pkg/react-spring")
+local React = require("@pkg/React")
+local ReactSpring = require("@pkg/ReactSpring")
 local constants = require("@root/constants")
 local useTheme = require("@root/Common/useTheme")
 

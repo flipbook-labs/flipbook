@@ -4,9 +4,9 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-local ModuleLoader = require("@pkg/module-loader")
-local React = require("@pkg/react")
-local ReactRoblox = require("@pkg/react-roblox")
+local ModuleLoader = require("@pkg/ModuleLoader")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")

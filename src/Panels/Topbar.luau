@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local Navigation = require("@root/Navigation")
 local NavigationContext = require("@root/Navigation/NavigationContext")

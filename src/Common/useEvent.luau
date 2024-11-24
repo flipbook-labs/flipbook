@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local function useEvent(event: RBXScriptSignal, callback: (...any) -> ())
 	React.useEffect(function()

@@ -1,6 +1,6 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 local ReactCounter = require("./ReactCounter")
-local ReactRoblox = require("@pkg/react-roblox")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 local controls = {
 	increment = 1,

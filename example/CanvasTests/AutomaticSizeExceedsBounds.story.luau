@@ -1,5 +1,5 @@
-local React = require("@pkg/react")
-local ReactRoblox = require("@pkg/react-roblox")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 return {
 	summary = "AutoamticSize test using a height that exceeds the story preview",

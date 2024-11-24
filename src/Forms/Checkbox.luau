@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 local useTheme = require("@root/Common/useTheme")
 
 export type Props = {

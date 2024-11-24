@@ -1,5 +1,5 @@
-local React = require("@pkg/react")
-local Sift = require("@pkg/sift")
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")

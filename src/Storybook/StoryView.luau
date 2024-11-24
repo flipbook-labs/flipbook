@@ -1,9 +1,9 @@
 local Selection = game:GetService("Selection")
 
-local ModuleLoader = require("@pkg/module-loader")
-local React = require("@pkg/react")
-local Sift = require("@pkg/sift")
-local Storyteller = require("@pkg/storyteller")
+local ModuleLoader = require("@pkg/ModuleLoader")
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local Storyteller = require("@pkg/Storyteller")
 
 local PluginContext = require("@root/Plugin/PluginContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
