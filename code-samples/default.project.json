@@ -4,7 +4,7 @@
     "$className": "DataModel",
     "ReplicatedStorage": {
       "Packages": {
-        "$path": "roblox_packages"
+        "$path": "../roblox_packages"
       },
       "CodeSamples": {
         "$path": "src"

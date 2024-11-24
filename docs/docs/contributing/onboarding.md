@@ -26,7 +26,7 @@ foreman install
 lune setup
 
 # Install packages
-pesde install
+lune run install
 
 ```
 
