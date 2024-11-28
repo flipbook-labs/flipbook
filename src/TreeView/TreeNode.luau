@@ -38,9 +38,10 @@ local function TreeNode(props: Props)
 	local isHovered, setIsHovered = useState(false)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
+	local isSelected = treeViewContext.isSelected(props.node)
 
 	local styles = useSpring({
-		hover = if isHovered then 0 else 1,
+		hover = if isHovered or isSelected then 0 else 1,
 		expand = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
@@ -75,8 +76,16 @@ local function TreeNode(props: Props)
 			props.onActivated()
 		end
 
-		treeViewContext.toggle(props.node)
+		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
+
+	local backgroundColor = useMemo(function(): Color3?
+		if isSelected then
+			return theme.selection
+		else
+			return theme.divider
+		end
+	end, { isSelected })
 
 	return React.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
@@ -93,7 +102,7 @@ local function TreeNode(props: Props)
 			AutoButtonColor = false,
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BorderSizePixel = 0,
-			BackgroundColor3 = theme.divider,
+			BackgroundColor3 = backgroundColor,
 			BackgroundTransparency = styles.hover,
 
 			[React.Event.MouseEnter] = onMouseEnter,

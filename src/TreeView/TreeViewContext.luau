@@ -24,8 +24,9 @@ end
 type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode }) -> (),
 	getRoots: () -> { TreeNode },
-	toggle: (node: TreeNode) -> (),
+	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
+	isSelected: (node: TreeNode) -> boolean,
 }
 
 local TreeViewContext = React.createContext(nil)
@@ -39,6 +40,7 @@ local function TreeNodeProvider(props: {
 	})
 
 	local expandedNodes, setExpandedNodes = useState({} :: { TreeNode })
+	local selectedNode, setSelectedNode = useState(nil :: TreeNode?)
 
 	local setRoots = useCallback(function(partials: { PartialTreeNode })
 		local newNodes = createTreeNodesFromPartials(partials)
@@ -55,9 +57,9 @@ local function TreeNodeProvider(props: {
 		return nodes.roots
 	end, { nodes })
 
-	local getLeaves = useCallback(function()
-		return nodes.leaves
-	end, { nodes })
+	-- local getLeaves = useCallback(function()
+	-- 	return nodes.leaves
+	-- end, { nodes })
 
 	local expand = useCallback(function(node: TreeNode)
 		setExpandedNodes(function(prev)
@@ -88,19 +90,32 @@ local function TreeNodeProvider(props: {
 		return table.find(expandedNodes, node) ~= nil
 	end, { expandedNodes })
 
-	local toggle = useCallback(function(node: TreeNode)
+	local isSelected = useCallback(function(node: TreeNode): boolean
+		return selectedNode == node
+	end, { selectedNode })
+
+	local activateNode = useCallback(function(node: TreeNode)
 		if isExpanded(node) then
 			collapse(node)
 		else
 			expand(node)
 		end
-	end, { isExpanded, expand, collapse } :: { unknown })
+
+		if node ~= selectedNode then
+			if table.find(nodes.leaves, node) then
+				setSelectedNode(node)
+			end
+		else
+			setSelectedNode(nil)
+		end
+	end, { nodes, selectedNode, isExpanded, expand, collapse } :: { unknown })
 
 	local context: TreeViewContext = {
 		setRoots = setRoots,
 		getRoots = getRoots,
-		toggle = toggle,
+		activateNode = activateNode,
 		isExpanded = isExpanded,
+		isSelected = isSelected,
 	}
 
 	return React.createElement(TreeViewContext.Provider, {
