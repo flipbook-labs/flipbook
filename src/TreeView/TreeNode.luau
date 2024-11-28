@@ -1,16 +1,29 @@
 local React = require("@pkg/React")
+local ReactSpring = require("@pkg/ReactSpring")
 
 local Sprite = require("@root/Common/Sprite")
-local types = require("@root/TreeView/types")
-local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
-local useTheme = require("@root/Common/useTheme")
 local assets = require("@root/assets")
+local constants = require("@root/constants")
+local types = require("@root/TreeView/types")
+local useTheme = require("@root/Common/useTheme")
+local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
+local useSpring = ReactSpring.useSpring :: any
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
 
 type TreeNode = types.TreeNode
+
+local function countParents(node: TreeNode): number
+	local current = node
+	local count = 0
+	while current.parent do
+		current = current.parent
+		count += 1
+	end
+	return count
+end
 
 export type Props = {
 	node: TreeNode,
@@ -21,8 +34,17 @@ export type Props = {
 local function TreeNode(props: Props)
 	local theme = useTheme()
 	local icon, iconColor = useTreeNodeIcon(props.node.icon)
-
 	local isExpanded, setIsExpanded = useState(props.node.isExpanded)
+	local isHovered, setIsHovered = useState(false)
+
+	local styles = useSpring({
+		alpha = if isHovered then 0 else 1,
+		config = constants.SPRING_CONFIG,
+	})
+
+	local numParents = useMemo(function()
+		return countParents(props.node)
+	end, { props.node })
 
 	local children = useMemo(function()
 		local elements: { [string]: React.Node } = {}
@@ -37,6 +59,14 @@ local function TreeNode(props: Props)
 		return elements
 	end, { props.node.children })
 
+	local onMouseEnter = useCallback(function()
+		setIsHovered(true)
+	end, {})
+
+	local onMouseLeave = useCallback(function()
+		setIsHovered(false)
+	end, {})
+
 	local onActivated = useCallback(function()
 		if props.onActivated then
 			props.onActivated()
@@ -47,23 +77,27 @@ local function TreeNode(props: Props)
 		end)
 	end, { props.onActivated })
 
-	return React.createElement("ImageButton", {
+	return React.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,
-		AutoButtonColor = false,
 		AutomaticSize = Enum.AutomaticSize.XY,
 		ClipsDescendants = true,
-
 		BackgroundTransparency = 1,
-		[React.Event.Activated] = onActivated,
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		Node = React.createElement("Frame", {
+		Node = React.createElement("ImageButton", {
 			LayoutOrder = 1,
+			AutoButtonColor = false,
 			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			BackgroundColor3 = theme.divider,
+			BackgroundTransparency = styles.alpha,
+
+			[React.Event.MouseEnter] = onMouseEnter,
+			[React.Event.MouseLeave] = onMouseLeave,
+			[React.Event.Activated] = onActivated,
 		}, {
 			Layout = React.createElement("UIListLayout", {
 				SortOrder = Enum.SortOrder.LayoutOrder,
@@ -75,6 +109,8 @@ local function TreeNode(props: Props)
 			Padding = React.createElement("UIPadding", {
 				PaddingTop = theme.paddingSmall,
 				PaddingBottom = theme.paddingSmall,
+				PaddingRight = theme.paddingSmall,
+				PaddingLeft = theme.paddingSmall + UDim.new(0, theme.padding.Offset * numParents),
 			}),
 
 			Icon = React.createElement(Sprite, {
@@ -127,11 +163,6 @@ local function TreeNode(props: Props)
 				AutomaticSize = Enum.AutomaticSize.XY,
 				BackgroundTransparency = 1,
 			}, {
-
-				Padding = React.createElement("UIPadding", {
-					PaddingLeft = theme.padding,
-				}),
-
 				Layout = React.createElement("UIListLayout", {
 					SortOrder = Enum.SortOrder.LayoutOrder,
 				}),
