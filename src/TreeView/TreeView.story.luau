@@ -20,7 +20,6 @@ local roots: { PartialTreeNode } = {
 			{
 				label = "Storybook 1",
 				icon = types.TreeNodeIcon.Storybook,
-				isExpanded = false,
 				children = {
 					-- ...
 				},
@@ -30,7 +29,6 @@ local roots: { PartialTreeNode } = {
 	{
 		label = "Storybook 1",
 		icon = types.TreeNodeIcon.Storybook,
-		isExpanded = false,
 		children = {
 			-- ...
 		},
@@ -39,7 +37,6 @@ local roots: { PartialTreeNode } = {
 	{
 		label = "Storybook 2",
 		icon = types.TreeNodeIcon.Storybook,
-		isExpanded = true,
 		children = {
 			{
 				label = "Folder",

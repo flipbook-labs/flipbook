@@ -42,25 +42,6 @@ local function TreeNodeProvider(props: {
 	local expandedNodes, setExpandedNodes = useState({} :: { TreeNode })
 	local selectedNode, setSelectedNode = useState(nil :: TreeNode?)
 
-	local setRoots = useCallback(function(partials: { PartialTreeNode })
-		local newNodes = createTreeNodesFromPartials(partials)
-
-		setExpandedNodes(newNodes.expandedByDefault)
-
-		setNodes({
-			roots = newNodes.roots,
-			leaves = newNodes.leaves,
-		})
-	end, {})
-
-	local getRoots = useCallback(function()
-		return nodes.roots
-	end, { nodes })
-
-	-- local getLeaves = useCallback(function()
-	-- 	return nodes.leaves
-	-- end, { nodes })
-
 	local expand = useCallback(function(node: TreeNode)
 		setExpandedNodes(function(prev)
 			-- If the parent node is not expanded then make sure to expand out
@@ -85,6 +66,27 @@ local function TreeNodeProvider(props: {
 			return prev
 		end)
 	end, {})
+
+	local setRoots = useCallback(function(partials: { PartialTreeNode })
+		local newNodes = createTreeNodesFromPartials(partials)
+
+		for _, node in newNodes.expandedByDefault do
+			expand(node)
+		end
+
+		setNodes({
+			roots = newNodes.roots,
+			leaves = newNodes.leaves,
+		})
+	end, {})
+
+	local getRoots = useCallback(function()
+		return nodes.roots
+	end, { nodes })
+
+	-- local getLeaves = useCallback(function()
+	-- 	return nodes.leaves
+	-- end, { nodes })
 
 	local isExpanded = useCallback(function(node: TreeNode): boolean
 		return table.find(expandedNodes, node) ~= nil
