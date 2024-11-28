@@ -24,10 +24,7 @@ end
 type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode }) -> (),
 	getRoots: () -> { TreeNode },
-	getLeaves: () -> { TreeNode },
 	toggle: (node: TreeNode) -> (),
-	expand: (node: TreeNode) -> (),
-	collapse: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
 }
 
@@ -102,11 +99,8 @@ local function TreeNodeProvider(props: {
 	local context: TreeViewContext = {
 		setRoots = setRoots,
 		getRoots = getRoots,
-		getLeaves = getLeaves,
 		toggle = toggle,
 		isExpanded = isExpanded,
-		expand = expand,
-		collapse = collapse,
 	}
 
 	return React.createElement(TreeViewContext.Provider, {
