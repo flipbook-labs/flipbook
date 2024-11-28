@@ -38,7 +38,8 @@ local function TreeNode(props: Props)
 	local isHovered, setIsHovered = useState(false)
 
 	local styles = useSpring({
-		alpha = if isHovered then 0 else 1,
+		hover = if isHovered then 0 else 1,
+		expand = if isExpanded then 1 else 0,
 		config = constants.SPRING_CONFIG,
 	})
 
@@ -93,7 +94,7 @@ local function TreeNode(props: Props)
 			AutomaticSize = Enum.AutomaticSize.XY,
 			BorderSizePixel = 0,
 			BackgroundColor3 = theme.divider,
-			BackgroundTransparency = styles.alpha,
+			BackgroundTransparency = styles.hover,
 
 			[React.Event.MouseEnter] = onMouseEnter,
 			[React.Event.MouseLeave] = onMouseLeave,
@@ -145,7 +146,9 @@ local function TreeNode(props: Props)
 					RotationWrapper = React.createElement("Frame", {
 						BackgroundTransparency = 1,
 						AutomaticSize = Enum.AutomaticSize.XY,
-						Rotation = if isExpanded then 90 else 0,
+						Rotation = styles.expand:map(function(value)
+							return 90 * value
+						end),
 					}, {
 						Icon = React.createElement(Sprite, {
 							image = assets.ChevronRight,
