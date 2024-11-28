@@ -1,42 +1,21 @@
 local React = require("@pkg/React")
 
-local types = require("@root/TreeView/types")
 local TreeNode = require("@root/TreeView/TreeNode")
-local createTreeNodesFromPartials = require("@root/TreeView/createTreeNodesFromPartials")
-
-local useCallback = React.useCallback
-local useMemo = React.useMemo
+local TreeViewContext = require("@root/TreeView/TreeViewContext")
+local types = require("@root/TreeView/types")
 
 type PartialTreeNode = types.PartialTreeNode
 type TreeNode = types.TreeNode
 type Tree = types.Tree
 
-export type Props = {
-	roots: { PartialTreeNode },
-	expandedNodes: { TreeNode }?,
-	onActivated: ((node: TreeNode) -> ())?,
-	filter: ((node: TreeNode) -> boolean)?,
-}
-
-local function TreeView(props: Props)
-	local roots = useMemo(function(): { TreeNode }
-		return createTreeNodesFromPartials(props.roots)
-	end, { props.roots })
-
-	local onNodeActivated = useCallback(function(node: TreeNode)
-		if props.onActivated then
-			props.onActivated(node)
-		end
-	end, { props.onActivated })
+local function TreeView()
+	local treeViewContext = TreeViewContext.use()
 
 	local children: { [string]: React.Node } = {}
-	for index, node in roots do
+	for index, node in treeViewContext.getRoots() do
 		children[node.label] = React.createElement(TreeNode, {
 			layoutOrder = index,
 			node = node,
-			onActivated = function()
-				onNodeActivated(node)
-			end,
 		})
 	end
 

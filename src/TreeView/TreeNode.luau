@@ -2,6 +2,7 @@ local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
 
 local Sprite = require("@root/Common/Sprite")
+local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local assets = require("@root/assets")
 local constants = require("@root/constants")
 local types = require("@root/TreeView/types")
@@ -34,8 +35,9 @@ export type Props = {
 local function TreeNode(props: Props)
 	local theme = useTheme()
 	local icon, iconColor = useTreeNodeIcon(props.node.icon)
-	local isExpanded, setIsExpanded = useState(props.node.isExpanded)
 	local isHovered, setIsHovered = useState(false)
+	local treeViewContext = TreeViewContext.use()
+	local isExpanded = treeViewContext.isExpanded(props.node)
 
 	local styles = useSpring({
 		hover = if isHovered then 0 else 1,
@@ -73,10 +75,8 @@ local function TreeNode(props: Props)
 			props.onActivated()
 		end
 
-		setIsExpanded(function(prev)
-			return not prev
-		end)
-	end, { props.onActivated })
+		treeViewContext.toggle(props.node)
+	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
 	return React.createElement("Frame", {
 		LayoutOrder = props.layoutOrder,

@@ -5,7 +5,14 @@ local types = require("./types")
 type PartialTreeNode = types.PartialTreeNode
 type TreeNode = types.TreeNode
 
-local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): { TreeNode }
+local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): {
+	roots: { TreeNode },
+	leaves: { TreeNode },
+	expandedByDefault: { TreeNode },
+}
+	local leaves: { TreeNode } = {}
+	local expandedByDefault: { TreeNode } = {}
+
 	local function process(partials: { PartialTreeNode }, parent: TreeNode?): { TreeNode }
 		local siblings: { TreeNode } = {}
 
@@ -20,8 +27,14 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): {
 
 			local node = Sift.Dictionary.join(base, partial)
 
+			if node.isExpanded then
+				table.insert(expandedByDefault, node)
+			end
+
 			if partial.children then
 				node.children = if partial.children then process(partial.children, node) else {}
+			else
+				table.insert(leaves, node)
 			end
 
 			table.insert(siblings, node)
@@ -30,7 +43,11 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): {
 		return siblings
 	end
 
-	return process(partialRoots)
+	return {
+		roots = process(partialRoots),
+		leaves = leaves,
+		expandedByDefault = expandedByDefault,
+	}
 end
 
 return createTreeNodesFromPartials
