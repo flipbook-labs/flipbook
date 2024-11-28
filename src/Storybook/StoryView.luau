@@ -100,6 +100,10 @@ local function StoryView(props: Props)
 		setTopbarHeight(rbx.AbsoluteSize.Y)
 	end, {})
 
+	React.useEffect(function()
+		setChangedControls({})
+	end, { story })
+
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,

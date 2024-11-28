@@ -14,6 +14,13 @@ local function StoryError(props: Props)
 		LayoutOrder = props.layoutOrder,
 		Text = props.err,
 		TextColor3 = theme.alert,
+	}, {
+		Padding = React.createElement("UIPadding", {
+			PaddingTop = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+		}),
 	})
 end
 
