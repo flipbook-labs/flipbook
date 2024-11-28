@@ -107,6 +107,10 @@ local function TreeNode(props: Props)
 				HorizontalFlex = Enum.UIFlexAlignment.Fill,
 			}),
 
+			Corner = React.createElement("UICorner", {
+				CornerRadius = theme.paddingSmall,
+			}),
+
 			Padding = React.createElement("UIPadding", {
 				PaddingTop = theme.paddingSmall,
 				PaddingBottom = theme.paddingSmall,
