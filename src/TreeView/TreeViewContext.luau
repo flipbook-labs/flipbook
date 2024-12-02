@@ -2,6 +2,8 @@ local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local createTreeNodesFromPartials = require("@root/TreeView/createTreeNodesFromPartials")
+local getAncestry = require("@root/TreeView/getAncestry")
+local reduceTree = require("@root/TreeView/reduceTree")
 local types = require("@root/TreeView/types")
 
 type PartialTreeNode = types.PartialTreeNode
@@ -9,17 +11,8 @@ type TreeNode = types.TreeNode
 
 local useCallback = React.useCallback
 local useContext = React.useContext
+local useMemo = React.useMemo
 local useState = React.useState
-
-local function getAncestry(node: TreeNode): { TreeNode }
-	local ancestry = {}
-	local parent = node.parent
-	while parent do
-		table.insert(ancestry, parent)
-		parent = parent.parent
-	end
-	return ancestry
-end
 
 type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode }) -> (),
@@ -27,6 +20,7 @@ type TreeViewContext = {
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
 	isSelected: (node: TreeNode) -> boolean,
+	search: (searchTerm: string) -> (),
 }
 
 local TreeViewContext = React.createContext(nil)
@@ -41,6 +35,10 @@ local function TreeNodeProvider(props: {
 
 	local expandedNodes, setExpandedNodes = useState({} :: { TreeNode })
 	local selectedNode, setSelectedNode = useState(nil :: TreeNode?)
+	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+
+	-- TODO: Expand to a specific node
+	-- TODO: Always put folders at the top of the list
 
 	local expand = useCallback(function(node: TreeNode)
 		setExpandedNodes(function(prev)
@@ -67,6 +65,24 @@ local function TreeNodeProvider(props: {
 		end)
 	end, {})
 
+	local filteredRoots = useMemo(function()
+		if searchTerm then
+			return reduceTree(nodes.roots, function(node)
+				return node.label:lower():match(searchTerm:lower()) ~= nil
+			end)
+		else
+			return nodes.roots
+		end
+	end, { nodes.roots, searchTerm } :: { unknown })
+
+	local search = useCallback(function(newSearchTerm: string)
+		if newSearchTerm ~= "" then
+			setSearchTerm(newSearchTerm)
+		else
+			setSearchTerm(nil)
+		end
+	end, {})
+
 	local setRoots = useCallback(function(partials: { PartialTreeNode })
 		local newNodes = createTreeNodesFromPartials(partials)
 
@@ -81,16 +97,16 @@ local function TreeNodeProvider(props: {
 	end, {})
 
 	local getRoots = useCallback(function()
-		return nodes.roots
-	end, { nodes })
-
-	-- local getLeaves = useCallback(function()
-	-- 	return nodes.leaves
-	-- end, { nodes })
+		return filteredRoots
+	end, { filteredRoots })
 
 	local isExpanded = useCallback(function(node: TreeNode): boolean
-		return table.find(expandedNodes, node) ~= nil
-	end, { expandedNodes })
+		if searchTerm then
+			return true
+		else
+			return table.find(expandedNodes, node) ~= nil
+		end
+	end, { expandedNodes, searchTerm } :: { unknown })
 
 	local isSelected = useCallback(function(node: TreeNode): boolean
 		return selectedNode == node
@@ -118,6 +134,7 @@ local function TreeNodeProvider(props: {
 		activateNode = activateNode,
 		isExpanded = isExpanded,
 		isSelected = isSelected,
+		search = search,
 	}
 
 	return React.createElement(TreeViewContext.Provider, {
