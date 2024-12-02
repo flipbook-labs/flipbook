@@ -2,34 +2,34 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local TreeView = require("@root/TreeView/TreeView")
+local TreeViewContext = require("@root/TreeView/TreeViewContext")
+local creaTreeNodesForStorybook = require("@root/TreeView/creaTreeNodesForStorybook")
 local treeViewTypes = require("@root/TreeView/types")
 
 type TreeNode = treeViewTypes.TreeNode
-type Storybook = Storyteller.Storybook
+type LoadedStorybook = Storyteller.LoadedStorybook
 
-local useMemo = React.useMemo
+local useEffect = React.useEffect
 
 export type Props = {
-	storybooks: { Storybook },
+	storybooks: { LoadedStorybook },
+	layoutOrder: number?,
 }
 
 local function StorybookTreeView(props: Props)
-	local storyModules = useMemo(function()
-		-- TODO: Collect all story modules under each storybook's `storyRoots` array
+	local treeViewContext = TreeViewContext.use()
+
+	useEffect(function()
+		local roots: { TreeNode } = {}
+		for _, storybook in props.storybooks do
+			local nodes = creaTreeNodesForStorybook(storybook)
+			table.insert(roots, nodes.root)
+		end
+		treeViewContext.setRoots(roots)
 	end, { props.storybooks })
 
-	local leafNodes = useMemo(function()
-		local nodes: { TreeNode } = {}
-		for _, storyModule in storyModules do
-			-- table.insert(nodes, {})
-		end
-		return nodes
-	end, { storyModules })
-
-	local roots = useMemo(function() end, { props.storybooks })
-
 	return React.createElement(TreeView, {
-		roots = roots,
+		layoutOrder = props.layoutOrder,
 	})
 end
 

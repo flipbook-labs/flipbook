@@ -5,7 +5,7 @@ local types = require("./types")
 type PartialTreeNode = types.PartialTreeNode
 type TreeNode = types.TreeNode
 
-local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): {
+local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | TreeNode }): {
 	roots: { TreeNode },
 	leaves: { TreeNode },
 	expandedByDefault: { TreeNode },
@@ -13,7 +13,7 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode }): {
 	local leaves: { TreeNode } = {}
 	local expandedByDefault: { TreeNode } = {}
 
-	local function process(partials: { PartialTreeNode }, parent: TreeNode?): { TreeNode }
+	local function process(partials: { PartialTreeNode | TreeNode }, parent: TreeNode?): { TreeNode }
 		local siblings: { TreeNode } = {}
 
 		for _, partial in partials do

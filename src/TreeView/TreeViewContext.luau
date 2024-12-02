@@ -15,7 +15,7 @@ local useMemo = React.useMemo
 local useState = React.useState
 
 type TreeViewContext = {
-	setRoots: (nodes: { PartialTreeNode }) -> (),
+	setRoots: (nodes: { PartialTreeNode | TreeNode }) -> (),
 	getRoots: () -> { TreeNode },
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
@@ -83,7 +83,7 @@ local function TreeNodeProvider(props: {
 		end
 	end, {})
 
-	local setRoots = useCallback(function(partials: { PartialTreeNode })
+	local setRoots = useCallback(function(partials: { TreeNode | PartialTreeNode })
 		local newNodes = createTreeNodesFromPartials(partials)
 
 		for _, node in newNodes.expandedByDefault do

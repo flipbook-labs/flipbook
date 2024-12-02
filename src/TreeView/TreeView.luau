@@ -9,7 +9,7 @@ type TreeNode = types.TreeNode
 type Tree = types.Tree
 
 local function TreeView(props: {
-	LayoutOrder: number?,
+	layoutOrder: number?,
 })
 	local treeViewContext = TreeViewContext.use()
 
@@ -24,7 +24,7 @@ local function TreeView(props: {
 	return React.createElement("Frame", {
 		BackgroundTransparency = 1,
 		AutomaticSize = Enum.AutomaticSize.XY,
-		LayoutOrder = props.LayoutOrder,
+		LayoutOrder = props.layoutOrder,
 	}, {
 		Layout = React.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
