@@ -1,4 +1,4 @@
-local Roact = require("@pkg/Roact")
+local Roact = require("@pkg/roact")
 
 export type Props = {
 	text: string,

@@ -1,5 +1,6 @@
-local React = require("@pkg/React")
-local ReactSpring = require("@pkg/ReactSpring")
+local React = require("@pkg/react")
+local ReactSpring = require("@pkg/react-spring")
+
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
 local constants = require("@root/constants")

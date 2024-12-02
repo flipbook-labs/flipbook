@@ -1,4 +1,4 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 local Sprite = require("./Sprite")
 local assets = require("@root/assets")
 

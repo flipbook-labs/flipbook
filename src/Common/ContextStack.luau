@@ -1,4 +1,4 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 
 export type Props = {
 	providers: { React.ReactElement<any, any> },

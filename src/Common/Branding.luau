@@ -1,4 +1,4 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
 local useTheme = require("@root/Common/useTheme")

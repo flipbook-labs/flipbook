@@ -1,5 +1,6 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
-local React = require("@pkg/React")
+local ModuleLoader = require("@pkg/module-loader")
+
+local React = require("@pkg/react")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")

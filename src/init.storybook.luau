@@ -1,5 +1,5 @@
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
+local React = require("@pkg/react")
+local ReactRoblox = require("@pkg/react-roblox")
 
 return {
 	name = script.Parent.Name,

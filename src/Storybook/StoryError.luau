@@ -1,4 +1,4 @@
-local React = require("@pkg/React")
+local React = require("@pkg/react")
 local SelectableTextLabel = require("@root/Forms/SelectableTextLabel")
 local useTheme = require("@root/Common/useTheme")
 

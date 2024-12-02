@@ -1,5 +1,5 @@
 local Button = require("./Button")
-local Roact = require("@pkg/Roact")
+local Roact = require("@pkg/roact")
 
 return {
 	summary = "A generic button component that can be used anywhere",
