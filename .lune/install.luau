@@ -20,21 +20,27 @@ local function toPascalCase(filename: string)
 end
 
 local function convertPackageNames()
-	for _, module in fs.readDir(constants.PACKAGES_PATH) do
-		local modulePath = `{constants.PACKAGES_PATH}/{module}`
+	local workspacePath = "packages"
+	for _, member in fs.readDir("packages") do
+		local memberPath = `{workspacePath}/{member}`
+		local packagesPath = `{memberPath}/{constants.PACKAGES_PATH}`
 
-		if not fs.isFile(modulePath) then
-			continue
+		for _, module in fs.readDir(packagesPath) do
+			local modulePath = `{packagesPath}/{module}`
+
+			if not fs.isFile(modulePath) then
+				continue
+			end
+
+			local pascalModule = toPascalCase(module)
+
+			if module == pascalModule then
+				print(`name would be unchanged for {module}. skipping...`)
+				continue
+			end
+
+			run("mv", { modulePath, `{packagesPath}/{pascalModule}` })
 		end
-
-		local pascalModule = toPascalCase(module)
-
-		if module == pascalModule then
-			print(`name would be unchanged for {module}. skipping...`)
-			continue
-		end
-
-		run("mv", { modulePath, `{constants.PACKAGES_PATH}/{pascalModule}` })
 	end
 end
 
