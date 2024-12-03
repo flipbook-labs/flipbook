@@ -1,9 +1,9 @@
 local constants = require("./constants")
 local fs = require("@lune/fs")
-local serde = require("@lune/serde")
 local run = require("./run")
+local serde = require("@lune/serde")
 
-local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
+local pesdeToml = serde.decode("toml", fs.readFile("pesde.toml"))
 
 type Target = "prod" | "dev"
 
@@ -19,7 +19,7 @@ local function compile(target: Target)
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
 	local env = {
-		BUILD_VERSION = wallyToml.package.version,
+		BUILD_VERSION = pesdeToml.version,
 		BUILD_CHANNEL = if target == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 	}
