@@ -1,5 +1,5 @@
-local AssetService = game:GetService("AssetService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local AssetService = game:GetService("AssetService")
 
 local CREATOR_ID: number = _G.ROBLOX_CREATOR_ID
 assert(typeof(CREATOR_ID) == "number", "_G.ROBLOX_CREATOR_ID must be supplied")
