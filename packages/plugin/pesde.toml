@@ -1,0 +1,29 @@
+name = "flipbook_labs/flipbook_plugin"
+version = "2.0.0"
+private = true
+
+[target]
+environment = "roblox"
+
+[scripts]
+roblox_sync_config_generator = ".pesde/roblox_sync_config_generator.luau"
+sourcemap_generator = ".pesde/sourcemap_generator.luau"
+
+[indices]
+default = "https://github.com/daimond113/pesde-index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[dependencies]
+module-loader = { wally = "wally#flipbook-labs/module-loader", version = "^0.6.2" }
+react = { wally = "wally#jsdotlua/react", version = "^17.2.0" }
+react-roblox = { wally = "wally#jsdotlua/react-roblox", version = "^17.2.0" }
+react-spring = { wally = "wally#chriscerie/react-spring", version = "^2.0.0" }
+sift = { wally = "wally#csqrl/sift", version = "^0.0.9" }
+storyteller = { wally = "wally#flipbook-labs/storyteller", version = "^0.5.0" }
+t = { wally = "wally#osyrisrblx/t", version = "^3.1.1" }
+
+[dev_dependencies]
+jest = { wally = "wally#jsdotlua/jest", version = "^3.6.1-rc.2" }
+jest-globals = { wally = "wally#jsdotlua/jest-globals", version = "^3.6.1-rc.2" }

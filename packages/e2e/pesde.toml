@@ -1,0 +1,23 @@
+name = "flipbook_labs/flipbook_e2e"
+version = "2.0.0"
+private = true
+
+[target]
+environment = "roblox"
+
+[scripts]
+roblox_sync_config_generator = ".pesde/roblox_sync_config_generator.luau"
+sourcemap_generator = ".pesde/sourcemap_generator.luau"
+
+[indices]
+default = "https://github.com/daimond113/pesde-index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[dependencies]
+react = { wally = "wally#jsdotlua/react", version = "^17.2.0" }
+react-roblox = { wally = "wally#jsdotlua/react-roblox", version = "^17.2.0" }
+sift = { wally = "wally#csqrl/sift", version = "^0.0.9" }
+fusion = { wally = "wally#elttob/fusion", version = "^0.2.0" }
+roact = { wally = "wally#roblox/roact", version = "^1.4.4" }

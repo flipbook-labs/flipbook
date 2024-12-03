@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Jest = require(ReplicatedStorage.Packages.Jest)
+local Jest = require("@pkg/Jest")
 
 local processServiceExists, ProcessService = pcall(function()
 	-- selene: allow(incorrect_standard_library_use)

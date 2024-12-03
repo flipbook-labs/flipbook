@@ -1,0 +1,396 @@
+name = "flipbook_labs/flipbook_e2e"
+version = "2.0.0"
+target = "roblox"
+
+[graph."wally#csqrl/sift"."0.0.9 roblox"]
+direct = ["sift", { wally = "wally#csqrl/sift", version = "^0.0.9" }, "standard"]
+resolved_ty = "standard"
+
+[graph."wally#csqrl/sift"."0.0.9 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#csqrl/sift"."0.0.9 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#csqrl/sift"
+version = "0.0.9"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#elttob/fusion"."0.2.0 roblox"]
+direct = ["fusion", { wally = "wally#elttob/fusion", version = "^0.2.0" }, "standard"]
+resolved_ty = "standard"
+
+[graph."wally#elttob/fusion"."0.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#elttob/fusion"."0.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#elttob/fusion"
+version = "0.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/boolean"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/boolean"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/boolean"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/number" = ["1.2.7 roblox", "number"]
+
+[graph."wally#jsdotlua/boolean"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/boolean"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/boolean"."1.2.7 roblox".pkg_ref.dependencies]
+number = [{ wally = "wally#jsdotlua/number", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/collections"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/collections"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/collections"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/es7-types" = ["1.2.7 roblox", "es7-types"]
+"wally#jsdotlua/instance-of" = ["1.2.7 roblox", "instance-of"]
+
+[graph."wally#jsdotlua/collections"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/collections"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/collections"."1.2.7 roblox".pkg_ref.dependencies]
+es7-types = [{ wally = "wally#jsdotlua/es7-types", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+instance-of = [{ wally = "wally#jsdotlua/instance-of", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/console"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/console"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/console"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/collections" = ["1.2.7 roblox", "collections"]
+
+[graph."wally#jsdotlua/console"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/console"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/console"."1.2.7 roblox".pkg_ref.dependencies]
+collections = [{ wally = "wally#jsdotlua/collections", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/es7-types"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/es7-types"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/es7-types"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/es7-types"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/instance-of"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/instance-of"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/instance-of"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/instance-of"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/luau-polyfill"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/luau-polyfill"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/luau-polyfill"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/boolean" = ["1.2.7 roblox", "boolean"]
+"wally#jsdotlua/collections" = ["1.2.7 roblox", "collections"]
+"wally#jsdotlua/console" = ["1.2.7 roblox", "console"]
+"wally#jsdotlua/es7-types" = ["1.2.7 roblox", "es7-types"]
+"wally#jsdotlua/instance-of" = ["1.2.7 roblox", "instance-of"]
+"wally#jsdotlua/math" = ["1.2.7 roblox", "math"]
+"wally#jsdotlua/number" = ["1.2.7 roblox", "number"]
+"wally#jsdotlua/string" = ["1.2.7 roblox", "string"]
+"wally#jsdotlua/symbol-luau" = ["1.0.1 roblox", "symbol-luau"]
+"wally#jsdotlua/timers" = ["1.2.7 roblox", "timers"]
+
+[graph."wally#jsdotlua/luau-polyfill"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/luau-polyfill"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/luau-polyfill"."1.2.7 roblox".pkg_ref.dependencies]
+boolean = [{ wally = "wally#jsdotlua/boolean", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+collections = [{ wally = "wally#jsdotlua/collections", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+console = [{ wally = "wally#jsdotlua/console", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+es7-types = [{ wally = "wally#jsdotlua/es7-types", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+instance-of = [{ wally = "wally#jsdotlua/instance-of", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+math = [{ wally = "wally#jsdotlua/math", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+number = [{ wally = "wally#jsdotlua/number", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+string = [{ wally = "wally#jsdotlua/string", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+symbol-luau = [{ wally = "wally#jsdotlua/symbol-luau", version = ">=1.0.0, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+timers = [{ wally = "wally#jsdotlua/timers", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/math"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/math"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/math"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/math"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/number"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/number"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/number"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/number"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/promise"."3.5.2 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/promise"."3.5.2 roblox".target]
+environment = "roblox"
+lib = "lib/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/promise"."3.5.2 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/promise"
+version = "3.5.2"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/react"."17.2.0 roblox"]
+direct = ["react", { wally = "wally#jsdotlua/react", version = "^17.2.0" }, "standard"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/react"."17.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#jsdotlua/react"."17.2.0 roblox".dependencies]
+"wally#jsdotlua/luau-polyfill" = ["1.2.7 roblox", "luau-polyfill"]
+"wally#jsdotlua/shared" = ["17.2.0 roblox", "shared"]
+
+[graph."wally#jsdotlua/react"."17.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/react"
+version = "17.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/react"."17.2.0 roblox".pkg_ref.dependencies]
+luau-polyfill = [{ wally = "wally#jsdotlua/luau-polyfill", version = ">=1.2.6, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+shared = [{ wally = "wally#jsdotlua/shared", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/react-reconciler"."17.2.0 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/react-reconciler"."17.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#jsdotlua/react-reconciler"."17.2.0 roblox".dependencies]
+"wally#jsdotlua/luau-polyfill" = ["1.2.7 roblox", "luau-polyfill"]
+"wally#jsdotlua/promise" = ["3.5.2 roblox", "promise"]
+"wally#jsdotlua/react" = ["17.2.0 roblox", "react"]
+"wally#jsdotlua/scheduler" = ["17.2.0 roblox", "scheduler"]
+"wally#jsdotlua/shared" = ["17.2.0 roblox", "shared"]
+
+[graph."wally#jsdotlua/react-reconciler"."17.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/react-reconciler"
+version = "17.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/react-reconciler"."17.2.0 roblox".pkg_ref.dependencies]
+luau-polyfill = [{ wally = "wally#jsdotlua/luau-polyfill", version = ">=1.2.6, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+promise = [{ wally = "wally#jsdotlua/promise", version = ">=3.5.0, <4.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+react = [{ wally = "wally#jsdotlua/react", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+scheduler = [{ wally = "wally#jsdotlua/scheduler", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+shared = [{ wally = "wally#jsdotlua/shared", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/react-roblox"."17.2.0 roblox"]
+direct = ["react-roblox", { wally = "wally#jsdotlua/react-roblox", version = "^17.2.0" }, "standard"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/react-roblox"."17.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#jsdotlua/react-roblox"."17.2.0 roblox".dependencies]
+"wally#jsdotlua/luau-polyfill" = ["1.2.7 roblox", "luau-polyfill"]
+"wally#jsdotlua/react" = ["17.2.0 roblox", "react"]
+"wally#jsdotlua/react-reconciler" = ["17.2.0 roblox", "react-reconciler"]
+"wally#jsdotlua/scheduler" = ["17.2.0 roblox", "scheduler"]
+"wally#jsdotlua/shared" = ["17.2.0 roblox", "shared"]
+
+[graph."wally#jsdotlua/react-roblox"."17.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/react-roblox"
+version = "17.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/react-roblox"."17.2.0 roblox".pkg_ref.dependencies]
+luau-polyfill = [{ wally = "wally#jsdotlua/luau-polyfill", version = ">=1.2.6, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+react = [{ wally = "wally#jsdotlua/react", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+react-reconciler = [{ wally = "wally#jsdotlua/react-reconciler", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+scheduler = [{ wally = "wally#jsdotlua/scheduler", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+shared = [{ wally = "wally#jsdotlua/shared", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/scheduler"."17.2.0 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/scheduler"."17.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#jsdotlua/scheduler"."17.2.0 roblox".dependencies]
+"wally#jsdotlua/luau-polyfill" = ["1.2.7 roblox", "luau-polyfill"]
+"wally#jsdotlua/shared" = ["17.2.0 roblox", "shared"]
+
+[graph."wally#jsdotlua/scheduler"."17.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/scheduler"
+version = "17.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/scheduler"."17.2.0 roblox".pkg_ref.dependencies]
+luau-polyfill = [{ wally = "wally#jsdotlua/luau-polyfill", version = ">=1.2.6, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+shared = [{ wally = "wally#jsdotlua/shared", version = ">=17.2.0, <18.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/shared"."17.2.0 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/shared"."17.2.0 roblox".target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = []
+
+[graph."wally#jsdotlua/shared"."17.2.0 roblox".dependencies]
+"wally#jsdotlua/luau-polyfill" = ["1.2.7 roblox", "luau-polyfill"]
+
+[graph."wally#jsdotlua/shared"."17.2.0 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/shared"
+version = "17.2.0"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/shared"."17.2.0 roblox".pkg_ref.dependencies]
+luau-polyfill = [{ wally = "wally#jsdotlua/luau-polyfill", version = ">=1.2.6, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/string"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/string"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/string"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/es7-types" = ["1.2.7 roblox", "es7-types"]
+"wally#jsdotlua/number" = ["1.2.7 roblox", "number"]
+
+[graph."wally#jsdotlua/string"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/string"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/string"."1.2.7 roblox".pkg_ref.dependencies]
+es7-types = [{ wally = "wally#jsdotlua/es7-types", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+number = [{ wally = "wally#jsdotlua/number", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#jsdotlua/symbol-luau"."1.0.1 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/symbol-luau"."1.0.1 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/symbol-luau"."1.0.1 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/symbol-luau"
+version = "1.0.1"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/timers"."1.2.7 roblox"]
+resolved_ty = "standard"
+
+[graph."wally#jsdotlua/timers"."1.2.7 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#jsdotlua/timers"."1.2.7 roblox".dependencies]
+"wally#jsdotlua/collections" = ["1.2.7 roblox", "collections"]
+
+[graph."wally#jsdotlua/timers"."1.2.7 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#jsdotlua/timers"
+version = "1.2.7"
+index_url = "https://github.com/UpliftGames/wally-index"
+
+[graph."wally#jsdotlua/timers"."1.2.7 roblox".pkg_ref.dependencies]
+collections = [{ wally = "wally#jsdotlua/collections", version = ">=1.2.7, <2.0.0", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+
+[graph."wally#roblox/roact"."1.4.4 roblox"]
+direct = ["roact", { wally = "wally#roblox/roact", version = "^1.4.4" }, "standard"]
+resolved_ty = "standard"
+
+[graph."wally#roblox/roact"."1.4.4 roblox".target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = []
+
+[graph."wally#roblox/roact"."1.4.4 roblox".pkg_ref]
+ref_ty = "wally"
+wally = "wally#roblox/roact"
+version = "1.4.4"
+index_url = "https://github.com/UpliftGames/wally-index"
