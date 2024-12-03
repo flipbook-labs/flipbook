@@ -1,5 +1,5 @@
-local React = require("@pkg/react")
-local Sift = require("@pkg/sift")
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingRow = require("@root/UserSettings/SettingRow")

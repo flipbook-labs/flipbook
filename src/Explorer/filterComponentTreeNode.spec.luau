@@ -1,5 +1,4 @@
-local JestGlobals = require("@pkg/jest-globals")
-
+local JestGlobals = require("@pkg/JestGlobals")
 local filterComponentTreeNode = require("./filterComponentTreeNode")
 local types = require("./types")
 

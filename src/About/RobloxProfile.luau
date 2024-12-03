@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 
-local React = require("@pkg/react")
-local ReactSpring = require("@pkg/react-spring")
+local React = require("@pkg/React")
+local ReactSpring = require("@pkg/ReactSpring")
 
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")

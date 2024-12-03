@@ -1,8 +1,8 @@
 local RunService = game:GetService("RunService")
 
 local PluginContext = require("@root/Plugin/PluginContext")
-local React = require("@pkg/react")
-local Sift = require("@pkg/sift")
+local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 local types = require("@root/Panels/types")
 
 local defaultProps = {

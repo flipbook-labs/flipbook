@@ -1,5 +1,5 @@
-local React = require("@pkg/react")
-local Storyteller = require("@pkg/storyteller")
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local useTheme = require("@root/Common/useTheme")
 

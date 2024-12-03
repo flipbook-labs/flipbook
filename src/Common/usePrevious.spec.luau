@@ -1,7 +1,6 @@
-local JestGlobals = require("@pkg/jest-globals")
-
-local React = require("@pkg/react")
-local ReactRoblox = require("@pkg/react-roblox")
+local JestGlobals = require("@pkg/JestGlobals")
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 local useEvent = require("@root/Common/useEvent")
 local usePrevious = require("./usePrevious")
 

@@ -1,5 +1,4 @@
-local JestGlobals = require("@pkg/jest-globals")
-
+local JestGlobals = require("@pkg/JestGlobals")
 local newFolder = require("./newFolder")
 
 local expect = JestGlobals.expect

@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local ZOOM_INCREMENT = 0.25
 

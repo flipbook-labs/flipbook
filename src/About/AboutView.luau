@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local BuildInfo = require("@root/About/BuildInfo")
 local RobloxProfile = require("@root/About/RobloxProfile")

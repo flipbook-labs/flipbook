@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local PluginContext = React.createContext((nil :: any) :: Plugin)
 

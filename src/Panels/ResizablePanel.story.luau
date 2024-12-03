@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 local ResizablePanel = require("./ResizablePanel")
 
 local controls = {

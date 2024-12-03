@@ -1,5 +1,4 @@
-local JestGlobals = require("@pkg/jest-globals")
-
+local JestGlobals = require("@pkg/JestGlobals")
 local getTreeDescendants = require("./getTreeDescendants")
 
 local expect = JestGlobals.expect

@@ -1,5 +1,5 @@
 local Counter = require("./Counter")
-local Roact = require("@pkg/roact")
+local Roact = require("@pkg/Roact")
 
 local controls = {
 	increment = 1,

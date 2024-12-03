@@ -1,4 +1,4 @@
-local React = require("@pkg/react")
+local React = require("@pkg/React")
 
 local Checkbox = require("./Checkbox")
 local ContextProviders = require("@root/Common/ContextProviders")

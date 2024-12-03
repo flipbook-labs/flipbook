@@ -1,4 +1,4 @@
-local Roact = require("@pkg/roact")
+local Roact = require("@pkg/Roact")
 
 return function(target: Instance)
 	local root = Roact.createElement("TextLabel", {

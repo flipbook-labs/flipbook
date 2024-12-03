@@ -1,4 +1,4 @@
-local Roact = require("@pkg/roact")
+local Roact = require("@pkg/Roact")
 
 local Counter = Roact.Component:extend("Counter")
 
