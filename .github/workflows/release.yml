@@ -40,7 +40,6 @@ jobs:
 
   publish-plugin:
     runs-on: ubuntu-latest
-    if: github.event.release
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
@@ -52,23 +51,10 @@ jobs:
       - name: Install packages
         run: lune run wally-install
 
-      - name: Publish to Creator Store
-        if: ${{ github.event.release }}
-        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
-
-  publish-plugin-nightly:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: Roblox/setup-foreman@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install packages
-        run: lune run wally-install
-
-      - name: Publish to Creator Store
+      - name: Publish nightly build to Creator Store
+        if: github.ref == 'refs/heads/main'
         run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+      - name: Publish release to Creator Store
+        if: github.event.release
+        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
