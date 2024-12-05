@@ -20,7 +20,7 @@ jobs:
         uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
 
       - name: Install packages
-        run: lune run install
+        run: pesde install
 
       - name: Lint
         run: lune run lint
@@ -55,7 +55,7 @@ jobs:
         run: lune setup
 
       - name: Install packages
-        run: lune run install
+        run: pesde install
 
       - name: Run Luau analysis
         run: lune run analyze
