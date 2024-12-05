@@ -20,7 +20,7 @@ type TreeViewContext = {
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
 	isSelected: (node: TreeNode) -> boolean,
-	search: (searchTerm: string) -> (),
+	search: (searchTerm: string?) -> (),
 }
 
 local TreeViewContext = React.createContext(nil)
@@ -75,7 +75,7 @@ local function TreeNodeProvider(props: {
 		end
 	end, { nodes.roots, searchTerm } :: { unknown })
 
-	local search = useCallback(function(newSearchTerm: string)
+	local search = useCallback(function(newSearchTerm: string?)
 		if newSearchTerm ~= "" then
 			setSearchTerm(newSearchTerm)
 		else

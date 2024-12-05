@@ -1,8 +1,8 @@
 local React = require("@pkg/React")
 
 local ContextProviders = require("@root/Common/ContextProviders")
+local InputField = require("@root/Forms/InputField")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local Searchbar = require("@root/Forms/Searchbar")
 local TreeView = require("./TreeView")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local types = require("./types")
@@ -106,7 +106,7 @@ local function Story()
 		treeViewContext.setRoots(roots)
 	end, {})
 
-	local searchTerm, setSearchTerm = useState(nil :: string?)
+	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
 
 	useEffect(function()
 		treeViewContext.search(searchTerm)
@@ -122,13 +122,15 @@ local function Story()
 			Padding = UDim.new(0, 16),
 		}),
 
-		Search = React.createElement(Searchbar, {
-			onSearchChanged = setSearchTerm,
-			LayoutOrder = 1,
+		Search = React.createElement(InputField, {
+			layoutOrder = 1,
+			size = UDim2.new(1, 0, 0, 16),
+			onSubmit = setSearchTerm,
+			onTextChange = setSearchTerm,
 		}),
 
 		TreeView = React.createElement(TreeView, {
-			LayoutOrder = 2,
+			layoutOrder = 2,
 		}),
 	})
 end
