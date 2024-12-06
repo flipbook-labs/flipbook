@@ -16,8 +16,8 @@ default = "https://github.com/daimond113/pesde-index"
 default = "https://github.com/UpliftGames/wally-index"
 
 [dependencies]
-react = { wally = "wally#jsdotlua/react", version = "^17.2.0" }
-react-roblox = { wally = "wally#jsdotlua/react-roblox", version = "^17.2.0" }
-sift = { wally = "wally#csqrl/sift", version = "^0.0.9" }
-fusion = { wally = "wally#elttob/fusion", version = "^0.2.0" }
-roact = { wally = "wally#roblox/roact", version = "^1.4.4" }
+React = { wally = "wally#jsdotlua/react", version = "^17.2.0" }
+ReactRoblox = { wally = "wally#jsdotlua/react-roblox", version = "^17.2.0" }
+Sift = { wally = "wally#csqrl/sift", version = "^0.0.9" }
+Fusion = { wally = "wally#elttob/fusion", version = "^0.2.0" }
+Roact = { wally = "wally#roblox/roact", version = "^1.4.4" }
