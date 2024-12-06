@@ -10,6 +10,7 @@ types.TreeNodeIcon = {
 }
 
 export type PartialTreeNode = {
+	id: string?,
 	label: string,
 	icon: TreeNodeIcon?,
 	isExpanded: boolean?,
@@ -17,6 +18,7 @@ export type PartialTreeNode = {
 }
 
 export type TreeNode = {
+	id: string,
 	label: string,
 	icon: TreeNodeIcon,
 	isExpanded: boolean,

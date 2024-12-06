@@ -7,6 +7,7 @@ local TreeView = require("./TreeView")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local types = require("./types")
 
+local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useState = React.useState
 
@@ -32,7 +33,29 @@ local roots: { PartialTreeNode } = {
 		label = "Storybook 1",
 		icon = types.TreeNodeIcon.Storybook,
 		children = {
-			-- ...
+			{
+				label = "Folder 1",
+				icon = types.TreeNodeIcon.Folder,
+				children = {
+					{
+						label = "Folder 2",
+						icon = types.TreeNodeIcon.Folder,
+						children = {
+							{
+								label = "Folder 3",
+								icon = types.TreeNodeIcon.Folder,
+								children = {
+									{
+										id = "custom-id",
+										label = "Deeply Nested Story",
+										icon = types.TreeNodeIcon.Story,
+									} :: PartialTreeNode,
+								},
+							} :: PartialTreeNode,
+						},
+					} :: PartialTreeNode,
+				},
+			} :: PartialTreeNode,
 		},
 	},
 
@@ -108,6 +131,13 @@ local function Story()
 
 	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
 
+	local onExpand = useCallback(function()
+		local node = treeViewContext.getNodeById("custom-id")
+		if node then
+			treeViewContext.activateNode(node)
+		end
+	end, { treeViewContext })
+
 	useEffect(function()
 		treeViewContext.search(searchTerm)
 	end, { treeViewContext, searchTerm } :: { unknown })
@@ -122,11 +152,31 @@ local function Story()
 			Padding = UDim.new(0, 16),
 		}),
 
-		Search = React.createElement(InputField, {
-			layoutOrder = 1,
-			size = UDim2.new(1, 0, 0, 16),
-			onSubmit = setSearchTerm,
-			onTextChange = setSearchTerm,
+		Topbar = React.createElement("Frame", {
+			LayoutOrder = 1,
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 0, 24),
+		}, {
+			Layout = React.createElement("UIListLayout", {
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				FillDirection = Enum.FillDirection.Horizontal,
+				Padding = UDim.new(0, 16),
+			}),
+
+			Search = React.createElement(InputField, {
+				layoutOrder = 1,
+				size = UDim2.fromScale(0.8, 1),
+				placeholder = "Search...",
+				onSubmit = setSearchTerm,
+				onTextChange = setSearchTerm,
+			}),
+
+			ExpandToNode = React.createElement("TextButton", {
+				LayoutOrder = 2,
+				Size = UDim2.fromScale(0.2, 1),
+				Text = "Expand",
+				[React.Event.Activated] = onExpand,
+			}),
 		}),
 
 		TreeView = React.createElement(TreeView, {

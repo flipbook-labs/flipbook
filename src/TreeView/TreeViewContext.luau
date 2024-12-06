@@ -17,6 +17,7 @@ local useState = React.useState
 type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode | TreeNode }) -> (),
 	getRoots: () -> { TreeNode },
+	getNodeById: (nodeId: string) -> TreeNode?,
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
 	isSelected: (node: TreeNode) -> boolean,
@@ -31,14 +32,12 @@ local function TreeNodeProvider(props: {
 	local nodes, setNodes = useState({
 		roots = {} :: { TreeNode },
 		leaves = {} :: { TreeNode },
+		byId = {} :: { [string]: TreeNode },
 	})
 
 	local expandedNodes, setExpandedNodes = useState({} :: { TreeNode })
 	local selectedNode, setSelectedNode = useState(nil :: TreeNode?)
 	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
-
-	-- TODO: Expand to a specific node
-	-- TODO: Always put folders at the top of the list
 
 	local expand = useCallback(function(node: TreeNode)
 		setExpandedNodes(function(prev)
@@ -93,12 +92,17 @@ local function TreeNodeProvider(props: {
 		setNodes({
 			roots = newNodes.roots,
 			leaves = newNodes.leaves,
+			byId = newNodes.byId,
 		})
 	end, {})
 
 	local getRoots = useCallback(function()
 		return filteredRoots
 	end, { filteredRoots })
+
+	local getNodeById = useCallback(function(nodeId: string)
+		return nodes.byId[nodeId]
+	end, { nodes.byId })
 
 	local isExpanded = useCallback(function(node: TreeNode): boolean
 		if searchTerm then
@@ -131,6 +135,7 @@ local function TreeNodeProvider(props: {
 	local context: TreeViewContext = {
 		setRoots = setRoots,
 		getRoots = getRoots,
+		getNodeById = getNodeById,
 		activateNode = activateNode,
 		isExpanded = isExpanded,
 		isSelected = isSelected,
