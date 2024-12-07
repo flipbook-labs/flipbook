@@ -3,8 +3,9 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const ORGANIZATION_NAME = 'flipbook-labs'
-const PROJECT_NAME = 'flipbook'
-const REPO_URL = `https://github.com/${ORGANIZATION_NAME}/${PROJECT_NAME}`
+const PROJECT_NAME = 'Flipbook'
+const REPO_NAME = 'flipbook'
+const REPO_URL = `https://github.com/${ORGANIZATION_NAME}/${REPO_NAME}`
 const SITE_URL = `https://${ORGANIZATION_NAME}.github.io`
 
 const config: Config = {
@@ -13,7 +14,7 @@ const config: Config = {
 	favicon: 'img/favicon.ico',
 
 	url: SITE_URL,
-	baseUrl: `/${PROJECT_NAME}/`,
+	baseUrl: `/${REPO_NAME}/`,
 
 	organizationName: ORGANIZATION_NAME,
 	projectName: PROJECT_NAME,

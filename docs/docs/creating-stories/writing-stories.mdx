@@ -13,15 +13,15 @@ import ReactButtonExplicitPackagesStory from "!!raw-loader!@site/../code-samples
 
 # Writing Stories
 
-Before flipbook can discover your Stories, you need a Storybook. A Storybook is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project.
+Before Flipbook can discover your Stories, you need a Storybook. A Storybook is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project.
 
 Relatedly, a Story is any ModuleScript with a `.story` extension, typically parented as a sibling to the UI component it renders.
 
-Stories are what you will be working with the most. The Storybook is simply what tells flipbook how to find them and render them.
+Stories are what you will be working with the most. The Storybook is simply what tells Flipbook how to find them and render them.
 
 ## Getting started
 
-A Storybook can be parented anywhere in the experience. The only requirement is that it defines a `storyRoots` array so flipbook knows where to search for Stories.
+A Storybook can be parented anywhere in the experience. The only requirement is that it defines a `storyRoots` array so Flipbook knows where to search for Stories.
 
 The simplest Storybook looks like this:
 
@@ -35,9 +35,9 @@ And here's an example of a Story that renders a TextButton:
 	{DefaultStory}
 </CodeBlock>
 
-In the flipbook plugin, opening the Button story will render out the component.
+In the Flipbook plugin, opening the Button story will render out the component.
 
-![Rendering the Button story in flipbook's UI](./img/first-story.png)
+![Rendering the Button story in Flipbook's UI](./img/first-story.png)
 
 From there, making changing to the Story will live-reload the rendered button.
 
@@ -46,11 +46,11 @@ To connect it back to Studio, these files could simply be stored in ReplicatedSt
 
 ## Using frameworks
 
-By default, flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. Simply returning an Instance allows flipbook to manage the creation and destruction of that Instance so you don't leak memory while working.
+By default, Flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. Simply returning an Instance allows Flipbook to manage the creation and destruction of that Instance so you don't leak memory while working.
 
-flipbook also has built-in support for UI libraries like [React](/docs/frameworks/react) and [Fusion](/docs/frameworks/fusion). The full list can be seen on the [Frameworks](/docs/category/frameworks) page.
+Flipbook also has built-in support for UI libraries like [React](/docs/frameworks/react) and [Fusion](/docs/frameworks/fusion). The full list can be seen on the [Frameworks](/docs/category/frameworks) page.
 
-You can tell flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
+You can tell Flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
 
 <CodeBlock language="lua" title="ReactButton.story.luau">
 	{ReactButtonExplicitPackagesStory}

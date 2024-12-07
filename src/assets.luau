@@ -45,7 +45,7 @@ return {
 		ImageRectOffset = Vector2.new(231, 108),
 		ImageRectSize = Vector2.new(32, 32),
 	},
-	flipbook = {
+	Flipbook = {
 		Image = "rbxassetid://18940815650",
 		ImageRectOffset = Vector2.new(231, 0),
 		ImageRectSize = Vector2.new(64, 64),

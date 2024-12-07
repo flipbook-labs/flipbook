@@ -4,7 +4,7 @@ Once ready to cut a new release, bump the version in `wally.toml` and merge it t
 
 After this point, to publish the new version you must create a new GitHub release, matching the tag to the version bump.
 
-From there, our GitHub Actions will handle building flipbook to an rbxm, attaching it to the release under the "Assets" list, and publish it to the Wally registry for consumption.
+From there, our GitHub Actions will handle building Flipbook to an rbxm, attaching it to the release under the "Assets" list, and publish it to the Wally registry for consumption.
 
 Check out the [Actions](https://github.com/flipbook-labs/flipbook/actions) tab after publishing the release to check the status of the deployment.
 
