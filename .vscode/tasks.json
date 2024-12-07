@@ -7,10 +7,9 @@
       "label": "Install packages",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
+      "command": "pesde",
       "args": [
-        "run",
-        "wally-install"
+        "install",
       ]
     },
     {
