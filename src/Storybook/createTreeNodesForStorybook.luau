@@ -1,21 +1,22 @@
+local HttpService = game:GetService("HttpService")
+
 local Storyteller = require("@pkg/Storyteller")
 
-local types = require("./types")
+local types = require("@root/TreeView/types")
 
 type PartialTreeNode = types.PartialTreeNode
 type TreeNode = types.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type LoadedStory<any> = Storyteller.LoadedStory<any>
 
-local function creaTreeNodesForStorybook(storybook: LoadedStorybook): {
+local function createTreeNodesForStorybook(storybook: LoadedStorybook): {
 	root: TreeNode,
-	leaves: { TreeNode },
 	nodesByInstance: { [Instance]: TreeNode },
 }
-	local leaves: { TreeNode } = {}
 	local nodesByInstance: { [Instance]: TreeNode } = {}
 
 	local root: TreeNode = {
+		id = HttpService:GenerateGUID(),
 		label = if storybook.name then storybook.name else "Unnamed Storybook",
 		icon = "storybook",
 		isExpanded = false,
@@ -24,28 +25,30 @@ local function creaTreeNodesForStorybook(storybook: LoadedStorybook): {
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
 		local currentNode: TreeNode = {
-			label = storyModule.Name,
+			id = HttpService:GenerateGUID(),
+			label = storyModule.Name:gsub("%.story", ""),
 			icon = "story",
 			isExpanded = false,
+			instance = storyModule,
 			children = {},
 		}
-
-		table.insert(leaves, currentNode)
 
 		local parentInstance = storyModule.Parent
 
 		while parentInstance do
+			if table.find(storybook.storyRoots, parentInstance) then
+				table.insert(root.children, currentNode)
+				break
+			end
+
 			local existingParentNode = nodesByInstance[parentInstance]
 
 			if existingParentNode then
-				if table.find(storybook.storyRoots, parentInstance) then
-					table.insert(root.children, existingParentNode)
-					break
-				end
-
 				table.insert(existingParentNode.children, currentNode)
+				break
 			else
 				local parentNode: TreeNode = {
+					id = HttpService:GenerateGUID(),
 					label = parentInstance.Name,
 					icon = "folder",
 					isExpanded = false,
@@ -62,9 +65,8 @@ local function creaTreeNodesForStorybook(storybook: LoadedStorybook): {
 
 	return {
 		root = root,
-		leaves = leaves,
 		nodesByInstance = nodesByInstance,
 	}
 end
 
-return creaTreeNodesForStorybook
+return createTreeNodesForStorybook

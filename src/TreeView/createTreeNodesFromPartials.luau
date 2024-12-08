@@ -36,8 +36,8 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 				table.insert(expandedByDefault, node)
 			end
 
-			if partial.children then
-				node.children = if partial.children then process(partial.children, node) else {}
+			if partial.children and #partial.children > 0 then
+				node.children = process(partial.children, node)
 			else
 				table.insert(leaves, node)
 			end

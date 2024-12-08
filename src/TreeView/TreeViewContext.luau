@@ -18,6 +18,7 @@ type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode | TreeNode }) -> (),
 	getRoots: () -> { TreeNode },
 	getNodeById: (nodeId: string) -> TreeNode?,
+	getSelectedNode: () -> TreeNode?,
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
 	isSelected: (node: TreeNode) -> boolean,
@@ -104,6 +105,10 @@ local function TreeNodeProvider(props: {
 		return nodes.byId[nodeId]
 	end, { nodes.byId })
 
+	local getSelectedNode = useCallback(function()
+		return selectedNode
+	end, { selectedNode })
+
 	local isExpanded = useCallback(function(node: TreeNode): boolean
 		if searchTerm then
 			return true
@@ -136,6 +141,7 @@ local function TreeNodeProvider(props: {
 		setRoots = setRoots,
 		getRoots = getRoots,
 		getNodeById = getNodeById,
+		getSelectedNode = getSelectedNode,
 		activateNode = activateNode,
 		isExpanded = isExpanded,
 		isSelected = isSelected,

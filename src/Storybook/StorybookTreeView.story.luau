@@ -18,6 +18,9 @@ local function Story()
 	}, {
 		StorybookTreeView = React.createElement(StorybookTreeView, {
 			storybooks = storybooks,
+			onStorySelected = function(storyModule)
+				print("selected", storyModule:GetFullName())
+			end,
 		}),
 	})
 end

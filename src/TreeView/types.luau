@@ -15,6 +15,7 @@ export type PartialTreeNode = {
 	icon: TreeNodeIcon?,
 	isExpanded: boolean?,
 	children: { PartialTreeNode }?,
+	instance: Instance?,
 }
 
 export type TreeNode = {
@@ -24,6 +25,7 @@ export type TreeNode = {
 	isExpanded: boolean,
 	children: { TreeNode },
 	parent: TreeNode?,
+	instance: Instance?,
 }
 
 export type Tree = {
