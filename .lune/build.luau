@@ -1,9 +1,11 @@
+local fs = require("@lune/fs")
+local process = require("@lune/process")
+
 local clean = require("./lib/clean")
 local compile = require("./lib/compile")
 local constants = require("./lib/constants")
 local getPluginsPath = require("./lib/getPluginsPath")
 local parseArgs = require("./lib/parseArgs")
-local process = require("@lune/process")
 local run = require("./lib/run")
 local watch = require("./lib/watcher/watch")
 
@@ -15,9 +17,29 @@ assert(target == "dev" or target == "prod", `bad value for target (must be one o
 local output = if args.output then args.output else `{getPluginsPath(process.os)}/{constants.PLUGIN_FILENAME}`
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
+local gameEnginePath = args.gameEnginePath
+assert(
+	not gameEnginePath or typeof(gameEnginePath) == "string",
+	`bad value for gameEnginePath (string expected, got {typeof(output)}`
+)
+
 local function build()
+	if not fs.isDir("Packages") then
+		run("lune", { "run", "wally-install" })
+	end
+
 	clean()
 	compile(target)
+
+	if gameEnginePath then
+		local engineBuildPath = run("find", { `{gameEnginePath}/build`, "-name", "optimized" })
+		assert(fs.isDir(engineBuildPath), `failed to find optimized engine build under {gameEnginePath}`)
+
+		local builtInPlugins = run("find", { engineBuildPath, "-name", "BuiltInPlugins", "-print", "-quit" })
+		assert(fs.isDir(builtInPlugins), `failed to find built-in plugins under {engineBuildPath}`)
+
+		output = `{builtInPlugins}/Optimized_Embedded_Signature/{constants.PLUGIN_FILENAME}`
+	end
 
 	run("rojo", { "build", "-o", output })
 end
