@@ -5,11 +5,9 @@ local Branding = require("@root/Common/Branding")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local explorerTypes = require("@root/Explorer/types")
 local useTheme = require("@root/Common/useTheme")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
-type ComponentTreeNode = explorerTypes.ComponentTreeNode
 
 local e = React.createElement
 
