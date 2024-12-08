@@ -1,11 +1,10 @@
 local HttpService = game:GetService("HttpService")
 
 local Storyteller = require("@pkg/Storyteller")
+local TreeView = require("@root/TreeView")
 
-local types = require("@root/TreeView/types")
-
-type PartialTreeNode = types.PartialTreeNode
-type TreeNode = types.TreeNode
+type PartialTreeNode = TreeView.PartialTreeNode
+type TreeNode = TreeView.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type LoadedStory<any> = Storyteller.LoadedStory<any>
 

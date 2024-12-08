@@ -1,15 +1,12 @@
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
+local TreeView = require("@root/TreeView")
 
-local TreeView = require("@root/TreeView/TreeView")
-local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
-local getAncestry = require("@root/TreeView/getAncestry")
-local treeViewTypes = require("@root/TreeView/types")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
-type TreeNode = treeViewTypes.TreeNode
+type TreeNode = TreeView.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 local useEffect = React.useEffect
@@ -23,7 +20,7 @@ export type Props = {
 }
 
 local function StorybookTreeView(props: Props)
-	local treeViewContext = TreeViewContext.use()
+	local treeViewContext = TreeView.useTreeViewContext()
 
 	local selectedNode = treeViewContext.getSelectedNode()
 	local prevSelectedNode = usePrevious(selectedNode)
@@ -69,11 +66,11 @@ local function StorybookTreeView(props: Props)
 		if props.onStoryChanged and selectedNode ~= prevSelectedNode then
 			if selectedNode then
 				if
-					selectedNode.icon == "story"
+					selectedNode.icon == TreeView.TreeNodeIcon.Story
 					and selectedNode.instance
 					and selectedNode.instance:IsA("ModuleScript")
 				then
-					local ancestry = getAncestry(selectedNode)
+					local ancestry = TreeView.getAncestry(selectedNode)
 					local root = ancestry[#ancestry]
 					local storybook = storybookByNodeId.current[root.id]
 
@@ -88,7 +85,7 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.onStoryChanged, selectedNode, prevSelectedNode, setLastOpenedStory } :: { unknown })
 
-	return React.createElement(TreeView, {
+	return React.createElement(TreeView.TreeView, {
 		layoutOrder = props.layoutOrder,
 	})
 end
