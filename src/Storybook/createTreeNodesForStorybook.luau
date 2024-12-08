@@ -9,10 +9,7 @@ type TreeNode = types.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type LoadedStory<any> = Storyteller.LoadedStory<any>
 
-local function createTreeNodesForStorybook(storybook: LoadedStorybook): {
-	root: TreeNode,
-	nodesByInstance: { [Instance]: TreeNode },
-}
+local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 	local nodesByInstance: { [Instance]: TreeNode } = {}
 
 	local root: TreeNode = {
@@ -63,10 +60,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): {
 		end
 	end
 
-	return {
-		root = root,
-		nodesByInstance = nodesByInstance,
-	}
+	return root
 end
 
 return createTreeNodesForStorybook
