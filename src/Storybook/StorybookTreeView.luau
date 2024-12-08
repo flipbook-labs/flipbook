@@ -3,9 +3,11 @@ local Storyteller = require("@pkg/Storyteller")
 
 local TreeView = require("@root/TreeView/TreeView")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
-local createTreeNodesForStorybook = require("./createTreeNodesForStorybook")
+local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local getAncestry = require("@root/TreeView/getAncestry")
 local treeViewTypes = require("@root/TreeView/types")
+local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
+local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNode = treeViewTypes.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -16,14 +18,17 @@ local useRef = React.useRef
 export type Props = {
 	searchTerm: string?,
 	storybooks: { LoadedStorybook },
-	onStorySelected: ((storyModule: ModuleScript, storybook: LoadedStorybook) -> ())?,
+	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	layoutOrder: number?,
 }
 
 local function StorybookTreeView(props: Props)
 	local treeViewContext = TreeViewContext.use()
+
 	local selectedNode = treeViewContext.getSelectedNode()
+	local prevSelectedNode = usePrevious(selectedNode)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
+	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 
 	useEffect(function()
 		storybookByNodeId.current = {}
@@ -44,23 +49,44 @@ local function StorybookTreeView(props: Props)
 		treeViewContext.search(props.searchTerm)
 	end, { props.searchTerm, treeViewContext.search } :: { unknown })
 
+	local wasLastStoryOpened = useRef(false)
 	useEffect(function()
-		if
-			props.onStorySelected
-			and selectedNode
-			and selectedNode.icon == "story"
-			and selectedNode.instance
-			and selectedNode.instance:IsA("ModuleScript")
-		then
-			local ancestry = getAncestry(selectedNode)
-			local root = ancestry[#ancestry]
-			local storybook = storybookByNodeId.current[root.id]
+		if wasLastStoryOpened.current then
+			return
+		end
 
-			if storybook then
-				props.onStorySelected(selectedNode.instance, storybook)
+		if lastOpenedStory then
+			local node = treeViewContext.getNodeByInstance(lastOpenedStory)
+
+			if node then
+				wasLastStoryOpened.current = true
+				treeViewContext.activateNode(node)
 			end
 		end
-	end, { props.onStorySelected, selectedNode } :: { unknown })
+	end, { lastOpenedStory, treeViewContext.getNodeByInstance, treeViewContext.activateNode } :: { unknown })
+
+	useEffect(function()
+		if props.onStoryChanged and selectedNode ~= prevSelectedNode then
+			if selectedNode then
+				if
+					selectedNode.icon == "story"
+					and selectedNode.instance
+					and selectedNode.instance:IsA("ModuleScript")
+				then
+					local ancestry = getAncestry(selectedNode)
+					local root = ancestry[#ancestry]
+					local storybook = storybookByNodeId.current[root.id]
+
+					if storybook then
+						props.onStoryChanged(selectedNode.instance, storybook)
+						setLastOpenedStory(selectedNode.instance)
+					end
+				end
+			else
+				props.onStoryChanged(nil, nil)
+			end
+		end
+	end, { props.onStoryChanged, selectedNode, prevSelectedNode, setLastOpenedStory } :: { unknown })
 
 	return React.createElement(TreeView, {
 		layoutOrder = props.layoutOrder,

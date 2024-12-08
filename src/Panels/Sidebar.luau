@@ -13,7 +13,7 @@ local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
-	onStorySelected: (storyModule: ModuleScript, storybook: LoadedStorybook) -> (),
+	onStoryChanged: (storyModule: ModuleScript, storybook: LoadedStorybook) -> (),
 	storybooks: { LoadedStorybook },
 }
 
@@ -81,7 +81,7 @@ local function Sidebar(props: Props)
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
 				storybooks = props.storybooks,
-				onStorySelected = props.onStorySelected,
+				onStoryChanged = props.onStoryChanged,
 			}),
 		}),
 	})

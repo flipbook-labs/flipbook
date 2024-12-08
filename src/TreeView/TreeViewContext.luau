@@ -18,6 +18,7 @@ type TreeViewContext = {
 	setRoots: (nodes: { PartialTreeNode | TreeNode }) -> (),
 	getRoots: () -> { TreeNode },
 	getNodeById: (nodeId: string) -> TreeNode?,
+	getNodeByInstance: (instance: Instance) -> TreeNode?,
 	getSelectedNode: () -> TreeNode?,
 	activateNode: (node: TreeNode) -> (),
 	isExpanded: (node: TreeNode) -> boolean,
@@ -34,6 +35,7 @@ local function TreeNodeProvider(props: {
 		roots = {} :: { TreeNode },
 		leaves = {} :: { TreeNode },
 		byId = {} :: { [string]: TreeNode },
+		byInstance = {} :: { [Instance]: TreeNode },
 	})
 
 	local expandedNodes, setExpandedNodes = useState({} :: { TreeNode })
@@ -94,6 +96,7 @@ local function TreeNodeProvider(props: {
 			roots = newNodes.roots,
 			leaves = newNodes.leaves,
 			byId = newNodes.byId,
+			byInstance = newNodes.byInstance,
 		})
 	end, {})
 
@@ -103,6 +106,10 @@ local function TreeNodeProvider(props: {
 
 	local getNodeById = useCallback(function(nodeId: string)
 		return nodes.byId[nodeId]
+	end, { nodes.byId })
+
+	local getNodeByInstance = useCallback(function(instance: Instance)
+		return nodes.byInstance[instance]
 	end, { nodes.byId })
 
 	local getSelectedNode = useCallback(function()
@@ -141,6 +148,7 @@ local function TreeNodeProvider(props: {
 		setRoots = setRoots,
 		getRoots = getRoots,
 		getNodeById = getNodeById,
+		getNodeByInstance = getNodeByInstance,
 		getSelectedNode = getSelectedNode,
 		activateNode = activateNode,
 		isExpanded = isExpanded,

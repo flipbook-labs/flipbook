@@ -11,11 +11,13 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 	roots: { TreeNode },
 	leaves: { TreeNode },
 	byId: { [string]: TreeNode },
+	byInstance: { [Instance]: TreeNode },
 	expandedByDefault: { TreeNode },
 }
 	local leaves: { TreeNode } = {}
 	local expandedByDefault: { TreeNode } = {}
 	local byId: { [string]: TreeNode } = {}
+	local byInstance: { [Instance]: TreeNode } = {}
 
 	local function process(partials: { PartialTreeNode | TreeNode }, parent: TreeNode?): { TreeNode }
 		local siblings: { TreeNode } = {}
@@ -36,6 +38,10 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 				table.insert(expandedByDefault, node)
 			end
 
+			if node.instance then
+				byInstance[node.instance] = node
+			end
+
 			if partial.children and #partial.children > 0 then
 				node.children = process(partial.children, node)
 			else
@@ -52,6 +58,7 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 	return {
 		roots = process(partialRoots),
 		byId = byId,
+		byInstance = byInstance,
 		leaves = leaves,
 		expandedByDefault = expandedByDefault,
 	}
