@@ -52,6 +52,16 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 			table.insert(siblings, node)
 		end
 
+		table.sort(siblings, function(a, b)
+			if a.icon ~= b.icon then
+				-- Sort by type
+				return a.icon < b.icon
+			else
+				-- Sort alphabetically
+				return a.label:lower() < b.label:lower()
+			end
+		end)
+
 		return siblings
 	end
 
