@@ -1,4 +1,5 @@
 local React = require("@pkg/React")
+local TreeView = require("@root/TreeView")
 
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -20,6 +21,7 @@ local function ContextProviders(props: Props)
 				defaultScreen = "Home",
 			}),
 			React.createElement(SettingsContext.Provider),
+			React.createElement(TreeView.TreeViewProvider),
 		},
 	}, props.children)
 end

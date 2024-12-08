@@ -15,11 +15,9 @@ return {
 			storybooks = {
 				internalStorybook,
 			},
-			selectStory = function(storyModule)
-				print(storyModule)
-			end,
-			selectStorybook = function(storybook)
-				print(storybook)
+			onStoryChanged = function(storyModule, storybook)
+				print("storyModule", storyModule)
+				print("storybook", storybook)
 			end,
 		}),
 	}),
