@@ -33,7 +33,7 @@ local function App(props: Props)
 	local onStorySelected = React.useCallback(function(newStoryModule: ModuleScript, newStorybook: LoadedStorybook)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript)
+		setStoryModule(function(prev: ModuleScript?)
 			return if prev ~= newStoryModule then newStoryModule else nil
 		end)
 
