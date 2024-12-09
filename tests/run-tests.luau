@@ -7,7 +7,7 @@ local processServiceExists, ProcessService = pcall(function()
 	return game:GetService("ProcessService")
 end)
 
-local root = ReplicatedStorage.flipbook
+local root = ReplicatedStorage.flipbook.Src
 
 _G.__DEV__ = true
 _G.__ROACT_17_MOCK_SCHEDULER__ = true

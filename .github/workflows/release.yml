@@ -20,13 +20,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install pesde
+        uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
+
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install
 
       - name: Build
         run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
@@ -48,8 +51,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install pesde
+        uses: 0x5eal/semver-luau/.github/actions/setup-pesde@main
+
       - name: Install packages
-        run: lune run wally-install
+        run: pesde install
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
