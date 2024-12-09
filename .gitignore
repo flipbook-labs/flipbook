@@ -10,7 +10,10 @@ sourcemap*.json
 globalTypes.d.luau
 
 # Pesde
+.pesde/scripts
 roblox_packages
+lune_packages
+luau_packages
 
 # Python
 __pycache__

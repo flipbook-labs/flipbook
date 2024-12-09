@@ -2,6 +2,253 @@ name = "flipbook_labs/flipbook"
 version = "2.0.0"
 target = "roblox"
 
+[graph."0x5eal/semver"."0.1.1 luau"]
+resolved_ty = "peer"
+
+[graph."0x5eal/semver"."0.1.1 luau".target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."0x5eal/semver"."0.1.1 luau".dependencies]
+"lukadev_0/option" = ["1.2.0 luau", "option"]
+"lukadev_0/result" = ["1.2.0 luau", "result"]
+
+[graph."0x5eal/semver"."0.1.1 luau".pkg_ref]
+ref_ty = "pesde"
+name = "0x5eal/semver"
+version = "0.1.1"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."0x5eal/semver"."0.1.1 luau".pkg_ref.dependencies]
+frktest = [{ name = "itsfrank/frktest", version = "^0.0.2", index = "https://github.com/daimond113/pesde-index", target = "lune" }, "dev"]
+option = [{ name = "lukadev_0/option", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "peer"]
+result = [{ name = "lukadev_0/result", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "peer"]
+
+[graph."0x5eal/semver"."0.1.1 luau".pkg_ref.target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."jiwonz/dirs"."0.1.2 lune"]
+resolved_ty = "standard"
+
+[graph."jiwonz/dirs"."0.1.2 lune".target]
+environment = "lune"
+lib = "src/init.luau"
+
+[graph."jiwonz/dirs"."0.1.2 lune".dependencies]
+"jiwonz/pathfs" = ["0.1.0 lune", "pathfs"]
+
+[graph."jiwonz/dirs"."0.1.2 lune".pkg_ref]
+ref_ty = "pesde"
+name = "jiwonz/dirs"
+version = "0.1.2"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."jiwonz/dirs"."0.1.2 lune".pkg_ref.dependencies]
+pathfs = [{ name = "jiwonz/pathfs", version = "^0.1.0", index = "https://github.com/daimond113/pesde-index" }, "standard"]
+
+[graph."jiwonz/dirs"."0.1.2 lune".pkg_ref.target]
+environment = "lune"
+lib = "src/init.luau"
+
+[graph."jiwonz/pathfs"."0.1.0 lune"]
+resolved_ty = "standard"
+
+[graph."jiwonz/pathfs"."0.1.0 lune".target]
+environment = "lune"
+lib = "init.luau"
+
+[graph."jiwonz/pathfs"."0.1.0 lune".pkg_ref]
+ref_ty = "pesde"
+name = "jiwonz/pathfs"
+version = "0.1.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."jiwonz/pathfs"."0.1.0 lune".pkg_ref.target]
+environment = "lune"
+lib = "init.luau"
+
+[graph."lukadev_0/option"."1.2.0 lune"]
+resolved_ty = "standard"
+
+[graph."lukadev_0/option"."1.2.0 lune".target]
+environment = "lune"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/option"."1.2.0 lune".pkg_ref]
+ref_ty = "pesde"
+name = "lukadev_0/option"
+version = "1.2.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."lukadev_0/option"."1.2.0 lune".pkg_ref.target]
+environment = "lune"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/option"."1.2.0 luau"]
+resolved_ty = "peer"
+
+[graph."lukadev_0/option"."1.2.0 luau".target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/option"."1.2.0 luau".pkg_ref]
+ref_ty = "pesde"
+name = "lukadev_0/option"
+version = "1.2.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."lukadev_0/option"."1.2.0 luau".pkg_ref.target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/result"."1.2.0 lune"]
+resolved_ty = "standard"
+
+[graph."lukadev_0/result"."1.2.0 lune".target]
+environment = "lune"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/result"."1.2.0 lune".pkg_ref]
+ref_ty = "pesde"
+name = "lukadev_0/result"
+version = "1.2.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."lukadev_0/result"."1.2.0 lune".pkg_ref.target]
+environment = "lune"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/result"."1.2.0 luau"]
+resolved_ty = "peer"
+
+[graph."lukadev_0/result"."1.2.0 luau".target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."lukadev_0/result"."1.2.0 luau".pkg_ref]
+ref_ty = "pesde"
+name = "lukadev_0/result"
+version = "1.2.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."lukadev_0/result"."1.2.0 luau".pkg_ref.target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[graph."pesde/rojo"."7.4.4 lune"]
+resolved_ty = "peer"
+
+[graph."pesde/rojo"."7.4.4 lune".target]
+environment = "lune"
+bin = "init.luau"
+
+[graph."pesde/rojo"."7.4.4 lune".dependencies]
+"lukadev_0/option" = ["1.2.0 lune", "option"]
+"lukadev_0/result" = ["1.2.0 lune", "result"]
+"pesde/toolchainlib" = ["0.1.2 lune", "core"]
+
+[graph."pesde/rojo"."7.4.4 lune".pkg_ref]
+ref_ty = "pesde"
+name = "pesde/rojo"
+version = "7.4.4"
+index_url = "https://github.com/pesde-pkg/index"
+
+[graph."pesde/rojo"."7.4.4 lune".pkg_ref.dependencies]
+core = [{ name = "pesde/toolchainlib", version = "^0.1.1", index = "https://github.com/daimond113/pesde-index", target = "lune" }, "standard"]
+option = [{ name = "lukadev_0/option", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "standard"]
+result = [{ name = "lukadev_0/result", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "standard"]
+
+[graph."pesde/rojo"."7.4.4 lune".pkg_ref.target]
+environment = "lune"
+bin = "init.luau"
+
+[graph."pesde/scripts_core"."0.0.1 lune"]
+resolved_ty = "standard"
+
+[graph."pesde/scripts_core"."0.0.1 lune".target]
+environment = "lune"
+lib = "src/init.luau"
+
+[graph."pesde/scripts_core"."0.0.1 lune".pkg_ref]
+ref_ty = "pesde"
+name = "pesde/scripts_core"
+version = "0.0.1"
+index_url = "https://github.com/pesde-pkg/index"
+
+[graph."pesde/scripts_core"."0.0.1 lune".pkg_ref.dependencies]
+frktest = [{ name = "itsfrank/frktest", version = "^0.0.2", index = "https://github.com/pesde-pkg/index" }, "dev"]
+luau-lsp = [{ name = "pesde/luau_lsp", version = "^1.36.0", index = "https://github.com/pesde-pkg/index" }, "dev"]
+pathfs = [{ name = "jiwonz/pathfs", version = "^0.1.0", index = "https://github.com/pesde-pkg/index" }, "dev"]
+stylua = [{ name = "pesde/stylua", version = "^2.0.1", index = "https://github.com/pesde-pkg/index" }, "dev"]
+
+[graph."pesde/scripts_core"."0.0.1 lune".pkg_ref.target]
+environment = "lune"
+lib = "src/init.luau"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune"]
+direct = ["scripts", { name = "pesde/scripts_rojo", version = "^0.1.0", target = "lune" }, "dev"]
+resolved_ty = "dev"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".target]
+environment = "lune"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".target.scripts]
+roblox_sync_config_generator = "roblox_sync_config_generator.luau"
+sourcemap_generator = "sourcemap_generator.luau"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".dependencies]
+"pesde/rojo" = ["7.4.4 lune", "rojo"]
+"pesde/scripts_core" = ["0.0.1 lune", "core"]
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".pkg_ref]
+ref_ty = "pesde"
+name = "pesde/scripts_rojo"
+version = "0.1.0"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".pkg_ref.dependencies]
+core = [{ name = "pesde/scripts_core", version = "^0.0.1", index = "https://github.com/pesde-pkg/index", target = "lune" }, "standard"]
+rojo = [{ name = "pesde/rojo", version = "^7.4.4", index = "https://github.com/pesde-pkg/index" }, "peer"]
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".pkg_ref.target]
+environment = "lune"
+
+[graph."pesde/scripts_rojo"."0.1.0 lune".pkg_ref.target.scripts]
+roblox_sync_config_generator = "roblox_sync_config_generator.luau"
+sourcemap_generator = "sourcemap_generator.luau"
+
+[graph."pesde/toolchainlib"."0.1.2 lune"]
+resolved_ty = "standard"
+
+[graph."pesde/toolchainlib"."0.1.2 lune".target]
+environment = "lune"
+lib = "src/init.luau"
+
+[graph."pesde/toolchainlib"."0.1.2 lune".dependencies]
+"0x5eal/semver" = ["0.1.1 luau", "semver"]
+"jiwonz/dirs" = ["0.1.2 lune", "dirs"]
+"jiwonz/pathfs" = ["0.1.0 lune", "pathfs"]
+"lukadev_0/option" = ["1.2.0 lune", "option"]
+"lukadev_0/result" = ["1.2.0 lune", "result"]
+
+[graph."pesde/toolchainlib"."0.1.2 lune".pkg_ref]
+ref_ty = "pesde"
+name = "pesde/toolchainlib"
+version = "0.1.2"
+index_url = "https://github.com/daimond113/pesde-index"
+
+[graph."pesde/toolchainlib"."0.1.2 lune".pkg_ref.dependencies]
+dirs = [{ name = "jiwonz/dirs", version = "^0.1.1", index = "https://github.com/daimond113/pesde-index" }, "standard"]
+option = [{ name = "lukadev_0/option", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "peer"]
+pathfs = [{ name = "jiwonz/pathfs", version = "^0.1.0", index = "https://github.com/daimond113/pesde-index" }, "standard"]
+result = [{ name = "lukadev_0/result", version = "^1.2.0", index = "https://github.com/daimond113/pesde-index" }, "peer"]
+semver = [{ name = "0x5eal/semver", version = "^0.1.1", index = "https://github.com/daimond113/pesde-index", target = "luau" }, "peer"]
+
+[graph."pesde/toolchainlib"."0.1.2 lune".pkg_ref.target]
+environment = "lune"
+lib = "src/init.luau"
+
 [graph."wally#chriscerie/react-spring"."2.0.0 roblox"]
 direct = ["ReactSpring", { wally = "wally#chriscerie/react-spring", version = "^2.0.0" }, "standard"]
 resolved_ty = "standard"

@@ -4,14 +4,15 @@ description = "Storybook plugin for Roblox UI"
 authors = ["Marin Minnerly", "pasheley"]
 repository = "https://github.com/flipbook-labs/flipbook"
 license = "MIT"
+pesde_version = "0.5.0-rc.16"
 
 [target]
 environment = "roblox"
 lib = "build/init.server.luau"
 
 [scripts]
-roblox_sync_config_generator = ".pesde/roblox_sync_config_generator.luau"
-sourcemap_generator = ".pesde/sourcemap_generator.luau"
+roblox_sync_config_generator = ".pesde/scripts/roblox_sync_config_generator.luau"
+sourcemap_generator = ".pesde/scripts/sourcemap_generator.luau"
 
 [indices]
 default = "https://github.com/daimond113/pesde-index"
@@ -33,3 +34,4 @@ Fusion = { wally = "wally#elttob/fusion", version = "^0.2.0" }
 Jest = { wally = "wally#jsdotlua/jest", version = "^3.6.1-rc.2" }
 JestGlobals = { wally = "wally#jsdotlua/jest-globals", version = "^3.6.1-rc.2" }
 Roact = { wally = "wally#roblox/roact", version = "^1.4.4" }
+scripts = { name = "pesde/scripts_rojo", version = "^0.1.0", target = "lune" }
