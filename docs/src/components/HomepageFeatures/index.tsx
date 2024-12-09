@@ -12,7 +12,7 @@ const FeatureList: FeatureItem[] = [
 		title: 'Isolate your UI',
 		description: (
 			<>
-				With flipbook you can isolate distinct parts of your game's UI to hammer
+				With Flipbook you can isolate distinct parts of your game's UI to hammer
 				out edge cases and complex states without having to run through the
 				whole UI
 			</>
@@ -32,7 +32,7 @@ const FeatureList: FeatureItem[] = [
 		title: 'Support for Hoarcekat',
 		description: (
 			<>
-				Bring your existing stories from Hoarcekat over to flipbook by adding a
+				Bring your existing stories from Hoarcekat over to Flipbook by adding a
 				Storybook to set them up.
 			</>
 		),

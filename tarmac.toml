@@ -1,4 +1,4 @@
-name = "flipbook"
+name = "Flipbook"
 
 [[inputs]]
 glob = "img/**/*.png"

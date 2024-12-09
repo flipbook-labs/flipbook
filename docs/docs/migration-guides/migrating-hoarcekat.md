@@ -1,6 +1,6 @@
 # Hoarcekat
 
-[Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like flipbook. Because of its popularity, its story format is supported by flipbook so that you have an easier time migrating.
+[Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like Flipbook. Because of its popularity, its story format is supported by Flipbook so that you have an easier time migrating.
 
 :::note
 This guide assumes you are using [Rojo](https://github.com/rojo-rbx/rojo/) to manage your source code. If you are not then your mileage may vary.
@@ -8,7 +8,7 @@ This guide assumes you are using [Rojo](https://github.com/rojo-rbx/rojo/) to ma
 
 ## Creating the Storybook
 
-The main difference in how flipbook and Hoarcekat handle stories is that flipbook requires a "storybook" file to know where your stories are. As such, to migrate over from Hoarcekat the first thing you should do is create a storybook for your project.
+The main difference in how Flipbook and Hoarcekat handle stories is that Flipbook requires a "storybook" file to know where your stories are. As such, to migrate over from Hoarcekat the first thing you should do is create a storybook for your project.
 
 To do this, create a new `ProjectName.storybook.luau` file at the root of your project with the following contents:
 
@@ -24,11 +24,11 @@ return {
 }
 ```
 
-From there the storybook will appear in flipbook's sidebar and you should be able to select your stories with no problem.
+From there the storybook will appear in Flipbook's sidebar and you should be able to select your stories with no problem.
 
 ## Migrating Stories
 
-To fully benefit from the features flipbook has to offer, this section will guide you in converting an existing Hoarcekat story to flipbook's format.
+To fully benefit from the features Flipbook has to offer, this section will guide you in converting an existing Hoarcekat story to Flipbook's format.
 
 We will use the following component and story as an example:
 
@@ -61,7 +61,7 @@ local HelloWorld = require(script.Parent.HelloWorld)
 
 return function(target)
     local root = Roact.createElement(HelloWorld, {
-        name = "flipbook"
+        name = "Flipbook"
     })
 
     local handle = Roact.mount(root, target)
@@ -74,7 +74,7 @@ end
 
 <!-- TODO: Add image of the story -->
 
-Converting a Hoarcekat story like this into one compatible with flipbook is quite easy. In fact, all that's needed from the above story is the call to `Roact.createElement`:
+Converting a Hoarcekat story like this into one compatible with Flipbook is quite easy. In fact, all that's needed from the above story is the call to `Roact.createElement`:
 
 ```lua
 -- HelloWorld.story.luau
@@ -84,22 +84,22 @@ local HelloWorld = require(script.Parent.HelloWorld)
 return {
     story = function()
 		return Roact.createElement(HelloWorld, {
-			name = "flipbook"
+			name = "Flipbook"
 		})
 	end
 }
 ```
 
-Since flipbook assumes use of Roact, you don't have to handle mounting and unmounting yourself. And now that the story has been migrated we can start supercharging it. For starters, we can give the story a summary that will be displayed when viewing it:
+Since Flipbook assumes use of Roact, you don't have to handle mounting and unmounting yourself. And now that the story has been migrated we can start supercharging it. For starters, we can give the story a summary that will be displayed when viewing it:
 
 ```diff
 local Roact = require(script.Parent.Parent.Roact)
 local HelloWorld = require(script.Parent.HelloWorld)
 
 return {
-+   summary = "This is a Hoarcekat component that has been converted for flipbook!"
++   summary = "This is a Hoarcekat component that has been converted for Flipbook!"
     story = Roact.createElement(HelloWorld, {
-        name = "flipbook"
+        name = "Flipbook"
     })
 }
 ```
@@ -113,9 +113,9 @@ local Roact = require(script.Parent.Parent.Roact)
 local HelloWorld = require(script.Parent.HelloWorld)
 
 return {
-    summary = "This is a Hoarcekat component that has been converted for flipbook!"
+    summary = "This is a Hoarcekat component that has been converted for Flipbook!"
 +   controls = {
-+       name = "flipbook"
++       name = "Flipbook"
 +   }
 +   story = function(props)
 +       return Roact.createElement(HelloWorld, {
@@ -129,4 +129,4 @@ You will now have a "Controls" section with an input field. Try changing the val
 
 <!-- TODO: Add image of the story -->
 
-You are now equipped to migrate your other Hoarcekat stories over to flipbook!
+You are now equipped to migrate your other Hoarcekat stories over to Flipbook!

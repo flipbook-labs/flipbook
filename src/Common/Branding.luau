@@ -41,7 +41,7 @@ local function Branding(props: Props)
 			Font = theme.headerFont,
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(0, 0),
-			Text = "flipbook",
+			Text = "Flipbook",
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 		}, {
