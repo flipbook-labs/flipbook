@@ -13,7 +13,7 @@ local PluginApp = require("@root/Plugin/PluginApp")
 local createToggleButton = require("@root/Plugin/createToggleButton")
 local createWidget = require("@root/Plugin/createWidget")
 
-local PLUGIN_NAME = "flipbook"
+local PLUGIN_NAME = "flipbook" .. if _G.BUILD_CHANNEL == "development" then ` {_G.BUILD_HASH}` else ""
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
