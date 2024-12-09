@@ -4,6 +4,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local AboutView = require("@root/About/AboutView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
+local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
 
@@ -30,6 +31,8 @@ local function Screen(props: Props)
 					story = props.story,
 					storybook = props.storybook,
 				})
+			else
+				return React.createElement(NoStorySelected)
 			end
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
