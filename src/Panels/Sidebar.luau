@@ -13,7 +13,7 @@ local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
-	onStoryChanged: (storyModule: ModuleScript, storybook: LoadedStorybook) -> (),
+	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	storybooks: { LoadedStorybook },
 }
 

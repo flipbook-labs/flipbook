@@ -30,7 +30,7 @@ local function App(props: Props)
 	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
-	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript, newStorybook: LoadedStorybook)
+	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
 		setStoryModule(function(prev: ModuleScript?)
@@ -67,7 +67,6 @@ local function App(props: Props)
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				-- onStorybookSelected = setStorybook,
 				storybooks = storybooks,
 			}),
 		}),
