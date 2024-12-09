@@ -53,7 +53,7 @@ local function InputField(providedProps: Props)
 
 		newText = newText:gsub("$%s+", ""):gsub("%s+^", "")
 
-		if newText == text or newText == "" then
+		if newText == text then
 			return
 		end
 
