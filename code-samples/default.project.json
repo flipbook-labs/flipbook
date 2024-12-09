@@ -1,14 +1,6 @@
 {
   "name": "CodeSamples",
   "tree": {
-    "$className": "DataModel",
-    "ReplicatedStorage": {
-      "Packages": {
-        "$path": "../roblox_packages"
-      },
-      "CodeSamples": {
-        "$path": "src"
-      }
-    }
+    "$path": "src"
   }
 }
