@@ -22,3 +22,6 @@ JestGlobals = "jsdotlua/jest-globals@3.6.1-rc.2"
 
 # ModuleLoader dependencies
 Janitor = "howmanysmall/janitor@1.13.15"
+
+# Storyteller dependencies
+Prospector = "egomoose/prospector@1.1.0"
