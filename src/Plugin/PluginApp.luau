@@ -67,7 +67,7 @@ local function App(props: Props)
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				storybooks = storybooks,
+				storybooks = storybooks.available,
 			}),
 		}),
 
