@@ -64,7 +64,7 @@ local function App(props: Props)
 			Sidebar = React.createElement(Sidebar, {
 				selectStory = selectStory,
 				selectStorybook = selectStorybook,
-				storybooks = storybooks,
+				storybooks = storybooks.available,
 			}),
 		}),
 
