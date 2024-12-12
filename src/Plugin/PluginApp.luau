@@ -14,6 +14,8 @@ local useTheme = require("@root/Common/useTheme")
 
 local TOPBAR_HEIGHT_PX = 32
 
+type LoadedStorybook = Storyteller.LoadedStorybook
+
 export type Props = {
 	loader: ModuleLoader.ModuleLoader,
 }
@@ -22,19 +24,21 @@ local function App(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
 	local storybooks = Storyteller.useStorybooks(game, props.loader)
-	local story: ModuleScript?, setStory = React.useState(nil :: ModuleScript?)
-	local storybook, selectStorybook = React.useState(nil :: ModuleScript?)
+	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
+	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
 	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
-	local selectStory = React.useCallback(function(newStory: ModuleScript)
+	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStory(function(prevStory)
-			return if prevStory ~= newStory then newStory else nil
+		setStoryModule(function(prev: ModuleScript?)
+			return if prev ~= newStoryModule then newStoryModule else nil
 		end)
-	end, { setStory, navigation.navigateTo } :: { unknown })
+
+		setStorybook(newStorybook)
+	end, { navigation.navigateTo } :: { unknown })
 
 	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
@@ -62,8 +66,7 @@ local function App(props: Props)
 			onResize = onSidebarResized,
 		}, {
 			Sidebar = React.createElement(Sidebar, {
-				selectStory = selectStory,
-				selectStorybook = selectStorybook,
+				onStoryChanged = onStoryChanged,
 				storybooks = storybooks.available,
 			}),
 		}),
@@ -89,7 +92,7 @@ local function App(props: Props)
 			}, {
 				Screen = React.createElement(Screen, {
 					loader = props.loader,
-					story = story,
+					story = storyModule,
 					storybook = storybook,
 				}),
 			}),
