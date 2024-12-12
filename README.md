@@ -1,4 +1,4 @@
-# <img src="img/Flipbook.png" alt="Plugin icon" height="32" /> Flipbook
+# <img src="img/FlipbookIcon.png" alt="Plugin icon" height="32" /> Flipbook
 
 [![Install on Roblox](https://img.shields.io/badge/%20-Install%20on%20Roblox-00A2FF?logo=robloxstudio&logoColor=fff)](https://create.roblox.com/store/asset/8517129161/flipbook)
 [![Documentation](https://img.shields.io/badge/%20-Documentation-3ECC5F?logo=docusaurus&logoColor=fff)](https://flipbook-labs.github.io/flipbook)

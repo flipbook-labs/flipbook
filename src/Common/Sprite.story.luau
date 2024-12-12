@@ -10,7 +10,7 @@ return {
 
 		Flipbook = React.createElement(Sprite, {
 			layoutOrder = 1,
-			image = assets.Flipbook,
+			image = assets.FlipbookIcon,
 		}),
 
 		Storybook = React.createElement(Sprite, {
