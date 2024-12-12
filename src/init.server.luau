@@ -11,4 +11,4 @@ local PLUGIN_NAME = "flipbook"
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local flipbookPlugin = createFlipbookPlugin(PLUGIN_NAME, plugin, toolbar)
 
-flipbookPlugin.mount()
+plugin.Unloading:Connect(flipbookPlugin.unmount)

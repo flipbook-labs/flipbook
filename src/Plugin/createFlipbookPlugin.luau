@@ -18,12 +18,7 @@ local function createFlipbookPlugin(
 ): {
 	mount: () -> (),
 	unmount: () -> (),
-	destroy: () -> (),
 }
-	local isDestroyed = false
-
-	local connections: { RBXScriptConnection } = {}
-
 	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
 
 	local widget = plugin:CreateDockWidgetPluginGui(name, info)
@@ -35,78 +30,46 @@ local function createFlipbookPlugin(
 	local loader = ModuleLoader.new()
 	local button = toolbar:CreateButton(name, "Open story view", "rbxassetid://10277153751")
 
-	local function unmount()
-		assert(not isDestroyed, "cannot call unmount (Flipbook plugin was destroyed)")
+	local app = React.createElement(ContextProviders, {
+		plugin = plugin,
+	}, {
+		PluginApp = React.createElement(PluginApp, {
+			loader = loader,
+		}),
+	})
 
+	local function unmount()
 		root:unmount()
 		loader:clear()
-
-		for _, connection in connections do
-			connection:Disconnect()
-		end
 	end
 
 	local function mount()
-		assert(not isDestroyed, "cannot call mount (Flipbook plugin was destroyed)")
-
-		local app = React.createElement(ContextProviders, {
-			plugin = plugin,
-		}, {
-			PluginApp = React.createElement(PluginApp, {
-				loader = loader,
-			}),
-		})
-
-		table.insert(
-			connections,
-			button.Click:Connect(function()
-				widget.Enabled = not widget.Enabled
-			end)
-		)
-
-		table.insert(
-			connections,
-			widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-				button:SetActive(widget.Enabled)
-			end)
-		)
-
-		table.insert(
-			connections,
-			widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-				if widget.Enabled then
-					root:render(app)
-				else
-					unmount()
-				end
-			end)
-		)
-
-		table.insert(connections, plugin.Unloading:Connect(unmount))
-
-		if widget.Enabled then
-			root:render(app)
-		end
+		root:render(app)
 	end
 
-	local function destroy()
-		assert(not isDestroyed, "cannot call destroy (Flipbook plugin was already destroyed)")
+	button.Click:Connect(function()
+		widget.Enabled = not widget.Enabled
+	end)
 
-		unmount()
+	widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+		button:SetActive(widget.Enabled)
+	end)
 
-		isDestroyed = true
+	widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+		if widget.Enabled then
+			root:render(app)
+		else
+			unmount()
+		end
+	end)
 
-		widget:Destroy()
-		toolbar:Destroy()
-		button:Destroy()
-		root = nil :: any
-		loader = nil :: any
+	if widget.Enabled then
+		mount()
 	end
 
 	return {
 		mount = mount,
 		unmount = unmount,
-		destroy = destroy,
 	}
 end
 
