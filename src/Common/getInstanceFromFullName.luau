@@ -10,12 +10,20 @@ local Sift = require("@pkg/Sift")
 
 local PATH_SEPERATOR = "."
 
+local function canAccess(instance: Instance): boolean
+	local success = pcall(function()
+		return instance.Name
+	end)
+
+	return success
+end
+
 local function maybeGetService(serviceName: string): Instance?
 	local success, current: any = pcall(function()
 		return game:GetService(serviceName)
 	end)
 
-	if success and current and current:IsA("Instance") then
+	if success and current and canAccess(current) and current:IsA("Instance") then
 		return current
 	else
 		return nil
