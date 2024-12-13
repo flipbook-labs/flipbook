@@ -1,59 +1,143 @@
-[inputs."img/ChevronRight.png"]
+[inputs."img/Core/ChevronRight.png"]
 hash = "4c91853652b4e0a6317804c54db6397ac0c710c819b282f7be2179e3abdc879c"
-id = 18940815650
-slice = [[49, 226], [81, 258]]
+id = 104159278187181
+slice = [[651, 721], [683, 753]]
 packable = true
 
-[inputs."img/Component.png"]
+[inputs."img/Core/Component.png"]
 hash = "d51b19d5f35ac87fd8156500828f3e217b6fc420b70fee5d97b3577e4e6a8843"
-id = 18940815650
-slice = [[0, 275], [32, 307]]
+id = 104159278187181
+slice = [[602, 770], [634, 802]]
 packable = true
 
-[inputs."img/Folder.png"]
+[inputs."img/Core/Folder.png"]
 hash = "4c0e80a363d36a4d127d410795cb13eec74d55871b70174636c0c962c242835c"
-id = 18940815650
-slice = [[345, 0], [377, 32]]
+id = 104159278187181
+slice = [[280, 785], [312, 817]]
 packable = true
 
-[inputs."img/GitHubMark.png"]
+[inputs."img/Core/GitHubMark.png"]
 hash = "a0fb973cd9bf0c1123dbe783f7a4093dbcf9b4910d6e385c16a837a04a02306c"
-id = 18940815650
-slice = [[0, 0], [230, 225]]
+id = 104159278187181
+slice = [[0, 785], [230, 1010]]
 packable = true
 
-[inputs."img/IconLight.png"]
+[inputs."img/Core/IconLight.png"]
 hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
-id = 18940815650
-slice = [[231, 65], [273, 107]]
+id = 104159278187181
+slice = [[952, 65], [994, 107]]
 packable = true
 
-[inputs."img/Magnify.png"]
+[inputs."img/Core/Magnify.png"]
 hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
-id = 18940815650
-slice = [[0, 226], [48, 274]]
+id = 104159278187181
+slice = [[602, 721], [650, 769]]
 packable = true
 
-[inputs."img/Minify.png"]
+[inputs."img/Core/Minify.png"]
 hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
-id = 18940815650
-slice = [[296, 0], [344, 48]]
+id = 104159278187181
+slice = [[231, 785], [279, 833]]
 packable = true
 
-[inputs."img/Search.png"]
+[inputs."img/Core/Search.png"]
 hash = "0ab89c0309f577f3ccae0e03b45292f6e2bca51cc9b8250f56ad756e04231c57"
-id = 18940815650
-slice = [[296, 49], [328, 81]]
+id = 104159278187181
+slice = [[231, 834], [263, 866]]
 packable = true
 
-[inputs."img/Storybook.png"]
+[inputs."img/Core/Storybook.png"]
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
-id = 18940815650
-slice = [[231, 108], [263, 140]]
+id = 104159278187181
+slice = [[952, 108], [984, 140]]
 packable = true
 
-[inputs."img/flipbook.png"]
+[inputs."img/Core/flipbook.png"]
 hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
-id = 18940815650
-slice = [[231, 0], [295, 64]]
+id = 104159278187181
+slice = [[952, 0], [1016, 64]]
+packable = true
+
+[inputs."img/DeviceEmulator/Google Pixel 7 Pro.png"]
+hash = "67fee6e77a604f032430c74348e84525cff0f3108939987a831edde323fa11b1"
+id = 104159278187181
+slice = [[602, 0], [951, 720]]
+packable = true
+
+[inputs."img/DeviceEmulator/Google Pixel 7.png"]
+hash = "7bc1b8344129499800aba063735ff4f74be43011aae6c6c891c98d3a67e0a6bf"
+id = 114229375337211
+slice = [[348, 0], [692, 713]]
+packable = true
+
+[inputs."img/DeviceEmulator/Samsun Galaxy S23 Ultra.png"]
+hash = "28567b050606371a39ece15c59bd1f63e492d8c366201f4f5c79440a2a66831b"
+id = 107811007825161
+slice = [[0, 0], [339, 710]]
+packable = true
+
+[inputs."img/DeviceEmulator/Samsun Galaxy S23.png"]
+hash = "ad195da726550c63004dd7c5b7a27f929af4f2b84316c4e62a76ae3ddca2bd9a"
+id = 114229375337211
+slice = [[693, 0], [1020, 670]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPad 10 Gen.png"]
+hash = "5423fff851b153827611a22a1ac61501defb725b323f4a1c9840eab1311993f0"
+id = 90673506267011
+slice = [[501, 0], [1000, 692]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPad Air (2022).png"]
+hash = "45cc0e2dbb50fac271330e5d0c527566e64dee35b52c7229f5a07b049e87395d"
+id = 111697932862429
+slice = [[0, 0], [496, 687]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPad Mini 2022.png"]
+hash = "731552f06f8d5fb31b3142726041abad1a78ad74b472ce56625475ee128862a4"
+id = 107811007825161
+slice = [[340, 0], [725, 556]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPad Pro 11 Inches.png"]
+hash = "b5eb6e028c528dd90df0754fccc27e27ee0dd21f66679e180ef1282c606b9365"
+id = 90673506267011
+slice = [[0, 0], [500, 693]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPad Pro 12.9 Inches.png"]
+hash = "9cfe027fc4d1fbb4ac3c5b0f25e5fe41dd292ef1e6385bd223470b4d7d33bd35"
+id = 104159278187181
+slice = [[0, 0], [601, 784]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPhone 14 Plus.png"]
+hash = "e111632989019227c5442c7a9f04d96f7312cb9a39aed413a45d806e935107f2"
+id = 111697932862429
+slice = [[497, 0], [846, 711]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPhone 14 Pro Max.png"]
+hash = "0bddf628bd920ae3b6e89041e59723b70b42ecbfa358f96938a32a275e2cad38"
+id = 114229375337211
+slice = [[0, 0], [347, 707]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPhone 14 Pro.png"]
+hash = "a4219c034583e04c4f08b2131c02e5ac1114d0f896c6f8864649ec9d7b65312e"
+id = 95214443053238
+slice = [[323, 0], [643, 649]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPhone 14.png"]
+hash = "100fe4005a7a87aadd63ca992094c490a99c7219991b44ab48ac033bcbc05c86"
+id = 95214443053238
+slice = [[0, 0], [322, 651]]
+packable = true
+
+[inputs."img/DeviceEmulator/iPhone SE.png"]
+hash = "b75747192a92e4442fc86ea5bcc84d000640a5ca32841e257766be2a70e2a47e"
+id = 95214443053238
+slice = [[644, 0], [946, 607]]
 packable = true
