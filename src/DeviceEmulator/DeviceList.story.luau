@@ -21,7 +21,7 @@ return {
 	controls = controls,
 	story = function(props: Props)
 		return React.createElement(DeviceList, {
-			screenScale = 3,
+			screenScale = 1.5,
 			scaleType = props.controls.scaleType,
 			devices = devices,
 		})

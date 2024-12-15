@@ -18,7 +18,7 @@ export type Props = {
 }
 
 local defaultProps = {
-	screenScale = 4,
+	screenScale = 1,
 	orientation = Enum.ScreenOrientation.Portrait,
 }
 
