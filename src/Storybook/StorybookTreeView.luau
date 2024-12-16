@@ -42,19 +42,21 @@ local function StorybookTreeView(props: Props)
 			storybookByNodeId.current[root.id] = storybook
 		end
 
-		local unavailableStorybooks: TreeNode = {
-			id = HttpService:GenerateGUID(),
-			label = "Unavailable Storybooks",
-			icon = "folder",
-			isExpanded = false,
-			children = {},
-		}
-		for _, unavailableStorybook in props.storybooks.unavailable do
-			local root = createTreeNodesForStorybook(unavailableStorybook.storybook)
-			table.insert(unavailableStorybooks.children, root)
-			storybookByNodeId.current[root.id] = unavailableStorybook.storybook
+		if #props.storybooks.unavailable > 0 then
+			local unavailableStorybooks: TreeNode = {
+				id = HttpService:GenerateGUID(),
+				label = "Unavailable Storybooks",
+				icon = "folder",
+				isExpanded = false,
+				children = {},
+			}
+			for _, unavailableStorybook in props.storybooks.unavailable do
+				local root = createTreeNodesForStorybook(unavailableStorybook.storybook)
+				table.insert(unavailableStorybooks.children, root)
+				storybookByNodeId.current[root.id] = unavailableStorybook.storybook
+			end
+			table.insert(roots, unavailableStorybooks)
 		end
-		table.insert(roots, unavailableStorybooks)
 
 		treeViewContext.setRoots(roots)
 
