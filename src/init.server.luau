@@ -9,6 +9,16 @@ local createFlipbookPlugin = require("@root/Plugin/createFlipbookPlugin")
 local PLUGIN_NAME = "flipbook"
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
-local flipbookPlugin = createFlipbookPlugin(PLUGIN_NAME, plugin, toolbar)
+
+local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
+
+local widget = plugin:CreateDockWidgetPluginGui(PLUGIN_NAME, info)
+widget.Name = PLUGIN_NAME
+widget.Title = PLUGIN_NAME
+widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", "rbxassetid://10277153751")
+
+local flipbookPlugin = createFlipbookPlugin(plugin, widget, button)
 
 plugin.Unloading:Connect(flipbookPlugin.unmount)

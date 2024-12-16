@@ -12,23 +12,16 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 
 local function createFlipbookPlugin(
-	name: string,
 	plugin: Plugin,
-	toolbar: PluginToolbar
+	widget: DockWidgetPluginGui,
+	button: PluginToolbarButton
 ): {
 	mount: () -> (),
 	unmount: () -> (),
 }
-	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
-
-	local widget = plugin:CreateDockWidgetPluginGui(name, info)
-	widget.Name = name
-	widget.Title = name
-	widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
+	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 	local loader = ModuleLoader.new()
-	local button = toolbar:CreateButton(name, "Open story view", "rbxassetid://10277153751")
 
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
@@ -47,29 +40,47 @@ local function createFlipbookPlugin(
 		root:render(app)
 	end
 
-	button.Click:Connect(function()
-		widget.Enabled = not widget.Enabled
-	end)
+	table.insert(
+		connections,
+		button.Click:Connect(function()
+			widget.Enabled = not widget.Enabled
+		end)
+	)
 
-	widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-		button:SetActive(widget.Enabled)
-	end)
+	table.insert(
+		connections,
+		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+			button:SetActive(widget.Enabled)
+		end)
+	)
 
-	widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-		if widget.Enabled then
-			root:render(app)
-		else
-			unmount()
-		end
-	end)
+	table.insert(
+		connections,
+		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+			if widget.Enabled then
+				root:render(app)
+			else
+				unmount()
+			end
+		end)
+	)
 
 	if widget.Enabled then
 		mount()
 	end
 
+	local function destroy()
+		print("destroy")
+		unmount()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end
+
 	return {
 		mount = mount,
 		unmount = unmount,
+		destroy = destroy,
 	}
 end
 
