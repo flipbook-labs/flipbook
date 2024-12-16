@@ -14,7 +14,10 @@ local e = React.createElement
 type Props = {
 	layoutOrder: number?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
-	storybooks: { LoadedStorybook },
+	storybooks: {
+		avialable: { LoadedStorybook },
+		unavailable: { UnavailableStorybook },
+	},
 }
 
 local function Sidebar(props: Props)

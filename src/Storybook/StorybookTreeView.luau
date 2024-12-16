@@ -1,3 +1,5 @@
+local HttpService = game:GetService("HttpService")
+
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
@@ -8,13 +10,17 @@ local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNode = TreeView.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local useEffect = React.useEffect
 local useRef = React.useRef
 
 export type Props = {
 	searchTerm: string?,
-	storybooks: { LoadedStorybook },
+	storybooks: {
+		avialable: { LoadedStorybook },
+		unavailable: { UnavailableStorybook },
+	},
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	layoutOrder: number?,
 }
@@ -30,17 +36,32 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		storybookByNodeId.current = {}
 		local roots: { TreeNode } = {}
-		for _, storybook in props.storybooks do
+		for _, storybook in props.storybooks.available do
 			local root = createTreeNodesForStorybook(storybook)
 			table.insert(roots, root)
 			storybookByNodeId.current[root.id] = storybook
 		end
+
+		local unavailableStorybooks: TreeNode = {
+			id = HttpService:GenerateGUID(),
+			label = "Unavailable Storybooks",
+			icon = "folder",
+			isExpanded = false,
+			children = {},
+		}
+		for _, unavailableStorybook in props.storybooks.unavailable do
+			local root = createTreeNodesForStorybook(unavailableStorybook.storybook)
+			table.insert(unavailableStorybooks.children, root)
+			storybookByNodeId.current[root.id] = unavailableStorybook.storybook
+		end
+		table.insert(roots, unavailableStorybooks)
+
 		treeViewContext.setRoots(roots)
 
 		return function()
 			treeViewContext.setRoots({})
 		end
-	end, { props.storybooks, treeViewContext.setRoots } :: { unknown })
+	end, { props.storybooks.available, props.storybooks.unavailable, treeViewContext.setRoots } :: { unknown })
 
 	useEffect(function()
 		treeViewContext.search(props.searchTerm)
