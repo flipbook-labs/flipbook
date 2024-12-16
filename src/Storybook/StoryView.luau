@@ -45,23 +45,9 @@ local function StoryView(props: Props)
 		setChangedControls({})
 	end, { story })
 
-	local controlsWithUserOverrides = React.useMemo(function()
-		local controls = {}
-		if story and story.controls then
-			for key, value in story.controls do
-				local override = changedControls[key]
+	local controlsSchema = if story then story.controls else nil
 
-				if override ~= nil and typeof(value) ~= "table" then
-					controls[key] = override
-				else
-					controls[key] = value
-				end
-			end
-		end
-		return controls
-	end, { story, changedControls } :: { unknown })
-
-	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
+	local showControls = controlsSchema and not Sift.isEmpty(controlsSchema)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
 		setChangedControls(function(prev)
@@ -176,7 +162,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
+					controls = Sift.Dictionary.merge(controlsSchema, changedControls),
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,
@@ -199,7 +185,8 @@ local function StoryView(props: Props)
 					BackgroundColor3 = theme.sidebar,
 				}, {
 					StoryControls = e(StoryControls, {
-						controls = controlsWithUserOverrides,
+						controlsSchema = controlsSchema,
+						changedControls = changedControls,
 						setControl = setControl,
 					}),
 				}),

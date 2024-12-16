@@ -10,7 +10,8 @@ local useMemo = React.useMemo
 local e = React.createElement
 
 type Props = {
-	controls: { [string]: any },
+	controlsSchema: { [string]: any },
+	changedControls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 	layoutOrder: number?,
 }
@@ -21,7 +22,7 @@ local function StoryControls(props: Props)
 	local sortedControls: { { name: string, value: any } } = useMemo(function()
 		local result = {}
 
-		for _, entry in Sift.Dictionary.entries(props.controls) do
+		for _, entry in Sift.Dictionary.entries(props.controlsSchema) do
 			table.insert(result, {
 				name = entry[1],
 				value = entry[2],
@@ -31,7 +32,7 @@ local function StoryControls(props: Props)
 		return Sift.List.sort(result, function(a, b)
 			return a.name < b.name
 		end)
-	end, { props.controls })
+	end, { props.controlsSchema })
 
 	local controlElements: { [string]: React.Node } = {}
 	for index, control in sortedControls do
@@ -52,8 +53,9 @@ local function StoryControls(props: Props)
 				onStateChange = setControl,
 			})
 		elseif controlType == "table" then
+			local default = props.changedControls[control.name]
 			option = React.createElement(Dropdown, {
-				default = control.value[1],
+				default = if default then default else control.value[1],
 				options = control.value,
 				onOptionChange = setControl,
 			})
