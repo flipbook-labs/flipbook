@@ -65,7 +65,7 @@ local function getInstanceFromFullName(fullName: string): Instance?
 						parts = Sift.List.shift(parts, #name:split(PATH_SEPERATOR))
 						break
 					else
-						if #tempParts > 1 then
+						if #tempParts == 1 then
 							-- TODO: Need this early exit to handle cases with instances not existing later on. Verify
 							-- if this can be effectively repro'd by calling this function on an instance that doesn't
 							-- exist. Particularly make sure to test look-aheads for `Foo.story`, it seemed like the

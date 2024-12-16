@@ -68,3 +68,8 @@ end)
 test("returns nil if the first part of the path is not a service", function()
 	expect(getInstanceFromFullName("Part")).toBeUndefined()
 end)
+
+test("returns nil when instance with an extension does not exist", function()
+	expect(getInstanceFromFullName("foo.story")).toBeUndefined()
+	expect(getInstanceFromFullName("Path.To.Foo.story")).toBeUndefined()
+end)
