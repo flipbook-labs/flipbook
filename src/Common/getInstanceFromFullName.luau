@@ -41,6 +41,11 @@ local function getInstanceFromFullName(fullName: string): Instance?
 		local current = maybeGetService(serviceName)
 
 		if current then
+			-- TODO: Verify this isn't also needed with the below TODO
+			-- if #parts == 1 then
+			-- 	return current
+			-- end
+
 			while #parts > 0 do
 				-- Keep around a copy of the `parts` array. We are going to concat this
 				-- into new paths, and incrementally remove from the right to narrow
@@ -60,8 +65,16 @@ local function getInstanceFromFullName(fullName: string): Instance?
 						parts = Sift.List.shift(parts, #name:split(PATH_SEPERATOR))
 						break
 					else
-						-- Reduce from the right until we find the next instance
-						tempParts = Sift.List.pop(tempParts)
+						if #tempParts > 1 then
+							-- TODO: Need this early exit to handle cases with instances not existing later on. Verify
+							-- if this can be effectively repro'd by calling this function on an instance that doesn't
+							-- exist. Particularly make sure to test look-aheads for `Foo.story`, it seemed like the
+							-- loop got stuck looking for "story" when "ChromeWindow.story" didn't exist
+							return nil
+						else
+							-- Reduce from the right until we find the next instance
+							tempParts = Sift.List.pop(tempParts)
+						end
 					end
 				end
 			end
