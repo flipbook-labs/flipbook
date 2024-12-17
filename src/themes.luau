@@ -55,7 +55,7 @@ local Light: Theme = {
 	story = tailwind.green500,
 	directory = tailwind.purple500,
 	alert = tailwind.rose500,
-	star = tailwind.yellow400,
+	star = tailwind.amber600,
 
 	github = Color3.fromHex("#333333"),
 
@@ -88,7 +88,7 @@ local Dark: Theme = {
 	story = tailwind.green500,
 	directory = tailwind.purple500,
 	alert = tailwind.rose500,
-	star = tailwind.yellow400,
+	star = tailwind.amber400,
 
 	github = Color3.fromHex("#ffffff"),
 
