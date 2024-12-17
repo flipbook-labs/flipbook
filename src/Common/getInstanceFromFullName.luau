@@ -41,11 +41,6 @@ local function getInstanceFromFullName(fullName: string): Instance?
 		local current = maybeGetService(serviceName)
 
 		if current then
-			-- TODO: Verify this isn't also needed with the below TODO
-			-- if #parts == 1 then
-			-- 	return current
-			-- end
-
 			while #parts > 0 do
 				-- Keep around a copy of the `parts` array. We are going to concat this
 				-- into new paths, and incrementally remove from the right to narrow
