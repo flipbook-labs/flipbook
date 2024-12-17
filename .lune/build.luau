@@ -51,6 +51,7 @@ if args.watch then
 		filePatterns = {
 			"src/.*%.luau",
 			"example/.*%.luau",
+			"Packages/.*%.luau",
 		},
 		onChanged = build,
 	})
