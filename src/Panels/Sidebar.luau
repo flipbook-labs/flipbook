@@ -1,3 +1,5 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -7,6 +9,7 @@ local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local createOnboardingStorybook = require("@root/Storybook/createOnboardingStorybook")
+local getMostLikelyProjectSources = require("@root/RobloxInternal/getMostLikelyProjectSources")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
@@ -80,15 +83,20 @@ local function Sidebar(props: Props)
 			}),
 		}),
 
-		CreateStorybook = if #props.storybooks.available == 0
-			then React.createElement(Button, {
-				layoutOrder = nextLayoutOrder(),
-				text = "Create Storybook",
-				onClick = function()
-					createOnboardingStorybook(game.ReplicatedStorage)
-				end,
-			})
-			else nil,
+		--if #props.storybooks.available == 0
+		CreateStorybook = React.createElement(Button, {
+			layoutOrder = nextLayoutOrder(),
+			text = "Create Storybook",
+			onClick = function()
+				local source = getMostLikelyProjectSources()[1]
+
+				if source then
+					createOnboardingStorybook(source.Name, source)
+				else
+					createOnboardingStorybook(string.gsub(game.Name, "%.", "_"), ReplicatedStorage)
+				end
+			end,
+		}),
 
 		ScrollingFrame = e(ScrollingFrame, {
 			LayoutOrder = nextLayoutOrder(),
