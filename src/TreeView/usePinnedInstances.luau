@@ -82,9 +82,15 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 		writePinnedPathsToDisk(pinnedPaths)
 	end, { readPinnedPathsFromDisk, writePinnedPathsToDisk })
 
+	local isPinned = useCallback(function(instance: Instance)
+		local pinnedPaths = readPinnedPathsFromDisk()
+		return table.find(pinnedPaths, instance:GetFullName()) ~= nil
+	end, { readPinnedPathsFromDisk })
+
 	return {
 		pin = pin,
 		unpin = unpin,
+		isPinned = isPinned,
 		togglePin = togglePin,
 		getPinnedInstances = getPinnedInstances,
 	}

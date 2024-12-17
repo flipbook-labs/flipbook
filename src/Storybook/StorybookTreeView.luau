@@ -43,7 +43,7 @@ local function StorybookTreeView(props: Props)
 			local pins: TreeNode = {
 				id = HttpService:GenerateGUID(),
 				label = "Starred",
-				icon = "folder",
+				icon = "star",
 				isExpanded = false,
 				children = {},
 			}
