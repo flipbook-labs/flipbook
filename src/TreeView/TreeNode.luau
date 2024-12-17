@@ -158,18 +158,20 @@ local function TreeNode(props: Props)
 				}),
 			}),
 
-			Pin = React.createElement("ImageButton", {
-				LayoutOrder = 3,
-				BackgroundTransparency = 1,
-				AutomaticSize = Enum.AutomaticSize.XY,
-				[React.Event.Activated] = onTogglePin,
-			}, {
-				Icon = React.createElement(Sprite, {
-					image = assets.Magnify, -- TODO: Use a new icon for pinning
-					color = theme.text,
-					size = UDim2.fromOffset(16, 16),
-				}),
-			}),
+			Pin = if props.node.icon == "story" or props.node.icon == "storybook"
+				then React.createElement("ImageButton", {
+					LayoutOrder = 3,
+					BackgroundTransparency = 1,
+					AutomaticSize = Enum.AutomaticSize.XY,
+					[React.Event.Activated] = onTogglePin,
+				}, {
+					Icon = React.createElement(Sprite, {
+						image = assets.Magnify, -- TODO: Use a new icon for pinning
+						color = theme.text,
+						size = UDim2.fromOffset(16, 16),
+					}),
+				})
+				else nil,
 
 			Toggle = if #props.node.children > 0
 				then React.createElement("Frame", {
