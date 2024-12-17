@@ -6,6 +6,7 @@ local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local assets = require("@root/assets")
 local constants = require("@root/constants")
 local types = require("@root/TreeView/types")
+local usePinnedInstances = require("@root/TreeView/usePinnedInstances")
 local useTheme = require("@root/Common/useTheme")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
@@ -39,6 +40,7 @@ local function TreeNode(props: Props)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
 	local isSelected = treeViewContext.isSelected(props.node)
+	local pinning = usePinnedInstances()
 
 	local styles = useSpring({
 		hover = if isHovered or isSelected then 0 else 1,
@@ -78,6 +80,12 @@ local function TreeNode(props: Props)
 
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
+
+	local onTogglePin = useCallback(function()
+		if props.node.instance then
+			pinning.togglePin(props.node.instance)
+		end
+	end, { pinning, props.node })
 
 	local backgroundColor = useMemo(function(): Color3?
 		if isSelected then
@@ -150,9 +158,22 @@ local function TreeNode(props: Props)
 				}),
 			}),
 
+			Pin = React.createElement("ImageButton", {
+				LayoutOrder = 3,
+				BackgroundTransparency = 1,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				[React.Event.Activated] = onTogglePin,
+			}, {
+				Icon = React.createElement(Sprite, {
+					image = assets.Magnify, -- TODO: Use a new icon for pinning
+					color = theme.text,
+					size = UDim2.fromOffset(16, 16),
+				}),
+			}),
+
 			Toggle = if #props.node.children > 0
 				then React.createElement("Frame", {
-					LayoutOrder = 3,
+					LayoutOrder = 4,
 					BackgroundTransparency = 1,
 					AutomaticSize = Enum.AutomaticSize.XY,
 				}, {

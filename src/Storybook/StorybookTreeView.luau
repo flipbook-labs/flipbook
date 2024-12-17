@@ -6,6 +6,7 @@ local TreeView = require("@root/TreeView")
 
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
+local usePinnedInstances = require("@root/TreeView/usePinnedInstances")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNode = TreeView.TreeNode
@@ -32,10 +33,43 @@ local function StorybookTreeView(props: Props)
 	local prevSelectedNode = usePrevious(selectedNode)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
+	local pinning = usePinnedInstances()
 
 	useEffect(function()
-		storybookByNodeId.current = {}
 		local roots: { TreeNode } = {}
+
+		local pinnedInstances = pinning.getPinnedInstances()
+		if #pinnedInstances > 0 then
+			local pins: TreeNode = {
+				id = HttpService:GenerateGUID(),
+				label = "Starred",
+				icon = "folder",
+				isExpanded = false,
+				children = {},
+			}
+
+			for _, pinnedInstance in pinnedInstances do
+				local node: { TreeNode }
+				if pinnedInstance.instance then
+					node = treeViewContext.getNodeByInstance(pinnedInstance.instance)
+				end
+
+				if not node then
+					node = {
+						id = HttpService:GenerateGUID(),
+						label = `ERR: {pinnedInstance.path}`,
+						icon = "folder", -- TODO: Use an error icon
+						isExpanded = true,
+						children = {},
+					}
+				end
+
+				table.insert(pins.children, node)
+			end
+
+			table.insert(roots, pins)
+		end
+
 		for _, storybook in props.storybooks.available do
 			local root = createTreeNodesForStorybook(storybook)
 			table.insert(roots, root)
@@ -50,11 +84,13 @@ local function StorybookTreeView(props: Props)
 				isExpanded = false,
 				children = {},
 			}
+
 			for _, unavailableStorybook in props.storybooks.unavailable do
 				local root = createTreeNodesForStorybook(unavailableStorybook.storybook)
 				table.insert(unavailableStorybooks.children, root)
 				storybookByNodeId.current[root.id] = unavailableStorybook.storybook
 			end
+
 			table.insert(roots, unavailableStorybooks)
 		end
 
