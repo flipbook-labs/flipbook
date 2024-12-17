@@ -2,9 +2,12 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local Branding = require("@root/Common/Branding")
+local Button = require("@root/Forms/Button")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
+local createOnboardingStorybook = require("@root/Storybook/createOnboardingStorybook")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -58,7 +61,7 @@ local function Sidebar(props: Props)
 		Header = e("Frame", {
 			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,
-			LayoutOrder = 0,
+			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 0),
 			[React.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
@@ -77,8 +80,18 @@ local function Sidebar(props: Props)
 			}),
 		}),
 
+		CreateStorybook = if #props.storybooks.available == 0
+			then React.createElement(Button, {
+				layoutOrder = nextLayoutOrder(),
+				text = "Create Storybook",
+				onClick = function()
+					createOnboardingStorybook(game.ReplicatedStorage)
+				end,
+			})
+			else nil,
+
 		ScrollingFrame = e(ScrollingFrame, {
-			LayoutOrder = 1,
+			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
 		}, {
 			StorybookTreeView = e(StorybookTreeView, {
