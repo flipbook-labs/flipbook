@@ -1,113 +1,77 @@
+[inputs."img/Alert.png"]
+hash = "e2f8c263a469a521d876de814fb5e3251084dbce9d41e06bf9037ccfe4710fd3"
+id = 74272179538762
+slice = [[0, 308], [24, 332]]
+packable = true
+
 [inputs."img/ChevronRight.png"]
 hash = "4c91853652b4e0a6317804c54db6397ac0c710c819b282f7be2179e3abdc879c"
-id = 128765597212202
+id = 74272179538762
 slice = [[49, 226], [81, 258]]
 packable = true
 
 [inputs."img/Component.png"]
 hash = "d51b19d5f35ac87fd8156500828f3e217b6fc420b70fee5d97b3577e4e6a8843"
-id = 128765597212202
+id = 74272179538762
 slice = [[0, 275], [32, 307]]
 packable = true
 
 [inputs."img/Folder.png"]
 hash = "4c0e80a363d36a4d127d410795cb13eec74d55871b70174636c0c962c242835c"
-id = 128765597212202
+id = 74272179538762
 slice = [[345, 0], [377, 32]]
 packable = true
 
 [inputs."img/GitHubMark.png"]
 hash = "a0fb973cd9bf0c1123dbe783f7a4093dbcf9b4910d6e385c16a837a04a02306c"
-id = 128765597212202
+id = 74272179538762
 slice = [[0, 0], [230, 225]]
 packable = true
 
 [inputs."img/IconLight.png"]
 hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
-id = 128765597212202
+id = 74272179538762
 slice = [[231, 65], [273, 107]]
 packable = true
 
 [inputs."img/Magnify.png"]
 hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
-id = 128765597212202
+id = 74272179538762
 slice = [[0, 226], [48, 274]]
 packable = true
 
 [inputs."img/Minify.png"]
 hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
-id = 128765597212202
+id = 74272179538762
 slice = [[296, 0], [344, 48]]
 packable = true
 
 [inputs."img/Search.png"]
 hash = "0ab89c0309f577f3ccae0e03b45292f6e2bca51cc9b8250f56ad756e04231c57"
-id = 128765597212202
+id = 74272179538762
 slice = [[296, 49], [328, 81]]
 packable = true
 
 [inputs."img/Star.png"]
 hash = "ae3c74c88729a8600531b2ade6cbaaa091033fffd0de5145b8462d3a15d0a510"
-id = 128765597212202
+id = 74272179538762
 slice = [[82, 226], [107, 250]]
-packable = true
-
-[inputs."img/Star@2x.png"]
-hash = "ebaeeb5c227223841d5bd5c001f58044d1995e5258374305032611a75a9070eb"
-id = 118393146115398
-slice = [[0, 0], [49, 48]]
-packable = true
-
-[inputs."img/Star@3x.png"]
-hash = "34cc831f584d6b54d60f5fe77f480e053e2e0091676f446aa0b9f92cc25f6a4f"
-id = 123049343108173
-slice = [[0, 0], [73, 72]]
 packable = true
 
 [inputs."img/StarFilled.png"]
 hash = "d958666976bb5a1ab5672e5a79d393b28fca26fb348f9b07ceecbcaf059e78f3"
-id = 128765597212202
+id = 74272179538762
 slice = [[49, 259], [74, 283]]
-packable = true
-
-[inputs."img/StarFilled@2x.png"]
-hash = "99216f340f265dcf7fa40c941427d9f09efeddc60ea5fd6a502f288e6d268e63"
-id = 118393146115398
-slice = [[50, 0], [99, 48]]
-packable = true
-
-[inputs."img/StarFilled@3x.png"]
-hash = "b7d7defc50fb8d0dcc92327406e9eb2e8fe379656239424fab6982d449248ba5"
-id = 123049343108173
-slice = [[74, 0], [147, 72]]
 packable = true
 
 [inputs."img/Storybook.png"]
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
-id = 128765597212202
+id = 74272179538762
 slice = [[231, 108], [263, 140]]
-packable = true
-
-[inputs."img/Warning.png"]
-hash = "e2f8c263a469a521d876de814fb5e3251084dbce9d41e06bf9037ccfe4710fd3"
-id = 128765597212202
-slice = [[0, 308], [24, 332]]
-packable = true
-
-[inputs."img/Warning@2x.png"]
-hash = "ecec999c799a628e0672fe1dd4d2c16df9f27caeb66b82a7bd5103326c6463ff"
-id = 118393146115398
-slice = [[0, 49], [48, 97]]
-packable = true
-
-[inputs."img/Warning@3x.png"]
-hash = "9524173aa67880639e5d09b02925e631e1766336bff06ddff2bdf5d834822464"
-id = 123049343108173
-slice = [[0, 73], [72, 145]]
 packable = true
 
 [inputs."img/flipbook.png"]
 hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
-id = 128765597212202
+id = 74272179538762
 slice = [[231, 0], [295, 64]]
 packable = true
