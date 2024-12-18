@@ -9,6 +9,10 @@ local useTheme = require("@root/Common/useTheme")
 local useMemo = React.useMemo
 local e = React.createElement
 
+local function isArray(obj: { [any]: any }): boolean
+	return #obj > 0 and next(obj, #obj) == nil
+end
+
 type Props = {
 	controlsSchema: { [string]: any },
 	changedControls: { [string]: any },
@@ -52,7 +56,7 @@ local function StoryControls(props: Props)
 				initialState = control.value,
 				onStateChange = setControl,
 			})
-		elseif controlType == "table" then
+		elseif controlType == "table" and isArray(control.value) then
 			local default = props.changedControls[control.name]
 			option = React.createElement(Dropdown, {
 				default = if default then default else control.value[1],
