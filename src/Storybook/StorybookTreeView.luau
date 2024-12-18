@@ -131,7 +131,7 @@ local function StorybookTreeView(props: Props)
 
 	useEffect(
 		function()
-			if selectedNode and selectedNode ~= prevSelectedNode then
+			if selectedNode ~= prevSelectedNode then
 				if props.onStoryChanged then
 					if selectedNode then
 						if
@@ -154,7 +154,7 @@ local function StorybookTreeView(props: Props)
 				end
 
 				if props.onShowErrorPage then
-					if selectedNode.icon == TreeView.TreeNodeIcon.Alert then
+					if selectedNode and selectedNode.icon == TreeView.TreeNodeIcon.Alert then
 						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
 						if unavailableStorybook then
 							props.onShowErrorPage(unavailableStorybook)
