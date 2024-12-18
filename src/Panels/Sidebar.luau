@@ -31,11 +31,6 @@ type Props = {
 local function Sidebar(props: Props)
 	local theme = useTheme()
 
-	local headerHeight, setHeaderHeight = React.useState(0)
-	local onHeaderSizeChanged = React.useCallback(function(rbx: Frame)
-		setHeaderHeight(rbx.AbsoluteSize.Y)
-	end, { setHeaderHeight })
-
 	local search: string?, setSearch = React.useState(nil :: string?)
 	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
@@ -53,6 +48,7 @@ local function Sidebar(props: Props)
 	}, {
 		UIListLayout = e("UIListLayout", {
 			Padding = theme.padding,
+			VerticalFlex = Enum.UIFlexAlignment.Fill,
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
@@ -68,42 +64,49 @@ local function Sidebar(props: Props)
 			BackgroundTransparency = 1,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 0),
-			[React.Change.AbsoluteSize] = onHeaderSizeChanged,
 		}, {
+			FlexItem = React.createElement("UIFlexItem", {
+				FlexMode = Enum.UIFlexMode.Grow,
+			}),
+
 			UIListLayout = e("UIListLayout", {
 				Padding = theme.paddingLarge,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			}),
 
 			Branding = e(Branding, {
-				layoutOrder = 0,
+				layoutOrder = nextLayoutOrder(),
 			}),
 
 			Searchbar = e(Searchbar, {
-				layoutOrder = 1,
+				layoutOrder = nextLayoutOrder(),
 				onSearchChanged = onSearchChanged,
 			}),
-		}),
 
-		--if #props.storybooks.available == 0
-		CreateStorybook = React.createElement(Button, {
-			layoutOrder = nextLayoutOrder(),
-			text = "Create Storybook",
-			onClick = function()
-				local source = getMostLikelyProjectSources()[1]
+			--if #props.storybooks.available == 0
+			CreateStorybook = React.createElement(Button, {
+				layoutOrder = nextLayoutOrder(),
+				text = "Create Storybook",
+				onClick = function()
+					local source = getMostLikelyProjectSources()[1]
 
-				if source then
-					createOnboardingStorybook(source.Name, source)
-				else
-					createOnboardingStorybook(string.gsub(game.Name, "%.", "_"), ReplicatedStorage)
-				end
-			end,
+					if source then
+						createOnboardingStorybook(source.Name, source)
+					else
+						createOnboardingStorybook(string.gsub(game.Name, "%.", "_"), ReplicatedStorage)
+					end
+				end,
+			}),
 		}),
 
 		ScrollingFrame = e(ScrollingFrame, {
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
+			Size = UDim2.fromScale(1, 1),
 		}, {
+			FlexItem = React.createElement("UIFlexItem", {
+				FlexMode = Enum.UIFlexMode.Shrink,
+			}),
+
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
 				storybooks = props.storybooks,
