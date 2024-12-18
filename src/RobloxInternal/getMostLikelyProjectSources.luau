@@ -23,6 +23,7 @@ local function getMostLikelyProjectSources(): { Instance }
 					return false
 				end
 			end
+			return nil
 		end)
 
 		return Sift.List.map(sorted, function(internalSyncItem)

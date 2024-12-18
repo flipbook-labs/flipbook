@@ -158,7 +158,7 @@ local function TreeNode(props: Props)
 				}),
 			}),
 
-				Pin = if props.node.instance and (props.node.icon == "story" or props.node.icon == "storybook")
+			Pin = if props.node.instance and (props.node.icon == "story" or props.node.icon == "storybook")
 				then React.createElement("ImageButton", {
 					LayoutOrder = 3,
 					BackgroundTransparency = 1,
@@ -166,7 +166,7 @@ local function TreeNode(props: Props)
 					[React.Event.Activated] = onTogglePin,
 				}, {
 					Icon = React.createElement(Sprite, {
-							image = if pinning.isPinned(props.node.instance) then assets.StarFilled else assets.Star,
+						image = if pinning.isPinned(props.node.instance) then assets.StarFilled else assets.Star,
 						color = theme.text,
 						size = UDim2.fromOffset(16, 16),
 					}),
