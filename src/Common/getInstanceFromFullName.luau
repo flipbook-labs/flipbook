@@ -8,27 +8,9 @@
 
 local Sift = require("@pkg/Sift")
 
+local tryGetService = require("@root/Permissions/tryGetService")
+
 local PATH_SEPERATOR = "."
-
-local function canAccess(instance: Instance): boolean
-	local success = pcall(function()
-		return instance.Name
-	end)
-
-	return success
-end
-
-local function maybeGetService(serviceName: string): Instance?
-	local success, current: any = pcall(function()
-		return game:GetService(serviceName)
-	end)
-
-	if success and current and canAccess(current) and current:IsA("Instance") then
-		return current
-	else
-		return nil
-	end
-end
 
 local function getInstanceFromFullName(fullName: string): Instance?
 	local parts = fullName:split(PATH_SEPERATOR)
@@ -38,7 +20,7 @@ local function getInstanceFromFullName(fullName: string): Instance?
 		-- This function only works for instances in the DataModel. As such, the
 		-- first part of the path will always be a service, so if we can't find
 		-- one we exit out and return nil
-		local current = maybeGetService(serviceName)
+		local current = tryGetService(serviceName)
 
 		if current then
 			while #parts > 0 do
@@ -61,10 +43,8 @@ local function getInstanceFromFullName(fullName: string): Instance?
 						break
 					else
 						if #tempParts == 1 then
-							-- TODO: Need this early exit to handle cases with instances not existing later on. Verify
-							-- if this can be effectively repro'd by calling this function on an instance that doesn't
-							-- exist. Particularly make sure to test look-aheads for `Foo.story`, it seemed like the
-							-- loop got stuck looking for "story" when "ChromeWindow.story" didn't exist
+							-- This fixes a crash when searching for paths that
+							-- no longer exist
 							return nil
 						else
 							-- Reduce from the right until we find the next instance
