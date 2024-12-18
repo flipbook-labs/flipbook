@@ -2,14 +2,14 @@ local process = require("@lune/process")
 
 local run = require("./lib/run")
 
-local function installPackageFromDisk(packageName: string, packagePath: string)
+local function installPackageFromDisk(packageName: string, packagePath: string, runOptions: { [string]: any }?)
 	local homePath = process.env.HOME
 	assert(homePath, "no $HOME env var")
 
 	local absPackagePath = run("realpath", { packagePath })
 
-	run("rm", { `Packages/{packageName}.lua` })
-	run("ln", { "-s", `{absPackagePath}/dist`, `Packages/{packageName}` })
+	run("rm", { `Packages/{packageName}.lua` }, runOptions)
+	run("ln", { "-s", `{absPackagePath}/dist`, `Packages/{packageName}` }, runOptions)
 end
 
 do
@@ -26,6 +26,11 @@ do
 	run("wally", { "install" }, {
 		cwd = "code-samples",
 	})
+
+	installPackageFromDisk("Storyteller", "../storyteller", {
+		cwd = "code-samples",
+	})
+
 	run("rojo", { "sourcemap", "default.project.json", "-o", "sourcemap.json" }, {
 		cwd = "code-samples",
 	})
