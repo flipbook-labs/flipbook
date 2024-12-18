@@ -4,7 +4,6 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
@@ -21,19 +20,15 @@ local function createFlipbookPlugin(
 }
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
-	local loader = ModuleLoader.new()
 
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
 	}, {
-		PluginApp = React.createElement(PluginApp, {
-			loader = loader,
-		}),
+		PluginApp = React.createElement(PluginApp),
 	})
 
 	local function unmount()
 		root:unmount()
-		loader:clear()
 	end
 
 	local function mount()

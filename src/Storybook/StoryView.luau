@@ -1,6 +1,5 @@
 local Selection = game:GetService("Selection")
 
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
@@ -20,11 +19,9 @@ local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
-	loader: ModuleLoader,
 	story: ModuleScript,
 	storybook: LoadedStorybook,
 }
@@ -32,7 +29,7 @@ type Props = {
 local function StoryView(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
+	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
 	local changedControls, setChangedControls = React.useState({})
@@ -46,7 +43,6 @@ local function StoryView(props: Props)
 	end, { story })
 
 	local controlsSchema = if story then story.controls else nil
-
 	local showControls = controlsSchema and not Sift.isEmpty(controlsSchema)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)

@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -7,12 +6,10 @@ local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
 	story: ModuleScript,
-	loader: ModuleLoader,
 	storybook: LoadedStorybook,
 	layoutOrder: number?,
 }
@@ -43,7 +40,6 @@ local function Canvas(props: Props)
 			}),
 
 			StoryView = props.story and e(StoryView, {
-				loader = props.loader,
 				story = props.story,
 				storybook = props.storybook,
 			}),

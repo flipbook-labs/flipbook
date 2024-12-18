@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -16,14 +15,10 @@ local TOPBAR_HEIGHT_PX = 32
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 
-export type Props = {
-	loader: ModuleLoader.ModuleLoader,
-}
-
-local function App(props: Props)
+local function App()
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local storybooks = Storyteller.useStorybooks(game, props.loader)
+	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
@@ -91,7 +86,6 @@ local function App(props: Props)
 				BackgroundTransparency = 1,
 			}, {
 				Screen = React.createElement(Screen, {
-					loader = props.loader,
 					story = storyModule,
 					storybook = storybook,
 				}),

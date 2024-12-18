@@ -16,6 +16,7 @@ do
 	run("wally", { "install" })
 
 	installPackageFromDisk("Storyteller", "../storyteller")
+	-- ModuleLoader is a dependency of Storyteller, make sure to install both.
 	installPackageFromDisk("ModuleLoader", "../module-loader")
 
 	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })

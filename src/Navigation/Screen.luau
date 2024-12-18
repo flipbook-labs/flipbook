@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -10,11 +9,9 @@ local StoryCanvas = require("@root/Storybook/StoryCanvas")
 
 local useMemo = React.useMemo
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 export type Props = {
-	loader: ModuleLoader,
 	story: ModuleScript?,
 	storybook: LoadedStorybook?,
 }
@@ -27,7 +24,6 @@ local function Screen(props: Props)
 		if currentScreen == "Home" then
 			if props.story and props.storybook then
 				return React.createElement(StoryCanvas, {
-					loader = props.loader,
 					story = props.story,
 					storybook = props.storybook,
 				})
