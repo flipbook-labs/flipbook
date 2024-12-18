@@ -43,6 +43,8 @@ local function getInstanceFromFullName(fullName: string): Instance?
 						break
 					else
 						if #tempParts == 1 then
+							-- This fixes a crash when searching for paths that
+							-- no longer exist
 							return nil
 						else
 							-- Reduce from the right until we find the next instance
