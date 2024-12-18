@@ -21,6 +21,8 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
 		return assets.Folder, theme.directory
 	elseif icon == types.TreeNodeIcon.Star then
 		return assets.Star, theme.star
+	elseif icon == types.TreeNodeIcon.Alert then
+		return assets.Alert, theme.alert
 	else
 		return assets.Folder, theme.textFaded
 	end

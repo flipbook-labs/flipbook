@@ -23,6 +23,7 @@ export type Props = {
 		unavailable: { UnavailableStorybook },
 	},
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
+	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
 
@@ -32,6 +33,7 @@ local function StorybookTreeView(props: Props)
 	local selectedNode = treeViewContext.getSelectedNode()
 	local prevSelectedNode = usePrevious(selectedNode)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
+	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local pinning = usePinnedInstances()
 
@@ -86,9 +88,15 @@ local function StorybookTreeView(props: Props)
 			}
 
 			for _, unavailableStorybook in props.storybooks.unavailable do
-				local root = createTreeNodesForStorybook(unavailableStorybook.storybook)
+				local root = {
+					id = HttpService:GenerateGUID(),
+					label = unavailableStorybook.storybook.name,
+					icon = "alert",
+					isExpanded = false,
+					children = {},
+				}
 				table.insert(unavailableStorybooks.children, root)
-				storybookByNodeId.current[root.id] = unavailableStorybook.storybook
+				unavailableStorybookByNodeId.current[root.id] = unavailableStorybook
 			end
 
 			table.insert(roots, unavailableStorybooks)
@@ -121,28 +129,42 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { lastOpenedStory, treeViewContext.getNodeByInstance, treeViewContext.activateNode } :: { unknown })
 
-	useEffect(function()
-		if props.onStoryChanged and selectedNode ~= prevSelectedNode then
-			if selectedNode then
-				if
-					selectedNode.icon == TreeView.TreeNodeIcon.Story
-					and selectedNode.instance
-					and selectedNode.instance:IsA("ModuleScript")
-				then
-					local ancestry = TreeView.getAncestry(selectedNode)
-					local root = ancestry[#ancestry]
-					local storybook = storybookByNodeId.current[root.id]
+	useEffect(
+		function()
+			if selectedNode and selectedNode ~= prevSelectedNode then
+				if props.onStoryChanged then
+					if selectedNode then
+						if
+							selectedNode.icon == TreeView.TreeNodeIcon.Story
+							and selectedNode.instance
+							and selectedNode.instance:IsA("ModuleScript")
+						then
+							local ancestry = TreeView.getAncestry(selectedNode)
+							local root = ancestry[#ancestry]
+							local storybook = storybookByNodeId.current[root.id]
 
-					if storybook then
-						props.onStoryChanged(selectedNode.instance, storybook)
-						setLastOpenedStory(selectedNode.instance)
+							if storybook then
+								props.onStoryChanged(selectedNode.instance, storybook)
+								setLastOpenedStory(selectedNode.instance)
+							end
+						end
+					else
+						props.onStoryChanged(nil, nil)
 					end
 				end
-			else
-				props.onStoryChanged(nil, nil)
+
+				if props.onShowErrorPage then
+					if selectedNode.icon == TreeView.TreeNodeIcon.Alert then
+						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
+						if unavailableStorybook then
+							props.onShowErrorPage(unavailableStorybook)
+						end
+					end
+				end
 			end
-		end
-	end, { props.onStoryChanged, selectedNode, prevSelectedNode, setLastOpenedStory } :: { unknown })
+		end,
+		{ props.onShowErrorPage, props.onStoryChanged, selectedNode, prevSelectedNode, setLastOpenedStory } :: { unknown }
+	)
 
 	return React.createElement(TreeView.TreeView, {
 		layoutOrder = props.layoutOrder,

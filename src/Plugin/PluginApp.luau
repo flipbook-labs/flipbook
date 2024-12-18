@@ -14,6 +14,7 @@ local useTheme = require("@root/Common/useTheme")
 local TOPBAR_HEIGHT_PX = 32
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local function App()
 	local theme = useTheme()
@@ -21,6 +22,7 @@ local function App()
 	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local unavailableStorybook, setUnavailableStorybook = React.useState(nil :: LoadedStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
 	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
@@ -34,6 +36,12 @@ local function App()
 
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
+
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
+	end, {})
 
 	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
@@ -62,6 +70,7 @@ local function App()
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
+				onShowErrorPage = onShowErrorPage,
 				storybooks = storybooks,
 			}),
 		}),
@@ -88,6 +97,7 @@ local function App()
 				Screen = React.createElement(Screen, {
 					story = storyModule,
 					storybook = storybook,
+					unavailableStorybook = unavailableStorybook,
 				}),
 			}),
 		}),

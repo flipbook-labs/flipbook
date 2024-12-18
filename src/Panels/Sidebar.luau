@@ -14,12 +14,14 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
+	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 	storybooks: {
 		avialable: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
@@ -106,6 +108,7 @@ local function Sidebar(props: Props)
 				searchTerm = search,
 				storybooks = props.storybooks,
 				onStoryChanged = props.onStoryChanged,
+				onShowErrorPage = props.onShowErrorPage,
 			}),
 		}),
 	})
