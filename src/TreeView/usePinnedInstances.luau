@@ -1,12 +1,12 @@
-local HttpService = game:GetService("HttpService")
-
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
 local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
 
-local useContext = React.useContext
 local useCallback = React.useCallback
+local useState = React.useState
+local useEffect = React.useEffect
 
 local PINNED_INSTANCES_KEY = "pinnedInstancePaths"
 
@@ -16,45 +16,31 @@ export type PinnedInstance = {
 }
 
 local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
-	local plugin = useContext(PluginContext.Context)
+	local localStorage = LocalStorageContext.use()
 
-	local readPinnedPathsFromDisk = useCallback(function(): { string }
-		local data = plugin:GetSetting(PINNED_INSTANCES_KEY)
-		if data then
-			local json = HttpService:JSONDecode(data)
-			if json then
-				return json
-			end
-		end
-		return {}
-	end, { plugin })
+	local pinnedPaths, setPinnedPaths = useState(function()
+		return localStorage.get(PINNED_INSTANCES_KEY) or {}
+	end)
 
-	local writePinnedPathsToDisk = useCallback(function(pins: { string })
-		local data = HttpService:JSONEncode(pins)
-		plugin:SetSetting(PINNED_INSTANCES_KEY, data)
-	end, { plugin })
+	useEffect(function()
+		localStorage.set(PINNED_INSTANCES_KEY, pinnedPaths)
+	end, { pinnedPaths })
 
 	local pin = useCallback(function(instance: Instance)
-		local pinnedPaths = readPinnedPathsFromDisk()
-
-		table.insert(pinnedPaths, instance:GetFullName())
-
-		writePinnedPathsToDisk(pinnedPaths)
-	end, { readPinnedPathsFromDisk, writePinnedPathsToDisk })
+		setPinnedPaths(function(prev)
+			return Sift.List.append(prev, instance:GetFullName())
+		end)
+	end, {})
 
 	local unpin = useCallback(function(instance: Instance)
-		local pinnedPaths = readPinnedPathsFromDisk()
-
-		local index = table.find(pinnedPaths, instance:GetFullName())
-		if index then
-			table.remove(pinnedPaths, index)
-		end
-
-		writePinnedPathsToDisk(pinnedPaths)
-	end, { readPinnedPathsFromDisk, writePinnedPathsToDisk })
+		setPinnedPaths(function(prev)
+			return Sift.List.filter(prev, function(pinnedPath)
+				return pinnedPath ~= instance:GetFullName()
+			end)
+		end)
+	end, {})
 
 	local getPinnedInstances = useCallback(function(): { PinnedInstance }
-		local pinnedPaths = readPinnedPathsFromDisk()
 		local pinnedInstances: { PinnedInstance } = {}
 
 		for _, pinnedPath in pinnedPaths do
@@ -65,27 +51,19 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return pinnedInstances
-	end, { readPinnedPathsFromDisk })
-
-	local togglePin = useCallback(function(instance: Instance)
-		local pinnedPaths = readPinnedPathsFromDisk()
-		local path = instance:GetFullName()
-
-		local index = table.find(pinnedPaths, path)
-
-		if index then
-			table.remove(pinnedPaths, index)
-		else
-			table.insert(pinnedPaths, path)
-		end
-
-		writePinnedPathsToDisk(pinnedPaths)
-	end, { readPinnedPathsFromDisk, writePinnedPathsToDisk })
+	end, { pinnedPaths })
 
 	local isPinned = useCallback(function(instance: Instance)
-		local pinnedPaths = readPinnedPathsFromDisk()
 		return table.find(pinnedPaths, instance:GetFullName()) ~= nil
-	end, { readPinnedPathsFromDisk })
+	end, { pinnedPaths })
+
+	local togglePin = useCallback(function(instance: Instance)
+		if isPinned(instance) then
+			unpin(instance)
+		else
+			pin(instance)
+		end
+	end, { isPinned, unpin, pin })
 
 	return {
 		pin = pin,

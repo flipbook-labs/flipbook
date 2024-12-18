@@ -65,7 +65,6 @@ local function createFlipbookPlugin(
 	end
 
 	local function destroy()
-		print("destroy")
 		unmount()
 		for _, connection in connections do
 			connection:Disconnect()
