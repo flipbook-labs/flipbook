@@ -70,6 +70,8 @@ test("returns nil if the first part of the path is not a service", function()
 end)
 
 test("returns nil if the path does not exist", function()
+	expect(getInstanceFromFullName("Foo.story")).toBeUndefined()
+	expect(getInstanceFromFullName("Path.To.Foo.story")).toBeUndefined()
 	expect(getInstanceFromFullName("ReplicatedStorage.Foo.Bar.Baz")).toBeUndefined()
 	expect(getInstanceFromFullName("ReplicatedStorage.Sample.story")).toBeUndefined()
 	expect(getInstanceFromFullName("ReplicatedStorage.Sample.spec")).toBeUndefined()
