@@ -8,7 +8,7 @@
 
 local Sift = require("@pkg/Sift")
 
-local tryGetService = require("@root/Permissions/tryGetService")
+local tryGetService = require("@root/RobloxInternal/tryGetService")
 
 local PATH_SEPERATOR = "."
 
