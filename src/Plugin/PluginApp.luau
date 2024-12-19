@@ -30,10 +30,8 @@ local function App()
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript?)
-			return if prev ~= newStoryModule then newStoryModule else nil
-		end)
-
+		setUnavailableStorybook(nil)
+		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
 
