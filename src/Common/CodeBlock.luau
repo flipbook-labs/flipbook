@@ -7,8 +7,6 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local useMemo = React.useMemo
-local useRef = React.useRef
-local useEffect = React.useEffect
 
 local function getLineNumbers(str: string): string
 	return Sift.List.reduce(str:split("\n"), function(accumulator, _item, index)
@@ -22,21 +20,25 @@ export type Props = {
 	layoutOrder: number?,
 }
 
-local function StoryError(props: Props)
+local function CodeBlock(props: Props)
 	local theme = useTheme()
-	local ref = useRef(nil :: TextBox?)
 
 	local sourceColor = useMemo(function()
 		return if props.sourceColor then props.sourceColor else theme.text
 	end, { props.sourceColor })
 
-	useEffect(function()
-		Highlighter.matchStudioSettings()
-
-		Highlighter.highlight({
-			textObject = ref.current,
-		})
-	end, {})
+	local source = useMemo(function()
+		if props.sourceColor then
+			return props.source
+		else
+			return table.concat(
+				Highlighter.buildRichTextLines({
+					src = props.source,
+				}),
+				"\n"
+			)
+		end
+	end, { props.source })
 
 	return React.createElement("Frame", {
 		AutomaticSize = Enum.AutomaticSize.XY,
@@ -65,7 +67,7 @@ local function StoryError(props: Props)
 		LineNumbers = React.createElement("TextLabel", {
 			LayoutOrder = nextLayoutOrder(),
 			AutomaticSize = Enum.AutomaticSize.XY,
-			Text = getLineNumbers(props.source),
+			Text = getLineNumbers(source),
 			TextSize = theme.textSize,
 			LineHeight = 1,
 			BackgroundTransparency = 1,
@@ -75,18 +77,18 @@ local function StoryError(props: Props)
 		}),
 
 		SourceCode = React.createElement(SelectableTextLabel, {
+			RichText = true,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
-			Text = props.source,
+			Text = source,
 			TextColor3 = sourceColor,
 			TextSize = theme.textSize,
 			TextWrapped = false,
 			LineHeight = 1,
 			Font = Enum.Font.RobotoMono,
-			ref = ref,
 		}),
 	})
 end
 
-return StoryError
+return CodeBlock
