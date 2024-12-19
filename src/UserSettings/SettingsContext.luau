@@ -1,14 +1,15 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
 local defaultSettings = require("./defaultSettings")
 
 local useCallback = React.useCallback
-local useContext = React.useContext
 local useState = React.useState
 
 type Settings = defaultSettings.Settings
+
+local USER_SETTINGS_KEY = "userSettings"
 
 local Context = React.createContext({} :: SettingsContext)
 
@@ -26,19 +27,23 @@ export type SettingsContext = {
 }
 
 local function Provider(props: Props)
-	local plugin = useContext(PluginContext.Context)
+	local localStorage = LocalStorageContext.use()
+
+	local userSettings, setUserSettings = useState(function()
+		return localStorage.get(USER_SETTINGS_KEY) or {}
+	end)
 
 	local loadSettingsFromDisk = useCallback(function()
 		local settings = {}
 		for settingName, setting in pairs(defaultSettings) do
-			local savedValue = plugin:GetSetting(settingName)
+			local savedValue = userSettings[settingName]
 
 			settings[settingName] = Sift.Dictionary.join(setting, {
 				value = savedValue,
 			})
 		end
 		return settings
-	end, { plugin })
+	end, { userSettings })
 
 	local settings, setSettings = useState(function()
 		return loadSettingsFromDisk()
@@ -57,18 +62,24 @@ local function Provider(props: Props)
 
 	local isSettingDefault = useCallback(function(settingName: string)
 		local defaultValue = getSettingDefault(settingName)
-		local savedValue = plugin:GetSetting(settingName)
+		local savedValue = userSettings[settingName]
 
 		return savedValue == nil or savedValue == defaultValue
-	end, { plugin, getSettingDefault } :: { unknown })
+	end, { userSettings, getSettingDefault } :: { unknown })
 
 	local setSetting = useCallback(function(settingName: string, newValue: any)
 		if newValue == nil then
 			newValue = getSettingDefault(settingName)
 		end
-		plugin:SetSetting(settingName, newValue)
+
+		setUserSettings(function(prev)
+			return Sift.Dictionary.join(prev, {
+				[settingName] = newValue,
+			})
+		end)
+
 		setSettings(loadSettingsFromDisk)
-	end, { plugin, loadSettingsFromDisk, getSettingDefault } :: { unknown })
+	end, { loadSettingsFromDisk, getSettingDefault } :: { unknown })
 
 	local getSetting = useCallback(function(settingName: string)
 		return settings[settingName].value
