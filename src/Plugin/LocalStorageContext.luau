@@ -21,22 +21,18 @@ export type LocalStorageContext = {
 	set: (key: string, value: unknown) -> (),
 }
 
-local LocalStorageContext = React.createContext({})
+local LocalStorageContext = React.createContext(nil :: LocalStorageContext?)
 
 export type Props = {
-	storageKey: string?,
+	storageKey: string,
 	children: React.Node,
 }
 
 local function LocalStorageProvider(props: Props)
 	local plugin = useContext(PluginContext.Context)
 
-	local storageKey = useMemo(function()
-		return if props.storageKey then props.storageKey else `{plugin.Name}LocalStorage`
-	end, { props.storageKey, plugin })
-
 	local loadFromDisk = useCallback(function(): LocalStorage
-		local data = plugin:GetSetting(storageKey)
+		local data = plugin:GetSetting(props.storageKey)
 		if data then
 			local json = HttpService:JSONDecode(data)
 			if json then
@@ -44,7 +40,7 @@ local function LocalStorageProvider(props: Props)
 			end
 		end
 		return {}
-	end, { plugin, storageKey })
+	end, { plugin, props.storageKey } :: { unknown })
 
 	local storage, setStorage = useState(loadFromDisk)
 	local prevStorage = usePrevious(storage)
@@ -52,15 +48,15 @@ local function LocalStorageProvider(props: Props)
 	local saveToDisk = useCallback(function()
 		local data = HttpService:JSONEncode(storage)
 		if data then
-			plugin:SetSetting(storageKey, data)
+			plugin:SetSetting(props.storageKey, data)
 		end
-	end, { plugin, storageKey, storage })
+	end, { plugin, props.storageKey, storage } :: { unknown })
 
 	local get = useCallback(function(key: string)
 		return storage[key]
 	end, { storage })
 
-	local set = useCallback(function(key: string, value: unknown)
+	local set = useCallback(function(key: string, value: any)
 		setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
 				[key] = if typeof(value) == "function" then value(prev[key]) else value,
@@ -72,7 +68,7 @@ local function LocalStorageProvider(props: Props)
 		if storage and storage ~= prevStorage then
 			saveToDisk()
 		end
-	end, { storage, prevStorage, saveToDisk })
+	end, { storage, prevStorage, saveToDisk } :: { unknown })
 
 	local context: LocalStorageContext = {
 		get = get,
@@ -84,7 +80,7 @@ local function LocalStorageProvider(props: Props)
 	}, props.children)
 end
 
-local function useLocalStorage(): TreeViewContext
+local function useLocalStorage(): LocalStorageContext
 	local context = useContext(LocalStorageContext)
 	if not context then
 		local contextName = script.Name

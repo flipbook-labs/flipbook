@@ -21,7 +21,9 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
-			React.createElement(LocalStorageContext.Provider),
+			React.createElement(LocalStorageContext.Provider, {
+				storageKey = "FlipbookInternal",
+			}),
 			React.createElement(SettingsContext.Provider),
 			React.createElement(TreeView.TreeViewProvider),
 		},
