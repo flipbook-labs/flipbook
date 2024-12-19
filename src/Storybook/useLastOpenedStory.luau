@@ -27,7 +27,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 
 		local lastOpenedStoryPath = localStorage.get(LAST_OPENED_STORY_PATH_KEY)
 
-		if lastOpenedStoryPath then
+		if lastOpenedStoryPath and typeof(lastOpenedStoryPath) == "string" then
 			local instance = getInstanceFromFullName(lastOpenedStoryPath)
 
 			if instance and instance:IsA("ModuleScript") then
@@ -36,7 +36,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return nil
-	end, { settingsContext, localStorage })
+	end, { settingsContext, localStorage } :: { unknown })
 
 	return lastOpenedStory, setLastOpenedStory
 end

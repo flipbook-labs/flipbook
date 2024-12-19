@@ -21,7 +21,7 @@ export type LocalStorageContext = {
 	set: (key: string, value: unknown) -> (),
 }
 
-local LocalStorageContext = React.createContext({})
+local LocalStorageContext = React.createContext(nil :: LocalStorageContext?)
 
 export type Props = {
 	storageKey: string?,
@@ -33,7 +33,7 @@ local function LocalStorageProvider(props: Props)
 
 	local storageKey = useMemo(function()
 		return if props.storageKey then props.storageKey else `{plugin.Name}LocalStorage`
-	end, { props.storageKey, plugin })
+	end, { props.storageKey, plugin } :: { unknown })
 
 	local loadFromDisk = useCallback(function(): LocalStorage
 		local data = plugin:GetSetting(storageKey)
@@ -44,7 +44,7 @@ local function LocalStorageProvider(props: Props)
 			end
 		end
 		return {}
-	end, { plugin, storageKey })
+	end, { plugin } :: { unknown })
 
 	local storage, setStorage = useState(loadFromDisk)
 	local prevStorage = usePrevious(storage)
@@ -54,13 +54,13 @@ local function LocalStorageProvider(props: Props)
 		if data then
 			plugin:SetSetting(storageKey, data)
 		end
-	end, { plugin, storageKey, storage })
+	end, { plugin, storageKey, storage } :: { unknown })
 
 	local get = useCallback(function(key: string)
 		return storage[key]
 	end, { storage })
 
-	local set = useCallback(function(key: string, value: unknown)
+	local set = useCallback(function(key: string, value: any)
 		setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
 				[key] = if typeof(value) == "function" then value(prev[key]) else value,
@@ -72,7 +72,7 @@ local function LocalStorageProvider(props: Props)
 		if storage and storage ~= prevStorage then
 			saveToDisk()
 		end
-	end, { storage, prevStorage, saveToDisk })
+	end, { storage, prevStorage, saveToDisk } :: { unknown })
 
 	local context: LocalStorageContext = {
 		get = get,
@@ -84,7 +84,7 @@ local function LocalStorageProvider(props: Props)
 	}, props.children)
 end
 
-local function useLocalStorage(): TreeViewContext
+local function useLocalStorage(): LocalStorageContext
 	local context = useContext(LocalStorageContext)
 	if not context then
 		local contextName = script.Name
