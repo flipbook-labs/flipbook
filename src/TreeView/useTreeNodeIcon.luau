@@ -1,6 +1,6 @@
 local assets = require("@root/assets")
-local useTheme = require("@root/Common/useTheme")
 local types = require("./types")
+local useTheme = require("@root/Common/useTheme")
 
 type TreeNodeIcon = types.TreeNodeIcon
 
@@ -19,6 +19,8 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
 		return assets.Storybook, theme.textFaded
 	elseif icon == types.TreeNodeIcon.Folder then
 		return assets.Folder, theme.directory
+	elseif icon == types.TreeNodeIcon.Alert then
+		return assets.Alert, theme.alert
 	else
 		return assets.Folder, theme.textFaded
 	end
