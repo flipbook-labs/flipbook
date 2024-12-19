@@ -1,15 +1,15 @@
 local tryGetService = require("@root/RobloxInternal/tryGetService")
 
 -- selene: allow(incorrect_standard_library_use)
-type FileSyncService = typeof(game:GetService("FileSyncService"))
+type InternalSyncService = typeof(game:GetService("InternalSyncService"))
 
-local FileSyncService: FileSyncService? = tryGetService("FileSyncService")
+local InternalSyncService: InternalSyncService? = tryGetService("InternalSyncService")
 
 local function getInternalSyncItems(): { InternalSyncItem }
 	local internalSyncItems: { InternalSyncItem } = {}
 
-	if FileSyncService then
-		for _, child in FileSyncService:GetChildren() do
+	if InternalSyncService then
+		for _, child in InternalSyncService:GetChildren() do
 			if child:IsA("InternalSyncItem") then
 				table.insert(internalSyncItems, child)
 			end
