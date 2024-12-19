@@ -1,3 +1,4 @@
+local Highlighter = require("@pkg/Highlighter")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
@@ -6,6 +7,8 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local useMemo = React.useMemo
+local useRef = React.useRef
+local useEffect = React.useEffect
 
 local function getLineNumbers(str: string): string
 	return Sift.List.reduce(str:split("\n"), function(accumulator, _item, index)
@@ -21,10 +24,19 @@ export type Props = {
 
 local function StoryError(props: Props)
 	local theme = useTheme()
+	local ref = useRef(nil :: TextBox?)
 
 	local sourceColor = useMemo(function()
 		return if props.sourceColor then props.sourceColor else theme.text
 	end, { props.sourceColor })
+
+	useEffect(function()
+		Highlighter.matchStudioSettings()
+
+		Highlighter.highlight({
+			textObject = ref.current,
+		})
+	end, {})
 
 	return React.createElement("Frame", {
 		AutomaticSize = Enum.AutomaticSize.XY,
@@ -72,6 +84,7 @@ local function StoryError(props: Props)
 			TextWrapped = false,
 			LineHeight = 1,
 			Font = Enum.Font.RobotoMono,
+			ref = ref,
 		}),
 	})
 end
