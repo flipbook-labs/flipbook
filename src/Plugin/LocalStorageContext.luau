@@ -9,7 +9,7 @@ local usePrevious = require("@root/Common/usePrevious")
 local useCallback = React.useCallback
 local useContext = React.useContext
 local useEffect = React.useEffect
-local useMemo = React.useMemo
+local useRef = React.useRef
 local useState = React.useState
 
 export type LocalStorage = {
@@ -56,10 +56,10 @@ local function LocalStorageProvider(props: Props)
 		return storage[key]
 	end, { storage })
 
-	local set = useCallback(function(key: string, value: any)
+	local set = useCallback(function(key: string, value: unknown?)
 		setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
-				[key] = if typeof(value) == "function" then value(prev[key]) else value,
+				[key] = if value == nil then Sift.None else value,
 			})
 		end)
 	end, { storage })
@@ -70,13 +70,13 @@ local function LocalStorageProvider(props: Props)
 		end
 	end, { storage, prevStorage, saveToDisk } :: { unknown })
 
-	local context: LocalStorageContext = {
+	local context: LocalStorageContext = useRef({
 		get = get,
 		set = set,
-	}
+	})
 
 	return React.createElement(LocalStorageContext.Provider, {
-		value = context,
+		value = context.current,
 	}, props.children)
 end
 

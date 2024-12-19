@@ -3,6 +3,7 @@ local Sift = require("@pkg/Sift")
 
 local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
 local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
+local usePrevious = require("@root/Common/usePrevious")
 
 local useCallback = React.useCallback
 local useState = React.useState
@@ -21,10 +22,7 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 	local pinnedPaths, setPinnedPaths = useState(function()
 		return localStorage.get(PINNED_INSTANCES_KEY) or {}
 	end)
-
-	useEffect(function()
-		localStorage.set(PINNED_INSTANCES_KEY, pinnedPaths)
-	end, { pinnedPaths })
+	local prevPinnedPaths = usePrevious(pinnedPaths)
 
 	local pin = useCallback(function(instance: Instance)
 		setPinnedPaths(function(prev)
@@ -64,6 +62,12 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 			pin(instance)
 		end
 	end, { isPinned, unpin, pin })
+
+	useEffect(function()
+		if prevPinnedPaths and pinnedPaths ~= prevPinnedPaths then
+			localStorage.set(PINNED_INSTANCES_KEY, pinnedPaths)
+		end
+	end, { localStorage, pinnedPaths, prevPinnedPaths })
 
 	return {
 		pin = pin,
