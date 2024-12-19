@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -15,6 +14,7 @@ local useTheme = require("@root/Common/useTheme")
 local TOPBAR_HEIGHT_PX = 32
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 export type Props = {
 	loader: ModuleLoader.ModuleLoader,
@@ -26,6 +26,7 @@ local function App(props: Props)
 	local storybooks = Storyteller.useStorybooks(game, props.loader)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local unavailableStorybook, setUnavailableStorybook = React.useState(nil :: LoadedStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
 	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
@@ -33,12 +34,16 @@ local function App(props: Props)
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript?)
-			return if prev ~= newStoryModule then newStoryModule else nil
-		end)
-
+		setUnavailableStorybook(nil)
+		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
+
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
+	end, {})
 
 	local onSidebarResized = React.useCallback(function(newSize: Vector2)
 		setSidebarWidth(newSize.X)
@@ -67,7 +72,8 @@ local function App(props: Props)
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				storybooks = storybooks.available,
+				onShowErrorPage = onShowErrorPage,
+				storybooks = storybooks,
 			}),
 		}),
 
@@ -91,9 +97,9 @@ local function App(props: Props)
 				BackgroundTransparency = 1,
 			}, {
 				Screen = React.createElement(Screen, {
-					loader = props.loader,
 					story = storyModule,
 					storybook = storybook,
+					unavailableStorybook = unavailableStorybook,
 				}),
 			}),
 		}),
