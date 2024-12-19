@@ -1,4 +1,6 @@
-local function tryGetService(serviceName: string): Instance
+local canAccess = require("@root/RobloxInternal/canAccess")
+
+local function tryGetService(serviceName: string): Instance?
 	local service
 
 	pcall(function()
@@ -15,7 +17,11 @@ local function tryGetService(serviceName: string): Instance
 		service = game:FindFirstChild(serviceName)
 	end)
 
-	return service
+	if canAccess(service) then
+		return service
+	end
+
+	return nil
 end
 
 return tryGetService
