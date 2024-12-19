@@ -2,7 +2,7 @@ local FLAG_PATTERN = "%-%-(%w+)"
 local FLAG_ALL_IN_ONE_PATTERN = `{FLAG_PATTERN}=(%w+)`
 
 local function parseArgs(args: { string })
-	local parsedArgs: { [string]: string | boolean | number } = {}
+	local parsedArgs: { [string]: string | boolean | number | nil } = {}
 
 	local skipNextToken = false
 

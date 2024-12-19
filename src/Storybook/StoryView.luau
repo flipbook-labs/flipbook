@@ -1,6 +1,5 @@
 local Selection = game:GetService("Selection")
 
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
@@ -20,11 +19,9 @@ local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
-	loader: ModuleLoader,
 	story: ModuleScript,
 	storybook: LoadedStorybook,
 }
@@ -32,7 +29,7 @@ type Props = {
 local function StoryView(props: Props)
 	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
+	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
 	local changedControls, setChangedControls = React.useState({})
@@ -45,23 +42,8 @@ local function StoryView(props: Props)
 		setChangedControls({})
 	end, { story })
 
-	local controlsWithUserOverrides = React.useMemo(function()
-		local controls = {}
-		if story and story.controls then
-			for key, value in story.controls do
-				local override = changedControls[key]
-
-				if override ~= nil and typeof(value) ~= "table" then
-					controls[key] = override
-				else
-					controls[key] = value
-				end
-			end
-		end
-		return controls
-	end, { story, changedControls } :: { unknown })
-
-	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
+	local controlsSchema = if story then story.controls else nil
+	local showControls = controlsSchema and not Sift.isEmpty(controlsSchema)
 
 	local setControl = React.useCallback(function(control: string, newValue: any)
 		setChangedControls(function(prev)
@@ -99,6 +81,10 @@ local function StoryView(props: Props)
 	local onTopbarSizeChanged = React.useCallback(function(rbx: Frame)
 		setTopbarHeight(rbx.AbsoluteSize.Y)
 	end, {})
+
+	React.useEffect(function()
+		setChangedControls({})
+	end, { story })
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -172,7 +158,7 @@ local function StoryView(props: Props)
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
-					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
+					controls = Sift.Dictionary.merge(controlsSchema, changedControls),
 					storyModule = props.story,
 					isMountedInViewport = isMountedInViewport,
 					ref = storyParentRef,
@@ -195,7 +181,8 @@ local function StoryView(props: Props)
 					BackgroundColor3 = theme.sidebar,
 				}, {
 					StoryControls = e(StoryControls, {
-						controls = controlsWithUserOverrides,
+						controlsSchema = controlsSchema,
+						changedControls = changedControls,
 						setControl = setControl,
 					}),
 				}),

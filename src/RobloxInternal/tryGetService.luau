@@ -1,6 +1,4 @@
-local canAccess = require("@root/Permissions/canAccess")
-
-local function tryGetService(serviceName: string): Instance?
+local function tryGetService(serviceName: string): Instance
 	local service
 
 	pcall(function()
@@ -17,11 +15,7 @@ local function tryGetService(serviceName: string): Instance?
 		service = game:FindFirstChild(serviceName)
 	end)
 
-	if canAccess(service) then
-		return service
-	end
-
-	return nil
+	return service
 end
 
 return tryGetService

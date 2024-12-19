@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -6,10 +5,8 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
 local StorybookTreeView = require("./StorybookTreeView")
 
-local loader = ModuleLoader.new()
-
 local function Story()
-	local storybooks = Storyteller.useStorybooks(game, loader)
+	local storybooks = Storyteller.useStorybooks(game)
 
 	return React.createElement("Frame", {
 		Size = UDim2.fromOffset(300, 0),
