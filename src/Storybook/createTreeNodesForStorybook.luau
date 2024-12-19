@@ -46,6 +46,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 				local parentNode: TreeNode = {
 					id = HttpService:GenerateGUID(),
 					label = parentInstance.Name,
+					instance = parentInstance,
 					icon = "folder",
 					isExpanded = false,
 					children = { currentNode },

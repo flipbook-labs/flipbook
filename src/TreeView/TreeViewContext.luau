@@ -110,7 +110,7 @@ local function TreeNodeProvider(props: {
 
 	local getNodeByInstance = useCallback(function(instance: Instance)
 		return nodes.byInstance[instance]
-	end, { nodes.byId })
+	end, { nodes.byInstance })
 
 	local getSelectedNode = useCallback(function()
 		return selectedNode
