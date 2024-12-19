@@ -150,6 +150,7 @@ local function StorybookTreeView(props: Props)
 						end
 					else
 						props.onStoryChanged(nil, nil)
+						setLastOpenedStory(nil)
 					end
 				end
 
