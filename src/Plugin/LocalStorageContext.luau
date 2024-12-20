@@ -4,12 +4,9 @@ local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local PluginContext = require("@root/Plugin/PluginContext")
-local usePrevious = require("@root/Common/usePrevious")
 
 local useCallback = React.useCallback
 local useContext = React.useContext
-local useEffect = React.useEffect
-local useRef = React.useRef
 local useState = React.useState
 
 export type LocalStorage = {
@@ -42,15 +39,16 @@ local function LocalStorageProvider(props: Props)
 		return {}
 	end, { plugin, props.storageKey } :: { unknown })
 
-	local storage, setStorage = useState(loadFromDisk)
-	local prevStorage = usePrevious(storage)
-
-	local saveToDisk = useCallback(function()
-		local data = HttpService:JSONEncode(storage)
+	local saveToDisk = useCallback(function(newStorage: { [any]: any })
+		local data = HttpService:JSONEncode(newStorage)
 		if data then
 			plugin:SetSetting(props.storageKey, data)
 		end
-	end, { plugin, props.storageKey, storage } :: { unknown })
+	end, { plugin, props.storageKey } :: { unknown })
+
+	local storage, setStorage = useState(function()
+		return loadFromDisk()
+	end)
 
 	local get = useCallback(function(key: string)
 		return storage[key]
@@ -58,25 +56,23 @@ local function LocalStorageProvider(props: Props)
 
 	local set = useCallback(function(key: string, value: unknown?)
 		setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
+			local new = Sift.Dictionary.join(prev, {
 				[key] = if value == nil then Sift.None else value,
 			})
+
+			saveToDisk(new)
+
+			return new
 		end)
 	end, { storage })
 
-	useEffect(function()
-		if storage and storage ~= prevStorage then
-			saveToDisk()
-		end
-	end, { storage, prevStorage, saveToDisk } :: { unknown })
-
-	local context: LocalStorageContext = useRef({
+	local context: LocalStorageContext = {
 		get = get,
 		set = set,
-	})
+	}
 
 	return React.createElement(LocalStorageContext.Provider, {
-		value = context.current,
+		value = context,
 	}, props.children)
 end
 

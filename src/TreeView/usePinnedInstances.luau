@@ -2,7 +2,8 @@ local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
-local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
+local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
+local getInstancePath = require("@root/Common/getInstancePath")
 local usePrevious = require("@root/Common/usePrevious")
 
 local useCallback = React.useCallback
@@ -26,14 +27,14 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 
 	local pin = useCallback(function(instance: Instance)
 		setPinnedPaths(function(prev)
-			return Sift.List.append(prev, instance:GetFullName())
+			return Sift.List.append(prev, getInstancePath(instance))
 		end)
 	end, {})
 
 	local unpin = useCallback(function(instance: Instance)
 		setPinnedPaths(function(prev)
 			return Sift.List.filter(prev, function(pinnedPath)
-				return pinnedPath ~= instance:GetFullName()
+				return pinnedPath ~= getInstancePath(instance)
 			end)
 		end)
 	end, {})
@@ -44,7 +45,7 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 		for _, pinnedPath in pinnedPaths do
 			table.insert(pinnedInstances, {
 				path = pinnedPath,
-				instance = getInstanceFromFullName(pinnedPath),
+				instance = getInstanceFromPath(pinnedPath),
 			})
 		end
 
@@ -67,7 +68,7 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 		if prevPinnedPaths and pinnedPaths ~= prevPinnedPaths then
 			localStorage.set(PINNED_INSTANCES_KEY, pinnedPaths)
 		end
-	end, { localStorage, pinnedPaths, prevPinnedPaths })
+	end, { localStorage.set, pinnedPaths, prevPinnedPaths })
 
 	return {
 		pin = pin,
