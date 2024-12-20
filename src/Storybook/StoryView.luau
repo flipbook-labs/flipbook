@@ -91,6 +91,7 @@ local function StoryView(props: Props)
 		BackgroundTransparency = 1,
 	}, {
 		Error = storyErr and e(StoryError, {
+			storyModule = props.story,
 			err = storyErr,
 		}),
 
