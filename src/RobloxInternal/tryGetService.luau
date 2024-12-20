@@ -9,19 +9,9 @@ local function tryGetService(serviceName: string): Instance?
 
 	if service and canAccess(service) then
 		return service
+	else
+		return nil
 	end
-
-	-- Some services cannot be retrieved by GetService but still exist in the DM
-	-- and can be retrieved by name.
-	pcall(function()
-		service = game:FindFirstChild(serviceName)
-	end)
-
-	if service and canAccess(service) then
-		return service
-	end
-
-	return nil
 end
 
 return tryGetService
