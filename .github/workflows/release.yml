@@ -4,10 +4,15 @@ on:
   pull_request:
   release:
     types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
-  publish:
+  publish-github-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -32,3 +37,24 @@ jobs:
           files: ${{ env.MODEL_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install packages
+        run: lune run wally-install
+
+      - name: Publish nightly build to Creator Store
+        if: github.ref == 'refs/heads/main'
+        run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+      - name: Publish release to Creator Store
+        if: github.event.release
+        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

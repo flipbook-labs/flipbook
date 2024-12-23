@@ -96,7 +96,7 @@ local function Searchbar(providedProps: Props)
 			BackgroundTransparency = 1,
 		}, {
 			InputField = isExpanded and e(InputField, {
-				placeholder = "Enter component name...",
+				placeholder = "Enter story name...",
 				autoFocus = true,
 				onFocus = onFocus,
 				onFocusLost = onFocusLost,

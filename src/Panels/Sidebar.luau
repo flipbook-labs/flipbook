@@ -1,45 +1,24 @@
-local Branding = require("@root/Common/Branding")
-local ComponentTree = require("@root/Explorer")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
+local Branding = require("@root/Common/Branding")
 local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
-local constants = require("@root/constants")
-local createStoryNodes = require("@root/Storybook/createStoryNodes")
-local explorerTypes = require("@root/Explorer/types")
-local storybookTypes = require("@root/Storybook/types")
+local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local useTheme = require("@root/Common/useTheme")
 
-type Storybook = storybookTypes.Storybook
-type ComponentTreeNode = explorerTypes.ComponentTreeNode
+type LoadedStorybook = Storyteller.LoadedStorybook
 
 local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
-	selectStory: (ModuleScript) -> (),
-	selectStorybook: (Storybook) -> (),
-	storybooks: { Storybook },
+	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
+	storybooks: { LoadedStorybook },
 }
 
 local function Sidebar(props: Props)
 	local theme = useTheme()
-
-	local activeNode, setActiveNode = React.useState(nil :: ComponentTreeNode?)
-	local onClick = React.useCallback(function(node: ComponentTreeNode)
-		if node.instance and node.instance:IsA("ModuleScript") and node.name:match(constants.STORY_NAME_PATTERN) then
-			if node.storybook then
-				props.selectStorybook(node.storybook)
-			end
-			props.selectStory(node.instance)
-			setActiveNode(function(prevNode)
-				return if prevNode ~= node then node else nil
-			end)
-		end
-	end, {})
-
-	local storybookNodes = React.useMemo(function()
-		return createStoryNodes(props.storybooks)
-	end, { props.storybooks })
 
 	local headerHeight, setHeaderHeight = React.useState(0)
 	local onHeaderSizeChanged = React.useCallback(function(rbx: Frame)
@@ -99,11 +78,10 @@ local function Sidebar(props: Props)
 			LayoutOrder = 1,
 			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
 		}, {
-			ComponentTree = e(ComponentTree, {
-				filter = search,
-				activeNode = activeNode,
-				nodes = storybookNodes,
-				onClick = onClick,
+			StorybookTreeView = e(StorybookTreeView, {
+				searchTerm = search,
+				storybooks = props.storybooks,
+				onStoryChanged = props.onStoryChanged,
 			}),
 		}),
 	})

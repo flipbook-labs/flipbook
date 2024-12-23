@@ -59,13 +59,13 @@ export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 -- 	},
 -- }
 
--- local rememberLastOpenedStory: Setting = {
--- 	name = "rememberLastOpenedStory",
--- 	displayName = "Remember last opened story",
--- 	description = "Open the last viewed story when starting",
--- 	settingType = SettingType.Checkbox,
--- 	value = true,
--- }
+local rememberLastOpenedStory: Setting = {
+	name = "rememberLastOpenedStory",
+	displayName = "Remember last opened story",
+	description = "Open the last viewed story when starting",
+	settingType = SettingType.Checkbox,
+	value = true,
+}
 
 local theme: DropdownSetting = {
 	name = "theme",
@@ -108,7 +108,7 @@ local controlsHeight: NumberSetting = {
 
 local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
-	-- rememberLastOpenedStory = rememberLastOpenedStory,
+	rememberLastOpenedStory = rememberLastOpenedStory,
 	theme = theme,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,

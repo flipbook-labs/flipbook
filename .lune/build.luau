@@ -19,12 +19,6 @@ local function build()
 	clean()
 	compile(target)
 
-	if target == "prod" then
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.spec.luau` })
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.story.luau` })
-		run("rm", { "-rf", `{constants.BUILD_PATH}/**/*.storybook.luau` })
-	end
-
 	run("rojo", { "build", "-o", output })
 end
 
