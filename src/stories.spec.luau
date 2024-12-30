@@ -39,13 +39,13 @@ describeEach({
 		} :: any
 	) :: ModuleLoader.ModuleLoader
 
-	local storybook = Storyteller.loadStorybookModule(mockModuleLoader, storybookModule)
+	local storybook = Storyteller.loadStorybookModule(storybookModule, mockModuleLoader)
 
 	describeEach({
 		Storyteller.findStoryModulesForStorybook(storybook),
 	})("%s", function(storyModule)
 		test("basic mount/unmount lifecycle", function()
-			local story = Storyteller.loadStoryModule(mockModuleLoader, storyModule, storybook)
+			local story = Storyteller.loadStoryModule(storyModule, storybook)
 
 			if story.packages then
 				story.packages = Sift.Dictionary.join(story.packages, {
