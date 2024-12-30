@@ -1,9 +1,9 @@
 --[[
-	Gets an instance based off the result of getInstancePath.
+	Gets an instance based off the result of `getInstancePath`.
 
-	The reason we use this over GetFullName is because it uses a dot (.) as the
-	path separator which makes it difficult to disambiguate instances stories
-	and test files (Foo.story and Foo.spec, respectively)
+	The reason we don't use GetFullName is because it uses a dot (.) as the path
+	separator which makes it difficult to disambiguate stories and test files
+	(Foo.story and Foo.spec, respectively)
 
 	Returns `nil` if the instance is outside the DataModel or otherwise cannot
 	be found.

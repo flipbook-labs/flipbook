@@ -1,8 +1,7 @@
 local PATH_SEPARATOR = "/"
 
 local function getInstancePath(instance: Instance, pathSeparator: string?): string
-	pathSeparator = if pathSeparator then pathSeparator else PATH_SEPARATOR
-	assert(pathSeparator, "Luau")
+	local separator = if pathSeparator then pathSeparator else PATH_SEPARATOR
 
 	local path = {}
 	local current = instance
@@ -12,7 +11,7 @@ local function getInstancePath(instance: Instance, pathSeparator: string?): stri
 		current = current.Parent
 	end
 
-	return table.concat(path, "/")
+	return table.concat(path, separator)
 end
 
 return getInstancePath

@@ -46,7 +46,7 @@ test("works with spec files", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	local path = getInstanceFromPath(module:GetFullName())
+	local path = getInstanceFromPath(getInstancePath(module))
 	expect(path).toBe(module)
 end)
 

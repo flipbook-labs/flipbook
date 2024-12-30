@@ -31,7 +31,7 @@ test("works on nested instances", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	expect(getInstancePath(module)).toBe("ReplicatedStorage/Folder/foo/bar")
+	expect(getInstancePath(module)).toBe("ReplicatedStorage/Root/foo/bar")
 end)
 
 test("works with spec files", function()
@@ -44,5 +44,18 @@ test("works with spec files", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	expect(getInstancePath(module)).toBe("ReplicatedStorage/Folder/foo/bar.spec")
+	expect(getInstancePath(module)).toBe("ReplicatedStorage/Root/foo/bar.spec")
+end)
+
+test("path separator can be changed", function()
+	local module = Instance.new("ModuleScript")
+
+	folder = newFolder({
+		foo = newFolder({
+			bar = module,
+		}),
+	})
+	folder.Parent = ReplicatedStorage
+
+	expect(getInstancePath(module, " > ")).toBe("ReplicatedStorage > Root > foo > bar")
 end)
