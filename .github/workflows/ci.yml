@@ -54,52 +54,18 @@ jobs:
       - name: Run Luau analysis
         run: lune run analyze
 
-  # Running unit tests in CI has historically been cumbersome, and presently
-  # there is no way to run Roblox Studio from a GitHub workflow. As such, our
-  # job for tests has been commented out so we can get the nice green checkmark
-  # in CI again
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
 
-  # tests:
-  #   runs-on: windows-latest
-  #   timeout-minutes: 10
-  #   steps:
-  #     - uses: actions/checkout@v3
+      - uses: Roblox/setup-foreman@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Check for ROBLOSECURITY token
-  #       shell: bash
-  #       run: ./.github/workflows/validate-secret.sh ROBLOSECURITY "${{ secrets.ROBLOSECURITY }}"
+      - name: Install packages
+        run: lune run wally-install
 
-  #     - name: Check for RBXID token
-  #       shell: bash
-  #       run: ./.github/workflows/validate-secret.sh RBXID "${{ secrets.RBXID }}"
-
-  #     - uses: Roblox/setup-foreman@v1
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-
-  #     - name: Install dependencies
-  #       run: wally install
-
-  #     - name: Build place file
-  #       run: rojo build dev.project.json -o studio-tests.rbxl
-
-  #     - name: Install Roblox Studio
-  #       run:
-  #         Invoke-WebRequest -Uri "https://github.com/OrbitalOwen/roblox-win-installer/archive/0.5.zip" -OutFile roblox-win-installer.zip;
-  #         Expand-Archive -LiteralPath roblox-win-installer.zip -DestinationPath .;
-  #         cd roblox-win-installer-0.5;
-  #         pip install --requirement requirements.txt;
-  #         python install.py "${{ secrets.ROBLOSECURITY }}"
-
-  #     - name: Create flag overrides for successful login
-  #       run: |
-  #         $flags = @{DFIntStudioUseNewLoginDataEndpointHundredthPercent=0; FFlagStudioUseNewLoginDataEndpoint=$false}
-  #         New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/' -Name "ClientSettings" -ItemType "directory"
-  #         New-Item -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings' -Name "ClientAppSettings.json"
-  #         $flags | ConvertTo-Json -depth 32| set-content -Path 'C:/Program Files (x86)/Roblox/Versions/version-*/ClientSettings/ClientAppSettings.json'
-
-  #     - name: Add RBXID to the Windows registry
-  #       run: REG ADD HKCU\Software\RobloxStudioBrowser\roblox.com /t REG_SZ /v .RBXID /d "${{ secrets.RBXID }}"
-
-  #     - name: Run tests
-  #       run: run-in-roblox --place studio-tests.rbxl --script tests/init.server.lua
+      - name: Run tests
+        run: lune run test-cloud -- --apiKey ${{ secrets.ROBLOX_API_KEY }}
