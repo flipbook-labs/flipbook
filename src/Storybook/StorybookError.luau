@@ -1,5 +1,4 @@
 local React = require("@pkg/React")
-local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
 local CodeBlock = require("@root/Common/CodeBlock")
@@ -14,7 +13,7 @@ export type Props = {
 	layoutOrder: number?,
 }
 
-local function StoryError(props: Props)
+local function StorybookError(props: Props)
 	local theme = useTheme()
 
 	local storybookSource = props.unavailableStorybook.storybook.source.Source
@@ -109,4 +108,4 @@ local function StoryError(props: Props)
 	})
 end
 
-return StoryError
+return StorybookError
