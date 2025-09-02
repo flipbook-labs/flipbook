@@ -16,9 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
       - name: Get model file name
         run: |
@@ -44,9 +45,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: Roblox/setup-foreman@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          allow-external-github-orgs: true
 
       - name: Install packages
         run: lune run wally-install
