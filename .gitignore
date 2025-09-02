@@ -19,3 +19,4 @@ __pycache__
 
 # Other
 /*.log
+__pycache__

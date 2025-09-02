@@ -2,6 +2,11 @@
   "name": "Flipbook",
   "tree": {
     "$className": "DataModel",
+    "ServerScriptService": {
+      "$properties": {
+        "LoadStringEnabled": true
+      }
+    },
     "ReplicatedStorage": {
       "Packages": {
         "$path": "Packages"
