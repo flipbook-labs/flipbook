@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.MODEL_FILE }}
           path: ${{ env.MODEL_FILE }}
