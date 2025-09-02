@@ -30,7 +30,7 @@ jobs:
         run: lune run wally-install
 
       - name: Build
-        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
+        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
@@ -55,8 +55,8 @@ jobs:
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
-        run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Publish release to Creator Store
         if: github.event.release
-        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

@@ -8,23 +8,14 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lune",
-      "args": [
-        "run",
-        "wally-install"
-      ]
+      "args": ["run", "wally-install"]
     },
     {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
       "command": "lune",
-      "args": [
-        "run",
-        "build",
-        "--",
-        "--target",
-        "dev"
-      ],
+      "args": ["run", "build", "--target", "dev"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -35,15 +26,9 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lune",
-      "args": [
-        "run",
-        "build",
-        "--",
-        "--target",
-        "prod"
-      ],
+      "args": ["run", "build", "--target", "prod"],
       "group": {
-        "kind": "build",
+        "kind": "build"
       }
     },
     {
@@ -51,24 +36,14 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lune",
-      "args": [
-        "run",
-        "build",
-        "--",
-        "--target",
-        "dev",
-        "--watch"
-      ]
+      "args": ["run", "build", "--target", "dev", "--watch"]
     },
     {
       "label": "Serve docs",
       "type": "shell",
       "problemMatcher": [],
       "command": "lune",
-      "args": [
-        "run",
-        "serve-docs"
-      ]
+      "args": ["run", "serve-docs"]
     }
   ]
 }

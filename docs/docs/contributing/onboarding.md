@@ -51,7 +51,7 @@ Once built, open up a Baseplate to start interacting with the plugin.
 Production builds prune development files like unit test and flipbook's own Storybook and Stories. To keep development files, pass the `--target` flag to set the environment to build for:
 
 ```sh
-lune run build -- --target dev
+lune run build --target dev
 ```
 
 ### Build to rbxm
@@ -61,7 +61,7 @@ When building, pass the `--output` flag to determine where flipbook will build t
 Run the following to build flipbook to the root of the repo:
 
 ```sh
-lune run build -- --output flipbook.rbxm
+lune run build --output flipbook.rbxm
 ```
 
 By default flipbook builds to these directories:
