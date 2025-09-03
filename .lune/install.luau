@@ -10,7 +10,7 @@ do
 	run("wally", { "install" }, {
 		cwd = "code-samples",
 	})
-	run("rojo", { "sourcemap", "default.project.json", "-o", "sourcemap.json" }, {
+	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
 		cwd = "code-samples",
 	})
 	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
