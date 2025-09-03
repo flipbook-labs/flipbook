@@ -12,21 +12,23 @@ compile("dev")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
-local output, success = run("python3", {
-	".lune/python/upload_and_run_task.py",
-	"tests.rbxl",
-	"tests/run-tests.luau",
-}, {
-	env = {
-		ROBLOX_UNIVERSE_ID = "6599100156",
-		ROBLOX_PLACE_ID = "123506190725771",
-		ROBLOX_API_KEY = apiKey,
-	},
-})
+local success, result = pcall(function()
+	return run("python3", {
+		".lune/python/upload_and_run_task.py",
+		"tests.rbxl",
+		"tests/run-tests.luau",
+	}, {
+		env = {
+			ROBLOX_UNIVERSE_ID = "6599100156",
+			ROBLOX_PLACE_ID = "123506190725771",
+			ROBLOX_API_KEY = tostring(apiKey),
+		},
+	})
+end)
 
 run("rm", { "tests.rbxl" })
 
 if not success then
-	print(output)
+	print(result)
 	process.exit(1)
 end
