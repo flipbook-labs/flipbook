@@ -1,7 +1,6 @@
 local CoreGui = game:GetService("CoreGui")
 
 local JestGlobals = require("@pkg/JestGlobals")
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Sift = require("@pkg/Sift")
@@ -31,13 +30,11 @@ describeEach({
 	-- FIXME: This is needed to get around a bug with React renders. I'm hoping
 	-- to keep this for now, but in the future this should really be a
 	-- ModuleLoader instance
-	local mockModuleLoader = (
-		{
-			require = function(_self, path)
-				return (require :: any)(path)
-			end,
-		} :: any
-	) :: ModuleLoader.ModuleLoader
+	local mockModuleLoader = ({
+		require = function(_self, path)
+			return (require :: any)(path)
+		end,
+	}) :: any
 
 	local storybook = Storyteller.loadStorybookModule(storybookModule, mockModuleLoader)
 
@@ -46,7 +43,7 @@ describeEach({
 	})("%s", function(storyModule)
 		local testOrSkip = test
 		if storyModule.Name == "ArrayControls.story" then
-			testOrSkip = test.skip
+			testOrSkip = (test :: any).skip
 		end
 
 		testOrSkip("basic mount/unmount lifecycle", function()

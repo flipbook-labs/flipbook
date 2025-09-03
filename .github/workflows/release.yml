@@ -16,10 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Get model file name
         run: |
@@ -27,10 +26,10 @@ jobs:
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Build
-        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
+        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
@@ -45,18 +44,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
-        run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Publish release to Creator Store
         if: github.event.release
-        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

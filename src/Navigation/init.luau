@@ -1,6 +1,6 @@
 return {
-	Divider = require("./Divider"),
-	Element = require("./Element"),
-	Item = require("./Item"),
-	Items = require("./Items"),
+	Divider = require("@self/Divider"),
+	Element = require("@self/Element"),
+	Item = require("@self/Item"),
+	Items = require("@self/Items"),
 }

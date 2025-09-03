@@ -14,20 +14,16 @@ All contents under the Contributing section are for the development of the Flipb
 
 We use [Visual Studio Code](https://code.visualstudio.com/) to work on this project, so you'll get the best mileage from using it too. We also have several [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json) that should be installed.
 
-You will also need [Foreman](https://github.com/Roblox/foreman/) for installing the various command-line tools we use.
+You will also need [Rokit](https://github.com/rojo-rbx/rokit/) for installing the various command-line tools we use.
 
 With the above requirements satisfied, run the following commands from your clone of the repo to start developing:
 
 ```sh
 # Install command-line tools (like Lune)
-foreman install
-
-# Setup lune with VSCode
-lune setup
+rokit install
 
 # Install packages
-lune run wally-install
-
+lune run install
 ```
 
 :::tip
@@ -51,7 +47,7 @@ Once built, open up a Baseplate to start interacting with the plugin.
 Production builds prune development files like unit test and Flipbook's own Storybook and Stories. To keep development files, pass the `--target` flag to set the environment to build for:
 
 ```sh
-lune run build -- --target dev
+lune run build --target dev
 ```
 
 ### Build to rbxm
@@ -61,7 +57,7 @@ When building, pass the `--output` flag to determine where Flipbook will build t
 Run the following to build Flipbook to the root of the repo:
 
 ```sh
-lune run build -- --output Flipbook.rbxm
+lune run build --output Flipbook.rbxm
 ```
 
 By default Flipbook builds to these directories:
