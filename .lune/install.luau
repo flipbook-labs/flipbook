@@ -1,16 +1,18 @@
 local run = require("./lib/run")
 
-do
+local function installWallyPackages()
 	run("wally", { "install" })
 	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
 
-	-- For some reason the default stdio of "inherit" results in WPT hanging indefinitely. Since we don't need the output in this case, we change to a stdio that won't hang
+	-- For some reason the default stdio of "inherit" results in WPT hanging
+	-- indefinitely. Since we don't need the output in this case, we change to a
+	-- stdio that won't hang
 	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
 		stdio = "forward",
 	})
 end
 
-do
+local function installWallyPackagesForCodeSamples()
 	run("wally", { "install" }, {
 		cwd = "code-samples",
 	})
@@ -22,3 +24,26 @@ do
 		stdio = "forward",
 	})
 end
+
+local function installRbxasset()
+	local packagesPath = ".lune/pkg"
+
+	run("rm", { "-rf", packagesPath })
+	run("mkdir", { "-p", packagesPath })
+
+	run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
+		cwd = packagesPath,
+	})
+
+	run("unzip", { "rbxasset.zip" }, {
+		cwd = packagesPath,
+	})
+
+	run("rm", { "-rf", "rbxasset.zip" }, {
+		cwd = packagesPath,
+	})
+end
+
+installWallyPackages()
+installWallyPackagesForCodeSamples()
+installRbxasset()
