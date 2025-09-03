@@ -11,7 +11,7 @@ All code samples are analyzed to ensure correctness before being deployed.
 Run the following commands from the root of the repo.
 
 ```sh
-lune run wally-install
+lune run install
 lune run build
 rojo serve code-samples/default.project.json
 ```

@@ -17,7 +17,7 @@ jobs:
           version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Lint
         run: lune run lint
@@ -46,7 +46,7 @@ jobs:
           version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Run Luau analysis
         run: lune run analyze
@@ -62,7 +62,7 @@ jobs:
           version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Run tests
         run: lune run test-cloud -- --apiKey ${{ secrets.ROBLOX_API_KEY }}

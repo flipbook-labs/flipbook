@@ -23,7 +23,7 @@ With the above requirements satisfied, run the following commands from your clon
 rokit install
 
 # Install packages
-lune run wally-install
+lune run install
 ```
 
 :::tip
