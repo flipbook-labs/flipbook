@@ -4,6 +4,7 @@ local stdio = require("@lune/stdio")
 type Options = {
 	cwd: string?,
 	env: { [string]: string }?,
+	stdio: any,
 }
 
 local function run(program: string, params: { string }, options: Options?): string
@@ -12,8 +13,8 @@ local function run(program: string, params: { string }, options: Options?): stri
 	stdio.write(stdio.style("reset"))
 
 	local result = process.exec(program, params, {
-		stdio = "forward",
 		shell = true,
+		stdio = if options and options.stdio then options.stdio else "inherit",
 		cwd = if options then options.cwd else nil,
 		env = if options then options.env else nil,
 	})
