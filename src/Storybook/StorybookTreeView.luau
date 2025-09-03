@@ -38,10 +38,13 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		local roots: { TreeNode } = {}
 
-		for _, storybook in props.storybooks.available do
-			local root = createTreeNodesForStorybook(storybook)
+		for _, storybook in props.storybooks.avialable do
+			-- FIXME: Need to cast each `storybook` variable to `any` to fix an
+			-- issue where the ModuleLoader type is somehow not compareable to
+			-- itself
+			local root = createTreeNodesForStorybook(storybook :: any)
 			table.insert(roots, root)
-			storybookByNodeId.current[root.id] = storybook
+			storybookByNodeId.current[root.id] = storybook :: any
 		end
 
 		if #props.storybooks.unavailable > 0 then
