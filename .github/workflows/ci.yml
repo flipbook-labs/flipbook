@@ -9,16 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Lint
         run: lune run lint
@@ -30,7 +30,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
+        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -39,19 +39,19 @@ jobs:
 
   analyze:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Setup Lune typedefs
         run: lune setup
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Run Luau analysis
         run: lune run analyze
@@ -62,13 +62,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Install packages
-        run: lune run wally-install
+        run: lune run install
 
       - name: Run tests
-        run: lune run test-cloud -- --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run test-cloud --apiKey ${{ secrets.ROBLOX_API_KEY }}

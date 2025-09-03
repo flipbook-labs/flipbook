@@ -4,30 +4,26 @@ local stdio = require("@lune/stdio")
 type Options = {
 	cwd: string?,
 	env: { [string]: string }?,
+	stdio: any,
 }
 
-local function run(program: string, params: { string }, options: Options?)
+local function run(program: string, params: { string }, options: Options?): string
 	stdio.write(stdio.style("bold"))
 	print(`> {program} {table.concat(params, " ")}`)
 	stdio.write(stdio.style("reset"))
 
-	local result = process.spawn(program, params, {
-		stdio = "inherit",
+	local result = process.exec(program, params, {
 		shell = true,
+		stdio = if options and options.stdio then options.stdio else "inherit",
 		cwd = if options then options.cwd else nil,
 		env = if options then options.env else nil,
 	})
 
-	local out
 	if result.ok then
-		out = result.stdout
+		return result.stdout:gsub("^\n", ""):gsub("\n$", "")
 	else
-		out = result.stderr
+		error(result.stderr, 2)
 	end
-
-	out = out:gsub("\n$", "")
-
-	return out, result.ok
 end
 
 return run

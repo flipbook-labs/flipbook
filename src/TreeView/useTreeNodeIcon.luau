@@ -1,6 +1,6 @@
 local assets = require("@root/assets")
-local useTheme = require("@root/Common/useTheme")
 local types = require("./types")
+local useTheme = require("@root/Common/useTheme")
 
 type TreeNodeIcon = types.TreeNodeIcon
 
