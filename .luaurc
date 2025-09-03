@@ -1,8 +1,8 @@
 {
-  "languageMode": "strict",
-  "aliases": {
-    "pkg": "./Packages",
-    "root": "./src",
-    "lune": "~/.lune/.typedefs/0.10.2/"
-  }
+	"languageMode": "strict",
+	"aliases": {
+		"pkg": "./Packages",
+		"root": "./src",
+		"lune": "~/.lune/.typedefs/0.10.2/"
+	}
 }

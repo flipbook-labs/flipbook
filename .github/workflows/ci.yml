@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
@@ -29,7 +30,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
+        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -38,6 +39,7 @@ jobs:
 
   analyze:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
@@ -65,4 +67,4 @@ jobs:
         run: lune run install
 
       - name: Run tests
-        run: lune run test-cloud -- --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run test-cloud --apiKey ${{ secrets.ROBLOX_API_KEY }}
