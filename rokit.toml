@@ -1,4 +1,11 @@
 [tools]
+darklua = "seaofvoices/darklua@0.13.1"
+luau-lsp = "JohnnyMorganz/luau-lsp@1.34.0"
 lune = "lune-org/lune@0.10.2"
+rojo = "rojo-rbx/rojo@7.4.3"
+run-in-roblox = "rojo-rbx/run-in-roblox@0.3.0"
+selene = "Kampfkarren/selene@0.27.1"
+stylua = "JohnnyMorganz/StyLua@0.20.0"
+tarmac = "Roblox/tarmac@0.7.0"
 wally = "UpliftGames/wally@0.3.2"
 wally-package-types = "JohnnyMorganz/wally-package-types@1.5.1"

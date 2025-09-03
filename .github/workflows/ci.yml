@@ -13,11 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
-
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
@@ -48,11 +43,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
-
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
@@ -71,11 +61,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-
-      - uses: Roblox/setup-foreman@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:

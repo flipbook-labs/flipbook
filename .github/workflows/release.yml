@@ -16,10 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Get model file name
         run: |
@@ -45,10 +44,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allow-external-github-orgs: true
+          version: v1.1.1
 
       - name: Install packages
         run: lune run wally-install

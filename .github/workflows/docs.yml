@@ -17,10 +17,9 @@ jobs:
         with:
           node-version: 18
 
-      - uses: Roblox/setup-foreman@v3
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          allow-external-github-orgs: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v1.1.1
 
       - name: Install dependencies
         run: npm ci
