@@ -11,7 +11,7 @@ local function run(program: string, params: { string }, options: Options?)
 	print(`> {program} {table.concat(params, " ")}`)
 	stdio.write(stdio.style("reset"))
 
-	local result = process.spawn(program, params, {
+	local result = process.exec(program, params, {
 		stdio = "inherit",
 		shell = true,
 		cwd = if options then options.cwd else nil,
@@ -25,7 +25,7 @@ local function run(program: string, params: { string }, options: Options?)
 		out = result.stderr
 	end
 
-	out = out:gsub("\n$", "")
+	out = out:gsub("^\n", ""):gsub("\n$", "")
 
 	return out, result.ok
 end
