@@ -31,9 +31,12 @@ local function StorybookTreeView(props: Props)
 		storybookByNodeId.current = {}
 		local roots: { TreeNode } = {}
 		for _, storybook in props.storybooks do
-			local root = createTreeNodesForStorybook(storybook)
+			-- FIXME: Need to cast each `storybook` variable to `any` to fix an
+			-- issue where the ModuleLoader type is somehow not compareable to
+			-- itself
+			local root = createTreeNodesForStorybook(storybook :: any)
 			table.insert(roots, root)
-			storybookByNodeId.current[root.id] = storybook
+			storybookByNodeId.current[root.id] = storybook :: any
 		end
 		treeViewContext.setRoots(roots)
 
