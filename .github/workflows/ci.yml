@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
@@ -16,6 +17,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allow-external-github-orgs: true
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
 
       - name: Install packages
         run: lune run wally-install
@@ -39,6 +44,7 @@ jobs:
 
   analyze:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 
@@ -46,6 +52,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allow-external-github-orgs: true
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
 
       - name: Setup Lune typedefs
         run: lune setup
@@ -66,6 +76,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allow-external-github-orgs: true
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
 
       - name: Install packages
         run: lune run wally-install
