@@ -47,6 +47,9 @@ jobs:
         with:
           version: v1.1.1
 
+      - name: Setup Lune typedefs
+        run: lune setup
+
       - name: Install packages
         run: lune run install
 
