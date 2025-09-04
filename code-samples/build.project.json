@@ -1,11 +1,8 @@
 {
-  "name": "Flipbook",
+  "name": "CodeSamples",
   "tree": {
     "Packages": {
       "$path": "Packages"
-    },
-    "Example": {
-      "$path": "example"
     },
     "$path": "src"
   }

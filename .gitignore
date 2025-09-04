@@ -14,8 +14,12 @@ DevPackages
 Packages
 wally.lock
 
+# Rbxasset
+LunePackages
+
 # Python
 __pycache__
 
 # Other
 /*.log
+__pycache__

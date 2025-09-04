@@ -1,7 +1,7 @@
 local React = require("@pkg/React")
 
-local RobloxProfile = require("@root/About/RobloxProfile")
 local BuildInfo = require("@root/About/BuildInfo")
+local RobloxProfile = require("@root/About/RobloxProfile")
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -58,7 +58,7 @@ local function AboutView()
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
+			Text = `Flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 			TextWrapped = true,
