@@ -32,6 +32,7 @@ local success, err = pcall(function()
 			ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
 			ROBLOX_API_KEY = tostring(apiKey),
 		},
+		stdio = "forward",
 	})
 end)
 
