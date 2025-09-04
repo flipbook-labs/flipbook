@@ -6,6 +6,7 @@ local NavigationContext = require("@root/Navigation/NavigationContext")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
+local StorybookError = require("@root/Storybook/StorybookError")
 
 local useMemo = React.useMemo
 
@@ -26,6 +27,10 @@ local function Screen(props: Props)
 				return React.createElement(StoryCanvas, {
 					story = props.story,
 					storybook = props.storybook,
+				})
+			elseif props.unavailableStorybook then
+				return React.createElement(StorybookError, {
+					unavailableStorybook = props.unavailableStorybook,
 				})
 			else
 				return React.createElement(NoStorySelected)
