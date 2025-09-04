@@ -29,8 +29,13 @@ export type SettingsContext = {
 local function Provider(props: Props)
 	local localStorage = LocalStorageContext.use()
 
-	local userSettings, setUserSettings = useState(function()
-		return localStorage.get(USER_SETTINGS_KEY) or {}
+	local userSettings: { [string]: any }, setUserSettings = useState(function()
+		local existing = localStorage.get(USER_SETTINGS_KEY)
+		if typeof(existing) == "table" then
+			return existing :: { [string]: any }
+		else
+			return {}
+		end
 	end)
 
 	local loadSettingsFromDisk = useCallback(function()
