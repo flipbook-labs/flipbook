@@ -69,6 +69,9 @@ jobs:
       - name: Install packages
         run: lune run install
 
+      - name: Create .env
+        run: cp .env.template .env
+
       - name: Run tests
         run: lune run test
         env:
