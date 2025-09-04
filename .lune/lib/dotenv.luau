@@ -15,7 +15,7 @@ local function dotenv()
 			for line in content:gmatch("[^\r\n]+") do
 				local key, value = line:match("([%u_]+)[%s+]?=[%s+]?(.*)")
 
-				if key and value then
+				if key and value and value ~= "" then
 					value = value:gsub('"', "")
 					env[key] = value
 				end
