@@ -1,7 +1,7 @@
 local constants = require("./constants")
 local fs = require("@lune/fs")
-local serde = require("@lune/serde")
 local run = require("./run")
+local serde = require("@lune/serde")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
