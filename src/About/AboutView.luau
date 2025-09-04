@@ -58,7 +58,7 @@ local function AboutView()
 			Font = theme.font,
 			LayoutOrder = nextLayoutOrder(),
 			Size = UDim2.fromScale(0, 0),
-			Text = `flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
+			Text = `Flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
 			TextColor3 = theme.text,
 			TextSize = theme.headerTextSize,
 			TextWrapped = true,

@@ -6,7 +6,7 @@ assert(typeof(CREATOR_ID) == "number", "_G.ROBLOX_CREATOR_ID must be supplied")
 
 local ASSET_ID: number? = _G.ROBLOX_ASSET_ID
 
-local root = ReplicatedStorage:FindFirstChild("flipbook")
+local root = ReplicatedStorage:FindFirstChild("Flipbook")
 assert(root, "no plugin found for upload")
 
 local assetId: number?
