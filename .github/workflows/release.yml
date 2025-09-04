@@ -52,7 +52,7 @@ jobs:
         run: lune run install
 
       - name: Publish nightly build to Creator Store
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
         run: lune run publish-plugin --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Publish release to Creator Store
