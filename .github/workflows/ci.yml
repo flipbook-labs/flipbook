@@ -70,4 +70,6 @@ jobs:
         run: lune run install
 
       - name: Run tests
-        run: lune run test-cloud --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run test
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
