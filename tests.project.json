@@ -1,5 +1,5 @@
 {
-  "name": "flipbook",
+  "name": "Flipbook",
   "tree": {
     "$className": "DataModel",
     "ServerScriptService": {
@@ -11,7 +11,7 @@
       "Packages": {
         "$path": "Packages"
       },
-      "flipbook": {
+      "Flipbook": {
         "$path": "default.project.json"
       }
     }

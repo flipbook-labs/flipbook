@@ -6,53 +6,53 @@ return {
 		ImageRectSize = Vector2.new(24, 24),
 	},
 	ChevronRight = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(49, 226),
 		ImageRectSize = Vector2.new(32, 32),
 	},
 	Component = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(0, 275),
 		ImageRectSize = Vector2.new(32, 32),
 	},
+	FlipbookIcon = {
+		Image = "rbxassetid://130695877008766",
+		ImageRectOffset = Vector2.new(231, 0),
+		ImageRectSize = Vector2.new(64, 64),
+	},
 	Folder = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(345, 0),
 		ImageRectSize = Vector2.new(32, 32),
 	},
 	GitHubMark = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(0, 0),
 		ImageRectSize = Vector2.new(230, 225),
 	},
 	IconLight = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(231, 65),
 		ImageRectSize = Vector2.new(42, 42),
 	},
 	Magnify = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(0, 226),
 		ImageRectSize = Vector2.new(48, 48),
 	},
 	Minify = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(296, 0),
 		ImageRectSize = Vector2.new(48, 48),
 	},
 	Search = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(296, 49),
 		ImageRectSize = Vector2.new(32, 32),
 	},
 	Storybook = {
-		Image = "rbxassetid://127517231667229",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(231, 108),
 		ImageRectSize = Vector2.new(32, 32),
-	},
-	flipbook = {
-		Image = "rbxassetid://127517231667229",
-		ImageRectOffset = Vector2.new(231, 0),
-		ImageRectSize = Vector2.new(64, 64),
 	},
 }
