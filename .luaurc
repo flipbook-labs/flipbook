@@ -3,6 +3,6 @@
 	"aliases": {
 		"pkg": "./Packages",
 		"root": "./src",
-		"lune": "~/.lune/.typedefs/0.10.2/"
+		"lune": "~/.lune/.typedefs/0.9.4/"
 	}
 }
