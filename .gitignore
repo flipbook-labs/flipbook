@@ -15,7 +15,7 @@ Packages
 wally.lock
 
 # Rbxasset
-.lune/pkg
+LunePackages
 
 # Python
 __pycache__

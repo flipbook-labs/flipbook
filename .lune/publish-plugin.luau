@@ -1,5 +1,5 @@
 local process = require("@lune/process")
-local rbxasset = require("./pkg/rbxasset")
+local rbxasset = require("@lunepkg/rbxasset")
 
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")

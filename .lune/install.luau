@@ -26,7 +26,7 @@ local function installWallyPackagesForCodeSamples()
 end
 
 local function installRbxasset()
-	local packagesPath = ".lune/pkg"
+	local packagesPath = "LunePackages"
 
 	run("rm", { "-rf", packagesPath })
 	run("mkdir", { "-p", packagesPath })
