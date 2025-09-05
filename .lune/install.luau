@@ -25,6 +25,10 @@ local function installWallyPackagesForCodeSamples()
 	})
 end
 
+local function installRobloxPackages()
+	run("roblox-packages", { "install", "RobloxPackages" })
+end
+
 local function installRbxasset()
 	local packagesPath = "LunePackages"
 
@@ -46,4 +50,5 @@ end
 
 installWallyPackages()
 installWallyPackagesForCodeSamples()
+installRobloxPackages()
 installRbxasset()
