@@ -28,6 +28,7 @@ jobs:
         with:
           name: ${{ inputs.artifact-name }}
           path: |
+            code-samples/Packages
             LunePackages
             Packages
             RobloxPackages
