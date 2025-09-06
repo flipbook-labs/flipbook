@@ -1,4 +1,36 @@
+local fs = require("@lune/fs")
+
 local run = require("./lib/run")
+
+local function find(rootPath: string, namePattern: string): { string }
+	local files = {}
+	local function search(path: string)
+		if fs.isFile(path) then
+			return
+		end
+
+		for _, file in fs.readDir(path) do
+			local fullPath = `{path}/{file}`
+
+			if fs.isFile(fullPath) then
+				if file:match(namePattern) then
+					table.insert(files, fullPath)
+				end
+			else
+				search(fullPath)
+			end
+		end
+	end
+	search(rootPath)
+
+	return files
+end
+
+local function findAndReplace(filePath: string, match: string, replacement: string)
+	local content = fs.readFile(filePath)
+	content = content:gsub(match, replacement)
+	fs.writeFile(filePath, content)
+end
 
 local function installWallyPackages()
 	run("wally", { "install" })
@@ -27,6 +59,25 @@ end
 
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackages" })
+
+	-- Patch React and RoactCompat dependencies to use ours
+	for _, name in { "React", "RoactCompat" } do
+		local linkers = find("RobloxPackages", `^{name}%..*`)
+		print(linkers)
+
+		for _, linker in linkers do
+			findAndReplace(
+				linker,
+				"local PackageIndex = .*_Index",
+				'local Root = script:FindFirstAncestor("RobloxPackages")'
+			)
+			findAndReplace(
+				linker,
+				"local Package = require%(.*%)",
+				`local Package = require(Root.Parent.Packages.{name})`
+			)
+		end
+	end
 end
 
 local function installRbxasset()
@@ -48,7 +99,11 @@ local function installRbxasset()
 	})
 end
 
+installRobloxPackages()
 installWallyPackages()
 installWallyPackagesForCodeSamples()
-installRobloxPackages()
 installRbxasset()
+
+for _, patch in fs.readDir("patches") do
+	run("git", { "apply", `patches/{patch}` })
+end
