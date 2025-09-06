@@ -63,7 +63,6 @@ local function installRobloxPackages()
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat" } do
 		local linkers = find("RobloxPackages", `^{name}%..*`)
-		print(linkers)
 
 		for _, linker in linkers do
 			findAndReplace(
