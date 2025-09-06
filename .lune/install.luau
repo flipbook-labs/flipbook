@@ -103,7 +103,3 @@ installRobloxPackages()
 installWallyPackages()
 installWallyPackagesForCodeSamples()
 installRbxasset()
-
-for _, patch in fs.readDir("patches") do
-	run("git", { "apply", `patches/{patch}` })
-end
