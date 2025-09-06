@@ -9,12 +9,18 @@ on:
       - main
 
 jobs:
+  install-packages:
+    uses: ./.github/workflows/install-packages.yml
+    with:
+      artifact-name: packages
+
   publish-github-release:
+    needs: ["install-packages"]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
@@ -25,8 +31,9 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - name: Install packages
-        run: lune run install
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
 
       - name: Build
         run: lune run build --target prod --output ${{ env.MODEL_FILE }}
@@ -39,19 +46,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
+    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       LOG_LEVEL: debug
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
-        run: lune run install
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
