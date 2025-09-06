@@ -7,18 +7,25 @@ on:
   pull_request:
 
 jobs:
+  install-packages:
+    uses: ./.github/workflows/install-packages.yml
+    with:
+      artifact-name: packages
+
   build:
+    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
-        run: lune run install
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
 
       - name: Lint
         run: lune run lint
@@ -38,36 +45,45 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
   analyze:
+    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+
       - name: Setup Lune typedefs
         run: lune setup
-
-      - name: Install packages
-        run: lune run install
 
       - name: Run Luau analysis
         run: lune run analyze
 
   tests:
+    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
-        run: lune run install
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+
+      - name: Create .env
+        run: cp .env.template .env
 
       - name: Run tests
-        run: lune run test-cloud --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run test
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
