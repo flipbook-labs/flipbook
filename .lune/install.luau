@@ -61,10 +61,16 @@ local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackages" })
 
 	-- Patch React and RoactCompat dependencies to use ours
-	for _, name in { "React", "RoactCompat" } do
+	for _, name in { "React", "RoactCompat", "Roact" } do
 		local linkers = find("RobloxPackages", `^{name}%..*`)
 
 		for _, linker in linkers do
+			-- All Roact linkers in RobloxPackages point to Roblox's
+			-- RoactCompat, so we need to update them to point to ours instead.
+			if name == "Roact" then
+				name = "RoactCompat"
+			end
+
 			findAndReplace(
 				linker,
 				"local PackageIndex = .*_Index",
