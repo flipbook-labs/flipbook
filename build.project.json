@@ -4,6 +4,9 @@
     "Packages": {
       "$path": "Packages"
     },
+    "RobloxPackages": {
+      "$path": "RobloxPackages"
+    },
     "Example": {
       "$path": "example"
     },

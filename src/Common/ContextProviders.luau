@@ -1,10 +1,11 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local TreeView = require("@root/TreeView")
 
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginContext = require("@root/Plugin/PluginContext")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
+local TreeView = require("@root/TreeView")
 
 export type Props = {
 	plugin: Plugin,
@@ -14,6 +15,7 @@ export type Props = {
 local function ContextProviders(props: Props)
 	return React.createElement(ContextStack, {
 		providers = {
+			React.createElement(Foundation.FoundationProvider),
 			React.createElement(PluginContext.Provider, {
 				plugin = props.plugin,
 			}),
