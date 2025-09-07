@@ -19,7 +19,6 @@ local function App()
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
-	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
@@ -31,10 +30,6 @@ local function App()
 
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
-
-	local onSidebarResized = React.useCallback(function(newSize: Vector2)
-		setSidebarWidth(newSize.X)
-	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
@@ -48,7 +43,6 @@ local function App()
 			},
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
-			onResize = onSidebarResized,
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,

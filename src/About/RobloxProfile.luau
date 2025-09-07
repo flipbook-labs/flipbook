@@ -5,7 +5,6 @@ local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
 
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 local useState = React.useState
 local useEffect = React.useEffect
