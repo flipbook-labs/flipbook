@@ -16,7 +16,7 @@ type Props = {
 
 local function Canvas(props: Props)
 	return e(Foundation.View, {
-		tag = "size-full col gap-medium bg-surface-200",
+		tag = "size-full bg-surface-200",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		StoryView = props.story and e(StoryView, {
