@@ -16,20 +16,12 @@ type Props = {
 
 local function Canvas(props: Props)
 	return e(Foundation.View, {
-		tag = "size-full bg-surface-200",
+		tag = "size-full col gap-medium bg-surface-200",
 		LayoutOrder = props.layoutOrder,
 	}, {
-		Divider = e(Foundation.Divider, {
-			tag = "size-full-50 bg-surface-200 anchor-right-center",
-		}),
-
-		Content = e(Foundation.View, {
-			tag = "size-full col gap-medium",
-		}, {
-			StoryView = props.story and e(StoryView, {
-				story = props.story,
-				storybook = props.storybook,
-			}),
+		StoryView = props.story and e(StoryView, {
+			story = props.story,
+			storybook = props.storybook,
 		}),
 	})
 end
