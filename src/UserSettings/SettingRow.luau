@@ -85,7 +85,7 @@ local function SettingRow(props: Props)
 
 	return React.createElement(Foundation.View, {
 		tag = {
-			["size-full-0 auto-y row"] = true,
+			["size-full-0 auto-y row radius-medium"] = true,
 			["bg-surface-200"] = isEvenRow,
 			["bg-surface-100"] = not isEvenRow,
 		},
@@ -100,67 +100,28 @@ local function SettingRow(props: Props)
 			else nil,
 
 		Main = React.createElement(Foundation.View, {
-			Size = UDim2.fromScale(1, 0),
-			BackgroundTransparency = 1,
-			AutomaticSize = Enum.AutomaticSize.Y,
+			tag = "size-full-0 auto-y col gap-medium padding-y-medium padding-x-large",
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = theme.padding,
-			}),
-
-			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.padding,
-				PaddingRight = theme.paddingLarge,
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.paddingLarge,
-			}),
-
 			Info = React.createElement(Foundation.View, {
+				tag = "size-full-0 auto-y col",
 				LayoutOrder = nextLayoutOrder(),
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
 			}, {
-				Layout = React.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-					Padding = theme.paddingSmall,
-				}),
-
-				Name = React.createElement("TextLabel", {
-					LayoutOrder = nextLayoutOrder(),
+				Name = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-title-medium text-truncate",
 					Text = props.setting.displayName,
-					Size = UDim2.fromScale(1, 0),
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundTransparency = 1,
-					Font = theme.font,
-					TextColor3 = theme.text,
-					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
-					TextTruncate = Enum.TextTruncate.AtEnd,
+					LayoutOrder = nextLayoutOrder(),
 				}),
 
-				Description = React.createElement("TextLabel", {
-					LayoutOrder = nextLayoutOrder(),
+				Description = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-body-medium text-wrap text-x-align-left",
 					Text = props.setting.description,
-					Size = UDim2.fromScale(1, 0),
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundTransparency = 1,
-					Font = theme.font,
-					TextColor3 = theme.textSubtitle,
-					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
-					TextWrapped = true,
+					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),
 
 			OptionWrapper = React.createElement(Foundation.View, {
-				LayoutOrder = nextLayoutOrder(),
-				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1 / 2, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
+				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Option = optionElement,
 			}),
