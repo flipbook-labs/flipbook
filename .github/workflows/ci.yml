@@ -83,6 +83,9 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
+      - name: Create .env
+        run: cp .env.template .env
+
       - name: Run tests
         run: lune run test
         env:
