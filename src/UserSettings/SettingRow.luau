@@ -14,8 +14,6 @@ local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
 
-local CHANGE_INDICATOR_WIDTH_PX = 2
-
 type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
 
@@ -85,7 +83,7 @@ local function SettingRow(props: Props)
 
 	return React.createElement(Foundation.View, {
 		tag = {
-			["size-full-0 auto-y row radius-medium"] = true,
+			["size-full-0 auto-y radius-medium"] = true,
 			["bg-surface-200"] = isEvenRow,
 			["bg-surface-100"] = not isEvenRow,
 		},
@@ -93,34 +91,36 @@ local function SettingRow(props: Props)
 	}, {
 		ChangedIndicator = if hasBeenChanged
 			then React.createElement(Foundation.View, {
-				Size = UDim2.new(0, CHANGE_INDICATOR_WIDTH_PX, 1, 0),
-				BorderSizePixel = 0,
-				BackgroundColor3 = if isValid then theme.selection else theme.alert,
+				tag = "size-50-full",
+				backgroundStyle = {
+					Color3 = if isValid then theme.selection else theme.alert,
+					Transparency = 0,
+				},
 			})
 			else nil,
 
 		Main = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-medium padding-y-medium padding-x-large",
+			tag = "size-full-0 auto-y col gap-medium padding-medium",
 		}, {
 			Info = React.createElement(Foundation.View, {
-				tag = "size-full-0 auto-y col",
+				tag = "size-full-0 auto-y col gap-small",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Name = React.createElement(Foundation.Text, {
-					tag = "auto-xy text-title-medium text-truncate",
+					tag = "auto-xy text-title-medium truncate",
 					Text = props.setting.displayName,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
 				Description = React.createElement(Foundation.Text, {
-					tag = "auto-xy text-body-medium text-wrap text-x-align-left",
+					tag = "auto-xy text-body-small text-wrap text-align-x-left",
 					Text = props.setting.description,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),
 
 			OptionWrapper = React.createElement(Foundation.View, {
-				Size = UDim2.fromScale(1 / 2, 0),
+				tag = "size-full-0 auto-y",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Option = optionElement,
