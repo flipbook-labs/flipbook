@@ -14,6 +14,9 @@ local PRUNED_FILES = {
 }
 
 local function compile(target: Target)
+	if fs.isDir(constants.BUILD_PATH) then
+		fs.removeDir(constants.BUILD_PATH)
+	end
 	fs.writeDir(constants.BUILD_PATH)
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
