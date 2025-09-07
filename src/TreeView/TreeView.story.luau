@@ -2,7 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local ContextProviders = require("@root/Common/ContextProviders")
-local InputField = require("@root/Forms/InputField")
 local MockPlugin = require("@root/Testing/MockPlugin")
 local TreeView = require("./TreeView")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
