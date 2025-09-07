@@ -1,6 +1,9 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+
 local SelectableTextLabel = require("@root/Forms/SelectableTextLabel")
-local useTheme = require("@root/Common/useTheme")
+
+local useTokens = Foundation.Hooks.useTokens
 
 export type Props = {
 	err: string,
@@ -8,12 +11,12 @@ export type Props = {
 }
 
 local function StoryError(props: Props)
-	local theme = useTheme()
+	local tokens = useTokens()
 
 	return React.createElement(SelectableTextLabel, {
 		LayoutOrder = props.layoutOrder,
 		Text = props.err,
-		TextColor3 = theme.alert,
+		TextColor3 = tokens.Color.System.Alert.Color3,
 	})
 end
 

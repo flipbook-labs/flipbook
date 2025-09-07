@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local BuildInfo = require("@root/About/BuildInfo")
@@ -7,6 +8,7 @@ local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
+local useTokens = Foundation.Hooks.useTokens
 local useMemo = React.useMemo
 
 local AUTHOR_USER_IDS = {
@@ -15,6 +17,7 @@ local AUTHOR_USER_IDS = {
 }
 
 local function AboutView()
+	local tokens = useTokens()
 	local theme = useTheme()
 	local currentYear = useMemo(function()
 		return (DateTime.now():ToUniversalTime() :: any).Year
@@ -28,105 +31,52 @@ local function AboutView()
 		})
 	end
 
-	return React.createElement("Frame", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = theme.background,
-		BorderSizePixel = 0,
+	return React.createElement(Foundation.View, {
+		tag = "size-full col bg-surface-200 align-x-center gap-xlarge padding-large",
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = theme.paddingLarge,
-		}),
-
-		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.paddingLarge,
-			PaddingRight = theme.paddingLarge,
-			PaddingBottom = theme.paddingLarge,
-			PaddingLeft = theme.paddingLarge,
-		}),
-
 		Logo = React.createElement(Sprite, {
 			layoutOrder = nextLayoutOrder(),
 			image = assets.IconLight,
-			size = UDim2.fromOffset(42, 42),
+			size = UDim2.fromOffset(tokens.Size.Size_2000, tokens.Size.Size_2000),
 		}),
 
-		Title = React.createElement("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
+		Title = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-heading-large",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(0, 0),
 			Text = `Flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
-			TextWrapped = true,
 		}),
 
-		GitHub = React.createElement("Frame", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+		GitHub = React.createElement(Foundation.View, {
+			tag = "auto-xy row gap-small align-y-center",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Horizontal,
-				Padding = theme.paddingSmall,
-			}),
-
 			Icon = React.createElement(Sprite, {
 				layoutOrder = nextLayoutOrder(),
 				color = theme.github,
 				image = assets.GitHubMark,
-				size = UDim2.fromOffset(theme.textSize, theme.textSize),
+				size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
 			}),
 
-			Label = React.createElement("TextLabel", {
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				LayoutOrder = nextLayoutOrder(),
-				Size = UDim2.fromScale(0, 0),
+			Label = React.createElement(Foundation.Text, {
+				tag = "auto-xy text-body-medium",
 				Text = "flipbook-labs/flipbook",
-				TextColor3 = theme.text,
-				TextSize = theme.textSize,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 		}),
 
-		Authors = React.createElement("Frame", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+		Authors = React.createElement(Foundation.View, {
+			tag = "auto-xy col align-x-center gap-medium",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				HorizontalAlignment = Enum.HorizontalAlignment.Center,
-				Padding = theme.padding,
-			}),
-
-			Title = React.createElement("TextLabel", {
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				LayoutOrder = nextLayoutOrder(),
-				Size = UDim2.fromScale(0, 0),
+			Title = React.createElement(Foundation.Text, {
+				tag = "auto-xy text-body-medium",
 				Text = `Created by:`,
-				TextColor3 = theme.text,
-				TextSize = theme.textSize,
-				TextWrapped = true,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			AuthorList = React.createElement("Frame", {
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
+			AuthorList = React.createElement(Foundation.View, {
+				tag = "auto-xy row align-x-center gap-medium",
 				LayoutOrder = nextLayoutOrder(),
-			}, {
-				Layout = React.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-					FillDirection = Enum.FillDirection.Horizontal,
-					Padding = theme.padding,
-				}),
 			}, authors),
 		}),
 
@@ -134,16 +84,10 @@ local function AboutView()
 			layoutOrder = nextLayoutOrder(),
 		}),
 
-		Copy = React.createElement("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
+		Copy = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-body-medium",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(0, 0),
 			Text = `Copyright © 2021—{currentYear} flipbook-labs`,
-			TextColor3 = theme.textSubtitle,
-			TextSize = theme.textSize,
-			TextWrapped = true,
 		}),
 	})
 end

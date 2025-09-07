@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -9,14 +10,10 @@ local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
-
-local TOPBAR_HEIGHT_PX = 32
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 local function App()
-	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
 	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
@@ -39,16 +36,9 @@ local function App()
 		setSidebarWidth(newSize.X)
 	end, {})
 
-	return React.createElement("Frame", {
-		BackgroundColor3 = theme.background,
-		Size = UDim2.fromScale(1, 1),
+	return React.createElement(Foundation.View, {
+		tag = "size-full row align-y-center flex-between",
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-		}),
-
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
 			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
@@ -66,24 +56,17 @@ local function App()
 			}),
 		}),
 
-		MainWrapper = React.createElement("Frame", {
+		MainWrapper = React.createElement(Foundation.View, {
+			tag = "size-full col shrink",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
-			BackgroundTransparency = 1,
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
 			Topbar = React.createElement(Topbar, {
-				Size = UDim2.new(1, 0, 0, TOPBAR_HEIGHT_PX),
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			ScreenWrapper = React.createElement("Frame", {
+			ScreenWrapper = React.createElement(Foundation.View, {
+				tag = "size-full shrink",
 				LayoutOrder = nextLayoutOrder(),
-				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, TOPBAR_HEIGHT_PX),
-				BackgroundTransparency = 1,
 			}, {
 				Screen = React.createElement(Screen, {
 					story = storyModule,

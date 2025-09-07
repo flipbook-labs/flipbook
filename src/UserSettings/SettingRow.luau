@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
@@ -80,22 +81,25 @@ local function SettingRow(props: Props)
 
 	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
 
-	return React.createElement("Frame", {
-		BorderSizePixel = 0,
-		BackgroundColor3 = if props.layoutOrder and props.layoutOrder % 2 == 0 then theme.background else theme.sidebar,
+	local isEvenRow = if props.layoutOrder then props.layoutOrder % 2 == 0 else false
+
+	return React.createElement(Foundation.View, {
+		tag = {
+			["size-full-0 auto-y row"] = true,
+			["bg-surface-200"] = isEvenRow,
+			["bg-surface-100"] = not isEvenRow,
+		},
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 0),
-		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
 		ChangedIndicator = if hasBeenChanged
-			then React.createElement("Frame", {
+			then React.createElement(Foundation.View, {
 				Size = UDim2.new(0, CHANGE_INDICATOR_WIDTH_PX, 1, 0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = if isValid then theme.selection else theme.alert,
 			})
 			else nil,
 
-		Main = React.createElement("Frame", {
+		Main = React.createElement(Foundation.View, {
 			Size = UDim2.fromScale(1, 0),
 			BackgroundTransparency = 1,
 			AutomaticSize = Enum.AutomaticSize.Y,
@@ -112,7 +116,7 @@ local function SettingRow(props: Props)
 				PaddingLeft = theme.paddingLarge,
 			}),
 
-			Info = React.createElement("Frame", {
+			Info = React.createElement(Foundation.View, {
 				LayoutOrder = nextLayoutOrder(),
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 0),
@@ -152,7 +156,7 @@ local function SettingRow(props: Props)
 				}),
 			}),
 
-			OptionWrapper = React.createElement("Frame", {
+			OptionWrapper = React.createElement(Foundation.View, {
 				LayoutOrder = nextLayoutOrder(),
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1 / 2, 0),

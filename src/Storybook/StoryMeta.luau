@@ -1,7 +1,8 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local MAX_SUMMARY_SIZE = 600
 
@@ -15,46 +16,23 @@ export type Props = {
 }
 
 local function StoryMeta(props: Props)
-	local theme = useTheme()
-
-	return e("Frame", {
-		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundTransparency = 1,
+	return e(Foundation.View, {
+		tag = "size-full-0 auto-y col gap-medium",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 0),
 	}, {
-		UIListLayout = e("UIListLayout", {
-			HorizontalAlignment = Enum.HorizontalAlignment.Left,
-			Padding = theme.padding,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-
-		Title = e("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.headerFont,
-			Size = UDim2.fromScale(0, 0),
+		Title = e(Foundation.Text, {
+			tag = "auto-xy text-heading-large",
 			Text = props.story.name,
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		Summary = props.story.summary and e("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			LayoutOrder = 2,
-			Size = UDim2.fromScale(0, 0),
+		Summary = props.story.summary and e(Foundation.Text, {
+			tag = "auto-xy text-body-medium text-wrap",
+			LayoutOrder = nextLayoutOrder(),
 			Text = props.story.summary,
-			TextColor3 = theme.textFaded,
-			TextSize = theme.textSize,
-			TextWrapped = true,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
-		}, {
-			UISizeConstraint = e("UISizeConstraint", {
+			sizeConstraint = {
 				MaxSize = Vector2.new(MAX_SUMMARY_SIZE, math.huge),
-			}),
+			},
 		}),
 	})
 end

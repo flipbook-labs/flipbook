@@ -1,7 +1,9 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local e = React.createElement
 
@@ -10,44 +12,20 @@ type Props = {
 }
 
 local function Branding(props: Props)
-	local theme = useTheme()
-
-	return e("Frame", {
-		AutomaticSize = Enum.AutomaticSize.XY,
-		BackgroundTransparency = 1,
+	return e(Foundation.View, {
+		tag = "auto-xy row gap-small align-y-center",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(0, 0),
 	}, {
-		UIListLayout = e("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = theme.padding,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-		}),
-
-		UIPadding = e("UIPadding", {
-			PaddingLeft = -theme.paddingSmall,
-		}),
-
 		Icon = e(Sprite, {
-			layoutOrder = 0,
+			layoutOrder = nextLayoutOrder(),
 			image = assets.IconLight,
 			size = UDim2.fromOffset(42, 42),
 		}),
 
-		Typography = e("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.headerFont,
-			LayoutOrder = 1,
-			Size = UDim2.fromOffset(0, 0),
+		Typography = e(Foundation.Text, {
+			tag = "auto-xy text-heading-medium",
+			LayoutOrder = nextLayoutOrder(),
 			Text = "Flipbook",
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
-		}, {
-			UIPadding = e("UIPadding", {
-				PaddingBottom = theme.paddingSmall,
-			}),
 		}),
 	})
 end
