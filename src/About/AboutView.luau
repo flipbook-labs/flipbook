@@ -36,8 +36,8 @@ local function AboutView()
 	}, {
 		Logo = React.createElement(Sprite, {
 			layoutOrder = nextLayoutOrder(),
-			image = assets.IconLight,
-			size = UDim2.fromOffset(tokens.Size.Size_2000, tokens.Size.Size_2000),
+			image = assets.FlipbookIcon,
+			size = UDim2.fromOffset(tokens.Size.Size_1600, tokens.Size.Size_1600),
 		}),
 
 		Title = React.createElement(Foundation.Text, {

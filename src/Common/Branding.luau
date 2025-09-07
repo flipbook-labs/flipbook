@@ -18,8 +18,8 @@ local function Branding(props: Props)
 	}, {
 		Icon = e(Sprite, {
 			layoutOrder = nextLayoutOrder(),
-			image = assets.IconLight,
-			size = UDim2.fromOffset(42, 42),
+			image = assets.FlipbookIcon,
+			size = UDim2.fromOffset(32, 32),
 		}),
 
 		Typography = e(Foundation.Text, {
