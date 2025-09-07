@@ -17,7 +17,7 @@ local function BuildInfo(props: Props)
 	local children: { [string]: React.Node } = {}
 	for _, info in BUILD_INFO do
 		children[info.label] = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-body-medium",
+			tag = "auto-xy text-body-medium content-muted",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `{info.label}: {info.value}`,
 		})

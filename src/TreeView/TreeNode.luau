@@ -8,14 +8,12 @@ local assets = require("@root/assets")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local types = require("@root/TreeView/types")
-local useTheme = require("@root/Common/useTheme")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
 local useSpring = ReactSpring.useSpring :: any
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
-local useRef = React.useRef
 local useTokens = Foundation.Hooks.useTokens
 
 type TreeNode = types.TreeNode
@@ -38,7 +36,6 @@ export type Props = {
 
 local function TreeNode(props: Props)
 	local tokens = useTokens()
-	local theme = useTheme()
 	local icon, iconColor = useTreeNodeIcon(props.node.icon)
 	local isHovered, setIsHovered = useState(false)
 	local treeViewContext = TreeViewContext.use()
@@ -68,14 +65,6 @@ local function TreeNode(props: Props)
 		return elements
 	end, { props.node.children })
 
-	local onMouseEnter = useCallback(function()
-		setIsHovered(true)
-	end, {})
-
-	local onMouseLeave = useCallback(function()
-		setIsHovered(false)
-	end, {})
-
 	local onActivated = useCallback(function()
 		if props.onActivated then
 			props.onActivated()
@@ -84,43 +73,21 @@ local function TreeNode(props: Props)
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
-	local backgroundColor = useMemo(function(): Color3?
-		if isSelected then
-			return theme.selection
-		else
-			return theme.divider
-		end
-	end, { isSelected })
-
-	local lastState: { current: Foundation.ControlState? } = useRef(nil)
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
-		if newState == Foundation.Enums.ControlState.Hover then
-			onMouseEnter()
-		end
-
-		if lastState.current == Foundation.Enums.ControlState.Hover then
-			onMouseLeave()
-		end
-
-		lastState.current = newState
-	end, { onMouseEnter, onMouseLeave })
+		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
+	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "auto-xy clip col",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Node = React.createElement(Foundation.View, {
-			tag = "auto-xy row gap-medium flex-fill radius-medium flex-between",
+			tag = "auto-xy row gap-medium flex-fill radius-medium flex-between padding-y-small",
 			padding = {
-				top = UDim.new(0, tokens.Padding.Small),
 				right = UDim.new(0, tokens.Padding.Large),
-				bottom = UDim.new(0, tokens.Padding.Small),
-				left = UDim.new(0, tokens.Padding.Small * numParents),
+				left = UDim.new(0, tokens.Padding.Medium * numParents),
 			},
-			backgroundStyle = {
-				Color3 = backgroundColor,
-				Transparency = styles.hover,
-			},
+			backgroundStyle = if isSelected then tokens.Color.Extended.Purple.Purple_800 else nil,
 			onStateChanged = onStateChanged,
 			onActivated = onActivated,
 			LayoutOrder = nextLayoutOrder(),
@@ -133,7 +100,7 @@ local function TreeNode(props: Props)
 			}),
 
 			Text = React.createElement(Foundation.Text, {
-				tag = "size-full-0 auto-y text-body-medium text-align-x-left shrink",
+				tag = "size-full-0 auto-y text-label-medium text-align-x-left shrink",
 				Text = props.node.label,
 				LayoutOrder = nextLayoutOrder(),
 			}),
@@ -151,7 +118,7 @@ local function TreeNode(props: Props)
 					}, {
 						Icon = React.createElement(Sprite, {
 							image = assets.ChevronRight,
-							color = theme.text,
+							color = tokens.Color.Extended.White.White_50.Color3,
 							size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
 						}),
 					}),

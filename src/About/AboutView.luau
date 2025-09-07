@@ -69,7 +69,7 @@ local function AboutView()
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Title = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-body-medium",
+				tag = "auto-xy text-title-medium",
 				Text = `Created by:`,
 				LayoutOrder = nextLayoutOrder(),
 			}),
