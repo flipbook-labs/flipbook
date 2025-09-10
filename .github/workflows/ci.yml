@@ -7,13 +7,7 @@ on:
   pull_request:
 
 jobs:
-  install-packages:
-    uses: ./.github/workflows/install-packages.yml
-    with:
-      artifact-name: packages
-
   build:
-    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -23,9 +17,8 @@ jobs:
         with:
           version: v1.1.1
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
+      - name: Install dependencies
+        run: lune run install
 
       - name: Lint
         run: lune run lint
@@ -45,7 +38,6 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
   analyze:
-    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -55,9 +47,8 @@ jobs:
         with:
           version: v1.1.1
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
+      - name: Install dependencies
+        run: lune run install
 
       - name: Setup Lune typedefs
         run: lune setup
@@ -66,7 +57,6 @@ jobs:
         run: lune run analyze
 
   tests:
-    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -76,9 +66,8 @@ jobs:
         with:
           version: v1.1.1
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
+      - name: Install dependencies
+        run: lune run install
 
       - name: Create .env
         run: cp .env.template .env

@@ -58,7 +58,10 @@ local function installWallyPackagesForCodeSamples()
 end
 
 local function installRobloxPackages()
-	run("roblox-packages", { "install", "RobloxPackages" })
+	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
+
+	fs.move("RobloxPackagesTmp/Packages", "RobloxPackages")
+	fs.removeDir("RobloxPackagesTmp")
 
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat", "Roact" } do
