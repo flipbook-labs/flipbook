@@ -9,13 +9,7 @@ on:
       - main
 
 jobs:
-  install-packages:
-    uses: ./.github/workflows/install-packages.yml
-    with:
-      artifact-name: packages
-
   publish-github-release:
-    needs: ["install-packages"]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -31,9 +25,8 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
+      - name: Install dependencies
+        run: lune run install
 
       - name: Build
         run: lune run build --target prod --output ${{ env.MODEL_FILE }}
@@ -46,7 +39,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
-    needs: ["install-packages"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -58,9 +50,8 @@ jobs:
         with:
           version: v1.1.1
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
+      - name: Install dependencies
+        run: lune run install
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
