@@ -28,24 +28,6 @@ id = 130695877008766
 slice = [[0, 0], [230, 225]]
 packable = true
 
-[inputs."img/IconLight.png"]
-hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
-id = 130695877008766
-slice = [[231, 65], [273, 107]]
-packable = true
-
-[inputs."img/Magnify.png"]
-hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
-id = 130695877008766
-slice = [[0, 226], [48, 274]]
-packable = true
-
-[inputs."img/Minify.png"]
-hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
-id = 130695877008766
-slice = [[296, 0], [344, 48]]
-packable = true
-
 [inputs."img/Search.png"]
 hash = "0ab89c0309f577f3ccae0e03b45292f6e2bca51cc9b8250f56ad756e04231c57"
 id = 130695877008766

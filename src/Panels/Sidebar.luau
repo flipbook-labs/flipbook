@@ -1,11 +1,11 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local Branding = require("@root/Common/Branding")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 
@@ -18,13 +18,6 @@ type Props = {
 }
 
 local function Sidebar(props: Props)
-	local theme = useTheme()
-
-	local headerHeight, setHeaderHeight = React.useState(0)
-	local onHeaderSizeChanged = React.useCallback(function(rbx: Frame)
-		setHeaderHeight(rbx.AbsoluteSize.Y)
-	end, { setHeaderHeight })
-
 	local search: string?, setSearch = React.useState(nil :: string?)
 	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
@@ -34,49 +27,32 @@ local function Sidebar(props: Props)
 		end
 	end, {})
 
-	return e("Frame", {
-		BackgroundColor3 = theme.sidebar,
-		BorderSizePixel = 0,
+	return e(Foundation.View, {
+		tag = "size-full bg-surface-0 col gap-medium padding-medium flex-between",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 1),
 	}, {
-		UIListLayout = e("UIListLayout", {
-			Padding = theme.padding,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-
-		UIPadding = e("UIPadding", {
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingTop = theme.padding,
-		}),
-
-		Header = e("Frame", {
-			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundTransparency = 1,
-			LayoutOrder = 0,
-			Size = UDim2.fromScale(1, 0),
-			[React.Change.AbsoluteSize] = onHeaderSizeChanged,
+		Header = e(Foundation.View, {
+			tag = "size-full-0 auto-y col gap-xlarge",
+			LayoutOrder = nextLayoutOrder(),
 		}, {
-			UIListLayout = e("UIListLayout", {
-				Padding = theme.paddingLarge,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
 			Branding = e(Branding, {
-				layoutOrder = 0,
+				layoutOrder = nextLayoutOrder(),
 			}),
 
 			Searchbar = e(Searchbar, {
-				layoutOrder = 1,
+				layoutOrder = nextLayoutOrder(),
 				onSearchChanged = onSearchChanged,
 			}),
 		}),
 
-		ScrollingFrame = e(ScrollingFrame, {
-			LayoutOrder = 1,
-			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, headerHeight),
+		ScrollingFrame = e(Foundation.ScrollView, {
+			tag = "size-full shrink",
+			scroll = {
+				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+				CanvasSize = UDim2.fromScale(1, 0),
+				ScrollingDirection = Enum.ScrollingDirection.Y,
+			},
+			LayoutOrder = nextLayoutOrder(),
 		}, {
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
