@@ -60,6 +60,9 @@ end
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
 
+	if fs.isDir("RobloxPackages") then
+		fs.removeDir("RobloxPackages")
+	end
 	fs.move("RobloxPackagesTmp/Packages", "RobloxPackages")
 	fs.removeDir("RobloxPackagesTmp")
 
