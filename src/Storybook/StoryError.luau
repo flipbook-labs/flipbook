@@ -16,15 +16,15 @@ local function StoryError(props: Props)
 	return React.createElement(Foundation.ScrollView, {
 		tag = "size-full padding-small gap-medium",
 		scroll = {
-			ScrollingDirection = Enum.ScrollingDirection.XY,
-			AutomaticCanvasSize = Enum.AutomaticSize.XY,
-			CanvasSize = UDim2.new(0, 0),
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+			AutomaticCanvasSize = Enum.AutomaticSize.Y,
+			CanvasSize = UDim2.new(1, 0),
 		},
 		LayoutOrder = props.layoutOrder,
 	}, {
 		CodeBlock = React.createElement(CodeBlock, {
 			source = props.err,
-			sourceColor = tokens.Color.ActionAlert.Background.Color3,
+			sourceColor = tokens.Color.ActionAlert.Foreground.Color3,
 		}),
 	})
 end

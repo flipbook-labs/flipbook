@@ -18,7 +18,7 @@ local useRef = React.useRef
 export type Props = {
 	searchTerm: string?,
 	storybooks: {
-		avialable: { LoadedStorybook },
+		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
@@ -38,7 +38,7 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		local roots: { TreeNode } = {}
 
-		for _, storybook in props.storybooks.avialable do
+		for _, storybook in props.storybooks.available do
 			-- FIXME: Need to cast each `storybook` variable to `any` to fix an
 			-- issue where the ModuleLoader type is somehow not compareable to
 			-- itself
