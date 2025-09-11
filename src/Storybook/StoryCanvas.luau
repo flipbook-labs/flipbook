@@ -1,8 +1,8 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryView = require("@root/Storybook/StoryView")
-local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
 
@@ -15,34 +15,13 @@ type Props = {
 }
 
 local function Canvas(props: Props)
-	local theme = useTheme()
-
-	return e("Frame", {
-		BackgroundColor3 = theme.canvas,
-		BorderSizePixel = 0,
+	return e(Foundation.View, {
+		tag = "size-full bg-surface-200",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 1),
 	}, {
-		Divider = e("Frame", {
-			AnchorPoint = Vector2.new(1, 0),
-			BackgroundColor3 = theme.divider,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0, 1, 1, 0),
-		}),
-
-		Content = e("Frame", {
-			Size = UDim2.fromScale(1, 1),
-			BackgroundTransparency = 1,
-		}, {
-			UIListLayout = e("UIListLayout", {
-				Padding = theme.paddingLarge,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
-			StoryView = props.story and e(StoryView, {
-				story = props.story,
-				storybook = props.storybook,
-			}),
+		StoryView = props.story and e(StoryView, {
+			story = props.story,
+			storybook = props.storybook,
 		}),
 	})
 end

@@ -1,7 +1,7 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local ContextProviders = require("@root/Common/ContextProviders")
-local InputField = require("@root/Forms/InputField")
 local MockPlugin = require("@root/Testing/MockPlugin")
 local TreeView = require("./TreeView")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
@@ -142,40 +142,30 @@ local function Story()
 		treeViewContext.search(searchTerm)
 	end, { treeViewContext, searchTerm } :: { unknown })
 
-	return React.createElement("Frame", {
+	return React.createElement(Foundation.View, {
+		tag = "auto-y col gap-large",
 		Size = UDim2.fromOffset(300, 0),
-		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundTransparency = 1,
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 16),
-		}),
-
-		Topbar = React.createElement("Frame", {
+		Topbar = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y row gap-large",
 			LayoutOrder = 1,
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0, 24),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Horizontal,
-				Padding = UDim.new(0, 16),
-			}),
-
-			Search = React.createElement(InputField, {
-				layoutOrder = 1,
-				size = UDim2.fromScale(0.8, 1),
+			Search = React.createElement(Foundation.TextInput, {
+				text = "",
+				label = "",
 				placeholder = "Search...",
-				onSubmit = setSearchTerm,
-				onTextChange = setSearchTerm,
+				size = Foundation.Enums.InputSize.Medium,
+				width = UDim.new(1, 0),
+				iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
+				onChanged = setSearchTerm,
+				LayoutOrder = 1,
 			}),
 
-			ExpandToNode = React.createElement("TextButton", {
+			ExpandToNode = React.createElement(Foundation.Button, {
+				text = "Expand",
+				size = Foundation.Enums.ButtonSize.Small,
+				onActivated = onExpand,
 				LayoutOrder = 2,
-				Size = UDim2.fromScale(0.2, 1),
-				Text = "Expand",
-				[React.Event.Activated] = onExpand,
 			}),
 		}),
 

@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
+      - name: Install dependencies
         run: lune run install
 
       - name: Lint
@@ -41,17 +41,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
+      - name: Install dependencies
+        run: lune run install
+
       - name: Setup Lune typedefs
         run: lune setup
-
-      - name: Install packages
-        run: lune run install
 
       - name: Run Luau analysis
         run: lune run analyze
@@ -60,13 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
+      - name: Install dependencies
         run: lune run install
 
       - name: Create .env

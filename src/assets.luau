@@ -30,21 +30,6 @@ return {
 		ImageRectOffset = Vector2.new(0, 0),
 		ImageRectSize = Vector2.new(230, 225),
 	},
-	IconLight = {
-		Image = "rbxassetid://130695877008766",
-		ImageRectOffset = Vector2.new(231, 65),
-		ImageRectSize = Vector2.new(42, 42),
-	},
-	Magnify = {
-		Image = "rbxassetid://130695877008766",
-		ImageRectOffset = Vector2.new(0, 226),
-		ImageRectSize = Vector2.new(48, 48),
-	},
-	Minify = {
-		Image = "rbxassetid://130695877008766",
-		ImageRectOffset = Vector2.new(296, 0),
-		ImageRectSize = Vector2.new(48, 48),
-	},
 	Search = {
 		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(296, 49),

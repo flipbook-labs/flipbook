@@ -1,8 +1,9 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local CodeBlock = require("@root/Common/CodeBlock")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
-local useTheme = require("@root/Common/useTheme")
+
+local useTokens = Foundation.Hooks.useTokens
 
 export type Props = {
 	err: string,
@@ -10,28 +11,20 @@ export type Props = {
 }
 
 local function StoryError(props: Props)
-	local theme = useTheme()
+	local tokens = useTokens()
 
-	return React.createElement(ScrollingFrame, {
-		ScrollingDirection = Enum.ScrollingDirection.XY,
+	return React.createElement(Foundation.ScrollView, {
+		tag = "size-full padding-small gap-medium",
+		scroll = {
+			ScrollingDirection = Enum.ScrollingDirection.XY,
+			AutomaticCanvasSize = Enum.AutomaticSize.XY,
+			CanvasSize = UDim2.new(0, 0),
+		},
 		LayoutOrder = props.layoutOrder,
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = theme.padding,
-		}),
-
-		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.paddingSmall,
-			PaddingRight = theme.paddingSmall,
-			PaddingBottom = theme.paddingSmall,
-			PaddingLeft = theme.paddingSmall,
-		}),
-
 		CodeBlock = React.createElement(CodeBlock, {
 			source = props.err,
-			sourceColor = theme.alert,
+			sourceColor = tokens.Color.ActionAlert.Background.Color3,
 		}),
 	})
 end
