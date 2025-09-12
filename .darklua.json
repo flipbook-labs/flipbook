@@ -3,11 +3,7 @@
     {
       "rule": "convert_require",
       "current": {
-        "name": "path",
-        "sources": {
-          "@pkg": "./Packages",
-          "@root": "./src"
-        }
+        "name": "luau"
       },
       "target": {
         "name": "roblox",

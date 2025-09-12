@@ -1,13 +1,12 @@
 local Selection = game:GetService("Selection")
 
-local ModuleLoader = require("@pkg/ModuleLoader")
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
 local PluginContext = require("@root/Plugin/PluginContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
@@ -15,30 +14,25 @@ local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local constants = require("@root/constants")
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 type Props = {
-	loader: ModuleLoader,
 	story: ModuleScript,
 	storybook: LoadedStorybook,
 }
 
 local function StoryView(props: Props)
-	local theme = useTheme()
 	local settingsContext = SettingsContext.use()
-	local story, storyErr = Storyteller.useStory(props.story, props.storybook, props.loader)
+	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
 	local plugin = React.useContext(PluginContext.Context)
 	local changedControls, setChangedControls = React.useState({})
 	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
-	local controlsHeight, setControlsHeight = React.useState(initialControlsHeight)
-	local topbarHeight, setTopbarHeight = React.useState(0)
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 
 	React.useEffect(function()
@@ -92,42 +86,20 @@ local function StoryView(props: Props)
 		setIsMountedInViewport(not isMountedInViewport)
 	end, { isMountedInViewport, setIsMountedInViewport } :: { unknown })
 
-	local onControlsResized = React.useCallback(function(newSize: Vector2)
-		setControlsHeight(newSize.Y)
-	end, {})
-
-	local onTopbarSizeChanged = React.useCallback(function(rbx: Frame)
-		setTopbarHeight(rbx.AbsoluteSize.Y)
-	end, {})
-
-	return e("Frame", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundTransparency = 1,
+	return e(Foundation.View, {
+		tag = "size-full",
 	}, {
 		Error = storyErr and e(StoryError, {
 			err = storyErr,
 		}),
 
-		Content = story and e("Frame", {
-			Size = UDim2.fromScale(1, 1),
-			BackgroundTransparency = 1,
+		Content = story and e(Foundation.View, {
+			tag = "size-full col flex-between",
 		}, {
-			Layout = e("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
-			TopbarWrapper = e("Frame", {
-				LayoutOrder = 1,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				Size = UDim2.fromScale(1, 0),
-				BackgroundTransparency = 1,
-				[React.Change.AbsoluteSize] = onTopbarSizeChanged,
+			TopbarWrapper = e(Foundation.View, {
+				tag = "size-full-0 auto-y padding-x-medium col gap-large",
+				LayoutOrder = nextLayoutOrder(),
 			}, {
-				Layout = e("UIListLayout", {
-					Padding = theme.paddingLarge,
-					SortOrder = Enum.SortOrder.LayoutOrder,
-				}),
-
 				StoryViewNavbar = e(StoryViewNavbar, {
 					onPreviewInViewport = onPreviewInViewport,
 					onZoomIn = zoom.zoomIn,
@@ -136,39 +108,22 @@ local function StoryView(props: Props)
 					onExplorer = exploreStoryParent,
 				}),
 
-				Padding = e("UIPadding", {
-					PaddingRight = theme.padding,
-					PaddingLeft = theme.padding,
-				}),
-
 				StoryMeta = e(StoryMeta, {
-					layoutOrder = 1,
+					layoutOrder = nextLayoutOrder(),
 					story = story,
 					storyModule = props.story,
 				}),
 
-				Divider = e("Frame", {
-					LayoutOrder = 2,
-					BackgroundColor3 = theme.divider,
-					Size = UDim2.new(1, 0, 0, 1),
-					BorderSizePixel = 0,
+				Divider = e(Foundation.Divider, {
+					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),
 
-			StoryWrapper = e("Frame", {
-				LayoutOrder = 2,
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1, 1)
-					- UDim2.fromOffset(0, if showControls then controlsHeight else 0)
-					- UDim2.fromOffset(0, topbarHeight),
+			StoryWrapper = e(Foundation.View, {
+				-- TODO: Apply larger padding on the top than the rest
+				tag = "size-full shrink padding-medium",
+				LayoutOrder = nextLayoutOrder(),
 			}, {
-				Padding = e("UIPadding", {
-					PaddingTop = theme.paddingLarge,
-					PaddingRight = theme.padding,
-					PaddingBottom = theme.padding,
-					PaddingLeft = theme.padding,
-				}),
-
 				StoryPreview = e(StoryPreview, {
 					zoom = zoom.value,
 					story = story,
@@ -180,7 +135,7 @@ local function StoryView(props: Props)
 			}),
 
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
-				layoutOrder = 3,
+				layoutOrder = nextLayoutOrder(),
 				initialSize = UDim2.new(1, 0, 0, initialControlsHeight),
 				dragHandles = {
 					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
@@ -188,11 +143,14 @@ local function StoryView(props: Props)
 				},
 				minSize = Vector2.new(0, constants.CONTROLS_MIN_HEIGHT),
 				maxSize = Vector2.new(math.huge, constants.CONTROLS_MAX_HEIGHT),
-				onResize = onControlsResized,
 			}, {
-				ScrollingFrame = e(ScrollingFrame, {
-					BackgroundTransparency = 1,
-					BackgroundColor3 = theme.sidebar,
+				ScrollingFrame = e(Foundation.ScrollView, {
+					tag = "size-full bg-surface-100",
+					scroll = {
+						ScrollingDirection = Enum.ScrollingDirection.Y,
+						AutomaticCanvasSize = Enum.AutomaticSize.Y,
+						CanvasSize = UDim2.new(1, 0),
+					},
 				}, {
 					StoryControls = e(StoryControls, {
 						controls = controlsWithUserOverrides,

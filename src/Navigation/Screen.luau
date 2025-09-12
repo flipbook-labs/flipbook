@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -7,16 +6,17 @@ local NavigationContext = require("@root/Navigation/NavigationContext")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
+local StorybookError = require("@root/Storybook/StorybookError")
 
 local useMemo = React.useMemo
 
-type ModuleLoader = ModuleLoader.ModuleLoader
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 export type Props = {
-	loader: ModuleLoader,
 	story: ModuleScript?,
 	storybook: LoadedStorybook?,
+	unavailableStorybook: UnavailableStorybook?,
 }
 
 local function Screen(props: Props)
@@ -27,9 +27,12 @@ local function Screen(props: Props)
 		if currentScreen == "Home" then
 			if props.story and props.storybook then
 				return React.createElement(StoryCanvas, {
-					loader = props.loader,
 					story = props.story,
 					storybook = props.storybook,
+				})
+			elseif props.unavailableStorybook then
+				return React.createElement(StorybookError, {
+					unavailableStorybook = props.unavailableStorybook,
 				})
 			else
 				return React.createElement(NoStorySelected)

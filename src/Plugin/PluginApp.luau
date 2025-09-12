@@ -1,4 +1,4 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
@@ -10,50 +10,37 @@ local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
-
-local TOPBAR_HEIGHT_PX = 32
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-export type Props = {
-	loader: ModuleLoader.ModuleLoader,
-}
-
-local function App(props: Props)
-	local theme = useTheme()
+local function App()
 	local settingsContext = SettingsContext.use()
-	local storybooks = Storyteller.useStorybooks(game, props.loader)
+	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
+		React.useState(nil :: UnavailableStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
-	local sidebarWidth, setSidebarWidth = React.useState(initialSidebarWidth)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript?)
-			return if prev ~= newStoryModule then newStoryModule else nil
-		end)
-
+		setUnavailableStorybook(nil)
+		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
 
-	local onSidebarResized = React.useCallback(function(newSize: Vector2)
-		setSidebarWidth(newSize.X)
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	return React.createElement("Frame", {
-		BackgroundColor3 = theme.background,
-		Size = UDim2.fromScale(1, 1),
+	return React.createElement(Foundation.View, {
+		tag = "size-full row align-y-center flex-between",
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-		}),
-
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
 			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
@@ -63,37 +50,30 @@ local function App(props: Props)
 			},
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
-			onResize = onSidebarResized,
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				storybooks = storybooks.available,
+				onShowErrorPage = onShowErrorPage,
+				storybooks = storybooks,
 			}),
 		}),
 
-		MainWrapper = React.createElement("Frame", {
+		MainWrapper = React.createElement(Foundation.View, {
+			tag = "size-full col shrink",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(sidebarWidth, 0),
-			BackgroundTransparency = 1,
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
 			Topbar = React.createElement(Topbar, {
-				Size = UDim2.new(1, 0, 0, TOPBAR_HEIGHT_PX),
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			ScreenWrapper = React.createElement("Frame", {
+			ScreenWrapper = React.createElement(Foundation.View, {
+				tag = "size-full shrink",
 				LayoutOrder = nextLayoutOrder(),
-				Size = UDim2.fromScale(1, 1) - UDim2.fromOffset(0, TOPBAR_HEIGHT_PX),
-				BackgroundTransparency = 1,
 			}, {
 				Screen = React.createElement(Screen, {
-					loader = props.loader,
 					story = storyModule,
 					storybook = storybook,
+					unavailableStorybook = unavailableStorybook,
 				}),
 			}),
 		}),

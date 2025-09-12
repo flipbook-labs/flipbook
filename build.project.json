@@ -1,8 +1,11 @@
 {
-  "name": "flipbook",
+  "name": "Flipbook",
   "tree": {
     "Packages": {
       "$path": "Packages"
+    },
+    "RobloxPackages": {
+      "$path": "RobloxPackages"
     },
     "Example": {
       "$path": "example"

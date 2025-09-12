@@ -14,22 +14,22 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v1.1.1
 
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - name: Install packages
-        run: lune run wally-install
+      - name: Install dependencies
+        run: lune run install
 
       - name: Build
-        run: lune run build -- --target prod --output ${{ env.MODEL_FILE }}
+        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
@@ -41,20 +41,22 @@ jobs:
   publish-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      LOG_LEVEL: debug
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: Roblox/setup-foreman@v1
+      - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v1.1.1
 
-      - name: Install packages
-        run: lune run wally-install
+      - name: Install dependencies
+        run: lune run install
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
-        run: lune run publish-plugin -- --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Publish release to Creator Store
         if: github.event.release
-        run: lune run publish-plugin -- --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

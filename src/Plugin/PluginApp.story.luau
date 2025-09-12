@@ -1,4 +1,3 @@
-local ModuleLoader = require("@pkg/ModuleLoader")
 local React = require("@pkg/React")
 
 local ContextProviders = require("@root/Common/ContextProviders")
@@ -12,7 +11,6 @@ return {
 		plugin = MockPlugin.new() :: any,
 	}, {
 		PluginApp = React.createElement(PluginApp, {
-			loader = ModuleLoader.new(),
 			plugin = plugin,
 		}),
 	}),

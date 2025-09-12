@@ -52,7 +52,7 @@ def run_luau_task(universe_id, place_id, place_version, script_file):
     print(logs)
 
     if task["state"] == "COMPLETE":
-        print("Luau task completed successfully")
+        print("Lua task completed successfully")
         exit(0)
     else:
         print("Luau task failed", file=sys.stderr)

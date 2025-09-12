@@ -1,5 +1,5 @@
-local TreeViewContext = require("./TreeViewContext")
-local types = require("./types")
+local TreeViewContext = require("@self/TreeViewContext")
+local types = require("@self/types")
 
 export type TreeNode = types.TreeNode
 export type PartialTreeNode = types.PartialTreeNode
@@ -10,11 +10,11 @@ return {
 
 	-- Components
 	TreeViewProvider = TreeViewContext.Provider,
-	TreeView = require("./TreeView"),
+	TreeView = require("@self/TreeView"),
 
 	-- Hooks
 	useTreeViewContext = TreeViewContext.use,
 
 	-- Functions
-	getAncestry = require("./getAncestry"),
+	getAncestry = require("@self/getAncestry"),
 }

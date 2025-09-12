@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
@@ -12,8 +13,6 @@ local useTheme = require("@root/Common/useTheme")
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
-
-local CHANGE_INDICATOR_WIDTH_PX = 2
 
 type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
@@ -80,83 +79,49 @@ local function SettingRow(props: Props)
 
 	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
 
-	return React.createElement("Frame", {
-		BorderSizePixel = 0,
-		BackgroundColor3 = if props.layoutOrder and props.layoutOrder % 2 == 0 then theme.background else theme.sidebar,
+	local isEvenRow = if props.layoutOrder then props.layoutOrder % 2 == 0 else false
+
+	return React.createElement(Foundation.View, {
+		tag = {
+			["size-full-0 auto-y radius-medium"] = true,
+			["bg-surface-200"] = isEvenRow,
+			["bg-surface-100"] = not isEvenRow,
+		},
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 0),
-		AutomaticSize = Enum.AutomaticSize.Y,
 	}, {
 		ChangedIndicator = if hasBeenChanged
-			then React.createElement("Frame", {
-				Size = UDim2.new(0, CHANGE_INDICATOR_WIDTH_PX, 1, 0),
-				BorderSizePixel = 0,
-				BackgroundColor3 = if isValid then theme.selection else theme.alert,
+			then React.createElement(Foundation.View, {
+				tag = "size-50-full",
+				backgroundStyle = {
+					Color3 = if isValid then theme.selection else theme.alert,
+					Transparency = 0,
+				},
 			})
 			else nil,
 
-		Main = React.createElement("Frame", {
-			Size = UDim2.fromScale(1, 0),
-			BackgroundTransparency = 1,
-			AutomaticSize = Enum.AutomaticSize.Y,
+		Main = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y col gap-medium padding-medium",
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = theme.padding,
-			}),
-
-			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.padding,
-				PaddingRight = theme.paddingLarge,
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.paddingLarge,
-			}),
-
-			Info = React.createElement("Frame", {
+			Info = React.createElement(Foundation.View, {
+				tag = "size-full-0 auto-y col gap-small",
 				LayoutOrder = nextLayoutOrder(),
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
 			}, {
-				Layout = React.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-					Padding = theme.paddingSmall,
-				}),
-
-				Name = React.createElement("TextLabel", {
-					LayoutOrder = nextLayoutOrder(),
+				Name = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-title-medium truncate",
 					Text = props.setting.displayName,
-					Size = UDim2.fromScale(1, 0),
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundTransparency = 1,
-					Font = theme.font,
-					TextColor3 = theme.text,
-					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
-					TextTruncate = Enum.TextTruncate.AtEnd,
+					LayoutOrder = nextLayoutOrder(),
 				}),
 
-				Description = React.createElement("TextLabel", {
-					LayoutOrder = nextLayoutOrder(),
+				Description = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-body-small text-wrap text-align-x-left",
 					Text = props.setting.description,
-					Size = UDim2.fromScale(1, 0),
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundTransparency = 1,
-					Font = theme.font,
-					TextColor3 = theme.textSubtitle,
-					TextSize = theme.textSize,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					TextYAlignment = Enum.TextYAlignment.Top,
-					TextWrapped = true,
+					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),
 
-			OptionWrapper = React.createElement("Frame", {
+			OptionWrapper = React.createElement(Foundation.View, {
+				tag = "size-full-0 auto-y",
 				LayoutOrder = nextLayoutOrder(),
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1 / 2, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
 			}, {
 				Option = optionElement,
 			}),

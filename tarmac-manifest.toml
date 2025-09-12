@@ -1,3 +1,9 @@
+[inputs."img/Alert.png"]
+hash = "e2f8c263a469a521d876de814fb5e3251084dbce9d41e06bf9037ccfe4710fd3"
+id = 127517231667229
+slice = [[82, 226], [106, 250]]
+packable = true
+
 [inputs."img/ChevronRight.png"]
 hash = "4c91853652b4e0a6317804c54db6397ac0c710c819b282f7be2179e3abdc879c"
 id = 137821613816144
@@ -10,6 +16,12 @@ id = 137821613816144
 slice = [[0, 275], [32, 307]]
 packable = true
 
+[inputs."img/FlipbookIcon.png"]
+hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
+id = 130695877008766
+slice = [[231, 0], [295, 64]]
+packable = true
+
 [inputs."img/Folder.png"]
 hash = "4c0e80a363d36a4d127d410795cb13eec74d55871b70174636c0c962c242835c"
 id = 137821613816144
@@ -20,24 +32,6 @@ packable = true
 hash = "a0fb973cd9bf0c1123dbe783f7a4093dbcf9b4910d6e385c16a837a04a02306c"
 id = 137821613816144
 slice = [[0, 0], [230, 225]]
-packable = true
-
-[inputs."img/IconLight.png"]
-hash = "237c66813c2b5a58ae9c46166f72db8698fbb046922e2473ebaca8f7d7376ce1"
-id = 137821613816144
-slice = [[231, 65], [273, 107]]
-packable = true
-
-[inputs."img/Magnify.png"]
-hash = "351db4b6132a9e02d01bc4cdc3c850099dce358673daaa0da66745b675ad38b1"
-id = 137821613816144
-slice = [[0, 226], [48, 274]]
-packable = true
-
-[inputs."img/Minify.png"]
-hash = "694db8ce141475fc0f42980d2a6dfd058dfa155348a579fab29ca6dd5684ec14"
-id = 137821613816144
-slice = [[296, 0], [344, 48]]
 packable = true
 
 [inputs."img/Search.png"]
@@ -62,10 +56,4 @@ packable = true
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
 id = 137821613816144
 slice = [[231, 108], [263, 140]]
-packable = true
-
-[inputs."img/flipbook.png"]
-hash = "423e3dcff54fce8824f14d7cadcfb90eef2abecd817df2bee13951bd2674f79a"
-id = 137821613816144
-slice = [[231, 0], [295, 64]]
 packable = true
