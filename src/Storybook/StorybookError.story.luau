@@ -17,6 +17,7 @@ return {
 				name = storybookModule.Name,
 				source = storybookModule,
 				loader = {} :: any,
+				storyRoots = {},
 			},
 		}
 

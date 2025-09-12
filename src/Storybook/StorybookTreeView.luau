@@ -56,8 +56,10 @@ local function StorybookTreeView(props: Props)
 				children = {},
 			}
 
-			for _, unavailableStorybook in props.storybooks.unavailable do
-				local root = {
+			-- Luau FIXME: Without using `pairs` here Luau will get angry about
+			-- the `unavailableStorybookByNodeId` assignment below
+			for _, unavailableStorybook in pairs(props.storybooks.unavailable) do
+				local root: TreeNode = {
 					id = HttpService:GenerateGUID(),
 					label = unavailableStorybook.storybook.name,
 					icon = "alert",
