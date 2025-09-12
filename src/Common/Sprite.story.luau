@@ -12,20 +12,5 @@ return {
 			layoutOrder = 1,
 			image = assets.FlipbookIcon,
 		}),
-
-		Storybook = React.createElement(Sprite, {
-			layoutOrder = 2,
-			image = assets.Storybook,
-		}),
-
-		Folder = React.createElement(Sprite, {
-			layoutOrder = 3,
-			image = assets.Folder,
-		}),
-
-		Component = React.createElement(Sprite, {
-			layoutOrder = 4,
-			image = assets.Component,
-		}),
 	}),
 }
