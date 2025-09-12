@@ -2,9 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local Checkbox = require("@root/Forms/Checkbox")
-local Dropdown = require("@root/Forms/Dropdown")
-local InputField = require("@root/Forms/InputField")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -33,45 +30,35 @@ local function SettingRow(props: Props)
 
 	local optionElement = useMemo(function(): React.Node
 		if props.setting.settingType == "checkbox" then
-			return React.createElement(Checkbox, {
-				initialState = props.setting.value,
-				onStateChange = setSetting,
+			return React.createElement(Foundation.Checkbox, {
+				label = props.setting.displayName,
+				hint = props.setting.description,
+				hasError = not isValid,
+				isChecked = props.setting.value,
+				onActivated = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
-			return React.createElement(Dropdown, {
-				default = props.setting.choices[1].name,
-				options = Sift.List.map(props.setting.choices, function(choice: SettingChoice)
+			return React.createElement(Foundation.Dropdown.Root, {
+				label = props.setting.displayName,
+				hint = props.setting.description,
+				hasError = not isValid,
+				value = props.setting.choices[1].name,
+				items = Sift.List.map(props.setting.choices, function(choice: SettingChoice)
 					return choice.name
 				end),
-				onOptionChange = setSetting,
+				onItemChanged = setSetting,
 			})
 		elseif props.setting.settingType == "number" then
 			local range = props.setting.range
 
-			return React.createElement(InputField, {
-				placeholder = props.setting.value,
-				onSubmit = function(newValue, isValidOnSubmit)
-					if newValue == "" then
-						setSetting(nil)
-					else
-						setIsValid(isValidOnSubmit)
-						setSetting(tonumber(newValue))
-					end
-				end,
-				validate = function(text)
-					local n = tonumber(text)
-					if n == nil then
-						return false
-					end
-
-					if range then
-						if n < range.Min or n > range.Max then
-							return false
-						end
-					end
-
-					return true
-				end,
+			return React.createElement(Foundation.NumberInput, {
+				value = props.setting.value,
+				label = props.setting.displayName,
+				hint = props.setting.description,
+				hasError = not isValid,
+				maximum = if range then range.Max else nil,
+				minimum = if range then range.Min else nil,
+				onChanged = setSetting,
 			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)
@@ -79,13 +66,9 @@ local function SettingRow(props: Props)
 
 	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
 
-	local isEvenRow = if props.layoutOrder then props.layoutOrder % 2 == 0 else false
-
 	return React.createElement(Foundation.View, {
 		tag = {
 			["size-full-0 auto-y radius-medium"] = true,
-			["bg-surface-200"] = isEvenRow,
-			["bg-surface-100"] = not isEvenRow,
 		},
 		LayoutOrder = props.layoutOrder,
 	}, {
@@ -102,22 +85,22 @@ local function SettingRow(props: Props)
 		Main = React.createElement(Foundation.View, {
 			tag = "size-full-0 auto-y col gap-medium padding-medium",
 		}, {
-			Info = React.createElement(Foundation.View, {
-				tag = "size-full-0 auto-y col gap-small",
-				LayoutOrder = nextLayoutOrder(),
-			}, {
-				Name = React.createElement(Foundation.Text, {
-					tag = "auto-xy text-title-medium truncate",
-					Text = props.setting.displayName,
-					LayoutOrder = nextLayoutOrder(),
-				}),
+			-- Info = React.createElement(Foundation.View, {
+			-- 	tag = "size-full-0 auto-y col gap-small",
+			-- 	LayoutOrder = nextLayoutOrder(),
+			-- }, {
+			-- 	Name = React.createElement(Foundation.Text, {
+			-- 		tag = "auto-xy text-title-medium truncate",
+			-- 		Text = props.setting.displayName,
+			-- 		LayoutOrder = nextLayoutOrder(),
+			-- 	}),
 
-				Description = React.createElement(Foundation.Text, {
-					tag = "auto-xy text-body-small text-wrap text-align-x-left",
-					Text = props.setting.description,
-					LayoutOrder = nextLayoutOrder(),
-				}),
-			}),
+			-- 	Description = React.createElement(Foundation.Text, {
+			-- 		tag = "auto-xy text-body-small text-wrap text-align-x-left",
+			-- 		Text = props.setting.description,
+			-- 		LayoutOrder = nextLayoutOrder(),
+			-- 	}),
+			-- }),
 
 			OptionWrapper = React.createElement(Foundation.View, {
 				tag = "size-full-0 auto-y",
