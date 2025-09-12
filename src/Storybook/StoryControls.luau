@@ -2,9 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local Checkbox = require("@root/Forms/Checkbox")
-local Dropdown = require("@root/Forms/Dropdown")
-local InputField = require("@root/Forms/InputField")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useMemo = React.useMemo
@@ -46,20 +43,22 @@ local function StoryControls(props: Props)
 		local controlType = typeof(control.value)
 		local option: React.Node
 		if controlType == "boolean" then
-			option = React.createElement(Checkbox, {
-				initialState = control.value,
-				onStateChange = setControl,
+			option = React.createElement(Foundation.Checkbox, {
+				label = "label",
+				isChecked = control.value,
+				onActivated = setControl,
 			})
 		elseif controlType == "table" then
-			option = React.createElement(Dropdown, {
-				default = control.value[1],
-				options = control.value,
-				onOptionChange = setControl,
+			option = React.createElement(Foundation.Dropdown.Root, {
+				label = "label",
+				items = control.value,
+				onItemChanged = setControl,
 			})
 		elseif controlType == "number" or controlType == "string" then
-			option = React.createElement(InputField, {
-				placeholder = control.value,
-				onSubmit = setControl,
+			option = React.createElement(Foundation.TextInput, {
+				label = "label",
+				text = control.value,
+				onChanged = setControl,
 			})
 		else
 			option = React.createElement(Foundation.Text, {
