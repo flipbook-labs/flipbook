@@ -45,15 +45,16 @@ local function CodeBlock(props: Props)
 		tag = "size-full-0 auto-y bg-surface-200 gap-medium row radius-medium padding-medium",
 		LayoutOrder = props.layoutOrder,
 	}, {
-		LineNumbers = React.createElement(Foundation.Text, {
-			tag = "auto-xy content-muted text-align-x-right",
-			fontStyle = {
-				Font = Enum.Font.RobotoMono,
-				FontSize = tokens.Typography.BodyMedium.FontSize,
-				LineHeight = 1,
-			},
-			Text = getLineNumbers(source),
+		LineNumbers = React.createElement("TextLabel", {
 			LayoutOrder = nextLayoutOrder(),
+			AutomaticSize = Enum.AutomaticSize.XY,
+			Text = getLineNumbers(source),
+			TextSize = tokens.Typography.BodyMedium.FontSize,
+			LineHeight = 1,
+			BackgroundTransparency = 1,
+			Font = Enum.Font.RobotoMono,
+			TextColor3 = tokens.Color.Content.Muted.Color3,
+			TextXAlignment = Enum.TextXAlignment.Right,
 		}),
 
 		SourceCodeWrapper = React.createElement(Foundation.ScrollView, {
@@ -63,15 +64,17 @@ local function CodeBlock(props: Props)
 				AutomaticCanvasSize = Enum.AutomaticSize.XY,
 				CanvasSize = UDim2.fromScale(0, 0),
 				ScrollingDirection = Enum.ScrollingDirection.X,
+				HorizontalScrollBarInset = Enum.ScrollBarInset.Always,
 			},
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			SourceCode = React.createElement(SelectableTextLabel, {
 				RichText = true,
+				LayoutOrder = nextLayoutOrder(),
 				AutomaticSize = Enum.AutomaticSize.XY,
 				Text = source,
-				TextSize = tokens.Typography.BodyMedium.FontSize,
 				TextColor3 = sourceColor,
+				TextSize = tokens.Typography.BodyMedium.FontSize,
 				TextWrapped = false,
 				LineHeight = 1,
 				Font = Enum.Font.RobotoMono,

@@ -46,7 +46,7 @@ local function StorybookError(props: Props)
 
 			CodeBlock = React.createElement(CodeBlock, {
 				source = props.unavailableStorybook.problem,
-				sourceColor = tokens.Color.ActionAlert.Background.Color3,
+				sourceColor = tokens.Color.ActionAlert.Foreground.Color3,
 				layoutOrder = nextLayoutOrder(),
 			}),
 		}),
