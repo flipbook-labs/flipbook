@@ -15,10 +15,13 @@ return {
 			plugin = MockPlugin.new() :: any,
 		}, {
 			Sidebar = React.createElement(Sidebar, {
-				storybooks = storybooks.available,
+				storybooks = storybooks,
 				onStoryChanged = function(storyModule, storybook)
 					print("storyModule", storyModule)
 					print("storybook", storybook)
+				end,
+				onShowErrorPage = function(unavailableStorybook)
+					print("unavailableStorybook", unavailableStorybook)
 				end,
 			}),
 		})

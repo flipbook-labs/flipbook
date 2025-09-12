@@ -14,6 +14,7 @@ ReactSpring = "chriscerie/react-spring@2.0.0"
 RoactCompat = "jsdotlua/react-roblox@17.0.2"
 Sift = "csqrl/sift@0.0.8"
 t = "osyrisrblx/t@3.0.0"
+Highlighter = "boatbomber/highlighter@0.9.0"
 
 # dev dependencies
 Roact = "roblox/roact@1.4.4"

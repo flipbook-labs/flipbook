@@ -22,6 +22,8 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
 		return assets.Storybook, tokens.Color.Extended.White.White_50.Color3
 	elseif icon == types.TreeNodeIcon.Folder then
 		return assets.Folder, tokens.Color.Extended.Purple.Purple_800.Color3
+	elseif icon == types.TreeNodeIcon.Alert then
+		return assets.Alert, tokens.Color.ActionAlert.Background.Color3
 	else
 		return assets.Folder, tokens.Color.Extended.White.White_50.Color3
 	end

@@ -12,24 +12,31 @@ local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local function App()
 	local settingsContext = SettingsContext.use()
 	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
+		React.useState(nil :: UnavailableStorybook?)
 	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript?)
-			return if prev ~= newStoryModule then newStoryModule else nil
-		end)
-
+		setUnavailableStorybook(nil)
+		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
+
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
+	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
@@ -46,7 +53,8 @@ local function App()
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				storybooks = storybooks.available,
+				onShowErrorPage = onShowErrorPage,
+				storybooks = storybooks,
 			}),
 		}),
 
@@ -65,6 +73,7 @@ local function App()
 				Screen = React.createElement(Screen, {
 					story = storyModule,
 					storybook = storybook,
+					unavailableStorybook = unavailableStorybook,
 				}),
 			}),
 		}),
