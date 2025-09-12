@@ -1,11 +1,12 @@
-local InputField = require("@root/Forms/InputField")
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
 local Sift = require("@pkg/Sift")
-local Sprite = require("@root/Common/Sprite")
-local assets = require("@root/assets")
+
+local InputField = require("@root/Forms/InputField")
 local constants = require("@root/constants")
 local mapRanges = require("@root/Common/mapRanges")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local e = React.createElement
@@ -83,7 +84,7 @@ local function Searchbar(providedProps: Props)
 		}),
 
 		InputFieldWrapper = e("Frame", {
-			LayoutOrder = 1,
+			LayoutOrder = nextLayoutOrder(),
 			Size = styles.alpha:map(function(alpha: number)
 				-- This represents the width taken up by the Icon element and
 				-- the layout's padding. We need to subtract it from the full
@@ -105,13 +106,15 @@ local function Searchbar(providedProps: Props)
 			}),
 		}),
 
-		Icon = e(Sprite, {
-			layoutOrder = 2,
-			image = assets.Search,
-			transparency = styles.alpha:map(function(alpha: number)
-				return mapRanges(alpha, 0, 1, 0.5, 0)
-			end),
-			size = UDim2.fromOffset(SEARCH_ICON_SIZE, SEARCH_ICON_SIZE),
+		Icon = e(Foundation.Icon, {
+			name = Foundation.Enums.IconName.MagnifyingGlass,
+			style = {
+				Transparency = styles.alpha:map(function(alpha: number)
+					return mapRanges(alpha, 0, 1, 0.5, 0)
+				end),
+			},
+			size = Foundation.Enums.IconSize.Small,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 	})
 end

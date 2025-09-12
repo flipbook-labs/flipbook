@@ -1,8 +1,6 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
-local Sprite = require("@root/Common/Sprite")
-local assets = require("@root/assets")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useTokens = Foundation.Hooks.useTokens
@@ -15,11 +13,11 @@ local function NoStorySelected()
 	return e(Foundation.View, {
 		tag = "size-full col bg-surface-200 gap-medium align-y-center align-x-center",
 	}, {
-		Icon = e(Sprite, {
-			image = assets.Storybook,
-			layoutOrder = nextLayoutOrder(),
-			color = tokens.Color.ActionStandard.Foreground.Color3,
-			size = UDim2.fromOffset(tokens.Size.Size_800, tokens.Size.Size_800),
+		Icon = e(Foundation.Icon, {
+			name = Foundation.Enums.IconName.SquareBooks,
+			style = tokens.Color.ActionStandard.Foreground,
+			size = Foundation.Enums.IconSize.Large,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
 		Message = e(Foundation.Text, {
