@@ -15,7 +15,7 @@ export type PinnedInstance = {
 	instance: Instance?,
 }
 
-local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
+local function usePinnedInstances()
 	local localStorage = LocalStorageContext.use()
 
 	local pinnedPaths, setPinnedPaths = useState(function()
@@ -63,7 +63,7 @@ local function usePinnedInstances(): (ModuleScript?, (storyModule: ModuleScript?
 		else
 			pin(instance)
 		end
-	end, { isPinned, unpin, pin })
+	end, { isPinned, unpin, pin } :: { unknown })
 
 	return {
 		pin = pin,

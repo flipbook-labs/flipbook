@@ -51,9 +51,12 @@ local function StorybookTreeView(props: Props)
 			}
 
 			for _, pinnedInstance in pinnedInstances do
-				local node: { TreeNode }
+				local node: TreeNode
 				if pinnedInstance.instance then
-					node = treeViewContext.getNodeByInstance(pinnedInstance.instance)
+					local pinnedNode = treeViewContext.getNodeByInstance(pinnedInstance.instance)
+					if pinnedNode then
+						node = pinnedNode
+					end
 				end
 
 				if not node then

@@ -79,7 +79,7 @@ local function TreeNode(props: Props)
 		if props.node.instance then
 			pinning.togglePin(props.node.instance)
 		end
-	end, { pinning, props.node })
+	end, { pinning, props.node } :: { unknown })
 
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
@@ -122,7 +122,7 @@ local function TreeNode(props: Props)
 				}, {
 					Icon = React.createElement(Sprite, {
 						image = if pinning.isPinned(props.node.instance) then assets.StarFilled else assets.Star,
-						color = theme.text,
+						color = iconColor,
 						size = UDim2.fromOffset(16, 16),
 					}),
 				})

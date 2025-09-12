@@ -22,7 +22,6 @@ export type Theme = {
 	story: Color3,
 	directory: Color3,
 	alert: Color3,
-	star: Color3,
 
 	github: Color3,
 
@@ -55,7 +54,6 @@ local Light: Theme = {
 	story = tailwind.green500,
 	directory = tailwind.purple500,
 	alert = tailwind.rose500,
-	star = tailwind.amber600,
 
 	github = Color3.fromHex("#333333"),
 
@@ -88,7 +86,6 @@ local Dark: Theme = {
 	story = tailwind.green500,
 	directory = tailwind.purple500,
 	alert = tailwind.rose500,
-	star = tailwind.amber400,
 
 	github = Color3.fromHex("#ffffff"),
 
