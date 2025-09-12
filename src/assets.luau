@@ -35,6 +35,16 @@ return {
 		ImageRectOffset = Vector2.new(296, 49),
 		ImageRectSize = Vector2.new(32, 32),
 	},
+	Star = {
+		Image = "rbxassetid://74272179538762",
+		ImageRectOffset = Vector2.new(82, 226),
+		ImageRectSize = Vector2.new(25, 24),
+	},
+	StarFilled = {
+		Image = "rbxassetid://74272179538762",
+		ImageRectOffset = Vector2.new(49, 259),
+		ImageRectSize = Vector2.new(25, 24),
+	},
 	Storybook = {
 		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(231, 108),

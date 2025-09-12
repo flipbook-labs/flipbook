@@ -10,8 +10,6 @@ return {
 	story = React.createElement(ContextProviders, {
 		plugin = MockPlugin.new() :: any,
 	}, {
-		PluginApp = React.createElement(PluginApp, {
-			plugin = plugin,
-		}),
+		PluginApp = React.createElement(PluginApp),
 	}),
 }

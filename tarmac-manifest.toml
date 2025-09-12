@@ -40,6 +40,18 @@ id = 130695877008766
 slice = [[296, 49], [328, 81]]
 packable = true
 
+[inputs."img/Star.png"]
+hash = "ae3c74c88729a8600531b2ade6cbaaa091033fffd0de5145b8462d3a15d0a510"
+id = 74272179538762
+slice = [[82, 226], [107, 250]]
+packable = true
+
+[inputs."img/StarFilled.png"]
+hash = "d958666976bb5a1ab5672e5a79d393b28fca26fb348f9b07ceecbcaf059e78f3"
+id = 74272179538762
+slice = [[49, 259], [74, 283]]
+packable = true
+
 [inputs."img/Storybook.png"]
 hash = "2a4b8bd513a8fa7eebae482943ab3435a659359bd94b24eff1c3dcc6f1244799"
 id = 130695877008766

@@ -1,8 +1,9 @@
+local process = require("@lune/process")
+
 local compile = require("./lib/compile")
 local constants = require("./lib/constants")
 local getPluginsPath = require("./lib/getPluginsPath")
 local parseArgs = require("./lib/parseArgs")
-local process = require("@lune/process")
 local run = require("./lib/run")
 local watch = require("./lib/watcher/watch")
 
@@ -27,6 +28,7 @@ if args.watch then
 		filePatterns = {
 			"src/.*%.luau",
 			"example/.*%.luau",
+			"Packages/.*%.luau",
 		},
 		onChanged = build,
 	})

@@ -48,6 +48,21 @@ local function Sidebar(props: Props)
 				layoutOrder = nextLayoutOrder(),
 				onSearchChanged = onSearchChanged,
 			}),
+
+			--if #props.storybooks.available == 0
+			CreateStorybook = React.createElement(Button, {
+				layoutOrder = nextLayoutOrder(),
+				text = "Create Storybook",
+				onClick = function()
+					local source = getMostLikelyProjectSources()[1]
+
+					if source then
+						createOnboardingStorybook(source.Name, source)
+					else
+						createOnboardingStorybook(string.gsub(game.Name, "%.", "_"), ReplicatedStorage)
+					end
+				end,
+			}),
 		}),
 
 		ScrollingFrame = e(Foundation.ScrollView, {
@@ -59,6 +74,10 @@ local function Sidebar(props: Props)
 			},
 			LayoutOrder = nextLayoutOrder(),
 		}, {
+			FlexItem = React.createElement("UIFlexItem", {
+				FlexMode = Enum.UIFlexMode.Shrink,
+			}),
+
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
 				storybooks = props.storybooks,
