@@ -70,7 +70,7 @@ local rememberLastOpenedStory: Setting = {
 local theme: DropdownSetting = {
 	name = "theme",
 	displayName = "UI theme",
-	description = "Select the UI theme to use. By default, flipbook will use the same theme as Studio",
+	description = "Select the UI theme to use. By default, Flipbook will use the same theme as Studio",
 	settingType = SettingType.Dropdown,
 	choices = {
 		{

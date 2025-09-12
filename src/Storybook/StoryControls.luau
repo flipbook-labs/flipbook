@@ -1,10 +1,11 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")
 local InputField = require("@root/Forms/InputField")
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useMemo = React.useMemo
 local e = React.createElement
@@ -21,8 +22,6 @@ type Props = {
 }
 
 local function StoryControls(props: Props)
-	local theme = useTheme()
-
 	local sortedControls: { { name: string, value: any } } = useMemo(function()
 		local result = {}
 
@@ -69,63 +68,30 @@ local function StoryControls(props: Props)
 				onSubmit = setControl,
 			})
 		else
-			option = React.createElement("TextLabel", {
+			option = React.createElement(Foundation.Text, {
+				tag = "auto-xy text-label-medium text-truncate content-system-alert",
 				Text = `ERR: Controls of type "{controlType}" are unsupported`,
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				TextColor3 = theme.alert,
-				TextSize = theme.textSize,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Center,
-				TextTruncate = Enum.TextTruncate.AtEnd,
 			})
 		end
 
-		controlElements[control.name] = e("Frame", {
+		controlElements[control.name] = e(Foundation.View, {
+			tag = {
+				["size-full-0 auto-y row gap-medium padding-small align-y-center"] = true,
+				["bg-surface-100"] = index % 2 ~= 0,
+				["bg-surface-200"] = index % 2 == 0,
+			},
 			LayoutOrder = index,
-			BackgroundColor3 = theme.background,
-			BackgroundTransparency = if index % 2 == 0 then 1 else 0,
-			BorderSizePixel = 0,
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				FillDirection = Enum.FillDirection.Horizontal,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = theme.padding,
-			}),
-
-			Padding = e("UIPadding", {
-				PaddingTop = theme.padding,
-				PaddingRight = theme.padding,
-				PaddingBottom = theme.padding,
-				PaddingLeft = theme.padding,
-			}),
-
-			Name = e("TextLabel", {
-				LayoutOrder = 1,
+			Name = e(Foundation.Text, {
+				tag = "auto-y text-label-medium text-truncate text-align-x-left",
 				Text = control.name,
 				Size = UDim2.fromScale(1 / 4, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				TextColor3 = theme.text,
-				TextSize = theme.textSize,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Center,
-				TextTruncate = Enum.TextTruncate.AtEnd,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			OptionWrapper = e("Frame", {
-				LayoutOrder = 2,
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1, 0),
-				AutomaticSize = Enum.AutomaticSize.Y,
-			}, {
-				Flex = e("UIFlexItem", {
-					FlexMode = Enum.UIFlexMode.Shrink,
-				}),
+			OptionWrapper = e(Foundation.View, {
+				tag = "size-full-0 auto-y shrink",
+				LayoutOrder = nextLayoutOrder(),
 			}, {
 				-- Keying by the identity of sortedControls fixes a bug where
 				-- the options visually do not update when two stories have the
@@ -135,46 +101,19 @@ local function StoryControls(props: Props)
 		})
 	end
 
-	return e("Frame", {
-		BackgroundTransparency = 0.4,
-		BackgroundColor3 = theme.sidebar,
-		BorderSizePixel = 0,
+	return e(Foundation.View, {
+		tag = "size-full-0 auto-y col gap-medium padding-medium",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 1),
 	}, {
-		Layout = e("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = theme.padding,
-		}),
-
-		Padding = e("UIPadding", {
-			PaddingTop = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-		}),
-
-		Title = e("TextLabel", {
-			LayoutOrder = 1,
+		Title = e(Foundation.Text, {
+			tag = "auto-xy text-heading-small text-align-x-left",
 			Text = "Controls",
-			Font = theme.headerFont,
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		Controls = e("Frame", {
-			LayoutOrder = 2,
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundTransparency = 1,
-		}, {
-			Layout = e("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
+		Controls = e(Foundation.View, {
+			tag = "size-full-0 auto-y col",
+			LayoutOrder = nextLayoutOrder(),
 		}, controlElements),
 	})
 end

@@ -19,7 +19,7 @@ local useRef = React.useRef
 export type Props = {
 	searchTerm: string?,
 	storybooks: {
-		avialable: { LoadedStorybook },
+		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
@@ -73,9 +73,12 @@ local function StorybookTreeView(props: Props)
 		end
 
 		for _, storybook in props.storybooks.available do
-			local root = createTreeNodesForStorybook(storybook)
+			-- FIXME: Need to cast each `storybook` variable to `any` to fix an
+			-- issue where the ModuleLoader type is somehow not compareable to
+			-- itself
+			local root = createTreeNodesForStorybook(storybook :: any)
 			table.insert(roots, root)
-			storybookByNodeId.current[root.id] = storybook
+			storybookByNodeId.current[root.id] = storybook :: any
 		end
 
 		if #props.storybooks.unavailable > 0 then
@@ -87,8 +90,10 @@ local function StorybookTreeView(props: Props)
 				children = {},
 			}
 
-			for _, unavailableStorybook in props.storybooks.unavailable do
-				local root = {
+			-- Luau FIXME: Without using `pairs` here Luau will get angry about
+			-- the `unavailableStorybookByNodeId` assignment below
+			for _, unavailableStorybook in pairs(props.storybooks.unavailable) do
+				local root: TreeNode = {
 					id = HttpService:GenerateGUID(),
 					label = unavailableStorybook.storybook.name,
 					icon = "alert",

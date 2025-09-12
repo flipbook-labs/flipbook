@@ -1,12 +1,13 @@
+local Foundation = require("@rbxpkg/Foundation")
 local Highlighter = require("@pkg/Highlighter")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local SelectableTextLabel = require("@root/Forms/SelectableTextLabel")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 local useMemo = React.useMemo
+local useTokens = Foundation.Hooks.useTokens
 
 local function getLineNumbers(str: string): string
 	return Sift.List.reduce(str:split("\n"), function(accumulator, _item, index)
@@ -21,11 +22,11 @@ export type Props = {
 }
 
 local function CodeBlock(props: Props)
-	local theme = useTheme()
+	local tokens = useTokens()
 
 	local sourceColor = useMemo(function()
-		return if props.sourceColor then props.sourceColor else theme.text
-	end, { props.sourceColor })
+		return if props.sourceColor then props.sourceColor else tokens.Color.Content.Default.Color3
+	end, { props.sourceColor, tokens } :: { unknown })
 
 	local source = useMemo(function()
 		if props.sourceColor then
@@ -40,53 +41,44 @@ local function CodeBlock(props: Props)
 		end
 	end, { props.source })
 
-	return React.createElement("Frame", {
-		AutomaticSize = Enum.AutomaticSize.XY,
-		BackgroundTransparency = 0.5,
-		BorderSizePixel = 0,
-		BackgroundColor3 = theme.sidebar,
+	return React.createElement(Foundation.View, {
+		tag = "size-full-0 auto-y bg-surface-200 gap-medium row radius-medium padding-medium",
 		LayoutOrder = props.layoutOrder,
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = theme.padding,
-		}),
-
-		BorderRadius = React.createElement("UICorner", {
-			CornerRadius = theme.corner,
-		}),
-
-		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-		}),
-
 		LineNumbers = React.createElement("TextLabel", {
 			LayoutOrder = nextLayoutOrder(),
 			AutomaticSize = Enum.AutomaticSize.XY,
 			Text = getLineNumbers(source),
-			TextSize = theme.textSize,
+			TextSize = tokens.Typography.BodyMedium.FontSize,
 			LineHeight = 1,
 			BackgroundTransparency = 1,
 			Font = Enum.Font.RobotoMono,
-			TextColor3 = theme.textFaded,
+			TextColor3 = tokens.Color.Content.Muted.Color3,
 			TextXAlignment = Enum.TextXAlignment.Right,
 		}),
 
-		SourceCode = React.createElement(SelectableTextLabel, {
-			RichText = true,
+		SourceCodeWrapper = React.createElement(Foundation.ScrollView, {
+			tag = "size-full-0 auto-y shrink",
+			scroll = {
+				AutomaticSize = Enum.AutomaticSize.Y,
+				AutomaticCanvasSize = Enum.AutomaticSize.XY,
+				CanvasSize = UDim2.fromScale(0, 0),
+				ScrollingDirection = Enum.ScrollingDirection.X,
+				HorizontalScrollBarInset = Enum.ScrollBarInset.Always,
+			},
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-			Text = source,
-			TextColor3 = sourceColor,
-			TextSize = theme.textSize,
-			TextWrapped = false,
-			LineHeight = 1,
-			Font = Enum.Font.RobotoMono,
+		}, {
+			SourceCode = React.createElement(SelectableTextLabel, {
+				RichText = true,
+				LayoutOrder = nextLayoutOrder(),
+				AutomaticSize = Enum.AutomaticSize.XY,
+				Text = source,
+				TextColor3 = sourceColor,
+				TextSize = tokens.Typography.BodyMedium.FontSize,
+				TextWrapped = false,
+				LineHeight = 1,
+				Font = Enum.Font.RobotoMono,
+			}),
 		}),
 	})
 end

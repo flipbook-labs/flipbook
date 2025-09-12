@@ -1,17 +1,11 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local Branding = require("@root/Common/Branding")
-local Button = require("@root/Forms/Button")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local createOnboardingStorybook = require("@root/Storybook/createOnboardingStorybook")
-local getMostLikelyProjectSources = require("@root/RobloxInternal/getMostLikelyProjectSources")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -23,14 +17,12 @@ type Props = {
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 	storybooks: {
-		avialable: { LoadedStorybook },
+		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
 }
 
 local function Sidebar(props: Props)
-	local theme = useTheme()
-
 	local search: string?, setSearch = React.useState(nil :: string?)
 	local onSearchChanged = React.useCallback(function(value: string)
 		if value == "" then
@@ -40,40 +32,14 @@ local function Sidebar(props: Props)
 		end
 	end, {})
 
-	return e("Frame", {
-		BackgroundColor3 = theme.sidebar,
-		BorderSizePixel = 0,
+	return e(Foundation.View, {
+		tag = "size-full bg-surface-0 col gap-medium padding-medium flex-between",
 		LayoutOrder = props.layoutOrder,
-		Size = UDim2.fromScale(1, 1),
 	}, {
-		UIListLayout = e("UIListLayout", {
-			Padding = theme.padding,
-			VerticalFlex = Enum.UIFlexAlignment.Fill,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-
-		UIPadding = e("UIPadding", {
-			PaddingBottom = theme.padding,
-			PaddingLeft = theme.padding,
-			PaddingRight = theme.padding,
-			PaddingTop = theme.padding,
-		}),
-
-		Header = e("Frame", {
-			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundTransparency = 1,
+		Header = e(Foundation.View, {
+			tag = "size-full-0 auto-y col gap-xlarge",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 0),
 		}, {
-			FlexItem = React.createElement("UIFlexItem", {
-				FlexMode = Enum.UIFlexMode.Grow,
-			}),
-
-			UIListLayout = e("UIListLayout", {
-				Padding = theme.paddingLarge,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-
 			Branding = e(Branding, {
 				layoutOrder = nextLayoutOrder(),
 			}),
@@ -99,9 +65,14 @@ local function Sidebar(props: Props)
 			}),
 		}),
 
-		ScrollingFrame = e(ScrollingFrame, {
+		ScrollingFrame = e(Foundation.ScrollView, {
+			tag = "size-full shrink",
+			scroll = {
+				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+				CanvasSize = UDim2.fromScale(1, 0),
+				ScrollingDirection = Enum.ScrollingDirection.Y,
+			},
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 1),
 		}, {
 			FlexItem = React.createElement("UIFlexItem", {
 				FlexMode = Enum.UIFlexMode.Shrink,

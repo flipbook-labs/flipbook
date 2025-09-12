@@ -1,10 +1,11 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local CodeBlock = require("@root/Common/CodeBlock")
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
+
+local useTokens = Foundation.Hooks.useTokens
 
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
@@ -14,90 +15,50 @@ export type Props = {
 }
 
 local function StorybookError(props: Props)
-	local theme = useTheme()
+	local tokens = useTokens()
 
 	local storybookSource = props.unavailableStorybook.storybook.source.Source
 
-	return React.createElement(ScrollingFrame, {
-		ScrollingDirection = Enum.ScrollingDirection.XY,
+	return React.createElement(Foundation.ScrollView, {
+		tag = "size-full padding-large gap-large",
+		scroll = {
+			ScrollingDirection = Enum.ScrollingDirection.XY,
+			AutomaticCanvasSize = Enum.AutomaticSize.XY,
+			CanvasSize = UDim2.new(0, 0),
+		},
 		LayoutOrder = props.layoutOrder,
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			FillDirection = Enum.FillDirection.Vertical,
-			Padding = theme.paddingLarge,
-		}),
-
-		Padding = React.createElement("UIPadding", {
-			PaddingTop = theme.paddingLarge,
-			PaddingRight = theme.paddingLarge,
-			PaddingBottom = theme.paddingLarge,
-			PaddingLeft = theme.paddingLarge,
-		}),
-
-		MainText = React.createElement("TextLabel", {
-			LayoutOrder = nextLayoutOrder(),
+		MainText = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-body-medium text-align-x-left",
 			Text = `Failed to load {props.unavailableStorybook.storybook.name}`,
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			TextColor3 = theme.text,
-			TextSize = theme.textSize,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Center,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		Problem = React.createElement("Frame", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+		Problem = React.createElement(Foundation.View, {
+			tag = "auto-xy gap-medium col",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Vertical,
-				Padding = theme.padding,
-			}),
-
-			Title = React.createElement("TextLabel", {
-				LayoutOrder = nextLayoutOrder(),
+			Title = React.createElement(Foundation.Text, {
+				tag = "auto-xy text-heading-medium",
 				Text = "Error",
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.headerFont,
-				TextColor3 = theme.text,
-				TextSize = theme.headerTextSize,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Center,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			CodeBlock = React.createElement(CodeBlock, {
 				source = props.unavailableStorybook.problem,
-				sourceColor = theme.alert,
+				sourceColor = tokens.Color.ActionAlert.Foreground.Color3,
 				layoutOrder = nextLayoutOrder(),
 			}),
 		}),
 
-		StorybookSource = React.createElement("Frame", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
+		StorybookSource = React.createElement(Foundation.View, {
+			tag = "auto-xy gap-medium col",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Vertical,
-				Padding = theme.padding,
-			}),
-
-			Title = React.createElement("TextLabel", {
-				LayoutOrder = nextLayoutOrder(),
+			Title = React.createElement(Foundation.Text, {
+				tag = "auto-xy text-heading-medium",
 				Text = "Storybook Source",
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-				Font = theme.headerFont,
-				TextColor3 = theme.text,
-				TextSize = theme.headerTextSize,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Center,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			CodeBlock = React.createElement(CodeBlock, {

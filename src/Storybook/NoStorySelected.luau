@@ -1,42 +1,31 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+
 local Sprite = require("@root/Common/Sprite")
 local assets = require("@root/assets")
-local useTheme = require("@root/Common/useTheme")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+
+local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
 
-local function NoStorySelected(_props)
-	local theme = useTheme()
+local function NoStorySelected()
+	local tokens = useTokens()
 
-	return e("Frame", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundTransparency = 1,
+	return e(Foundation.View, {
+		tag = "size-full col bg-surface-200 gap-medium align-y-center align-x-center",
 	}, {
-		UIListLayout = e("UIListLayout", {
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = theme.padding,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-		}),
-
 		Icon = e(Sprite, {
 			image = assets.Storybook,
-			layoutOrder = 1,
-			color = theme.text,
-			size = UDim2.fromOffset(32, 32),
+			layoutOrder = nextLayoutOrder(),
+			color = tokens.Color.ActionStandard.Foreground.Color3,
+			size = UDim2.fromOffset(tokens.Size.Size_800, tokens.Size.Size_800),
 		}),
 
-		Message = e("TextLabel", {
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
-			LayoutOrder = 2,
-			Size = UDim2.fromScale(0, 0),
+		Message = e(Foundation.Text, {
+			tag = "auto-xy text-heading-medium",
 			Text = "Select a story to preview it",
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
+			LayoutOrder = nextLayoutOrder(),
 		}),
 	})
 end

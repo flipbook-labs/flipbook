@@ -1,6 +1,5 @@
 local process = require("@lune/process")
 
-local clean = require("./lib/clean")
 local compile = require("./lib/compile")
 local constants = require("./lib/constants")
 local getPluginsPath = require("./lib/getPluginsPath")
@@ -17,7 +16,6 @@ local output = if args.output then args.output else `{getPluginsPath(process.os)
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
-	clean()
 	compile(target)
 
 	run("rojo", { "build", "-o", output })

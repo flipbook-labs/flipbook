@@ -1,3 +1,6 @@
+# Environment variables
+.env
+
 # Darklua
 build
 
@@ -13,6 +16,12 @@ globalTypes.d.luau
 DevPackages
 Packages
 wally.lock
+
+# Rbxasset
+LunePackages
+
+# Roblox Packages
+RobloxPackages
 
 # Python
 __pycache__

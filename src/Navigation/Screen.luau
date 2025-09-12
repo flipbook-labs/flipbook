@@ -11,10 +11,12 @@ local StorybookError = require("@root/Storybook/StorybookError")
 local useMemo = React.useMemo
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 export type Props = {
 	story: ModuleScript?,
 	storybook: LoadedStorybook?,
+	unavailableStorybook: UnavailableStorybook?,
 }
 
 local function Screen(props: Props)

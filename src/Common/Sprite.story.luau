@@ -8,9 +8,9 @@ return {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 
-		flipbook = React.createElement(Sprite, {
+		Flipbook = React.createElement(Sprite, {
 			layoutOrder = 1,
-			image = assets.flipbook,
+			image = assets.FlipbookIcon,
 		}),
 
 		Storybook = React.createElement(Sprite, {

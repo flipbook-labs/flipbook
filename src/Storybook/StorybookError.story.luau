@@ -10,7 +10,6 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 return {
 	summary = "Component for displaying error messages to the user",
 	story = function()
-
 		local storybookModule = script.Parent.Parent["init.storybook"]
 		local unavailableStorybook: UnavailableStorybook = {
 			problem = "Something went wrong!",
@@ -18,14 +17,15 @@ return {
 				name = storybookModule.Name,
 				source = storybookModule,
 				loader = {} :: any,
-			}
+				storyRoots = {},
+			},
 		}
 
 		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new() :: ,
+			plugin = MockPlugin.new() :: any,
 		}, {
 			StorybookError = React.createElement(StorybookError, {
-				unavailableStorybook =unavailableStorybook
+				unavailableStorybook = unavailableStorybook,
 			}),
 		})
 	end,

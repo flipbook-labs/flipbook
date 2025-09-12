@@ -6,7 +6,7 @@ return {
 	LUNE_SCRIPTS_PATH = ".lune",
 	EXAMPLE_PATH = "example",
 
-	PLUGIN_FILENAME = "flipbook.rbxm",
+	PLUGIN_FILENAME = "Flipbook.rbxm",
 
 	SOURCEMAP_PATH = "sourcemap.json",
 	DARKLUA_SOURCEMAP_PATH = "sourcemap-darklua.json",
