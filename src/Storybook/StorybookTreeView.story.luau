@@ -14,7 +14,7 @@ local function Story()
 		BackgroundTransparency = 1,
 	}, {
 		StorybookTreeView = React.createElement(StorybookTreeView, {
-			storybooks = storybooks.available,
+			storybooks = storybooks,
 			onStoryChanged = function(storyModule)
 				if storyModule then
 					print("selected", storyModule:GetFullName())

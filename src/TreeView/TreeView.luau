@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local TreeNode = require("@root/TreeView/TreeNode")
@@ -21,14 +22,9 @@ local function TreeView(props: {
 		})
 	end
 
-	return React.createElement("Frame", {
-		BackgroundTransparency = 1,
-		AutomaticSize = Enum.AutomaticSize.XY,
+	return React.createElement(Foundation.View, {
+		tag = "auto-xy col",
 		LayoutOrder = props.layoutOrder,
-	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
 	}, children)
 end
 

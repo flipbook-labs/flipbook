@@ -1,7 +1,7 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 local BUILD_INFO = {
 	{ label = "Version", value = _G.BUILD_VERSION },
@@ -14,31 +14,18 @@ export type Props = {
 }
 
 local function BuildInfo(props: Props)
-	local theme = useTheme()
-
 	local children: { [string]: React.Node } = {}
 	for _, info in BUILD_INFO do
-		children[info.label] = React.createElement("TextLabel", {
+		children[info.label] = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-body-medium content-muted",
 			LayoutOrder = nextLayoutOrder(),
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.font,
 			Text = `{info.label}: {info.value}`,
-			TextColor3 = theme.textSubtitle,
-			TextSize = theme.textSize,
 		})
 	end
 
-	return React.createElement("Frame", {
+	return React.createElement(Foundation.View, {
+		tag = "auto-xy col gap-medium align-x-center",
 		LayoutOrder = props.layoutOrder,
-		AutomaticSize = Enum.AutomaticSize.XY,
-		BackgroundTransparency = 1,
-	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			Padding = theme.paddingSmall,
-		}),
 	}, children)
 end
 

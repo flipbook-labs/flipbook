@@ -14,7 +14,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
@@ -25,7 +25,7 @@ jobs:
           name=$(jq -r .name default.project.json)
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
-      - name: Install packages
+      - name: Install dependencies
         run: lune run install
 
       - name: Build
@@ -44,13 +44,13 @@ jobs:
     env:
       LOG_LEVEL: debug
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
           version: v1.1.1
 
-      - name: Install packages
+      - name: Install dependencies
         run: lune run install
 
       - name: Publish nightly build to Creator Store

@@ -1,6 +1,9 @@
+local Foundation = require("@rbxpkg/Foundation")
+
 local assets = require("@root/assets")
 local types = require("./types")
-local useTheme = require("@root/Common/useTheme")
+
+local useTokens = Foundation.Hooks.useTokens
 
 type TreeNodeIcon = types.TreeNodeIcon
 
@@ -11,16 +14,18 @@ type Sprite = {
 }
 
 local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
-	local theme = useTheme()
+	local tokens = useTokens()
 
 	if icon == types.TreeNodeIcon.Story then
-		return assets.Component, theme.story
+		return assets.Component, tokens.Color.Extended.Green.Green_800.Color3
 	elseif icon == types.TreeNodeIcon.Storybook then
-		return assets.Storybook, theme.textFaded
+		return assets.Storybook, tokens.Color.Extended.White.White_50.Color3
 	elseif icon == types.TreeNodeIcon.Folder then
-		return assets.Folder, theme.directory
+		return assets.Folder, tokens.Color.Extended.Purple.Purple_800.Color3
+	elseif icon == types.TreeNodeIcon.Alert then
+		return assets.Alert, tokens.Color.ActionAlert.Background.Color3
 	else
-		return assets.Folder, theme.textFaded
+		return assets.Folder, tokens.Color.Extended.White.White_50.Color3
 	end
 end
 

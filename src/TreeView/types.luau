@@ -1,12 +1,13 @@
 local types = {}
 
-export type TreeNodeIcon = "none" | "story" | "storybook" | "folder"
+export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert"
 
 types.TreeNodeIcon = {
 	None = "none" :: "none",
 	Story = "story" :: "story",
 	Storybook = "storybook" :: "storybook",
 	Folder = "folder" :: "folder",
+	Alert = "alert" :: "alert",
 }
 
 export type PartialTreeNode = {
