@@ -59,6 +59,9 @@ local function compile(target: Target)
 			run("find", { constants.BUILD_PATH, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
+
+	run("cp", { "-R", "Packages", constants.BUILD_PATH })
+	run("cp", { "-R", "RobloxPackages", constants.BUILD_PATH })
 end
 
 return compile
