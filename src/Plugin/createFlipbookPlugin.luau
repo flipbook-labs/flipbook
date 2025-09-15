@@ -1,9 +1,3 @@
-local RunService = game:GetService("RunService")
-
-if RunService:IsRunning() or not RunService:IsEdit() then
-	return
-end
-
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
