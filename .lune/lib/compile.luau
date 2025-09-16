@@ -14,10 +14,12 @@ local PRUNED_FILES = {
 }
 
 local function compile(target: Target)
-	if fs.isDir(constants.BUILD_PATH) then
-		fs.removeDir(constants.BUILD_PATH)
+	local dest = `{constants.BUILD_PATH}/plugin`
+
+	if fs.isDir(dest) then
+		fs.removeDir(dest)
 	end
-	fs.writeDir(constants.BUILD_PATH)
+	fs.writeDir(dest)
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
@@ -39,7 +41,7 @@ local function compile(target: Target)
 	run("darklua", {
 		"process",
 		constants.SOURCE_PATH,
-		constants.BUILD_PATH,
+		dest,
 	}, {
 		env = env,
 	})
@@ -48,7 +50,7 @@ local function compile(target: Target)
 		run("darklua", {
 			"process",
 			"example",
-			`{constants.BUILD_PATH}/Example`,
+			`{dest}/Example`,
 		}, {
 			env = env,
 		})
@@ -56,12 +58,12 @@ local function compile(target: Target)
 
 	if target == "prod" then
 		for _, pattern in PRUNED_FILES do
-			run("find", { constants.BUILD_PATH, "-type", "f", "-name", pattern, "-delete" })
+			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
 
-	run("cp", { "-R", "Packages", constants.BUILD_PATH })
-	run("cp", { "-R", "RobloxPackages", constants.BUILD_PATH })
+	run("cp", { "-R", "Packages", dest })
+	run("cp", { "-R", "RobloxPackages", dest })
 end
 
 return compile
