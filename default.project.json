@@ -1,12 +1,6 @@
 {
   "name": "Flipbook",
   "tree": {
-    "Packages": {
-      "$path": "Packages"
-    },
-    "RobloxPackages": {
-      "$path": "RobloxPackages"
-    },
-    "$path": "build"
+    "$path": "build/plugin"
   }
 }
