@@ -16,6 +16,13 @@ export type PluginSettingsStore<T> = {
 	dispose: () -> (),
 }
 
+--[[
+	Creates a store to manage plugin settings.
+
+	Settings are persisted using Plugin:SetSetting and Plugin:GetSetting, and are
+	stored as JSON strings. The settings are loaded once when the store is first
+	created, and any changes to the settings are automatically saved.
+]]
 local function createPluginSettingsStore<T>(
 	storageKey: string,
 	defaultValue: T,
