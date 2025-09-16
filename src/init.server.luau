@@ -9,7 +9,6 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
-local PluginStore = require("@root/Plugin/PluginStore")
 local createToggleButton = require("@root/Plugin/createToggleButton")
 local createWidget = require("@root/Plugin/createWidget")
 
@@ -19,8 +18,6 @@ local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 local widget = createWidget(plugin, PLUGIN_NAME)
 local root = ReactRoblox.createRoot(widget)
 local disconnectButton = createToggleButton(toolbar, widget)
-
-PluginStore.get(false).setPlugin(plugin)
 
 local app = React.createElement(ContextProviders, {
 	plugin = plugin,

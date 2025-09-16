@@ -1,12 +1,14 @@
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local themes = require("@root/themes")
 local usePrevious = require("@root/Common/usePrevious")
 
 local useMemo = React.useMemo
 local useState = React.useState
 local useEffect = React.useEffect
+local useSignalState = SignalsReact.useSignalState
 
 local MOCK_STUDIO = {
 	ThemeChanged = Instance.new("BindableEvent").Event,
@@ -16,9 +18,10 @@ local MOCK_STUDIO = {
 }
 
 local function useTheme()
-	local settingsContext = SettingsContext.use()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local themeOverride = settingsContext.getSetting("theme")
+	local themeOverride = userSettings.theme
 	local prevThemeOverride = usePrevious(themeOverride)
 
 	local studio: Studio = useMemo(function()
@@ -38,7 +41,7 @@ local function useTheme()
 			end
 		end
 		return studio.Theme.Name
-	end, { themeOverride, studio })
+	end, { themeOverride, studio } :: { unknown })
 
 	local theme: themes.Theme, set = useState(themes[themeName])
 
@@ -46,7 +49,7 @@ local function useTheme()
 		if themeOverride ~= prevThemeOverride then
 			set(themes[themeName])
 		end
-	end, { themeOverride, prevThemeOverride, themeName })
+	end, { themeOverride, prevThemeOverride, themeName } :: { unknown })
 
 	useEffect(function(): any
 		if themeOverride == "system" then

@@ -3,15 +3,22 @@ local React = require("@pkg/React")
 
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local PluginStore = require("@root/Plugin/PluginStore")
 local TreeView = require("@root/TreeView")
 
+local useEffect = React.useEffect
+
 export type Props = {
+	plugin: Plugin,
 	overlayGui: GuiBase2d?,
 	children: React.Node?,
 }
 
 local function ContextProviders(props: Props)
+	useEffect(function()
+		PluginStore.get(false).setPlugin(props.plugin)
+	end, { props.plugin })
+
 	return React.createElement(ContextStack, {
 		providers = {
 			React.createElement(Foundation.FoundationProvider, {
@@ -22,7 +29,6 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
-			React.createElement(SettingsContext.Provider),
 			React.createElement(TreeView.TreeViewProvider),
 		},
 	}, props.children)

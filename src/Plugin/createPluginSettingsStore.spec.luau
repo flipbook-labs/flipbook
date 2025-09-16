@@ -1,9 +1,8 @@
 local HttpService = game:GetService("HttpService")
 
 local JestGlobals = require("@pkg/JestGlobals")
+local Signals = require("@rbxpkg/Signals")
 local t = require("@pkg/t")
-
-local createPluginSettingsStore = require("./createPluginSettingsStore")
 
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
@@ -14,6 +13,8 @@ local MOCK_STORAGE_KEY = "MockStorageKey"
 
 local mockSettings
 local mockPlugin
+
+local createPluginSettingsStore
 
 beforeEach(function()
 	mockSettings = {}
@@ -30,21 +31,39 @@ beforeEach(function()
 			end),
 		} :: any
 	) :: Plugin
+
+	jest.mock(script.Parent.PluginStore, function()
+		return {
+			get = function()
+				return {
+					getPlugin = function()
+						return mockPlugin
+					end,
+				}
+			end,
+		}
+	end)
+
+	createPluginSettingsStore = require("./createPluginSettingsStore")
 end)
 
 test("loads until data is read from disk", function()
 	mockSettings[MOCK_STORAGE_KEY] = nil
 
-	local pluginSettingsStore = createPluginSettingsStore(
-		mockPlugin,
-		MOCK_STORAGE_KEY,
-		{
-			foo = true,
-		},
-		t.interface({
-			foo = t.boolean,
-		})
-	)
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				foo = true,
+			},
+			t.interface({
+				foo = t.boolean,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
 
 	expect(pluginSettingsStore.getIsLoading(false)).toBe(true)
 
@@ -58,16 +77,20 @@ end)
 test("propagate error signal when failing to read from disk", function()
 	mockSettings[MOCK_STORAGE_KEY] = "this is not json"
 
-	local pluginSettingsStore = createPluginSettingsStore(
-		mockPlugin,
-		MOCK_STORAGE_KEY,
-		{
-			foo = true,
-		},
-		t.interface({
-			foo = t.boolean,
-		})
-	)
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				foo = true,
+			},
+			t.interface({
+				foo = t.boolean,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
 
 	repeat
 		task.wait()
@@ -81,16 +104,20 @@ test("propagate error signal when schema validation fails", function()
 		foo = "this should be a boolean",
 	})
 
-	local pluginSettingsStore = createPluginSettingsStore(
-		mockPlugin,
-		MOCK_STORAGE_KEY,
-		{
-			foo = true,
-		},
-		t.interface({
-			foo = t.boolean,
-		})
-	)
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				foo = true,
+			},
+			t.interface({
+				foo = t.boolean,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
 
 	repeat
 		task.wait()
@@ -104,16 +131,20 @@ test("automatically load data on disk", function()
 		greeting = "Hello!",
 	})
 
-	local pluginSettingsStore = createPluginSettingsStore(
-		mockPlugin,
-		MOCK_STORAGE_KEY,
-		{
-			greeting = "Hi!",
-		},
-		t.interface({
-			greeting = t.string,
-		})
-	)
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				greeting = "Hi!",
+			},
+			t.interface({
+				greeting = t.string,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
 
 	expect(pluginSettingsStore.getStorage(false)).toEqual({
 		greeting = "Hi!",
@@ -129,16 +160,20 @@ test("automatically load data on disk", function()
 end)
 
 test("setting data writes to disk", function()
-	local pluginSettingsStore = createPluginSettingsStore(
-		mockPlugin,
-		MOCK_STORAGE_KEY,
-		{
-			farewell = "Bye!",
-		},
-		t.interface({
-			farewell = t.string,
-		})
-	)
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				farewell = "Bye!",
+			},
+			t.interface({
+				farewell = t.string,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
 
 	local newStorage = {
 		farewell = "Goodbye!",
@@ -153,4 +188,29 @@ test("setting data writes to disk", function()
 	task.wait()
 
 	expect(mockSettings[MOCK_STORAGE_KEY]).toEqual(HttpService:JSONEncode(newStorage))
+end)
+
+test("determine is a setting's value is the default", function()
+	local getPluginSettingsStore = Signals.createComputed(function(scope)
+		return createPluginSettingsStore(
+			scope,
+			MOCK_STORAGE_KEY,
+			{
+				farewell = "Bye!",
+			},
+			t.interface({
+				farewell = t.string,
+			})
+		)
+	end)
+
+	local pluginSettingsStore = getPluginSettingsStore(false)
+
+	expect(pluginSettingsStore.isSettingDefault("farewell")).toBe(true)
+
+	pluginSettingsStore.setStorage({
+		farewell = "Goodbye!",
+	})
+
+	expect(pluginSettingsStore.isSettingDefault("farewell")).toBe(false)
 end)

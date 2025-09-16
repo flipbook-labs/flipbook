@@ -3,7 +3,6 @@ local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
 local SettingRow = require("@root/UserSettings/SettingRow")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -13,14 +12,12 @@ type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
 
 local function SettingsView()
-	local settingsContext = SettingsContext.use()
-
 	local orderedSettings: { Setting } = useMemo(function()
-		local values = Sift.Dictionary.values(settingsContext.settings)
+		local values = Sift.Dictionary.values(defaultSettings)
 		return Sift.Array.sort(values, function(a: Setting, b: Setting)
 			return a.name < b.name
 		end)
-	end, { settingsContext.settings })
+	end, { defaultSettings })
 
 	local children: { [string]: React.Node } = {}
 	for index, setting in orderedSettings do

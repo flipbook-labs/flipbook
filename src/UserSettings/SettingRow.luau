@@ -1,15 +1,17 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")
 local InputField = require("@root/Forms/InputField")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
+local useSignalState = SignalsReact.useSignalState
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
@@ -24,12 +26,16 @@ export type Props = {
 
 local function SettingRow(props: Props)
 	local theme = useTheme()
-	local settingsContext = SettingsContext.use()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local isValid, setIsValid = useState(true)
 
 	local setSetting = useCallback(function(newValue: any)
-		settingsContext.setSetting(props.setting.name, newValue)
-	end, { settingsContext.setSetting, props.setting } :: { unknown })
+		userSettingsStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				[props.setting.name] = newValue,
+			})
+		end)
+	end, { userSettingsStore.setStorage, props.setting } :: { unknown })
 
 	local optionElement = useMemo(function(): React.Node
 		if props.setting.settingType == "checkbox" then
@@ -77,7 +83,7 @@ local function SettingRow(props: Props)
 		error(`no handling for setting type {props.setting.settingType}`)
 	end, { props.setting, setSetting } :: { unknown })
 
-	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
+	local hasBeenChanged = not userSettingsStore.isSettingDefault(props.setting.name)
 
 	local isEvenRow = if props.layoutOrder then props.layoutOrder % 2 == 0 else false
 

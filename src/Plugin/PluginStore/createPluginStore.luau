@@ -1,8 +1,8 @@
 local Signals = require("@rbxpkg/Signals")
 
 export type PluginStore = {
-	getPlugin: () -> Plugin?,
-	setPlugin: (plugin: Plugin) -> (),
+	getPlugin: Signals.getter<Plugin?>,
+	setPlugin: Signals.setter<Plugin>,
 }
 
 local function createPluginStore()

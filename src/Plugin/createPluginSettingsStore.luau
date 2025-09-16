@@ -2,9 +2,13 @@ local HttpService = game:GetService("HttpService")
 
 local Signals = require("@rbxpkg/Signals")
 
+local PluginStore = require("@root/Plugin/PluginStore")
+
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
 	setStorage: Signals.setter<T>,
+
+	isSettingDefault: (settingName: string) -> boolean,
 
 	getIsLoading: Signals.getter<boolean>,
 	getErr: Signals.getter<string?>,
@@ -13,7 +17,6 @@ export type PluginSettingsStore<T> = {
 }
 
 local function createPluginSettingsStore<T>(
-	plugin: Plugin,
 	storageKey: string,
 	defaultValue: T,
 	validate: (value: any) -> (boolean, string)
@@ -22,7 +25,8 @@ local function createPluginSettingsStore<T>(
 	local getIsLoading, setIsLoading = Signals.createSignal(true)
 	local getErr, setErr = Signals.createSignal(nil :: string?)
 
-	local function readPluginSettingsAsync(): T?
+	local function readPluginSettingsAsync(plugin: Plugin): T?
+		print("GetSetting", storageKey)
 		local data = plugin:GetSetting(storageKey)
 
 		if typeof(data) == "string" then
@@ -47,34 +51,58 @@ local function createPluginSettingsStore<T>(
 		return nil
 	end
 
-	local function writePluginSettingsAsync(storage: T)
+	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
 		local data = HttpService:JSONEncode(storage)
 		if data then
+			print("SetSetting", storageKey, data)
 			plugin:SetSetting(storageKey, data)
 		end
 	end
 
-	task.spawn(function()
-		local data = readPluginSettingsAsync()
-		if data then
-			setStorage(data)
-		end
-		setIsLoading(false)
-	end)
-
+	local prevStorage: T?
 	local dispose = Signals.createEffect(function(scope)
 		local storage = getStorage(scope)
+		local plugin = PluginStore.get(scope).getPlugin(scope)
 
-		task.spawn(function()
-			writePluginSettingsAsync(storage)
-		end)
+		if plugin then
+			if getIsLoading(false) then
+				task.spawn(function()
+					local data = readPluginSettingsAsync(plugin)
+					if data then
+						setStorage(data)
+					end
+					setIsLoading(false)
+				end)
+			end
+
+			if storage ~= prevStorage then
+				task.spawn(function()
+					writePluginSettingsAsync(plugin, storage)
+				end)
+			end
+		end
+
+		prevStorage = storage
 	end)
+
+	local function isSettingDefault(settingName: string): boolean
+		local storage = getStorage(false)
+		if typeof(defaultValue) ~= "table" or typeof(storage) ~= "table" then
+			return true
+		end
+
+		local settingDefaultValue = defaultValue[settingName]
+		local storedValue = storage[settingName]
+
+		return storedValue == nil or storedValue == settingDefaultValue
+	end
 
 	return {
 		getIsLoading = getIsLoading,
 		getErr = getErr,
 		getStorage = getStorage,
 		setStorage = setStorage,
+		isSettingDefault = isSettingDefault,
 		dispose = dispose,
 	}
 end
