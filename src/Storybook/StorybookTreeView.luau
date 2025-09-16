@@ -4,6 +4,7 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
+local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
@@ -11,6 +12,7 @@ local usePrevious = require("@root/Common/usePrevious")
 type TreeNode = TreeView.TreeNode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
+type LoadedStory<T> = Storyteller.LoadedStory<T>
 
 local useEffect = React.useEffect
 local useRef = React.useRef
@@ -21,6 +23,7 @@ export type Props = {
 		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
+	orphanedStoryModules: { ModuleScript }?,
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
@@ -71,6 +74,23 @@ local function StorybookTreeView(props: Props)
 			end
 
 			table.insert(roots, unavailableStorybooks)
+		end
+
+		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
+			local orphanedStories: TreeNode = {
+				id = HttpService:GenerateGUID(),
+				label = "Unknown Stories",
+				icon = "folder",
+				isExpanded = false,
+				children = {},
+			}
+
+			for _, orphan in props.orphanedStoryModules do
+				local root = createTreeNodeForStoryModule(orphan)
+				table.insert(orphanedStories.children, root)
+			end
+
+			table.insert(roots, orphanedStories)
 		end
 
 		treeViewContext.setRoots(roots)
