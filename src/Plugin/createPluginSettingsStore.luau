@@ -9,20 +9,25 @@ export type PluginSettings = {
 	lastOpenedStoryPath: string?,
 }
 
-export type PluginSettingsStore = {
-	get: Signals.getter<PluginSettings>,
-	set: Signals.setter<PluginSettings>,
+export type PluginSettingsStore<T> = {
+	getStorage: Signals.getter<T>,
+	setStorage: Signals.setter<T>,
+
+	getIsLoading: Signals.getter<boolean>,
+	getErr: Signals.getter<string?>,
 }
 
-local function createPluginSettingsStore(
+local function createPluginSettingsStore<T>(
 	plugin: Plugin,
 	storageKey: string,
-	defaultValue: PluginSettings?
-): PluginSettingsStore
-	local getStorage, setStorage = Signals.createSignal(if defaultValue then defaultValue else {} :: PluginSettings)
+	defaultValue: T,
+	validate: (value: any) -> (boolean, string)
+): PluginSettingsStore<T>
+	local getStorage, setStorage = Signals.createSignal(defaultValue)
+	local getIsLoading, setIsLoading = Signals.createSignal(true)
+	local getErr, setErr = Signals.createSignal(nil :: string?)
 
-	local function readPluginSettingsAsync(): PluginSettings?
-		print("loading...")
+	local function readPluginSettingsAsync(): T?
 		local data = plugin:GetSetting(storageKey)
 
 		if typeof(data) == "string" then
@@ -30,21 +35,27 @@ local function createPluginSettingsStore(
 				return HttpService:JSONDecode(data)
 			end)
 
-			if success then
-				print("loaded!")
-				return result
+			if not success then
+				setErr(result)
+				return nil
 			end
+
+			local isValid, message = validate(result)
+
+			if not isValid then
+				setErr(message)
+				return nil
+			end
+
+			return result
 		end
-		print("nothing to load")
 		return nil
 	end
 
-	local function writePluginSettingsAsync(storage: PluginSettings)
-		print("saving...")
+	local function writePluginSettingsAsync(storage: T)
 		local data = HttpService:JSONEncode(storage)
 		if data then
 			plugin:SetSetting(storageKey, data)
-			print("saved!")
 		end
 	end
 
@@ -53,10 +64,10 @@ local function createPluginSettingsStore(
 		if data then
 			setStorage(data)
 		end
+		setIsLoading(false)
 	end)
 
 	local dispose = Signals.createEffect(function(scope)
-		print("run effect")
 		local storage = getStorage(scope)
 
 		task.spawn(function()
@@ -65,8 +76,10 @@ local function createPluginSettingsStore(
 	end)
 
 	return {
-		get = getStorage,
-		set = setStorage,
+		getIsLoading = getIsLoading,
+		getErr = getErr,
+		getStorage = getStorage,
+		setStorage = setStorage,
 		dispose = dispose,
 	}
 end
