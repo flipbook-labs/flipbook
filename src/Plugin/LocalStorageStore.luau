@@ -15,6 +15,6 @@ local validate = t.interface({
 
 return {
 	get = Signals.createComputed(function(_scope)
-		return createPluginSettingsStore("FlipbookLocalStorageStore", defaultValue, validate)
+		return createPluginSettingsStore("FlipbookLocalStorage", defaultValue, validate)
 	end),
 }
