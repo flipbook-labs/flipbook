@@ -25,6 +25,11 @@ local validate = t.interface({
 	controlsHeight = t.number,
 })
 
+-- defaultValue needs to be kept in sync with the keys in defaultSettings
+for key in defaultSettings do
+	assert(defaultValue[key] ~= nil, "setting with key {key} is missing from UserSettingsStore")
+end
+
 return {
 	get = Signals.createComputed(function(_scope)
 		return createPluginSettingsStore("FlipbookUserSettings", defaultValue, validate)
