@@ -26,7 +26,6 @@ local function createPluginSettingsStore<T>(
 	local getErr, setErr = Signals.createSignal(nil :: string?)
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
-		print("GetSetting", storageKey)
 		local data = plugin:GetSetting(storageKey)
 
 		if typeof(data) == "string" then
@@ -54,7 +53,6 @@ local function createPluginSettingsStore<T>(
 	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
 		local data = HttpService:JSONEncode(storage)
 		if data then
-			print("SetSetting", storageKey, data)
 			plugin:SetSetting(storageKey, data)
 		end
 	end
