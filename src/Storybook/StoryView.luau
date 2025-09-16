@@ -36,7 +36,7 @@ local function StoryView(props: Props)
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
 	local pluginStore = useSignalState(PluginStore.get)
-	local plugin: Plugin? = useSignalState(pluginStore.getPlugin)
+	local plugin = useSignalState(pluginStore.getPlugin)
 	local changedControls, setChangedControls = React.useState({})
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 

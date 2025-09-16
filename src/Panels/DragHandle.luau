@@ -29,7 +29,7 @@ local function DragHandle(providedProps: Props)
 	local theme = useTheme()
 
 	local pluginStore = useSignalState(PluginStore.get)
-	local plugin: Plugin? = useSignalState(pluginStore.getPlugin)
+	local plugin = useSignalState(pluginStore.getPlugin)
 
 	local isDragging, setIsDragging = React.useState(false)
 	local isHovered, setIsHovered = React.useState(false)
