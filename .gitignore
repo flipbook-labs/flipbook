@@ -3,6 +3,7 @@
 
 # Darklua
 build
+.build
 
 # Rojo
 /*.rbxl*
