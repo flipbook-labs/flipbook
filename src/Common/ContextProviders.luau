@@ -2,7 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local ContextStack = require("@root/Common/ContextStack")
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginContext = require("@root/Plugin/PluginContext")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
@@ -28,7 +27,6 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
-			React.createElement(LocalStorageContext.Provider),
 			React.createElement(SettingsContext.Provider),
 			React.createElement(TreeView.TreeViewProvider),
 		},

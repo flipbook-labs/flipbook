@@ -1,15 +1,15 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
+local PluginSettingsStore = require("@root/Plugin/PluginSettingsStore")
 local defaultSettings = require("./defaultSettings")
 
 local useCallback = React.useCallback
 local useState = React.useState
+local useSignalState = SignalsReact.useSignalState
 
 type Settings = defaultSettings.Settings
-
-local USER_SETTINGS_KEY = "userSettings"
 
 local Context = React.createContext({} :: SettingsContext)
 
@@ -27,10 +27,10 @@ export type SettingsContext = {
 }
 
 local function Provider(props: Props)
-	local localStorage = LocalStorageContext.use()
+	local pluginSettingsStore = useSignalState(PluginSettingsStore.get)
 
 	local userSettings: { [string]: any }, setUserSettings = useState(function()
-		local existing = localStorage.get(USER_SETTINGS_KEY)
+		local existing = pluginSettingsStore.get(false).userSettings
 		if typeof(existing) == "table" then
 			return existing :: { [string]: any }
 		else
@@ -41,7 +41,7 @@ local function Provider(props: Props)
 	local loadSettingsFromDisk = useCallback(function()
 		local settings = {}
 		for settingName, setting in pairs(defaultSettings) do
-			local savedValue = userSettings[settingName]
+			local savedValue = pluginSettingsStore.get(false).userSettings[settingName]
 
 			settings[settingName] = Sift.Dictionary.join(setting, {
 				value = savedValue,

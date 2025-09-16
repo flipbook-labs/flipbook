@@ -1,22 +1,28 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
+local PluginSettingsStore = require("@root/Plugin/PluginSettingsStore")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
 local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useSignalState = SignalsReact.useSignalState
 
 local REMEMBER_LAST_OPENED_STORY_KEY = "rememberLastOpenedStory"
-local LAST_OPENED_STORY_PATH_KEY = "lastOpenedStoryPath"
 
 local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
-	local localStorage = LocalStorageContext.use()
+	local pluginSettingsStore = useSignalState(PluginSettingsStore.get)
 	local settingsContext = SettingsContext.use()
 
 	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?)
-		localStorage.set(LAST_OPENED_STORY_PATH_KEY, if storyModule then storyModule:GetFullName() else nil)
-	end, { localStorage })
+		pluginSettingsStore.set(function(prev)
+			return Sift.Dictionary.join(prev, {
+				lastOpenedStoryPath = if storyModule then storyModule:GetFullName() else nil,
+			})
+		end)
+	end, { pluginSettingsStore })
 
 	local lastOpenedStory = useMemo(function(): ModuleScript?
 		local rememberLastOpenedStory = settingsContext.getSetting(REMEMBER_LAST_OPENED_STORY_KEY)
@@ -25,7 +31,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 			return nil
 		end
 
-		local lastOpenedStoryPath = localStorage.get(LAST_OPENED_STORY_PATH_KEY)
+		local lastOpenedStoryPath = pluginSettingsStore.get(false).lastOpenedStoryPath
 
 		if lastOpenedStoryPath and typeof(lastOpenedStoryPath) == "string" then
 			local instance = getInstanceFromFullName(lastOpenedStoryPath)
@@ -36,7 +42,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return nil
-	end, { settingsContext, localStorage } :: { unknown })
+	end, { settingsContext, pluginSettingsStore } :: { unknown })
 
 	return lastOpenedStory, setLastOpenedStory
 end
