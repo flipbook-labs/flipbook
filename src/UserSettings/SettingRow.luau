@@ -27,6 +27,8 @@ export type Props = {
 local function SettingRow(props: Props)
 	local theme = useTheme()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local isValid, setIsValid = useState(true)
 
 	local setSetting = useCallback(function(newValue: any)
@@ -40,12 +42,15 @@ local function SettingRow(props: Props)
 	local optionElement = useMemo(function(): React.Node
 		if props.setting.settingType == "checkbox" then
 			return React.createElement(Checkbox, {
-				initialState = props.setting.value,
+				initialState = userSettings[props.setting.name],
 				onStateChange = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
+			local initialChoiceIndex = Sift.List.findWhere(props.setting.choices, function(choice: SettingChoice)
+				return choice.name == userSettings[props.setting.name]
+			end) or 1
 			return React.createElement(Dropdown, {
-				default = props.setting.choices[1].name,
+				default = props.setting.choices[initialChoiceIndex].name,
 				options = Sift.List.map(props.setting.choices, function(choice: SettingChoice)
 					return choice.name
 				end),
@@ -55,7 +60,7 @@ local function SettingRow(props: Props)
 			local range = props.setting.range
 
 			return React.createElement(InputField, {
-				placeholder = props.setting.value,
+				placeholder = userSettings[props.setting.name],
 				onSubmit = function(newValue, isValidOnSubmit)
 					if newValue == "" then
 						setSetting(nil)
