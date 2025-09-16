@@ -2,19 +2,14 @@ local HttpService = game:GetService("HttpService")
 
 local Signals = require("@rbxpkg/Signals")
 
-export type PluginSettings = {
-	userSettings: {
-		[string]: string | number | boolean,
-	}?,
-	lastOpenedStoryPath: string?,
-}
-
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
 	setStorage: Signals.setter<T>,
 
 	getIsLoading: Signals.getter<boolean>,
 	getErr: Signals.getter<string?>,
+
+	dispose: () -> (),
 }
 
 local function createPluginSettingsStore<T>(
