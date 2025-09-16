@@ -5,9 +5,10 @@ local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local PluginStore = require("@root/Plugin/PluginStore")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local SettingsContext = require("@root/UserSettings/SettingsContext")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryMeta = require("@root/Storybook/StoryMeta")
@@ -16,6 +17,8 @@ local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useZoom = require("@root/Common/useZoom")
+
+local useSignalState = SignalsReact.useSignalState
 
 local e = React.createElement
 
@@ -30,7 +33,8 @@ local function StoryView(props: Props)
 	local settingsContext = SettingsContext.use()
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
-	local plugin = React.useContext(PluginContext.Context)
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin: Plugin? = useSignalState(pluginStore.getPlugin)
 	local changedControls, setChangedControls = React.useState({})
 	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
 	local storyParentRef = React.useRef(nil :: GuiObject?)
