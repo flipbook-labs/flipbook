@@ -1,0 +1,9 @@
+{
+  "name": "flipbook-core",
+  "tree": {
+    "Packages": {
+      "$path": "Packages"
+    },
+    "$path": "src"
+  }
+}

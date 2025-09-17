@@ -44,6 +44,25 @@ local function installWallyPackages()
 	})
 end
 
+local function installWallyPackagesForWorkspace()
+	local WORKSPACE_PATH = "workspace"
+	for _, member in fs.readDir("workspace") do
+		local memberPath = `{WORKSPACE_PATH}/{member}`
+
+		run("wally", { "install" }, {
+			cwd = memberPath,
+		})
+		run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
+			cwd = memberPath,
+		})
+
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+			stdio = "forward",
+			cwd = memberPath,
+		})
+	end
+end
+
 local function installWallyPackagesForCodeSamples()
 	run("wally", { "install" }, {
 		cwd = "code-samples",
@@ -112,5 +131,6 @@ end
 
 installRobloxPackages()
 installWallyPackages()
+installWallyPackagesForWorkspace()
 installWallyPackagesForCodeSamples()
 installRbxasset()

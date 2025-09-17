@@ -4,6 +4,7 @@
 		"pkg": "./Packages",
 		"rbxpkg": "./RobloxPackages",
 		"lunepkg": "./LunePackages",
+		"workspace": "./workspace",
 		"root": "./src",
 		"lune": "~/.lune/.typedefs/0.9.4/"
 	}
