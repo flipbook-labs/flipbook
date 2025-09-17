@@ -1,14 +1,15 @@
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
+local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
 local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
+local usePrevious = require("@root/Common/usePrevious")
 
 local useCallback = React.useCallback
 local useState = React.useState
 local useEffect = React.useEffect
-
-local PINNED_INSTANCES_KEY = "pinnedInstancePaths"
+local useSignalState = SignalsReact.useSignalState
 
 export type PinnedInstance = {
 	path: string,
@@ -16,15 +17,24 @@ export type PinnedInstance = {
 }
 
 local function usePinnedInstances()
-	local localStorage = LocalStorageContext.use()
+	local localStorageStore = useSignalState(LocalStorageStore.get)
+	local localStorage = useSignalState(localStorageStore.getStorage)
 
 	local pinnedPaths, setPinnedPaths = useState(function()
-		return localStorage.get(PINNED_INSTANCES_KEY) or {}
+		return localStorage.pinnedInstancePaths or {} :: { string }
 	end)
 
+	local prevPinnedPaths = usePrevious(pinnedPaths)
+
 	useEffect(function()
-		localStorage.set(PINNED_INSTANCES_KEY, pinnedPaths)
-	end, { pinnedPaths })
+		if pinnedPaths ~= prevPinnedPaths then
+			localStorageStore.setStorage(function(prev)
+				return Sift.Dictionary.join(prev, {
+					pinnedInstancePaths = pinnedPaths,
+				})
+			end)
+		end
+	end, { pinnedPaths, prevPinnedPaths, localStorageStore } :: { unknown })
 
 	local pin = useCallback(function(instance: Instance)
 		setPinnedPaths(function(prev)
