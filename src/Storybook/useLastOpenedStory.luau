@@ -1,29 +1,38 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local PluginContext = require("@root/Plugin/PluginContext")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
 
-local useContext = React.useContext
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useSignalState = SignalsReact.useSignalState
 
 local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
-	local plugin = useContext(PluginContext.Context)
+	local localStorageStore = useSignalState(LocalStorageStore.get)
+	local localStorage = useSignalState(localStorageStore.getStorage)
 
-	local settingsContext = SettingsContext.use()
-	local rememberLastOpenedStory = settingsContext.getSetting("rememberLastOpenedStory")
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?)
-		plugin:SetSetting("lastOpenedStoryPath", if storyModule then storyModule:GetFullName() else nil)
-	end, { plugin })
+		localStorageStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				lastOpenedStoryPath = if storyModule then storyModule:GetFullName() else nil,
+			})
+		end)
+	end, { localStorageStore })
 
 	local lastOpenedStory = useMemo(function(): ModuleScript?
+		local rememberLastOpenedStory = userSettings.rememberLastOpenedStory
+
 		if not rememberLastOpenedStory then
 			return nil
 		end
 
-		local lastOpenedStoryPath = plugin:GetSetting("lastOpenedStoryPath")
+		local lastOpenedStoryPath = localStorage.lastOpenedStoryPath
 
 		if lastOpenedStoryPath then
 			local instance = getInstanceFromFullName(lastOpenedStoryPath)
@@ -34,7 +43,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return nil
-	end, { rememberLastOpenedStory, plugin })
+	end, { localStorage, localStorageStore } :: { unknown })
 
 	return lastOpenedStory, setLastOpenedStory
 end
