@@ -1,3 +1,5 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
@@ -5,6 +7,8 @@ local Storyteller = require("@pkg/Storyteller")
 local Branding = require("@root/Common/Branding")
 local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
+local createOnboardingStorybook = require("@root/Storybook/createOnboardingStorybook")
+local getMostLikelyProjectSources = require("@root/RobloxInternal/getMostLikelyProjectSources")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -50,10 +54,10 @@ local function Sidebar(props: Props)
 			}),
 
 			--if #props.storybooks.available == 0
-			CreateStorybook = React.createElement(Button, {
+			CreateStorybook = React.createElement(Foundation.Button, {
 				layoutOrder = nextLayoutOrder(),
 				text = "Create Storybook",
-				onClick = function()
+				onActivated = function()
 					local source = getMostLikelyProjectSources()[1]
 
 					if source then
