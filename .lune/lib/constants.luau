@@ -5,6 +5,7 @@ return {
 	PACKAGES_PATH = "Packages",
 	LUNE_SCRIPTS_PATH = ".lune",
 	EXAMPLE_PATH = "example",
+	WORKSPACE_PATH = "workspace",
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 

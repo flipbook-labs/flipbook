@@ -1,17 +1,11 @@
 {
   "name": "Flipbook",
   "tree": {
-    "Workspace": {
+    "workspace": {
       "$path": "workspace"
     },
     "Packages": {
       "$path": "Packages"
-    },
-    "RobloxPackages": {
-      "$path": "RobloxPackages"
-    },
-    "Example": {
-      "$path": "example"
     },
     "$path": "src"
   }

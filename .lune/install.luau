@@ -33,43 +33,53 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 end
 
 local function installWallyPackages()
-	local function installPackagesForProject(projectPath: string)
+	local function installPackagesForProject(projectPath: string?)
+		print("installing packages for", projectPath)
+
 		run("wally", { "install" }, {
 			cwd = projectPath,
 		})
-		run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
+
+		local rojoProject = if projectPath then "default.project.json" else "build.project.json"
+
+		run("rojo", { "sourcemap", rojoProject, "-o", "sourcemap.json" }, {
 			cwd = projectPath,
 		})
 
-		-- For some reason the default stdio of "inherit" results in WPT hanging
-		-- indefinitely. Since we don't need the output in this case, we change to a
-		-- stdio that won't hang
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-			stdio = "forward",
-			cwd = projectPath,
-		})
+		if fs.isDir(`{projectPath}/Packages`) then
+			-- For some reason the default stdio of "inherit" results in WPT hanging
+			-- indefinitely. Since we don't need the output in this case, we change to a
+			-- stdio that won't hang
+			run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+				stdio = "forward",
+				cwd = projectPath,
+			})
+		end
 	end
 
-	installPackagesForProject(".")
+	installPackagesForProject()
 
 	for _, member in fs.readDir("workspace") do
 		local memberPath = `workspace/{member}`
-		installPackagesForProject(memberPath)
+		if fs.isDir(memberPath) then
+			installPackagesForProject(memberPath)
+		end
 	end
 end
 
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
 
-	if fs.isDir("RobloxPackages") then
-		fs.removeDir("RobloxPackages")
+	local dest = "workspace/flipbook-core/RobloxPackages"
+	if fs.isDir(dest) then
+		fs.removeDir(dest)
 	end
-	fs.move("RobloxPackagesTmp/Packages", "RobloxPackages")
+	fs.move("RobloxPackagesTmp/Packages", dest)
 	fs.removeDir("RobloxPackagesTmp")
 
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat", "Roact" } do
-		local linkers = find("RobloxPackages", `^{name}%..*`)
+		local linkers = find(dest, `^{name}%..*`)
 
 		for _, linker in linkers do
 			-- All Roact linkers in RobloxPackages point to Roblox's
