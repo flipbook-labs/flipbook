@@ -46,15 +46,13 @@ local function installWallyPackages()
 			cwd = projectPath,
 		})
 
-		if fs.isDir(`{projectPath}/Packages`) then
-			-- For some reason the default stdio of "inherit" results in WPT hanging
-			-- indefinitely. Since we don't need the output in this case, we change to a
-			-- stdio that won't hang
-			run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-				stdio = "forward",
-				cwd = projectPath,
-			})
-		end
+		-- For some reason the default stdio of "inherit" results in WPT hanging
+		-- indefinitely. Since we don't need the output in this case, we change to a
+		-- stdio that won't hang
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+			stdio = "forward",
+			cwd = projectPath,
+		})
 	end
 
 	installPackagesForProject()

@@ -62,9 +62,7 @@ local function compile(target: Target)
 		})
 
 		local packagesPath = `{memberPath}/Packages`
-		if fs.isDir(packagesPath) then
-			run("cp", { "-R", packagesPath, `{dest}/{packagesPath}` })
-		end
+		run("cp", { "-R", packagesPath, `{dest}/{packagesPath}` })
 
 		local robloxPackagesPath = `{memberPath}/RobloxPackages`
 		if fs.isDir(robloxPackagesPath) then
