@@ -1,7 +1,9 @@
-local constants = require("./constants")
 local fs = require("@lune/fs")
-local run = require("./run")
 local serde = require("@lune/serde")
+local task = require("@lune/task")
+
+local constants = require("./constants")
+local run = require("./run")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
@@ -20,6 +22,8 @@ local function compile(target: Target)
 		fs.removeDir(dest)
 	end
 	fs.writeDir(dest)
+
+	task.wait()
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
@@ -62,8 +66,10 @@ local function compile(target: Target)
 		end
 	end
 
-	run("cp", { "-R", "Packages", dest })
-	run("cp", { "-R", "RobloxPackages", dest })
+	task.wait()
+
+	fs.copy("Packages", `{dest}/Packages`, true)
+	fs.copy("RobloxPackages", `{dest}/RobloxPackages`, true)
 end
 
 return compile

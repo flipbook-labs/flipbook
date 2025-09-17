@@ -17,6 +17,8 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (string, Foundation.ColorSty
 		return IconName.SquareBooks, tokens.Color.Extended.White.White_50
 	elseif icon == types.TreeNodeIcon.Folder then
 		return IconName.FileBox, tokens.Color.Extended.Purple.Purple_800
+	elseif icon == types.TreeNodeIcon.Star then
+		return IconName.Star, tokens.Color.Extended.Yellow.Yellow_800
 	elseif icon == types.TreeNodeIcon.Alert then
 		return IconName.TriangleExclamation, tokens.Color.ActionAlert.Foreground
 	else
