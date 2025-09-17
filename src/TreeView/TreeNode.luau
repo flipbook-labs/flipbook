@@ -2,9 +2,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
 
-local Sprite = require("@root/Common/Sprite")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
-local assets = require("@root/assets")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local types = require("@root/TreeView/types")
@@ -92,11 +90,11 @@ local function TreeNode(props: Props)
 			onActivated = onActivated,
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Icon = React.createElement(Sprite, {
-				image = icon,
-				color = iconColor,
-				layoutOrder = nextLayoutOrder(),
-				size = UDim2.fromOffset(tokens.Size.Size_500, tokens.Size.Size_500),
+			Icon = React.createElement(Foundation.Icon, {
+				name = icon,
+				style = iconColor,
+				size = Foundation.Enums.IconSize.Small,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			Text = React.createElement(Foundation.Text, {
@@ -116,10 +114,10 @@ local function TreeNode(props: Props)
 							return 90 * value
 						end),
 					}, {
-						Icon = React.createElement(Sprite, {
-							image = assets.ChevronRight,
-							color = tokens.Color.Extended.White.White_50.Color3,
-							size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
+						Icon = React.createElement(Foundation.Icon, {
+							name = Foundation.Enums.IconName.ChevronLargeRight,
+							style = tokens.Color.Extended.White.White_50,
+							size = Foundation.Enums.IconSize.Small,
 						}),
 					}),
 				})
