@@ -38,7 +38,7 @@ local function installPackageFromRepo(
 	rev: string,
 	extraSteps: ((packagePath: string) -> ())?
 )
-	local packagePath = `.build/{packageName}`
+	local packagePath = `build/{packageName}`
 
 	run("rm", { "-rf", packagePath })
 	run("rm", { "-rf", `{packagePath}.lua` })
