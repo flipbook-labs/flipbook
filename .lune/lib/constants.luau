@@ -19,7 +19,8 @@ return {
 	FOLDERS_TO_LINT = {
 		"src",
 		".lune",
-		"example",
-		"code-samples/src",
+		"workspace/flipbook-core/src",
+		"workspace/example/src",
+		"workspace/code-samples/src",
 	},
 }
