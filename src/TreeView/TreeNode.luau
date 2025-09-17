@@ -1,12 +1,13 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
+local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local types = require("@root/TreeView/types")
-local usePinnedInstances = require("@root/TreeView/usePinnedInstances")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
 local useSpring = ReactSpring.useSpring :: any
@@ -14,6 +15,7 @@ local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
 local useTokens = Foundation.Hooks.useTokens
+local useSignalState = SignalsReact.useSignalState
 
 type TreeNode = types.TreeNode
 
@@ -40,7 +42,7 @@ local function TreeNode(props: Props)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
 	local isSelected = treeViewContext.isSelected(props.node)
-	local pinning = usePinnedInstances()
+	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
 	local styles = useSpring({
 		hover = if isHovered or isSelected then 0 else 1,
@@ -74,10 +76,15 @@ local function TreeNode(props: Props)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
 	local onTogglePin = useCallback(function()
-		if props.node.instance then
-			pinning.togglePin(props.node.instance)
+		local instance = props.node.instance
+		if instance then
+			if pinnedInstanceStore.isPinned(instance) then
+				pinnedInstanceStore.unpin(instance)
+			else
+				pinnedInstanceStore.pin(instance)
+			end
 		end
-	end, { pinning, props.node } :: { unknown })
+	end, { pinnedInstanceStore, props.node } :: { unknown })
 
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
@@ -115,7 +122,7 @@ local function TreeNode(props: Props)
 				then React.createElement(Foundation.IconButton, {
 					icon = {
 						name = Foundation.Enums.IconName.Star,
-						variant = if pinning.isPinned(props.node.instance)
+						variant = if pinnedInstanceStore.isPinned(props.node.instance)
 							then Foundation.Enums.IconVariant.Filled
 							else Foundation.Enums.IconVariant.Regular,
 					},
