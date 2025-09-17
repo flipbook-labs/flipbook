@@ -2,7 +2,8 @@ local Sift = require("@pkg/Sift")
 local Signals = require("@rbxpkg/Signals")
 
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
-local getInstanceFromFullName = require("@root/Common/getInstanceFromFullName")
+local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
+local getInstancePath = require("@root/Common/getInstancePath")
 
 export type PinnedInstance = {
 	path: string,
@@ -26,18 +27,18 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 
 	local function pin(instance: Instance)
 		setPinnedPaths(function(prev)
-			return Sift.List.append(prev, instance:GetFullName())
+			return Sift.List.append(prev, getInstancePath(instance))
 		end)
 	end
 
 	local function unpin(instance: Instance)
 		setPinnedPaths(function(prev)
-			return Sift.List.removeValue(prev, instance:GetFullName())
+			return Sift.List.removeValue(prev, getInstancePath(instance))
 		end)
 	end
 
 	local function isPinned(instance: Instance)
-		return Sift.List.has(getPinnedPaths(false), instance:GetFullName())
+		return Sift.List.has(getPinnedPaths(false), getInstancePath(instance))
 	end
 
 	local dispose = Signals.createEffect(function(scope)
@@ -46,7 +47,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 		setPinnedInstances(Sift.List.map(pinnedPaths, function(pinnedPath)
 			return {
 				path = pinnedPath,
-				instance = getInstanceFromFullName(pinnedPath),
+				instance = getInstanceFromPath(pinnedPath),
 			} :: PinnedInstance
 		end))
 
