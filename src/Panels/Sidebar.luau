@@ -74,10 +74,6 @@ local function Sidebar(props: Props)
 			},
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			FlexItem = React.createElement("UIFlexItem", {
-				FlexMode = Enum.UIFlexMode.Shrink,
-			}),
-
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
 				storybooks = props.storybooks,

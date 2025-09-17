@@ -76,10 +76,9 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 		end
 	end, { props.story, props.isMountedInViewport } :: { unknown })
 
-	if err and props.story then
+	if err then
 		return e(StoryError, {
 			layoutOrder = props.layoutOrder,
-			storyModule = props.story.source,
 			err = err,
 		})
 	else

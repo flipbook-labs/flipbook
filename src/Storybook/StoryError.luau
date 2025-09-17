@@ -1,16 +1,12 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local Storyteller = require("@pkg/Storyteller")
 
 local CodeBlock = require("@root/Common/CodeBlock")
 
 local useTokens = Foundation.Hooks.useTokens
 
-type LoadedStory<T> = Storyteller.LoadedStory<T>
-
 export type Props = {
 	err: string,
-	storyModule: ModuleScript,
 	layoutOrder: number?,
 }
 

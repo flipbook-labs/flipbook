@@ -2,7 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local ContextStack = require("@root/Common/ContextStack")
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local TreeView = require("@root/TreeView")
