@@ -21,6 +21,9 @@ if not apiKey then
 	process.exit(1)
 end
 
+if fs.isDir("build/tests") then
+	fs.removeDir("build/tests")
+end
 fs.writeDir("build/tests")
 fs.copy("tests/run-tests.luau", "build/tests/run-tests.luau", true)
 if testPathPattern then
