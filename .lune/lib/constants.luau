@@ -5,6 +5,7 @@ return {
 	PACKAGES_PATH = "Packages",
 	LUNE_SCRIPTS_PATH = ".lune",
 	EXAMPLE_PATH = "example",
+	WORKSPACE_PATH = "workspace",
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
@@ -18,7 +19,8 @@ return {
 	FOLDERS_TO_LINT = {
 		"src",
 		".lune",
-		"example",
-		"code-samples/src",
+		"workspace/flipbook-core/src",
+		"workspace/example/src",
+		"workspace/code-samples/src",
 	},
 }

@@ -1,9 +1,6 @@
 {
-  "name": "Flipbook",
+  "name": "example",
   "tree": {
-    "workspace": {
-      "$path": "workspace"
-    },
     "Packages": {
       "$path": "Packages"
     },

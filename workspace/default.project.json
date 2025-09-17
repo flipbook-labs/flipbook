@@ -1,0 +1,15 @@
+{
+  "name": "workspace",
+  "tree": {
+    "$className": "Folder",
+    "code-samples": {
+      "$path": "code-samples"
+    },
+    "example": {
+      "$path": "example"
+    },
+    "flipbook-core": {
+      "$path": "flipbook-core"
+    }
+  }
+}
