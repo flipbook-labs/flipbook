@@ -1,5 +1,5 @@
 [package]
-name = "flipbook-labs/flipbook-examples"
+name = "flipbook-labs/flipbook-code-samples"
 version = "0.1.0"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
