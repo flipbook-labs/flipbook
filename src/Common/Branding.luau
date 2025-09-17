@@ -1,9 +1,10 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
-local Sprite = require("@root/Common/Sprite")
-local assets = require("@root/assets")
+local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+
+local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
 
@@ -12,14 +13,16 @@ type Props = {
 }
 
 local function Branding(props: Props)
+	local tokens = useTokens()
+
 	return e(Foundation.View, {
 		tag = "auto-xy row gap-small align-y-center",
 		LayoutOrder = props.layoutOrder,
 	}, {
-		Icon = e(Sprite, {
-			layoutOrder = nextLayoutOrder(),
-			image = assets.FlipbookIcon,
-			size = UDim2.fromOffset(32, 32),
+		Icon = e(Foundation.Image, {
+			LayoutOrder = nextLayoutOrder(),
+			Image = constants.FLIPBOOK_LOGO,
+			Size = UDim2.fromOffset(tokens.Size.Size_800, tokens.Size.Size_800),
 		}),
 
 		Typography = e(Foundation.Text, {
