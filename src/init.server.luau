@@ -21,6 +21,7 @@ local disconnectButton = createToggleButton(toolbar, widget)
 
 local app = React.createElement(ContextProviders, {
 	plugin = plugin,
+	overlayGui = widget :: GuiBase2d,
 }, {
 	PluginApp = React.createElement(PluginApp),
 })
