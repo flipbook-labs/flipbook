@@ -1,4 +1,5 @@
 return {
+
 	STORY_NAME_PATTERN = "%.story$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
@@ -15,4 +16,7 @@ return {
 		mass = 0.6,
 		tension = 700,
 	},
+
+	FLIPBOOK_LOGO = "rbxassetid://76698965087351",
+	GITHUB_LOGO = "rbxassetid://129495436983093",
 }
