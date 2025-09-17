@@ -6,7 +6,6 @@ local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local types = require("@root/TreeView/types")
-local usePinnedInstances = require("@root/TreeView/usePinnedInstances")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
 local useSpring = ReactSpring.useSpring :: any
@@ -40,7 +39,6 @@ local function TreeNode(props: Props)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
 	local isSelected = treeViewContext.isSelected(props.node)
-	local pinning = usePinnedInstances()
 
 	local styles = useSpring({
 		hover = if isHovered or isSelected then 0 else 1,
@@ -73,12 +71,6 @@ local function TreeNode(props: Props)
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
-	local onTogglePin = useCallback(function()
-		if props.node.instance then
-			pinning.togglePin(props.node.instance)
-		end
-	end, { pinning, props.node })
-
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
 	end, {})
@@ -110,21 +102,6 @@ local function TreeNode(props: Props)
 				Text = props.node.label,
 				LayoutOrder = nextLayoutOrder(),
 			}),
-
-			Pin = if props.node.instance and (props.node.icon == "story" or props.node.icon == "storybook")
-				then React.createElement("ImageButton", {
-					LayoutOrder = 3,
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
-					[React.Event.Activated] = onTogglePin,
-				}, {
-					Icon = React.createElement(Sprite, {
-						image = if pinning.isPinned(props.node.instance) then assets.StarFilled else assets.Star,
-						color = theme.text,
-						size = UDim2.fromOffset(16, 16),
-					}),
-				})
-				else nil,
 
 			Toggle = if #props.node.children > 0
 				then React.createElement(Foundation.View, {
