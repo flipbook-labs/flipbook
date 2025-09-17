@@ -6,12 +6,12 @@ return {
 		ImageRectSize = Vector2.new(24, 24),
 	},
 	ChevronRight = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(49, 226),
 		ImageRectSize = Vector2.new(32, 32),
 	},
 	Component = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(0, 275),
 		ImageRectSize = Vector2.new(32, 32),
 	},
@@ -21,32 +21,22 @@ return {
 		ImageRectSize = Vector2.new(64, 64),
 	},
 	Folder = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(345, 0),
 		ImageRectSize = Vector2.new(32, 32),
 	},
 	GitHubMark = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(0, 0),
 		ImageRectSize = Vector2.new(230, 225),
 	},
 	Search = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(296, 49),
 		ImageRectSize = Vector2.new(32, 32),
 	},
-	Star = {
-		Image = "rbxassetid://137821613816144",
-		ImageRectOffset = Vector2.new(82, 226),
-		ImageRectSize = Vector2.new(25, 24),
-	},
-	StarFilled = {
-		Image = "rbxassetid://137821613816144",
-		ImageRectOffset = Vector2.new(49, 259),
-		ImageRectSize = Vector2.new(25, 24),
-	},
 	Storybook = {
-		Image = "rbxassetid://137821613816144",
+		Image = "rbxassetid://130695877008766",
 		ImageRectOffset = Vector2.new(231, 108),
 		ImageRectSize = Vector2.new(32, 32),
 	},

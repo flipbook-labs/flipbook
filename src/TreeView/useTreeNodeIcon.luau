@@ -5,6 +5,8 @@ local types = require("./types")
 
 local useTokens = Foundation.Hooks.useTokens
 
+local IconName = Foundation.Enums.IconName
+
 type TreeNodeIcon = types.TreeNodeIcon
 
 type Sprite = {
@@ -13,7 +15,7 @@ type Sprite = {
 	ImageRectSize: Vector2,
 }
 
-local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
+local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite | string, Color3)
 	local tokens = useTokens()
 
 	if icon == types.TreeNodeIcon.Story then
@@ -23,7 +25,7 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (Sprite, Color3)
 	elseif icon == types.TreeNodeIcon.Folder then
 		return assets.Folder, tokens.Color.Extended.Purple.Purple_800.Color3
 	elseif icon == types.TreeNodeIcon.Star then
-		return assets.Star, tokens.Color.Extended.Yellow.Yellow_800.Color3
+		return IconName.Star, tokens.Color.Extended.Yellow.Yellow_800.Color3
 	elseif icon == types.TreeNodeIcon.Alert then
 		return assets.Alert, tokens.Color.ActionAlert.Background.Color3
 	else

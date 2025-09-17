@@ -114,17 +114,16 @@ local function TreeNode(props: Props)
 			}),
 
 			Pin = if props.node.instance and (props.node.icon == "story" or props.node.icon == "storybook")
-				then React.createElement("ImageButton", {
-					LayoutOrder = 3,
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
-					[React.Event.Activated] = onTogglePin,
-				}, {
-					Icon = React.createElement(Sprite, {
-						image = if pinning.isPinned(props.node.instance) then assets.StarFilled else assets.Star,
-						color = iconColor,
-						size = UDim2.fromOffset(16, 16),
-					}),
+				then React.createElement(Foundation.IconButton, {
+					icon = {
+						name = Foundation.Enums.IconName.Star,
+						variant = if pinning.isPinned(props.node.instance)
+							then Foundation.Enums.IconVariant.Filled
+							else Foundation.Enums.IconVariant.Regular,
+					},
+					size = Foundation.Enums.IconSize.Small,
+					onActivated = onTogglePin,
+					LayoutOrder = nextLayoutOrder(),
 				})
 				else nil,
 
