@@ -33,47 +33,29 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 end
 
 local function installWallyPackages()
-	run("wally", { "install" })
-	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
-
-	-- For some reason the default stdio of "inherit" results in WPT hanging
-	-- indefinitely. Since we don't need the output in this case, we change to a
-	-- stdio that won't hang
-	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-		stdio = "forward",
-	})
-end
-
-local function installWallyPackagesForWorkspace()
-	local WORKSPACE_PATH = "workspace"
-	for _, member in fs.readDir("workspace") do
-		local memberPath = `{WORKSPACE_PATH}/{member}`
-
+	local function installPackagesForProject(projectPath: string)
 		run("wally", { "install" }, {
-			cwd = memberPath,
+			cwd = projectPath,
 		})
 		run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
-			cwd = memberPath,
+			cwd = projectPath,
 		})
 
+		-- For some reason the default stdio of "inherit" results in WPT hanging
+		-- indefinitely. Since we don't need the output in this case, we change to a
+		-- stdio that won't hang
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
 			stdio = "forward",
-			cwd = memberPath,
+			cwd = projectPath,
 		})
 	end
-end
 
-local function installWallyPackagesForCodeSamples()
-	run("wally", { "install" }, {
-		cwd = "code-samples",
-	})
-	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
-		cwd = "code-samples",
-	})
-	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-		cwd = "code-samples",
-		stdio = "forward",
-	})
+	installPackagesForProject(".")
+
+	for _, member in fs.readDir("workspace") do
+		local memberPath = `workspace/{member}`
+		installPackagesForProject(memberPath)
+	end
 end
 
 local function installRobloxPackages()
@@ -131,6 +113,4 @@ end
 
 installRobloxPackages()
 installWallyPackages()
-installWallyPackagesForWorkspace()
-installWallyPackagesForCodeSamples()
 installRbxasset()
