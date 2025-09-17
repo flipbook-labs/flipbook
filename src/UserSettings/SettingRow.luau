@@ -1,15 +1,17 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local Checkbox = require("@root/Forms/Checkbox")
 local Dropdown = require("@root/Forms/Dropdown")
 local InputField = require("@root/Forms/InputField")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
+local useSignalState = SignalsReact.useSignalState
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
@@ -24,22 +26,31 @@ export type Props = {
 
 local function SettingRow(props: Props)
 	local theme = useTheme()
-	local settingsContext = SettingsContext.use()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local isValid, setIsValid = useState(true)
 
 	local setSetting = useCallback(function(newValue: any)
-		settingsContext.setSetting(props.setting.name, newValue)
-	end, { settingsContext.setSetting, props.setting } :: { unknown })
+		userSettingsStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				[props.setting.name] = newValue,
+			})
+		end)
+	end, { userSettingsStore.setStorage, props.setting } :: { unknown })
 
 	local optionElement = useMemo(function(): React.Node
 		if props.setting.settingType == "checkbox" then
 			return React.createElement(Checkbox, {
-				initialState = props.setting.value,
+				initialState = userSettings[props.setting.name],
 				onStateChange = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
+			local initialChoiceIndex = Sift.List.findWhere(props.setting.choices, function(choice: SettingChoice)
+				return choice.name == userSettings[props.setting.name]
+			end) or 1
 			return React.createElement(Dropdown, {
-				default = props.setting.choices[1].name,
+				default = props.setting.choices[initialChoiceIndex].name,
 				options = Sift.List.map(props.setting.choices, function(choice: SettingChoice)
 					return choice.name
 				end),
@@ -49,7 +60,7 @@ local function SettingRow(props: Props)
 			local range = props.setting.range
 
 			return React.createElement(InputField, {
-				placeholder = props.setting.value,
+				placeholder = userSettings[props.setting.name],
 				onSubmit = function(newValue, isValidOnSubmit)
 					if newValue == "" then
 						setSetting(nil)
@@ -77,7 +88,7 @@ local function SettingRow(props: Props)
 		error(`no handling for setting type {props.setting.settingType}`)
 	end, { props.setting, setSetting } :: { unknown })
 
-	local hasBeenChanged = not settingsContext.isSettingDefault(props.setting.name)
+	local hasBeenChanged = not userSettingsStore.isSettingDefault(props.setting.name)
 
 	local isEvenRow = if props.layoutOrder then props.layoutOrder % 2 == 0 else false
 
