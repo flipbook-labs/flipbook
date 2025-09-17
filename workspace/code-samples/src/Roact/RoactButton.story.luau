@@ -1,8 +1,6 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Roact = require("@pkg/Roact")
 
-local Roact = require(ReplicatedStorage.Packages.Roact)
-
-local RoactButton = require(script.Parent.RoactButton)
+local RoactButton = require("./RoactButton")
 
 return {
 	story = function()

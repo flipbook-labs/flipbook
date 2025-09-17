@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Roact = require(ReplicatedStorage.Packages.Roact)
+local Roact = require("@pkg/Roact")
 
 local RoactButton = Roact.Component:extend("RoactButton")
 

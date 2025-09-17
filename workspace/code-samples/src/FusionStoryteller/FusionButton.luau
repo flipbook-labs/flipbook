@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local Fusion = require("@pkg/Fusion")
 
 local New = Fusion.New
 local OnEvent = Fusion.OnEvent

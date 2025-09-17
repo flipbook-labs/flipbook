@@ -1,8 +1,6 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local React = require("@pkg/React")
 
-local React = require(ReplicatedStorage.Packages.React)
-
-local ReactButton = require(script.Parent.ReactButton)
+local ReactButton = require("./ReactButton")
 
 return {
 	story = function()

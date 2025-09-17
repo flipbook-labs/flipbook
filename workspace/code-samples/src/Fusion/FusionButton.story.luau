@@ -1,4 +1,4 @@
-local FusionButton = require(script.Parent.FusionButton)
+local FusionButton = require("./FusionButton")
 
 return {
 	story = function()

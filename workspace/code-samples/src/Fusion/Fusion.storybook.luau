@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local Fusion = require("@pkg/Fusion")
 
 return {
 	name = "Fusion",

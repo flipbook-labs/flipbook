@@ -1,9 +1,7 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
-local React = require(ReplicatedStorage.Packages.React)
-local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-local ReactButton = require(script.Parent.ReactButton)
+local ReactButton = require("./ReactButton")
 
 local controls = {
 	text = "Click Me",

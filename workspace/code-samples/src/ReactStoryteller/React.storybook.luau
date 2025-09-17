@@ -1,8 +1,6 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local React = require(ReplicatedStorage.Packages.React)
-local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
-local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
+local Storyteller = require("@pkg/Storyteller")
 
 local storybook: Storyteller.Storybook = {
 	name = "React (Storyteller)",

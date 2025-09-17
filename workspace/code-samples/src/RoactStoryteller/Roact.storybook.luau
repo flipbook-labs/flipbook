@@ -1,7 +1,5 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Roact = require(ReplicatedStorage.Packages.Roact)
-local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
+local Roact = require("@pkg/Roact")
+local Storyteller = require("@pkg/Storyteller")
 
 local storybook: Storyteller.Storybook = {
 	name = "Roact (Storyteller)",

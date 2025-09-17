@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local React = require(ReplicatedStorage.Packages.React)
+local React = require("@pkg/React")
 
 local function ReactButton(props: {
 	text: string,

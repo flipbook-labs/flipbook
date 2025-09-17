@@ -1,7 +1,5 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local React = require(ReplicatedStorage.Packages.React)
-local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
+local React = require("@pkg/React")
+local ReactRoblox = require("@pkg/ReactRoblox")
 
 return {
 	story = function()

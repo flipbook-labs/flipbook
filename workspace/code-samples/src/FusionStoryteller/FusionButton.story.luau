@@ -1,8 +1,6 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Storyteller = require("@pkg/Storyteller")
 
-local Storyteller = require(ReplicatedStorage.Packages.Storyteller)
-
-local FusionButton = require(script.Parent.FusionButton)
+local FusionButton = require("./FusionButton")
 
 local story: Storyteller.Story<any> = {
 	story = function()
