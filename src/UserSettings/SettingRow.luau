@@ -33,29 +33,42 @@ local function SettingRow(props: Props)
 			return React.createElement(Foundation.Checkbox, {
 				label = props.setting.displayName,
 				hint = props.setting.description,
-				hasError = not isValid,
 				isChecked = props.setting.value,
 				onActivated = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
+			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.MenuItem
+				return {
+					id = choice.name,
+					text = choice.name,
+				}
+			end)
+
+			local value = props.setting.choices[1].name
+			for _, choice in props.setting.choices do
+				if choice.name == settingsContext.getSetting(props.setting.name) then
+					value = choice.name
+					break
+				end
+			end
+
 			return React.createElement(Foundation.Dropdown.Root, {
 				label = props.setting.displayName,
 				hint = props.setting.description,
 				hasError = not isValid,
-				value = props.setting.choices[1].name,
-				items = Sift.List.map(props.setting.choices, function(choice: SettingChoice)
-					return choice.name
-				end),
+				value = value,
+				items = items,
 				onItemChanged = setSetting,
 			})
 		elseif props.setting.settingType == "number" then
 			local range = props.setting.range
 
 			return React.createElement(Foundation.NumberInput, {
-				value = props.setting.value,
+				value = settingsContext.getSetting(props.setting.name),
 				label = props.setting.displayName,
 				hint = props.setting.description,
 				hasError = not isValid,
+				step = 10,
 				maximum = if range then range.Max else nil,
 				minimum = if range then range.Min else nil,
 				onChanged = setSetting,
