@@ -1,32 +1,38 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local LocalStorageContext = require("@root/Plugin/LocalStorageContext")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
+local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
-local getInstancePath = require("@root/Common/getInstancePath")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
-
-local REMEMBER_LAST_OPENED_STORY_KEY = "rememberLastOpenedStory"
-local LAST_OPENED_STORY_PATH_KEY = "lastOpenedStoryPath"
+local useSignalState = SignalsReact.useSignalState
 
 local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
-	local localStorage = LocalStorageContext.use()
-	local settingsContext = SettingsContext.use()
+	local localStorageStore = useSignalState(LocalStorageStore.get)
+	local localStorage = useSignalState(localStorageStore.getStorage)
+
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?)
-		localStorage.set(LAST_OPENED_STORY_PATH_KEY, if storyModule then getInstancePath(storyModule) else nil)
-	end, { localStorage.set })
+		localStorageStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				lastOpenedStoryPath = if storyModule then storyModule:GetFullName() else nil,
+			})
+		end)
+	end, { localStorageStore })
 
 	local lastOpenedStory = useMemo(function(): ModuleScript?
-		local rememberLastOpenedStory = settingsContext.getSetting(REMEMBER_LAST_OPENED_STORY_KEY)
+		local rememberLastOpenedStory = userSettings.rememberLastOpenedStory
 
 		if not rememberLastOpenedStory then
 			return nil
 		end
 
-		local lastOpenedStoryPath = localStorage.get(LAST_OPENED_STORY_PATH_KEY)
+		local lastOpenedStoryPath = localStorage.lastOpenedStoryPath
 
 		if lastOpenedStoryPath and typeof(lastOpenedStoryPath) == "string" then
 			local instance = getInstanceFromPath(lastOpenedStoryPath)
@@ -37,7 +43,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return nil
-	end, { settingsContext, localStorage.get })
+	end, { localStorage, localStorageStore } :: { unknown })
 
 	return lastOpenedStory, setLastOpenedStory
 end

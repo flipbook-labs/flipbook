@@ -3,19 +3,22 @@ local Selection = game:GetService("Selection")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local PluginStore = require("@root/Plugin/PluginStore")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useZoom = require("@root/Common/useZoom")
+
+local useSignalState = SignalsReact.useSignalState
 
 local e = React.createElement
 
@@ -27,12 +30,14 @@ type Props = {
 }
 
 local function StoryView(props: Props)
-	local settingsContext = SettingsContext.use()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
 	local zoom = useZoom(props.story)
-	local plugin = React.useContext(PluginContext.Context)
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin = useSignalState(pluginStore.getPlugin)
 	local changedControls, setChangedControls = React.useState({})
-	local initialControlsHeight = settingsContext.getSetting("controlsHeight")
 	local storyParentRef = React.useRef(nil :: GuiObject?)
 
 	React.useEffect(function()
@@ -52,7 +57,9 @@ local function StoryView(props: Props)
 
 	local viewCode = React.useCallback(function()
 		Selection:Set({ props.story })
-		plugin:OpenScript(props.story)
+		if plugin then
+			plugin:OpenScript(props.story)
+		end
 	end, { plugin, props.story } :: { unknown })
 
 	local exploreStoryParent = React.useCallback(function()
@@ -126,7 +133,7 @@ local function StoryView(props: Props)
 
 			StoryControlsWrapper = showControls and e(ResizablePanel, {
 				layoutOrder = nextLayoutOrder(),
-				initialSize = UDim2.new(1, 0, 0, initialControlsHeight),
+				initialSize = UDim2.new(1, 0, 0, userSettings.controlsHeight),
 				dragHandles = {
 					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
 					"Top" :: any,

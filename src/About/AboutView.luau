@@ -3,10 +3,8 @@ local React = require("@pkg/React")
 
 local BuildInfo = require("@root/About/BuildInfo")
 local RobloxProfile = require("@root/About/RobloxProfile")
-local Sprite = require("@root/Common/Sprite")
-local assets = require("@root/assets")
+local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 local useTokens = Foundation.Hooks.useTokens
 local useMemo = React.useMemo
@@ -18,7 +16,6 @@ local AUTHOR_USER_IDS = {
 
 local function AboutView()
 	local tokens = useTokens()
-	local theme = useTheme()
 	local currentYear = useMemo(function()
 		return (DateTime.now():ToUniversalTime() :: any).Year
 	end, {})
@@ -34,10 +31,10 @@ local function AboutView()
 	return React.createElement(Foundation.View, {
 		tag = "size-full col bg-surface-200 align-x-center gap-xlarge padding-large",
 	}, {
-		Logo = React.createElement(Sprite, {
-			layoutOrder = nextLayoutOrder(),
-			image = assets.FlipbookIcon,
-			size = UDim2.fromOffset(tokens.Size.Size_1600, tokens.Size.Size_1600),
+		Logo = React.createElement(Foundation.Image, {
+			Image = constants.FLIPBOOK_LOGO,
+			Size = UDim2.fromOffset(tokens.Size.Size_1600, tokens.Size.Size_1600),
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
 		Title = React.createElement(Foundation.Text, {
@@ -50,11 +47,10 @@ local function AboutView()
 			tag = "auto-xy row gap-small align-y-center",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Icon = React.createElement(Sprite, {
-				layoutOrder = nextLayoutOrder(),
-				color = theme.github,
-				image = assets.GitHubMark,
-				size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
+			Icon = React.createElement(Foundation.Image, {
+				LayoutOrder = nextLayoutOrder(),
+				Image = constants.GITHUB_LOGO,
+				Size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
 			}),
 
 			Label = React.createElement(Foundation.Text, {
