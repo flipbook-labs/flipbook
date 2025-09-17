@@ -55,14 +55,14 @@ local function installWallyPackages()
 		})
 	end
 
-	installPackagesForProject()
-
 	for _, member in fs.readDir("workspace") do
 		local memberPath = `workspace/{member}`
 		if fs.isDir(memberPath) then
 			installPackagesForProject(memberPath)
 		end
 	end
+
+	installPackagesForProject()
 end
 
 local function installRobloxPackages()
