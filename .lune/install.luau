@@ -32,6 +32,26 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 	fs.writeFile(filePath, content)
 end
 
+local function installPackageFromRepo(
+	packageName: string,
+	repo: string,
+	rev: string,
+	extraSteps: ((packagePath: string) -> ())?
+)
+	local packagePath = `build/{packageName}`
+
+	run("rm", { "-rf", packagePath })
+	run("rm", { "-rf", `{packagePath}.lua` })
+	run("git", { "clone", repo, packagePath })
+	run("git", { "checkout", rev }, {
+		cwd = packagePath,
+	})
+
+	if extraSteps then
+		extraSteps(packagePath)
+	end
+end
+
 local function installWallyPackages()
 	run("wally", { "install" })
 	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
@@ -42,6 +62,38 @@ local function installWallyPackages()
 	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
 		stdio = "forward",
 	})
+
+	installPackageFromRepo(
+		"Storyteller",
+		"https://github.com/flipbook-labs/storyteller",
+		"roblox-internal",
+		function(packagePath)
+			run("lune", { "run", "install" }, {
+				cwd = packagePath,
+				stdio = "none",
+			})
+			run("lune", { "run", "build" }, {
+				cwd = packagePath,
+			})
+			run("cp", { "-R", `{packagePath}/dist`, "Packages/Storyteller" })
+		end
+	)
+	-- ModuleLoader is a dependency of Storyteller, make sure to install both.
+	installPackageFromRepo(
+		"ModuleLoader",
+		"https://github.com/flipbook-labs/module-loader",
+		"roblox-internal",
+		function(packagePath)
+			run("lune", { "run", "wally-install" }, {
+				cwd = packagePath,
+				stdio = "none",
+			})
+			run("lune", { "run", "build" }, {
+				cwd = packagePath,
+			})
+			run("cp", { "-R", `{packagePath}/dist`, "Packages/ModuleLoader" })
+		end
+	)
 end
 
 local function installWallyPackagesForCodeSamples()
