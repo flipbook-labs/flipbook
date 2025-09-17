@@ -59,7 +59,7 @@ export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 -- 	},
 -- }
 
-local rememberLastOpenedStory: Setting = {
+local rememberLastOpenedStory: CheckboxSetting = {
 	name = "rememberLastOpenedStory",
 	displayName = "Remember last opened story",
 	description = "Open the last viewed story when starting",
