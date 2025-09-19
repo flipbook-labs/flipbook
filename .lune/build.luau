@@ -17,7 +17,9 @@ assert(typeof(output) == "string", `bad value for output (string expected, got {
 local function build()
 	compile(target)
 
-	run("rojo", { "build", "-o", output })
+	local dest = `{constants.BUILD_PATH}/{constants.PLUGIN_FILENAME}`
+	run("rojo", { "build", "-o", dest })
+	run("cp", { dest, output })
 end
 
 build()

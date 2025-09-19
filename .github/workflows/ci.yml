@@ -20,9 +20,6 @@ jobs:
       - name: Install dependencies
         run: lune run install
 
-      - name: Lint
-        run: lune run lint
-
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
@@ -52,6 +49,9 @@ jobs:
 
       - name: Setup Lune typedefs
         run: lune setup
+
+      - name: Lint
+        run: lune run lint
 
       - name: Run Luau analysis
         run: lune run analyze
