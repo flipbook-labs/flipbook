@@ -7,10 +7,16 @@ local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
 type Target = "prod" | "dev"
 
-local PRUNED_FILES = {
-	"*.spec.luau",
-	"*.story.luau",
-	"*.storybook.luau",
+local PROD_CONFIG = {
+	prunedDirs = {
+		"workspace/code-samples",
+		"workspace/example",
+	},
+	prunedFiles = {
+		"*.spec.luau",
+		"*.story.luau",
+		"*.storybook.luau",
+	},
 }
 
 local function compile(target: Target)
@@ -70,18 +76,12 @@ local function compile(target: Target)
 		end
 	end
 
-	if target == "dev" then
-		run("darklua", {
-			"process",
-			"example",
-			`{dest}/Example`,
-		}, {
-			env = env,
-		})
-	end
-
 	if target == "prod" then
-		for _, pattern in PRUNED_FILES do
+		for _, dir in PROD_CONFIG.prunedDirs do
+			run("rm", { "-rf", `{dest}/{dir}` })
+		end
+
+		for _, pattern in PROD_CONFIG.prunedFiles do
 			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
