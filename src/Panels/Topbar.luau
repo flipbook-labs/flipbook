@@ -1,10 +1,15 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
+local AboutView = require("@root/About/AboutView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
+local ReportIssueDialog = require("@root/Plugin/ReportIssueDialog")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useCallback = React.useCallback
+local useState = React.useState
+local useMemo = React.useMemo
+local useRef = React.useRef
 
 export type Props = {
 	LayoutOrder: number?,
@@ -21,31 +26,105 @@ local function Topbar(props: Props)
 		end
 	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
 
-	local navigateToAbout = useCallback(function()
-		if navigation.currentScreen ~= "About" then
-			navigation.navigateTo("About")
+	local navigateToDocs = useCallback(function()
+		if navigation.currentScreen ~= "Docs" then
+			navigation.navigateTo("Docs")
 		else
 			navigation.navigateTo("Home")
 		end
 	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
 
+	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
+	local helpButtonRef = useRef(nil :: GuiObject?)
+	local isAboutDialogOpen, setIsAboutDialogOpen = useState(false)
+	local isReportIssueDialogOpen, setIsReportIssueDialogOpen = useState(false)
+
+	local helpMenuItems = useMemo(function(): { Foundation.MenuItem }
+		return {
+			{
+				id = "docs",
+				text = "Docs",
+				onActivated = function()
+					navigateToDocs()
+					setIsHelpMenuOpen(false)
+				end,
+			},
+			{
+				id = "report-issue",
+				text = "Report issue",
+				onActivated = function()
+					setIsReportIssueDialogOpen(true)
+					setIsHelpMenuOpen(false)
+				end,
+			},
+			{
+				id = "about",
+				text = "About",
+				onActivated = function()
+					setIsAboutDialogOpen(true)
+					setIsHelpMenuOpen(false)
+				end,
+			},
+		}
+	end, { navigateToDocs })
+
 	return React.createElement(Foundation.View, {
-		tag = "size-full-0 auto-y bg-surface-0 row gap-small padding-small align-x-right",
+		tag = "size-full-0 auto-y bg-surface-0 row gap-small padding-xsmall align-x-right",
 		LayoutOrder = props.LayoutOrder,
 	}, {
-		About = React.createElement(Foundation.Button, {
-			text = "About",
-			size = Foundation.Enums.ButtonSize.Small,
-			LayoutOrder = nextLayoutOrder(),
-			onActivated = navigateToAbout,
-		}),
-
-		Settings = React.createElement(Foundation.Button, {
-			text = "Settings",
-			size = Foundation.Enums.ButtonSize.Small,
+		SettingsButton = React.createElement(Foundation.IconButton, {
+			icon = Foundation.Enums.IconName.Gear,
+			size = Foundation.Enums.InputSize.Small,
 			LayoutOrder = nextLayoutOrder(),
 			onActivated = navigateToSettings,
 		}),
+
+		HelpButton = React.createElement(Foundation.IconButton, {
+			icon = Foundation.Enums.IconName.CircleQuestion,
+			size = Foundation.Enums.InputSize.Small,
+			LayoutOrder = nextLayoutOrder(),
+			ref = helpButtonRef,
+			onActivated = function()
+				setIsHelpMenuOpen(true)
+			end,
+		}),
+
+		HelpMenu = React.createElement(Foundation.Menu, {
+			isOpen = isHelpMenuOpen,
+			items = helpMenuItems,
+			anchorRef = helpButtonRef,
+			onPressedOutside = function()
+				setIsHelpMenuOpen(function(prev)
+					return not prev
+				end)
+			end,
+		}),
+
+		AboutDialog = if isAboutDialogOpen
+			then React.createElement(Foundation.Dialog.Root, {
+				disablePortal = false,
+				hasBackdrop = true,
+				onClose = function()
+					setIsAboutDialogOpen(false)
+				end,
+			}, {
+				Title = React.createElement(Foundation.Dialog.Title, {
+					text = "About",
+				}),
+
+				Content = React.createElement(Foundation.Dialog.Content, nil, {
+					AboutView = React.createElement(AboutView),
+				}),
+			})
+			else nil,
+
+		ReportIssueDialog = if isReportIssueDialogOpen
+			then React.createElement(ReportIssueDialog, {
+				onClose = function()
+					setIsReportIssueDialogOpen(false)
+				end,
+			})
+			else nil,
 	})
 end
 
