@@ -3,8 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local JestGlobals = require("@pkg/JestGlobals")
 local newFolder = require("@root/Testing/newFolder")
 
-local getInstanceFromPath = require("./getInstanceFromPath")
-local getInstancePath = require("./getInstancePath")
+local getInstanceFromFullName = require("./getInstanceFromFullName")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -19,7 +18,7 @@ afterEach(function()
 end)
 
 test("gets services", function()
-	local path = getInstanceFromPath("ReplicatedStorage")
+	local path = getInstanceFromFullName("ReplicatedStorage")
 	expect(path).toBe(ReplicatedStorage)
 end)
 
@@ -33,7 +32,8 @@ test("works on nested instances", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	expect(getInstanceFromPath(getInstancePath(module))).toBe(module)
+	local path = getInstanceFromFullName(module:GetFullName())
+	expect(path).toBe(module)
 end)
 
 test("works with spec files", function()
@@ -46,7 +46,7 @@ test("works with spec files", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	local path = getInstanceFromPath(getInstancePath(module))
+	local path = getInstanceFromFullName(module:GetFullName())
 	expect(path).toBe(module)
 end)
 
@@ -61,17 +61,18 @@ test("finds spec files BEFORE the module it is associated with", function()
 	})
 	folder.Parent = ReplicatedStorage
 
-	expect(getInstanceFromPath(getInstancePath(module))).toBe(module)
+	local path = getInstanceFromFullName(module:GetFullName())
+	expect(path).toBe(module)
 end)
 
 test("returns nil if the first part of the path is not a service", function()
-	expect(getInstanceFromPath("Part")).toBeUndefined()
+	expect(getInstanceFromFullName("Part")).toBeUndefined()
 end)
 
 test("returns nil if the path does not exist", function()
-	expect(getInstanceFromPath("Foo.story")).toBeUndefined()
-	expect(getInstanceFromPath("Path/To/Foo.story")).toBeUndefined()
-	expect(getInstanceFromPath("ReplicatedStorage/Foo/Bar/Baz")).toBeUndefined()
-	expect(getInstanceFromPath("ReplicatedStorage/Sample.story")).toBeUndefined()
-	expect(getInstanceFromPath("ReplicatedStorage/Sample.spec")).toBeUndefined()
+	expect(getInstanceFromFullName("Foo.story")).toBeUndefined()
+	expect(getInstanceFromFullName("Path.To.Foo.story")).toBeUndefined()
+	expect(getInstanceFromFullName("ReplicatedStorage.Foo.Bar.Baz")).toBeUndefined()
+	expect(getInstanceFromFullName("ReplicatedStorage.Sample.story")).toBeUndefined()
+	expect(getInstanceFromFullName("ReplicatedStorage.Sample.spec")).toBeUndefined()
 end)
