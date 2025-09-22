@@ -95,7 +95,7 @@ local function TreeNode(props: Props)
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Node = React.createElement(Foundation.View, {
-			tag = "auto-xy row gap-medium flex-fill radius-medium flex-between padding-y-small",
+			tag = "auto-xy row gap-medium flex-between radius-medium align-y-center padding-y-small",
 			padding = {
 				right = UDim.new(0, tokens.Padding.Large),
 				left = UDim.new(0, tokens.Padding.Medium * numParents),

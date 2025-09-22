@@ -15,15 +15,34 @@ export type PinnedInstanceStore = {
 	isPinned: (instance: Instance) -> boolean,
 	pin: (instance: Instance) -> (),
 	unpin: (instance: Instance) -> (),
-
-	dispose: () -> (),
 }
 
 local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInstanceStore
-	local getPinnedPaths, setPinnedPaths = Signals.createSignal({} :: { string })
-	local getPinnedInstances, setPinnedInstances = Signals.createSignal({} :: { PinnedInstance })
-
 	local localStorageStore = LocalStorageStore.get(parentScope)
+
+	local getPinnedPaths = Signals.createComputed(function(scope)
+		local storage = localStorageStore.getStorage(scope)
+		return storage.pinnedInstancePaths or {}
+	end)
+
+	local function setPinnedPaths(update: (prev: { string }) -> { string })
+		localStorageStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				pinnedInstancePaths = update(prev.pinnedInstancePaths or {}),
+			})
+		end)
+	end
+
+	local getPinnedInstances = Signals.createComputed(function(scope)
+		local pinnedPaths = getPinnedPaths(scope)
+
+		return Sift.List.map(pinnedPaths, function(pinnedPath)
+			return {
+				path = pinnedPath,
+				instance = getInstanceFromPath(pinnedPath),
+			} :: PinnedInstance
+		end)
+	end)
 
 	local function pin(instance: Instance)
 		setPinnedPaths(function(prev)
@@ -41,30 +60,11 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 		return Sift.List.has(getPinnedPaths(false), getInstancePath(instance))
 	end
 
-	local dispose = Signals.createEffect(function(scope)
-		local pinnedPaths = getPinnedPaths(scope)
-
-		setPinnedInstances(Sift.List.map(pinnedPaths, function(pinnedPath)
-			return {
-				path = pinnedPath,
-				instance = getInstanceFromPath(pinnedPath),
-			} :: PinnedInstance
-		end))
-
-		localStorageStore.setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
-				pinnedInstancePaths = pinnedPaths,
-			})
-		end)
-	end)
-
 	return {
 		pin = pin,
 		unpin = unpin,
 		isPinned = isPinned,
 		getPinnedInstances = getPinnedInstances,
-
-		dispose = dispose,
 	}
 end
 
