@@ -118,7 +118,7 @@ local function TreeNode(props: Props)
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			Pin = if props.node.instance and (props.node.icon == "story" or props.node.icon == "storybook")
+			Pin = if props.node.instance and props.node.icon == "storybook"
 				then React.createElement(Foundation.IconButton, {
 					icon = {
 						name = Foundation.Enums.IconName.Star,
