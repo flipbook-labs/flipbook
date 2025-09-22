@@ -7,6 +7,7 @@ local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryError = require("@root/Storybook/StoryError")
+local useHoveredGuiObjects = require("@root/Common/useHoveredGuiObjects")
 local usePrevious = require("@root/Common/usePrevious")
 
 local e = React.createElement
@@ -36,6 +37,39 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local err, setErr = React.useState(nil :: string?)
 	local prevControls = usePrevious(props.controls)
 	local prevStory = usePrevious(props.story)
+
+	local hoveredObjects = useHoveredGuiObjects(ref.current)
+	local depth, setDepth = React.useState(1)
+	local highlightedObject = hoveredObjects[depth]
+
+	React.useEffect(function(): (() -> ())?
+		if #hoveredObjects <= 0 then
+			return nil
+		end
+
+		local connections = {}
+
+		for _, hoveredObject in hoveredObjects do
+			if hoveredObject:IsA("GuiButton") then
+				table.insert(
+					connections,
+					hoveredObject.Activated:Connect(function()
+						setDepth(function(prevDepth)
+							return math.clamp(prevDepth + 1, 0, #hoveredObjects)
+						end)
+					end)
+				)
+			end
+		end
+
+		return function()
+			for _, connection in connections do
+				connection:Disconnect()
+			end
+		end
+	end, { hoveredObjects })
+
+	print("hoveredObjects", hoveredObjects)
 
 	React.useEffect(function()
 		setErr(nil)
@@ -100,6 +134,16 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 				LayoutOrder = props.layoutOrder,
 				scrollingFrameRef = ref,
 			}, {
+				Highlight = if highlightedObject
+					then ReactRoblox.createPortal({
+						Highlight = e("Frame", {
+							BorderSizePixel = 4,
+							Size = UDim2.fromScale(1, 1),
+							ZIndex = 10,
+						}),
+					}, highlightedObject)
+					else nil,
+
 				Scale = e("UIScale", {
 					Scale = 1 + props.zoom,
 				}),
