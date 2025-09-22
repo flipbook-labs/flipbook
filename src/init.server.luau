@@ -4,43 +4,22 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
-local React = require("@pkg/React")
-local ReactRoblox = require("@pkg/ReactRoblox")
-
-local ContextProviders = require("@root/Common/ContextProviders")
-local PluginApp = require("@root/Plugin/PluginApp")
-local createToggleButton = require("@root/Plugin/createToggleButton")
-local createWidget = require("@root/Plugin/createWidget")
+local constants = require("@root/constants")
+local createFlipbookPlugin = require("@root/Plugin/createFlipbookPlugin")
 
 local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` {_G.BUILD_HASH}` else ""
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
-local widget = createWidget(plugin, PLUGIN_NAME)
-local root = ReactRoblox.createRoot(widget)
-local disconnectButton = createToggleButton(toolbar, widget)
 
-local app = React.createElement(ContextProviders, {
-	plugin = plugin,
-	overlayGui = widget :: GuiBase2d,
-}, {
-	PluginApp = React.createElement(PluginApp),
-})
+local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
 
-local widgetConn = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-	if widget.Enabled then
-		root:render(app)
-	else
-		root:unmount()
-	end
-end)
+local widget = plugin:CreateDockWidgetPluginGui(PLUGIN_NAME, info)
+widget.Name = PLUGIN_NAME
+widget.Title = PLUGIN_NAME
+widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-if widget.Enabled then
-	root:render(app)
-end
+local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", constants.FLIPBOOK_LOGO)
 
-plugin.Unloading:Connect(function()
-	disconnectButton()
-	widgetConn:Disconnect()
+local flipbookPlugin = createFlipbookPlugin(plugin, widget, button)
 
-	root:unmount()
-end)
+plugin.Unloading:Connect(flipbookPlugin.unmount)

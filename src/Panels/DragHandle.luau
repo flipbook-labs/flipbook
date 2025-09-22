@@ -2,10 +2,13 @@ local RunService = game:GetService("RunService")
 
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
-local PluginContext = require("@root/Plugin/PluginContext")
+local PluginStore = require("@root/Plugin/PluginStore")
 local types = require("@root/Panels/types")
 local useTheme = require("@root/Common/useTheme")
+
+local useSignalState = SignalsReact.useSignalState
 
 local defaultProps = {
 	size = 8, -- px
@@ -25,7 +28,9 @@ local function DragHandle(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 	local theme = useTheme()
 
-	local plugin = React.useContext(PluginContext.Context)
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin = useSignalState(pluginStore.getPlugin)
+
 	local isDragging, setIsDragging = React.useState(false)
 	local isHovered, setIsHovered = React.useState(false)
 	local mouseInput: InputObject?, setMouseInput = React.useState(nil :: InputObject?)

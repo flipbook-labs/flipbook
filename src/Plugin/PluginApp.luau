@@ -1,42 +1,53 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
 local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
+local useSignalState = SignalsReact.useSignalState
+
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local function App()
-	local settingsContext = SettingsContext.use()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
-	local initialSidebarWidth = settingsContext.getSetting("sidebarWidth")
+	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
+		React.useState(nil :: UnavailableStorybook?)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setStoryModule(function(prev: ModuleScript?)
-			return if prev ~= newStoryModule then newStoryModule else nil
-		end)
-
+		setUnavailableStorybook(nil)
+		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
+
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
+	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
 	}, {
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			layoutOrder = nextLayoutOrder(),
-			initialSize = UDim2.new(0, initialSidebarWidth, 1, 0),
+			initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
 			dragHandles = {
 				-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
 				"Right" :: any,
@@ -46,7 +57,8 @@ local function App()
 		}, {
 			Sidebar = React.createElement(Sidebar, {
 				onStoryChanged = onStoryChanged,
-				storybooks = storybooks.available,
+				onShowErrorPage = onShowErrorPage,
+				storybooks = storybooks,
 			}),
 		}),
 
@@ -65,6 +77,7 @@ local function App()
 				Screen = React.createElement(Screen, {
 					story = storyModule,
 					storybook = storybook,
+					unavailableStorybook = unavailableStorybook,
 				}),
 			}),
 		}),

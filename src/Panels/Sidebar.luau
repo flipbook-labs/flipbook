@@ -8,13 +8,18 @@ local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local e = React.createElement
 
 type Props = {
 	layoutOrder: number?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
-	storybooks: { LoadedStorybook },
+	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
+	storybooks: {
+		available: { LoadedStorybook },
+		unavailable: { UnavailableStorybook },
+	},
 }
 
 local function Sidebar(props: Props)
@@ -58,6 +63,7 @@ local function Sidebar(props: Props)
 				searchTerm = search,
 				storybooks = props.storybooks,
 				onStoryChanged = props.onStoryChanged,
+				onShowErrorPage = props.onShowErrorPage,
 			}),
 		}),
 	})
