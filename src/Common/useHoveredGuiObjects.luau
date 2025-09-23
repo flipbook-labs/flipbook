@@ -23,7 +23,7 @@ local function useHoveredGuiObjects(root: Instance?): { GuiObject }
 				connections,
 				instance.MouseEnter:Connect(function()
 					setHoveredObjects(function(prev)
-						return Sift.List.append(prev, instance)
+						return Sift.List.prepend(prev, instance)
 					end)
 				end)
 			)
