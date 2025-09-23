@@ -21,7 +21,7 @@ Roact = "roblox/roact@1.4.4"
 Jest = "jsdotlua/jest@3.10.0"
 JestGlobals = "jsdotlua/jest-globals@3.10.0"
 
-# Storyteller dependencies
+# Storyteller and ModuleLoader dependencies
 Prospector = "egomoose/prospector@1.1.0"
 Janitor = "howmanysmall/janitor@1.13.15"
 LuauPolyfill = "jsdotlua/luau-polyfill@1.2.7"

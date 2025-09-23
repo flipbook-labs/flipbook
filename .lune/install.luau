@@ -63,28 +63,22 @@ local function installWallyPackages()
 		stdio = "forward",
 	})
 
-	-- installPackageFromRepo(
-	-- 	"Storyteller",
-	-- 	"https://github.com/flipbook-labs/storyteller",
-	-- 	"roblox-internal",
-	-- 	function(packagePath)
-	-- 		run("lune", { "run", "install" }, {
-	-- 			cwd = packagePath,
-	-- 			stdio = "none",
-	-- 		})
-	-- 		run("lune", { "run", "build" }, {
-	-- 			cwd = packagePath,
-	-- 		})
-	-- 		run("cp", { "-R", `{packagePath}/dist`, "Packages/Storyteller" })
-	-- 	end
-	-- )
-
+	installPackageFromRepo("Storyteller", "https://github.com/flipbook-labs/storyteller", "main", function(packagePath)
+		run("lune", { "run", "install" }, {
+			cwd = packagePath,
+			stdio = "none",
+		})
+		run("lune", { "run", "build" }, {
+			cwd = packagePath,
+		})
+		run("cp", { "-R", `{packagePath}/dist`, "Packages/Storyteller" })
+	end)
 	installPackageFromRepo(
 		"ModuleLoader",
 		"https://github.com/flipbook-labs/module-loader",
 		"roblox-internal",
 		function(packagePath)
-			run("lune", { "run", "wally-install" }, {
+			run("lune", { "run", "install" }, {
 				cwd = packagePath,
 				stdio = "none",
 			})
