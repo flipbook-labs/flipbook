@@ -24,7 +24,7 @@ local function StorybookError(props: Props)
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
-			CanvasSize = UDim2.new(0, 0),
+			CanvasSize = UDim2.fromScale(0, 0),
 		},
 		LayoutOrder = props.layoutOrder,
 	}, {
