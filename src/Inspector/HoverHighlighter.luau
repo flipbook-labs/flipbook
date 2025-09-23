@@ -30,16 +30,12 @@ local function HoverHighlighter(props: Props): React.Node
 
 	local root = React.createElement(Foundation.View, {
 		tag = "col align-y-center gap-small",
-		stroke = {
-			Color = tokens.Color.Extended.Turquoise.Turquoise_500.Color3,
-			Transparency = tokens.Color.Extended.Turquoise.Turquoise_500.Transparency,
-			Thickness = 2,
-		},
 		Size = UDim2.fromOffset(absSize.X, absSize.Y),
 		Position = UDim2.fromOffset(absPosition.X, absPosition.Y),
 	}, {
+
 		Name = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-label-medium bg-surface-300 padding-small",
+			tag = "auto-xy text-label-medium bg-over-media-100 padding-xsmall",
 			Text = highlightedObject.Name,
 			LayoutOrder = nextLayoutOrder(),
 		}),
@@ -49,15 +45,21 @@ local function HoverHighlighter(props: Props): React.Node
 			-- onActivated = function()
 			-- 	print("clicked on", highlightedObject)
 			-- end,
+			stroke = {
+				Color = tokens.Color.Extended.Turquoise.Turquoise_700.Color3,
+				Transparency = tokens.Color.Extended.Turquoise.Turquoise_700.Transparency,
+				Thickness = 2,
+			},
 			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		Dimensions = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y row align-x-center",
+		DimensionsWrapper = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y row align-x-center ",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Label = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-label-medium bg-surface-100 padding-small",
+				tag = "auto-xy text-label-medium padding-xsmall",
+				backgroundStyle = tokens.Color.Extended.Turquoise.Turquoise_700,
 				Text = `{math.round(absSize.X)} x {math.round(absSize.Y)}`,
 			}),
 		}),
