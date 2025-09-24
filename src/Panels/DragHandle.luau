@@ -1,9 +1,14 @@
 local RunService = game:GetService("RunService")
 
-local PluginContext = require("@root/Plugin/PluginContext")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
+
+local PluginStore = require("@root/Plugin/PluginStore")
 local types = require("@root/Panels/types")
+local useTheme = require("@root/Common/useTheme")
+
+local useSignalState = SignalsReact.useSignalState
 
 local defaultProps = {
 	size = 8, -- px
@@ -21,19 +26,24 @@ type InternalProps = Props & typeof(defaultProps)
 
 local function DragHandle(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
+	local theme = useTheme()
 
-	local plugin = React.useContext(PluginContext.Context)
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin = useSignalState(pluginStore.getPlugin)
+
 	local isDragging, setIsDragging = React.useState(false)
 	local isHovered, setIsHovered = React.useState(false)
 	local mouseInput: InputObject?, setMouseInput = React.useState(nil :: InputObject?)
 
 	local getHandleProperties = React.useCallback(function()
-		local size: UDim2
+		local hitboxSize: UDim2
+		local highlightSize: UDim2
 		local position: UDim2
 		local anchorPoint: Vector2
 
 		if props.handle == "Right" or props.handle == "Left" then
-			size = UDim2.new(0, props.size, 1, 0)
+			hitboxSize = UDim2.new(0, props.size, 1, 0)
+			highlightSize = UDim2.new(0, props.size / 4, 1, 0)
 
 			if props.handle == "Right" then
 				position = UDim2.fromScale(1, 0)
@@ -43,7 +53,8 @@ local function DragHandle(providedProps: Props)
 				anchorPoint = Vector2.new(0, 0)
 			end
 		elseif props.handle == "Top" or props.handle == "Bottom" then
-			size = UDim2.new(1, 0, 0, props.size)
+			hitboxSize = UDim2.new(1, 0, 0, props.size)
+			highlightSize = UDim2.new(1, 0, 0, props.size / 4)
 
 			if props.handle == "Bottom" then
 				position = UDim2.fromScale(0, 1)
@@ -54,7 +65,7 @@ local function DragHandle(providedProps: Props)
 			end
 		end
 
-		return size, position, anchorPoint
+		return hitboxSize, highlightSize, position, anchorPoint
 	end, { props.handle, props.size } :: { unknown })
 
 	local onInputBegan = React.useCallback(function(_rbx, input: InputObject)
@@ -85,7 +96,7 @@ local function DragHandle(providedProps: Props)
 		setIsHovered(false)
 	end, {})
 
-	local size, position, anchorPoint = getHandleProperties()
+	local hitboxSize, highlightSize, position, anchorPoint = getHandleProperties()
 
 	React.useEffect(function(): any
 		if mouseInput and isDragging then
@@ -125,7 +136,7 @@ local function DragHandle(providedProps: Props)
 	end, { plugin, isDragging, isHovered } :: { unknown })
 
 	return React.createElement("ImageButton", {
-		Size = size,
+		Size = hitboxSize,
 		Position = position,
 		AnchorPoint = anchorPoint,
 		BackgroundTransparency = 1,
@@ -133,6 +144,13 @@ local function DragHandle(providedProps: Props)
 		[React.Event.InputEnded] = onInputEnded,
 		[React.Event.MouseEnter] = onMouseEnter :: any,
 		[React.Event.MouseLeave] = onMouseLeave :: any,
+	}, {
+		Highlght = React.createElement("Frame", {
+			Size = highlightSize,
+			BorderSizePixel = 0,
+			BackgroundTransparency = if isHovered or isDragging then 0 else 1,
+			BackgroundColor3 = theme.selection,
+		}),
 	})
 end
 

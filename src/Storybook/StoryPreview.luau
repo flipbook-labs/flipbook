@@ -1,11 +1,11 @@
 local CoreGui = game:GetService("CoreGui")
 
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local StoryError = require("@root/Storybook/StoryError")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -90,14 +90,15 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 				}),
 			}, CoreGui)
 		else
-			return e(ScrollingFrame, {
-				BackgroundTransparency = 1,
+			return e(Foundation.ScrollView, {
+				tag = "size-full",
+				scroll = {
+					ScrollingDirection = Enum.ScrollingDirection.XY,
+					AutomaticCanvasSize = Enum.AutomaticSize.XY,
+					CanvasSize = UDim2.new(0, 0),
+				},
 				LayoutOrder = props.layoutOrder,
-				ScrollingDirection = Enum.ScrollingDirection.XY,
-				AutomaticCanvasSize = Enum.AutomaticSize.XY,
-				CanvasSize = UDim2.new(),
-				Size = UDim2.fromScale(1, 1),
-				ref = ref,
+				scrollingFrameRef = ref,
 			}, {
 				Scale = e("UIScale", {
 					Scale = 1 + props.zoom,

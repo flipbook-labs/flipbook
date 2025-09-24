@@ -1,12 +1,10 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local ScrollingFrame = require("@root/Common/ScrollingFrame")
 local SettingRow = require("@root/UserSettings/SettingRow")
-local SettingsContext = require("@root/UserSettings/SettingsContext")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useTheme = require("@root/Common/useTheme")
 
 local useMemo = React.useMemo
 
@@ -14,15 +12,12 @@ type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
 
 local function SettingsView()
-	local settingsContext = SettingsContext.use()
-	local theme = useTheme()
-
 	local orderedSettings: { Setting } = useMemo(function()
-		local values = Sift.Dictionary.values(settingsContext.settings)
+		local values = Sift.Dictionary.values(defaultSettings)
 		return Sift.Array.sort(values, function(a: Setting, b: Setting)
 			return a.name < b.name
 		end)
-	end, { settingsContext.settings })
+	end, { defaultSettings })
 
 	local children: { [string]: React.Node } = {}
 	for index, setting in orderedSettings do
@@ -32,42 +27,23 @@ local function SettingsView()
 		})
 	end
 
-	return React.createElement(ScrollingFrame, {
-		BackgroundColor3 = theme.background,
-		BackgroundTransparency = 0,
+	return React.createElement(Foundation.ScrollView, {
+		tag = "size-full col bg-surface-200 gap-large padding-y-large",
+		scroll = {
+			AutomaticCanvasSize = Enum.AutomaticSize.Y,
+			CanvasSize = UDim2.fromScale(1, 0),
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+		},
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-
-		Title = React.createElement("TextLabel", {
-			LayoutOrder = nextLayoutOrder(),
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BackgroundTransparency = 1,
-			Font = theme.headerFont,
-			Size = UDim2.fromScale(0, 0),
+		Title = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-heading-large padding-medium",
 			Text = "Settings",
-			TextColor3 = theme.text,
-			TextSize = theme.headerTextSize,
-		}, {
-			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.paddingLarge,
-				PaddingRight = theme.paddingLarge,
-				PaddingBottom = theme.paddingLarge,
-				PaddingLeft = theme.paddingLarge,
-			}),
+			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		Settings = React.createElement("Frame", {
+		Settings = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y col gap-medium",
 			LayoutOrder = nextLayoutOrder(),
-			Size = UDim2.fromScale(1, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundTransparency = 1,
-		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = theme.padding,
-			}),
 		}, children),
 	})
 end

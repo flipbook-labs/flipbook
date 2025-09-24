@@ -1,12 +1,17 @@
 {
-  "name": "flipbook",
+  "name": "Flipbook",
   "tree": {
     "$className": "DataModel",
+    "ServerScriptService": {
+      "$properties": {
+        "LoadStringEnabled": true
+      }
+    },
     "ReplicatedStorage": {
       "Packages": {
         "$path": "Packages"
       },
-      "flipbook": {
+      "Flipbook": {
         "$path": "default.project.json"
       }
     }

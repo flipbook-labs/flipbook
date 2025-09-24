@@ -1,18 +1,18 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
 
-local Sprite = require("@root/Common/Sprite")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
-local assets = require("@root/assets")
 local constants = require("@root/constants")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local types = require("@root/TreeView/types")
-local useTheme = require("@root/Common/useTheme")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
 local useSpring = ReactSpring.useSpring :: any
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
+local useTokens = Foundation.Hooks.useTokens
 
 type TreeNode = types.TreeNode
 
@@ -33,7 +33,7 @@ export type Props = {
 }
 
 local function TreeNode(props: Props)
-	local theme = useTheme()
+	local tokens = useTokens()
 	local icon, iconColor = useTreeNodeIcon(props.node.icon)
 	local isHovered, setIsHovered = useState(false)
 	local treeViewContext = TreeViewContext.use()
@@ -63,14 +63,6 @@ local function TreeNode(props: Props)
 		return elements
 	end, { props.node.children })
 
-	local onMouseEnter = useCallback(function()
-		setIsHovered(true)
-	end, {})
-
-	local onMouseLeave = useCallback(function()
-		setIsHovered(false)
-	end, {})
-
 	local onActivated = useCallback(function()
 		if props.onActivated then
 			props.onActivated()
@@ -79,94 +71,53 @@ local function TreeNode(props: Props)
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
-	local backgroundColor = useMemo(function(): Color3?
-		if isSelected then
-			return theme.selection
-		else
-			return theme.divider
-		end
-	end, { isSelected })
+	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
+		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
+	end, {})
 
-	return React.createElement("Frame", {
+	return React.createElement(Foundation.View, {
+		tag = "auto-xy clip col",
 		LayoutOrder = props.layoutOrder,
-		AutomaticSize = Enum.AutomaticSize.XY,
-		ClipsDescendants = true,
-		BackgroundTransparency = 1,
 	}, {
-		Layout = React.createElement("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-
-		Node = React.createElement("ImageButton", {
-			LayoutOrder = 1,
-			AutoButtonColor = false,
-			AutomaticSize = Enum.AutomaticSize.XY,
-			BorderSizePixel = 0,
-			BackgroundColor3 = backgroundColor,
-			BackgroundTransparency = styles.hover,
-
-			[React.Event.MouseEnter] = onMouseEnter,
-			[React.Event.MouseLeave] = onMouseLeave,
-			[React.Event.Activated] = onActivated,
+		Node = React.createElement(Foundation.View, {
+			tag = "auto-xy row gap-medium flex-fill radius-medium flex-between padding-y-small",
+			padding = {
+				right = UDim.new(0, tokens.Padding.Large),
+				left = UDim.new(0, tokens.Padding.Medium * numParents),
+			},
+			backgroundStyle = if isSelected then tokens.Color.Extended.Purple.Purple_800 else nil,
+			onStateChanged = onStateChanged,
+			onActivated = onActivated,
+			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Layout = React.createElement("UIListLayout", {
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Horizontal,
-				Padding = theme.paddingSmall,
-				HorizontalFlex = Enum.UIFlexAlignment.Fill,
+			Icon = React.createElement(Foundation.Icon, {
+				name = icon,
+				style = iconColor,
+				size = Foundation.Enums.IconSize.Small,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
-			Corner = React.createElement("UICorner", {
-				CornerRadius = theme.paddingSmall,
-			}),
-
-			Padding = React.createElement("UIPadding", {
-				PaddingTop = theme.paddingSmall,
-				PaddingBottom = theme.paddingSmall,
-				PaddingRight = theme.paddingSmall,
-				PaddingLeft = theme.paddingSmall + UDim.new(0, theme.padding.Offset * numParents),
-			}),
-
-			Icon = React.createElement(Sprite, {
-				image = icon,
-				color = iconColor,
-				layoutOrder = 1,
-				size = UDim2.fromOffset(16, 16),
-			}),
-
-			Text = React.createElement("TextLabel", {
-				LayoutOrder = 2,
+			Text = React.createElement(Foundation.Text, {
+				tag = "size-full-0 auto-y text-label-medium text-align-x-left shrink",
 				Text = props.node.label,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				Font = theme.font,
-				Size = UDim2.fromScale(1, 0),
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextColor3 = theme.text,
-				TextSize = theme.textSize,
-			}, {
-				Flex = React.createElement("UIFlexItem", {
-					FlexMode = Enum.UIFlexMode.Shrink,
-				}),
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			Toggle = if #props.node.children > 0
-				then React.createElement("Frame", {
-					LayoutOrder = 3,
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
+				then React.createElement(Foundation.View, {
+					tag = "auto-xy",
+					LayoutOrder = nextLayoutOrder(),
 				}, {
-					RotationWrapper = React.createElement("Frame", {
-						BackgroundTransparency = 1,
-						AutomaticSize = Enum.AutomaticSize.XY,
+					RotationWrapper = React.createElement(Foundation.View, {
+						tag = "auto-xy",
 						Rotation = styles.expand:map(function(value)
 							return 90 * value
 						end),
 					}, {
-						Icon = React.createElement(Sprite, {
-							image = assets.ChevronRight,
-							color = theme.text,
-							size = UDim2.fromOffset(16, 16),
+						Icon = React.createElement(Foundation.Icon, {
+							name = Foundation.Enums.IconName.ChevronLargeRight,
+							style = tokens.Color.Extended.White.White_50,
+							size = Foundation.Enums.IconSize.Small,
 						}),
 					}),
 				})
@@ -174,14 +125,9 @@ local function TreeNode(props: Props)
 		}),
 
 		Children = if isExpanded
-			then React.createElement("Frame", {
-				LayoutOrder = 2,
-				AutomaticSize = Enum.AutomaticSize.XY,
-				BackgroundTransparency = 1,
-			}, {
-				Layout = React.createElement("UIListLayout", {
-					SortOrder = Enum.SortOrder.LayoutOrder,
-				}),
+			then React.createElement(Foundation.View, {
+				tag = "auto-xy col",
+				LayoutOrder = nextLayoutOrder(),
 			}, children)
 			else nil,
 	})

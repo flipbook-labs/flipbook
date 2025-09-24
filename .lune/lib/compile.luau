@@ -1,7 +1,7 @@
 local constants = require("./constants")
 local fs = require("@lune/fs")
-local serde = require("@lune/serde")
 local run = require("./run")
+local serde = require("@lune/serde")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
@@ -14,7 +14,12 @@ local PRUNED_FILES = {
 }
 
 local function compile(target: Target)
-	fs.writeDir(constants.BUILD_PATH)
+	local dest = `{constants.BUILD_PATH}/plugin`
+
+	if fs.isDir(dest) then
+		fs.removeDir(dest)
+	end
+	fs.writeDir(dest)
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
@@ -36,7 +41,7 @@ local function compile(target: Target)
 	run("darklua", {
 		"process",
 		constants.SOURCE_PATH,
-		constants.BUILD_PATH,
+		dest,
 	}, {
 		env = env,
 	})
@@ -45,7 +50,7 @@ local function compile(target: Target)
 		run("darklua", {
 			"process",
 			"example",
-			`{constants.BUILD_PATH}/Example`,
+			`{dest}/Example`,
 		}, {
 			env = env,
 		})
@@ -53,9 +58,12 @@ local function compile(target: Target)
 
 	if target == "prod" then
 		for _, pattern in PRUNED_FILES do
-			run("find", { constants.BUILD_PATH, "-type", "f", "-name", pattern, "-delete" })
+			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
+
+	run("cp", { "-R", "Packages", dest })
+	run("cp", { "-R", "RobloxPackages", dest })
 end
 
 return compile
