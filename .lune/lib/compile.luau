@@ -13,9 +13,9 @@ local PROD_CONFIG = {
 		"workspace/example",
 	},
 	prunedFiles = {
-		"*.spec.luau",
-		"*.story.luau",
-		"*.storybook.luau",
+		"*.spec.lua*",
+		"*.story.lua*",
+		"*.storybook.lua*",
 	},
 }
 
