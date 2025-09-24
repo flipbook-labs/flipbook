@@ -9,10 +9,16 @@ local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
 type Target = "prod" | "dev"
 
-local PRUNED_FILES = {
-	"*.spec.luau",
-	"*.story.luau",
-	"*.storybook.luau",
+local PROD_CONFIG = {
+	prunedDirs = {
+		"workspace/code-samples",
+		"workspace/example",
+	},
+	prunedFiles = {
+		"*.spec.lua*",
+		"*.story.lua*",
+		"*.storybook.lua*",
+	},
 }
 
 local function compile(target: Target)
@@ -50,26 +56,41 @@ local function compile(target: Target)
 		env = env,
 	})
 
-	if target == "dev" then
+	for _, member in fs.readDir(constants.WORKSPACE_PATH) do
+		local memberPath = `{constants.WORKSPACE_PATH}/{member}`
+
+		if not fs.isDir(memberPath) then
+			continue
+		end
+
 		run("darklua", {
 			"process",
-			"example",
-			`{dest}/Example`,
+			`{memberPath}/src`,
+			`{dest}/{memberPath}`,
 		}, {
 			env = env,
 		})
+
+		local packagesPath = `{memberPath}/Packages`
+		run("cp", { "-R", packagesPath, `{dest}/{packagesPath}` })
+
+		local robloxPackagesPath = `{memberPath}/RobloxPackages`
+		if fs.isDir(robloxPackagesPath) then
+			run("cp", { "-R", robloxPackagesPath, `{dest}/{robloxPackagesPath}` })
+		end
 	end
 
 	if target == "prod" then
-		for _, pattern in PRUNED_FILES do
+		for _, dir in PROD_CONFIG.prunedDirs do
+			run("rm", { "-rf", `{dest}/{dir}` })
+		end
+
+		for _, pattern in PROD_CONFIG.prunedFiles do
 			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
 
-	task.wait()
-
-	fs.copy("Packages", `{dest}/Packages`, true)
-	fs.copy("RobloxPackages", `{dest}/RobloxPackages`, true)
+	run("cp", { "-R", "Packages", dest })
 end
 
 return compile
