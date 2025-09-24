@@ -2,9 +2,8 @@
 	"languageMode": "strict",
 	"aliases": {
 		"pkg": "./Packages",
-		"rbxpkg": "./RobloxPackages",
 		"lunepkg": "./LunePackages",
-		"root": "./src",
+		"workspace": "./workspace",
 		"lune": "~/.lune/.typedefs/0.9.4/"
 	}
 }

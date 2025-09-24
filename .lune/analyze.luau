@@ -23,17 +23,8 @@ run("luau-lsp", {
 	`--sourcemap={constants.SOURCEMAP_PATH}`,
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",
-	"--ignore=**/_Index/**",
+	"--ignore=**/_Index/** --ignore=**/RobloxPackages/**",
 	constants.SOURCE_PATH,
 	constants.LUNE_SCRIPTS_PATH,
-	constants.EXAMPLE_PATH,
-})
-
-run("luau-lsp", {
-	"analyze",
-	`--sourcemap={constants.SOURCEMAP_PATH}`,
-	`--defs={globalDefsPath}`,
-	"--settings=./.vscode/settings.json",
-	"--ignore=**/_Index/**",
-	"code-samples/src",
+	constants.WORKSPACE_PATH,
 })

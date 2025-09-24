@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Jest = require(ReplicatedStorage.Packages.Jest)
 
-local root = ReplicatedStorage.Flipbook
+local root = ReplicatedStorage.Flipbook.workspace["flipbook-core"]
 
 _G.__DEV__ = true
 _G.__ROACT_17_MOCK_SCHEDULER__ = true

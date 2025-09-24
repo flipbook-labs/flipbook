@@ -33,42 +33,51 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 end
 
 local function installWallyPackages()
-	run("wally", { "install" })
-	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" })
+	local function installPackagesForProject(projectPath: string?)
+		print("installing packages for", projectPath)
 
-	-- For some reason the default stdio of "inherit" results in WPT hanging
-	-- indefinitely. Since we don't need the output in this case, we change to a
-	-- stdio that won't hang
-	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-		stdio = "forward",
-	})
-end
+		run("wally", { "install" }, {
+			cwd = projectPath,
+		})
 
-local function installWallyPackagesForCodeSamples()
-	run("wally", { "install" }, {
-		cwd = "code-samples",
-	})
-	run("rojo", { "sourcemap", "build.project.json", "-o", "sourcemap.json" }, {
-		cwd = "code-samples",
-	})
-	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-		cwd = "code-samples",
-		stdio = "forward",
-	})
+		local rojoProject = if projectPath then "default.project.json" else "build.project.json"
+
+		run("rojo", { "sourcemap", rojoProject, "-o", "sourcemap.json" }, {
+			cwd = projectPath,
+		})
+
+		-- For some reason the default stdio of "inherit" results in WPT hanging
+		-- indefinitely. Since we don't need the output in this case, we change to a
+		-- stdio that won't hang
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+			stdio = "forward",
+			cwd = projectPath,
+		})
+	end
+
+	for _, member in fs.readDir("workspace") do
+		local memberPath = `workspace/{member}`
+		if fs.isDir(memberPath) then
+			installPackagesForProject(memberPath)
+		end
+	end
+
+	installPackagesForProject()
 end
 
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
 
-	if fs.isDir("RobloxPackages") then
-		fs.removeDir("RobloxPackages")
+	local dest = "workspace/flipbook-core/RobloxPackages"
+	if fs.isDir(dest) then
+		fs.removeDir(dest)
 	end
-	fs.move("RobloxPackagesTmp/Packages", "RobloxPackages")
+	fs.move("RobloxPackagesTmp/Packages", dest)
 	fs.removeDir("RobloxPackagesTmp")
 
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat", "Roact" } do
-		local linkers = find("RobloxPackages", `^{name}%..*`)
+		local linkers = find(dest, `^{name}%..*`)
 
 		for _, linker in linkers do
 			-- All Roact linkers in RobloxPackages point to Roblox's
@@ -110,7 +119,21 @@ local function installRbxasset()
 	})
 end
 
+local function pruneDevelopmentFiles()
+	-- Prune any third-party tests or stories that may have slipped through
+	local prunedFiles = {
+		"*.spec.lua*",
+		"*.story.lua*",
+		"*.storybook.lua*",
+	}
+	for _, path in { "Packages", "workspace/flipbook-core/RobloxPackages" } do
+		for _, pattern in prunedFiles do
+			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
+		end
+	end
+end
+
 installRobloxPackages()
 installWallyPackages()
-installWallyPackagesForCodeSamples()
 installRbxasset()
+pruneDevelopmentFiles()
