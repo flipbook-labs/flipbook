@@ -1,8 +1,8 @@
 {
-  "name": "Flipbook",
+  "name": "flipbook-core",
   "tree": {
-    "workspace": {
-      "$path": "workspace"
+    "RobloxPackages": {
+      "$path": "RobloxPackages"
     },
     "Packages": {
       "$path": "Packages"
