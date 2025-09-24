@@ -1,4 +1,4 @@
 return {
 	testMatch = { "**/*.spec" },
-	testPathIgnorePatterns = { "Packages" },
+	testPathIgnorePatterns = { "Packages", "RobloxPackages" },
 }

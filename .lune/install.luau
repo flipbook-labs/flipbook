@@ -119,6 +119,21 @@ local function installRbxasset()
 	})
 end
 
+local function pruneDevelopmentFiles()
+	-- Prune any third-party tests or stories that may have slipped through
+	local prunedFiles = {
+		"*.spec.lua*",
+		"*.story.lua*",
+		"*.storybook.lua*",
+	}
+	for _, path in { "Packages", "workspace/flipbook-core/RobloxPackages" } do
+		for _, pattern in prunedFiles do
+			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
+		end
+	end
+end
+
 installRobloxPackages()
 installWallyPackages()
 installRbxasset()
+pruneDevelopmentFiles()

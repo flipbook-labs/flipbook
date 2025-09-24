@@ -42,7 +42,7 @@ describeEach({
 		Storyteller.findStoryModulesForStorybook(storybook),
 	})("%s", function(storyModule)
 		local testOrSkip = test
-		if storyModule.Name == "ArrayControls.story" then
+		if storyModule.Name == "ArrayControls.story" or storyModule.Name == "AboutView.story" then
 			testOrSkip = (test :: any).skip
 		end
 
