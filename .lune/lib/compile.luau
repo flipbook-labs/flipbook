@@ -29,8 +29,6 @@ local function compile(target: Target)
 	end
 	fs.writeDir(dest)
 
-	task.wait()
-
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
 	local env = {
