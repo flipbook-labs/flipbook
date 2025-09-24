@@ -29,7 +29,7 @@ local function AboutView()
 	end
 
 	return React.createElement(Foundation.View, {
-		tag = "size-full col bg-surface-200 align-x-center gap-xlarge padding-large",
+		tag = "size-full-0 auto-y col align-x-center gap-xlarge padding-large",
 	}, {
 		Logo = React.createElement(Foundation.Image, {
 			Image = constants.FLIPBOOK_LOGO,
