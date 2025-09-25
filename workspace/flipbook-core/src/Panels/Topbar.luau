@@ -26,14 +26,6 @@ local function Topbar(props: Props)
 		end
 	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
 
-	local navigateToDocs = useCallback(function()
-		if navigation.currentScreen ~= "Docs" then
-			navigation.navigateTo("Docs")
-		else
-			navigation.navigateTo("Home")
-		end
-	end, { navigation.navigateTo, navigation.currentScreen } :: { unknown })
-
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local helpButtonRef = useRef(nil :: GuiObject?)
 	local isAboutDialogOpen, setIsAboutDialogOpen = useState(false)
@@ -41,14 +33,6 @@ local function Topbar(props: Props)
 
 	local helpMenuItems = useMemo(function(): { Foundation.MenuItem }
 		return {
-			{
-				id = "docs",
-				text = "Docs",
-				onActivated = function()
-					navigateToDocs()
-					setIsHelpMenuOpen(false)
-				end,
-			},
 			{
 				id = "report-issue",
 				text = "Report issue",
@@ -66,7 +50,7 @@ local function Topbar(props: Props)
 				end,
 			},
 		}
-	end, { navigateToDocs })
+	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full-0 auto-y bg-surface-0 row gap-small padding-xsmall align-x-right",
