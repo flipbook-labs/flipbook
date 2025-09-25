@@ -8,6 +8,7 @@ local useMemo = React.useMemo
 local e = React.createElement
 
 type Props = {
+	changedControls: { [string]: any },
 	controls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 	layoutOrder: number?,
@@ -44,20 +45,42 @@ local function StoryControls(props: Props)
 		local option: React.Node
 		if controlType == "boolean" then
 			option = React.createElement(Foundation.Checkbox, {
-				label = "label",
+				label = "",
 				isChecked = control.value,
+				size = Foundation.Enums.InputSize.Small,
 				onActivated = setControl,
 			})
-		elseif controlType == "table" then
+		elseif controlType == "table" and Sift.List.is(control.value) then
+			-- TODO: Still need to polish up how array-based controls behave
+			-- with Foundation's Dropdown.
+			local items = Sift.List.map(control.value, function(value)
+				return {
+					id = value,
+					text = tostring(value),
+				}
+			end)
+
+			local changedValue = props.changedControls[control.name]
+
 			option = React.createElement(Foundation.Dropdown.Root, {
-				label = "label",
-				items = control.value,
+				label = "",
+				items = items,
+				value = if changedValue then changedValue else control.value[1],
+				size = Foundation.Enums.InputSize.Small,
 				onItemChanged = setControl,
 			})
-		elseif controlType == "number" or controlType == "string" then
+		elseif controlType == "string" then
 			option = React.createElement(Foundation.TextInput, {
-				label = "label",
+				label = "",
 				text = control.value,
+				size = Foundation.Enums.InputSize.Small,
+				onChanged = setControl,
+			})
+		elseif controlType == "number" then
+			option = React.createElement(Foundation.NumberInput, {
+				label = "",
+				text = control.value,
+				size = Foundation.Enums.InputSize.Small,
 				onChanged = setControl,
 			})
 		else
