@@ -97,33 +97,7 @@ local function SettingRow(props: Props)
 			})
 			else nil,
 
-		Main = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-medium padding-medium",
-		}, {
-			-- Info = React.createElement(Foundation.View, {
-			-- 	tag = "size-full-0 auto-y col gap-small",
-			-- 	LayoutOrder = nextLayoutOrder(),
-			-- }, {
-			-- 	Name = React.createElement(Foundation.Text, {
-			-- 		tag = "auto-xy text-title-medium truncate",
-			-- 		Text = props.setting.displayName,
-			-- 		LayoutOrder = nextLayoutOrder(),
-			-- 	}),
-
-			-- 	Description = React.createElement(Foundation.Text, {
-			-- 		tag = "auto-xy text-body-small text-wrap text-align-x-left",
-			-- 		Text = props.setting.description,
-			-- 		LayoutOrder = nextLayoutOrder(),
-			-- 	}),
-			-- }),
-
-			OptionWrapper = React.createElement(Foundation.View, {
-				tag = "size-full-0 auto-y",
-				LayoutOrder = nextLayoutOrder(),
-			}, {
-				Option = optionElement,
-			}),
-		}),
+		Option = optionElement,
 	})
 end
 
