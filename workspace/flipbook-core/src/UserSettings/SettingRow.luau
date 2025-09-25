@@ -5,13 +5,11 @@ local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useTheme = require("@root/Common/useTheme")
 
 local useSignalState = SignalsReact.useSignalState
 local useCallback = React.useCallback
 local useMemo = React.useMemo
-local useState = React.useState
 
 type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
@@ -25,8 +23,6 @@ local function SettingRow(props: Props)
 	local theme = useTheme()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
-
-	local isValid, setIsValid = useState(true)
 
 	local setSetting = useCallback(function(newValue: any)
 		userSettingsStore.setStorage(function(prev)
@@ -57,7 +53,6 @@ local function SettingRow(props: Props)
 			return React.createElement(Foundation.Dropdown.Root, {
 				label = props.setting.displayName,
 				hint = props.setting.description,
-				hasError = not isValid,
 				value = value,
 				items = items,
 				onItemChanged = setSetting,
@@ -69,7 +64,6 @@ local function SettingRow(props: Props)
 				value = value,
 				label = props.setting.displayName,
 				hint = props.setting.description,
-				hasError = not isValid,
 				step = 10,
 				maximum = if range then range.Max else nil,
 				minimum = if range then range.Min else nil,
@@ -91,7 +85,7 @@ local function SettingRow(props: Props)
 			then React.createElement(Foundation.View, {
 				tag = "size-50-full",
 				backgroundStyle = {
-					Color3 = if isValid then theme.selection else theme.alert,
+					Color3 = theme.selection,
 					Transparency = 0,
 				},
 			})
