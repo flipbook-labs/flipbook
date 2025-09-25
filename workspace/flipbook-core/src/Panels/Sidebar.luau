@@ -3,7 +3,6 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local Branding = require("@root/Common/Branding")
-local Searchbar = require("@root/Forms/Searchbar")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -44,9 +43,15 @@ local function Sidebar(props: Props)
 				layoutOrder = nextLayoutOrder(),
 			}),
 
-			Searchbar = e(Searchbar, {
-				layoutOrder = nextLayoutOrder(),
-				onSearchChanged = onSearchChanged,
+			Searchbar = e(Foundation.TextInput, {
+				label = "",
+				text = "",
+				placeholder = "Search...",
+				iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
+				size = Foundation.Enums.InputSize.Small,
+				width = UDim.new(1, 0),
+				onChanged = onSearchChanged,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 		}),
 
