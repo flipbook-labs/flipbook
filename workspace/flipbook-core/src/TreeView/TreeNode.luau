@@ -11,6 +11,7 @@ local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 local useSpring = ReactSpring.useSpring :: any
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useRef = React.useRef
 local useState = React.useState
 local useTokens = Foundation.Hooks.useTokens
 
@@ -36,9 +37,11 @@ local function TreeNode(props: Props)
 	local tokens = useTokens()
 	local icon, iconColor = useTreeNodeIcon(props.node.icon)
 	local isHovered, setIsHovered = useState(false)
+	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
 	local isSelected = treeViewContext.isSelected(props.node)
+	local nodeRef = useRef(nil :: GuiObject?)
 
 	local styles = useSpring({
 		hover = if isHovered or isSelected then 0 else 1,
@@ -71,6 +74,10 @@ local function TreeNode(props: Props)
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
+	local onSecondaryActivated = useCallback(function()
+		setIsContextMenuOpen(true)
+	end, {})
+
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
 	end, {})
@@ -86,8 +93,10 @@ local function TreeNode(props: Props)
 				left = UDim.new(0, tokens.Padding.Medium * numParents),
 			},
 			backgroundStyle = if isSelected then tokens.Color.Extended.Purple.Purple_800 else nil,
+			ref = nodeRef,
 			onStateChanged = onStateChanged,
 			onActivated = onActivated,
+			onSecondaryActivated = onSecondaryActivated,
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Icon = React.createElement(Foundation.Icon, {
@@ -130,6 +139,52 @@ local function TreeNode(props: Props)
 				LayoutOrder = nextLayoutOrder(),
 			}, children)
 			else nil,
+
+		ContextMenu = React.createElement(Foundation.Menu, {
+			isOpen = isContextMenuOpen,
+			size = Foundation.Enums.InputSize.Small,
+			items = {
+				{
+					id = "pin",
+					text = "Pin",
+					onActivated = function()
+						print("click")
+					end,
+				},
+				{
+					id = "reload",
+					text = "Reload",
+					onActivated = function()
+						print("click")
+					end,
+				},
+				{
+					id = "explore",
+					text = "Select in Explorer",
+					onActivated = function()
+						print("click")
+					end,
+				},
+				{
+					id = "viewport-preview",
+					text = "Preview in viewport",
+					onActivated = function()
+						print("click")
+					end,
+				},
+				{
+					id = "reset-zoom",
+					text = "Reset zoom",
+					onActivated = function()
+						print("click")
+					end,
+				},
+			},
+			onPressedOutside = function()
+				setIsContextMenuOpen(false)
+			end,
+			anchorRef = nodeRef,
+		}),
 	})
 end
 
