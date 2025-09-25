@@ -37,11 +37,13 @@ local function SettingRow(props: Props)
 	end, { userSettingsStore.setStorage, props.setting } :: { unknown })
 
 	local optionElement = useMemo(function(): React.Node
+		local value = userSettings[props.setting.name]
+
 		if props.setting.settingType == "checkbox" then
 			return React.createElement(Foundation.Checkbox, {
 				label = props.setting.displayName,
 				hint = props.setting.description,
-				isChecked = props.setting.value,
+				isChecked = value,
 				onActivated = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
@@ -51,14 +53,6 @@ local function SettingRow(props: Props)
 					text = choice.name,
 				}
 			end)
-
-			local value = props.setting.choices[1].name
-			for _, choice in props.setting.choices do
-				if choice.name == userSettings[props.setting.name] then
-					value = choice.name
-					break
-				end
-			end
 
 			return React.createElement(Foundation.Dropdown.Root, {
 				label = props.setting.displayName,
@@ -72,7 +66,7 @@ local function SettingRow(props: Props)
 			local range = props.setting.range
 
 			return React.createElement(Foundation.NumberInput, {
-				value = userSettings[props.setting.name],
+				value = value,
 				label = props.setting.displayName,
 				hint = props.setting.description,
 				hasError = not isValid,
@@ -83,7 +77,7 @@ local function SettingRow(props: Props)
 			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)
-	end, { props.setting, setSetting } :: { unknown })
+	end, { props.setting, userSettings } :: { unknown })
 
 	local hasBeenChanged = not userSettingsStore.isSettingDefault(props.setting.name)
 
