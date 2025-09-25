@@ -1,9 +1,11 @@
 local HttpService = game:GetService("HttpService")
 
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
+local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
@@ -14,6 +16,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local useEffect = React.useEffect
 local useRef = React.useRef
+local useSignalState = SignalsReact.useSignalState
 
 export type Props = {
 	searchTerm: string?,
@@ -35,50 +38,102 @@ local function StorybookTreeView(props: Props)
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 
-	useEffect(function()
-		local roots: { TreeNode } = {}
+	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local pinnedInstances = useSignalState(pinnedInstanceStore.getPinnedInstances)
 
-		for _, storybook in props.storybooks.available do
-			-- FIXME: Need to cast each `storybook` variable to `any` to fix an
-			-- issue where the ModuleLoader type is somehow not compareable to
-			-- itself
-			local root = createTreeNodesForStorybook(storybook :: any)
-			table.insert(roots, root)
-			storybookByNodeId.current[root.id] = storybook :: any
-		end
+	useEffect(
+		function()
+			local roots: { TreeNode } = {}
 
-		if #props.storybooks.unavailable > 0 then
-			local unavailableStorybooks: TreeNode = {
-				id = HttpService:GenerateGUID(),
-				label = "Unavailable Storybooks",
-				icon = "folder",
-				isExpanded = false,
-				children = {},
-			}
-
-			-- Luau FIXME: Without using `pairs` here Luau will get angry about
-			-- the `unavailableStorybookByNodeId` assignment below
-			for _, unavailableStorybook in pairs(props.storybooks.unavailable) do
-				local root: TreeNode = {
+			if #pinnedInstances > 0 then
+				-- TODO: Remove the Starred dropdown all together. Instead just
+				-- move those storybooks to the top
+				local pins: TreeNode = {
 					id = HttpService:GenerateGUID(),
-					label = unavailableStorybook.storybook.name,
-					icon = "alert",
+					label = "Starred",
+					icon = "star",
+					isExpanded = true,
+					children = {},
+				}
+
+				for _, pinnedInstance in pinnedInstances do
+					local node: TreeNode
+					if pinnedInstance.instance then
+						local pinnedNode = treeViewContext.getNodeByInstance(pinnedInstance.instance)
+						if pinnedNode then
+							node = pinnedNode
+						end
+					end
+
+					-- FIXME: When initially pinning a storybook, it shows up
+					-- under Starred with the correct path. But when reloading
+					-- it can't be found
+					if not node then
+						node = {
+							id = HttpService:GenerateGUID(),
+							label = `ERR: {pinnedInstance.path}`,
+							icon = "alert", -- TODO: Use an error icon
+							isExpanded = true,
+							children = {},
+						}
+					end
+
+					table.insert(pins.children, node)
+				end
+
+				table.insert(roots, 1, pins)
+			end
+
+			for _, storybook in props.storybooks.available do
+				-- FIXME: Need to cast each `storybook` variable to `any` to fix an
+				-- issue where the ModuleLoader type is somehow not compareable to
+				-- itself
+				local root = createTreeNodesForStorybook(storybook :: any)
+				table.insert(roots, root)
+				storybookByNodeId.current[root.id] = storybook :: any
+			end
+
+			if #props.storybooks.unavailable > 0 then
+				local unavailableStorybooks: TreeNode = {
+					id = HttpService:GenerateGUID(),
+					label = "Unavailable Storybooks",
+					icon = "folder",
 					isExpanded = false,
 					children = {},
 				}
-				table.insert(unavailableStorybooks.children, root)
-				unavailableStorybookByNodeId.current[root.id] = unavailableStorybook
+
+				-- Luau FIXME: Without using `pairs` here Luau will get angry about
+				-- the `unavailableStorybookByNodeId` assignment below
+				for _, unavailableStorybook in pairs(props.storybooks.unavailable) do
+					local root: TreeNode = {
+						id = HttpService:GenerateGUID(),
+						label = unavailableStorybook.storybook.name,
+						icon = "alert",
+						isExpanded = false,
+						children = {},
+					}
+					table.insert(unavailableStorybooks.children, root)
+					unavailableStorybookByNodeId.current[root.id] = unavailableStorybook
+				end
+
+				table.insert(roots, unavailableStorybooks)
 			end
 
-			table.insert(roots, unavailableStorybooks)
-		end
+			-- FIXME: When pinning a storybook the entire tree reloads and the
+			-- expanded states are discarded
+			treeViewContext.setRoots(roots)
 
-		treeViewContext.setRoots(roots)
-
-		return function()
-			treeViewContext.setRoots({})
-		end
-	end, { props.storybooks.available, props.storybooks.unavailable, treeViewContext.setRoots } :: { unknown })
+			return function()
+				treeViewContext.setRoots({})
+			end
+		end,
+		{
+			props.storybooks.available,
+			props.storybooks.unavailable,
+			treeViewContext.setRoots,
+			pinnedInstances,
+		} :: { unknown }
+	)
 
 	useEffect(function()
 		treeViewContext.search(props.searchTerm)

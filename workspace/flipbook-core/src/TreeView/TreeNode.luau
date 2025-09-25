@@ -1,7 +1,9 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSpring = require("@pkg/ReactSpring")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
+local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -13,6 +15,7 @@ local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
 local useTokens = Foundation.Hooks.useTokens
+local useSignalState = SignalsReact.useSignalState
 
 type TreeNode = types.TreeNode
 
@@ -39,6 +42,7 @@ local function TreeNode(props: Props)
 	local treeViewContext = TreeViewContext.use()
 	local isExpanded = treeViewContext.isExpanded(props.node)
 	local isSelected = treeViewContext.isSelected(props.node)
+	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
 	local styles = useSpring({
 		hover = if isHovered or isSelected then 0 else 1,
@@ -71,6 +75,17 @@ local function TreeNode(props: Props)
 		treeViewContext.activateNode(props.node)
 	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
 
+	local onTogglePin = useCallback(function()
+		local instance = props.node.instance
+		if instance then
+			if pinnedInstanceStore.isPinned(instance) then
+				pinnedInstanceStore.unpin(instance)
+			else
+				pinnedInstanceStore.pin(instance)
+			end
+		end
+	end, { pinnedInstanceStore, props.node } :: { unknown })
+
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
 	end, {})
@@ -80,7 +95,7 @@ local function TreeNode(props: Props)
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Node = React.createElement(Foundation.View, {
-			tag = "auto-xy row gap-medium flex-fill radius-medium flex-between padding-y-small",
+			tag = "auto-xy row gap-medium flex-between radius-medium align-y-center padding-y-small",
 			padding = {
 				right = UDim.new(0, tokens.Padding.Large),
 				left = UDim.new(0, tokens.Padding.Medium * numParents),
@@ -102,6 +117,20 @@ local function TreeNode(props: Props)
 				Text = props.node.label,
 				LayoutOrder = nextLayoutOrder(),
 			}),
+
+			Pin = if props.node.instance and props.node.icon == "storybook"
+				then React.createElement(Foundation.IconButton, {
+					icon = {
+						name = Foundation.Enums.IconName.Star,
+						variant = if pinnedInstanceStore.isPinned(props.node.instance)
+							then Foundation.Enums.IconVariant.Filled
+							else Foundation.Enums.IconVariant.Regular,
+					},
+					size = Foundation.Enums.IconSize.Small,
+					onActivated = onTogglePin,
+					LayoutOrder = nextLayoutOrder(),
+				})
+				else nil,
 
 			Toggle = if #props.node.children > 0
 				then React.createElement(Foundation.View, {
