@@ -15,6 +15,7 @@ local StoryPreview = require("@root/Storybook/StoryPreview")
 local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
+local exportGuiToDisk = require("@root/Storybook/exportGuiToDisk")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useZoom = require("@root/Common/useZoom")
 
@@ -87,6 +88,13 @@ local function StoryView(props: Props)
 		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
 	end, { storyParentRef })
 
+	local exportSelection = React.useCallback(function()
+		local selection = game.Selection:Get()[1]
+		if selection then
+			exportGuiToDisk(selection)
+		end
+	end, {})
+
 	local isMountedInViewport, setIsMountedInViewport = React.useState(false)
 
 	local onPreviewInViewport = React.useCallback(function()
@@ -119,6 +127,12 @@ local function StoryView(props: Props)
 					layoutOrder = nextLayoutOrder(),
 					story = story,
 					storyModule = props.story,
+				}),
+
+				Export = e(Foundation.Button, {
+					text = "Export Selection",
+					onActivated = exportSelection,
+					LayoutOrder = nextLayoutOrder(),
 				}),
 
 				Divider = e(Foundation.Divider, {
