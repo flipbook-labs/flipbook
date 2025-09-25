@@ -3,6 +3,7 @@ local React = require("@pkg/React")
 
 local AboutView = require("@root/About/AboutView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
+local ReportIssueDialog = require("@root/Plugin/ReportIssueDialog")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useCallback = React.useCallback
@@ -28,9 +29,18 @@ local function Topbar(props: Props)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local helpButtonRef = useRef(nil :: GuiObject?)
 	local isAboutDialogOpen, setIsAboutDialogOpen = useState(false)
+	local isReportIssueDialogOpen, setIsReportIssueDialogOpen = useState(false)
 
 	local helpMenuItems = useMemo(function(): { Foundation.MenuItem }
 		return {
+			{
+				id = "report-issue",
+				text = "Report issue",
+				onActivated = function()
+					setIsReportIssueDialogOpen(true)
+					setIsHelpMenuOpen(false)
+				end,
+			},
 			{
 				id = "about",
 				text = "About",
@@ -89,6 +99,14 @@ local function Topbar(props: Props)
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					AboutView = React.createElement(AboutView),
 				}),
+			})
+			else nil,
+
+		ReportIssueDialog = if isReportIssueDialogOpen
+			then React.createElement(ReportIssueDialog, {
+				onClose = function()
+					setIsReportIssueDialogOpen(false)
+				end,
 			})
 			else nil,
 	})
