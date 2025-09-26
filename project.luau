@@ -19,8 +19,12 @@ return {
 	FOLDERS_TO_LINT = {
 		"src",
 		".lune",
+
+		-- We have to exhaustively include every workspace member to skip over
+		-- Packages/RobloxPackages
 		"workspace/flipbook-core/src",
 		"workspace/example/src",
 		"workspace/code-samples/src",
+		"workspace/test-runner/src",
 	},
 }
