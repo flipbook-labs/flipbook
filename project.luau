@@ -1,9 +1,7 @@
-local BUILD_PATH = "build"
-
 return {
 	-- All paths are relative to the root of the repo
 	SOURCE_PATH = "src",
-	BUILD_PATH = BUILD_PATH,
+	BUILD_PATH = "build",
 	PACKAGES_PATH = "Packages",
 	LUNE_SCRIPTS_PATH = ".lune",
 	EXAMPLE_PATH = "example",
@@ -11,8 +9,8 @@ return {
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
-	SOURCEMAP_PATH = `{BUILD_PATH}/sourcemap.json`,
-	DARKLUA_SOURCEMAP_PATH = `{BUILD_PATH}/sourcemap-darklua.json`,
+	SOURCEMAP_PATH = "sourcemap.json",
+	DARKLUA_SOURCEMAP_PATH = "sourcemap-darklua.json",
 
 	ROJO_ANALYSIS_PROJECT = "analysis.project.json",
 	ROJO_BUILD_PROJECT = "build.project.json",
