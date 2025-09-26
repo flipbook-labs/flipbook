@@ -2,7 +2,7 @@ local project = require("@repo/project")
 
 local run = require("./lib/run")
 
-local globalDefsPath = "globalTypes.d.luau"
+local globalDefsPath = `{project.BUILD_PATH}/globalTypes.d.luau`
 
 run("curl", {
 	"-s",
