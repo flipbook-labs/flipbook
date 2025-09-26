@@ -11,11 +11,13 @@ local PROD_CONFIG = {
 	prunedDirs = {
 		"workspace/code-samples",
 		"workspace/example",
+		"workspace/test-runner",
 	},
 	prunedFiles = {
 		"*.spec.lua*",
 		"*.story.lua*",
 		"*.storybook.lua*",
+		"jest.config.lua*",
 	},
 }
 
@@ -85,8 +87,6 @@ local function compile(target: Target)
 			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
-
-	run("cp", { "-R", "Packages", dest })
 end
 
 return compile

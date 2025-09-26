@@ -12,10 +12,6 @@
       },
 
       "Flipbook": {
-        "TestRunner": {
-          "$path": "tests"
-        },
-
         "$path": "build.project.json"
       }
     }
