@@ -10,12 +10,15 @@ local Sidebar = require("@root/Panels/Sidebar")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
+local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = SignalsReact.useSignalState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
+
+local defaultStorybook = createLoadedStorybook()
 
 local function App()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
@@ -32,6 +35,11 @@ local function App()
 		navigation.navigateTo("Home")
 
 		setUnavailableStorybook(nil)
+
+		if newStoryModule and not newStorybook then
+			newStorybook = defaultStorybook
+		end
+
 		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })

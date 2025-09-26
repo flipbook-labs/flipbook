@@ -136,10 +136,8 @@ local function StorybookTreeView(props: Props)
 							local root = ancestry[#ancestry]
 							local storybook = storybookByNodeId.current[root.id]
 
-							if storybook then
-								props.onStoryChanged(selectedNode.instance, storybook)
-								setLastOpenedStory(selectedNode.instance)
-							end
+							props.onStoryChanged(selectedNode.instance, storybook)
+							setLastOpenedStory(selectedNode.instance)
 						end
 					else
 						props.onStoryChanged(nil, nil)
