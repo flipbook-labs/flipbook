@@ -19,6 +19,4 @@ widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore.FLIPBOOK_LOGO)
 
-local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin, widget, button)
-
-plugin.Unloading:Connect(flipbookPlugin.unmount)
+FlipbookCore.createFlipbookPlugin(plugin, widget, button)

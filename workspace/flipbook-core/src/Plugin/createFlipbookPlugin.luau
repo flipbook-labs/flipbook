@@ -11,6 +11,7 @@ local function createFlipbookPlugin(
 ): {
 	mount: () -> (),
 	unmount: () -> (),
+	destroy: () -> (),
 }
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
@@ -28,6 +29,13 @@ local function createFlipbookPlugin(
 
 	local function mount()
 		root:render(app)
+	end
+
+	local function destroy()
+		unmount()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
 	end
 
 	table.insert(
@@ -55,15 +63,10 @@ local function createFlipbookPlugin(
 		end)
 	)
 
+	table.insert(connections, plugin.Unloading:Connect(destroy))
+
 	if widget.Enabled then
 		mount()
-	end
-
-	local function destroy()
-		unmount()
-		for _, connection in connections do
-			connection:Disconnect()
-		end
 	end
 
 	return {
