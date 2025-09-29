@@ -93,8 +93,6 @@ local function StorybookTreeView(props: Props)
 			table.insert(roots, orphanedStories)
 		end
 
-		-- TODO: maybe this needs to be a merge so the entire tree isn't
-		-- replaced
 		treeViewContext.setRoots(roots)
 
 		return function()
