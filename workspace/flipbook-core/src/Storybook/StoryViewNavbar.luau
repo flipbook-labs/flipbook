@@ -26,13 +26,13 @@ local function StoryViewNavbar(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local onThemeChanged = useCallback(function(itemId)
+	local onThemeChanged = useCallback(function(itemId: string | number)
 		userSettingsStore.setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
 				theme = itemId,
 			})
 		end)
-	end, {})
+	end, { userSettingsStore.setStorage })
 
 	return e(Foundation.View, {
 		tag = "size-full-0 auto-y row gap-small align-y-center",
