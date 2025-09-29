@@ -104,7 +104,7 @@ local function StoryView(props: Props)
 			tag = "size-full col flex-between",
 		}, {
 			TopbarWrapper = e(Foundation.View, {
-				tag = "size-full-0 auto-y padding-x-medium col gap-large",
+				tag = "size-full-0 auto-y padding-small col gap-large",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				StoryViewNavbar = e(StoryViewNavbar, {
