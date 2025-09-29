@@ -32,6 +32,26 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 	fs.writeFile(filePath, content)
 end
 
+-- local function installPackageFromRepo(
+-- 	packageName: string,
+-- 	repo: string,
+-- 	rev: string,
+-- 	extraSteps: ((packagePath: string) -> ())?
+-- )
+-- 	local packagePath = `build/{packageName}`
+
+-- 	run("rm", { "-rf", packagePath })
+-- 	run("rm", { "-rf", `{packagePath}.lua` })
+-- 	run("git", { "clone", repo, packagePath })
+-- 	run("git", { "checkout", rev }, {
+-- 		cwd = packagePath,
+-- 	})
+
+-- 	if extraSteps then
+-- 		extraSteps(packagePath)
+-- 	end
+-- end
+
 local function installWallyPackages()
 	local function installPackagesForProject(projectPath: string?)
 		print("installing packages for", projectPath)
@@ -54,6 +74,33 @@ local function installWallyPackages()
 			cwd = projectPath,
 		})
 	end
+
+	-- installPackageFromRepo("Storyteller", "https://github.com/flipbook-labs/storyteller", "main", function(packagePath)
+	-- 	run("lune", { "run", "install" }, {
+	-- 		cwd = packagePath,
+	-- 		stdio = "none",
+	-- 	})
+	-- 	run("lune", { "run", "build" }, {
+	-- 		cwd = packagePath,
+	-- 	})
+	-- 	run("cp", { "-R", `{packagePath}/dist`, "Packages/Storyteller" })
+	-- end)
+
+	-- installPackageFromRepo(
+	-- 	"ModuleLoader",
+	-- 	"https://github.com/flipbook-labs/module-loader",
+	-- 	"roblox-internal",
+	-- 	function(packagePath)
+	-- 		run("lune", { "run", "install" }, {
+	-- 			cwd = packagePath,
+	-- 			stdio = "none",
+	-- 		})
+	-- 		run("lune", { "run", "build" }, {
+	-- 			cwd = packagePath,
+	-- 		})
+	-- 		run("cp", { "-R", `{packagePath}/dist`, "Packages/ModuleLoader" })
+	-- 	end
+	-- )
 
 	for _, member in fs.readDir("workspace") do
 		local memberPath = `workspace/{member}`
