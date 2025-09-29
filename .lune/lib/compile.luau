@@ -1,5 +1,5 @@
-local constants = require("./constants")
 local fs = require("@lune/fs")
+local project = require("@repo/project")
 local run = require("./run")
 local serde = require("@lune/serde")
 
@@ -11,16 +11,18 @@ local PROD_CONFIG = {
 	prunedDirs = {
 		"workspace/code-samples",
 		"workspace/example",
+		"workspace/test-runner",
 	},
 	prunedFiles = {
 		"*.spec.lua*",
 		"*.story.lua*",
 		"*.storybook.lua*",
+		"jest.config.lua*",
 	},
 }
 
 local function compile(target: Target)
-	local dest = `{constants.BUILD_PATH}/plugin`
+	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.isDir(dest) then
 		fs.removeDir(dest)
@@ -37,23 +39,23 @@ local function compile(target: Target)
 
 	run("rojo", {
 		"sourcemap",
-		constants.ROJO_BUILD_PROJECT,
+		project.ROJO_BUILD_PROJECT,
 		"-o",
-		constants.DARKLUA_SOURCEMAP_PATH,
+		project.DARKLUA_SOURCEMAP_PATH,
 	})
 
 	print("substituting globals", env)
 
 	run("darklua", {
 		"process",
-		constants.SOURCE_PATH,
+		project.SOURCE_PATH,
 		dest,
 	}, {
 		env = env,
 	})
 
-	for _, member in fs.readDir(constants.WORKSPACE_PATH) do
-		local memberPath = `{constants.WORKSPACE_PATH}/{member}`
+	for _, member in fs.readDir(project.WORKSPACE_PATH) do
+		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
 		if not fs.isDir(memberPath) then
 			continue
@@ -85,8 +87,6 @@ local function compile(target: Target)
 			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
-
-	run("cp", { "-R", "Packages", dest })
 end
 
 return compile
