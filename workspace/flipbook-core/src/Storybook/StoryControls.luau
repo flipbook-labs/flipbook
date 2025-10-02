@@ -30,6 +30,8 @@ local function StoryControls(props: Props)
 		end)
 	end, { props.controls })
 
+	local pendingControl, setPendingControl = React.useState(nil :: string?)
+
 	local controlElements: { [string]: React.Node } = {}
 	for index, control in sortedControls do
 		local function setControl(newValue: any)
@@ -74,12 +76,21 @@ local function StoryControls(props: Props)
 				label = "",
 				text = control.value,
 				size = Foundation.Enums.InputSize.Small,
-				onChanged = setControl,
+				onChanged = function(newText)
+					setPendingControl(newText)
+				end,
+				onReturnPressed = function()
+					setControl(pendingControl)
+				end,
+				onFocusLost = function()
+					setControl(pendingControl)
+				end,
 			})
 		elseif controlType == "number" then
 			option = React.createElement(Foundation.NumberInput, {
 				label = "",
-				text = control.value,
+				value = control.value,
+				step = 1,
 				size = Foundation.Enums.InputSize.Small,
 				onChanged = setControl,
 			})
