@@ -76,9 +76,7 @@ local function SettingRow(props: Props)
 	local hasBeenChanged = not userSettingsStore.isSettingDefault(props.setting.name)
 
 	return React.createElement(Foundation.View, {
-		tag = {
-			["size-full-0 auto-y radius-medium"] = true,
-		},
+		tag = "size-full-0 auto-y",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		ChangedIndicator = if hasBeenChanged
@@ -91,7 +89,11 @@ local function SettingRow(props: Props)
 			})
 			else nil,
 
-		Option = optionElement,
+		OptionWrapper = React.createElement(Foundation.View, {
+			tag = "auto-xy padding-x-medium",
+		}, {
+			Option = optionElement,
+		}),
 	})
 end
 
