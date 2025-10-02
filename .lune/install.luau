@@ -64,7 +64,7 @@ local function installWallyPackages()
 end
 
 local function installRobloxPackages()
-	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
+	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.693.0.6930961" })
 
 	local dest = "workspace/flipbook-core/RobloxPackages"
 	if fs.isDir(dest) then
