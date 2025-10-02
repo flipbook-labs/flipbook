@@ -31,6 +31,13 @@ local function Sidebar(props: Props)
 		end
 	end, {})
 
+	-- Right now we just respond to available storybook changes. This should be
+	-- updated into a `useOrphanedStoryModules` hook that will update based on
+	-- .story modules being added/removed from the DM.
+	local orphanedStoryModules = React.useMemo(function()
+		return Storyteller.findOrphanedStoryModules(game, props.storybooks.available)
+	end, { props.storybooks.available })
+
 	return e(Foundation.View, {
 		tag = "size-full bg-surface-0 col gap-medium padding-medium flex-between",
 		LayoutOrder = props.layoutOrder,
@@ -67,6 +74,7 @@ local function Sidebar(props: Props)
 			StorybookTreeView = e(StorybookTreeView, {
 				searchTerm = search,
 				storybooks = props.storybooks,
+				orphanedStoryModules = orphanedStoryModules,
 				onStoryChanged = props.onStoryChanged,
 				onShowErrorPage = props.onShowErrorPage,
 			}),
