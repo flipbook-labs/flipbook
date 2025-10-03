@@ -40,7 +40,7 @@ jobs:
         # The rbxm file isn't actually needed, we just pass the flag so the build
         # script doesn't try to build to the Roblox Studio plugins folder (which
         # doesn't exist in CI and causes an error)
-        run: lune run build --target prod --output Flipbook.rbxm
+        run: lune run build --channel prod --target rotriever --output Flipbook.rbxm
 
       - uses: actions/upload-artifact@v4
         with:

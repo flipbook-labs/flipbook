@@ -1,11 +1,14 @@
 local fs = require("@lune/fs")
 local project = require("@repo/project")
-local run = require("./run")
 local serde = require("@lune/serde")
+
+local find = require("./find")
+local run = require("./run")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
-type Target = "prod" | "dev"
+type Channel = "prod" | "dev"
+type Target = "roblox" | "rotriever"
 
 local PROD_CONFIG = {
 	prunedDirs = {
@@ -21,7 +24,12 @@ local PROD_CONFIG = {
 	},
 }
 
-local function compileWorkspaceMember(memberPath: string, target: Target, env: { [string]: any }): string
+local function compileWorkspaceMember(
+	memberPath: string,
+	channel: Channel,
+	target: Target,
+	env: { [string]: any }
+): string
 	local memberBuildPath = `{memberPath}/build`
 
 	if fs.isDir(memberBuildPath) then
@@ -45,16 +53,25 @@ local function compileWorkspaceMember(memberPath: string, target: Target, env: {
 		run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
 	end
 
-	if target == "prod" then
+	if channel == "prod" then
 		for _, pattern in PROD_CONFIG.prunedFiles do
 			run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
+		end
+	end
+
+	if target == "rotriever" then
+		-- Rotriever does not support .luau files, so rename them to .lua for
+		-- compatibility
+		for _, luauFile in find(memberBuildPath, "%.luau$") do
+			local newName = luauFile:gsub("%.luau$", ".lua")
+			fs.move(luauFile, newName)
 		end
 	end
 
 	return memberBuildPath
 end
 
-local function compile(target: Target)
+local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.isDir(dest) then
@@ -66,7 +83,7 @@ local function compile(target: Target)
 
 	local env = {
 		BUILD_VERSION = wallyToml.package.version,
-		BUILD_CHANNEL = if target == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 	}
 
@@ -91,14 +108,14 @@ local function compile(target: Target)
 		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
 		if fs.isDir(memberPath) then
-			local memberBuildPath = compileWorkspaceMember(memberPath, target, env)
+			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
 
 			run("mkdir", { "-p", `{dest}/{memberPath}` })
 			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
 		end
 	end
 
-	if target == "prod" then
+	if channel == "prod" then
 		for _, dir in PROD_CONFIG.prunedDirs do
 			run("rm", { "-rf", `{dest}/{dir}` })
 		end
