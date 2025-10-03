@@ -61,12 +61,10 @@ local function installWallyPackages()
 			installPackagesForProject(memberPath)
 		end
 	end
-
-	installPackagesForProject()
 end
 
 local function installRobloxPackages()
-	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
+	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.693.0.6930961" })
 
 	local dest = "workspace/flipbook-core/RobloxPackages"
 	if fs.isDir(dest) then
@@ -126,7 +124,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { "Packages", "workspace/flipbook-core/RobloxPackages" } do
+	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
 		end

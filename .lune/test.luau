@@ -25,7 +25,7 @@ local success, err = pcall(function()
 	run("python3", {
 		".lune/python/upload_and_run_task.py",
 		"tests.rbxl",
-		"tests/run-tests.luau",
+		".lune/tasks/run-tests.luau",
 	}, {
 		env = {
 			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,

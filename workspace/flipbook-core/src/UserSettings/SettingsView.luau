@@ -42,7 +42,7 @@ local function SettingsView()
 		}),
 
 		Settings = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-medium",
+			tag = "size-full-0 auto-y col gap-xlarge",
 			LayoutOrder = nextLayoutOrder(),
 		}, children),
 	})

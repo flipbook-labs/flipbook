@@ -2,15 +2,13 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local Checkbox = require("@root/Forms/Checkbox")
-local Dropdown = require("@root/Forms/Dropdown")
-local InputField = require("@root/Forms/InputField")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useMemo = React.useMemo
 local e = React.createElement
 
 type Props = {
+	changedControls: { [string]: any },
 	controls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 	layoutOrder: number?,
@@ -32,6 +30,8 @@ local function StoryControls(props: Props)
 		end)
 	end, { props.controls })
 
+	local pendingControl, setPendingControl = React.useState(nil :: string?)
+
 	local controlElements: { [string]: React.Node } = {}
 	for index, control in sortedControls do
 		local function setControl(newValue: any)
@@ -46,20 +46,53 @@ local function StoryControls(props: Props)
 		local controlType = typeof(control.value)
 		local option: React.Node
 		if controlType == "boolean" then
-			option = React.createElement(Checkbox, {
-				initialState = control.value,
-				onStateChange = setControl,
+			option = React.createElement(Foundation.Checkbox, {
+				label = "",
+				isChecked = control.value,
+				size = Foundation.Enums.InputSize.Small,
+				onActivated = setControl,
 			})
-		elseif controlType == "table" then
-			option = React.createElement(Dropdown, {
-				default = control.value[1],
-				options = control.value,
-				onOptionChange = setControl,
+		elseif controlType == "table" and Sift.List.is(control.value) then
+			-- TODO: Still need to polish up how array-based controls behave
+			-- with Foundation's Dropdown.
+			local items = Sift.List.map(control.value, function(value)
+				return {
+					id = value,
+					text = tostring(value),
+				}
+			end)
+
+			local changedValue = props.changedControls[control.name]
+
+			option = React.createElement(Foundation.Dropdown.Root, {
+				label = "",
+				items = items,
+				value = if changedValue then changedValue else control.value[1],
+				size = Foundation.Enums.InputSize.Small,
+				onItemChanged = setControl,
 			})
-		elseif controlType == "number" or controlType == "string" then
-			option = React.createElement(InputField, {
-				placeholder = control.value,
-				onSubmit = setControl,
+		elseif controlType == "string" then
+			option = React.createElement(Foundation.TextInput, {
+				label = "",
+				text = control.value,
+				size = Foundation.Enums.InputSize.Small,
+				onChanged = function(newText)
+					setPendingControl(newText)
+				end,
+				onReturnPressed = function()
+					setControl(pendingControl)
+				end,
+				onFocusLost = function()
+					setControl(pendingControl)
+				end,
+			})
+		elseif controlType == "number" then
+			option = React.createElement(Foundation.NumberInput, {
+				label = "",
+				value = control.value,
+				step = 1,
+				size = Foundation.Enums.InputSize.Small,
+				onChanged = setControl,
 			})
 		else
 			option = React.createElement(Foundation.Text, {
