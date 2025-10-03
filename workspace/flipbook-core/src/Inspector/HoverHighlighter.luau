@@ -3,7 +3,8 @@ local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useHoveredGuiObjects = require("@root/Common/useHoveredGuiObjects")
+local useGuiDimensions = require("@root/Inspector/useGuiDimensions")
+local useHoveredGuiObjects = require("@root/Inspector/useHoveredGuiObjects")
 
 local useTokens = Foundation.Hooks.useTokens
 local useOverlay = Foundation.Hooks.useOverlay
@@ -18,20 +19,16 @@ local function HoverHighlighter(props: Props): React.Node
 	local hoveredObjects = useHoveredGuiObjects(if props.hoverRef then props.hoverRef.current else nil)
 	local highlightedObject = hoveredObjects[1]
 
+	local dim = useGuiDimensions(highlightedObject)
+
 	if not highlightedObject then
 		return nil
 	end
 
-	-- TODO: If highlightedObject's position or size changes make sure to
-	-- trigger a re-render
-
-	local absSize = highlightedObject.AbsoluteSize
-	local absPosition = highlightedObject.AbsolutePosition
-
 	local root = React.createElement(Foundation.View, {
 		tag = "col align-y-center gap-small",
-		Size = UDim2.fromOffset(absSize.X, absSize.Y),
-		Position = UDim2.fromOffset(absPosition.X, absPosition.Y),
+		Size = UDim2.fromOffset(dim.size.X, dim.size.Y),
+		Position = UDim2.fromOffset(dim.position.X, dim.position.Y),
 	}, {
 
 		Name = React.createElement(Foundation.Text, {
@@ -60,7 +57,7 @@ local function HoverHighlighter(props: Props): React.Node
 			Label = React.createElement(Foundation.Text, {
 				tag = "auto-xy text-label-medium padding-xsmall",
 				backgroundStyle = tokens.Color.Extended.Turquoise.Turquoise_700,
-				Text = `{math.round(absSize.X)} x {math.round(absSize.Y)}`,
+				Text = `{math.round(dim.size.X)} x {math.round(dim.size.Y)}`,
 			}),
 		}),
 	})
