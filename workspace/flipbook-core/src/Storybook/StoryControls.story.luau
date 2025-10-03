@@ -14,6 +14,7 @@ return {
 				controls = {
 					foo = "bar",
 					checkbox = false,
+					number = 10,
 					dropdown = {
 						"Option 1",
 						"Option 2",
@@ -22,6 +23,7 @@ return {
 					onlyTwentyCharacters = "OnlyTwentyCharacters",
 					badControlType = function() end,
 				},
+				changedControls = {},
 				setControl = function() end,
 			}),
 		})

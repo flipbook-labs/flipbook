@@ -55,6 +55,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: flipbook-core-build
+          path: workspace/flipbook-core/build
+
       - uses: Roblox-ActionsCache/tibdex-github-app-token@v1.4.0
         id: setup_token
         with:
@@ -66,10 +71,6 @@ jobs:
         with:
           token: ${{ steps.setup_token.outputs.token }}
           allow-external-github-orgs: true
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: flipbook-core-build
 
       - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
         if: ${{ !github.event.release }}

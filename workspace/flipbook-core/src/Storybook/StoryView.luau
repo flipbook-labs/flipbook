@@ -160,6 +160,7 @@ local function StoryView(props: Props)
 					},
 				}, {
 					StoryControls = e(StoryControls, {
+						changedControls = changedControls,
 						controls = controlsWithUserOverrides,
 						setControl = setControl,
 					}),
