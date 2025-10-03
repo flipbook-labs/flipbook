@@ -9,54 +9,71 @@ on:
       - main
 
 jobs:
-  publish-github-release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: Roblox-ActionsCache/tibdex-github-app-token@v1.4.0
+        id: setup_token
         with:
-          version: v1.1.1
+          app_id: ${{ secrets.TOKENS_APP_LUA_ECOSYSTEM_DEPENDENCIES_ID }}
+          private_key: ${{ secrets.TOKENS_APP_LUA_ECOSYSTEM_DEPENDENCIES_KEY }}
+          repository: Roblox/rotriever-proxy-index
+
+      - uses: Roblox/setup-foreman@v3
+        with:
+          token: ${{ steps.setup_token.outputs.token }}
+          allow-external-github-orgs: true
+
+      - name: Install dependencies
+        run: lune run install
 
       - name: Get model file name
         run: |
           name=$(jq -r .name default.project.json)
-          echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
-
-      - name: Install dependencies
-        run: lune run install
+          sha=${GITHUB_SHA:0:7}
+          echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
+        # The rbxm file isn't actually needed, we just pass the flag so the build
+        # script doesn't try to build to the Roblox Studio plugins folder (which
+        # doesn't exist in CI and causes an error)
+        run: lune run build --target prod --output Flipbook.rbxm
 
-      - uses: softprops/action-gh-release@v1
-        if: ${{ github.event.release }}
+      - uses: actions/upload-artifact@v4
         with:
-          files: ${{ env.MODEL_FILE }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: flipbook-core-build
+          path: workspace/flipbook-core/build
 
-  publish-plugin:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      LOG_LEVEL: debug
+  publish-rotriever-package:
+    needs: [build]
+    runs-on: [self-hosted, generic-linux]
+    container: docker.artifactory.rbx.com/rbx-lua-build-tools:v1.0.1
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: Roblox-ActionsCache/tibdex-github-app-token@v1.4.0
+        id: setup_token
         with:
-          version: v1.1.1
+          app_id: ${{ secrets.TOKENS_APP_LUA_ECOSYSTEM_DEPENDENCIES_ID }}
+          private_key: ${{ secrets.TOKENS_APP_LUA_ECOSYSTEM_DEPENDENCIES_KEY }}
+          repository: Roblox/rotriever-proxy-index
 
-      - name: Install dependencies
-        run: lune run install
+      - uses: Roblox/setup-foreman@v3
+        with:
+          token: ${{ steps.setup_token.outputs.token }}
+          allow-external-github-orgs: true
 
-      - name: Publish nightly build to Creator Store
-        if: github.ref == 'refs/heads/main'
-        run: lune run publish-plugin --target dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: flipbook-core-build
 
-      - name: Publish release to Creator Store
-        if: github.event.release
-        run: lune run publish-plugin --target prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+      - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
+        with:
+          artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
+          github-token: ${{ steps.setup_token.outputs.token }}
+          working-dir: workspace/flipbook-core
+          dry-run: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
