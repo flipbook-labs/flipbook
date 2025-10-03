@@ -2,11 +2,11 @@ name: Release
 
 on:
   pull_request:
-  release:
-    types: [published]
   push:
     branches:
       - main
+    tags:
+      - "v*"
 
 jobs:
   build:
