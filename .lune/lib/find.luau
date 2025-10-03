@@ -1,8 +1,6 @@
 local fs = require("@lune/fs")
 
-type Matcher = string | (path: string) -> boolean
-
-local function find(root: string, matcher: Matcher): { string }
+local function find(root: string, pattern: string): { string }
 	local matches: { string } = {}
 
 	local function search(path: string)
@@ -12,14 +10,8 @@ local function find(root: string, matcher: Matcher): { string }
 				search(childPath)
 			end
 		else
-			if typeof(matcher) == "string" then
-				if path:match(matcher) then
-					table.insert(matches, path)
-				end
-			else
-				if matcher(path) then
-					table.insert(matches, path)
-				end
+			if path:match(pattern) then
+				table.insert(matches, path)
 			end
 		end
 	end
