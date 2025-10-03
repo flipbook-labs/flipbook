@@ -44,15 +44,17 @@ lune run build
 
 Once built, open up a Baseplate to start interacting with the plugin.
 
-Production builds prune development files like unit test and Flipbook's own Storybook and Stories. To keep development files, pass the `--target` flag to set the environment to build for:
+Production builds prune development files like unit tests, Storybooks, and Stories. The latter two can be handy to have during development so you can use Flipbook to develop it. To keep development files, pass the `--target` flag to set the environment to build for:
 
 ```sh
 lune run build --target dev
 ```
 
+There's also a `--watch` flag to automatically rebuild on file changes.
+
 ### Build to rbxm
 
-When building, pass the `--output` flag to determine where Flipbook will build to.
+When building, pass the `--output` flag to determine where Flipbook will build to. By default, Flipbook builds to the Roblox Studio plugins directory.
 
 Run the following to build Flipbook to the root of the repo:
 
@@ -60,13 +62,11 @@ Run the following to build Flipbook to the root of the repo:
 lune run build --output Flipbook.rbxm
 ```
 
-By default Flipbook builds to these directories:
-* MacOS: `~/Documents/Roblox/Plugins`
-* Windows: `%LOCALAPPDATA%/Roblox/Plugins`
-
 ## Testing
 
-Run the following to run all unit tests for the project:
+Running tests requires an Open Cloud API key. Reach out to the maintainers for access, then copy the `.env.template` file to `.env` and set `ROBLOX_API_KEY` to the value of the API key.
+
+Then run the following to run all unit tests for the project:
 
 ```sh
 lune run test
@@ -75,7 +75,7 @@ lune run test
 We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
 
 :::tip
-If your code is not properly tested, maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
+If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
 :::
 
 ## Using Flipbook to develop Flipbook
@@ -87,5 +87,3 @@ Once you have Flipbook built, navigate to the Studio settings and turn on "Plugi
 ![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](./plugin-debugging-enabled.png)
 
 Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
-
-
