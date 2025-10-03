@@ -5,7 +5,7 @@ local serde = require("@lune/serde")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
-type Target = "prod" | "dev"
+type Channel = "prod" | "dev"
 
 local PROD_CONFIG = {
 	prunedDirs = {
@@ -21,7 +21,7 @@ local PROD_CONFIG = {
 	},
 }
 
-local function compile(target: Target)
+local function compile(channel: Channel)
 	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.isDir(dest) then
@@ -33,7 +33,7 @@ local function compile(target: Target)
 
 	local env = {
 		BUILD_VERSION = wallyToml.package.version,
-		BUILD_CHANNEL = if target == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 	}
 
@@ -78,7 +78,7 @@ local function compile(target: Target)
 		end
 	end
 
-	if target == "prod" then
+	if channel == "prod" then
 		for _, dir in PROD_CONFIG.prunedDirs do
 			run("rm", { "-rf", `{dest}/{dir}` })
 		end
