@@ -77,21 +77,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git switch -c publishing
           git add -f workspace/flipbook-core/build
           git commit -m "Add build artifact for Rotriever package"
 
-      - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
-        if: ${{ !github.event.release }}
+      - uses: Roblox/rotriever-registry-workflows/composite-publish@v2
         with:
           artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
           github-token: ${{ steps.setup_token.outputs.token }}
           working-dir: workspace/flipbook-core
-          dry-run: true
-
-      - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
-        if: ${{ github.event.release }}
-        with:
-          artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
-          github-token: ${{ steps.setup_token.outputs.token }}
-          working-dir: workspace/flipbook-core
+          dry-run: ${{ !github.event.release }}
