@@ -72,6 +72,15 @@ jobs:
           token: ${{ steps.setup_token.outputs.token }}
           allow-external-github-orgs: true
 
+      - name: Commit build artifact
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git switch -c publishing
+          git add -f workspace/flipbook-core/build
+          git commit -m "Add build artifact for Rotriever package"
+
       - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
         if: ${{ !github.event.release }}
         with:
