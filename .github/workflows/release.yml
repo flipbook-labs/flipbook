@@ -72,8 +72,16 @@ jobs:
           name: flipbook-core-build
 
       - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
+        if: ${{ !github.event.release }}
         with:
           artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
           github-token: ${{ steps.setup_token.outputs.token }}
           working-dir: workspace/flipbook-core
-          dry-run: ${{ !github.event.release }}
+          dry-run: true
+
+      - uses: Roblox/rotriever-registry-workflows/composite-publish@v1
+        if: ${{ github.event.release }}
+        with:
+          artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
+          github-token: ${{ steps.setup_token.outputs.token }}
+          working-dir: workspace/flipbook-core
