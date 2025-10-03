@@ -44,10 +44,10 @@ lune run build
 
 Once built, open up a Baseplate to start interacting with the plugin.
 
-Production builds prune development files like unit test and Flipbook's own Storybook and Stories. To keep development files, pass the `--target` flag to set the environment to build for:
+Production builds prune development files like unit test and Flipbook's own Storybook and Stories. To keep development files, pass the `--channel` flag to set the environment to build for:
 
 ```sh
-lune run build --target dev
+lune run build --channel dev
 ```
 
 ### Build to rbxm
