@@ -2,11 +2,11 @@ name: Release
 
 on:
   pull_request:
+  release:
+    types: [published]
   push:
     branches:
       - main
-    tags:
-      - "v*"
 
 jobs:
   build:
@@ -76,4 +76,4 @@ jobs:
           artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
           github-token: ${{ steps.setup_token.outputs.token }}
           working-dir: workspace/flipbook-core
-          dry-run: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
+          dry-run: ${{ !github.event.release }}
