@@ -21,6 +21,39 @@ local PROD_CONFIG = {
 	},
 }
 
+local function compileWorkspaceMember(memberPath: string, channel: Channel, env: { [string]: any }): string
+	local memberBuildPath = `{memberPath}/build`
+
+	if fs.isDir(memberBuildPath) then
+		fs.removeDir(memberBuildPath)
+	end
+	fs.writeDir(memberBuildPath)
+
+	run("darklua", {
+		"process",
+		`{memberPath}/src`,
+		memberBuildPath,
+	}, {
+		env = env,
+	})
+
+	local packagesPath = `{memberPath}/Packages`
+	run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
+
+	local robloxPackagesPath = `{memberPath}/RobloxPackages`
+	if fs.isDir(robloxPackagesPath) then
+		run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
+	end
+
+	if channel == "prod" then
+		for _, pattern in PROD_CONFIG.prunedFiles do
+			run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
+		end
+	end
+
+	return memberBuildPath
+end
+
 local function compile(channel: Channel)
 	local dest = `{project.BUILD_PATH}/plugin`
 
@@ -57,34 +90,17 @@ local function compile(channel: Channel)
 	for _, member in fs.readDir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
-		if not fs.isDir(memberPath) then
-			continue
-		end
+		if fs.isDir(memberPath) then
+			local memberBuildPath = compileWorkspaceMember(memberPath, channel, env)
 
-		run("darklua", {
-			"process",
-			`{memberPath}/src`,
-			`{dest}/{memberPath}`,
-		}, {
-			env = env,
-		})
-
-		local packagesPath = `{memberPath}/Packages`
-		run("cp", { "-R", packagesPath, `{dest}/{packagesPath}` })
-
-		local robloxPackagesPath = `{memberPath}/RobloxPackages`
-		if fs.isDir(robloxPackagesPath) then
-			run("cp", { "-R", robloxPackagesPath, `{dest}/{robloxPackagesPath}` })
+			run("mkdir", { "-p", `{dest}/{memberPath}` })
+			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
 		end
 	end
 
 	if channel == "prod" then
 		for _, dir in PROD_CONFIG.prunedDirs do
 			run("rm", { "-rf", `{dest}/{dir}` })
-		end
-
-		for _, pattern in PROD_CONFIG.prunedFiles do
-			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
 end
