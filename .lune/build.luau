@@ -12,11 +12,17 @@ local args = parseArgs(process.args)
 local channel = if args.channel then args.channel else "prod"
 assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
 
+local target = if args.target then args.target else "roblox"
+assert(
+	target == "roblox" or target == "rotriever",
+	`bad value for target (must be one of "roblox" or "rotriever", got "{target}")`
+)
+
 local output = if args.output then args.output else `{roblox.studioPluginPath()}/{project.PLUGIN_FILENAME}`
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
-	compile(channel)
+	compile(channel, target)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })

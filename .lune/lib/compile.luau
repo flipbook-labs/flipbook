@@ -1,11 +1,14 @@
 local fs = require("@lune/fs")
 local project = require("@repo/project")
-local run = require("./run")
 local serde = require("@lune/serde")
+
+local find = require("./find")
+local run = require("./run")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
 type Channel = "prod" | "dev"
+type Target = "roblox" | "rotriever"
 
 local PROD_CONFIG = {
 	prunedDirs = {
@@ -21,7 +24,12 @@ local PROD_CONFIG = {
 	},
 }
 
-local function compileWorkspaceMember(memberPath: string, channel: Channel, env: { [string]: any }): string
+local function compileWorkspaceMember(
+	memberPath: string,
+	channel: Channel,
+	target: Target,
+	env: { [string]: any }
+): string
 	local memberBuildPath = `{memberPath}/build`
 
 	if fs.isDir(memberBuildPath) then
@@ -51,10 +59,19 @@ local function compileWorkspaceMember(memberPath: string, channel: Channel, env:
 		end
 	end
 
+	if target == "rotriever" then
+		-- Rotriever does not support .luau files, so rename them to .lua for
+		-- compatibility
+		for _, luauFile in find(memberBuildPath, "%.luau$") do
+			local newName = luauFile:gsub("%.luau$", ".lua")
+			fs.move(luauFile, newName)
+		end
+	end
+
 	return memberBuildPath
 end
 
-local function compile(channel: Channel)
+local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.isDir(dest) then
@@ -91,7 +108,7 @@ local function compile(channel: Channel)
 		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
 		if fs.isDir(memberPath) then
-			local memberBuildPath = compileWorkspaceMember(memberPath, channel, env)
+			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
 
 			run("mkdir", { "-p", `{dest}/{memberPath}` })
 			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
