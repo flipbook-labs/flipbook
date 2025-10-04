@@ -9,8 +9,9 @@ local SettingType = {
 }
 
 export type SettingChoice = {
-	name: string,
 	description: string,
+	displayName: string,
+	name: string,
 }
 
 type BaseSetting = {
@@ -75,14 +76,17 @@ local theme: DropdownSetting = {
 	choices = {
 		{
 			name = "system",
+			displayName = "System",
 			description = "Match the theme selected for Studio",
 		},
 		{
 			name = "dark",
+			displayName = "Dark",
 			description = "Force the theme to use dark mode",
 		},
 		{
 			name = "light",
+			displayName = "Light",
 			description = "Force the theme to use light mode",
 		},
 	},

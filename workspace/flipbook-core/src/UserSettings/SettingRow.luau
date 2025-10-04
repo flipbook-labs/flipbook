@@ -46,7 +46,7 @@ local function SettingRow(props: Props)
 			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.MenuItem
 				return {
 					id = choice.name,
-					text = choice.name,
+					text = choice.displayName,
 				}
 			end)
 

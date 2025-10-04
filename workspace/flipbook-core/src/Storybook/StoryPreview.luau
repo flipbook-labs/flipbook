@@ -32,6 +32,7 @@ type InternalProps = Props & typeof(defaultProps)
 
 local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
+
 	local lifecycle = React.useRef(nil :: Storyteller.RenderLifecycle?)
 	local err, setErr = React.useState(nil :: string?)
 	local prevControls = usePrevious(props.controls)
