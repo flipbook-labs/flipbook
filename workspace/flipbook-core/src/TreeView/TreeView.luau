@@ -13,11 +13,11 @@ local function TreeView(props: {
 	layoutOrder: number?,
 })
 	local treeViewContext = TreeViewContext.use()
-
 	local children: { [string]: React.Node } = {}
+
 	for index, node in treeViewContext.getRoots() do
 		children[node.label] = React.createElement(TreeNode, {
-			layoutOrder = index,
+			LayoutOrder = index,
 			node = node,
 		})
 	end

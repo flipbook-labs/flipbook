@@ -12,16 +12,16 @@ local function useTreeNodeIcon(icon: TreeNodeIcon): (string, Foundation.ColorSty
 	local tokens = useTokens()
 
 	if icon == types.TreeNodeIcon.Story then
-		return IconName.DiamondSimplified, tokens.Color.Extended.Green.Green_800
+		return IconName.DiamondSimplified, tokens.Color.Extended.Green.Green_500
 	elseif icon == types.TreeNodeIcon.Storybook then
-		return IconName.SquareBooks, tokens.Color.Extended.White.White_50
+		return IconName.SquareBooks, tokens.Color.Content.Default
 	elseif icon == types.TreeNodeIcon.Folder then
-		return IconName.FileBox, tokens.Color.Extended.Purple.Purple_800
+		return IconName.FileBox, tokens.Color.Extended.Purple.Purple_500
 	elseif icon == types.TreeNodeIcon.Alert then
 		return IconName.TriangleExclamation, tokens.Color.ActionAlert.Foreground
-	else
-		return IconName.FileBox, tokens.Color.Extended.White.White_50
 	end
+
+	return "", tokens.Color.Content.Default
 end
 
 return useTreeNodeIcon
