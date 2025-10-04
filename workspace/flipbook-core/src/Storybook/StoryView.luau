@@ -1,6 +1,8 @@
 local Foundation = require("@rbxpkg/Foundation")
+local LuauPolyfill = require("@rbxpkg/LuauPolyfill")
 local React = require("@pkg/React")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local Storyteller = require("@pkg/Storyteller")
@@ -9,7 +11,13 @@ local Divider = Foundation.Divider
 local Text = Foundation.Text
 local View = Foundation.View
 
+local Object = LuauPolyfill.Object
+
 local e = React.createElement
+local useCallback = React.useCallback
+local useEffect = React.useEffect
+local useMemo = React.useMemo
+local useState = React.useState
 
 local useStory = Storyteller.useStory
 
@@ -23,6 +31,35 @@ type StoryViewProps = {
 local function StoryView(props: StoryViewProps)
 	local storyActions = StoryActionsContext.useStoryActions()
 	local storyData, storyError = useStory(props.story, props.storybook)
+
+	local modifiedControls, setModifiedControls = useState({})
+	local controls = useMemo(function()
+		local newControls = {}
+
+		if storyData ~= nil and storyData.controls ~= nil then
+			for key, value in storyData.controls do
+				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
+					newControls[key] = modifiedControls[key]
+				else
+					newControls[key] = value
+				end
+			end
+		end
+
+		return newControls
+	end, { storyData, modifiedControls } :: { any })
+
+	local setControl = useCallback(function(key: string, value: any)
+		setModifiedControls(function(currentValue)
+			return Object.assign({}, currentValue, {
+				[key] = value,
+			})
+		end)
+	end, {})
+
+	useEffect(function()
+		setModifiedControls({})
+	end, { storyData })
 
 	return e(View, {
 		tag = "size-full",
@@ -42,10 +79,9 @@ local function StoryView(props: StoryViewProps)
 					LayoutOrder = 1,
 					Text = storyData.name,
 					tag = {
-						-- NOTE (Paul): Super nitpick-y, but
-						-- keeping all this on one line made
-						-- for some really weird formatting
-						-- that I couldn't accept.
+						-- NOTE (Paul): Super nitpick-y, but keeping all this on
+						-- one line made for some really weird formatting that I
+						-- couldn't accept.
 						["auto-y content-emphasis size-full-0"] = true,
 						["text-align-x-left text-align-y-top text-heading-large text-wrap"] = true,
 					},
@@ -68,12 +104,19 @@ local function StoryView(props: StoryViewProps)
 				tag = "padding-large shrink size-full",
 			}, {
 				Preview = e(StoryPreview, {
-					controls = {},
+					controls = Object.assign({}, controls, modifiedControls),
 					isMountedInViewport = false,
 					ref = storyActions.storyContainerRef,
 					story = storyData,
 					zoom = storyActions.zoom.value,
 				}),
+			}),
+
+			Controls = next(controls) ~= nil and e(StoryControls, {
+				LayoutOrder = 4,
+				controls = controls,
+				modifiedControls = modifiedControls,
+				setControl = setControl,
 			}),
 		}),
 	})
