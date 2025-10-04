@@ -105,7 +105,7 @@ local function StoryView(props: StoryViewProps)
 			}, {
 				Preview = e(StoryPreview, {
 					controls = Object.assign({}, controls, modifiedControls),
-					isMountedInViewport = false,
+					isMountedInViewport = storyActions.isMountedInViewport,
 					ref = storyActions.storyContainerRef,
 					story = storyData,
 					zoom = storyActions.zoom.value,
