@@ -1,22 +1,18 @@
-local Selection = game:GetService("Selection")
-
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 
-local PluginStore = require("@root/Plugin/PluginStore")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
+local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useZoom = require("@root/Common/useZoom")
 
 local useSignalState = SignalsReact.useSignalState
 
@@ -34,11 +30,8 @@ local function StoryView(props: Props)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
-	local zoom = useZoom(props.story)
-	local pluginStore = useSignalState(PluginStore.get)
-	local plugin = useSignalState(pluginStore.getPlugin)
+	local storyActions = StoryActionsContext.useStoryActions()
 	local changedControls, setChangedControls = React.useState({})
-	local storyParentRef = React.useRef(nil :: GuiObject?)
 
 	React.useEffect(function()
 		setChangedControls({})
@@ -70,29 +63,6 @@ local function StoryView(props: Props)
 		end)
 	end, {})
 
-	local viewCode = React.useCallback(function()
-		Selection:Set({ props.story })
-		if plugin then
-			plugin:OpenScript(props.story)
-		end
-	end, { plugin, props.story } :: { unknown })
-
-	local exploreStoryParent = React.useCallback(function()
-		local current = storyParentRef.current
-		if current then
-			local firstGuiObject = current:FindFirstChildWhichIsA("GuiObject")
-			Selection:Set({ if firstGuiObject then firstGuiObject else current })
-		end
-
-		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
-	end, { storyParentRef })
-
-	local isMountedInViewport, setIsMountedInViewport = React.useState(false)
-
-	local onPreviewInViewport = React.useCallback(function()
-		setIsMountedInViewport(not isMountedInViewport)
-	end, { isMountedInViewport, setIsMountedInViewport } :: { unknown })
-
 	return e(Foundation.View, {
 		tag = "size-full",
 	}, {
@@ -107,14 +77,6 @@ local function StoryView(props: Props)
 				tag = "size-full-0 auto-y padding-small col gap-large",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
-				StoryViewNavbar = e(StoryViewNavbar, {
-					onPreviewInViewport = onPreviewInViewport,
-					onZoomIn = zoom.zoomIn,
-					onZoomOut = zoom.zoomOut,
-					onViewCode = viewCode,
-					onExplorer = exploreStoryParent,
-				}),
-
 				StoryMeta = e(StoryMeta, {
 					layoutOrder = nextLayoutOrder(),
 					story = story,
@@ -132,12 +94,12 @@ local function StoryView(props: Props)
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				StoryPreview = e(StoryPreview, {
-					zoom = zoom.value,
+					zoom = storyActions.zoom.value,
 					story = story,
 					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
 					storyModule = props.story,
-					isMountedInViewport = isMountedInViewport,
-					ref = storyParentRef,
+					isMountedInViewport = storyActions.isMountedInViewport,
+					ref = storyActions.storyContainerRef,
 				}),
 			}),
 

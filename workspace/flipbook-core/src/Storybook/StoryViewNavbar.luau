@@ -88,8 +88,8 @@ local function StoryViewNavbar(props: Props)
 		}),
 
 		ThemeSelection = e(Foundation.Dropdown.Root, {
-			label = "Theme",
 			size = Foundation.Enums.InputSize.Small,
+			label = "",
 			onItemChanged = onThemeChanged,
 			width = UDim.new(0, 150),
 			value = userSettings.theme,
