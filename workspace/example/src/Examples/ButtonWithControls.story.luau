@@ -3,6 +3,7 @@ local Roact = require("@pkg/Roact")
 
 local controls = {
 	isDisabled = false,
+	text = "Click me",
 }
 
 type Props = {
@@ -15,7 +16,7 @@ return {
 	roact = Roact,
 	story = function(props: Props)
 		return Roact.createElement(ButtonWithControls, {
-			text = "Click me",
+			text = props.controls.text,
 			isDisabled = props.controls.isDisabled,
 			onActivated = function()
 				print("click")
