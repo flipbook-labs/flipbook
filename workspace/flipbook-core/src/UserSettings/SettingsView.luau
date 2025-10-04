@@ -2,6 +2,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
+local NavigationContext = require("@root/Navigation/NavigationContext")
 local SettingRow = require("@root/UserSettings/SettingRow")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -12,6 +13,7 @@ type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
 
 local function SettingsView()
+	local navigation = NavigationContext.use()
 	local orderedSettings: { Setting } = useMemo(function()
 		local values = Sift.Dictionary.values(defaultSettings)
 		return Sift.Array.sort(values, function(a: Setting, b: Setting)
@@ -35,10 +37,25 @@ local function SettingsView()
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 		},
 	}, {
-		Title = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-heading-large padding-medium",
-			Text = "Settings",
+		Title = React.createElement(Foundation.View, {
 			LayoutOrder = nextLayoutOrder(),
+			tag = "align-y-center auto-y padding-right-medium row size-full-0",
+		}, {
+			Title = React.createElement(Foundation.Text, {
+				LayoutOrder = nextLayoutOrder(),
+				Text = "Settings",
+				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-large padding-medium",
+			}),
+
+			Close = React.createElement(Foundation.IconButton, {
+				LayoutOrder = nextLayoutOrder(),
+				icon = "x",
+				isCircular = true,
+				onActivated = function()
+					navigation.navigateTo("Home")
+				end,
+				variant = Foundation.Enums.ButtonVariant.OverMedia,
+			}),
 		}),
 
 		Settings = React.createElement(Foundation.View, {
