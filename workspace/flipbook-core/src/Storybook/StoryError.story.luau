@@ -15,7 +15,7 @@ return {
 			plugin = MockPlugin.new() :: any,
 		}, {
 			StoryError = React.createElement(StoryError, {
-				err = result,
+				errorMessage = result,
 			}),
 		})
 	end,

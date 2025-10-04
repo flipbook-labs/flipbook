@@ -23,7 +23,7 @@ return {
 					onlyTwentyCharacters = "OnlyTwentyCharacters",
 					badControlType = function() end,
 				},
-				changedControls = {},
+				modifiedControls = {},
 				setControl = function() end,
 			}),
 		})
