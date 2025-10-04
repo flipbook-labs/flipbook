@@ -58,12 +58,9 @@ local function App()
 			story = storyModule,
 		}, {
 			SidebarWrapper = React.createElement(ResizablePanel, {
-				layoutOrder = nextLayoutOrder(),
+				LayoutOrder = nextLayoutOrder(),
 				initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
-				dragHandles = {
-					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
-					"Right" :: any,
-				},
+				dragHandles = { "Right" :: "Right" },
 				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
@@ -83,8 +80,8 @@ local function App()
 				}),
 
 				ScreenWrapper = React.createElement(Foundation.View, {
-					tag = "size-full shrink",
 					LayoutOrder = nextLayoutOrder(),
+					tag = "size-full shrink",
 				}, {
 					Screen = React.createElement(Screen, {
 						story = storyModule,
