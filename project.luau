@@ -27,4 +27,19 @@ return {
 		"workspace/code-samples/src",
 		"workspace/test-runner/src",
 	},
+
+	PROD_CONFIG = {
+		prunedDirs = {
+			"workspace/code-samples",
+			"workspace/example",
+			"workspace/template",
+			"workspace/test-runner",
+		},
+		prunedFiles = {
+			"*.spec.lua*",
+			"*.story.lua*",
+			"*.storybook.lua*",
+			"jest.config.lua*",
+		},
+	},
 }

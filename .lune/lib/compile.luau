@@ -10,20 +10,6 @@ local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
 
-local PROD_CONFIG = {
-	prunedDirs = {
-		"workspace/code-samples",
-		"workspace/example",
-		"workspace/test-runner",
-	},
-	prunedFiles = {
-		"*.spec.lua*",
-		"*.story.lua*",
-		"*.storybook.lua*",
-		"jest.config.lua*",
-	},
-}
-
 local function compileWorkspaceMember(
 	memberPath: string,
 	channel: Channel,
@@ -54,7 +40,7 @@ local function compileWorkspaceMember(
 	end
 
 	if channel == "prod" then
-		for _, pattern in PROD_CONFIG.prunedFiles do
+		for _, pattern in project.PROD_CONFIG.prunedFiles do
 			run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
 		end
 	end
@@ -116,7 +102,7 @@ local function compile(channel: Channel, target: Target)
 	end
 
 	if channel == "prod" then
-		for _, dir in PROD_CONFIG.prunedDirs do
+		for _, dir in project.PROD_CONFIG.prunedDirs do
 			run("rm", { "-rf", `{dest}/{dir}` })
 		end
 	end
