@@ -7,7 +7,7 @@ local PluginApp = require("@root/Plugin/PluginApp")
 local function createFlipbookPlugin(
 	plugin: Plugin,
 	widget: DockWidgetPluginGui,
-	button: PluginToolbarButton
+	button: PluginToolbarButton?
 ): {
 	mount: () -> (),
 	unmount: () -> (),
@@ -30,19 +30,21 @@ local function createFlipbookPlugin(
 		root:render(app)
 	end
 
-	table.insert(
-		connections,
-		button.Click:Connect(function()
-			widget.Enabled = not widget.Enabled
-		end)
-	)
+	if button then
+		table.insert(
+			connections,
+			button.Click:Connect(function()
+				widget.Enabled = not widget.Enabled
+			end)
+		)
 
-	table.insert(
-		connections,
-		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-			button:SetActive(widget.Enabled)
-		end)
-	)
+		table.insert(
+			connections,
+			widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+				button:SetActive(widget.Enabled)
+			end)
+		)
+	end
 
 	table.insert(
 		connections,
