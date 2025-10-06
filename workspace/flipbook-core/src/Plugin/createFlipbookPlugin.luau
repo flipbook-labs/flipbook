@@ -30,7 +30,7 @@ local function createFlipbookPlugin(
 		root:render(app)
 	end
 
-	if button then
+	if button ~= nil then
 		table.insert(
 			connections,
 			button.Click:Connect(function()
