@@ -1,9 +1,0 @@
-{
-  "name": "Flipbook",
-  "tree": {
-    "workspace": {
-      "$path": "workspace"
-    },
-    "$path": "src"
-  }
-}

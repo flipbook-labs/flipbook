@@ -1,7 +1,0 @@
-[package]
-name = "flipbook-labs/flipbook"
-version = "2.2.0"
-license = "MIT"
-registry = "https://github.com/UpliftGames/wally-index"
-realm = "shared"
-exclude = ["*"]

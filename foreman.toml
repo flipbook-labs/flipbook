@@ -1,11 +1,11 @@
 [tools]
+rotrieve = { source = "Roblox/rotriever", version = "=0.5.25" }
+
+# Dependencies for building Flipbook
 darklua = { source = "seaofvoices/darklua", version = "=0.17.1" }
 luau-lsp = { source = "JohnnyMorganz/luau-lsp", version = "=1.53.2" }
 lune = { source = "Roblox/lune", version = "=0.9.4" }
 roblox-packages = { source = "flipbook-labs/roblox-packages", version = "=0.2.0" }
 rojo = { source = "rojo-rbx/rojo", version = "=7.5.1" }
-rotrieve = { source = "Roblox/rotriever", version = "=0.5.25" }
-selene = { source = "Kampfkarren/selene", version = "=0.29.0" }
-stylua = { source = "JohnnyMorganz/StyLua", version = "=2.1.0" }
 wally = { source = "UpliftGames/wally", version = "=0.3.2" }
 wally-package-types = { source = "JohnnyMorganz/wally-package-types", version = "=1.5.1" }

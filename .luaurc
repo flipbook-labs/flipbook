@@ -1,9 +1,6 @@
 {
 	"languageMode": "strict",
 	"aliases": {
-		"lune": "~/.lune/.typedefs/0.9.4/",
-		"lunepkg": "./LunePackages",
-		"repo": ".",
-		"workspace": "./workspace"
+		"lune": "~/.lune/.typedefs/0.9.4/"
 	}
 }

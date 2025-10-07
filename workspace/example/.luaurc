@@ -1,7 +1,0 @@
-{
-	"languageMode": "strict",
-	"aliases": {
-		"pkg": "./Packages",
-		"root": "./src"
-	}
-}

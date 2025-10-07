@@ -1,5 +1,0 @@
-return {
-	storyRoots = {
-		script.Parent,
-	},
-}
