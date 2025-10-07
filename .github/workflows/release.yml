@@ -1,12 +1,10 @@
 name: Release
 
 on:
-  pull_request:
-  release:
-    types: [published]
   push:
     branches:
-      - main
+      - upstream
+  pull_request:
 
 jobs:
   build:
@@ -14,6 +12,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.ref || 'roblox' }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: upstream
+          path: upstream
 
       - uses: Roblox-ActionsCache/tibdex-github-app-token@v1.4.0
         id: setup_token
@@ -28,15 +33,18 @@ jobs:
           allow-external-github-orgs: true
 
       - name: Install dependencies
+        working-directory: upstream
         run: lune run install
 
       - name: Get model file name
+        working-directory: upstream
         run: |
           name=$(jq -r .name default.project.json)
           sha=${GITHUB_SHA:0:7}
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
+        working-directory: upstream
         # The rbxm file isn't actually needed, we just pass the flag so the build
         # script doesn't try to build to the Roblox Studio plugins folder (which
         # doesn't exist in CI and causes an error)
@@ -45,7 +53,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: flipbook-core-build
-          path: workspace/flipbook-core/build
+          path: upstream/workspace/flipbook-core/build
 
   publish-rotriever-package:
     needs: [build]
@@ -58,7 +66,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: flipbook-core-build
-          path: workspace/flipbook-core/build
+          path: build
 
       - uses: Roblox-ActionsCache/tibdex-github-app-token@v1.4.0
         id: setup_token
@@ -72,17 +80,28 @@ jobs:
           token: ${{ steps.setup_token.outputs.token }}
           allow-external-github-orgs: true
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Commit build artifact
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add -f workspace/flipbook-core/build
+          git add -f build
           git commit -m "Add build artifact for Rotriever package"
+
+      - name: Bump version for dry-run
+        if: ${{ github.event_name != 'push' }}
+        run: |
+          lune run bump-version patch
+
+          cat rotriever.toml
+
+          git add rotriever.toml
+          git commit -m "Bump version for dry-run"
 
       - uses: Roblox/rotriever-registry-workflows/composite-publish@v2
         with:
           artifactory-token: ${{ secrets.ROBLOX_ARTIFACTORY_CI_PUBLISH_BEARER_TOKEN }}
           github-token: ${{ steps.setup_token.outputs.token }}
-          working-dir: workspace/flipbook-core
-          dry-run: ${{ !github.event.release }}
+          dry-run: ${{ github.event_name != 'push' }}

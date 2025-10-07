@@ -1,6 +1,6 @@
 {
-  "name": "Flipbook",
+  "name": "FlipbookCore",
   "tree": {
-    "$path": "build/plugin"
+    "$path": "build"
   }
 }
