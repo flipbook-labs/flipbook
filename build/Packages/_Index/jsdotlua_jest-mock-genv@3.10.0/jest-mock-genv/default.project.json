@@ -1,0 +1,6 @@
+{
+  "name": "jest-mock-genv",
+  "tree": {
+    "$path": "src"
+  }
+}

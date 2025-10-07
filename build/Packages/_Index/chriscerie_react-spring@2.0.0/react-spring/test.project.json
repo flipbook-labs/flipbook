@@ -1,0 +1,24 @@
+{
+	"name": "roact-spring-story",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+            "Packages": {
+                "$path": "Packages",
+                "RoactSpring": {
+                    "$path": "src"
+                }
+            },
+            "Stories": {
+                "$path": "stories"
+            }
+		},
+        "StarterPlayer": {
+			"StarterPlayerScripts": {
+				"testRunner": {
+					"$path": "test/testRunner.client.lua"
+				}
+			}
+		}
+	}
+}

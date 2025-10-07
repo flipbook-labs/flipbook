@@ -1,0 +1,9 @@
+[package]
+name = "jsdotlua/jest"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"jest-core" = "jsdotlua/jest-core@3.10.0"

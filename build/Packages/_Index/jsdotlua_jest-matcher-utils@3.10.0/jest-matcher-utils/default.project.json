@@ -1,0 +1,6 @@
+{
+  "name": "jest-matcher-utils",
+  "tree": {
+    "$path": "src"
+  }
+}

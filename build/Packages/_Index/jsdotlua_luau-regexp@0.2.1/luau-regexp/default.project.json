@@ -1,0 +1,6 @@
+{
+  "name": "luau-regexp",
+  "tree": {
+    "$path": "src"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "jest-circus",
+  "tree": {
+    "$path": "src"
+  }
+}

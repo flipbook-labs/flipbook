@@ -1,0 +1,41 @@
+site_name: Roact Documentation
+site_url: https://roblox.github.io/roact/
+repo_name: Roblox/roact
+repo_url: https://github.com/Roblox/roact
+
+theme:
+  name: material
+  palette:
+    primary: 'Light Blue'
+    accent: 'Light Blue'
+    scheme: preference
+
+nav:
+  - Home: index.md
+  - Guide:
+    - Installation: guide/installation.md
+    - Hello, Roact!: guide/hello-roact.md
+    - Elements: guide/elements.md
+    - Components: guide/components.md
+    - State and Lifecycle: guide/state-and-lifecycle.md
+    - Events: guide/events.md
+  - Advanced Concepts:
+    - Fragments: advanced/fragments.md
+    - Portals: advanced/portals.md
+    - Bindings and Refs: advanced/bindings-and-refs.md
+    - Context: advanced/context.md
+  - Performance Optimization:
+    - Overview: performance/overview.md
+    - Reduce Reconciliation: performance/reduce-reconciliation.md
+  - API Reference: api-reference.md
+
+extra_css:
+  - extra.css
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.superfences

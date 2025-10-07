@@ -1,0 +1,12 @@
+[package]
+name = "jsdotlua/roact-compat"
+version = "17.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+react = "jsdotlua/react@17.2.1"
+"react-roblox" = "jsdotlua/react-roblox@17.2.1"
+shared = "jsdotlua/shared@17.2.1"

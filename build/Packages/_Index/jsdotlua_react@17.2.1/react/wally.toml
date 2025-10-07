@@ -1,0 +1,10 @@
+[package]
+name = "jsdotlua/react"
+version = "17.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+shared = "jsdotlua/shared@17.2.1"

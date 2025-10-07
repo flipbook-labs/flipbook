@@ -1,0 +1,23 @@
+local REQUIRED_MODULE = require(script.Parent.Parent["jsdotlua_jest-test-result@3.10.0"]["jest-test-result"])
+export type AggregatedResult = REQUIRED_MODULE.AggregatedResult 
+export type AssertionLocation = REQUIRED_MODULE.AssertionLocation 
+export type AssertionResult = REQUIRED_MODULE.AssertionResult 
+export type FailedAssertion = REQUIRED_MODULE.FailedAssertion 
+export type FormattedTestResults = REQUIRED_MODULE.FormattedTestResults 
+export type Milliseconds = REQUIRED_MODULE.Milliseconds 
+export type RuntimeTransformResult = REQUIRED_MODULE.RuntimeTransformResult 
+export type SerializableError = REQUIRED_MODULE.SerializableError 
+export type Snapshot = REQUIRED_MODULE.Snapshot 
+export type SnapshotSummary = REQUIRED_MODULE.SnapshotSummary 
+export type Status = REQUIRED_MODULE.Status 
+export type Suite = REQUIRED_MODULE.Suite 
+export type Test = REQUIRED_MODULE.Test 
+export type TestContext = REQUIRED_MODULE.TestContext 
+export type Context = REQUIRED_MODULE.Context 
+export type TestEvents = REQUIRED_MODULE.TestEvents 
+export type TestFileEvent = REQUIRED_MODULE.TestFileEvent 
+export type TestResult = REQUIRED_MODULE.TestResult 
+export type TestResultsProcessor = REQUIRED_MODULE.TestResultsProcessor 
+export type TestCaseResult = REQUIRED_MODULE.TestCaseResult 
+export type V8CoverageResult = REQUIRED_MODULE.V8CoverageResult 
+return REQUIRED_MODULE

@@ -1,0 +1,14 @@
+[package]
+name = "jsdotlua/jest-matcher-utils"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+chalk = "jsdotlua/chalk@^0.2.1"
+"jest-diff" = "jsdotlua/jest-diff@3.10.0"
+"jest-get-type" = "jsdotlua/jest-get-type@3.10.0"
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+"pretty-format" = "jsdotlua/pretty-format@3.10.0"
+"luau-regexp" = "jsdotlua/luau-regexp@^0.2.1"

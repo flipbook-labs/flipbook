@@ -1,0 +1,15 @@
+[package]
+name = "jsdotlua/jest-util"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+chalk = "jsdotlua/chalk@^0.2.1"
+"jest-roblox-shared" = "jsdotlua/jest-roblox-shared@3.10.0"
+"jest-types" = "jsdotlua/jest-types@3.10.0"
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+picomatch = "jsdotlua/picomatch@^0.4.0"
+promise = "jsdotlua/promise@^3.5.0"
+"luau-regexp" = "jsdotlua/luau-regexp@^0.2.1"

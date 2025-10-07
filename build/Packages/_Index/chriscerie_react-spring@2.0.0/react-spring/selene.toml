@@ -1,0 +1,4 @@
+std = "roblox+testez"
+
+[rules]
+empty_if = "allow"

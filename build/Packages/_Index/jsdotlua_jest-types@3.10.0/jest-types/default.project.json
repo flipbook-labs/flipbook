@@ -1,0 +1,6 @@
+{
+  "name": "jest-types",
+  "tree": {
+    "$path": "src"
+  }
+}

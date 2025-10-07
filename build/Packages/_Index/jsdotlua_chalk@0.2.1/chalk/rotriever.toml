@@ -1,0 +1,12 @@
+[package]
+name = "ChalkLua"
+authors = [
+    "Raymond Ng <rng@roblox.com>",
+    "Chris Trzesniewski <k.trzesniewski@gmail.com"
+]
+license = "MIT"
+content_root = "src"
+version = "0.2.0"
+
+[dev_dependencies]
+TestEZ = "github.com/roblox/testez@0.4.1"

@@ -1,0 +1,27 @@
+[package]
+name = "FoundationImages"
+version = "1.31.0"
+readme = "README.md"
+content_root = "src"
+files = ["*"]
+publish = true
+authors = [
+    "Nick Winans <nwinans@roblox.com>",
+    "Andrea Fletcher <afletcher@roblox.com>",
+]
+description = "Source for all images used in Foundation."
+repository = "https://github.com/Roblox/foundation-images"
+keywords = [
+    "images",
+    "foundation",
+    "icons",
+]
+homepage = "https://foundation.roblox.com/Images/"
+documentation = "https://foundation.roblox.com/Images/"
+[dependencies.SafeFlags]
+version = "^0.1.0"
+[dev_dependencies.Jest]
+version = "^3.11.1"
+
+[dev_dependencies.JestGlobals]
+version = "^3.11.1"

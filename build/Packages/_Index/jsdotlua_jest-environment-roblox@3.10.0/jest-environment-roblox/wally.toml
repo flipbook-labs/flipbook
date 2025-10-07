@@ -1,0 +1,14 @@
+[package]
+name = "jsdotlua/jest-environment-roblox"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"jest-environment" = "jsdotlua/jest-environment@3.10.0"
+"jest-fake-timers" = "jsdotlua/jest-fake-timers@3.10.0"
+"jest-mock" = "jsdotlua/jest-mock@3.10.0"
+"jest-types" = "jsdotlua/jest-types@3.10.0"
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+promise = "jsdotlua/promise@^3.5.0"

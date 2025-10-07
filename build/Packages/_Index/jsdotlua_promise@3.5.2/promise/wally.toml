@@ -1,0 +1,8 @@
+[package]
+name = "jsdotlua/promise"
+version = "3.5.2"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]

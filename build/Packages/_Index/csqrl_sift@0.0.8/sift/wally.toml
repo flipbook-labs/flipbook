@@ -1,0 +1,12 @@
+[package]
+name = "csqrl/sift"
+description = "Immutable data library for Luau"
+version = "0.0.8"
+license = "MIT"
+author = "csqrl (https://csqrl.dev)"
+registry = "https://github.com/upliftgames/wally-index"
+homepage = "https://csqrl.github.io/sift"
+repo = "https://github.com/csqrl/sift"
+realm = "shared"
+exclude = ["**"]
+include = ["src", "src/**", "wally.toml", "wally.lock", "default.project.json"]

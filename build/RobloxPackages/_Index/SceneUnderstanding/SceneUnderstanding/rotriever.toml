@@ -1,0 +1,40 @@
+[package]
+name = "SceneUnderstanding"
+version = "0.13.1"
+readme = "README.md"
+content_root = "src"
+files = [
+    "*",
+    "!**/*.spec.lua",
+    "!**/*.bench.lua",
+]
+publish = true
+authors = [
+    "Marin Minnerly <dminnerly@roblox.com>",
+    "#content-music",
+]
+description = "Analysis of the DataModel in Luau"
+repository = "https://github.com/Roblox/scene-understanding-internal"
+keywords = [
+    "scene",
+    "understanding",
+    "datamodel",
+    "analysis",
+    "assets",
+]
+homepage = "https://roblox.github.io/scene-understanding-internal/"
+documentation = "https://roblox.github.io/scene-understanding-internal/"
+[dependencies.SafeFlags]
+version = "^0.1.1"
+[dev_dependencies.InternalTestUtils]
+package = "InternalTestUtils"
+version = "^0.13.1"
+
+[dev_dependencies.Jest]
+version = "^3.8.0"
+
+[dev_dependencies.JestBenchmark]
+version = "^3.8.0"
+
+[dev_dependencies.JestGlobals]
+version = "^3.8.0"

@@ -1,0 +1,6 @@
+{
+  "name": "jest-runtime",
+  "tree": {
+    "$path": "src"
+  }
+}

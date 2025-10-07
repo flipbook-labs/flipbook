@@ -1,0 +1,9 @@
+[package]
+name = "Rodux"
+version = "3.3.0"
+readme = "README.md"
+content_root = "src"
+files = ["*"]
+publish = true
+authors = ["Roblox"]
+license = "Apache-2.0"

@@ -1,0 +1,28 @@
+[package]
+name = "RegExp"
+version = "0.2.2"
+readme = "README.md"
+content_root = "src"
+files = [
+    "*",
+    "!**/__tests__/**",
+]
+publish = true
+authors = ["#luau"]
+description = "A regular expression library for Luau."
+repository = "https://github.com/roblox/luau-regexp-internal"
+keywords = [
+    "regex",
+    "regexpr",
+]
+[dev_dependencies.JestGlobals]
+target = "https://github.com/roblox/jest-roblox"
+version = "^2.0.1"
+
+[dev_dependencies.LuauPolyfill]
+target = "https://github.com/roblox/luau-polyfill"
+version = "^0.2.1"
+
+[dev_dependencies.TestEZ]
+target = "https://github.com/roblox/jest-roblox"
+version = "^2.0.1"

@@ -1,0 +1,8 @@
+[package]
+name = "jsdotlua/luau-regexp"
+version = "0.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]

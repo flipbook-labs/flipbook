@@ -1,0 +1,9 @@
+[package]
+name = "jsdotlua/react-is"
+version = "17.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+shared = "jsdotlua/shared@17.2.1"

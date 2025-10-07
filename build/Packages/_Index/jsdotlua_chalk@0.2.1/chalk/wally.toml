@@ -1,0 +1,7 @@
+[package]
+name = "jsdotlua/chalk"
+version = "0.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]

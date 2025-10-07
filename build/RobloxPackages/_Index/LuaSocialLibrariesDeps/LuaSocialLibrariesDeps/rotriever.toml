@@ -1,0 +1,142 @@
+[package]
+name = "LuaSocialLibrariesDeps"
+version = "1.8.1"
+readme = "README.md"
+content_root = "src"
+files = ["*"]
+publish = true
+authors = ["Roblox"]
+[dependencies.CollisionMatchers]
+target = "https://github.com/roblox/2d-collision-matchers"
+package = "CollisionMatchers2D"
+version = "^1.1.0"
+
+[dependencies.GenericPagination]
+target = "https://github.com/roblox/genericpagination"
+version = "^0.1.0"
+
+[dependencies.LazyRequire]
+target = "https://github.com/roblox/lua-lazy-require"
+version = "^0.1.4"
+
+[dependencies.Mock]
+target = "https://github.com/roblox/mock"
+package = "mock"
+version = "^1.1.0"
+
+[dependencies.NetworkingAccountInformation]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^0.6.1"
+
+[dependencies.NetworkingAccountSettings]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.0.0"
+
+[dependencies.NetworkingAliases]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^0.6.3"
+
+[dependencies.NetworkingBlocking]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.2.0"
+
+[dependencies.NetworkingCall]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.13.0"
+
+[dependencies.NetworkingChat]
+target = "https://github.com/roblox/networking-chat"
+version = "^1.0.1"
+
+[dependencies.NetworkingContacts]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.3.1"
+
+[dependencies.NetworkingCurrentlyWearing]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.12.0"
+
+[dependencies.NetworkingFriends]
+target = "https://github.com/roblox/networking-friends"
+version = "^2.11.0"
+
+[dependencies.NetworkingGames]
+target = "https://github.com/roblox/networking-games"
+version = "^1.2.0"
+
+[dependencies.NetworkingPremiumFeatures]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.12.0"
+
+[dependencies.NetworkingPresence]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^1.15.0"
+
+[dependencies.NetworkingShareLinks]
+target = "https://github.com/roblox/networking-sharelinks"
+version = "^1.4.2"
+
+[dependencies.NetworkingUserSettings]
+target = "https://github.com/roblox/lua-app-networking"
+version = "^0.7.0"
+
+[dependencies.NetworkingUsers]
+target = "https://github.com/roblox/networking-users"
+version = "^1.2.1"
+
+[dependencies.RoactFitComponents]
+target = "https://github.com/roblox/roact-fit-components"
+version = "^2.0.0"
+
+[dependencies.RoduxAliases]
+target = "https://github.com/roblox/rodux-aliases"
+version = "^2.2.0"
+
+[dependencies.RoduxCall]
+target = "https://github.com/roblox/rodux-call"
+version = "^1.18.0"
+
+[dependencies.RoduxContacts]
+target = "https://github.com/roblox/rodux-contacts"
+version = "^0.8.2"
+
+[dependencies.RoduxFriends]
+target = "https://github.com/roblox/rodux-friends"
+version = "^4.2.4"
+
+[dependencies.RoduxGames]
+target = "https://github.com/roblox/rodux-games"
+version = "^1.4.1"
+
+[dependencies.RoduxNetworking]
+target = "https://github.com/roblox/rodux-networking"
+version = "^3.2.1"
+
+[dependencies.RoduxPresence]
+target = "https://github.com/roblox/rodux-presence"
+version = "^3.2.3"
+
+[dependencies.RoduxShareLinks]
+target = "https://github.com/roblox/rodux-sharelinks"
+version = "^1.5.1"
+
+[dependencies.RoduxUserPermissions]
+target = "https://github.com/roblox/rodux-contacts"
+version = "^0.5.0"
+
+[dependencies.RoduxUsers]
+target = "https://github.com/roblox/rodux-users"
+version = "^1.6.0"
+
+[dependencies.SocialLibraries]
+target = "https://github.com/roblox/social-libraries"
+version = "^4.1.1"
+
+[dependencies.httpRequest]
+target = "https://github.com/roblox/http-request"
+package = "HttpRequest"
+version = "^1.1.1"
+
+[dependencies.llama]
+target = "https://github.com/roblox/lua-llama-internal"
+version = "^1.0.0"

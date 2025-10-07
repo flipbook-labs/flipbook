@@ -1,0 +1,6 @@
+{
+  "name": "jest-console",
+  "tree": {
+    "$path": "src"
+  }
+}

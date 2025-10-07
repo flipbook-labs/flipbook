@@ -1,0 +1,18 @@
+[package]
+name = "jsdotlua/luau-polyfill"
+version = "1.2.7"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+boolean = "jsdotlua/boolean@1.2.7"
+collections = "jsdotlua/collections@1.2.7"
+console = "jsdotlua/console@1.2.7"
+"es7-types" = "jsdotlua/es7-types@1.2.7"
+"instance-of" = "jsdotlua/instance-of@1.2.7"
+math = "jsdotlua/math@1.2.7"
+number = "jsdotlua/number@1.2.7"
+string = "jsdotlua/string@1.2.7"
+timers = "jsdotlua/timers@1.2.7"
+"symbol-luau" = "jsdotlua/symbol-luau@^1.0.0"

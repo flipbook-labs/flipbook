@@ -1,0 +1,16 @@
+std = "roblox+testez"
+
+[config]
+empty_if = { comments_count = true }
+
+[rules]
+# remove this once the feature request here is implemented: https://github.com/Kampfkarren/selene/issues/181
+global_usage = "allow"
+# remove when the Luau type narrowing issues (and the workarounds) are resolved
+shadowing = "allow"
+# standard library functions are overridden for fake timers, also complains about internal services
+incorrect_standard_library_use = "allow"
+# prefer to align to upstream for readability
+multiple_statements = "allow"
+unused_variable = "allow"
+if_same_then_else = "allow"

@@ -1,0 +1,253 @@
+--[[
+	validateFullBody.lua checks the entire body is not too big or too small
+]]
+
+local root = script.Parent.Parent
+
+local Analytics = require(root.Analytics)
+local Constants = require(root.Constants)
+local ConstantsInterface = require(root.ConstantsInterface)
+
+local getFFlagUGCValidateMeshMin = require(root.flags.getFFlagUGCValidateMeshMin)
+local getEngineFeatureUGCValidateBodyMaxCageMeshDistance =
+	require(root.flags.getEngineFeatureUGCValidateBodyMaxCageMeshDistance)
+local getEngineFeatureUGCValidationFullBodyFacs = require(root.flags.getEngineFeatureUGCValidationFullBodyFacs)
+
+local Types = require(root.util.Types)
+local FailureReasonsAccumulator = require(root.util.FailureReasonsAccumulator)
+local validateWithSchema = require(root.util.validateWithSchema)
+
+local validateAssetBounds = require(root.validation.validateAssetBounds)
+local validateSingleInstance = require(root.validation.validateSingleInstance)
+local ValidateBodyBlockingTests = require(root.util.ValidateBodyBlockingTests)
+local ValidateAssetBodyPartCages = require(root.validation.ValidateAssetBodyPartCages)
+local ValidateEachBodyPartFacsBounds = require(root.validation.ValidateEachBodyPartFacsBounds)
+
+local createDynamicHeadMeshPartSchema = require(root.util.createDynamicHeadMeshPartSchema)
+local createLimbsAndTorsoSchema = require(root.util.createLimbsAndTorsoSchema)
+local resetPhysicsData = require(root.util.resetPhysicsData)
+local ParseContentIds = require(root.util.ParseContentIds)
+
+local function getInstance(instances: { Instance }, name: string): Instance?
+	for _, inst in instances do
+		if inst.Name == name then
+			return inst
+		end
+	end
+	return nil
+end
+
+-- this would be all done on each individual asset, but we do it here again, as we're making sure nothing is missing, as some validation
+-- checks will use some child parts without checking they exist as they assume this check has been done
+local function validateAllAssetsWithSchema(
+	fullBodyData: Types.FullBodyData,
+	requiredTopLevelFolders: { string },
+	validationContext: Types.ValidationContext
+): boolean
+	for _, instancesAndType in fullBodyData do
+		if Enum.AssetType.DynamicHead == instancesAndType.assetTypeEnum then
+			local result = validateSingleInstance(instancesAndType.allSelectedInstances, validationContext)
+			if not result then
+				return false
+			end
+			local validationResult = validateWithSchema(
+				createDynamicHeadMeshPartSchema(validationContext),
+				instancesAndType.allSelectedInstances[1],
+				validationContext
+			)
+			if not validationResult.success then
+				return false
+			end
+		else
+			for _, folderName in requiredTopLevelFolders do
+				local folderInst = getInstance(instancesAndType.allSelectedInstances, folderName)
+				if not folderInst then
+					return false
+				end
+				local validationResult = validateWithSchema(
+					createLimbsAndTorsoSchema(instancesAndType.assetTypeEnum, folderName, validationContext),
+					folderInst,
+					validationContext
+				)
+				if not validationResult.success then
+					return false
+				end
+			end
+		end
+	end
+	return true
+end
+
+local function validateCorrectAssetTypesExist(fullBodyData: Types.FullBodyData): boolean
+	local bodyAssetTypes = {}
+	local numRequiredAssetTypes = #ConstantsInterface.getBodyPartAssets()
+
+	local count = 0
+	for _, instancesAndType in fullBodyData do
+		if not ConstantsInterface.isBodyPart(instancesAndType.assetTypeEnum) then
+			return false
+		end
+		if bodyAssetTypes[instancesAndType.assetTypeEnum] then
+			return false
+		end
+		bodyAssetTypes[instancesAndType.assetTypeEnum] = true
+		count += 1
+	end
+	return count == numRequiredAssetTypes
+end
+
+local function createAllBodyPartsTable(folderName: string, fullBodyData: Types.FullBodyData): Types.AllBodyParts
+	local results: Types.AllBodyParts = {}
+	for _, instancesAndType in fullBodyData do
+		if Enum.AssetType.DynamicHead == instancesAndType.assetTypeEnum then
+			results[instancesAndType.allSelectedInstances[1].Name] = instancesAndType.allSelectedInstances[1]
+		else
+			local folderInst = getInstance(instancesAndType.allSelectedInstances, folderName) :: Folder
+			for _, child in folderInst:GetChildren() do
+				results[child.Name] = child
+			end
+		end
+	end
+	return results
+end
+
+local function validateMeshIds(
+	fullBodyData: Types.FullBodyData,
+	validationContext: Types.ValidationContext
+): (boolean, { string }?)
+	local fieldsToCheckFor = {
+		MeshPart = { "MeshId" },
+	}
+
+	local requiredFields = {
+		MeshPart = { MeshId = true },
+	}
+
+	for _, instancesAndType in fullBodyData do
+		for __, instance in instancesAndType.allSelectedInstances do
+			local contentIdMap = {}
+			local contentIds = {}
+
+			local parseSuccess = ParseContentIds.parseWithErrorCheck(
+				contentIds,
+				contentIdMap,
+				instance,
+				fieldsToCheckFor,
+				requiredFields,
+				validationContext
+			)
+			if not parseSuccess then
+				Analytics.reportFailure(Analytics.ErrorType.validateFullBody_MeshIdsMissing, nil, validationContext)
+				return false,
+					{
+						"Unable to run full body validation due to previous errors detected while processing individual body parts",
+					}
+			end
+		end
+	end
+	return true
+end
+
+local function validateInstanceHierarchy(
+	fullBodyData: Types.FullBodyData,
+	requiredTopLevelFolders: { string },
+	validationContext: Types.ValidationContext
+): (boolean, { string }?)
+	local isServer = if validationContext then validationContext.isServer else nil
+	if not validateCorrectAssetTypesExist(fullBodyData) then
+		local errorMsg =
+			"Full body check did not receive the correct set of body part Asset Types (i.e. Head, Torso, LeftArm, RightArm, LeftLeg, RightLeg). Make sure the body model is valid and try again."
+		Analytics.reportFailure(Analytics.ErrorType.validateFullBody_IncorrectAssetTypeSet, nil, validationContext)
+		if isServer then
+			-- this is a code issue, where the wrong set of assets have been sent, this is not a fault on the UGC creator
+			error(errorMsg)
+		end
+		return false, { errorMsg }
+	end
+
+	if not validateAllAssetsWithSchema(fullBodyData, requiredTopLevelFolders, validationContext) then
+		Analytics.reportFailure(Analytics.ErrorType.validateFullBody_InstancesMissing, nil, validationContext)
+		-- don't need more detailed error, as this is a check which has been done for each individual asset
+		return false,
+			{
+				"Unable to run full body validation due to previous errors detected while processing individual body parts.",
+			}
+	end
+
+	local success, errorMessage = validateMeshIds(fullBodyData, validationContext)
+	if not success then
+		return false, errorMessage
+	end
+
+	return true
+end
+
+local function resetAllPhysicsData(validationContext: Types.ValidationContext): (boolean, { string }?)
+	local fullBodyData = validationContext.fullBodyData :: Types.FullBodyData
+
+	for _, instancesAndType in fullBodyData do
+		local success, errorMessage = resetPhysicsData(instancesAndType.allSelectedInstances, validationContext)
+		if not success then
+			return false, { errorMessage :: string }
+		end
+	end
+
+	return true
+end
+
+local function validateFullBody(validationContext: Types.ValidationContext): (boolean, { string }?)
+	assert(validationContext.fullBodyData ~= nil, "fullBodyData required in validationContext for validateFullBody")
+	local fullBodyData = validationContext.fullBodyData :: Types.FullBodyData
+	local requireAllFolders = validationContext.requireAllFolders
+
+	local requiredTopLevelFolders: { string } = {
+		Constants.FOLDER_NAMES.R15ArtistIntent,
+	}
+	if requireAllFolders then
+		-- in Studio these folders are automatically added just before upload
+		table.insert(requiredTopLevelFolders, Constants.FOLDER_NAMES.R15Fixed)
+	end
+
+	local success, reasons = validateInstanceHierarchy(fullBodyData, requiredTopLevelFolders, validationContext)
+	if not success then
+		return false, reasons
+	end
+
+	success, reasons = resetAllPhysicsData(validationContext)
+	if not success then
+		return false, reasons
+	end
+
+	local reasonsAccumulator = FailureReasonsAccumulator.new()
+
+	for _, folderName in requiredTopLevelFolders do
+		local allBodyParts: Types.AllBodyParts = createAllBodyPartsTable(folderName, fullBodyData)
+		assert(allBodyParts) -- if validateInstanceHierarchy() has passed, this should not have any problems
+
+		if getFFlagUGCValidateMeshMin() then
+			-- anything which would cause a crash later on, we check in here and exit early
+			if not ValidateBodyBlockingTests.validateAll(allBodyParts, validationContext) then
+				Analytics.reportFailure(Analytics.ErrorType.validateFullBody_ZeroMeshSize, nil, validationContext)
+				-- don't need more detailed error, as this is a check which has been done for each individual asset
+				return false,
+					{
+						"Unable to run full body validation due to previous errors detected while processing individual body parts.",
+					}
+			end
+		end
+
+		if getEngineFeatureUGCValidateBodyMaxCageMeshDistance() then
+			reasonsAccumulator:updateReasons(
+				ValidateAssetBodyPartCages.validateFullBody(allBodyParts, validationContext)
+			)
+		end
+		reasonsAccumulator:updateReasons(validateAssetBounds(allBodyParts, nil, validationContext))
+
+		if getEngineFeatureUGCValidationFullBodyFacs() then
+			reasonsAccumulator:updateReasons(ValidateEachBodyPartFacsBounds(allBodyParts, validationContext))
+		end
+	end
+	return reasonsAccumulator:getFinalResults()
+end
+
+return validateFullBody

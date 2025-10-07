@@ -1,0 +1,10 @@
+[package]
+name = "jsdotlua/throat"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+promise = "jsdotlua/promise@^3.5.0"

@@ -1,0 +1,57 @@
+gitRepoUrl = "https://github.com/chriscerie/roact-spring"
+
+[docusaurus]
+tagline = "A spring-physics based animation library for Roact"
+
+[home]
+enabled = true
+includeReadme = false
+
+[[home.features]]
+title = "Declarative and imperative"
+description = "roact-spring is the perfect bridge between declarative and imperative animations. It takes the best of both worlds and packs them into one flexible library."
+
+[[home.features]]
+title = "Fluid, powerful, painless"
+description = "roact-spring is designed to make animations fluid, powerful, and painless to build and maintain. Animation becomes easy and approachable, and everything you do look and feel natural by default."
+
+[[home.features]]
+title = "Versatile"
+description = "roact-spring works with most data types and provides extensible configurations that makes it painless to create advanced animations."
+
+[[footer.links]]
+title = "Docs"
+
+[[footer.links.items]]
+label = "Introduction"
+href = "/docs/intro"
+
+[[footer.links.items]]
+label = "Common"
+href = "/docs/Common/props"
+
+[[footer.links.items]]
+label = "Hooks"
+href = "/docs/Hooks/useSpring"
+
+[[footer.links.items]]
+label = "Additional Classes"
+href = "/docs/Additional%20Classes/controller"
+
+[[footer.links.items]]
+label = "API Reference"
+href = "/api"
+
+[[footer.links]]
+title = "Community"
+
+[[footer.links.items]]
+label = "GitHub"
+href = "https://github.com/chriscerie/roact-spring"
+
+[[footer.links]]
+title = "More"
+
+[[footer.links.items]]
+label = "License"
+href = "https://github.com/chriscerie/roact-spring/blob/main/LICENSE"

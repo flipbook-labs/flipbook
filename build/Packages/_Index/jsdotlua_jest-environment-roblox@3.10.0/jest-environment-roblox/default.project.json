@@ -1,0 +1,6 @@
+{
+  "name": "jest-environment-roblox",
+  "tree": {
+    "$path": "src"
+  }
+}

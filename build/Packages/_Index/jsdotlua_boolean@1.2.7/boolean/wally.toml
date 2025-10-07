@@ -1,0 +1,9 @@
+[package]
+name = "jsdotlua/boolean"
+version = "1.2.7"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+number = "jsdotlua/number@1.2.7"

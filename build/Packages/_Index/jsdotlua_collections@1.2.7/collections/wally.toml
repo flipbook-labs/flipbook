@@ -1,0 +1,10 @@
+[package]
+name = "jsdotlua/collections"
+version = "1.2.7"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"es7-types" = "jsdotlua/es7-types@1.2.7"
+"instance-of" = "jsdotlua/instance-of@1.2.7"

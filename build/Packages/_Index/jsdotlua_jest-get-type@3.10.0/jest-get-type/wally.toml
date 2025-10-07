@@ -1,0 +1,10 @@
+[package]
+name = "jsdotlua/jest-get-type"
+version = "3.10.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+"luau-regexp" = "jsdotlua/luau-regexp@^0.2.1"

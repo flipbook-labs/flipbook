@@ -1,0 +1,13 @@
+[package]
+name = "jsdotlua/react-reconciler"
+version = "17.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+promise = "jsdotlua/promise@^3.5.0"
+react = "jsdotlua/react@17.2.1"
+scheduler = "jsdotlua/scheduler@17.2.1"
+shared = "jsdotlua/shared@17.2.1"

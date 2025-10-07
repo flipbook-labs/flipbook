@@ -1,0 +1,32 @@
+{
+  "name": "@jsdotlua/chalk",
+  "version": "0.2.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsdotlua/chalk-lua.git"
+  },
+  "contributors": [
+    {
+      "name": "Raymond Ng",
+      "email": "rng@roblox.com"
+    },
+    {
+      "name": "Chris Trzesniewski",
+      "email": "k.trzesniewski@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "main": "src/init.lua",
+  "scripts": {
+    "prepare": "npmluau",
+    "build-assets": "sh ./scripts/build-assets.sh",
+    "lint": "selene src",
+    "format": "stylua src",
+    "style-check": "stylua --check src",
+    "clean": "rm -rf roblox build node_modules"
+  },
+  "devDependencies": {
+    "npmluau": "^0.1.1"
+  },
+  "packageManager": "yarn@4.0.2"
+}

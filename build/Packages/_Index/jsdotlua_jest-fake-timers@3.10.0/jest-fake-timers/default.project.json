@@ -1,0 +1,6 @@
+{
+  "name": "jest-fake-timers",
+  "tree": {
+    "$path": "src"
+  }
+}

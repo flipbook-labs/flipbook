@@ -1,0 +1,13 @@
+[package]
+name = "jsdotlua/react-roblox"
+version = "17.2.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+
+[dependencies]
+"luau-polyfill" = "jsdotlua/luau-polyfill@^1.2.6"
+react = "jsdotlua/react@17.2.1"
+"react-reconciler" = "jsdotlua/react-reconciler@17.2.1"
+scheduler = "jsdotlua/scheduler@17.2.1"
+shared = "jsdotlua/shared@17.2.1"
