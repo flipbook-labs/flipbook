@@ -29,9 +29,12 @@ test("pin and unpin an instances", function()
 
 	expect(#pins).toBeGreaterThan(0)
 	expect(pins[1]).toMatchObject({
-		path = "Workspace.Folder",
+		path = "Workspace/Folder",
 		instance = instance,
 	})
+
+	pinnedInstanceStore.unpin(instance)
+	expect(pinnedInstanceStore.getPinnedInstances(false)).toEqual({})
 end)
 
 test("changing pins is persisted to local storage", function()
@@ -44,7 +47,10 @@ test("changing pins is persisted to local storage", function()
 	task.wait()
 
 	local localStorage = LocalStorageStore.get(false).getStorage(false)
-	expect(localStorage.pinnedInstancePaths).toEqual({ "Workspace.Folder" })
+	expect(localStorage.pinnedInstancePaths).toEqual({ "Workspace/Folder" })
+
+	-- Unpin to make sure it doesn't stick around in local storage
+	pinnedInstanceStore.unpin(instance)
 end)
 
 test("check if an instance has been pinned", function()
@@ -56,4 +62,7 @@ test("check if an instance has been pinned", function()
 	pinnedInstanceStore.pin(instance)
 
 	expect(pinnedInstanceStore.isPinned(instance)).toBe(true)
+
+	-- Unpin to make sure it doesn't stick around in local storage
+	pinnedInstanceStore.unpin(instance)
 end)
