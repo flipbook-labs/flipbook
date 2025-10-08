@@ -1,5 +1,8 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
+
+local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
@@ -18,6 +21,8 @@ local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useState = React.useState
 local useRef = React.useRef
+
+local useSignalState = SignalsReact.useSignalState
 
 type TreeNode = Types.TreeNode
 
@@ -47,6 +52,8 @@ local function TreeNode(props: TreeNodeProps)
 
 	local tokens = useTokens()
 	local iconName, iconStyle = useTreeNodeIcon(props.node.icon)
+	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local isPinned = pinnedInstanceStore.isPinned(props.node.instance)
 
 	local children = useMemo(function()
 		local elements: { [string]: React.ReactNode } = {}
@@ -78,6 +85,20 @@ local function TreeNode(props: TreeNodeProps)
 			setIsContextMenuOpen(true)
 		end
 	end, { props.node.icon })
+
+	local pinToggleItem = useMemo(function(): Foundation.MenuItem
+		return {
+			id = "pin",
+			text = if isPinned then "Unpin" else "Pin",
+			onActivated = function()
+				if isPinned then
+					pinnedInstanceStore.unpin(props.node.instance)
+				else
+					pinnedInstanceStore.pin(props.node.instance)
+				end
+			end,
+		}
+	end, { props.node.instance, isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin })
 
 	return e(
 		View,
@@ -123,43 +144,9 @@ local function TreeNode(props: TreeNodeProps)
 			ContextMenu = if isContextMenuOpen
 				then React.createElement(Foundation.Menu, {
 					isOpen = true,
-					size = Foundation.Enums.InputSize.Small,
+					size = Foundation.Enums.InputSize.Medium,
 					items = {
-						{
-							id = "pin",
-							text = "Pin",
-							onActivated = function()
-								print("click")
-							end,
-						},
-						{
-							id = "reload",
-							text = "Reload",
-							onActivated = function()
-								print("click")
-							end,
-						},
-						{
-							id = "explore",
-							text = "Select in Explorer",
-							onActivated = function()
-								print("click")
-							end,
-						},
-						{
-							id = "viewport-preview",
-							text = "Preview in viewport",
-							onActivated = function()
-								print("click")
-							end,
-						},
-						{
-							id = "reset-zoom",
-							text = "Reset zoom",
-							onActivated = function()
-								print("click")
-							end,
-						},
+						pinToggleItem,
 					},
 					onPressedOutside = function()
 						setIsContextMenuOpen(false)
