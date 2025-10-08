@@ -3,7 +3,7 @@ local Highlighter = require("@pkg/Highlighter")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local SelectableTextLabel = require("@root/Forms/SelectableTextLabel")
+local SelectableTextLabel = require("@root/Common/SelectableTextLabel")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useMemo = React.useMemo

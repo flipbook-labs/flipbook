@@ -1,17 +1,13 @@
-local fs = require("@lune/fs")
 local process = require("@lune/process")
 
 local compile = require("./lib/compile")
 local dotenv = require("./lib/dotenv")
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
-local watch = require("./lib/watcher/watch")
 
 dotenv()
 
 local args = parseArgs(process.args)
-
-local testPathPattern = args.testPathPattern
 
 local apiKey = process.env.ROBLOX_API_KEY or args.apiKey
 if not apiKey then
@@ -21,55 +17,28 @@ if not apiKey then
 	process.exit(1)
 end
 
-if fs.isDir("build/tests") then
-	fs.removeDir("build/tests")
-end
-fs.writeDir("build/tests")
-fs.copy("tests/run-tests.luau", "build/tests/run-tests.luau", true)
-if testPathPattern then
-	run("sed", { "-i", "-e", `'s/_G.JEST_TEST_PATH_PATTERN/"{testPathPattern}"/g'`, "build/tests/run-tests.luau" })
-end
+compile("dev", "roblox")
 
-local function buildAndRunTests()
-	compile("dev")
+run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
-	run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
-
-	local success, err = pcall(function()
-		run("python3", {
-			".lune/python/upload_and_run_task.py",
-			"tests.rbxl",
-			"build/tests/run-tests.luau",
-		}, {
-			env = {
-				ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
-				ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
-				ROBLOX_API_KEY = tostring(apiKey),
-			},
-			stdio = "forward",
-		})
-	end)
-
-	run("rm", { "tests.rbxl" })
-
-	if not success then
-		print(err)
-	end
-	return success
-end
-
-local success = buildAndRunTests()
-
-if args.watch then
-	watch({
-		filePatterns = {
-			"src/.*%.luau",
-			"example/.*%.luau",
+local success, err = pcall(function()
+	run("python3", {
+		".lune/python/upload_and_run_task.py",
+		"tests.rbxl",
+		".lune/tasks/run-tests.luau",
+	}, {
+		env = {
+			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+			ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+			ROBLOX_API_KEY = tostring(apiKey),
 		},
-		onChanged = buildAndRunTests,
+		stdio = "forward",
 	})
-end
+end)
+
+run("rm", { "tests.rbxl" })
 
 if not success then
+	print(err)
 	process.exit(1)
 end

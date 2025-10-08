@@ -1,165 +1,119 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactSpring = require("@pkg/ReactSpring")
-local SignalsReact = require("@rbxpkg/SignalsReact")
-
-local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
-local constants = require("@root/constants")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local types = require("@root/TreeView/types")
+local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
-local useSpring = ReactSpring.useSpring :: any
+local Icon = Foundation.Icon
+local IconName = Foundation.Enums.IconName
+local IconSize = Foundation.Enums.IconSize
+local IconVariant = Foundation.Enums.IconVariant
+local Text = Foundation.Text
+local View = Foundation.View
+local useTokens = Foundation.Hooks.useTokens
+local withCommonProps = Foundation.Utility.withCommonProps
+
+local e = React.createElement
 local useCallback = React.useCallback
 local useMemo = React.useMemo
-local useState = React.useState
-local useTokens = Foundation.Hooks.useTokens
-local useSignalState = SignalsReact.useSignalState
 
-type TreeNode = types.TreeNode
+type TreeNode = Types.TreeNode
 
-local function countParents(node: TreeNode): number
+local function getParentCount(node: TreeNode): number
 	local current = node
 	local count = 0
+
 	while current.parent do
 		current = current.parent
 		count += 1
 	end
+
 	return count
 end
 
-export type Props = {
+type TreeNodeProps = {
 	node: TreeNode,
-	onActivated: (() -> ())?,
-	layoutOrder: number?,
-}
+	onActivated: () -> ()?,
+} & Foundation.CommonProps
 
-local function TreeNode(props: Props)
+local function TreeNode(props: TreeNodeProps)
+	local treeView = TreeViewContext.use()
+	local isExpanded = treeView.isExpanded(props.node)
+	local isSelected = treeView.isSelected(props.node)
+
 	local tokens = useTokens()
-	local icon, iconColor = useTreeNodeIcon(props.node.icon)
-	local isHovered, setIsHovered = useState(false)
-	local treeViewContext = TreeViewContext.use()
-	local isExpanded = treeViewContext.isExpanded(props.node)
-	local isSelected = treeViewContext.isSelected(props.node)
-	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
-
-	local styles = useSpring({
-		hover = if isHovered or isSelected then 0 else 1,
-		expand = if isExpanded then 1 else 0,
-		config = constants.SPRING_CONFIG,
-	})
-
-	local numParents = useMemo(function()
-		return countParents(props.node)
-	end, { props.node })
+	local iconName, iconStyle = useTreeNodeIcon(props.node.icon)
 
 	local children = useMemo(function()
-		local elements: { [string]: React.Node } = {}
-		if props.node.children then
-			for index, child in props.node.children do
-				elements[child.label] = React.createElement(TreeNode, {
-					layoutOrder = index,
-					node = child,
-				})
-			end
+		local elements: { [string]: React.ReactNode } = {}
+
+		for index, childNode in props.node.children do
+			elements[childNode.label] = e(TreeNode, {
+				LayoutOrder = index,
+				node = childNode,
+			})
 		end
+
 		return elements
 	end, { props.node.children })
 
+	local parentCount = useMemo(function()
+		return getParentCount(props.node) + 1
+	end, { props.node })
+
 	local onActivated = useCallback(function()
-		if props.onActivated then
+		if props.onActivated ~= nil then
 			props.onActivated()
 		end
 
-		treeViewContext.activateNode(props.node)
-	end, { props.onActivated, treeViewContext, props.node } :: { unknown })
+		treeView.activateNode(props.node)
+	end, { props.onActivated, treeView.activateNode, props.node } :: { any })
 
-	local onTogglePin = useCallback(function()
-		local instance = props.node.instance
-		if instance then
-			if pinnedInstanceStore.isPinned(instance) then
-				pinnedInstanceStore.unpin(instance)
-			else
-				pinnedInstanceStore.pin(instance)
-			end
-		end
-	end, { pinnedInstanceStore, props.node } :: { unknown })
-
-	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
-		setIsHovered(newState == Foundation.Enums.ControlState.Hover)
-	end, {})
-
-	return React.createElement(Foundation.View, {
-		tag = "auto-xy clip col",
-		LayoutOrder = props.layoutOrder,
-	}, {
-		Node = React.createElement(Foundation.View, {
-			tag = "auto-xy row gap-medium flex-between radius-medium align-y-center padding-y-small",
-			padding = {
-				right = UDim.new(0, tokens.Padding.Large),
-				left = UDim.new(0, tokens.Padding.Medium * numParents),
-			},
-			backgroundStyle = if isSelected then tokens.Color.Extended.Purple.Purple_800 else nil,
-			onStateChanged = onStateChanged,
-			onActivated = onActivated,
-			LayoutOrder = nextLayoutOrder(),
-		}, {
-			Icon = React.createElement(Foundation.Icon, {
-				name = icon,
-				style = iconColor,
-				size = Foundation.Enums.IconSize.Small,
-				LayoutOrder = nextLayoutOrder(),
-			}),
-
-			Text = React.createElement(Foundation.Text, {
-				tag = "size-full-0 auto-y text-label-medium text-align-x-left shrink",
-				Text = props.node.label,
-				LayoutOrder = nextLayoutOrder(),
-			}),
-
-			Pin = if props.node.instance and props.node.icon == "storybook"
-				then React.createElement(Foundation.IconButton, {
-					icon = {
-						name = Foundation.Enums.IconName.Star,
-						variant = if pinnedInstanceStore.isPinned(props.node.instance)
-							then Foundation.Enums.IconVariant.Filled
-							else Foundation.Enums.IconVariant.Regular,
-					},
-					size = Foundation.Enums.IconSize.Small,
-					onActivated = onTogglePin,
-					LayoutOrder = nextLayoutOrder(),
-				})
-				else nil,
-
-			Toggle = if #props.node.children > 0
-				then React.createElement(Foundation.View, {
-					tag = "auto-xy",
-					LayoutOrder = nextLayoutOrder(),
-				}, {
-					RotationWrapper = React.createElement(Foundation.View, {
-						tag = "auto-xy",
-						Rotation = styles.expand:map(function(value)
-							return 90 * value
-						end),
-					}, {
-						Icon = React.createElement(Foundation.Icon, {
-							name = Foundation.Enums.IconName.ChevronLargeRight,
-							style = tokens.Color.Extended.White.White_50,
-							size = Foundation.Enums.IconSize.Small,
-						}),
-					}),
-				})
-				else nil,
+	return e(
+		View,
+		withCommonProps(props, {
+			tag = "auto-y col size-full-0",
 		}),
+		{
+			Node = e(View, {
+				LayoutOrder = 1,
+				backgroundStyle = if isSelected then tokens.Color.ActionEmphasis.Background else nil,
+				onActivated = onActivated,
+				padding = {
+					left = UDim.new(0, tokens.Padding.Medium * parentCount),
+				},
+				tag = "align-y-center auto-y gap-medium padding-right-medium padding-y-medium row size-full-0",
+			}, {
+				Icon = e(Icon, {
+					LayoutOrder = 1,
+					name = iconName,
+					size = IconSize.Small,
+					style = iconStyle,
+					variant = if isSelected then IconVariant.Filled else nil,
+				}),
 
-		Children = if isExpanded
-			then React.createElement(Foundation.View, {
+				Title = e(Text, {
+					LayoutOrder = 2,
+					Text = props.node.label,
+					tag = {
+						["auto-y shrink size-full-0 text-align-x-left text-label-medium text-truncate-end"] = true,
+						["content-emphasis"] = isSelected,
+					},
+				}),
+
+				Arrow = #props.node.children > 0 and e(Icon, {
+					LayoutOrder = 3,
+					name = if isExpanded then IconName.ChevronSmallUp else IconName.ChevronSmallDown,
+					size = IconSize.XSmall,
+				}),
+			}),
+
+			Children = isExpanded and e(View, {
+				LayoutOrder = 2,
 				tag = "auto-xy col",
-				LayoutOrder = nextLayoutOrder(),
-			}, children)
-			else nil,
-	})
+			}, children),
+		}
+	)
 end
 
-return TreeNode
+return React.memo(TreeNode)

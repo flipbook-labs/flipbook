@@ -10,13 +10,13 @@ local defaultProps = {
 }
 
 export type Props = {
-	initialSize: UDim2,
-	layoutOrder: number?,
+	LayoutOrder: number?,
+	children: { [string]: React.Node }?,
 	dragHandles: { types.DragHandle }?,
 	hoverIconX: string?,
 	hoverIconY: string?,
+	initialSize: UDim2,
 	onResize: ((newSize: Vector2) -> ())?,
-	children: { [string]: React.Node }?,
 }
 
 type InternalProps = Props & typeof(defaultProps)
@@ -107,7 +107,7 @@ local function ResizablePanel(providedProps: Props)
 	end
 
 	return React.createElement("Frame", {
-		LayoutOrder = props.layoutOrder,
+		LayoutOrder = props.LayoutOrder,
 		Size = UDim2.new(width, height),
 		BackgroundTransparency = 1,
 		[React.Change.AbsoluteSize] = onAbsoluteSizeChanged,
