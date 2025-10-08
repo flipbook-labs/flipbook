@@ -122,10 +122,6 @@ local function StorybookTreeView(props: Props)
 				table.insert(roots, unavailableStorybooks)
 			end
 
-			-- FIXME: When pinning a storybook the entire tree reloads and the
-			-- expanded states are discarded
-			treeViewContext.setRoots(roots)
-
 			if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
 				local orphanedStories: TreeNode = {
 					id = HttpService:GenerateGUID(),
@@ -143,6 +139,8 @@ local function StorybookTreeView(props: Props)
 				table.insert(roots, orphanedStories)
 			end
 
+			-- FIXME: When pinning a storybook the entire tree reloads and the
+			-- expanded states are discarded
 			treeViewContext.setRoots(roots)
 
 			return function()
