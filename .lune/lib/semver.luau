@@ -3,8 +3,6 @@ local serde = require("@lune/serde")
 
 export type VersionComponent = "major" | "minor" | "patch"
 
--- Needs to support Wally and Rotriever manifests
-
 local function getVersionFromManifest(manifestPath: string)
 	local manifestContent = fs.readFile(manifestPath)
 	local manifest = serde.decode("toml", manifestContent)
