@@ -5,7 +5,7 @@ version = "2.2.0"
 files = ["*"]
 publish = true
 
-authors = ["Marin Minnerly <me@vocksel.com>"]
+authors = ["Marin Minnerly <marin@vocksel.com>"]
 documentation = "https://flipbook-labs.github.io/flipbook"
 homepage = "https://flipbook-labs.github.io/flipbook"
 readme = "README.md"
