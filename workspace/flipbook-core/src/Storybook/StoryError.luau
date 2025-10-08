@@ -6,24 +6,24 @@ local CodeBlock = require("@root/Common/CodeBlock")
 local useTokens = Foundation.Hooks.useTokens
 
 export type Props = {
-	err: string,
-	layoutOrder: number?,
+	LayoutOrder: number?,
+	errorMessage: string,
 }
 
 local function StoryError(props: Props)
 	local tokens = useTokens()
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full padding-small gap-medium",
+		LayoutOrder = props.LayoutOrder,
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.new(1, 0),
 		},
-		LayoutOrder = props.layoutOrder,
+		tag = "size-full padding-small gap-medium",
 	}, {
 		CodeBlock = React.createElement(CodeBlock, {
-			source = props.err,
+			source = props.errorMessage,
 			sourceColor = tokens.Color.ActionAlert.Foreground.Color3,
 		}),
 	})

@@ -15,7 +15,9 @@ globalTypes.d.luau
 # Wally
 DevPackages
 Packages
-wally.lock
+
+# Package managers
+*.lock
 
 # Rbxasset
 LunePackages
