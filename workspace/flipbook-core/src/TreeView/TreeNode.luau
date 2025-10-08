@@ -74,8 +74,10 @@ local function TreeNode(props: TreeNodeProps)
 	end, { props.onActivated, treeView.activateNode, props.node } :: { any })
 
 	local onSecondaryActivated = useCallback(function()
-		setIsContextMenuOpen(true)
-	end, {})
+		if props.node.icon == Types.TreeNodeIcon.Storybook then
+			setIsContextMenuOpen(true)
+		end
+	end, { props.node.icon })
 
 	return e(
 		View,
