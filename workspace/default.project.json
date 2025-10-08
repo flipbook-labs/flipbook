@@ -10,6 +10,12 @@
     },
     "flipbook-core": {
       "$path": "flipbook-core"
+    },
+    "template": {
+      "$path": "template"
+    },
+    "test-runner": {
+      "$path": "test-runner"
     }
   }
 }

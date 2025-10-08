@@ -17,7 +17,7 @@ if not apiKey then
 	process.exit(1)
 end
 
-compile("dev")
+compile("dev", "roblox")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
@@ -25,7 +25,7 @@ local success, err = pcall(function()
 	run("python3", {
 		".lune/python/upload_and_run_task.py",
 		"tests.rbxl",
-		"tests/run-tests.luau",
+		".lune/tasks/run-tests.luau",
 	}, {
 		env = {
 			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,

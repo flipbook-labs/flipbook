@@ -5,9 +5,3 @@ license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 exclude = ["*"]
-
-[dependencies]
-# dev dependencies
-Roact = "roblox/roact@1.4.4"
-Jest = "jsdotlua/jest@3.10.0"
-JestGlobals = "jsdotlua/jest-globals@3.10.0"
