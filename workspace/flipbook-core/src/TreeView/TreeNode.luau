@@ -1,3 +1,5 @@
+local Selection = game:GetService("Selection")
+
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
@@ -147,6 +149,13 @@ local function TreeNode(props: TreeNodeProps)
 					size = Foundation.Enums.InputSize.Medium,
 					items = {
 						pinToggleItem,
+						{
+							id = "select-in-explorer",
+							text = "Select in Explorer",
+							onActivated = function()
+								Selection:Set({ props.node.instance })
+							end,
+						},
 					},
 					onPressedOutside = function()
 						setIsContextMenuOpen(false)
