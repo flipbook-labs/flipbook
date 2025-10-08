@@ -75,7 +75,7 @@ local function StorybookTreeView(props: Props)
 						node = {
 							id = HttpService:GenerateGUID(),
 							label = `ERR: {pinnedInstance.path}`,
-							icon = "alert", -- TODO: Use an error icon
+							icon = "alert",
 							isExpanded = true,
 							children = {},
 						}
