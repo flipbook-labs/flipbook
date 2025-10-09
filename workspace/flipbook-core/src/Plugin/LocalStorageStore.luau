@@ -5,6 +5,7 @@ local createPluginSettingsStore = require("@root/Plugin/createPluginSettingsStor
 
 export type LocalStorageStore = {
 	lastOpenedStoryPath: string?,
+	pinnedInstancePaths: { string }?,
 }
 
 local defaultValue: LocalStorageStore = {}

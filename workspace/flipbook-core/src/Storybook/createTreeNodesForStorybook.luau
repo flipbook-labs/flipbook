@@ -18,6 +18,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 		label = if storybook.name then storybook.name else "Unnamed Storybook",
 		icon = "storybook",
 		isExpanded = false,
+		instance = storybook.source,
 		children = {},
 	}
 
@@ -40,6 +41,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 				local parentNode: TreeNode = {
 					id = HttpService:GenerateGUID(),
 					label = parentInstance.Name,
+					instance = parentInstance,
 					icon = "folder",
 					isExpanded = false,
 					children = { currentNode },
