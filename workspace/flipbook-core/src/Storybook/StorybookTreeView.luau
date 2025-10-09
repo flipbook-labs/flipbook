@@ -61,11 +61,12 @@ local function StorybookTreeView(props: Props)
 				-- issue where the ModuleLoader type is somehow not compareable to
 				-- itself
 				local root = createTreeNodesForStorybook(storybook :: any)
-				table.insert(roots, root)
 				storybookByNodeId.current[root.id] = storybook :: any
 
 				if pinnedInstanceStore.isPinned(storybook.source) then
 					table.insert(pins.children, root)
+				else
+					table.insert(roots, root)
 				end
 			end
 
