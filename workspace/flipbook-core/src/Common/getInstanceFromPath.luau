@@ -17,17 +17,17 @@ local function getInstanceFromPath(path: string): Instance?
 	local parts = path:split(PATH_SEPERATOR)
 	local serviceName = parts[1]
 
-	if serviceName then
+	if serviceName ~= nil then
 		-- This function only works for instances in the DataModel. As such, the
 		-- first part of the path will always be a service, so if we can't find
 		-- one we exit out and return nil
 		local current = tryGetService(serviceName)
 
-		if current then
+		if current ~= nil then
 			for i = 2, #parts do
 				local found = current:FindFirstChild(parts[i])
 
-				if found then
+				if found ~= nil then
 					current = found
 				else
 					return nil
