@@ -42,40 +42,18 @@ local function StorybookTreeView(props: Props)
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
-	local pinnedInstances = useSignalState(pinnedInstanceStore.getPinnedInstances)
 
 	useEffect(
 		function()
 			local roots: { TreeNode } = {}
 
-			if #pinnedInstances > 0 then
-				local pins: TreeNode = {
-					id = HttpService:GenerateGUID(),
-					label = "Pinned",
-					icon = "star",
-					isExpanded = true,
-					children = {},
-				}
-
-				for _, pinnedInstance in pinnedInstances do
-					local node: TreeNode
-					if pinnedInstance.instance then
-						local pinnedNode = treeViewContext.getNodeByInstance(pinnedInstance.instance)
-						if pinnedNode then
-							node = pinnedNode
-						end
-					end
-
-					table.insert(pins.children, node)
-				end
-
-				-- There can be pinned paths that were never apart of the
-				-- current DataModel, so only add the "Pinned" root if there are
-				-- children to show
-				if #pins.children > 0 then
-					table.insert(roots, pins)
-				end
-			end
+			local pins: TreeNode = {
+				id = HttpService:GenerateGUID(),
+				label = "Pinned",
+				icon = "star",
+				isExpanded = true,
+				children = {},
+			}
 
 			for _, storybook in props.storybooks.available do
 				-- FIXME: Need to cast each `storybook` variable to `any` to fix an
@@ -84,6 +62,10 @@ local function StorybookTreeView(props: Props)
 				local root = createTreeNodesForStorybook(storybook :: any)
 				table.insert(roots, root)
 				storybookByNodeId.current[root.id] = storybook :: any
+
+				if pinnedInstanceStore.isPinned(storybook.source) then
+					table.insert(pins.children, root)
+				end
 			end
 
 			if #props.storybooks.unavailable > 0 then
@@ -129,6 +111,13 @@ local function StorybookTreeView(props: Props)
 				table.insert(roots, orphanedStories)
 			end
 
+			-- There can be pinned paths that were never apart of the current
+			-- DataModel, so only add the "Pinned" root if there are children to
+			-- show
+			if #pins.children > 0 then
+				table.insert(roots, 1, pins)
+			end
+
 			-- FIXME: When pinning a storybook the entire tree reloads and the
 			-- expanded states are discarded
 			treeViewContext.setRoots(roots)
@@ -141,7 +130,7 @@ local function StorybookTreeView(props: Props)
 			props.storybooks.available,
 			props.storybooks.unavailable,
 			treeViewContext.setRoots,
-			pinnedInstances,
+			pinnedInstanceStore.isPinned,
 		} :: { unknown }
 	)
 
