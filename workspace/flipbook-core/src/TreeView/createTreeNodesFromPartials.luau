@@ -19,9 +19,6 @@ local function createTreeNodesFromPartials(partialRoots: { PartialTreeNode | Tre
 	local byId: { [string]: TreeNode } = {}
 	local byInstance: { [Instance]: TreeNode } = {}
 
-	-- FIXME: I think something is wrong in here both for attaching the Instance
-	-- to a Storybook TreeNode, and also setting byInstance for pinned instances
-	-- doesn't seem to work
 	local function process(partials: { PartialTreeNode | TreeNode }, parent: TreeNode?): { TreeNode }
 		local siblings: { TreeNode } = {}
 
