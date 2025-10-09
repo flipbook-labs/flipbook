@@ -66,23 +66,15 @@ local function StorybookTreeView(props: Props)
 						end
 					end
 
-					-- FIXME: When initially pinning a storybook, it shows up
-					-- under Pinned with the correct path. But when reloading
-					-- it can't be found
-					if not node then
-						node = {
-							id = HttpService:GenerateGUID(),
-							label = `ERR: {pinnedInstance.path}`,
-							icon = "alert",
-							isExpanded = true,
-							children = {},
-						}
-					end
-
 					table.insert(pins.children, node)
 				end
 
-				table.insert(roots, pins)
+				-- There can be pinned paths that were never apart of the
+				-- current DataModel, so only add the "Pinned" root if there are
+				-- children to show
+				if #pins.children > 0 then
+					table.insert(roots, pins)
+				end
 			end
 
 			for _, storybook in props.storybooks.available do
