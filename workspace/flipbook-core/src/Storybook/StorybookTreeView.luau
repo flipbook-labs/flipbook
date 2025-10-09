@@ -42,6 +42,7 @@ local function StorybookTreeView(props: Props)
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local pinnedInstances = useSignalState(pinnedInstanceStore.getPinnedInstances)
 
 	useEffect(
 		function()
@@ -131,6 +132,7 @@ local function StorybookTreeView(props: Props)
 			props.storybooks.unavailable,
 			treeViewContext.setRoots,
 			pinnedInstanceStore.isPinned,
+			pinnedInstances,
 		} :: { unknown }
 	)
 
