@@ -1,31 +1,38 @@
 local fs = require("@lune/fs")
 
-local function getWatchedFiles(filePatterns: { string }): { string }
+local function getWatchedFiles(filePatterns: { string }, excludedFilePatterns: { string }?): { string }
 	local files = {}
 
-	local function traverse(rootDir: string, filePattern: string)
+	local function traverse(rootDir: string)
 		for _, file in fs.readDir(rootDir) do
 			local filePath = `{rootDir}/{file}`
 			if fs.isDir(filePath) then
-				traverse(filePath, filePattern)
+				traverse(filePath)
 			else
-				if filePath:match(filePattern) then
-					table.insert(files, filePath)
+				if excludedFilePatterns then
+					local isExcluded = false
+					for _, excludedPattern in excludedFilePatterns do
+						if filePath:match(excludedPattern) then
+							isExcluded = true
+							break
+						end
+					end
+					if isExcluded then
+						continue
+					end
+				end
+
+				for _, filePattern in filePatterns do
+					if filePath:match(filePattern) then
+						table.insert(files, filePath)
+						break
+					end
 				end
 			end
 		end
 	end
 
-	for _, filePattern in filePatterns do
-		local rootDir = filePattern:split("/")[1]
-
-		assert(
-			rootDir and fs.isDir(rootDir),
-			`first part of file pattern must be a directory ({rootDir} is not a directory)`
-		)
-
-		traverse(rootDir, filePattern)
-	end
+	traverse(".")
 
 	return files
 end

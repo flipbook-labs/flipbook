@@ -37,6 +37,10 @@ if args.watch then
 			"src/.*%.luau",
 			"workspace/.*%.luau",
 		},
+		excludedFilePatterns = {
+			".*Packages",
+			"build",
+		},
 		onChanged = build,
 	})
 end
