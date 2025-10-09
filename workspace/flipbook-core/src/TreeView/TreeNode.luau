@@ -147,13 +147,17 @@ local function TreeNode(props: TreeNodeProps)
 						{
 							id = "pin",
 							text = if isPinned then "Unpin" else "Pin",
-							onActivated = onTogglePin,
+							onActivated = function()
+								onTogglePin()
+								setIsContextMenuOpen(false)
+							end,
 						},
 						{
 							id = "select-in-explorer",
 							text = "Select in Explorer",
 							onActivated = function()
 								Selection:Set({ props.node.instance })
+								setIsContextMenuOpen(false)
 							end,
 						},
 					},
