@@ -1,4 +1,5 @@
 local fs = require("@lune/fs")
+local process = require("@lune/process")
 local project = require("@repo/project")
 local serde = require("@lune/serde")
 
@@ -71,6 +72,7 @@ local function compile(channel: Channel, target: Target)
 		BUILD_VERSION = wallyToml.package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
+		BASE_URL = process.env.BASE_URL,
 	}
 
 	run("rojo", {

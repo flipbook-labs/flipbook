@@ -9,4 +9,6 @@ export type StoryOpened = types.StoryOpened
 export type StoryClosed = types.StoryClosed
 export type Navigated = types.Navigated
 
-return {}
+return {
+	fireEvent = require("@self/fireEvent"),
+}
