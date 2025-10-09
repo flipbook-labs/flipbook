@@ -55,7 +55,7 @@ local function TreeNode(props: TreeNodeProps)
 	local tokens = useTokens()
 	local iconName, iconStyle = useTreeNodeIcon(props.node.icon)
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
-	local isPinned = pinnedInstanceStore.isPinned(props.node.instance)
+	local isPinned = if props.node.instance then pinnedInstanceStore.isPinned(props.node.instance) else false
 
 	local children = useMemo(function()
 		local elements: { [string]: React.ReactNode } = {}
@@ -88,19 +88,15 @@ local function TreeNode(props: TreeNodeProps)
 		end
 	end, { props.node.icon })
 
-	local pinToggleItem = useMemo(function(): Foundation.MenuItem
-		return {
-			id = "pin",
-			text = if isPinned then "Unpin" else "Pin",
-			onActivated = function()
-				if isPinned then
-					pinnedInstanceStore.unpin(props.node.instance)
-				else
-					pinnedInstanceStore.pin(props.node.instance)
-				end
-			end,
-		}
-	end, { props.node.instance, isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin })
+	local onTogglePin = useCallback(function()
+		if props.node.instance then
+			if isPinned then
+				pinnedInstanceStore.unpin(props.node.instance)
+			else
+				pinnedInstanceStore.pin(props.node.instance)
+			end
+		end
+	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, props.node.instance } :: { unknown })
 
 	return e(
 		View,
@@ -148,7 +144,11 @@ local function TreeNode(props: TreeNodeProps)
 					isOpen = true,
 					size = Foundation.Enums.InputSize.Medium,
 					items = {
-						pinToggleItem,
+						{
+							id = "pin",
+							text = if isPinned then "Unpin" else "Pin",
+							onActivated = onTogglePin,
+						},
 						{
 							id = "select-in-explorer",
 							text = "Select in Explorer",
