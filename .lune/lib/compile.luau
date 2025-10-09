@@ -92,6 +92,8 @@ local function compile(channel: Channel, target: Target)
 		env = env,
 	})
 
+	run("cp", { "-R", "RobloxPackages", `{dest}/RobloxPackages` })
+
 	for _, member in fs.readDir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
