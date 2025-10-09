@@ -166,12 +166,16 @@ local function StorybookTreeView(props: Props)
 							and selectedNode.instance
 							and selectedNode.instance:IsA("ModuleScript")
 						then
-							local ancestry = TreeView.getAncestry(selectedNode)
-							local root = ancestry[#ancestry]
-							local storybook = storybookByNodeId.current[root.id]
+							local storybookNode = TreeView.findFirstAncestor(selectedNode, function(ancestor)
+								return ancestor.icon == TreeView.TreeNodeIcon.Storybook
+							end)
 
-							props.onStoryChanged(selectedNode.instance, storybook)
-							setLastOpenedStory(selectedNode.instance)
+							if storybookNode then
+								local storybook = storybookByNodeId.current[storybookNode.id]
+
+								props.onStoryChanged(selectedNode.instance, storybook)
+								setLastOpenedStory(selectedNode.instance)
+							end
 						end
 					else
 						props.onStoryChanged(nil, nil)
