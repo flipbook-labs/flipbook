@@ -49,11 +49,9 @@ local function StorybookTreeView(props: Props)
 			local roots: { TreeNode } = {}
 
 			if #pinnedInstances > 0 then
-				-- TODO: Remove the Starred dropdown all together. Instead just
-				-- move those storybooks to the top
 				local pins: TreeNode = {
 					id = HttpService:GenerateGUID(),
-					label = "Starred",
+					label = "Pinned",
 					icon = "star",
 					isExpanded = true,
 					children = {},
@@ -69,7 +67,7 @@ local function StorybookTreeView(props: Props)
 					end
 
 					-- FIXME: When initially pinning a storybook, it shows up
-					-- under Starred with the correct path. But when reloading
+					-- under Pinned with the correct path. But when reloading
 					-- it can't be found
 					if not node then
 						node = {
@@ -84,7 +82,7 @@ local function StorybookTreeView(props: Props)
 					table.insert(pins.children, node)
 				end
 
-				table.insert(roots, 1, pins)
+				table.insert(roots, pins)
 			end
 
 			for _, storybook in props.storybooks.available do
