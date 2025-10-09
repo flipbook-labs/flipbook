@@ -10,6 +10,7 @@ type FileChanges = { string }
 
 type Options = {
 	filePatterns: { string },
+	excludedFilePatterns: { string }?,
 	onAdded: ((changedFiles: FileChanges) -> ())?,
 	onRemoved: ((changedFiles: FileChanges) -> ())?,
 	onChanged: ((changedFiles: FileChanges) -> ())?,
@@ -17,7 +18,7 @@ type Options = {
 
 local function watch(options: Options)
 	local prevWatchedFileMetadata: { [string]: fs.Metadata } = {}
-	local watchedFiles = getWatchedFiles(options.filePatterns)
+	local watchedFiles = getWatchedFiles(options.filePatterns, options.excludedFilePatterns)
 	local prevWatchedFiles
 
 	print("watching files:")
@@ -63,7 +64,7 @@ local function watch(options: Options)
 
 		prevWatchedFiles = watchedFiles
 		task.wait(1)
-		watchedFiles = getWatchedFiles(options.filePatterns)
+		watchedFiles = getWatchedFiles(options.filePatterns, options.excludedFilePatterns)
 	end
 end
 
