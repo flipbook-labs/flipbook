@@ -1,6 +1,4 @@
 export type TelemetryEvent = {
-	installationId: string,
-	sessionId: string,
 	eventName: string,
 }
 
@@ -14,6 +12,10 @@ export type TelemetryOptedOut = TelemetryEvent & {
 
 export type NodePinned = TelemetryEvent & {
 	eventName: "NodePinned",
+	type: "storybook",
+}
+export type NodeUnpinned = TelemetryEvent & {
+	eventName: "NodeUnpinned",
 	type: "storybook",
 }
 

@@ -5,6 +5,7 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 end
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
+local Telemetry = require("@workspace/telemetry/src")
 
 local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` {_G.BUILD_HASH}` else ""
 
@@ -19,6 +20,17 @@ widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore.FLIPBOOK_LOGO)
 
+button.Click:Connect(function()
+	Telemetry.fireEvent({
+		eventName = "SessionStarted",
+	})
+end)
+
 local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin, widget, button)
 
-plugin.Unloading:Connect(flipbookPlugin.unmount)
+plugin.Unloading:Connect(function()
+	Telemetry.fireEvent({
+		eventName = "SessionEnded",
+	})
+	flipbookPlugin.unmount()
+end)

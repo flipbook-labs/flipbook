@@ -1,11 +1,14 @@
 local React = require("@pkg/React")
+local Telemetry = require("@workspace/telemetry/src")
 
 local navigationEnums = require("@root/Navigation/enums")
+local usePrevious = require("@root/Common/usePrevious")
 
 local useCallback = React.useCallback
 local useContext = React.useContext
 local useMemo = React.useMemo
 local useState = React.useState
+local useEffect = React.useEffect
 
 type Screen = navigationEnums.Screen
 
@@ -26,6 +29,7 @@ export type Props = {
 
 local function Provider(props: Props)
 	local stack: { Screen }, setStack = useState({ props.defaultScreen })
+	local prevStack = usePrevious(stack)
 
 	local navigateTo = useCallback(function(newScreen: Screen)
 		setStack(function(prev)
@@ -52,6 +56,15 @@ local function Provider(props: Props)
 			end)
 		end
 	end, { canGoBack })
+
+	useEffect(function()
+		if stack ~= prevStack then
+			Telemetry.fireEvent({
+				eventName = "Navigated",
+				page = stack[#stack],
+			})
+		end
+	end, { stack })
 
 	return React.createElement(Context.Provider, {
 		value = {

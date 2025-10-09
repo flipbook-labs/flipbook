@@ -2,6 +2,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
+local Telemetry = require("@workspace/telemetry/src")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
@@ -40,6 +41,10 @@ local function App()
 		if newStoryModule and not newStorybook then
 			newStorybook = defaultStorybook
 		end
+
+		Telemetry.fireEvent({
+			eventName = "StoryOpened",
+		})
 
 		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
