@@ -17,4 +17,5 @@ return {
 
 	-- Functions
 	getAncestry = require("@self/getAncestry"),
+	findFirstAncestor = require("@self/findFirstAncestor"),
 }

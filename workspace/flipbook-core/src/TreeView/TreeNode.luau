@@ -1,5 +1,10 @@
+local Selection = game:GetService("Selection")
+
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
+
+local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
@@ -16,6 +21,10 @@ local withCommonProps = Foundation.Utility.withCommonProps
 local e = React.createElement
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useState = React.useState
+local useRef = React.useRef
+
+local useSignalState = SignalsReact.useSignalState
 
 type TreeNode = Types.TreeNode
 
@@ -40,9 +49,13 @@ local function TreeNode(props: TreeNodeProps)
 	local treeView = TreeViewContext.use()
 	local isExpanded = treeView.isExpanded(props.node)
 	local isSelected = treeView.isSelected(props.node)
+	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
+	local nodeRef = useRef(nil :: GuiObject?)
 
 	local tokens = useTokens()
 	local iconName, iconStyle = useTreeNodeIcon(props.node.icon)
+	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local isPinned = if props.node.instance then pinnedInstanceStore.isPinned(props.node.instance) else false
 
 	local children = useMemo(function()
 		local elements: { [string]: React.ReactNode } = {}
@@ -69,6 +82,22 @@ local function TreeNode(props: TreeNodeProps)
 		treeView.activateNode(props.node)
 	end, { props.onActivated, treeView.activateNode, props.node } :: { any })
 
+	local onSecondaryActivated = useCallback(function()
+		if props.node.icon == Types.TreeNodeIcon.Storybook then
+			setIsContextMenuOpen(true)
+		end
+	end, { props.node.icon })
+
+	local onTogglePin = useCallback(function()
+		if props.node.instance then
+			if isPinned then
+				pinnedInstanceStore.unpin(props.node.instance)
+			else
+				pinnedInstanceStore.pin(props.node.instance)
+			end
+		end
+	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, props.node.instance } :: { unknown })
+
 	return e(
 		View,
 		withCommonProps(props, {
@@ -79,10 +108,12 @@ local function TreeNode(props: TreeNodeProps)
 				LayoutOrder = 1,
 				backgroundStyle = if isSelected then tokens.Color.ActionEmphasis.Background else nil,
 				onActivated = onActivated,
+				onSecondaryActivated = onSecondaryActivated,
 				padding = {
 					left = UDim.new(0, tokens.Padding.Medium * parentCount),
 				},
 				tag = "align-y-center auto-y gap-medium padding-right-medium padding-y-medium row size-full-0",
+				ref = nodeRef,
 			}, {
 				Icon = e(Icon, {
 					LayoutOrder = 1,
@@ -107,6 +138,35 @@ local function TreeNode(props: TreeNodeProps)
 					size = IconSize.XSmall,
 				}),
 			}),
+
+			ContextMenu = if isContextMenuOpen
+				then React.createElement(Foundation.Menu, {
+					isOpen = true,
+					size = Foundation.Enums.InputSize.Medium,
+					items = {
+						{
+							id = "pin",
+							text = if isPinned then "Unpin" else "Pin",
+							onActivated = function()
+								onTogglePin()
+								setIsContextMenuOpen(false)
+							end,
+						},
+						{
+							id = "select-in-explorer",
+							text = "Select in Explorer",
+							onActivated = function()
+								Selection:Set({ props.node.instance })
+								setIsContextMenuOpen(false)
+							end,
+						},
+					},
+					onPressedOutside = function()
+						setIsContextMenuOpen(false)
+					end,
+					anchorRef = nodeRef,
+				})
+				else nil,
 
 			Children = isExpanded and e(View, {
 				LayoutOrder = 2,
