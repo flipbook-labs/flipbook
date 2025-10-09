@@ -20,11 +20,12 @@ return {
 		"src",
 		".lune",
 
-		-- We have to exhaustively include every workspace member to skip over
-		-- Packages/RobloxPackages
-		"workspace/flipbook-core/src",
-		"workspace/example/src",
+		-- We have to exhaustively include every workspace member to skip the
+		-- Packages folders
 		"workspace/code-samples/src",
+		"workspace/example/src",
+		"workspace/flipbook-core/src",
+		"workspace/telemetry/src",
 		"workspace/test-runner/src",
 	},
 
