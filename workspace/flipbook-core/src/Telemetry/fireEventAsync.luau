@@ -13,14 +13,24 @@ local function fireEventAsync(event: TelemetryEvent)
 
 	print("fireEventAsync", event.eventName)
 
-	return HttpService:RequestAsync({
-		Url = `{_G.BASE_URL}/telemetry`,
-		Method = "POST",
-		Headers = {
-			["Content-Type"] = "application/json",
-		},
-		Body = HttpService:JSONEncode(body),
-	})
+	local res
+	local success, err = pcall(function()
+		res = HttpService:RequestAsync({
+			Url = `{_G.BASE_URL}/telemetry`,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json",
+			},
+			Body = HttpService:JSONEncode(body),
+		})
+	end)
+
+	if not success then
+		warn("fireEventAsync error", err)
+		return
+	end
+
+	return res
 end
 
 return fireEventAsync
