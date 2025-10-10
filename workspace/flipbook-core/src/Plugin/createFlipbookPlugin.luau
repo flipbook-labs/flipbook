@@ -3,17 +3,12 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 
-local function createFlipbookPlugin(
-	plugin: Plugin,
-	widget: DockWidgetPluginGui,
-	button: PluginToolbarButton?
-): {
-	mount: () -> (),
-	unmount: () -> (),
-}
+local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
+	local hasSessionStarted = false
 
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
@@ -27,6 +22,13 @@ local function createFlipbookPlugin(
 	end
 
 	local function mount()
+		if not hasSessionStarted then
+			fireEventAsync({
+				eventName = "SessionStarted",
+			})
+			hasSessionStarted = true
+		end
+
 		root:render(app)
 	end
 
@@ -62,6 +64,9 @@ local function createFlipbookPlugin(
 	end
 
 	local function destroy()
+		fireEventAsync({
+			eventName = "SessionEnded",
+		})
 		unmount()
 		for _, connection in connections do
 			connection:Disconnect()

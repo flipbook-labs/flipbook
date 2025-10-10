@@ -19,17 +19,6 @@ widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore.FLIPBOOK_LOGO)
 
-button.Click:Connect(function()
-	FlipbookCore.fireEventAsync({
-		eventName = "SessionStarted",
-	})
-end)
-
 local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin, widget, button)
 
-plugin.Unloading:Connect(function()
-	FlipbookCore.fireEventAsync({
-		eventName = "SessionEnded",
-	})
-	flipbookPlugin.unmount()
-end)
+plugin.Unloading:Connect(flipbookPlugin.destroy)
