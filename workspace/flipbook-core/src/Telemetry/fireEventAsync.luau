@@ -7,11 +7,12 @@ type TelemetryEvent = types.TelemetryEvent
 
 local function fireEventAsync(event: TelemetryEvent)
 	local body = {
-		event = event,
+		eventName = event.eventName,
 		anonymizedUserId = getAnonymizedUserId(),
+		buildVersion = _G.BUILD_VERSION,
+		buildChannel = _G.BUILD_CHANNEL,
+		buildHash = _G.BUILD_HASH,
 	}
-
-	print("fireEventAsync", event.eventName)
 
 	local res
 	local success, err = pcall(function()
