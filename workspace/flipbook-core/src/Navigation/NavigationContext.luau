@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
-local Telemetry = require("@workspace/telemetry/src")
 
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local navigationEnums = require("@root/Navigation/enums")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -59,7 +59,7 @@ local function Provider(props: Props)
 
 	useEffect(function()
 		if stack ~= prevStack then
-			Telemetry.fireEventAsync({
+			fireEventAsync({
 				eventName = "Navigated",
 				page = stack[#stack],
 			})

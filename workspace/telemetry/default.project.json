@@ -1,9 +1,0 @@
-{
-  "name": "telemetry",
-  "tree": {
-    "Packages": {
-      "$path": "Packages"
-    },
-    "$path": "src"
-  }
-}

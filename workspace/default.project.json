@@ -11,9 +11,6 @@
     "flipbook-core": {
       "$path": "flipbook-core"
     },
-    "telemetry": {
-      "$path": "telemetry"
-    },
     "template": {
       "$path": "template"
     },

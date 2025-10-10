@@ -1,8 +1,8 @@
 local Sift = require("@pkg/Sift")
 local Signals = require("@rbxpkg/Signals")
-local Telemetry = require("@workspace/telemetry/src")
 
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
 
@@ -46,7 +46,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end)
 
 	local function pin(instance: Instance)
-		Telemetry.fireEventAsync({
+		fireEventAsync({
 			eventName = "NodePinned",
 		})
 		setPinnedPaths(function(prev)
@@ -55,7 +55,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end
 
 	local function unpin(instance: Instance)
-		Telemetry.fireEventAsync({
+		fireEventAsync({
 			eventName = "NodeUnpinned",
 		})
 		setPinnedPaths(function(prev)

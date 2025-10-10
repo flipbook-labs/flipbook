@@ -2,7 +2,6 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
-local Telemetry = require("@workspace/telemetry/src")
 
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
@@ -13,6 +12,7 @@ local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = SignalsReact.useSignalState
@@ -42,7 +42,7 @@ local function App()
 			newStorybook = defaultStorybook
 		end
 
-		Telemetry.fireEventAsync({
+		fireEventAsync({
 			eventName = "StoryOpened",
 		})
 

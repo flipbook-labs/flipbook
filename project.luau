@@ -25,7 +25,6 @@ return {
 		"workspace/code-samples/src",
 		"workspace/example/src",
 		"workspace/flipbook-core/src",
-		"workspace/telemetry/src",
 		"workspace/test-runner/src",
 	},
 
