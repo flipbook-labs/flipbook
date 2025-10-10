@@ -46,7 +46,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end)
 
 	local function pin(instance: Instance)
-		Telemetry.fireEvent({
+		Telemetry.fireEventAsync({
 			eventName = "NodePinned",
 		})
 		setPinnedPaths(function(prev)
@@ -55,7 +55,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end
 
 	local function unpin(instance: Instance)
-		Telemetry.fireEvent({
+		Telemetry.fireEventAsync({
 			eventName = "NodeUnpinned",
 		})
 		setPinnedPaths(function(prev)

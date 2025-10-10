@@ -8,3 +8,4 @@ exclude = ["*"]
 
 [dependencies]
 React = "jsdotlua/react@17.0.2"
+sha256 = "dekkonot/sha256@1.0.1"

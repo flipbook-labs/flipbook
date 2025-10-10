@@ -42,7 +42,7 @@ local function App()
 			newStorybook = defaultStorybook
 		end
 
-		Telemetry.fireEvent({
+		Telemetry.fireEventAsync({
 			eventName = "StoryOpened",
 		})
 

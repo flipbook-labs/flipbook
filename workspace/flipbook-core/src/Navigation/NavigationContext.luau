@@ -59,7 +59,7 @@ local function Provider(props: Props)
 
 	useEffect(function()
 		if stack ~= prevStack then
-			Telemetry.fireEvent({
+			Telemetry.fireEventAsync({
 				eventName = "Navigated",
 				page = stack[#stack],
 			})

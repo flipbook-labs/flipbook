@@ -11,5 +11,5 @@ export type StoryClosed = types.StoryClosed
 export type Navigated = types.Navigated
 
 return {
-	fireEvent = require("@self/fireEvent"),
+	fireEventAsync = require("@self/fireEventAsync"),
 }
