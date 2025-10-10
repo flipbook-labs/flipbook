@@ -66,7 +66,7 @@ end
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.693.0.6930961" })
 
-	local dest = "RobloxPackages"
+	local dest = "workspace/flipbook-core/RobloxPackages"
 	if fs.isDir(dest) then
 		fs.removeDir(dest)
 	end
@@ -124,7 +124,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { "workspace/**/Packages", "RobloxPackages" } do
+	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
 		end
