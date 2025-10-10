@@ -21,7 +21,8 @@ local function compileWorkspaceMember(
 	if fs.isDir(memberBuildPath) then
 		fs.removeDir(memberBuildPath)
 	end
-	fs.writeDir(memberBuildPath)
+
+	run("cp", { "-R", `{memberPath}/src`, memberBuildPath })
 
 	run("darklua", {
 		"process",
@@ -37,6 +38,12 @@ local function compileWorkspaceMember(
 	local robloxPackagesPath = `{memberPath}/RobloxPackages`
 	if fs.isDir(robloxPackagesPath) then
 		run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
+	end
+
+	-- Turn all .md files into .txt so Rojo will sync them as StringValues
+	for _, mdFile in find(memberBuildPath, "%.md$") do
+		local newName = mdFile:gsub("%.md$", ".txt")
+		fs.move(mdFile, newName)
 	end
 
 	if channel == "prod" then
