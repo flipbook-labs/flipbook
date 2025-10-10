@@ -1,9 +1,9 @@
 # Hoarcekat
 
-[Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like Flipbook. Because of its popularity, its story format is supported by Flipbook so that you have an easier time migrating.
+[Hoarcekat][hoarcekat] is a popular storybook plugin like Flipbook. Because of its popularity, its story format is supported by Flipbook so that you have an easier time migrating.
 
 :::note
-This guide assumes you are using [Rojo](https://github.com/rojo-rbx/rojo/) to manage your source code. If you are not then your mileage may vary.
+This guide assumes you are using [Rojo][rojo] to manage your source code. If you are not then your mileage may vary.
 :::
 
 ## Creating the Storybook
@@ -130,3 +130,6 @@ You will now have a "Controls" section with an input field. Try changing the val
 <!-- TODO: Add image of the story -->
 
 You are now equipped to migrate your other Hoarcekat stories over to Flipbook!
+
+[hoarcekat]: https://github.com/Kampfkarren/hoarcekat/
+[rojo]: https://github.com/rojo-rbx/rojo/
