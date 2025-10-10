@@ -23,9 +23,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 
 	local function mount()
 		if not hasSessionStarted then
-			fireEventAsync({
-				eventName = "SessionStarted",
-			})
+			task.spawn(function()
+				fireEventAsync({
+					eventName = "SessionStarted",
+				})
+			end)
 			hasSessionStarted = true
 		end
 
@@ -64,9 +66,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
-		fireEventAsync({
-			eventName = "SessionEnded",
-		})
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "SessionEnded",
+			})
+		end)
 		unmount()
 		for _, connection in connections do
 			connection:Disconnect()

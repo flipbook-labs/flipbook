@@ -46,18 +46,24 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end)
 
 	local function pin(instance: Instance)
-		fireEventAsync({
-			eventName = "NodePinned",
-		})
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "NodePinned",
+			})
+		end)
+
 		setPinnedPaths(function(prev)
 			return Sift.List.append(prev, getInstancePath(instance))
 		end)
 	end
 
 	local function unpin(instance: Instance)
-		fireEventAsync({
-			eventName = "NodeUnpinned",
-		})
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "NodeUnpinned",
+			})
+		end)
+
 		setPinnedPaths(function(prev)
 			return Sift.List.removeValue(prev, getInstancePath(instance))
 		end)

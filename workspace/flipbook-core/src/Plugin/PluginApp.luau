@@ -42,9 +42,11 @@ local function App()
 			newStorybook = defaultStorybook
 		end
 
-		fireEventAsync({
-			eventName = "StoryOpened",
-		})
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "StoryOpened",
+			})
+		end)
 
 		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)

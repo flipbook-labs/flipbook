@@ -59,10 +59,12 @@ local function Provider(props: Props)
 
 	useEffect(function()
 		if stack ~= prevStack then
-			fireEventAsync({
-				eventName = "Navigated",
-				page = stack[#stack],
-			})
+			task.spawn(function()
+				fireEventAsync({
+					eventName = "Navigated",
+					page = stack[#stack],
+				})
+			end)
 		end
 	end, { stack })
 
