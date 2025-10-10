@@ -2,6 +2,7 @@ local Sift = require("@pkg/Sift")
 local Signals = require("@rbxpkg/Signals")
 
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
 
@@ -45,12 +46,24 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end)
 
 	local function pin(instance: Instance)
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "NodePinned",
+			})
+		end)
+
 		setPinnedPaths(function(prev)
 			return Sift.List.append(prev, getInstancePath(instance))
 		end)
 	end
 
 	local function unpin(instance: Instance)
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "NodeUnpinned",
+			})
+		end)
+
 		setPinnedPaths(function(prev)
 			return Sift.List.removeValue(prev, getInstancePath(instance))
 		end)

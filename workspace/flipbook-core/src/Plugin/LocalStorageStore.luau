@@ -12,6 +12,7 @@ local defaultValue: LocalStorageStore = {}
 
 local validate = t.interface({
 	lastOpenedStoryPath = t.optional(t.string),
+	pinnedInstancePaths = t.optional(t.array(t.string)),
 })
 
 return {

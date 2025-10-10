@@ -21,4 +21,4 @@ local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore
 
 local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin, widget, button)
 
-plugin.Unloading:Connect(flipbookPlugin.unmount)
+plugin.Unloading:Connect(flipbookPlugin.destroy)
