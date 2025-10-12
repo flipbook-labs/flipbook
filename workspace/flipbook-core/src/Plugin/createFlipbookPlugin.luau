@@ -8,7 +8,6 @@ local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
-	local hasSessionStarted = false
 
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
@@ -18,19 +17,20 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	})
 
 	local function unmount()
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "SessionEnded",
+			})
+		end)
 		root:unmount()
 	end
 
 	local function mount()
-		if not hasSessionStarted then
-			task.spawn(function()
-				fireEventAsync({
-					eventName = "SessionStarted",
-				})
-			end)
-			hasSessionStarted = true
-		end
-
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "SessionStarted",
+			})
+		end)
 		root:render(app)
 	end
 
@@ -66,11 +66,6 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "SessionEnded",
-			})
-		end)
 		unmount()
 		for _, connection in connections do
 			connection:Disconnect()
