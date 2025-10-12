@@ -16,6 +16,7 @@ local function fireEventAsync(event: TelemetryEvent)
 
 	local body = {
 		eventName = event.eventName,
+		properties = (event :: any).properties,
 		anonymizedUserId = getAnonymizedUserId(),
 		buildVersion = _G.BUILD_VERSION,
 		buildChannel = _G.BUILD_CHANNEL,

@@ -61,8 +61,10 @@ local function Provider(props: Props)
 		if stack ~= prevStack then
 			task.spawn(function()
 				fireEventAsync({
-					eventName = "Navigated",
-					page = stack[#stack],
+					eventName = "PageChanged",
+					properties = {
+						page = stack[#stack],
+					},
 				})
 			end)
 		end

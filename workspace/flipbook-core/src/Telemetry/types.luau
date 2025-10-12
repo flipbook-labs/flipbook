@@ -1,43 +1,53 @@
-export type TelemetryEvent = {
-	eventName: string,
+-- The events in this file mirror the TelementryEventName enum in the backend.
+-- The backend must be updated first before adding new events.
+
+export type AppOpened = {
+	eventName: "AppOpened",
 }
 
-export type TelemetryOptedIn = TelemetryEvent & {
-	eventName: "TelemetryOptedIn",
+export type AppClosed = {
+	eventName: "AppClosed",
 }
 
-export type TelemetryOptedOut = TelemetryEvent & {
-	eventName: "TelemetryOptedOut",
-}
-
-export type NodePinned = TelemetryEvent & {
+export type NodePinned = {
 	eventName: "NodePinned",
-	type: "storybook",
 }
-export type NodeUnpinned = TelemetryEvent & {
+
+export type NodeUnpinned = {
 	eventName: "NodeUnpinned",
-	type: "storybook",
 }
 
-export type SessionStarted = TelemetryEvent & {
-	eventName: "SessionStarted",
+export type PageChanged = {
+	eventName: "PageChanged",
+	properties: {
+		page: string,
+	},
 }
-
-export type SessionEnded = TelemetryEvent & {
-	eventName: "SessionEnded",
-}
-
-export type StoryOpened = TelemetryEvent & {
+export type StoryOpened = {
 	eventName: "StoryOpened",
 }
 
-export type StoryClosed = TelemetryEvent & {
+export type StoryClosed = {
 	eventName: "StoryClosed",
 }
 
-export type Navigated = TelemetryEvent & {
-	eventName: "Navigated",
-	page: string,
+export type TelemetryOptedIn = {
+	eventName: "TelemetryOptedIn",
 }
+
+export type TelemetryOptedOut = {
+	eventName: "TelemetryOptedOut",
+}
+
+export type TelemetryEvent =
+	AppOpened
+	| AppClosed
+	| NodePinned
+	| NodeUnpinned
+	| PageChanged
+	| StoryClosed
+	| StoryOpened
+	| TelemetryOptedIn
+	| TelemetryOptedOut
 
 return nil

@@ -19,7 +19,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	local function unmount()
 		task.spawn(function()
 			fireEventAsync({
-				eventName = "SessionEnded",
+				eventName = "AppClosed",
 			})
 		end)
 		root:unmount()
@@ -28,7 +28,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	local function mount()
 		task.spawn(function()
 			fireEventAsync({
-				eventName = "SessionStarted",
+				eventName = "AppOpened",
 			})
 		end)
 		root:render(app)
