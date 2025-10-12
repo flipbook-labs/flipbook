@@ -54,7 +54,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 		connections,
 		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 			if widget.Enabled then
-				root:render(app)
+				mount()
 			else
 				unmount()
 			end
