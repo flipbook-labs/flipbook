@@ -24,7 +24,7 @@ local function fireEventAsync(event: TelemetryEvent)
 	}
 
 	local res
-	local success, _err = pcall(function()
+	local success, err = pcall(function()
 		res = HttpService:RequestAsync({
 			Url = `{_G.BASE_URL}/telemetry`,
 			Method = "POST",
@@ -35,11 +35,13 @@ local function fireEventAsync(event: TelemetryEvent)
 		})
 	end)
 
+	-- TODO: Introduce a logging library so we can include these messages
+	-- without printing to the output all the time
 	if not success then
-		-- TODO: Introduce a logging library so we can include this message
-		-- without printing to the output all the time
-		-- warn("failed to communicate with backend:", err)
-		return
+		warn("failed to communicate with backend:", err)
+	end
+	if not res.Success then
+		warn("failed sending event to basckend:", res.StatusMessage)
 	end
 
 	return res
