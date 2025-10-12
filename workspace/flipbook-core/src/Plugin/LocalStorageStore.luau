@@ -6,6 +6,7 @@ local createPluginSettingsStore = require("@root/Plugin/createPluginSettingsStor
 export type LocalStorageStore = {
 	lastOpenedStoryPath: string?,
 	pinnedInstancePaths: { string }?,
+	wasUserPromptedForTelemetry: boolean?,
 }
 
 local defaultValue: LocalStorageStore = {}
@@ -13,6 +14,7 @@ local defaultValue: LocalStorageStore = {}
 local validate = t.interface({
 	lastOpenedStoryPath = t.optional(t.string),
 	pinnedInstancePaths = t.optional(t.array(t.string)),
+	wasUserPromptedForTelemetry = t.optional(t.boolean),
 })
 
 return {
