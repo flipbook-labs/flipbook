@@ -8,6 +8,14 @@ local SettingType = {
 	Number = "number" :: "number",
 }
 
+export type SettingGroup = "UI" | "Stories" | "Telemetry"
+
+local SettingGroup = {
+	UI = "UI" :: "UI",
+	Stories = "Stories" :: "Stories",
+	Telemetry = "Telemetry" :: "Telemetry",
+}
+
 export type SettingChoice = {
 	description: string,
 	displayName: string,
@@ -16,6 +24,7 @@ export type SettingChoice = {
 
 type BaseSetting = {
 	name: string,
+	group: SettingGroup,
 	displayName: string,
 	description: string,
 	settingType: SettingType,
@@ -62,6 +71,7 @@ export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 
 local rememberLastOpenedStory: CheckboxSetting = {
 	name = "rememberLastOpenedStory",
+	group = SettingGroup.Stories,
 	displayName = "Remember last opened story",
 	description = "Open the last viewed story when starting",
 	settingType = SettingType.Checkbox,
@@ -70,6 +80,7 @@ local rememberLastOpenedStory: CheckboxSetting = {
 
 local theme: DropdownSetting = {
 	name = "theme",
+	group = SettingGroup.UI,
 	displayName = "UI theme",
 	description = "Select the UI theme to use. By default, Flipbook will use the same theme as Studio",
 	settingType = SettingType.Dropdown,
@@ -93,6 +104,7 @@ local theme: DropdownSetting = {
 }
 
 local sidebarWidth: NumberSetting = {
+	group = SettingGroup.UI,
 	name = "sidebarWidth",
 	displayName = "Sidebar panel width",
 	description = `The default width (in pixels) of the sidebar. This can be between {constants.SIDEBAR_MIN_WIDTH}-{constants.SIDEBAR_MAX_WIDTH} px`,
@@ -102,6 +114,7 @@ local sidebarWidth: NumberSetting = {
 }
 
 local controlsHeight: NumberSetting = {
+	group = SettingGroup.UI,
 	name = "controlsHeight",
 	displayName = "Controls panel height",
 	description = `The default height (in pixels) of the 'Controls' panel. This can be between {constants.CONTROLS_MIN_HEIGHT}-{constants.CONTROLS_MAX_HEIGHT} px`,
@@ -112,6 +125,7 @@ local controlsHeight: NumberSetting = {
 
 local collectAnonymousUsageData: CheckboxSetting = {
 	name = "collectAnonymousUsageData",
+	group = SettingGroup.Telemetry,
 	displayName = "Help improve Flipbook by sending anonymous usage data",
 	description = "Allow Flipbook to collect anonymous usage data to help improve the product. No personal data or story content is collected",
 	settingType = SettingType.Checkbox,
