@@ -42,6 +42,7 @@ local function StorybookTreeView(props: Props)
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local pinnedInstances = useSignalState(pinnedInstanceStore.getPinnedInstances)
 
 	useEffect(
 		function()
@@ -60,11 +61,12 @@ local function StorybookTreeView(props: Props)
 				-- issue where the ModuleLoader type is somehow not compareable to
 				-- itself
 				local root = createTreeNodesForStorybook(storybook :: any)
-				table.insert(roots, root)
 				storybookByNodeId.current[root.id] = storybook :: any
 
 				if pinnedInstanceStore.isPinned(storybook.source) then
 					table.insert(pins.children, root)
+				else
+					table.insert(roots, root)
 				end
 			end
 
@@ -131,6 +133,7 @@ local function StorybookTreeView(props: Props)
 			props.storybooks.unavailable,
 			treeViewContext.setRoots,
 			pinnedInstanceStore.isPinned,
+			pinnedInstances,
 		} :: { unknown }
 	)
 
@@ -164,12 +167,16 @@ local function StorybookTreeView(props: Props)
 							and selectedNode.instance
 							and selectedNode.instance:IsA("ModuleScript")
 						then
-							local ancestry = TreeView.getAncestry(selectedNode)
-							local root = ancestry[#ancestry]
-							local storybook = storybookByNodeId.current[root.id]
+							local storybookNode = TreeView.findFirstAncestor(selectedNode, function(ancestor)
+								return ancestor.icon == TreeView.TreeNodeIcon.Storybook
+							end)
 
-							props.onStoryChanged(selectedNode.instance, storybook)
-							setLastOpenedStory(selectedNode.instance)
+							if storybookNode then
+								local storybook = storybookByNodeId.current[storybookNode.id]
+
+								props.onStoryChanged(selectedNode.instance, storybook)
+								setLastOpenedStory(selectedNode.instance)
+							end
 						end
 					else
 						props.onStoryChanged(nil, nil)
