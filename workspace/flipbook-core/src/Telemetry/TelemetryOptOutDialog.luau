@@ -44,7 +44,10 @@ local function TelemetryOptOutDialog(): React.Node?
 		end)
 	end, { localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown })
 
-	if storage.wasUserPromptedForTelemetry then
+	-- `wasUserPromptedForTelemetry` will be nil while waiting for local
+	-- storage, so we want to make sure to only show the dialog when this value
+	-- is exactly `false`, otherwise there will be a flash of the dialog on load
+	if storage.wasUserPromptedForTelemetry ~= false then
 		return nil
 	end
 
