@@ -40,7 +40,7 @@ local function fireEventAsync(event: TelemetryEvent)
 	if not success then
 		warn("failed to communicate with backend:", err)
 	end
-	if not res.Success then
+	if res and not res.Success then
 		warn("failed sending event to basckend:", res.StatusMessage)
 	end
 

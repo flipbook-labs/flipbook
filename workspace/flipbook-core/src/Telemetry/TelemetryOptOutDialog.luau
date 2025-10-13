@@ -16,7 +16,7 @@ local function TelemetryOptOutDialog(): React.Node?
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local localStorageStore = useSignalState(LocalStorageStore.get)
 	local storage = useSignalState(localStorageStore.getStorage)
-	local isOptedIn = useState(true)
+	local isOptedIn, setIsOptedIn = useState(true)
 
 	local onClose = useCallback(function()
 		localStorageStore.setStorage(function(prev)
@@ -55,24 +55,33 @@ local function TelemetryOptOutDialog(): React.Node?
 		onPressedOutside = onClose,
 	}, {
 		Title = React.createElement(Foundation.Dialog.Title, {
-			text = "Anonymized telemetry collection",
+			text = "Help us improve Flipbook",
 		}),
 
 		Content = React.createElement(Foundation.Dialog.Content, {
-			tag = "col gap-medium",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Body = React.createElement(Foundation.Dialog.Text, {
-				tag = "auto-xy text-wrap text-body-medium",
-				Text = "Flipbook collects anonymized usage data to like to collect anonymized usage metrics to help improve the quality of the plugin. You can opt out at any time in the settings.",
-				LayoutOrder = nextLayoutOrder(),
-			}),
+			Wrapper = React.createElement(Foundation.View, {
+				tag = "auto-xy col gap-large",
+			}, {
+				MainParagraph = React.createElement(Foundation.Dialog.Text, {
+					tag = "auto-xy text-wrap text-body-medium",
+					Text = "Flipbook would like to send anonymized usage data to help us improve the quality of the plugin.",
+					LayoutOrder = nextLayoutOrder(),
+				}),
 
-			Checkbox = React.createElement(Foundation.Checkbox, {
-				label = "Opt-in to telemetry collection",
-				isChecked = isOptedIn,
-				onActivated = onClose,
-				LayoutOrder = nextLayoutOrder(),
+				WhereToOptOut = React.createElement(Foundation.Dialog.Text, {
+					tag = "auto-xy text-wrap text-body-medium",
+					Text = "You can opt out at any time in the settings.",
+					LayoutOrder = nextLayoutOrder(),
+				}),
+
+				Checkbox = React.createElement(Foundation.Checkbox, {
+					label = "Help improve Flipbook by sending anonymous usage data",
+					isChecked = isOptedIn,
+					onActivated = setIsOptedIn,
+					LayoutOrder = nextLayoutOrder(),
+				}),
 			}),
 		}),
 
@@ -80,6 +89,7 @@ local function TelemetryOptOutDialog(): React.Node?
 			actions = {
 				{
 					text = "Done",
+					variant = Foundation.Enums.ButtonVariant.Emphasis,
 					onActivated = onClose,
 				},
 			},
