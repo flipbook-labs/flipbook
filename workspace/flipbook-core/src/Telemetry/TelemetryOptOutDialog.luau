@@ -16,6 +16,7 @@ local function TelemetryOptOutDialog(): React.Node?
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local localStorageStore = useSignalState(LocalStorageStore.get)
 	local storage = useSignalState(localStorageStore.getStorage)
+	local isStorageLoading = useSignalState(localStorageStore.getIsLoading)
 	local isOptedIn, setIsOptedIn = useState(true)
 
 	local onClose = useCallback(function()
@@ -44,10 +45,9 @@ local function TelemetryOptOutDialog(): React.Node?
 		end)
 	end, { localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown })
 
-	-- `wasUserPromptedForTelemetry` will be nil while waiting for local
-	-- storage, so we want to make sure to only show the dialog when this value
-	-- is exactly `false`, otherwise there will be a flash of the dialog on load
-	if storage.wasUserPromptedForTelemetry ~= false then
+	-- We check `isStorageLoading` to prevent the dialog from briefly flashing
+	-- on screen
+	if isStorageLoading or storage.wasUserPromptedForTelemetry then
 		return nil
 	end
 
