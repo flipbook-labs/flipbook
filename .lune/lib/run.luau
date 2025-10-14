@@ -1,5 +1,4 @@
-local process = require("@lune/process")
-local stdio = require("@lune/stdio")
+local process = require("@lute/process")
 
 type Options = {
 	cwd: string?,
@@ -8,11 +7,12 @@ type Options = {
 }
 
 local function run(program: string, params: { string }, options: Options?): string
-	stdio.write(stdio.style("bold"))
-	print(`> {program} {table.concat(params, " ")}`)
-	stdio.write(stdio.style("reset"))
+	local command = `{program} {table.concat(params, " ")}`
+	-- stdio.write(stdio.style("bold"))
+	print(`> {command}`)
+	-- stdio.write(stdio.style("reset"))
 
-	local result = process.exec(program, params, {
+	local result = process.run(command, {
 		shell = true,
 		stdio = if options and options.stdio then options.stdio else "inherit",
 		cwd = if options then options.cwd else nil,

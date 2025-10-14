@@ -1,24 +1,46 @@
-local process = require("@lune/process")
+local cli = require("@batteries/cli")
 local project = require("@repo/project")
-local roblox = require("@lune/roblox")
 
 local compile = require("./lib/compile")
-local parseArgs = require("./lib/parseArgs")
+local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
 local run = require("./lib/run")
 local watch = require("./lib/watcher/watch")
 
-local args = parseArgs(process.args)
+local args = cli.parser()
 
-local channel = if args.channel then args.channel else "prod"
+args:add("channel", "flag", {
+	help = "Input file",
+	aliases = { "c" },
+	default = "prod",
+})
+args:add("target", "flag", {
+	help = "Output file",
+	aliases = { "t" },
+	default = "roblox",
+})
+args:add("output", "flag", {
+	help = "Folder to output to",
+	aliases = { "o" },
+	default = `{getStudioPluginsPath()}/{project.PLUGIN_FILENAME}`,
+})
+args:add("watch", "flag", {
+	help = "Watch for changes and recompile automatically",
+	aliases = { "w" },
+	default = false,
+})
+
+args:parse({ ... })
+
+local channel = args:get("channel")
 assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
 
-local target = if args.target then args.target else "roblox"
+local target = args:get("target")
 assert(
 	target == "roblox" or target == "rotriever",
 	`bad value for target (must be one of "roblox" or "rotriever", got "{target}")`
 )
 
-local output = if args.output then args.output else `{roblox.studioPluginPath()}/{project.PLUGIN_FILENAME}`
+local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
@@ -31,7 +53,7 @@ end
 
 build()
 
-if args.watch then
+if args:get("watch") then
 	watch({
 		filePatterns = {
 			"src/.*%.luau",

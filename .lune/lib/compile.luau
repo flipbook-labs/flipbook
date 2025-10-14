@@ -1,11 +1,11 @@
-local fs = require("@lune/fs")
+local fs = require("@lute/fs")
 local project = require("@repo/project")
-local serde = require("@lune/serde")
+local toml = require("@batteries/toml")
 
 local find = require("./find")
 local run = require("./run")
 
-local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
+local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
 
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
@@ -18,10 +18,10 @@ local function compileWorkspaceMember(
 ): string
 	local memberBuildPath = `{memberPath}/build`
 
-	if fs.isDir(memberBuildPath) then
-		fs.removeDir(memberBuildPath)
+	if fs.exists(memberBuildPath) then
+		fs.rmdir(memberBuildPath)
 	end
-	fs.writeDir(memberBuildPath)
+	fs.mkdir(memberBuildPath)
 
 	run("darklua", {
 		"process",
@@ -32,11 +32,11 @@ local function compileWorkspaceMember(
 	})
 
 	local packagesPath = `{memberPath}/Packages`
-	run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
+	fs.copy(packagesPath, `{memberBuildPath}/Packages`)
 
 	local robloxPackagesPath = `{memberPath}/RobloxPackages`
-	if fs.isDir(robloxPackagesPath) then
-		run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
+	if fs.exists(robloxPackagesPath) then
+		fs.copy(robloxPackagesPath, `{memberBuildPath}/RobloxPackages`)
 	end
 
 	if channel == "prod" then
@@ -50,7 +50,8 @@ local function compileWorkspaceMember(
 		-- compatibility
 		for _, luauFile in find(memberBuildPath, "%.luau$") do
 			local newName = luauFile:gsub("%.luau$", ".lua")
-			fs.move(luauFile, newName)
+			fs.copy(luauFile, newName)
+			fs.remove(luauFile)
 		end
 	end
 
@@ -60,15 +61,15 @@ end
 local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
-	if fs.isDir(dest) then
-		fs.removeDir(dest)
+	if fs.exists(dest) then
+		fs.rmdir(dest)
 	end
-	fs.writeDir(dest)
+	fs.mkdir(dest)
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
 	local env = {
-		BUILD_VERSION = wallyToml.package.version,
+		BUILD_VERSION = (wallyToml :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 	}
@@ -90,20 +91,18 @@ local function compile(channel: Channel, target: Target)
 		env = env,
 	})
 
-	for _, member in fs.readDir(project.WORKSPACE_PATH) do
-		local memberPath = `{project.WORKSPACE_PATH}/{member}`
+	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
-		if fs.isDir(memberPath) then
+		if fs.exists(memberPath) then
 			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-
-			run("mkdir", { "-p", `{dest}/{memberPath}` })
-			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
+			fs.copy(memberBuildPath, `{dest}/{memberPath}`)
 		end
 	end
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			run("rm", { "-rf", `{dest}/{dir}` })
+			fs.rmdir(`{dest}/{dir}`)
 		end
 	end
 end

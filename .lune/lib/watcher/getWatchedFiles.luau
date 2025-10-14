@@ -1,12 +1,12 @@
-local fs = require("@lune/fs")
+local fs = require("@lute/fs")
 
 local function getWatchedFiles(filePatterns: { string }, excludedFilePatterns: { string }?): { string }
 	local files = {}
 
 	local function traverse(rootDir: string)
-		for _, file in fs.readDir(rootDir) do
-			local filePath = `{rootDir}/{file}`
-			if fs.isDir(filePath) then
+		for _, file in fs.listdir(rootDir) do
+			local filePath = `{rootDir}/{file.name}`
+			if fs.exists(filePath) then
 				traverse(filePath)
 			else
 				if excludedFilePatterns then
