@@ -1,3 +1,4 @@
+local fs = require("@lune/fs")
 local process = require("@lune/process")
 
 local compile = require("./lib/compile")
@@ -36,7 +37,7 @@ local success, err = pcall(function()
 	})
 end)
 
-run("rm", { "tests.rbxl" })
+fs.removeFile("tests.rbxl")
 
 if not success then
 	print(err)

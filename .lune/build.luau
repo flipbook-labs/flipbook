@@ -1,3 +1,4 @@
+local fs = require("@lune/fs")
 local process = require("@lune/process")
 local project = require("@repo/project")
 local roblox = require("@lune/roblox")
@@ -28,7 +29,10 @@ local function build()
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
-	run("cp", { dest, output })
+	if fs.isFile(output) then
+		fs.removeFile(output)
+	end
+	fs.copy(dest, output)
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
