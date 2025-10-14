@@ -30,7 +30,7 @@ local function build()
 	run("rojo", { "build", "-o", dest })
 	run("cp", { dest, output })
 
-	print(("build completed in %.2f seconds"):format(os.clock() - startTime))
+	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
 build()
