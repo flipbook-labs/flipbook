@@ -18,8 +18,8 @@ local function compileWorkspaceMember(
 ): string
 	local memberBuildPath = `{memberPath}/build`
 
-	if fs.exists(memberBuildPath) then
-		fs.rmdir(memberBuildPath)
+	if fs.type(memberBuildPath) == "dir" then
+		run("rm", { "-rf", memberBuildPath })
 	end
 	fs.mkdir(memberBuildPath)
 
@@ -32,16 +32,16 @@ local function compileWorkspaceMember(
 	})
 
 	local packagesPath = `{memberPath}/Packages`
-	fs.copy(packagesPath, `{memberBuildPath}/Packages`)
+	run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
 
 	local robloxPackagesPath = `{memberPath}/RobloxPackages`
 	if fs.exists(robloxPackagesPath) then
-		fs.copy(robloxPackagesPath, `{memberBuildPath}/RobloxPackages`)
+		run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
 	end
 
 	if channel == "prod" then
 		for _, pattern in project.PROD_CONFIG.prunedFiles do
-			run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
+			run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
 	end
 
@@ -50,7 +50,7 @@ local function compileWorkspaceMember(
 		-- compatibility
 		for _, luauFile in find(memberBuildPath, "%.luau$") do
 			local newName = luauFile:gsub("%.luau$", ".lua")
-			fs.copy(luauFile, newName)
+			run("cp", { "-R", luauFile, newName })
 			fs.remove(luauFile)
 		end
 	end
@@ -62,7 +62,7 @@ local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.exists(dest) then
-		fs.rmdir(dest)
+		run("rm", { "-rf", dest })
 	end
 	fs.mkdir(dest)
 
@@ -94,15 +94,17 @@ local function compile(channel: Channel, target: Target)
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
-		if fs.exists(memberPath) then
+		if fs.type(memberPath) == "dir" then
 			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-			fs.copy(memberBuildPath, `{dest}/{memberPath}`)
+
+			run("mkdir", { "-p", `{dest}/{memberPath}` })
+			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
 		end
 	end
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			fs.rmdir(`{dest}/{dir}`)
+			run("rm", { "-rf", `{dest}/{dir}` })
 		end
 	end
 end
