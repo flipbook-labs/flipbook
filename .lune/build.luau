@@ -22,11 +22,15 @@ local output = if args.output then args.output else `{roblox.studioPluginPath()}
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
+	local startTime = os.clock()
+
 	compile(channel, target)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
 	run("cp", { dest, output })
+
+	print(("build completed in %.2f seconds"):format(os.clock() - startTime))
 end
 
 build()
