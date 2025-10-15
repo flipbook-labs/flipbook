@@ -27,6 +27,6 @@ run("luau-lsp", {
 	`--ignore="**/_Index/**"`,
 	`--ignore="**/RobloxPackages/**"`,
 	project.SOURCE_PATH,
-	project.LUNE_SCRIPTS_PATH,
+	project.SCRIPTS_PATH,
 	project.WORKSPACE_PATH,
 })

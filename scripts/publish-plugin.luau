@@ -1,6 +1,6 @@
 local cli = require("@batteries/cli")
 local process = require("@lute/process")
-local rbxasset = require("@lunepkg/rbxasset")
+local rbxasset = require("@luaupkg/rbxasset")
 
 local run = require("./lib/run")
 
