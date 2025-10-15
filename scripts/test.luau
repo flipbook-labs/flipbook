@@ -1,4 +1,5 @@
 local cli = require("@batteries/cli")
+local fs = require("@lute/fs")
 local process = require("@lute/process")
 
 local compile = require("./lib/compile")
@@ -30,9 +31,9 @@ run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
 local success, err = pcall(function()
 	run("python3", {
-		".lune/python/upload_and_run_task.py",
+		"scripts/python/upload_and_run_task.py",
 		"tests.rbxl",
-		".lune/tasks/run-tests.luau",
+		"scripts/tasks/run-tests.luau",
 	}, {
 		env = {
 			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
@@ -42,6 +43,6 @@ local success, err = pcall(function()
 	})
 end)
 
-fs.removeFile("tests.rbxl")
+fs.remove("tests.rbxl")
 
 assert(success, err)
