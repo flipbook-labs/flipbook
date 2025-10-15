@@ -22,11 +22,13 @@ local function run(program: string, params: { string }, options: Options?): stri
 		})
 	end)
 
-	print("result")
-	print("  ok", result.ok)
-	print("  signal", result.signal)
-	print("  stdout", result.stdout)
-	print("  stderr", result.stderr)
+	if result then
+		print("result")
+		print("  ok", result.ok)
+		print("  signal", result.signal)
+		print("  stdout", result.stdout)
+		print("  stderr", result.stderr)
+	end
 
 	if not success then
 		error(err)
