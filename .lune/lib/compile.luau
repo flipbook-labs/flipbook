@@ -64,7 +64,7 @@ local function compile(channel: Channel, target: Target)
 	if fs.exists(dest) then
 		run("rm", { "-rf", dest })
 	end
-	fs.mkdir(dest)
+	run("mkdir", { "-p", dest })
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
