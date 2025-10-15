@@ -1,10 +1,11 @@
 local cli = require("@batteries/cli")
+local process = require("@lute/process")
 local project = require("@repo/project")
 
 local compile = require("./lib/compile")
 local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
 local run = require("./lib/run")
-local watch = require("./lib/watcher/watch")
+local watch = require("./lib/watch")
 
 local args = cli.parser()
 
@@ -53,11 +54,11 @@ end
 
 build()
 
-if args:get("watch") then
+if args:has("watch") then
 	watch({
-		filePatterns = {
-			"src/.*%.luau",
-			"workspace/.*%.luau",
+		roots = {
+			`{process.cwd()}/src`,
+			`{process.cwd()}/workspace`,
 		},
 		excludedFilePatterns = {
 			".*Packages",
