@@ -13,7 +13,7 @@ local function find(rootPath: string, namePattern: string): { string }
 		for _, file in fs.listdir(path) do
 			local fullPath = `{path}/{file.name}`
 
-			if fs.stat(fullPath).type == "file" then
+			if file.type == "file" then
 				if file.name:match(namePattern) then
 					table.insert(files, fullPath)
 				end
@@ -53,9 +53,8 @@ local function installWallyPackages()
 	end
 
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
-		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
-		if fs.stat(memberPath).type == "dir" then
-			installPackagesForProject(memberPath)
+		if member.type == "dir" then
+			installPackagesForProject(`{project.WORKSPACE_PATH}/{member.name}`)
 		end
 	end
 end

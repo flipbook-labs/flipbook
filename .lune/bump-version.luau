@@ -1,5 +1,5 @@
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+local cli = require("@batteries/cli")
+local fs = require("@lute/fs")
 
 local semver = require("./lib/semver")
 
@@ -28,6 +28,15 @@ local function getNextVersion(currentVersion: string, versionBump: VersionCompon
 	return table.concat(versionParts, ".")
 end
 
+local args = cli.parser()
+
+args:add("versionBump", "positional", {
+	help = `Can be one of "major", "minor", or "patch"`,
+	required = true,
+})
+
+args:parse({ ... })
+
 -- The only package we publish is FlipbookCore, so the following makes no
 -- attempt to bump the version of any of our other workspace members
 do
@@ -37,12 +46,13 @@ do
 		"workspace/flipbook-core/rotriever.toml",
 	}
 
-	local bumpedVersionComponent = process.args[1]
+	local bumpedVersionComponent = args:get("versionBump")
+	print("bumpedVersionComponent")
 	local versionBump: VersionComponent = validateVersionBump(bumpedVersionComponent)
 
 	-- The root Wally manifest is the source of truth for the current version
 	local wallyPath = MANIFEST_PATHS[1]
-	assert(fs.isFile(wallyPath), `no wally.toml found at the root of the repo`)
+	assert(fs.exists(wallyPath), `no wally.toml found at the root of the repo`)
 
 	local currentVersion = semver.getVersionFromManifest(wallyPath)
 	local nextVersion = getNextVersion(currentVersion, versionBump)
@@ -50,10 +60,10 @@ do
 	for _, manifestPath in MANIFEST_PATHS do
 		local manifestVersion = semver.getVersionFromManifest(manifestPath)
 
-		if fs.isFile(manifestPath) then
-			local manifestContent = fs.readFile(manifestPath)
+		if fs.exists(manifestPath) then
+			local manifestContent = fs.readfiletostring(manifestPath)
 			manifestContent = manifestContent:gsub(`version = "{manifestVersion}"`, `version = "{nextVersion}"`)
-			fs.writeFile(manifestPath, manifestContent)
+			fs.writestringtofile(manifestPath, manifestContent)
 
 			print(`bumped version in {manifestPath} to {nextVersion} (was {manifestVersion})`)
 		end

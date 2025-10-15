@@ -1,20 +1,27 @@
-local process = require("@lune/process")
+local cli = require("@batteries/cli")
+local process = require("@lute/process")
 
 local compile = require("./lib/compile")
 local dotenv = require("./lib/dotenv")
-local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
 
 dotenv()
 
-local args = parseArgs(process.args)
+local args = cli.parser()
 
-local apiKey = process.env.ROBLOX_API_KEY or args.apiKey
+args:add("apiKey", "flag", {
+	help = "Open Cloud API key used for running Luau Execution. Can also be "
+		.. "supplied by the ROBLOX_API_KEY environment variable",
+	aliases = { "k" },
+})
+
+args:parse({ ... })
+
+local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
 if not apiKey then
-	print(
-		"err: A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
+	error(
+		"A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
 	)
-	process.exit(1)
 end
 
 compile("dev", "roblox")
@@ -32,13 +39,9 @@ local success, err = pcall(function()
 			ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
 			ROBLOX_API_KEY = tostring(apiKey),
 		},
-		stdio = "forward",
 	})
 end)
 
 run("rm", { "tests.rbxl" })
 
-if not success then
-	print(err)
-	process.exit(1)
-end
+assert(success, err)

@@ -1,11 +1,11 @@
-local fs = require("@lune/fs")
-local serde = require("@lune/serde")
+local fs = require("@lute/fs")
+local toml = require("@batteries/toml")
 
 export type VersionComponent = "major" | "minor" | "patch"
 
 local function getVersionFromManifest(manifestPath: string)
-	local manifestContent = fs.readFile(manifestPath)
-	local manifest = serde.decode("toml", manifestContent)
+	local manifestContent = fs.readfiletostring(manifestPath)
+	local manifest = toml.deserialize(manifestContent)
 
 	if manifest.workspace then
 		return manifest.workspace.version
