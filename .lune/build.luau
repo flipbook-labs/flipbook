@@ -1,3 +1,4 @@
+local fs = require("@lune/fs")
 local process = require("@lune/process")
 local project = require("@repo/project")
 local roblox = require("@lune/roblox")
@@ -25,11 +26,18 @@ local output = if args.output then args.output else `{roblox.studioPluginPath()}
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
+	local startTime = os.clock()
+
 	compile(channel, target)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
-	run("cp", { dest, output })
+	if fs.isFile(output) then
+		fs.removeFile(output)
+	end
+	fs.copy(dest, output)
+
+	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
 build()

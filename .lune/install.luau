@@ -114,8 +114,10 @@ end
 local function installRbxasset()
 	local packagesPath = "LunePackages"
 
-	run("rm", { "-rf", packagesPath })
-	run("mkdir", { "-p", packagesPath })
+	if fs.isDir(packagesPath) then
+		fs.removeDir(packagesPath)
+	end
+	fs.writeDir(packagesPath)
 
 	run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
 		cwd = packagesPath,
@@ -125,9 +127,7 @@ local function installRbxasset()
 		cwd = packagesPath,
 	})
 
-	run("rm", { "-rf", "rbxasset.zip" }, {
-		cwd = packagesPath,
-	})
+	fs.removeFile(`{packagesPath}/rbxasset.zip`)
 end
 
 local function pruneDevelopmentFiles()
