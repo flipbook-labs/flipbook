@@ -3,15 +3,9 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 
-local function createFlipbookPlugin(
-	plugin: Plugin,
-	widget: DockWidgetPluginGui,
-	button: PluginToolbarButton?
-): {
-	mount: () -> (),
-	unmount: () -> (),
-}
+local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 
@@ -23,10 +17,20 @@ local function createFlipbookPlugin(
 	})
 
 	local function unmount()
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "AppClosed",
+			})
+		end)
 		root:unmount()
 	end
 
 	local function mount()
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "AppOpened",
+			})
+		end)
 		root:render(app)
 	end
 
@@ -50,7 +54,7 @@ local function createFlipbookPlugin(
 		connections,
 		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 			if widget.Enabled then
-				root:render(app)
+				mount()
 			else
 				unmount()
 			end

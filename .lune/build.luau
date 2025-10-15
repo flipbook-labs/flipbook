@@ -4,9 +4,12 @@ local project = require("@repo/project")
 local roblox = require("@lune/roblox")
 
 local compile = require("./lib/compile")
+local dotenv = require("./lib/dotenv")
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
 local watch = require("./lib/watcher/watch")
+
+dotenv()
 
 local args = parseArgs(process.args)
 
