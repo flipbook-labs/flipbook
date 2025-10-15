@@ -1,19 +1,19 @@
-local fs = require("@lune/fs")
+local fs = require("@lute/fs")
 
 local run = require("./lib/run")
 
 local function find(rootPath: string, namePattern: string): { string }
 	local files = {}
 	local function search(path: string)
-		if fs.isFile(path) then
+		if fs.stat(path).type == "file" then
 			return
 		end
 
-		for _, file in fs.readDir(path) do
-			local fullPath = `{path}/{file}`
+		for _, file in fs.listdir(path) do
+			local fullPath = `{path}/{file.name}`
 
-			if fs.isFile(fullPath) then
-				if file:match(namePattern) then
+			if fs.stat(fullPath).type == "file" then
+				if file.name:match(namePattern) then
 					table.insert(files, fullPath)
 				end
 			else
@@ -27,9 +27,9 @@ local function find(rootPath: string, namePattern: string): { string }
 end
 
 local function findAndReplace(filePath: string, match: string, replacement: string)
-	local content = fs.readFile(filePath)
+	local content = fs.readfiletostring(filePath)
 	content = content:gsub(match, replacement)
-	fs.writeFile(filePath, content)
+	fs.writestringtofile(filePath, content)
 end
 
 local function installWallyPackages()
@@ -46,18 +46,14 @@ local function installWallyPackages()
 			cwd = projectPath,
 		})
 
-		-- For some reason the default stdio of "inherit" results in WPT hanging
-		-- indefinitely. Since we don't need the output in this case, we change to a
-		-- stdio that won't hang
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-			stdio = "forward",
 			cwd = projectPath,
 		})
 	end
 
-	for _, member in fs.readDir("workspace") do
-		local memberPath = `workspace/{member}`
-		if fs.isDir(memberPath) then
+	for _, member in fs.listdir("workspace") do
+		local memberPath = `workspace/{member.name}`
+		if fs.stat(memberPath).type == "dir" then
 			installPackagesForProject(memberPath)
 		end
 	end
@@ -67,11 +63,11 @@ local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.693.0.6930961" })
 
 	local dest = "workspace/flipbook-core/RobloxPackages"
-	if fs.isDir(dest) then
-		fs.removeDir(dest)
+	if fs.exists(dest) and fs.stat(dest).type == "dir" then
+		run("rm", { "-rf", dest })
 	end
-	fs.move("RobloxPackagesTmp/Packages", dest)
-	fs.removeDir("RobloxPackagesTmp")
+	run("mv", { "RobloxPackagesTmp/Packages", dest })
+	run("rm", { "-rf", "RobloxPackagesTmp" })
 
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat", "Roact" } do
@@ -126,7 +122,7 @@ local function pruneDevelopmentFiles()
 	}
 	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
 		for _, pattern in prunedFiles do
-			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
+			run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
 	end
 end
