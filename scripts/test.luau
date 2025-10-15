@@ -42,6 +42,6 @@ local success, err = pcall(function()
 	})
 end)
 
-run("rm", { "tests.rbxl" })
+fs.removeFile("tests.rbxl")
 
 assert(success, err)

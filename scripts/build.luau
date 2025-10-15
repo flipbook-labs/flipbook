@@ -3,9 +3,12 @@ local process = require("@lute/process")
 local project = require("@repo/project")
 
 local compile = require("./lib/compile")
+local dotenv = require("./lib/dotenv")
 local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
 local run = require("./lib/run")
 local watch = require("./lib/watch")
+
+dotenv()
 
 local args = cli.parser()
 
@@ -45,11 +48,15 @@ local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function build()
+	local startTime = os.clock()
+
 	compile(channel, target)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
 	run("cp", { dest, output })
+
+	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
 build()

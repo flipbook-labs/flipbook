@@ -114,9 +114,7 @@ local function installRbxasset()
 		cwd = LUAU_PACKAGES_PATH,
 	})
 
-	run("rm", { "-rf", "rbxasset.zip" }, {
-		cwd = LUAU_PACKAGES_PATH,
-	})
+	fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
 end
 
 local function pruneDevelopmentFiles()

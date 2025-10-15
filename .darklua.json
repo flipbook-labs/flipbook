@@ -26,6 +26,11 @@
       "identifier": "BUILD_HASH",
       "env": "BUILD_HASH"
     },
+    {
+      "rule": "inject_global_value",
+      "identifier": "BASE_URL",
+      "env": "BASE_URL"
+    },
     "compute_expression",
     "remove_unused_if_branch",
     "remove_unused_while",

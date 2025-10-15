@@ -32,7 +32,7 @@ local function compileWorkspaceMember(
 	})
 
 	local packagesPath = `{memberPath}/Packages`
-	run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
+	fs.copy(packagesPath, `{memberBuildPath}/Packages`)
 
 	local robloxPackagesPath = `{memberPath}/RobloxPackages`
 	if fs.exists(robloxPackagesPath) then
@@ -72,6 +72,7 @@ local function compile(channel: Channel, target: Target)
 		BUILD_VERSION = (wallyToml :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
+		BASE_URL = process.env.BASE_URL,
 	}
 
 	run("rojo", {
@@ -96,15 +97,13 @@ local function compile(channel: Channel, target: Target)
 
 		if fs.type(memberPath) == "dir" then
 			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-
-			run("mkdir", { "-p", `{dest}/{memberPath}` })
-			run("cp", { "-R", `{memberBuildPath}/*`, `{dest}/{memberPath}` })
+			fs.copy(memberBuildPath, `{dest}/{memberPath}`)
 		end
 	end
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			run("rm", { "-rf", `{dest}/{dir}` })
+			fs.removeDir(`{dest}/{dir}`)
 		end
 	end
 end
