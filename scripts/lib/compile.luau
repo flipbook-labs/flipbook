@@ -1,4 +1,5 @@
 local fs = require("@lute/fs")
+local process = require("@lute/process")
 local project = require("@repo/project")
 local toml = require("@batteries/toml")
 
@@ -18,10 +19,8 @@ local function compileWorkspaceMember(
 ): string
 	local memberBuildPath = `{memberPath}/build`
 
-	if fs.type(memberBuildPath) == "dir" then
-		run("rm", { "-rf", memberBuildPath })
-	end
-	fs.mkdir(memberBuildPath)
+	run("rm", { "-rf", memberBuildPath })
+	run("mkdir", { "-p", memberBuildPath })
 
 	run("darklua", {
 		"process",
@@ -32,7 +31,7 @@ local function compileWorkspaceMember(
 	})
 
 	local packagesPath = `{memberPath}/Packages`
-	fs.copy(packagesPath, `{memberBuildPath}/Packages`)
+	run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
 
 	local robloxPackagesPath = `{memberPath}/RobloxPackages`
 	if fs.exists(robloxPackagesPath) then
@@ -61,9 +60,7 @@ end
 local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
-	if fs.exists(dest) then
-		run("rm", { "-rf", dest })
-	end
+	run("rm", { "-rf", dest })
 	run("mkdir", { "-p", dest })
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
@@ -95,15 +92,16 @@ local function compile(channel: Channel, target: Target)
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
-		if fs.type(memberPath) == "dir" then
+		if member.type == "dir" then
 			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-			fs.copy(memberBuildPath, `{dest}/{memberPath}`)
+			run("mkdir", { "-p", `{dest}/{memberPath}` })
+			run("cp", { "-R", memberBuildPath, `{dest}/{memberPath}` })
 		end
 	end
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			fs.removeDir(`{dest}/{dir}`)
+			run("rm", { "-rf", `{dest}/{dir}` })
 		end
 	end
 end
