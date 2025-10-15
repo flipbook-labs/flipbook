@@ -12,18 +12,18 @@ dotenv()
 
 local args = cli.parser()
 
-args:add("channel", "flag", {
-	help = "Input file",
+args:add("channel", "option", {
+	help = "Channel to build for",
 	aliases = { "c" },
-	default = "prod",
+	-- default = "prod",
 })
-args:add("target", "flag", {
-	help = "Output file",
+args:add("target", "option", {
+	help = "Target to build for",
 	aliases = { "t" },
 	default = "roblox",
 })
-args:add("output", "flag", {
-	help = "Folder to output to",
+args:add("output", "option", {
+	help = "Full path to the rbxm file to build",
 	aliases = { "o" },
 	default = `{getStudioPluginsPath()}/{project.PLUGIN_FILENAME}`,
 })

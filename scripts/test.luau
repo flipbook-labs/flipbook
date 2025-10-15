@@ -9,7 +9,7 @@ dotenv()
 
 local args = cli.parser()
 
-args:add("apiKey", "flag", {
+args:add("apiKey", "option", {
 	help = "Open Cloud API key used for running Luau Execution. Can also be "
 		.. "supplied by the ROBLOX_API_KEY environment variable",
 	aliases = { "k" },

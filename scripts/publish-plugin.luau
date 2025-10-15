@@ -6,13 +6,13 @@ local run = require("./lib/run")
 
 local args = cli.parser()
 
-args:add("apiKey", "flag", {
+args:add("apiKey", "option", {
 	help = "Open Cloud API key used for publishing the plugin",
 	aliases = { "k" },
 	required = true,
 })
-args:add("channel", "flag", {
-	help = "Input file",
+args:add("channel", "option", {
+	help = "Channel to build for",
 	aliases = { "c" },
 	default = "prod",
 })
