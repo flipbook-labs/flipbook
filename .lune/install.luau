@@ -1,4 +1,5 @@
 local fs = require("@lute/fs")
+local project = require("@repo/project")
 
 local run = require("./lib/run")
 
@@ -51,8 +52,8 @@ local function installWallyPackages()
 		})
 	end
 
-	for _, member in fs.listdir("workspace") do
-		local memberPath = `workspace/{member.name}`
+	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 		if fs.stat(memberPath).type == "dir" then
 			installPackagesForProject(memberPath)
 		end
@@ -62,7 +63,7 @@ end
 local function installRobloxPackages()
 	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.693.0.6930961" })
 
-	local dest = "workspace/flipbook-core/RobloxPackages"
+	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
 	if fs.exists(dest) and fs.stat(dest).type == "dir" then
 		run("rm", { "-rf", dest })
 	end
@@ -120,7 +121,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
+	for _, path in { `{project.WORKSPACE_PATH}/**/Packages`, `{project.WORKSPACE_PATH}/**/RobloxPackages` } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
