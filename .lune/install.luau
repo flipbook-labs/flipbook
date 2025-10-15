@@ -72,8 +72,6 @@ local function installRobloxPackages()
 		"-d",
 		"Foundation",
 		"-d",
-		"LuauPolyfill",
-		"-d",
 		"Signals",
 		"-d",
 		"SignalsReact",
