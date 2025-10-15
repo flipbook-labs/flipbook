@@ -55,7 +55,7 @@ local function installRobloxPackages()
 	})
 
 	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
-	if fs.exists(dest) and fs.stat(dest).type == "dir" then
+	if fs.exists(dest) and fs.type(dest) == "dir" then
 		run("rm", { "-rf", dest })
 	end
 	run("mv", { "RobloxPackagesTmp/Packages", dest })

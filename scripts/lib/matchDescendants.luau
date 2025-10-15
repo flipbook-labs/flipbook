@@ -1,7 +1,7 @@
 local fs = require("@lute/fs")
 
 local function matchDescendants(rootPath: string, predicate: (path: string) -> boolean?): { string }
-	assert(fs.stat(rootPath).type == "dir", "rootPath must be a directory")
+	assert(fs.type(rootPath) == "dir", "rootPath must be a directory")
 
 	local descendants: { string } = {}
 
@@ -13,7 +13,7 @@ local function matchDescendants(rootPath: string, predicate: (path: string) -> b
 			table.insert(descendants, path)
 		end
 
-		if fs.stat(path).type == "dir" then
+		if fs.type(path) == "dir" then
 			for _, child in fs.listdir(path) do
 				search(`{path}/{child.name}`)
 			end

@@ -12,7 +12,7 @@ type Options = {
 
 local function watch(options: Options)
 	local foldersToWatch = matchDescendants(process.cwd(), function(path)
-		if fs.stat(path).type == "dir" then
+		if fs.type(path) == "dir" then
 			if options.excludedFilePatterns then
 				for _, excludedFilePattern in options.excludedFilePatterns do
 					if path:match(excludedFilePattern) then
