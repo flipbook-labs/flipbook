@@ -41,7 +41,9 @@ jobs:
   publish-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: roblox-creator-store
+    environment:
+      name: roblox-creator-store
+      url: https://create.roblox.com/store/asset/8517129161
     env:
       LOG_LEVEL: debug
     if: github.event.release
@@ -58,10 +60,12 @@ jobs:
       - name: Publish release to Creator Store
         run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
- publish-nightly-plugin:
+  publish-nightly-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: roblox-creator-store
+    environment:
+      name: roblox-creator-store
+      url: https://create.roblox.com/store/asset/88523969718241
     env:
       LOG_LEVEL: debug
     if: github.ref == 'refs/heads/main'
