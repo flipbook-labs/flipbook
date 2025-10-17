@@ -12,19 +12,12 @@ local function run(program: string, params: { string }, options: Options?): stri
 	print(`> {command}`)
 	-- stdio.write(stdio.style("reset"))
 
-	local result: process.ProcessResult
-	local success, err = pcall(function()
-		result = process.run(command, {
-			shell = true,
-			stdio = if options and options.stdio then options.stdio else "inherit",
-			cwd = if options then options.cwd else nil,
-			env = if options then options.env else nil,
-		})
-	end)
-
-	if not success then
-		error(err, 2)
-	end
+	local result = process.run(command, {
+		shell = true,
+		stdio = if options and options.stdio then options.stdio else "inherit",
+		cwd = if options then options.cwd else nil,
+		env = if options then options.env else nil,
+	})
 
 	if result.ok then
 		return result.stdout:gsub("^\n", ""):gsub("\n$", "")
