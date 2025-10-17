@@ -22,16 +22,8 @@ local function run(program: string, params: { string }, options: Options?): stri
 		})
 	end)
 
-	if result then
-		print("result")
-		print("  ok", result.ok)
-		print("  signal", result.signal)
-		print("  stdout", result.stdout)
-		print("  stderr", result.stderr)
-	end
-
 	if not success then
-		error(err)
+		error(err, 2)
 	end
 
 	if result.ok then
