@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    if: ${{ github.event.release }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +33,6 @@ jobs:
         run: lune run build --channel prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
-        if: ${{ github.event.release }}
         with:
           files: ${{ env.MODEL_FILE }}
         env:
@@ -40,9 +40,31 @@ jobs:
 
   publish-plugin:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
+    environment: roblox-creator-store
     env:
       LOG_LEVEL: debug
+    if: github.event.release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
+
+      - name: Install dependencies
+        run: lune run install
+
+      - name: Publish release to Creator Store
+        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+ publish-nightly-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: roblox-creator-store
+    env:
+      LOG_LEVEL: debug
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -54,9 +76,4 @@ jobs:
         run: lune run install
 
       - name: Publish nightly build to Creator Store
-        if: github.ref == 'refs/heads/main'
         run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
-
-      - name: Publish release to Creator Store
-        if: github.event.release
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
