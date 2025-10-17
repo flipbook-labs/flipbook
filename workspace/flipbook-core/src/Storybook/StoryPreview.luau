@@ -8,6 +8,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local StoryError = require("@root/Storybook/StoryError")
 local usePrevious = require("@root/Common/usePrevious")
+local useThemeName = require("@root/Common/useThemeName")
 
 local e = React.createElement
 
@@ -36,10 +37,17 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local err, setErr = React.useState(nil :: string?)
 	local prevControls = usePrevious(props.controls)
 	local prevStory = usePrevious(props.story)
+	local theme = useThemeName()
 
 	React.useEffect(function()
 		setErr(nil)
 	end, { props.story, ref })
+
+	local extraProps: Storyteller.ExtraStoryProps = React.useMemo(function()
+		return {
+			theme = theme :: useThemeName.ThemeName,
+		}
+	end, { theme } :: { unknown })
 
 	React.useEffect(function()
 		if props.story == prevStory and props.controls ~= prevControls then
@@ -47,7 +55,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 
 			if lifecycle.current and areControlsDifferent then
 				local success, result = xpcall(function()
-					lifecycle.current.update(props.controls)
+					lifecycle.current.update(props.controls, extraProps)
 				end, debug.traceback)
 
 				if not success then
@@ -55,12 +63,14 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 				end
 			end
 		end
-	end, { props.controls, prevControls, props.story, prevStory } :: { unknown })
+	end, { props.controls, prevControls, props.story, prevStory, extraProps } :: { unknown })
 
 	React.useEffect(function(): (() -> ())?
+		-- TODO: When storyProps changes we don't want the effect body to run,
+		-- but we do for other dependencies. What's a good way to handle that?
 		if props.story and ref.current then
 			local success, result = xpcall(function()
-				lifecycle.current = Storyteller.render(ref.current, props.story)
+				lifecycle.current = Storyteller.render(ref.current, props.story, extraProps)
 			end, debug.traceback)
 
 			if not success then
@@ -74,7 +84,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 				lifecycle.current = nil
 			end
 		end
-	end, { props.story, props.isMountedInViewport } :: { unknown })
+	end, { props.story, props.isMountedInViewport, storyProps } :: { unknown })
 
 	if err then
 		return e(StoryError, {
