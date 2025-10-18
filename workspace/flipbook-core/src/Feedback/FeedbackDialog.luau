@@ -1,43 +1,18 @@
-local Players = game:GetService("Players")
-
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactUtils = require("@rbxpkg/ReactUtils")
 
-local getClientUserId = require("@root/Common/getClientUserId")
+local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useState = React.useState
 local useCallback = React.useCallback
-local useAsync = ReactUtils.useAsync
 
 export type Props = {
 	onClose: () -> (),
 	LayoutOrder: number?,
 }
 
-local function UsernameConfirmationInput(props: {
-	LayoutOrder: number?,
-})
-	local username = useAsync(function()
-		return Players:GetNameFromUserIdAsync(tonumber(getClientUserId()))
-	end, {})
-
-	local answer, setAnswer = useState("" :: string?)
-
-	return React.createElement(Foundation.TextInput, {
-		label = "Confirm Roblox username",
-		text = answer,
-		hasError = if answer ~= "" and username.status == "ok" then username.value:lower() ~= answer:lower() else nil,
-		hint = "This form will be posted to GitHub, including your Roblox username to provide attribution. Please enter your Roblox username to confirm",
-		placeholder = if username.status == "ok" then username.value else nil,
-		isRequired = true,
-		onChanged = setAnswer,
-		LayoutOrder = props.LayoutOrder,
-	})
-end
-
-local function ReportIssueDialog(props: Props)
+local function FeedbackDialog(props: Props)
 	local summary, setSummary = useState("" :: string?)
 	local reproSteps, setReproSteps = useState("" :: string?)
 	local errorLogs, setErrorLogs = useState("" :: string?)
@@ -64,7 +39,7 @@ local function ReportIssueDialog(props: Props)
 	end, { summary, reproSteps, errorLogs })
 
 	return React.createElement(React.Fragment, nil, {
-		ReportIssueDialog = if not isCancelDialogOpen
+		FeedbackDialog = if not isCancelDialogOpen
 			then React.createElement(Foundation.Dialog.Root, {
 				disablePortal = false,
 				hasBackdrop = true,
@@ -162,4 +137,4 @@ local function ReportIssueDialog(props: Props)
 	})
 end
 
-return ReportIssueDialog
+return FeedbackDialog

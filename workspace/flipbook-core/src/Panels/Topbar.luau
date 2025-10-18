@@ -4,8 +4,8 @@ local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 
 local AboutView = require("@root/About/AboutView")
+local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
-local ReportIssueDialog = require("@root/Plugin/ReportIssueDialog")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
@@ -228,7 +228,7 @@ local function Topbar(props: TopbarProps)
 			}),
 
 			FeedbackDialog = if isFeedbackDialogOpen
-				then React.createElement(ReportIssueDialog, {
+				then React.createElement(FeedbackDialog, {
 					onClose = function()
 						setIsFeedbackDialogOpen(false)
 					end,
