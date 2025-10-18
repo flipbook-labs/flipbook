@@ -4,6 +4,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local logging = require("@root/logging")
 
 local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
@@ -17,6 +18,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	})
 
 	local function unmount()
+		logging.info("unmounting app")
 		task.spawn(function()
 			fireEventAsync({
 				eventName = "AppClosed",
@@ -26,6 +28,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function mount()
+		logging.info("mounting app")
 		task.spawn(function()
 			fireEventAsync({
 				eventName = "AppOpened",
@@ -66,6 +69,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
+		logging.info("destroying")
 		unmount()
 		for _, connection in connections do
 			connection:Disconnect()
