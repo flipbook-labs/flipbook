@@ -1,26 +1,65 @@
-local constants = require("./constants")
 local fs = require("@lune/fs")
-local run = require("./run")
+local process = require("@lune/process")
+local project = require("@repo/project")
 local serde = require("@lune/serde")
+
+local find = require("./find")
+local run = require("./run")
 
 local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
 
-type Target = "prod" | "dev"
+type Channel = "prod" | "dev"
+type Target = "roblox" | "rotriever"
 
-local PROD_CONFIG = {
-	prunedDirs = {
-		"workspace/code-samples",
-		"workspace/example",
-	},
-	prunedFiles = {
-		"*.spec.lua*",
-		"*.story.lua*",
-		"*.storybook.lua*",
-	},
-}
+local function compileWorkspaceMember(
+	memberPath: string,
+	channel: Channel,
+	target: Target,
+	env: { [string]: any }
+): string
+	local memberBuildPath = `{memberPath}/build`
 
-local function compile(target: Target)
-	local dest = `{constants.BUILD_PATH}/plugin`
+	if fs.isDir(memberBuildPath) then
+		fs.removeDir(memberBuildPath)
+	end
+	fs.writeDir(memberBuildPath)
+
+	run("darklua", {
+		"process",
+		`{memberPath}/src`,
+		memberBuildPath,
+	}, {
+		env = env,
+	})
+
+	local packagesPath = `{memberPath}/Packages`
+	fs.copy(packagesPath, `{memberBuildPath}/Packages`)
+
+	local robloxPackagesPath = `{memberPath}/RobloxPackages`
+	if fs.isDir(robloxPackagesPath) then
+		fs.copy(robloxPackagesPath, `{memberBuildPath}/RobloxPackages`)
+	end
+
+	if channel == "prod" then
+		for _, pattern in project.PROD_CONFIG.prunedFiles do
+			run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
+		end
+	end
+
+	if target == "rotriever" then
+		-- Rotriever does not support .luau files, so rename them to .lua for
+		-- compatibility
+		for _, luauFile in find(memberBuildPath, "%.luau$") do
+			local newName = luauFile:gsub("%.luau$", ".lua")
+			fs.move(luauFile, newName)
+		end
+	end
+
+	return memberBuildPath
+end
+
+local function compile(channel: Channel, target: Target)
+	local dest = `{project.BUILD_PATH}/plugin`
 
 	if fs.isDir(dest) then
 		fs.removeDir(dest)
@@ -31,62 +70,42 @@ local function compile(target: Target)
 
 	local env = {
 		BUILD_VERSION = wallyToml.package.version,
-		BUILD_CHANNEL = if target == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
+		BASE_URL = process.env.BASE_URL,
 	}
 
 	run("rojo", {
 		"sourcemap",
-		constants.ROJO_BUILD_PROJECT,
+		project.ROJO_BUILD_PROJECT,
 		"-o",
-		constants.DARKLUA_SOURCEMAP_PATH,
+		project.DARKLUA_SOURCEMAP_PATH,
 	})
 
 	print("substituting globals", env)
 
 	run("darklua", {
 		"process",
-		constants.SOURCE_PATH,
+		project.SOURCE_PATH,
 		dest,
 	}, {
 		env = env,
 	})
 
-	for _, member in fs.readDir(constants.WORKSPACE_PATH) do
-		local memberPath = `{constants.WORKSPACE_PATH}/{member}`
+	for _, member in fs.readDir(project.WORKSPACE_PATH) do
+		local memberPath = `{project.WORKSPACE_PATH}/{member}`
 
-		if not fs.isDir(memberPath) then
-			continue
-		end
-
-		run("darklua", {
-			"process",
-			`{memberPath}/src`,
-			`{dest}/{memberPath}`,
-		}, {
-			env = env,
-		})
-
-		local packagesPath = `{memberPath}/Packages`
-		run("cp", { "-R", packagesPath, `{dest}/{packagesPath}` })
-
-		local robloxPackagesPath = `{memberPath}/RobloxPackages`
-		if fs.isDir(robloxPackagesPath) then
-			run("cp", { "-R", robloxPackagesPath, `{dest}/{robloxPackagesPath}` })
+		if fs.isDir(memberPath) then
+			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
+			fs.copy(memberBuildPath, `{dest}/{memberPath}`)
 		end
 	end
 
-	if target == "prod" then
-		for _, dir in PROD_CONFIG.prunedDirs do
-			run("rm", { "-rf", `{dest}/{dir}` })
-		end
-
-		for _, pattern in PROD_CONFIG.prunedFiles do
-			run("find", { dest, "-type", "f", "-name", pattern, "-delete" })
+	if channel == "prod" then
+		for _, dir in project.PROD_CONFIG.prunedDirs do
+			fs.removeDir(`{dest}/{dir}`)
 		end
 	end
-
-	run("cp", { "-R", "Packages", dest })
 end
 
 return compile

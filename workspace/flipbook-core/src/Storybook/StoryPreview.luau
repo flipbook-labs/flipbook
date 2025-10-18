@@ -19,19 +19,19 @@ local defaultProps = {
 type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
-	story: LoadedStory,
+	LayoutOrder: number?,
 	controls: { [string]: any },
-
 	isMountedInViewport: boolean?,
-	layoutOrder: number?,
-	zoom: number?,
 	ref: any,
+	story: LoadedStory,
+	zoom: number?,
 }
 
 type InternalProps = Props & typeof(defaultProps)
 
 local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
+
 	local lifecycle = React.useRef(nil :: Storyteller.RenderLifecycle?)
 	local err, setErr = React.useState(nil :: string?)
 	local prevControls = usePrevious(props.controls)
@@ -78,8 +78,8 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 
 	if err then
 		return e(StoryError, {
-			layoutOrder = props.layoutOrder,
-			err = err,
+			LayoutOrder = props.LayoutOrder,
+			errorMessage = err,
 		})
 	else
 		if props.isMountedInViewport then
@@ -97,7 +97,7 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 					AutomaticCanvasSize = Enum.AutomaticSize.XY,
 					CanvasSize = UDim2.new(0, 0),
 				},
-				LayoutOrder = props.layoutOrder,
+				LayoutOrder = props.LayoutOrder,
 				scrollingFrameRef = ref,
 			}, {
 				Scale = e("UIScale", {

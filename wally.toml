@@ -1,13 +1,7 @@
 [package]
 name = "flipbook-labs/flipbook"
-version = "2.2.0"
+version = "2.3.0"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 exclude = ["*"]
-
-[dependencies]
-# dev dependencies
-Roact = "roblox/roact@1.4.4"
-Jest = "jsdotlua/jest@3.10.0"
-JestGlobals = "jsdotlua/jest-globals@3.10.0"

@@ -1,72 +1,85 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local Storyteller = require("@pkg/Storyteller")
 
-local Branding = require("@root/Common/Branding")
-local Searchbar = require("@root/Forms/Searchbar")
-local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+local IconName = Foundation.Enums.IconName
+local InputSize = Foundation.Enums.InputSize
+local ScrollView = Foundation.ScrollView
+local TextInput = Foundation.TextInput
+local View = Foundation.View
+local withCommonProps = Foundation.Utility.withCommonProps
+
+local e = React.createElement
+local useCallback = React.useCallback
+local useMemo = React.useMemo
+local useState = React.useState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-local e = React.createElement
-
-type Props = {
-	layoutOrder: number?,
+type SidebarProps = {
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 	storybooks: {
 		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
-}
+} & Foundation.CommonProps
 
-local function Sidebar(props: Props)
-	local search: string?, setSearch = React.useState(nil :: string?)
-	local onSearchChanged = React.useCallback(function(value: string)
-		if value == "" then
-			setSearch(nil)
-		else
-			setSearch(value)
-		end
+local function Sidebar(props: SidebarProps)
+	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
+		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
 
-	return e(Foundation.View, {
-		tag = "size-full bg-surface-0 col gap-medium padding-medium flex-between",
-		LayoutOrder = props.layoutOrder,
-	}, {
-		Header = e(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-xlarge",
-			LayoutOrder = nextLayoutOrder(),
-		}, {
-			Branding = e(Branding, {
-				layoutOrder = nextLayoutOrder(),
+	-- Right now we just respond to available storybook changes. This should be
+	-- updated into a `useOrphanedStoryModules` hook that will update based on
+	-- .story modules being added/removed from the DM.
+	local orphanedStoryModules = useMemo(function()
+		return Storyteller.findOrphanedStoryModules(game, props.storybooks.available)
+	end, { props.storybooks.available })
+
+	return e(
+		View,
+		withCommonProps(props, {
+			tag = "bg-surface-0 col size-full",
+		}),
+		{
+			Search = e(View, {
+				LayoutOrder = 1,
+				tag = "auto-y padding-x-medium padding-y-large size-full-0",
+			}, {
+				SearchBar = e(TextInput, {
+					label = "",
+					leadingIcon = IconName.MagnifyingGlass,
+					onChanged = onSearchTermChanged,
+					placeholder = "Search...",
+					size = InputSize.Small,
+					text = "",
+					width = UDim.new(1, 0),
+				}),
 			}),
 
-			Searchbar = e(Searchbar, {
-				layoutOrder = nextLayoutOrder(),
-				onSearchChanged = onSearchChanged,
+			Content = e(ScrollView, {
+				LayoutOrder = 2,
+				scroll = {
+					AutomaticCanvasSize = Enum.AutomaticSize.Y,
+					CanvasSize = UDim2.fromScale(0, 0),
+					ScrollingDirection = Enum.ScrollingDirection.Y,
+				},
+				tag = "shrink size-full",
+			}, {
+				StorybookTreeView = e(StorybookTreeView, {
+					onShowErrorPage = props.onShowErrorPage,
+					onStoryChanged = props.onStoryChanged,
+					orphanedStoryModules = orphanedStoryModules,
+					searchTerm = searchTerm,
+					storybooks = props.storybooks,
+				}),
 			}),
-		}),
-
-		ScrollingFrame = e(Foundation.ScrollView, {
-			tag = "size-full shrink",
-			scroll = {
-				AutomaticCanvasSize = Enum.AutomaticSize.Y,
-				CanvasSize = UDim2.fromScale(1, 0),
-				ScrollingDirection = Enum.ScrollingDirection.Y,
-			},
-			LayoutOrder = nextLayoutOrder(),
-		}, {
-			StorybookTreeView = e(StorybookTreeView, {
-				searchTerm = search,
-				storybooks = props.storybooks,
-				onStoryChanged = props.onStoryChanged,
-				onShowErrorPage = props.onShowErrorPage,
-			}),
-		}),
-	})
+		}
+	)
 end
 
-return Sidebar
+return React.memo(Sidebar)

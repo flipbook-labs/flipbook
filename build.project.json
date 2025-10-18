@@ -4,9 +4,6 @@
     "workspace": {
       "$path": "workspace"
     },
-    "Packages": {
-      "$path": "Packages"
-    },
     "$path": "src"
   }
 }

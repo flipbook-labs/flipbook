@@ -1,4 +1,5 @@
-local constants = require("./lib/constants")
+local project = require("@repo/project")
+
 local run = require("./lib/run")
 
 local globalDefsPath = "globalTypes.d.luau"
@@ -13,18 +14,18 @@ run("curl", {
 
 run("rojo", {
 	"sourcemap",
-	constants.ROJO_ANALYSIS_PROJECT,
+	project.ROJO_ANALYSIS_PROJECT,
 	"-o",
-	constants.SOURCEMAP_PATH,
+	project.SOURCEMAP_PATH,
 })
 
 run("luau-lsp", {
 	"analyze",
-	`--sourcemap={constants.SOURCEMAP_PATH}`,
+	`--sourcemap={project.SOURCEMAP_PATH}`,
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",
 	"--ignore=**/_Index/** --ignore=**/RobloxPackages/**",
-	constants.SOURCE_PATH,
-	constants.LUNE_SCRIPTS_PATH,
-	constants.WORKSPACE_PATH,
+	project.SOURCE_PATH,
+	project.LUNE_SCRIPTS_PATH,
+	project.WORKSPACE_PATH,
 })
