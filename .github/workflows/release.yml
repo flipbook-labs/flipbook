@@ -41,6 +41,7 @@ jobs:
   publish-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency: production
     environment:
       name: roblox-creator-store
       url: https://create.roblox.com/store/asset/8517129161
@@ -63,8 +64,9 @@ jobs:
   publish-nightly-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency: nightly
     environment:
-      name: roblox-creator-store
+      name: roblox-creator-store-dev
       url: https://create.roblox.com/store/asset/88523969718241
     env:
       LOG_LEVEL: debug
