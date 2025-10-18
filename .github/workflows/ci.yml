@@ -66,6 +66,9 @@ jobs:
         with:
           version: v1.2.0
 
+      - name: List installed tools
+        run: rokit list
+
       - name: Install dependencies
         run: lute scripts/install
 
