@@ -1,5 +1,5 @@
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@rbxpkg/LuauPolyfill")
+local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local StoryControls = require("@root/Storybook/StoryControls")
