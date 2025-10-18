@@ -39,7 +39,6 @@ local function installWallyPackages()
 end
 
 local function installRobloxPackages()
-	run("mkdir", { "-p", "RobloxPackagesTmp" })
 	run("roblox-packages", {
 		"install",
 		"RobloxPackagesTmp",
