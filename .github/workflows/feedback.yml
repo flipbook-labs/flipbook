@@ -1,7 +1,10 @@
+name: Feedback
+
 on:
   repository_dispatch:
     types: [post_feedback]
   pull_request:
+
 jobs:
   post-issue:
     runs-on: ubuntu-latest
