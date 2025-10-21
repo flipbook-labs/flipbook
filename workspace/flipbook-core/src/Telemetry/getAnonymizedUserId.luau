@@ -1,18 +1,6 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local StudioService = if RunService:IsStudio() then game:GetService("StudioService") else nil
-
 local sha256 = require("@pkg/sha256")
 
-local function getLocalUserId(): number
-	if StudioService then
-		return StudioService:GetUserId()
-	end
-	if Players.LocalPlayer then
-		return Players.LocalPlayer.UserId
-	end
-	return -1
-end
+local getLocalUserId = require("@root/Telemetry/getLocalUserId")
 
 --[[
 	The events we send to the backend need some persistent identifier so we can

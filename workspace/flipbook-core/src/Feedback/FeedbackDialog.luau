@@ -2,7 +2,9 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
+-- local getLocalUserId = require("@root/Telemetry/getLocalUserId")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+-- local requestAsync = require("@root/Http/requestAsync")
 
 local useState = React.useState
 local useCallback = React.useCallback
@@ -15,13 +17,13 @@ export type Props = {
 type IssueType = "bug" | "feature" | "feedback" | "other"
 
 local function FeedbackDialog(props: Props)
-	local summary, setSummary = useState("" :: string?)
-	local reproSteps, setReproSteps = useState("" :: string?)
-	local errorLogs, setErrorLogs = useState("" :: string?)
+	local title, setTitle = useState("" :: string?)
+	local body, setBody = useState("" :: string?)
+	local isUsernameConfirmed, setIsUsernameConfirmed = useState(false)
 	local isCancelDialogOpen, setIsCancelDialogOpen = useState(false)
-	local issueType, setIssueType = useState(nil :: IssueType?)
+	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 
-	local wasChanged = summary ~= "" or reproSteps ~= "" or errorLogs ~= ""
+	local wasChanged = title ~= "" or body ~= "" or isUsernameConfirmed ~= false
 
 	local onCancel = useCallback(function()
 		if wasChanged then
@@ -32,21 +34,25 @@ local function FeedbackDialog(props: Props)
 	end, { wasChanged, props.onClose } :: { unknown })
 
 	local onSubmit = useCallback(function()
-		print("submit")
+		print(title)
+		print(body)
 
-		print(summary)
-		print(reproSteps)
-		print(errorLogs)
+		if title ~= "" and body ~= "" and isUsernameConfirmed then
+			print("posting")
+			setIsSuccessDialogOpen(true)
 
-		-- requestAsync(`{_G.BASE_URL}/feedback`, {
-		-- 	method = "POST",
-		-- 	body = {
-		-- 		title = summary,
-		-- 	}
-		-- })
-
-		-- TODO: Send HTTP request to GitHub webhook to create issue
-	end, { summary, reproSteps, errorLogs })
+			-- task.spawn(function()
+			-- 	requestAsync(`{_G.BASE_URL}/feedback`, {
+			-- 		method = "POST",
+			-- 		body = {
+			-- 			title = title,
+			-- 			body = body,
+			-- 			userId = getLocalUserId(),
+			-- 		},
+			-- 	})
+			-- end)
+		end
+	end, { title, body, isUsernameConfirmed })
 
 	return React.createElement(React.Fragment, nil, {
 		FeedbackDialog = if not isCancelDialogOpen
@@ -63,63 +69,30 @@ local function FeedbackDialog(props: Props)
 					Layout = React.createElement(Foundation.View, {
 						tag = "size-full-0 auto-y col gap-medium",
 					}, {
-						IssueType = React.createElement(Foundation.Dropdown.Root, {
-							label = "Issue type",
-							value = issueType,
-							onItemChanged = function(itemId)
-								setIssueType(itemId)
-							end,
-							items = {
-								{
-									id = "bug",
-									text = "Bug",
-								},
-								{
-									id = "feature",
-									text = "Feature",
-								},
-								{
-									id = "feedback",
-									text = "Feedback",
-								},
-								{
-									id = "other",
-									text = "Other",
-								},
-							},
-							LayoutOrder = nextLayoutOrder(),
-						}),
-
-						Summary = React.createElement(Foundation.TextInput, {
-							label = "Issue summary",
-							text = summary,
-							hasError = summary == "",
+						Title = React.createElement(Foundation.TextInput, {
+							label = "Title",
+							text = title,
+							hasError = title == "",
 							isRequired = true,
-							hint = "Enter a breif summary of the issue you are encountering",
-							placeholder = "Issue summary...",
-							onChanged = setSummary,
+							hint = "Enter a breif summary of the feedback you're giving",
+							placeholder = "Enter title...",
+							onChanged = setTitle,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
-						ReproSteps = React.createElement(Foundation.TextInput, {
-							label = "Steps to reproduce",
-							text = reproSteps,
-							hint = "The more details the better. This will help us investigate the issue and resolve it quickly",
-							placeholder = "1) Open Plugin 2) Press button 3) Observe error",
-							onChanged = setReproSteps,
-							LayoutOrder = nextLayoutOrder(),
-						}),
-
-						ErrorLogs = React.createElement(Foundation.TextInput, {
-							label = "Relevant logs",
-							text = errorLogs,
-							hint = "Copy any logs from the Output window relevant to the issue",
-							placeholder = "Enter logs...",
-							onChanged = setErrorLogs,
+						Body = React.createElement(Foundation.TextInput, {
+							label = "Body",
+							text = body,
+							hasError = body == "",
+							isRequired = true,
+							hint = "Enter a breif summary of the feedback you're giving",
+							placeholder = "Enter body...",
+							onChanged = setBody,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
 						UsernameConfirmation = React.createElement(UsernameConfirmationInput, {
+							onChange = setIsUsernameConfirmed,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 					}),
@@ -135,6 +108,7 @@ local function FeedbackDialog(props: Props)
 						{
 							variant = Foundation.Enums.ButtonVariant.Emphasis,
 							text = "Submit",
+
 							onActivated = onSubmit,
 						},
 					},
@@ -149,13 +123,52 @@ local function FeedbackDialog(props: Props)
 				hasBackdrop = true,
 			}, {
 				Title = React.createElement(Foundation.Dialog.Title, {
-					text = "Discard issue report",
+					text = "Discard feedback",
 				}),
 
-				Message = React.createElement(Foundation.Text, {
-					tag = "auto-xy",
-					Text = "Are you sure you want to discard your changes?",
+				Content = React.createElement(Foundation.Dialog.Content, nil, {
+					Message = React.createElement(Foundation.Text, {
+						tag = "auto-xy",
+						Text = "Are you sure you want to discard your changes?",
+						LayoutOrder = nextLayoutOrder(),
+					}),
+				}),
+
+				Actions = React.createElement(Foundation.Dialog.Actions, {
+					actions = {
+						{
+							variant = Foundation.Enums.ButtonVariant.Standard :: Foundation.ButtonVariant,
+							text = "Keep editing",
+							onActivated = function()
+								setIsCancelDialogOpen(false)
+							end,
+						},
+						{
+							variant = Foundation.Enums.ButtonVariant.Emphasis,
+							text = "Discard",
+							onActivated = props.onClose,
+						},
+					},
 					LayoutOrder = nextLayoutOrder(),
+				}),
+			})
+			else nil,
+
+		SuccessDialog = if isSuccessDialogOpen
+			then React.createElement(Foundation.Dialog.Root, {
+				disablePortal = false,
+				hasBackdrop = true,
+			}, {
+				Title = React.createElement(Foundation.Dialog.Title, {
+					text = "Discard feedback",
+				}),
+
+				Content = React.createElement(Foundation.Dialog.Content, nil, {
+					Message = React.createElement(Foundation.Text, {
+						tag = "auto-xy",
+						Text = "Are you sure you want to discard your changes?",
+						LayoutOrder = nextLayoutOrder(),
+					}),
 				}),
 
 				Actions = React.createElement(Foundation.Dialog.Actions, {
