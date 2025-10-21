@@ -3,7 +3,6 @@ local React = require("@pkg/React")
 
 local DiscardChangesDialog = require("@root/Feedback/DiscardChangesDialog")
 local SuccessDialog = require("@root/Feedback/SuccessDialog")
-local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local postFeedbackAsync = require("@root/Feedback/postFeedbackAsync")
@@ -22,11 +21,11 @@ type IssueType = "bug" | "feature" | "feedback" | "other"
 local function FeedbackDialog(props: Props)
 	local title, setTitle = useState("" :: string?)
 	local body, setBody = useState("" :: string?)
-	local isUsernameConfirmed, setIsUsernameConfirmed = useState(false)
+	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 
-	local wasChanged = title ~= "" or body ~= "" or isUsernameConfirmed ~= false
+	local wasChanged = title ~= "" or body ~= "" or isAcknowledgedByUser ~= false
 
 	local onCancel = useCallback(function()
 		if wasChanged then
@@ -51,7 +50,7 @@ local function FeedbackDialog(props: Props)
 	end, {})
 
 	local onSubmit = useCallback(function()
-		if title ~= "" and body ~= "" and isUsernameConfirmed then
+		if title ~= "" and body ~= "" and isAcknowledgedByUser then
 			setIsSuccessDialogOpen(true)
 
 			task.spawn(function()
@@ -62,7 +61,7 @@ local function FeedbackDialog(props: Props)
 				})
 			end)
 		end
-	end, { title, body, isUsernameConfirmed } :: { unknown })
+	end, { title, body, isAcknowledgedByUser } :: { unknown })
 
 	useEffect(function()
 		task.spawn(function()
@@ -109,8 +108,11 @@ local function FeedbackDialog(props: Props)
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
-						UsernameConfirmation = React.createElement(UsernameConfirmationInput, {
-							onChange = setIsUsernameConfirmed,
+						Confirmation = React.createElement(Foundation.Checkbox, {
+							isChecked = isAcknowledgedByUser,
+							onActivated = setIsAcknowledgedByUser,
+							label = "I acknowledge that my Roblox UserId will be included in the resulting GitHub Issue to attribute the feedback to me.",
+							size = Foundation.Enums.InputSize.Small,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 					}),
