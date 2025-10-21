@@ -95,7 +95,7 @@ local function compile(channel: Channel, target: Target)
 		if member.type == "dir" then
 			local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
 			run("mkdir", { "-p", `{dest}/{memberPath}` })
-			run("cp", { "-R", memberBuildPath, `{dest}/{memberPath}` })
+			run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
 		end
 	end
 
