@@ -1,6 +1,8 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
+local DiscardChangesDialog = require("@root/Feedback/DiscardChangesDialog")
+local SuccessDialog = require("@root/Feedback/SuccessDialog")
 local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -21,14 +23,14 @@ local function FeedbackDialog(props: Props)
 	local title, setTitle = useState("" :: string?)
 	local body, setBody = useState("" :: string?)
 	local isUsernameConfirmed, setIsUsernameConfirmed = useState(false)
-	local isCancelDialogOpen, setIsCancelDialogOpen = useState(false)
+	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 
 	local wasChanged = title ~= "" or body ~= "" or isUsernameConfirmed ~= false
 
 	local onCancel = useCallback(function()
 		if wasChanged then
-			setIsCancelDialogOpen(true)
+			setIsDiscardChangesDialogOpen(true)
 		else
 			props.onClose()
 		end
@@ -42,6 +44,10 @@ local function FeedbackDialog(props: Props)
 				eventName = "FeedbackDiscarded",
 			})
 		end)
+	end, {})
+
+	local onKeepEditing = useCallback(function()
+		setIsDiscardChangesDialogOpen(false)
 	end, {})
 
 	local onSubmit = useCallback(function()
@@ -67,7 +73,7 @@ local function FeedbackDialog(props: Props)
 	end, {})
 
 	return React.createElement(React.Fragment, nil, {
-		FeedbackDialog = if not (isCancelDialogOpen or isSuccessDialogOpen)
+		FeedbackDialog = if not (isDiscardChangesDialogOpen or isSuccessDialogOpen)
 			then React.createElement(Foundation.Dialog.Root, {
 				disablePortal = false,
 				hasBackdrop = true,
@@ -129,70 +135,16 @@ local function FeedbackDialog(props: Props)
 			})
 			else nil,
 
-		CancelDialog = if isCancelDialogOpen
-			then React.createElement(Foundation.Dialog.Root, {
-				disablePortal = false,
-				hasBackdrop = true,
-			}, {
-				Title = React.createElement(Foundation.Dialog.Title, {
-					text = "Discard feedback",
-				}),
-
-				Content = React.createElement(Foundation.Dialog.Content, nil, {
-					Message = React.createElement(Foundation.Text, {
-						tag = "auto-xy",
-						Text = "Are you sure you want to discard your changes?",
-						LayoutOrder = nextLayoutOrder(),
-					}),
-				}),
-
-				Actions = React.createElement(Foundation.Dialog.Actions, {
-					actions = {
-						{
-							variant = Foundation.Enums.ButtonVariant.Standard :: Foundation.ButtonVariant,
-							text = "Keep editing",
-							onActivated = function()
-								setIsCancelDialogOpen(false)
-							end,
-						},
-						{
-							variant = Foundation.Enums.ButtonVariant.Emphasis,
-							text = "Discard",
-							onActivated = onDiscard,
-						},
-					},
-					LayoutOrder = nextLayoutOrder(),
-				}),
+		DiscardChangesDialog = if isDiscardChangesDialogOpen
+			then React.createElement(DiscardChangesDialog, {
+				onDiscard = onDiscard,
+				onKeepEditing = onKeepEditing,
 			})
 			else nil,
 
 		SuccessDialog = if isSuccessDialogOpen
-			then React.createElement(Foundation.Dialog.Root, {
-				disablePortal = false,
-				hasBackdrop = true,
-			}, {
-				Title = React.createElement(Foundation.Dialog.Title, {
-					text = "Feedback posted",
-				}),
-
-				Content = React.createElement(Foundation.Dialog.Content, nil, {
-					Message = React.createElement(Foundation.Text, {
-						tag = "auto-xy",
-						Text = "Your feedback has been submitted! Thank you for helping us to improve Flipbook",
-						LayoutOrder = nextLayoutOrder(),
-					}),
-				}),
-
-				Actions = React.createElement(Foundation.Dialog.Actions, {
-					actions = {
-						{
-							variant = Foundation.Enums.ButtonVariant.Emphasis,
-							text = "Close",
-							onActivated = props.onClose,
-						},
-					},
-					LayoutOrder = nextLayoutOrder(),
-				}),
+			then React.createElement(SuccessDialog, {
+				onClose = props.onClose,
 			})
 			else nil,
 	})
