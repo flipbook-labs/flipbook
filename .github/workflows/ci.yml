@@ -35,7 +35,7 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
   analyze:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
         run: lute scripts/analyze
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4

@@ -10,7 +10,7 @@ on:
 
 jobs:
   publish-github-release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       contents: write
     steps:
@@ -39,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 10
     env:
       LOG_LEVEL: debug
