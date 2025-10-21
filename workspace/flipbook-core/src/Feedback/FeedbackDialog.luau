@@ -2,11 +2,13 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local postFeedbackAsync = require("@root/Feedback/postFeedbackAsync")
 
-local useState = React.useState
 local useCallback = React.useCallback
+local useEffect = React.useEffect
+local useState = React.useState
 
 export type Props = {
 	onClose: () -> (),
@@ -32,22 +34,40 @@ local function FeedbackDialog(props: Props)
 		end
 	end, { wasChanged, props.onClose } :: { unknown })
 
-	local onSubmit = useCallback(function()
-		print(title)
-		print(body)
+	local onDiscard = useCallback(function()
+		props.onClose()
 
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "FeedbackDiscarded",
+			})
+		end)
+	end, {})
+
+	local onSubmit = useCallback(function()
 		if title ~= "" and body ~= "" and isUsernameConfirmed then
-			print("posting")
 			setIsSuccessDialogOpen(true)
 
 			task.spawn(function()
 				postFeedbackAsync(title, body)
+
+				fireEventAsync({
+					eventName = "FeedbackSubmitted",
+				})
 			end)
 		end
 	end, { title, body, isUsernameConfirmed } :: { unknown })
 
+	useEffect(function()
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "FeedbackDialogOpened",
+			})
+		end)
+	end, {})
+
 	return React.createElement(React.Fragment, nil, {
-		FeedbackDialog = if not isCancelDialogOpen
+		FeedbackDialog = if not (isCancelDialogOpen or isSuccessDialogOpen)
 			then React.createElement(Foundation.Dialog.Root, {
 				disablePortal = false,
 				hasBackdrop = true,
@@ -138,7 +158,7 @@ local function FeedbackDialog(props: Props)
 						{
 							variant = Foundation.Enums.ButtonVariant.Emphasis,
 							text = "Discard",
-							onActivated = props.onClose,
+							onActivated = onDiscard,
 						},
 					},
 					LayoutOrder = nextLayoutOrder(),
@@ -158,7 +178,7 @@ local function FeedbackDialog(props: Props)
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					Message = React.createElement(Foundation.Text, {
 						tag = "auto-xy",
-						Text = "Are you sure you want to discard your changes?",
+						Text = "Your feedback has been submitted! Thank you for helping us to improve Flipbook",
 						LayoutOrder = nextLayoutOrder(),
 					}),
 				}),
