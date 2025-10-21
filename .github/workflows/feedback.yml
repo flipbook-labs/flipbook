@@ -1,0 +1,23 @@
+on:
+  repository_dispatch:
+    types: [post_feedback]
+  pull_request:
+jobs:
+  post-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: ${{ github.event.client_payload.title }}
+          BODY: ${{ github.event.client_payload.bODY }}
+          BUILD_VERSION: ${{ github.event.client_payload.buildVersion }}
+          BUILD_CHANNEL: ${{ github.event.client_payload.buildChannel }}
+          BUILD_HASH: ${{ github.event.client_payload.buildHash }}
+          USER_ID: ${{ github.event.client_payload.userId }}
+        with:
+          filename: .github/feedback.md
