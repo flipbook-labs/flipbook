@@ -10,7 +10,7 @@ local function postFeedbackAsync(title: string, body: string)
 		body = {
 			title = title,
 			body = body,
-			userId = getLocalUserId(),
+			userId = tostring(getLocalUserId()),
 			buildVersion = buildInfo.version,
 			buildChannel = buildInfo.channel,
 			buildHash = buildInfo.hash,
