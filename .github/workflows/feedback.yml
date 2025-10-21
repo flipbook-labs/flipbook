@@ -8,16 +8,23 @@ jobs:
     permissions:
       issues: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: JasonEtco/create-an-issue@v2
+      - name: Post feedback
+        run: |
+          gh issue create \
+            --title "$TITLE" \
+            --body "$BODY" \
+            --label "feedback"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           TITLE: ${{ github.event.client_payload.title }}
-          BODY: ${{ github.event.client_payload.bODY }}
-          BUILD_VERSION: ${{ github.event.client_payload.buildVersion }}
-          BUILD_CHANNEL: ${{ github.event.client_payload.buildChannel }}
-          BUILD_HASH: ${{ github.event.client_payload.buildHash }}
-          USER_ID: ${{ github.event.client_payload.userId }}
-        with:
-          filename: .github/feedback.md
+          BODY: |
+            > ${{ github.event.client_payload.bODY }}
+
+            Build info:
+
+            - Version: ${{ github.event.client_payload.buildVersion }}
+            - Channel: ${{ github.event.client_payload.buildChannel }}
+            - Hash: ${{ github.event.client_payload.buildHash }}
+
+            <sub>Posted on behalf of Roblox user ${{ github.event.client_payload.userId }}</sub>
