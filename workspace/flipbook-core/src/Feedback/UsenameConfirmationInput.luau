@@ -4,7 +4,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactUtils = require("@rbxpkg/ReactUtils")
 
-local getClientUserId = require("@root/Common/getClientUserId")
+local getLocalUserId = require("@root/Telemetry/getLocalUserId")
 
 local useCallback = React.useCallback
 local useState = React.useState
@@ -15,7 +15,7 @@ local function UsernameConfirmationInput(props: {
 	LayoutOrder: number?,
 })
 	local username = useAsync(function()
-		return Players:GetNameFromUserIdAsync(tonumber(getClientUserId()))
+		return Players:GetNameFromUserIdAsync(getLocalUserId())
 	end, {})
 
 	local answer, setAnswer = useState("" :: string?)
