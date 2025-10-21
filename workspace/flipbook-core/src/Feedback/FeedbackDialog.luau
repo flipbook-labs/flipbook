@@ -2,9 +2,8 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
-local getLocalUserId = require("@root/Telemetry/getLocalUserId")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local requestAsync = require("@root/Http/requestAsync")
+local postFeedbackAsync = require("@root/Feedback/postFeedbackAsync")
 
 local useState = React.useState
 local useCallback = React.useCallback
@@ -42,17 +41,10 @@ local function FeedbackDialog(props: Props)
 			setIsSuccessDialogOpen(true)
 
 			task.spawn(function()
-				requestAsync(`{_G.BASE_URL}/feedback`, {
-					method = "POST",
-					body = {
-						title = title,
-						body = body,
-						userId = getLocalUserId(),
-					},
-				})
+				postFeedbackAsync(title, body)
 			end)
 		end
-	end, { title, body, isUsernameConfirmed })
+	end, { title, body, isUsernameConfirmed } :: { unknown })
 
 	return React.createElement(React.Fragment, nil, {
 		FeedbackDialog = if not isCancelDialogOpen
@@ -160,7 +152,7 @@ local function FeedbackDialog(props: Props)
 				hasBackdrop = true,
 			}, {
 				Title = React.createElement(Foundation.Dialog.Title, {
-					text = "Discard feedback",
+					text = "Feedback posted",
 				}),
 
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
@@ -174,15 +166,8 @@ local function FeedbackDialog(props: Props)
 				Actions = React.createElement(Foundation.Dialog.Actions, {
 					actions = {
 						{
-							variant = Foundation.Enums.ButtonVariant.Standard :: Foundation.ButtonVariant,
-							text = "Keep editing",
-							onActivated = function()
-								setIsCancelDialogOpen(false)
-							end,
-						},
-						{
 							variant = Foundation.Enums.ButtonVariant.Emphasis,
-							text = "Discard",
+							text = "Close",
 							onActivated = props.onClose,
 						},
 					},
