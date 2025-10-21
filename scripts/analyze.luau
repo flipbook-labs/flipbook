@@ -26,6 +26,7 @@ run("luau-lsp", {
 	"--settings=./.vscode/settings.json",
 	`--ignore="**/_Index/**"`,
 	`--ignore="**/RobloxPackages/**"`,
+	`--ignore="**/LuauPackages/**"`,
 	project.SOURCE_PATH,
 	project.SCRIPTS_PATH,
 	project.WORKSPACE_PATH,
