@@ -1,8 +1,32 @@
 name: Feedback
 
 on:
-  repository_dispatch:
-    types: [post_feedback]
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "The title as it will appear on the Issues tab"
+        type: string
+        required: true
+      body:
+        description: "The user's feedback that will be displayed with other info like the build details"
+        type: string
+        required: true
+      user_id:
+        description: "The Roblox user to attribute the feedback to"
+        type: number
+        required: true
+      build_version:
+        description: "The version of Flipbook the feedback is being sent from"
+        type: string
+        required: true
+      build_channel:
+        description: "The channel the feedback is being sent from"
+        type: string
+        required: true
+      build_hash:
+        description: "The hash the feedback is being sent from"
+        type: string
+        required: true
 
 jobs:
   post-issue:
@@ -19,14 +43,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TITLE: ${{ github.event.client_payload.title }}
+          TITLE: ${{ inputs.title }}
           BODY: |
-            > ${{ github.event.client_payload.body }}
+            > ${{ inputs.body }}
 
             Build info:
 
-            - Version: ${{ github.event.client_payload.buildVersion }}
-            - Channel: ${{ github.event.client_payload.buildChannel }}
-            - Hash: ${{ github.event.client_payload.buildHash }}
+            - Version: ${{ inputs.build_version }}
+            - Channel: ${{ inputs.build_channel }}
+            - Hash: ${{ inputs.build_hash }}
 
-            <sub>Posted on behalf of Roblox user ${{ github.event.client_payload.userId }}</sub>
+            <sub>Posted on behalf of Roblox user ${{ inputs.user_id }}</sub>
