@@ -2,9 +2,9 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local UsernameConfirmationInput = require("@root/Feedback/UsenameConfirmationInput")
--- local getLocalUserId = require("@root/Telemetry/getLocalUserId")
+local getLocalUserId = require("@root/Telemetry/getLocalUserId")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
--- local requestAsync = require("@root/Http/requestAsync")
+local requestAsync = require("@root/Http/requestAsync")
 
 local useState = React.useState
 local useCallback = React.useCallback
@@ -41,16 +41,16 @@ local function FeedbackDialog(props: Props)
 			print("posting")
 			setIsSuccessDialogOpen(true)
 
-			-- task.spawn(function()
-			-- 	requestAsync(`{_G.BASE_URL}/feedback`, {
-			-- 		method = "POST",
-			-- 		body = {
-			-- 			title = title,
-			-- 			body = body,
-			-- 			userId = getLocalUserId(),
-			-- 		},
-			-- 	})
-			-- end)
+			task.spawn(function()
+				requestAsync(`{_G.BASE_URL}/feedback`, {
+					method = "POST",
+					body = {
+						title = title,
+						body = body,
+						userId = getLocalUserId(),
+					},
+				})
+			end)
 		end
 	end, { title, body, isUsernameConfirmed })
 
