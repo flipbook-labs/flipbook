@@ -3,7 +3,6 @@ name: Feedback
 on:
   repository_dispatch:
     types: [post_feedback]
-  pull_request:
 
 jobs:
   post-issue:
@@ -20,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TITLE: ${{ github.event.client_payload.title || 'Title' }}
+          TITLE: ${{ github.event.client_payload.title }}
           BODY: |
             > ${{ github.event.client_payload.body }}
 
