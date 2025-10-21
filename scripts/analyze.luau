@@ -19,7 +19,7 @@ run("rojo", {
 	project.SOURCEMAP_PATH,
 })
 
-run("luau-lsp", {
+local defaultArgs = {
 	"analyze",
 	`--sourcemap={project.SOURCEMAP_PATH}`,
 	`--defs={globalDefsPath}`,
@@ -27,7 +27,20 @@ run("luau-lsp", {
 	`--ignore="**/_Index/**"`,
 	`--ignore="**/RobloxPackages/**"`,
 	`--ignore="**/LuauPackages/**"`,
-	project.SOURCE_PATH,
-	project.SCRIPTS_PATH,
-	project.WORKSPACE_PATH,
-})
+}
+
+do
+	local args = table.clone(defaultArgs)
+	table.insert(args, "--flag:LuauSolverV2=true")
+	table.insert(args, project.SCRIPTS_PATH)
+
+	run("luau-lsp", args)
+end
+
+do
+	local args = table.clone(defaultArgs)
+	table.insert(args, project.SOURCE_PATH)
+	table.insert(args, project.WORKSPACE_PATH)
+
+	run("luau-lsp", args)
+end

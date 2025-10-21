@@ -30,7 +30,6 @@ args:add("output", "option", {
 args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
-	default = false,
 })
 
 args:parse({ ... })

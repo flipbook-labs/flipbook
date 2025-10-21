@@ -5,7 +5,7 @@ local DOTENV_FILE_NAME = ".env"
 
 local function dotenv()
 	local current = process.cwd()
-	local env: { [string]: string | number | boolean } = {}
+	local env: { [string]: string } = {}
 
 	for _, file in fs.listdir(current) do
 		local filePath = `{current}/{file.name}`

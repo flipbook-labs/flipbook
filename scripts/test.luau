@@ -41,6 +41,8 @@ local success, err = pcall(function()
 			ROBLOX_API_KEY = tostring(apiKey),
 		},
 	})
+
+	return nil
 end)
 
 fs.remove("tests.rbxl")

@@ -8,9 +8,9 @@ local function getVersionFromManifest(manifestPath: string)
 	local manifest = toml.deserialize(manifestContent)
 
 	if manifest.workspace then
-		return manifest.workspace.version
+		return (manifest.workspace :: any).version
 	elseif manifest.package then
-		return manifest.package.version
+		return (manifest.package :: any).version
 	else
 		error(`Could not find a 'version' field in {manifestPath}`)
 	end

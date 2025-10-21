@@ -23,7 +23,8 @@ local function run(program: string, params: { string }, options: Options?): stri
 	})
 
 	if result.ok then
-		return result.stdout:gsub("^\n", ""):gsub("\n$", "")
+		local trimmed = result.stdout:gsub("^\n", ""):gsub("\n$", "")
+		return trimmed
 	else
 		error(result.stderr, 2)
 	end

@@ -15,7 +15,7 @@ local function compileWorkspaceMember(
 	memberPath: string,
 	channel: Channel,
 	target: Target,
-	env: { [string]: any }
+	env: { [string]: string }
 ): string
 	local memberBuildPath = `{memberPath}/build`
 
