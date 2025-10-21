@@ -20,9 +20,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TITLE: ${{ github.event.client_payload.title }}
+          TITLE: ${{ github.event.client_payload.title || 'Title' }}
           BODY: |
-            > ${{ github.event.client_payload.bODY }}
+            > ${{ github.event.client_payload.body }}
 
             Build info:
 
