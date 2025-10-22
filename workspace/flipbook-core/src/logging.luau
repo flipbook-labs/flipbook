@@ -1,12 +1,15 @@
 local Log = require("@pkg/Log")
 
+local function stringToLogLevel(_logLevel: string)
+	return Log.LogLevel.Information
+end
+
 local logger = Log.Logger.new({
-	Log.Enrichers.TimestampEnricher(true, true),
-	Log.Enrichers.DynSourceEnricher(true),
-	Log.Enrichers.LogLevelEnricher(),
-	Log.Enrichers.TraceEnricher(),
+	Log.Common.Enrichers.LogLevelEnricher(),
 }, {
-	Log.RobloxLogSink(),
+	Log.Common.RobloxLogSink(),
+}, {
+	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL or "info")),
 })
 
 local logging = {}
@@ -18,10 +21,10 @@ function logging.info(...: any)
 	logger:Info(...)
 end
 function logging.warn(...: any)
-	logger:Warning(...)
+	logger:Warn(...)
 end
 function logging.err(...: any)
-	logger:Err(...)
+	logger:Error(...)
 end
 
 return logging
