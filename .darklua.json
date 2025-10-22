@@ -31,6 +31,11 @@
       "identifier": "BASE_URL",
       "env": "BASE_URL"
     },
+    {
+      "rule": "inject_global_value",
+      "identifier": "LOG_LEVEL",
+      "env": "LOG_LEVEL"
+    },
     "compute_expression",
     "remove_unused_if_branch",
     "remove_unused_while",
