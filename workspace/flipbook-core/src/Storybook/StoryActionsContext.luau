@@ -3,6 +3,7 @@ local Selection = game:GetService("Selection")
 local PluginStore = require("@root/Plugin/PluginStore")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
+local exportGuiToDisk = require("@root/Storybook/exportGuiToDisk")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
@@ -28,6 +29,8 @@ export type StoryActionsContext = {
 		zoomIn: () -> (),
 		zoomOut: () -> (),
 	},
+
+	exportStory: () -> (),
 }
 
 local StoryActionsContext = React.createContext({} :: StoryActionsContext)
@@ -71,6 +74,14 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 		Selection:Set({ storyContainerRef.current:FindFirstAncestorWhichIsA("GuiObject") or storyContainerRef.current })
 	end, {})
 
+	local exportStory = useCallback(function()
+		-- TODO: Use the story container, not the current selection
+		local selection = Selection:Get()[1]
+		if selection then
+			exportGuiToDisk(selection)
+		end
+	end, {})
+
 	return e(StoryActionsContext.Provider, {
 		value = {
 			isDisabled = props.story == nil,
@@ -83,6 +94,8 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 			viewExplorer = viewExplorer,
 
 			zoom = zoom,
+
+			exportStory = exportStory,
 		},
 	}, props.children)
 end

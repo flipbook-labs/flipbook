@@ -142,6 +142,19 @@ local function Topbar(props: TopbarProps)
 							onActivated = storyActions.viewExplorer,
 						}),
 					}),
+
+					ExportStory = e(Tooltip, {
+						LayoutOrder = 4,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Export Selection",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.FrameExpanded,
+							isDisabled = storyActions.isDisabled,
+							onActivated = storyActions.exportStory,
+						}),
+					}),
 				}),
 
 				ViewsDivider = e(Divider, {
