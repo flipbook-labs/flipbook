@@ -1,11 +1,17 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local e = React.createElement
 
 local noop = function() end
+
+local useSignalState = SignalsReact.useSignalState
+local useCallback = React.useCallback
 
 type Props = {
 	layoutOrder: number?,
@@ -17,8 +23,19 @@ type Props = {
 }
 
 local function StoryViewNavbar(props: Props)
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
+	local onThemeChanged = useCallback(function(itemId: string | number)
+		userSettingsStore.setStorage(function(prev)
+			return Sift.Dictionary.join(prev, {
+				theme = itemId,
+			})
+		end)
+	end, { userSettingsStore.setStorage })
+
 	return e(Foundation.View, {
-		tag = "size-full-0 auto-y row gap-small align-y-center padding-y-medium",
+		tag = "size-full-0 auto-y row gap-small align-y-center",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Zoom = e(Foundation.View, {
@@ -67,6 +84,29 @@ local function StoryViewNavbar(props: Props)
 			text = "Preview in Viewport",
 			size = Foundation.Enums.ButtonSize.Small,
 			onActivated = props.onPreviewInViewport or noop,
+			LayoutOrder = nextLayoutOrder(),
+		}),
+
+		ThemeSelection = e(Foundation.Dropdown.Root, {
+			size = Foundation.Enums.InputSize.Small,
+			label = "",
+			onItemChanged = onThemeChanged,
+			width = UDim.new(0, 150),
+			value = userSettings.theme,
+			items = {
+				{
+					id = "system",
+					text = "System",
+				},
+				{
+					id = "dark",
+					text = "Dark",
+				},
+				{
+					id = "light",
+					text = "Light",
+				},
+			},
 			LayoutOrder = nextLayoutOrder(),
 		}),
 	})

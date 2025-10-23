@@ -1,3 +1,4 @@
+local fs = require("@lune/fs")
 local process = require("@lune/process")
 
 local compile = require("./lib/compile")
@@ -17,7 +18,7 @@ if not apiKey then
 	process.exit(1)
 end
 
-compile("dev")
+compile("dev", "roblox")
 
 run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
 
@@ -25,7 +26,7 @@ local success, err = pcall(function()
 	run("python3", {
 		".lune/python/upload_and_run_task.py",
 		"tests.rbxl",
-		"tests/run-tests.luau",
+		".lune/tasks/run-tests.luau",
 	}, {
 		env = {
 			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
@@ -36,7 +37,7 @@ local success, err = pcall(function()
 	})
 end)
 
-run("rm", { "tests.rbxl" })
+fs.removeFile("tests.rbxl")
 
 if not success then
 	print(err)

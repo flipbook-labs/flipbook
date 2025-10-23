@@ -61,12 +61,23 @@ local function installWallyPackages()
 			installPackagesForProject(memberPath)
 		end
 	end
-
-	installPackagesForProject()
 end
 
 local function installRobloxPackages()
-	run("roblox-packages", { "install", "RobloxPackagesTmp", "--version", "0.690.0.6900721" })
+	run("roblox-packages", {
+		"install",
+		"RobloxPackagesTmp",
+		"--version",
+		"0.693.0.6930961",
+		"-d",
+		"Foundation",
+		"-d",
+		"LuauPolyfill",
+		"-d",
+		"Signals",
+		"-d",
+		"SignalsReact",
+	})
 
 	local dest = "workspace/flipbook-core/RobloxPackages"
 	if fs.isDir(dest) then
@@ -103,8 +114,10 @@ end
 local function installRbxasset()
 	local packagesPath = "LunePackages"
 
-	run("rm", { "-rf", packagesPath })
-	run("mkdir", { "-p", packagesPath })
+	if fs.isDir(packagesPath) then
+		fs.removeDir(packagesPath)
+	end
+	fs.writeDir(packagesPath)
 
 	run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
 		cwd = packagesPath,
@@ -114,9 +127,7 @@ local function installRbxasset()
 		cwd = packagesPath,
 	})
 
-	run("rm", { "-rf", "rbxasset.zip" }, {
-		cwd = packagesPath,
-	})
+	fs.removeFile(`{packagesPath}/rbxasset.zip`)
 end
 
 local function pruneDevelopmentFiles()
@@ -126,7 +137,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { "Packages", "workspace/flipbook-core/RobloxPackages" } do
+	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
 		end

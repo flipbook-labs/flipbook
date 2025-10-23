@@ -1,0 +1,10 @@
+[package]
+name = "flipbook-labs/test-runner"
+version = "0.1.0"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = ["*"]
+
+[dependencies]
+Jest = "jsdotlua/jest@3.10.0"

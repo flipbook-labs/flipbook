@@ -5,6 +5,7 @@ local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local TreeView = require("@root/TreeView")
+local useThemeName = require("@root/Common/useThemeName")
 
 local useEffect = React.useEffect
 
@@ -15,6 +16,8 @@ export type Props = {
 }
 
 local function ContextProviders(props: Props)
+	local themeName: "Dark" | "Light" = useThemeName()
+
 	useEffect(function()
 		PluginStore.get(false).setPlugin(props.plugin)
 	end, { props.plugin })
@@ -22,8 +25,7 @@ local function ContextProviders(props: Props)
 	return React.createElement(ContextStack, {
 		providers = {
 			React.createElement(Foundation.FoundationProvider, {
-				-- TODO: Have this change based on the current Studio theme
-				theme = Foundation.Enums.Theme.Dark,
+				theme = themeName,
 				overlayGui = props.overlayGui,
 			}),
 			React.createElement(NavigationContext.Provider, {

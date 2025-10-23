@@ -1,7 +1,9 @@
 local HttpService = game:GetService("HttpService")
 
 local Storyteller = require("@pkg/Storyteller")
+
 local TreeView = require("@root/TreeView")
+local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 
 type PartialTreeNode = TreeView.PartialTreeNode
 type TreeNode = TreeView.TreeNode
@@ -16,19 +18,12 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 		label = if storybook.name then storybook.name else "Unnamed Storybook",
 		icon = "storybook",
 		isExpanded = false,
+		instance = storybook.source,
 		children = {},
 	}
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-		local currentNode: TreeNode = {
-			id = HttpService:GenerateGUID(),
-			label = storyModule.Name:gsub("%.story", ""),
-			icon = "story",
-			isExpanded = false,
-			instance = storyModule,
-			children = {},
-		}
-
+		local currentNode = createTreeNodeForStoryModule(storyModule)
 		local parentInstance = storyModule.Parent
 
 		while parentInstance do
@@ -46,6 +41,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 				local parentNode: TreeNode = {
 					id = HttpService:GenerateGUID(),
 					label = parentInstance.Name,
+					instance = parentInstance,
 					icon = "folder",
 					isExpanded = false,
 					children = { currentNode },
