@@ -14,6 +14,9 @@ local function stringToLogLevel(logLevel: string)
 end
 
 local logger = Log.Logger.new({
+	Log.LogEnricher.new(function(_event)
+		return "flipbook", nil
+	end),
 	Log.Common.Enrichers.LogLevelEnricher(),
 }, {
 	Log.Common.RobloxLogSink(),
