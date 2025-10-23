@@ -8,7 +8,8 @@ exclude = ["*"]
 
 [dependencies]
 Highlighter = "boatbomber/highlighter@0.9.0"
-Log = "realthx1/luaulog@0.2.0"
+Log = "realthx1/luaulog@0.2.1"
+LuauPolyfill = "jsdotlua/luau-polyfill@1.2.7"
 ModuleLoader = "flipbook-labs/module-loader@0.7.0"
 React = "jsdotlua/react@17.0.2"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"

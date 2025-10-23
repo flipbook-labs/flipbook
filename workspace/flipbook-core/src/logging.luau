@@ -14,14 +14,11 @@ local function stringToLogLevel(logLevel: string)
 end
 
 local logger = Log.Logger.new({
-	Log.Enrichers.TimestampEnricher(true, true),
-	Log.Enrichers.DynSourceEnricher(true),
-	Log.Enrichers.LogLevelEnricher(),
-	Log.Enrichers.TraceEnricher(),
+	Log.Common.Enrichers.LogLevelEnricher(),
 }, {
-	Log.RobloxLogSink(),
+	Log.Common.RobloxLogSink(),
 }, {
-	Log.Filters.MaxLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Information),
+	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Information),
 })
 
 local logging = {}
@@ -35,11 +32,11 @@ function logging.info(...: any)
 end
 
 function logging.warn(...: any)
-	logger:Warning(...)
+	logger:Warn(...)
 end
 
 function logging.err(...: any)
-	logger:Err(...)
+	logger:Error(...)
 end
 
 return logging
