@@ -73,6 +73,7 @@ local function compile(channel: Channel, target: Target)
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 		BASE_URL = process.env.BASE_URL,
+		LOG_LEVEL = process.env.LOG_LEVEL,
 	}
 
 	run("rojo", {
