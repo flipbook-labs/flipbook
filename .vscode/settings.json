@@ -1,4 +1,9 @@
 {
   "luau-lsp.sourcemap.rojoProjectFile": "analysis.project.json",
-  "luau-lsp.ignoreGlobs": ["**/_Index/**", "**/build/**", "LunePackages/**"]
+  "luau-lsp.ignoreGlobs": [
+    "**/_Index/**",
+    "**/build/**",
+    "LunePackages/**",
+    "LuauPackages/**"
+  ]
 }
