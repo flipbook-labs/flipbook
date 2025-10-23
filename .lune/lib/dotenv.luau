@@ -13,6 +13,10 @@ local function dotenv()
 			local content = fs.readFile(filePath)
 
 			for line in content:gmatch("[^\r\n]+") do
+				if line:match("^%s*#%s*") then
+					continue
+				end
+
 				local key, value = line:match("([%u_]+)[%s+]?=[%s+]?(.*)")
 
 				if key and value and value ~= "" then
