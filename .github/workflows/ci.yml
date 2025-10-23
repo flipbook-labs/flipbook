@@ -18,7 +18,7 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install
+        run: lute scripts/install.luau
 
       - name: Get model file name
         run: |
@@ -27,7 +27,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lute scripts/build --channel prod --output ${{ env.MODEL_FILE }}
+        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -45,16 +45,16 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install
+        run: lute scripts/install.luau
 
       - name: Setup Lute typedefs
         run: lute setup
 
       - name: Lint
-        run: lute scripts/lint
+        run: lute scripts/lint.luau
 
       - name: Run Luau analysis
-        run: lute scripts/analyze
+        run: lute scripts/analyze.luau
 
   tests:
     runs-on: macos-latest
@@ -67,12 +67,12 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install
+        run: lute scripts/install.luau
 
       - name: Create .env
         run: cp .env.template .env
 
       - name: Run tests
-        run: lute scripts/test
+        run: lute scripts/test.luau
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
