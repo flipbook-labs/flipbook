@@ -19,7 +19,8 @@ Packages
 # Package managers
 *.lock
 
-# Rbxasset
+# Luau packages
+LuauPackages
 LunePackages
 
 # Roblox Packages

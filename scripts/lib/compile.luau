@@ -1,14 +1,14 @@
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+local fs = require("@lute/fs")
+local process = require("@lute/process")
 local project = require("@repo/project")
-local serde = require("@lune/serde")
-local task = require("@lune/task")
+local task = require("@lute/task")
+local toml = require("@batteries/toml")
 
 local find = require("./find")
 local run = require("./run")
 local waitForTasks = require("./waitForTasks")
 
-local wallyToml = serde.decode("toml", fs.readFile("wally.toml"))
+local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
 
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
@@ -17,17 +17,15 @@ local function compileWorkspaceMember(
 	memberPath: string,
 	channel: Channel,
 	target: Target,
-	env: { [string]: any }
+	env: { [string]: string }
 ): string
 	local startTime = os.clock()
 
 	local memberBuildPath = `{memberPath}/build`
 	print(`[{memberPath}] compiling...`)
 
-	if fs.isDir(memberBuildPath) then
-		fs.removeDir(memberBuildPath)
-	end
-	fs.writeDir(memberBuildPath)
+	run("rm", { "-rf", memberBuildPath })
+	run("mkdir", { "-p", memberBuildPath })
 
 	run("darklua", {
 		"process",
@@ -45,7 +43,7 @@ local function compileWorkspaceMember(
 			print(`[{memberPath}] copying Packages...`)
 
 			local packagesPath = `{memberPath}/Packages`
-			fs.copy(packagesPath, `{memberBuildPath}/Packages`)
+			run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
 
 			print(`[{memberPath}] successfully copied Packages`)
 		end)
@@ -57,9 +55,10 @@ local function compileWorkspaceMember(
 			print(`[{memberPath}] copying RobloxPackages...`)
 
 			local robloxPackagesPath = `{memberPath}/RobloxPackages`
-			if fs.isDir(robloxPackagesPath) then
-				fs.copy(robloxPackagesPath, `{memberBuildPath}/RobloxPackages`)
+			if fs.exists(robloxPackagesPath) then
+				run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
 			end
+
 			print(`[{memberPath}] successfully copied RobloxPackages`)
 		end)
 	)
@@ -71,7 +70,7 @@ local function compileWorkspaceMember(
 				print(`[{memberPath}] pruning development files...`)
 
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
-					run("find", { memberBuildPath, "-type", "f", "-name", pattern, "-delete" })
+					run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 				end
 
 				print(`[{memberPath}] successfully pruned development files`)
@@ -89,7 +88,8 @@ local function compileWorkspaceMember(
 				-- compatibility
 				for _, luauFile in find(memberBuildPath, "%.luau$") do
 					local newName = luauFile:gsub("%.luau$", ".lua")
-					fs.move(luauFile, newName)
+					run("cp", { "-R", luauFile, newName })
+					fs.remove(luauFile)
 				end
 
 				print(`[{memberPath}] successfully renamed files for Rotriever`)
@@ -107,15 +107,13 @@ end
 local function compile(channel: Channel, target: Target)
 	local dest = `{project.BUILD_PATH}/plugin`
 
-	if fs.isDir(dest) then
-		fs.removeDir(dest)
-	end
-	fs.writeDir(dest)
+	run("rm", { "-rf", dest })
+	run("mkdir", { "-p", dest })
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
 
 	local env = {
-		BUILD_VERSION = wallyToml.package.version,
+		BUILD_VERSION = (wallyToml :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 		BASE_URL = process.env.BASE_URL,
@@ -140,15 +138,16 @@ local function compile(channel: Channel, target: Target)
 
 	print("compiling workspace members...")
 	local tasks: { thread } = {}
-	for _, member in fs.readDir(project.WORKSPACE_PATH) do
-		local memberPath = `{project.WORKSPACE_PATH}/{member}`
+	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
-		if fs.isDir(memberPath) then
+		if member.type == "dir" then
 			table.insert(
 				tasks,
 				task.spawn(function()
 					local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-					fs.copy(memberBuildPath, `{dest}/{memberPath}`)
+					run("mkdir", { "-p", `{dest}/{memberPath}` })
+					run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
 				end)
 			)
 		end
@@ -160,7 +159,7 @@ local function compile(channel: Channel, target: Target)
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			fs.removeDir(`{dest}/{dir}`)
+			run("rm", { "-rf", `{dest}/{dir}` })
 		end
 	end
 end
