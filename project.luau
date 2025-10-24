@@ -3,7 +3,7 @@ return {
 	SOURCE_PATH = "src",
 	BUILD_PATH = "build",
 	PACKAGES_PATH = "Packages",
-	LUNE_SCRIPTS_PATH = ".lune",
+	SCRIPTS_PATH = "scripts",
 	EXAMPLE_PATH = "example",
 	WORKSPACE_PATH = "workspace",
 
@@ -18,7 +18,7 @@ return {
 
 	FOLDERS_TO_LINT = {
 		"src",
-		".lune",
+		"scripts",
 
 		-- We have to exhaustively include every workspace member to skip over
 		-- Packages/RobloxPackages
