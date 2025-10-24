@@ -47,11 +47,12 @@ local function installRobloxPackages()
 		"-d",
 		"Foundation",
 		"-d",
-		"LuauPolyfill",
-		"-d",
 		"Signals",
 		"-d",
 		"SignalsReact",
+
+		"-d",
+		"Promise",
 	})
 
 	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
