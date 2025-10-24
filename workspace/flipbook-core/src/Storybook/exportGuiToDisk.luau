@@ -4,8 +4,9 @@ local CoreGui = game:GetService("CoreGui")
 local Selection = game:GetService("Selection")
 
 local PluginStore = require("@root/Plugin/PluginStore")
+local waitForAsync = require("@root/Storybook/waitForAsync")
 
-Selection:Set({})
+-- Selection:Set({})
 
 local function exportGuiToDisk(gui: GuiObject)
 	if gui.AbsolutePosition.X % 1 ~= 0 or gui.AbsolutePosition.Y % 1 ~= 0 then
@@ -18,6 +19,8 @@ local function exportGuiToDisk(gui: GuiObject)
 
 	local screen = Instance.new("ScreenGui")
 
+	-- TODO: I think the stylelink gets broken from this which is messing up the
+	-- export
 	export.Parent = screen
 
 	screen.Parent = CoreGui
@@ -26,6 +29,11 @@ local function exportGuiToDisk(gui: GuiObject)
 
 	CaptureService:CaptureScreenshot(function(assetId)
 		local screenshot = AssetService:CreateEditableImageAsync(assetId)
+
+		waitForAsync(function()
+			return export.AbsoluteSize.X > 0 and export.AbsoluteSize.Y > 0
+		end)
+		print("export.AbsoluteSize", export.AbsoluteSize)
 
 		local cropped = AssetService:CreateEditableImage({
 			Size = export.AbsoluteSize,
