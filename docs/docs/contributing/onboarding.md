@@ -19,11 +19,11 @@ You will also need [Rokit](https://github.com/rojo-rbx/rokit/) for installing th
 With the above requirements satisfied, run the following commands from your clone of the repo to start developing:
 
 ```sh
-# Install command-line tools (like Lune)
+# Install command-line tools (like Lute)
 rokit install
 
 # Install packages
-lune run install
+lute scripts/install.luau
 ```
 
 :::tip
@@ -32,14 +32,14 @@ When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on M
 
 ## Building
 
-Part of our build process uses [darklua](https://github.com/seaofvoices/darklua) to compile our Luau source code for Roblox. This is largely to support string requires so our source code can use the same syntax as our Lune scripts.
+Part of our build process uses [darklua](https://github.com/seaofvoices/darklua) to compile our Luau source code for Roblox. This is largely to support string requires so our source code can use the same syntax as our Lute scripts.
 
 ### Build for Studio
 
 The following command will build production Flipbook to your Roblox Studio plugins directory:
 
 ```sh
-lune run build
+lute scripts/build.luau
 ```
 
 Once built, open up a Baseplate to start interacting with the plugin.
@@ -47,7 +47,7 @@ Once built, open up a Baseplate to start interacting with the plugin.
 Production builds prune development files like unit tests, Storybooks, and Stories. The latter two can be handy to have during development so you can use Flipbook to develop it. To keep development files, pass the `--channel` flag to set the environment to build for:
 
 ```sh
-lune run build --channel dev
+lute scripts/build.luau --channel dev
 ```
 
 There's also a `--watch` flag to automatically rebuild on file changes.
@@ -59,7 +59,7 @@ When building, pass the `--output` flag to determine where Flipbook will build t
 Run the following to build Flipbook to the root of the repo:
 
 ```sh
-lune run build --output Flipbook.rbxm
+lute scripts/build.luau --output Flipbook.rbxm
 ```
 
 ## Testing
@@ -69,7 +69,7 @@ Running tests requires an Open Cloud API key. Reach out to the maintainers for a
 Then run the following to run all unit tests for the project:
 
 ```sh
-lune run test
+lute scripts/test.luau
 ```
 
 We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
