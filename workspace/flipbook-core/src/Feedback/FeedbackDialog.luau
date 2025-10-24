@@ -84,7 +84,7 @@ local function FeedbackDialog(props: Props)
 
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					Layout = React.createElement(Foundation.View, {
-						tag = "size-full-0 auto-y col gap-medium",
+						tag = "size-full-0 auto-y col gap-large padding-y-medium",
 					}, {
 						Title = React.createElement(Foundation.TextInput, {
 							label = "Title",
@@ -102,8 +102,8 @@ local function FeedbackDialog(props: Props)
 							text = body,
 							hasError = body == "",
 							isRequired = true,
-							hint = "Enter a breif summary of the feedback you're giving",
-							placeholder = "Enter body...",
+							hint = "Let us know what's on your mind. This can be a feature request, bug report, or any other feedback you'd like to give",
+							placeholder = "Enter feedback...",
 							onChanged = setBody,
 							LayoutOrder = nextLayoutOrder(),
 						}),
