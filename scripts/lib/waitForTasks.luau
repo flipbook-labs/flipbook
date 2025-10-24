@@ -1,4 +1,4 @@
-local task = require("@lune/task")
+local task = require("@lute/task")
 
 local function waitForTasks(tasks: { thread })
 	local running = table.clone(tasks)
