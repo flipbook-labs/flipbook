@@ -1,35 +1,15 @@
-local fs = require("@lune/fs")
+local fs = require("@lute/fs")
+local project = require("@repo/project")
 
+local find = require("./lib/find")
 local run = require("./lib/run")
 
-local function find(rootPath: string, namePattern: string): { string }
-	local files = {}
-	local function search(path: string)
-		if fs.isFile(path) then
-			return
-		end
-
-		for _, file in fs.readDir(path) do
-			local fullPath = `{path}/{file}`
-
-			if fs.isFile(fullPath) then
-				if file:match(namePattern) then
-					table.insert(files, fullPath)
-				end
-			else
-				search(fullPath)
-			end
-		end
-	end
-	search(rootPath)
-
-	return files
-end
+local LUAU_PACKAGES_PATH = "LuauPackages"
 
 local function findAndReplace(filePath: string, match: string, replacement: string)
-	local content = fs.readFile(filePath)
+	local content = fs.readfiletostring(filePath)
 	content = content:gsub(match, replacement)
-	fs.writeFile(filePath, content)
+	fs.writestringtofile(filePath, content)
 end
 
 local function installWallyPackages()
@@ -46,19 +26,14 @@ local function installWallyPackages()
 			cwd = projectPath,
 		})
 
-		-- For some reason the default stdio of "inherit" results in WPT hanging
-		-- indefinitely. Since we don't need the output in this case, we change to a
-		-- stdio that won't hang
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-			stdio = "forward",
 			cwd = projectPath,
 		})
 	end
 
-	for _, member in fs.readDir("workspace") do
-		local memberPath = `workspace/{member}`
-		if fs.isDir(memberPath) then
-			installPackagesForProject(memberPath)
+	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+		if member.type == "dir" then
+			installPackagesForProject(`{project.WORKSPACE_PATH}/{member.name}`)
 		end
 	end
 end
@@ -82,12 +57,12 @@ local function installRobloxPackages()
 		"Promise",
 	})
 
-	local dest = "workspace/flipbook-core/RobloxPackages"
-	if fs.isDir(dest) then
-		fs.removeDir(dest)
+	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
+	if fs.exists(dest) and fs.type(dest) == "dir" then
+		run("rm", { "-rf", dest })
 	end
-	fs.move("RobloxPackagesTmp/Packages", dest)
-	fs.removeDir("RobloxPackagesTmp")
+	run("mv", { "RobloxPackagesTmp/Packages", dest })
+	run("rm", { "-rf", "RobloxPackagesTmp" })
 
 	-- Patch React and RoactCompat dependencies to use ours
 	for _, name in { "React", "RoactCompat", "Roact" } do
@@ -114,23 +89,35 @@ local function installRobloxPackages()
 	end
 end
 
-local function installRbxasset()
-	local packagesPath = "LunePackages"
+local function installLuteBatteries()
+	local commit = "7b4e269"
+	local batteries = {
+		"cli.luau",
+		"toml.luau",
+	}
 
-	if fs.isDir(packagesPath) then
-		fs.removeDir(packagesPath)
+	local dest = `{LUAU_PACKAGES_PATH}/batteries`
+	run("mkdir", { "-p", dest })
+	for _, battery in batteries do
+		run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
+			cwd = dest,
+		})
 	end
-	fs.writeDir(packagesPath)
+end
+
+local function installRbxasset()
+	run("rm", { "-rf", LUAU_PACKAGES_PATH })
+	run("mkdir", { "-p", LUAU_PACKAGES_PATH })
 
 	run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-		cwd = packagesPath,
+		cwd = LUAU_PACKAGES_PATH,
 	})
 
 	run("unzip", { "rbxasset.zip" }, {
-		cwd = packagesPath,
+		cwd = LUAU_PACKAGES_PATH,
 	})
 
-	fs.removeFile(`{packagesPath}/rbxasset.zip`)
+	fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
 end
 
 local function pruneDevelopmentFiles()
@@ -140,9 +127,9 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { "workspace/**/Packages", "workspace/**/RobloxPackages" } do
+	for _, path in { `{project.WORKSPACE_PATH}/**/Packages`, `{project.WORKSPACE_PATH}/**/RobloxPackages` } do
 		for _, pattern in prunedFiles do
-			run("find", { path, "-type", "f", "-name", pattern, "-delete" })
+			run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
 	end
 end
@@ -150,4 +137,5 @@ end
 installRobloxPackages()
 installWallyPackages()
 installRbxasset()
+installLuteBatteries()
 pruneDevelopmentFiles()
