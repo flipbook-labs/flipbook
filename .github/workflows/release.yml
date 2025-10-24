@@ -55,8 +55,8 @@ jobs:
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
-        run: lute scripts/publish-plugin.luau --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Publish release to Creator Store
         if: github.event.release
-        run: lute scripts/publish-plugin.luau --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
