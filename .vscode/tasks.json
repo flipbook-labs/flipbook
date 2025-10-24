@@ -7,15 +7,15 @@
       "label": "Install packages",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "install"]
+      "command": "lute",
+      "args": ["scripts/install.luau"]
     },
     {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--channel", "dev"],
+      "command": "lute",
+      "args": ["scripts/build.luau", "--channel", "dev"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -25,8 +25,8 @@
       "label": "Build (Production)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--channel", "prod"],
+      "command": "lute",
+      "args": ["scripts/build.luau", "--channel", "prod"],
       "group": {
         "kind": "build"
       }
@@ -35,15 +35,15 @@
       "label": "Build and watch",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--channel", "dev", "--watch"]
+      "command": "lute",
+      "args": ["scripts/build.luau", "--channel", "dev", "--watch"]
     },
     {
       "label": "Serve docs",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "serve-docs"]
+      "command": "lute",
+      "args": ["scripts/serve-docs.luau"]
     }
   ]
 }

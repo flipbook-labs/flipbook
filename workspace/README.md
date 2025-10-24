@@ -12,6 +12,6 @@ Perform a find-and-replace in `workspace/new-package` for `template` and `Templa
 
 Update [`workspace/default.project.json`](default.project.json) to include the new package
 
-Run `lune run install` and `lune run build`
+Run `lute scripts/install.luau` and `lute scripts/build.luau`
 
 Some packages are not included with production builds. If your package also should not be included, update `PROD_CONFIG` in `project.luau` to omit it.

@@ -2,7 +2,9 @@
 	"languageMode": "strict",
 	"aliases": {
 		"lune": "~/.lune/.typedefs/0.9.4/",
-		"lunepkg": "./LunePackages",
+		"lute": "~/.lute/typedefs/0.1.0/",
+		"batteries": "./LuauPackages/batteries",
+		"luaupkg": "./LuauPackages",
 		"repo": ".",
 		"workspace": "./workspace"
 	}

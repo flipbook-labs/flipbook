@@ -1,12 +1,16 @@
-local fs = require("@lune/fs")
+local fs = require("@lute/fs")
 
 local function find(root: string, pattern: string): { string }
 	local matches: { string } = {}
 
+	if not fs.exists(root) or fs.type(root) == "file" then
+		return matches
+	end
+
 	local function search(path: string)
-		if fs.isDir(path) then
-			for _, child in fs.readDir(path) do
-				local childPath = `{path}/{child}`
+		if fs.type(path) == "dir" then
+			for _, child in fs.listdir(path) do
+				local childPath = `{path}/{child.name}`
 				search(childPath)
 			end
 		else
