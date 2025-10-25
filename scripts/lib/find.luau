@@ -1,6 +1,6 @@
 local fs = require("@lute/fs")
 
-local function find(root: string, pattern: string): { string }
+local function find(root: string, filenamePattern: string): { string }
 	local matches: { string } = {}
 
 	if not fs.exists(root) or fs.type(root) == "file" then
@@ -14,7 +14,10 @@ local function find(root: string, pattern: string): { string }
 				search(childPath)
 			end
 		else
-			if path:match(pattern) then
+			local parts = path:split("/")
+			local filename = parts[#parts]
+
+			if filename:match(filenamePattern) then
 				table.insert(matches, path)
 			end
 		end
