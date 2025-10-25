@@ -6,9 +6,10 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 local DiscardChangesDialog = require("./DiscardChangesDialog")
 
 return {
-	story = function()
+	story = function(props)
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
+			overlayGui = props.container,
 		}, {
 			DiscardChangesDialog = React.createElement(DiscardChangesDialog, {
 				onKeepEditing = function()

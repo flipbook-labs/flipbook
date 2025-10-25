@@ -6,9 +6,10 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 local FeedbackDialog = require("./FeedbackDialog")
 
 return {
-	story = function()
+	story = function(props)
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
+			overlayGui = props.container,
 		}, {
 			FeedbackDialog = React.createElement(FeedbackDialog, {
 				onClose = function()
