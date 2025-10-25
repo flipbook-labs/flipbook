@@ -56,7 +56,7 @@ jobs:
           version: v1.1.1
 
       - name: Install dependencies
-        run: lune run install
+        run: lute scripts/install.luau
 
       - name: Publish release to Creator Store
         run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
