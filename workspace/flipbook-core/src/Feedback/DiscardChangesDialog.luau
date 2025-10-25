@@ -19,7 +19,7 @@ local function DiscardChangesDialog(props: Props)
 
 		Content = React.createElement(Foundation.Dialog.Content, nil, {
 			Message = React.createElement(Foundation.Text, {
-				tag = "auto-xy",
+				tag = "auto-xy padding-top-medium",
 				Text = "Are you sure you want to discard your changes?",
 				LayoutOrder = nextLayoutOrder(),
 			}),

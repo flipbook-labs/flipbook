@@ -21,7 +21,7 @@ local function SuccessDialog(props: Props)
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Message = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-wrap text-align-x-left text-align-y-top",
+				tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-top-medium",
 				Text = "Your feedback has been submitted! Thank you for helping us to improve Flipbook",
 			}),
 		}),

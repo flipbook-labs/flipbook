@@ -84,7 +84,7 @@ local function FeedbackDialog(props: Props)
 
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					Layout = React.createElement(Foundation.View, {
-						tag = "size-full-0 auto-y col gap-large padding-y-medium",
+						tag = "size-full-0 auto-y col gap-large padding-top-medium",
 					}, {
 						Title = React.createElement(Foundation.TextInput, {
 							label = "Title",
