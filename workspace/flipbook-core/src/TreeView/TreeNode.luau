@@ -83,9 +83,7 @@ local function TreeNode(props: TreeNodeProps)
 	end, { props.onActivated, treeView.activateNode, props.node } :: { any })
 
 	local onSecondaryActivated = useCallback(function()
-		if props.node.icon == Types.TreeNodeIcon.Storybook then
-			setIsContextMenuOpen(true)
-		end
+		setIsContextMenuOpen(true)
 	end, { props.node.icon })
 
 	local onTogglePin = useCallback(function()
@@ -97,6 +95,51 @@ local function TreeNode(props: TreeNodeProps)
 			end
 		end
 	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, props.node.instance } :: { unknown })
+
+	local contextMenuItems = useMemo(function()
+		local items: { Foundation.MenuItem } = {}
+
+		if props.node.icon == Types.TreeNodeIcon.Storybook then
+			table.insert(items, {
+				id = "pin",
+				text = if isPinned then "Unpin" else "Pin",
+				onActivated = function()
+					onTogglePin()
+					setIsContextMenuOpen(false)
+				end,
+			})
+		end
+
+		table.insert(items, {
+			id = "select-in-explorer",
+			text = "Select in Explorer",
+			onActivated = function()
+				Selection:Set({ props.node.instance })
+				setIsContextMenuOpen(false)
+			end,
+		})
+
+		if #props.node.children > 0 then
+			table.insert(items, {
+				id = "expand-all",
+				text = "Expand all",
+				onActivated = function()
+					-- props.node.expandDown()
+					setIsContextMenuOpen(false)
+				end,
+			})
+			table.insert(items, {
+				id = "collapse-all",
+				text = "Collapse all",
+				onActivated = function()
+					-- props.node.collapseDown()
+					setIsContextMenuOpen(false)
+				end,
+			})
+		end
+
+		return items
+	end, { props.node })
 
 	return e(
 		View,
@@ -143,24 +186,7 @@ local function TreeNode(props: TreeNodeProps)
 				then React.createElement(Foundation.Menu, {
 					isOpen = true,
 					size = Foundation.Enums.InputSize.Medium,
-					items = {
-						{
-							id = "pin",
-							text = if isPinned then "Unpin" else "Pin",
-							onActivated = function()
-								onTogglePin()
-								setIsContextMenuOpen(false)
-							end,
-						},
-						{
-							id = "select-in-explorer",
-							text = "Select in Explorer",
-							onActivated = function()
-								Selection:Set({ props.node.instance })
-								setIsContextMenuOpen(false)
-							end,
-						},
-					},
+					items = contextMenuItems,
 					onPressedOutside = function()
 						setIsContextMenuOpen(false)
 					end,
