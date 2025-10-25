@@ -68,10 +68,10 @@ local function createTreeNodeStore(): TreeNodeStore
 		local stack = getChildren(scope)
 
 		while #stack > 0 do
-			local node = table.remove(stack)
-			if node then
-				table.insert(descendants, node)
-				stack = Sift.List.join(stack, node.getChildren(scope))
+			local candidate = table.remove(stack)
+			if candidate then
+				table.insert(descendants, candidate)
+				stack = Sift.List.join(stack, candidate.getChildren(scope))
 			end
 		end
 
