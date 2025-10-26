@@ -8,7 +8,7 @@ local useState = React.useState
 local useEffect = React.useEffect
 local useSignalState = SignalsReact.useSignalState
 
-type ThemeName = "Dark" | "Light"
+export type ThemeName = "Dark" | "Light"
 
 local MOCK_STUDIO = {
 	ThemeChanged = Instance.new("BindableEvent").Event,
