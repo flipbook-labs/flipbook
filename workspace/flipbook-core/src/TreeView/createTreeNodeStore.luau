@@ -6,6 +6,7 @@ local Signals = require("@rbxpkg/Signals")
 local types = require("@root/TreeView/types")
 
 type TreeNodeStore = types.TreeNodeStore
+type TreeNodeSnapshot = types.TreeNodeSnapshot
 
 local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
@@ -49,6 +50,16 @@ local function createTreeNodeStore(): TreeNodeStore
 
 		return descendants
 	end)
+
+	local function matchDescendants(predicate: (node: TreeNodeStore) -> boolean): { TreeNodeStore }
+		local matches = {}
+		for _, descendant in getDescendants(false) do
+			if predicate(descendant) then
+				table.insert(matches, descendant)
+			end
+		end
+		return matches
+	end
 
 	local function parentTo(newParent: TreeNodeStore?)
 		local parent = getParent(false)
@@ -97,7 +108,22 @@ local function createTreeNodeStore(): TreeNodeStore
 		end)
 	end
 
-	-- setFilter
+	local function snapshot(): TreeNodeSnapshot
+		local root = {
+			id = id,
+			name = getName(false),
+			icon = getIcon(false),
+			isVisible = getIsVisible(false),
+			isSelected = getIsSelected(false),
+			children = {},
+		}
+
+		for _, child in getChildren(false) do
+			table.insert(root.children, child.snapshot())
+		end
+
+		return root
+	end
 
 	self = {
 		id = id,
@@ -127,10 +153,14 @@ local function createTreeNodeStore(): TreeNodeStore
 		getParent = getParent,
 		parentTo = parentTo,
 		setChildren = setChildren,
+		matchDescendants = matchDescendants,
 
 		-- DataModel
 		getInstance = getInstance,
 		setInstance = setInstance,
+
+		-- Other
+		snapshot = snapshot,
 	}
 
 	return self

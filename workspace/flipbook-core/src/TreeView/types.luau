@@ -41,10 +41,24 @@ export type TreeNodeStore = {
 	getDescendants: Signals.getter<{ TreeNodeStore }>,
 	getParent: Signals.getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),
+	matchDescendants: (predicate: (node: TreeNodeStore) -> boolean) -> { TreeNodeStore },
 
 	-- DataModel
 	getInstance: Signals.getter<Instance?>,
 	setInstance: Signals.setter<Instance?>,
+
+	-- Other
+	snapshot: () -> TreeNodeSnapshot,
+}
+
+export type TreeNodeSnapshot = {
+	id: string,
+	name: string,
+	icon: string?,
+	isSelected: boolean,
+	isVisible: boolean,
+	instance: Instance?,
+	children: { TreeNodeSnapshot },
 }
 
 return types

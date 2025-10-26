@@ -88,6 +88,76 @@ describe("hierarchy", function()
 		expect(root.getChildren(false)).toEqual({ childB })
 		expect(root.getDescendants(false)).toEqual({ childB })
 	end)
+
+	test("match for descendants by a predicate", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.setName("Match")
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		local matches = root.matchDescendants(function(node)
+			return node.getName(false) == "Match"
+		end)
+
+		expect(matches).toEqual({ descendant3 })
+	end)
+
+	test("take a snapshotof the hierarchy", function()
+		local root = createTreeNodeStore()
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = {},
+		})
+
+		local currentNode = root
+		for i = 1, 3 do
+			local node = createTreeNodeStore()
+			node.setName(`Descendant {i}`)
+
+			node.parentTo(currentNode)
+			currentNode = node
+		end
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = expect.arrayContaining({
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = expect.arrayContaining({
+								expect.objectContaining({
+									id = expect.anything(),
+									name = "Descendant 3",
+									children = {},
+								}),
+							}),
+						}),
+					}),
+				}),
+			}),
+		})
+	end)
 end)
 
 describe("expand and collapse nodes", function()
