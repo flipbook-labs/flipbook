@@ -103,9 +103,15 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function activate()
-		setIsSelected(function(prev)
-			return not prev
-		end)
+		if #getChildren(false) > 0 then
+			setIsExpanded(function(prev)
+				return not prev
+			end)
+		else
+			setIsSelected(function(prev)
+				return not prev
+			end)
+		end
 	end
 
 	local function snapshot(): TreeNodeSnapshot
