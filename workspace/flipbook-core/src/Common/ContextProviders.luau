@@ -4,7 +4,6 @@ local React = require("@pkg/React")
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
-local TreeView = require("@root/TreeView")
 local useThemeName = require("@root/Common/useThemeName")
 
 local useEffect = React.useEffect
@@ -31,7 +30,6 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
-			React.createElement(TreeView.TreeViewProvider),
 		},
 	}, props.children)
 end

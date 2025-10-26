@@ -13,6 +13,5 @@ return {
 	TreeView = require("@self/TreeView"),
 
 	-- Functions
-	getAncestry = require("@self/getAncestry"),
 	findFirstAncestor = require("@self/findFirstAncestor"),
 }

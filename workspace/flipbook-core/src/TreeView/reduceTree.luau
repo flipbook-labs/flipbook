@@ -2,18 +2,18 @@ local Sift = require("@pkg/Sift")
 
 local types = require("@root/TreeView/types")
 
-type TreeNode = types.TreeNode
-type SearchMatch = (node: TreeNode) -> boolean
+type TreeNodeStore = types.TreeNodeStore
+type SearchMatch = (node: TreeNodeStore) -> boolean
 
-local function reduceTree(nodes: { TreeNode }, searchMatch: SearchMatch): { TreeNode }
-	local function reduceNodes(accumulator: { TreeNode }, node: TreeNode)
+local function reduceTree(nodes: { TreeNodeStore }, searchMatch: SearchMatch): { TreeNodeStore }
+	local function reduceNodes(accumulator: { TreeNodeStore }, node: TreeNodeStore)
 		if searchMatch(node) then
 			table.insert(accumulator, node)
 			return accumulator
 		end
 
-		if #node.children > 0 then
-			local children = Sift.List.reduce(node.children, reduceNodes, {})
+		if #node.getChildren(false) > 0 then
+			local children = Sift.List.reduce(node.getChildren(false), reduceNodes, {})
 
 			if #children > 0 then
 				table.insert(

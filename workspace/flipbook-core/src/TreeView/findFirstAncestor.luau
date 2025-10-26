@@ -1,14 +1,18 @@
 local types = require("./types")
 
-type TreeNode = types.TreeNode
+type TreeNodeStore = types.TreeNodeStore
 
-local function findFirstAncestor(descendant: TreeNode, predicate: (ancestor: TreeNode) -> boolean): TreeNode?
-	local current = descendant.parent
+-- FIXME: This is better as a member on TreeNodeStore if we still need it
+local function findFirstAncestor(
+	descendant: TreeNodeStore,
+	predicate: (ancestor: TreeNodeStore) -> boolean
+): TreeNodeStore?
+	local current = descendant.getParent(false)
 	while current do
 		if predicate(current) == true then
 			return current
 		end
-		current = current.parent
+		current = current.getParent(false)
 	end
 	return nil
 end

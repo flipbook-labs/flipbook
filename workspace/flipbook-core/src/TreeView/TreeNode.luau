@@ -40,7 +40,7 @@ local function TreeNode(props: TreeNodeProps)
 	local isSelected = useSignalState(props.node.getIsSelected)
 	local name = useSignalState(props.node.getName)
 	local nodeChildren = useSignalState(props.node.getChildren)
-	local iconName, iconStyle = useTreeNodeIcon(icon)
+	local iconName, iconStyle = useTreeNodeIcon(icon :: Types.TreeNodeIcon)
 
 	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
 	local ref = useRef(nil :: GuiObject?)
