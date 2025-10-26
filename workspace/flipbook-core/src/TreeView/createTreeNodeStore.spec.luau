@@ -89,6 +89,41 @@ describe("hierarchy", function()
 		expect(root.getDescendants(false)).toEqual({ childB })
 	end)
 
+	test("moving a node in the hierarchy around works", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.parentTo(root)
+
+		local childADescendant = createTreeNodeStore()
+		childADescendant.parentTo(childA)
+
+		local childB = createTreeNodeStore()
+		childB.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual(expect.arrayContaining({ childA, childB }))
+
+		childA.parentTo(childB)
+
+		expect(root.getChildren(false)).toEqual(expect.arrayContaining({ childB }))
+		expect(childB.getChildren(false)).toEqual(expect.arrayContaining({ childA }))
+	end)
+
+	test("parenting to the same parent is a no-op", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		task.wait()
+
+		-- Can't exactly test for it but under the hood this should just be
+		-- doing an early exit since the parent is the same.
+		child.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ child })
+	end)
+
 	test("match for descendants by a predicate", function()
 		local root = createTreeNodeStore()
 

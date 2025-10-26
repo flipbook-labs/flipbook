@@ -64,7 +64,11 @@ local function createTreeNodeStore(): TreeNodeStore
 	local function parentTo(newParent: TreeNodeStore?)
 		local parent = getParent(false)
 
-		if parent then
+		if parent ~= nil then
+			if newParent == parent then
+				return
+			end
+
 			parent.setChildren(function(prev)
 				return Sift.List.filter(prev, function(otherNode)
 					return otherNode.id ~= id
@@ -74,9 +78,9 @@ local function createTreeNodeStore(): TreeNodeStore
 
 		setParent(newParent)
 
-		if newParent then
+		if newParent ~= nil then
 			newParent.setChildren(function(prev)
-				return Sift.List.append(prev, self)
+				return Sift.List.join(prev, { self })
 			end)
 		end
 	end
