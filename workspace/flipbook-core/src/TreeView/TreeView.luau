@@ -1,30 +1,33 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local TreeNode = require("@root/TreeView/TreeNode")
-local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local types = require("@root/TreeView/types")
 
-type PartialTreeNode = types.PartialTreeNode
-type TreeNode = types.TreeNode
-type Tree = types.Tree
+local useSignalState = SignalsReact.useSignalState
 
-local function TreeView(props: {
-	layoutOrder: number?,
-})
-	local treeViewContext = TreeViewContext.use()
+type TreeNodeStore = types.TreeNodeStore
+
+export type Props = {
+	root: TreeNodeStore,
+	LayoutOrder: number?,
+}
+
+local function TreeView(props: Props)
+	local rootNodeChildren = useSignalState(props.root.getChildren)
+
 	local children: { [string]: React.Node } = {}
-
-	for index, node in treeViewContext.getRoots() do
-		children[node.label] = React.createElement(TreeNode, {
-			LayoutOrder = index,
+	for index, node in rootNodeChildren do
+		children[node.getName(false)] = React.createElement(TreeNode, {
 			node = node,
+			LayoutOrder = index,
 		})
 	end
 
 	return React.createElement(Foundation.View, {
 		tag = "auto-xy col",
-		LayoutOrder = props.layoutOrder,
+		LayoutOrder = props.LayoutOrder,
 	}, children)
 end
 

@@ -3,184 +3,168 @@ local React = require("@pkg/React")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local TreeView = require("./TreeView")
-local TreeViewContext = require("@root/TreeView/TreeViewContext")
-local types = require("./types")
+local TreeView = require("@root/TreeView/TreeView")
+local createTreeNodeStore = require("@root/TreeView/createTreeNodeStore")
+local types = require("@root/TreeView/types")
 
 local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useState = React.useState
 
-type PartialTreeNode = types.PartialTreeNode
-type TreeNode = types.TreeNode
+type TreeNodeStore = types.TreeNodeStore
 
-local roots: { PartialTreeNode } = {
-	{
-		label = "Pinned Storybooks",
-		icon = types.TreeNodeIcon.None,
-		isExpanded = true,
-		children = {
-			{
-				label = "Storybook 1",
-				icon = types.TreeNodeIcon.Storybook,
-				children = {
-					-- ...
-				},
-			},
-		},
-	},
-	{
-		label = "Storybook 1",
-		icon = types.TreeNodeIcon.Storybook,
-		children = {
-			{
-				label = "Folder 1",
-				icon = types.TreeNodeIcon.Folder,
-				children = {
-					{
-						label = "Folder 2",
-						icon = types.TreeNodeIcon.Folder,
-						children = {
-							{
-								label = "Folder 3",
-								icon = types.TreeNodeIcon.Folder,
-								children = {
-									{
-										id = "custom-id",
-										label = "Deeply Nested Story",
-										icon = types.TreeNodeIcon.Story,
-									} :: PartialTreeNode,
-								},
-							} :: PartialTreeNode,
-						},
-					} :: PartialTreeNode,
-				},
-			} :: PartialTreeNode,
-		},
-	},
+local root = createTreeNodeStore()
+root.setName("<root>")
 
-	{
-		label = "Storybook 2",
-		icon = types.TreeNodeIcon.Storybook,
-		children = {
-			{
-				label = "Folder",
-				icon = types.TreeNodeIcon.Folder,
-				isExpanded = true,
-				children = {
-					{
-						label = "Story 1",
-						icon = types.TreeNodeIcon.Story,
-					},
-					{
-						label = "Story 2",
-						icon = types.TreeNodeIcon.Story,
-					},
-				},
-			} :: PartialTreeNode,
-			{
-				label = "Story 1",
-				icon = types.TreeNodeIcon.Story,
-			},
-			{
-				label = "Story 2",
-				icon = types.TreeNodeIcon.Story,
-			},
-			{
-				label = "Story 3",
-				icon = types.TreeNodeIcon.Story,
-			},
-		},
-	},
-	{
-		label = "Storybook 3",
-		icon = types.TreeNodeIcon.Storybook,
-		children = {
-			-- ...
-		},
-	},
-	{
-		label = "Unnamed Storybook",
-		icon = types.TreeNodeIcon.Storybook,
-		children = {
-			-- ...
-		},
-	},
-	{
-		label = "Unknown Stories",
-		icon = types.TreeNodeIcon.Storybook,
-		children = {
-			{
-				label = "Story 1",
-				icon = types.TreeNodeIcon.Story,
-			},
-			{
-				label = "Story 2",
-				icon = types.TreeNodeIcon.Story,
-			},
-		},
-	},
-}
+do
+	local pins = createTreeNodeStore()
+	pins.setName("Pinned Storybooks")
+	pins.setIcon(types.TreeNodeIcon.Pin)
+	pins.parentTo(root)
 
-local function Story()
-	local treeViewContext = TreeViewContext.use()
+	local storybook = createTreeNodeStore()
+	storybook.setName("Storybook 1")
+	storybook.setIcon(types.TreeNodeIcon.Storybook)
+	storybook.parentTo(root)
 
-	useEffect(function()
-		treeViewContext.setRoots(roots)
-	end, {})
+	local folder1 = createTreeNodeStore()
+	folder1.setName("Folder 1")
+	folder1.setIcon(types.TreeNodeIcon.Folder)
+	folder1.parentTo(storybook)
 
-	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+	local folder2 = createTreeNodeStore()
+	folder2.setName("Folder 2")
+	folder2.setIcon(types.TreeNodeIcon.Folder)
+	folder2.parentTo(folder1)
 
-	local onExpand = useCallback(function()
-		local node = treeViewContext.getNodeById("custom-id")
-		if node then
-			treeViewContext.activateNode(node)
-		end
-	end, { treeViewContext })
+	local folder3 = createTreeNodeStore()
+	folder3.setName("Folder 3")
+	folder3.setIcon(types.TreeNodeIcon.Folder)
+	folder3.parentTo(folder2)
+end
 
-	useEffect(function()
-		treeViewContext.search(searchTerm)
-	end, { treeViewContext, searchTerm } :: { unknown })
+do
+	local storybook = createTreeNodeStore()
+	storybook.setName("Storybook 2")
+	storybook.setIcon(types.TreeNodeIcon.Storybook)
+	storybook.parentTo(root)
 
-	return React.createElement(Foundation.View, {
-		tag = "auto-y col gap-large",
-		Size = UDim2.fromOffset(300, 0),
-	}, {
-		Topbar = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y row gap-large",
-			LayoutOrder = 1,
-		}, {
-			Search = React.createElement(Foundation.TextInput, {
-				text = "",
-				label = "",
-				placeholder = "Search...",
-				size = Foundation.Enums.InputSize.Medium,
-				width = UDim.new(1, 0),
-				iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
-				onChanged = setSearchTerm,
-				LayoutOrder = 1,
-			}),
+	local folder1 = createTreeNodeStore()
+	folder1.setName("Folder 1")
+	folder1.setIcon(types.TreeNodeIcon.Folder)
+	folder1.parentTo(storybook)
 
-			ExpandToNode = React.createElement(Foundation.Button, {
-				text = "Expand",
-				size = Foundation.Enums.ButtonSize.Small,
-				onActivated = onExpand,
-				LayoutOrder = 2,
-			}),
-		}),
+	local folder2 = createTreeNodeStore()
+	folder2.setName("Folder 2")
+	folder2.setIcon(types.TreeNodeIcon.Folder)
+	folder2.parentTo(folder1)
 
-		TreeView = React.createElement(TreeView, {
-			layoutOrder = 2,
-		}),
-	})
+	local folder3 = createTreeNodeStore()
+	folder3.setName("Folder 3")
+	folder3.setIcon(types.TreeNodeIcon.Folder)
+	folder3.parentTo(folder2)
+
+	local deepStory = createTreeNodeStore()
+	deepStory.setName("Deeply Nested Story")
+	deepStory.setIcon(types.TreeNodeIcon.Story)
+	deepStory.parentTo(folder3)
+end
+
+do
+	local storybook = createTreeNodeStore()
+	storybook.setName("Storybook 3")
+	storybook.setIcon(types.TreeNodeIcon.Storybook)
+	storybook.parentTo(root)
+
+	local folder = createTreeNodeStore()
+	folder.setName("Folder")
+	folder.setIcon(types.TreeNodeIcon.Folder)
+	folder.parentTo(storybook)
+
+	local siblingStory1 = createTreeNodeStore()
+	siblingStory1.setName("Story 1")
+	siblingStory1.setIcon(types.TreeNodeIcon.Story)
+	siblingStory1.parentTo(folder)
+
+	local siblingStory2 = createTreeNodeStore()
+	siblingStory2.setName("Story 2")
+	siblingStory2.setIcon(types.TreeNodeIcon.Story)
+	siblingStory2.parentTo(folder)
+
+	local story1 = createTreeNodeStore()
+	story1.setName("Story 1")
+	story1.setIcon(types.TreeNodeIcon.Story)
+	story1.parentTo(storybook)
+
+	local story2 = createTreeNodeStore()
+	story2.setName("Story 2")
+	story2.setIcon(types.TreeNodeIcon.Story)
+	story2.parentTo(storybook)
+
+	local story3 = createTreeNodeStore()
+	story3.setName("Story 3")
+	story3.setIcon(types.TreeNodeIcon.Story)
+	story3.parentTo(storybook)
+end
+
+do
+	local storybook = createTreeNodeStore()
+	storybook.setName("Storybook 4")
+	storybook.setIcon(types.TreeNodeIcon.Storybook)
+	storybook.parentTo(root)
 end
 
 return {
 	story = function()
+		local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+
+		local onExpand = useCallback(function()
+			local node = root.getNodeById()
+			if node then
+				node.activate()
+				node.expandUp()
+			end
+		end, {})
+
+		useEffect(function()
+			root.setFilter(searchTerm)
+		end, { searchTerm } :: { unknown })
+
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
 		}, {
-			Story = React.createElement(Story),
+			Story = React.createElement(Foundation.View, {
+				tag = "auto-y col gap-large",
+				Size = UDim2.fromOffset(300, 0),
+			}, {
+				Topbar = React.createElement(Foundation.View, {
+					tag = "size-full-0 auto-y row gap-large",
+					LayoutOrder = 1,
+				}, {
+					Search = React.createElement(Foundation.TextInput, {
+						text = "",
+						label = "",
+						placeholder = "Search...",
+						size = Foundation.Enums.InputSize.Medium,
+						width = UDim.new(1, 0),
+						iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
+						onChanged = setSearchTerm,
+						LayoutOrder = 1,
+					}),
+
+					ExpandToNode = React.createElement(Foundation.Button, {
+						text = "Expand",
+						size = Foundation.Enums.ButtonSize.Small,
+						onActivated = onExpand,
+						LayoutOrder = 2,
+					}),
+				}),
+
+				TreeView = React.createElement(TreeView, {
+					root = root,
+					LayoutOrder = 2,
+				}),
+			}),
 		})
 	end,
 }

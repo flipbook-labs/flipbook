@@ -5,36 +5,7 @@ local Signals = require("@rbxpkg/Signals")
 
 local types = require("@root/TreeView/types")
 
-export type TreeNodeStore = {
-	id: string,
-
-	-- Node properties and states
-	getName: Signals.getter<string>,
-	setName: Signals.setter<string>,
-	getIcon: Signals.getter<types.TreeNodeIcon?>,
-	setIcon: Signals.setter<types.TreeNodeIcon?>,
-	getIsSelected: Signals.getter<boolean>,
-	setIsSelected: Signals.setter<boolean>,
-
-	-- Expand/Collapse
-	getIsExpanded: Signals.getter<boolean>,
-	setIsExpanded: Signals.setter<boolean>,
-	expandDown: () -> (),
-	expandUp: () -> (),
-	collapseDown: () -> (),
-
-	-- Hierarchy
-	getChildren: Signals.getter<{ TreeNodeStore }>,
-	setChildren: Signals.setter<{ TreeNodeStore }>,
-	getAncestors: Signals.getter<{ TreeNodeStore }>,
-	getDescendants: Signals.getter<{ TreeNodeStore }>,
-	getParent: Signals.getter<TreeNodeStore?>,
-	parentTo: (newParent: TreeNodeStore?) -> (),
-
-	-- DataModel
-	getInstance: Signals.getter<Instance?>,
-	setInstance: Signals.setter<Instance?>,
-}
+type TreeNodeStore = types.TreeNodeStore
 
 local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()

@@ -1,3 +1,5 @@
+local Signals = require("@rbxpkg/Signals")
+
 local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
@@ -11,29 +13,38 @@ types.TreeNodeIcon = {
 	Pin = "pin" :: "pin",
 }
 
-export type PartialTreeNode = {
-	id: string?,
-	label: string,
-	icon: TreeNodeIcon?,
-	isExpanded: boolean?,
-	children: { PartialTreeNode }?,
-	instance: Instance?,
-}
-
-export type TreeNode = {
+export type TreeNodeStore = {
 	id: string,
-	label: string,
-	icon: TreeNodeIcon,
-	isExpanded: boolean,
-	children: { TreeNode },
-	parent: TreeNode?,
-	instance: Instance?,
-}
 
-export type Tree = {
-	root: { PartialTreeNode },
-	leafNodes: { TreeNode },
-	nodesById: { [string]: TreeNode },
+	-- Node properties and states
+	getName: Signals.getter<string>,
+	setName: Signals.setter<string>,
+	getIcon: Signals.getter<TreeNodeIcon?>,
+	setIcon: Signals.setter<TreeNodeIcon?>,
+	getIsSelected: Signals.getter<boolean>,
+	setIsSelected: Signals.setter<boolean>,
+	getIsVisible: Signals.getter<boolean>,
+	setIsVisible: Signals.setter<boolean>,
+	activate: () -> (),
+
+	-- Expand/Collapse
+	getIsExpanded: Signals.getter<boolean>,
+	setIsExpanded: Signals.setter<boolean>,
+	expandDown: () -> (),
+	expandUp: () -> (),
+	collapseDown: () -> (),
+
+	-- Hierarchy
+	getChildren: Signals.getter<{ TreeNodeStore }>,
+	setChildren: Signals.setter<{ TreeNodeStore }>,
+	getAncestors: Signals.getter<{ TreeNodeStore }>,
+	getDescendants: Signals.getter<{ TreeNodeStore }>,
+	getParent: Signals.getter<TreeNodeStore?>,
+	parentTo: (newParent: TreeNodeStore?) -> (),
+
+	-- DataModel
+	getInstance: Signals.getter<Instance?>,
+	setInstance: Signals.setter<Instance?>,
 }
 
 return types

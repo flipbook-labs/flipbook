@@ -5,7 +5,6 @@ local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
-local TreeViewContext = require("@root/TreeView/TreeViewContext")
 local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
 
@@ -26,80 +25,69 @@ local useRef = React.useRef
 
 local useSignalState = SignalsReact.useSignalState
 
-type TreeNode = Types.TreeNode
-
-local function getParentCount(node: TreeNode): number
-	local current = node
-	local count = 0
-
-	while current.parent do
-		current = current.parent
-		count += 1
-	end
-
-	return count
-end
+type TreeNodeStore = Types.TreeNodeStore
 
 type TreeNodeProps = {
-	node: TreeNode,
+	node: TreeNodeStore,
 	onActivated: () -> ()?,
 } & Foundation.CommonProps
 
 local function TreeNode(props: TreeNodeProps)
-	local treeView = TreeViewContext.use()
-	local isExpanded = treeView.isExpanded(props.node)
-	local isSelected = treeView.isSelected(props.node)
+	local ancestors = useSignalState(props.node.getAncestors)
+	local icon = useSignalState(props.node.getIcon)
+	local instance = useSignalState(props.node.getInstance)
+	local isExpanded = useSignalState(props.node.getIsExpanded)
+	local isSelected = useSignalState(props.node.getIsSelected)
+	local name = useSignalState(props.node.getName)
+	local nodeChildren = useSignalState(props.node.getChildren)
+	local iconName, iconStyle = useTreeNodeIcon(icon)
+
 	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
-	local nodeRef = useRef(nil :: GuiObject?)
+	local ref = useRef(nil :: GuiObject?)
 
 	local tokens = useTokens()
-	local iconName, iconStyle = useTreeNodeIcon(props.node.icon)
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
-	local isPinned = if props.node.instance then pinnedInstanceStore.isPinned(props.node.instance) else false
+	local isPinned = if instance then pinnedInstanceStore.isPinned(instance) else false
 
 	local children = useMemo(function()
 		local elements: { [string]: React.ReactNode } = {}
 
-		for index, childNode in props.node.children do
-			elements[childNode.label] = e(TreeNode, {
+		for index, childNode in nodeChildren do
+			elements[childNode.getName(false)] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
 			})
 		end
 
 		return elements
-	end, { props.node.children })
-
-	local parentCount = useMemo(function()
-		return getParentCount(props.node) + 1
-	end, { props.node })
+	end, { nodeChildren })
 
 	local onActivated = useCallback(function()
 		if props.onActivated ~= nil then
 			props.onActivated()
 		end
 
-		treeView.activateNode(props.node)
-	end, { props.onActivated, treeView.activateNode, props.node } :: { any })
+		props.node.activate()
+	end, { props.onActivated, props.node } :: { unknown })
 
 	local onSecondaryActivated = useCallback(function()
 		setIsContextMenuOpen(true)
-	end, { props.node.icon })
+	end, {})
 
 	local onTogglePin = useCallback(function()
-		if props.node.instance then
+		if instance then
 			if isPinned then
-				pinnedInstanceStore.unpin(props.node.instance)
+				pinnedInstanceStore.unpin(instance)
 			else
-				pinnedInstanceStore.pin(props.node.instance)
+				pinnedInstanceStore.pin(instance)
 			end
 		end
-	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, props.node.instance } :: { unknown })
+	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, instance } :: { unknown })
 
 	local contextMenuItems = useMemo(function()
 		local items: { Foundation.MenuItem } = {}
 
-		if props.node.icon == Types.TreeNodeIcon.Storybook then
+		if icon == Types.TreeNodeIcon.Storybook then
 			table.insert(items, {
 				id = "pin",
 				text = if isPinned then "Unpin" else "Pin",
@@ -114,17 +102,17 @@ local function TreeNode(props: TreeNodeProps)
 			id = "select-in-explorer",
 			text = "Select in Explorer",
 			onActivated = function()
-				Selection:Set({ props.node.instance })
+				Selection:Set({ instance })
 				setIsContextMenuOpen(false)
 			end,
 		})
 
-		if #props.node.children > 0 then
+		if #nodeChildren > 0 then
 			table.insert(items, {
 				id = "expand-all",
 				text = "Expand all",
 				onActivated = function()
-					-- props.node.expandDown()
+					props.node.expandDown()
 					setIsContextMenuOpen(false)
 				end,
 			})
@@ -132,14 +120,14 @@ local function TreeNode(props: TreeNodeProps)
 				id = "collapse-all",
 				text = "Collapse all",
 				onActivated = function()
-					-- props.node.collapseDown()
+					props.node.collapseDown()
 					setIsContextMenuOpen(false)
 				end,
 			})
 		end
 
 		return items
-	end, { props.node })
+	end, { isPinned, icon, nodeChildren, props.node } :: { unknown })
 
 	return e(
 		View,
@@ -153,10 +141,10 @@ local function TreeNode(props: TreeNodeProps)
 				onActivated = onActivated,
 				onSecondaryActivated = onSecondaryActivated,
 				padding = {
-					left = UDim.new(0, tokens.Padding.Medium * parentCount),
+					left = UDim.new(0, tokens.Padding.Medium * #ancestors),
 				},
 				tag = "align-y-center auto-y gap-medium padding-right-medium padding-y-medium row size-full-0",
-				ref = nodeRef,
+				ref = ref,
 			}, {
 				Icon = e(Icon, {
 					LayoutOrder = 1,
@@ -168,14 +156,14 @@ local function TreeNode(props: TreeNodeProps)
 
 				Title = e(Text, {
 					LayoutOrder = 2,
-					Text = props.node.label,
+					Text = name,
 					tag = {
 						["auto-y shrink size-full-0 text-align-x-left text-label-medium text-truncate-end"] = true,
 						["content-emphasis"] = isSelected,
 					},
 				}),
 
-				Arrow = #props.node.children > 0 and e(Icon, {
+				Arrow = #nodeChildren > 0 and e(Icon, {
 					LayoutOrder = 3,
 					name = if isExpanded then IconName.ChevronSmallUp else IconName.ChevronSmallDown,
 					size = IconSize.XSmall,
@@ -190,7 +178,7 @@ local function TreeNode(props: TreeNodeProps)
 					onPressedOutside = function()
 						setIsContextMenuOpen(false)
 					end,
-					anchorRef = nodeRef,
+					anchorRef = ref,
 				})
 				else nil,
 

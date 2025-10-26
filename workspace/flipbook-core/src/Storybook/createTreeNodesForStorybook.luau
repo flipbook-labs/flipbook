@@ -1,57 +1,35 @@
-local HttpService = game:GetService("HttpService")
-
 local Storyteller = require("@pkg/Storyteller")
 
 local TreeView = require("@root/TreeView")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
+local getAncestors = require("@root/Common/getAncestors")
 
-type PartialTreeNode = TreeView.PartialTreeNode
-type TreeNode = TreeView.TreeNode
+type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
 type LoadedStory<any> = Storyteller.LoadedStory<any>
 
-local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
-	local nodesByInstance: { [Instance]: TreeNode } = {}
-
-	local root: TreeNode = {
-		id = HttpService:GenerateGUID(),
-		label = if storybook.name then storybook.name else "Unnamed Storybook",
-		icon = "storybook",
-		isExpanded = false,
-		instance = storybook.source,
-		children = {},
-	}
+local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNodeStore
+	local root = TreeView.createTreeNodeStore()
+	root.setName(if storybook.name then storybook.name else "Unnamed Storybook")
+	root.setIcon(TreeView.TreeNodeIcon.Storybook)
+	root.setInstance(storybook.source)
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
 		local currentNode = createTreeNodeForStoryModule(storyModule)
-		local parentInstance = storyModule.Parent
 
-		while parentInstance do
-			if table.find(storybook.storyRoots, parentInstance) then
-				table.insert(root.children, currentNode)
-				break
-			end
+		for _, ancestor in getAncestors(storyModule) do
+			local node = TreeView.createTreeNodeStore()
+			node.setName(ancestor.Name)
+			node.setIcon(TreeView.TreeNodeIcon.Folder)
+			node.setInstance(ancestor)
 
-			local existingParentNode = nodesByInstance[parentInstance]
-
-			if existingParentNode then
-				table.insert(existingParentNode.children, currentNode)
-				break
+			if table.find(storybook.storyRoots, ancestor) then
+				node.parentTo(root)
 			else
-				local parentNode: TreeNode = {
-					id = HttpService:GenerateGUID(),
-					label = parentInstance.Name,
-					instance = parentInstance,
-					icon = "folder",
-					isExpanded = false,
-					children = { currentNode },
-				}
-
-				nodesByInstance[parentInstance] = parentNode
-				currentNode = parentNode
+				currentNode.parentTo(node)
 			end
 
-			parentInstance = parentInstance.Parent
+			currentNode = node
 		end
 	end
 
