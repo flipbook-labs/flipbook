@@ -28,6 +28,17 @@ test("nodes can be named", function()
 	expect(root.getName(false)).toBe("<root>")
 end)
 
+test("activating a node toggles its selected state", function()
+	local root = createTreeNodeStore()
+	root.activate()
+
+	expect(root.getIsSelected(false)).toBe(true)
+
+	root.activate()
+
+	expect(root.getIsSelected(false)).toBe(false)
+end)
+
 describe("hierarchy", function()
 	test("descendants are tracked in ancestor nodes", function()
 		local root = createTreeNodeStore()

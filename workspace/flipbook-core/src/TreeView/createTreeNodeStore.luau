@@ -14,6 +14,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	local getIcon, setIcon = Signals.createSignal(nil :: types.TreeNodeIcon?)
 	local getIsSelected, setIsSelected = Signals.createSignal(false)
 	local getIsExpanded, setIsExpanded = Signals.createSignal(false)
+	local getIsVisible, setIsVisible = Signals.createSignal(true)
 
 	local getInstance, setInstance = Signals.createSignal(nil :: Instance?)
 
@@ -90,6 +91,14 @@ local function createTreeNodeStore(): TreeNodeStore
 		end
 	end
 
+	local function activate()
+		setIsSelected(function(prev)
+			return not prev
+		end)
+	end
+
+	-- setFilter
+
 	self = {
 		id = id,
 
@@ -98,8 +107,11 @@ local function createTreeNodeStore(): TreeNodeStore
 		setName = setName,
 		getIcon = getIcon,
 		setIcon = setIcon,
+		getIsVisible = getIsVisible,
+		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,
 		setIsSelected = setIsSelected,
+		activate = activate,
 
 		-- Expand/Collapse
 		collapseDown = collapseDown,
