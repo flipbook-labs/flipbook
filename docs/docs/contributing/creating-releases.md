@@ -5,7 +5,7 @@ Once ready to cut a new release, bump the version in our manifest files and crea
 We have a script to make version bumps easier. Run the following, replacing `minor` with the version to bump. This can be `major`, `minor`, or `patch`.
 
 ```sh
-lune run bump-version minor
+lute scripts/bump-version.luau minor
 ```
 
 Once merged, to publish the new version you must [create a new GitHub release](https://github.com/flipbook-labs/flipbook/releases), matching the tag to the version bump.

@@ -16,13 +16,13 @@ local function requestAsync(
 		headers = {},
 	}, options)
 
-	local payload
+	local body
 	if requestOptions and requestOptions.body then
 		if typeof(requestOptions.body) == "table" then
 			requestOptions.headers["Content-Type"] = "application/json"
-			payload = HttpService:JSONEncode(requestOptions.body)
+			body = HttpService:JSONEncode(requestOptions.body)
 		else
-			payload = tostring(requestOptions.body)
+			body = tostring(requestOptions.body)
 		end
 	end
 
@@ -33,7 +33,7 @@ local function requestAsync(
 			Url = url,
 			Method = requestOptions.method,
 			Headers = requestOptions.headers,
-			Body = payload,
+			Body = body,
 		})
 	end)
 

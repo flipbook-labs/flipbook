@@ -10,7 +10,7 @@ on:
 
 jobs:
   publish-github-release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       contents: write
     steps:
@@ -18,7 +18,7 @@ jobs:
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Get model file name
         run: |
@@ -26,10 +26,10 @@ jobs:
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: lune run install
+        run: lute scripts/install.luau
 
       - name: Build
-        run: lune run build --channel prod --output ${{ env.MODEL_FILE }}
+        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         if: ${{ github.event.release }}
@@ -39,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 10
     env:
       LOG_LEVEL: debug
@@ -48,10 +48,10 @@ jobs:
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
-        run: lune run install
+        run: lute scripts/install.luau
 
       - name: Publish nightly build to Creator Store
         if: github.ref == 'refs/heads/main'
