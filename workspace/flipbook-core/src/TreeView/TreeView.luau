@@ -11,7 +11,7 @@ type TreeNodeStore = types.TreeNodeStore
 
 export type Props = {
 	root: TreeNodeStore,
-	LayoutOrder: number?,
+	layoutOrder: number?,
 }
 
 local function TreeView(props: Props)
@@ -27,7 +27,7 @@ local function TreeView(props: Props)
 
 	return React.createElement(Foundation.View, {
 		tag = "auto-xy col",
-		LayoutOrder = props.LayoutOrder,
+		LayoutOrder = props.layoutOrder,
 	}, children)
 end
 

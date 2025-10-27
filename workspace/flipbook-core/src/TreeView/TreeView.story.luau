@@ -114,57 +114,61 @@ do
 	storybook.parentTo(root)
 end
 
+local function Story()
+	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+
+	local onExpand = useCallback(function()
+		local node = root.getNodeById()
+		if node then
+			node.activate()
+			node.expandUp()
+		end
+	end, {})
+
+	useEffect(function()
+		root.setFilter(searchTerm)
+	end, { searchTerm } :: { unknown })
+
+	return React.createElement(Foundation.View, {
+		tag = "auto-y col gap-large",
+		Size = UDim2.fromOffset(300, 0),
+	}, {
+		Topbar = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y row gap-large",
+			LayoutOrder = 1,
+		}, {
+			Search = React.createElement(Foundation.TextInput, {
+				text = "",
+				label = "",
+				placeholder = "Search...",
+				size = Foundation.Enums.InputSize.Medium,
+				width = UDim.new(1, 0),
+				iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
+				onChanged = setSearchTerm,
+				LayoutOrder = 1,
+			}),
+
+			ExpandToNode = React.createElement(Foundation.Button, {
+				text = "Expand",
+				size = Foundation.Enums.ButtonSize.Small,
+				onActivated = onExpand,
+				LayoutOrder = 2,
+			}),
+		}),
+
+		TreeView = React.createElement(TreeView, {
+			root = root,
+			layoutOrder = 2,
+		}),
+	})
+end
+
 return {
 	story = function()
-		local searchTerm: string?, setSearchTerm = useState(nil :: string?)
-
-		local onExpand = useCallback(function()
-			local node = root.getNodeById()
-			if node then
-				node.activate()
-				node.expandUp()
-			end
-		end, {})
-
-		useEffect(function()
-			root.setFilter(searchTerm)
-		end, { searchTerm } :: { unknown })
-
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
 		}, {
-			Story = React.createElement(Foundation.View, {
-				tag = "auto-y col gap-large",
-				Size = UDim2.fromOffset(300, 0),
-			}, {
-				Topbar = React.createElement(Foundation.View, {
-					tag = "size-full-0 auto-y row gap-large",
-					LayoutOrder = 1,
-				}, {
-					Search = React.createElement(Foundation.TextInput, {
-						text = "",
-						label = "",
-						placeholder = "Search...",
-						size = Foundation.Enums.InputSize.Medium,
-						width = UDim.new(1, 0),
-						iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
-						onChanged = setSearchTerm,
-						LayoutOrder = 1,
-					}),
-
-					ExpandToNode = React.createElement(Foundation.Button, {
-						text = "Expand",
-						size = Foundation.Enums.ButtonSize.Small,
-						onActivated = onExpand,
-						LayoutOrder = 2,
-					}),
-				}),
-
-				TreeView = React.createElement(TreeView, {
-					root = root,
-					LayoutOrder = 2,
-				}),
-			}),
+			Story = React.createElement(Story),
 		})
 	end,
 }

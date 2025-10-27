@@ -190,7 +190,7 @@ local function StorybookTreeView(props: Props)
 
 	return React.createElement(TreeView.TreeView, {
 		root = rootNode,
-		LayoutOrder = props.layoutOrder,
+		layoutOrder = props.layoutOrder,
 	})
 end
 
