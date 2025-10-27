@@ -213,6 +213,53 @@ describe("hierarchy", function()
 				}),
 			}),
 		})
+
+		-- Add some more nodes to verify siblings work with the snapshot
+		currentNode = root
+		for i = 1, 2 do
+			local node = createTreeNodeStore()
+			node.setName(`Descendant {i}`)
+
+			node.parentTo(currentNode)
+			currentNode = node
+		end
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = expect.arrayContaining({
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = expect.arrayContaining({
+								expect.objectContaining({
+									id = expect.anything(),
+									name = "Descendant 3",
+									children = {},
+								}),
+							}),
+						}),
+					}),
+				}),
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = {},
+						}),
+					}),
+				}),
+			}),
+		})
 	end)
 end)
 
