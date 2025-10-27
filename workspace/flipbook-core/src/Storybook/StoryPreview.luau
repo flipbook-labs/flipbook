@@ -6,6 +6,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 
+local HoverHighlighter = require("@root/Inspector/HoverHighlighter")
 local StoryError = require("@root/Storybook/StoryError")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -100,6 +101,10 @@ local StoryPreview = React.forwardRef(function(providedProps: Props, ref: any)
 				LayoutOrder = props.LayoutOrder,
 				scrollingFrameRef = ref,
 			}, {
+				HoverHighlighter = e(HoverHighlighter, {
+					hoverRef = ref,
+				}),
+
 				Scale = e("UIScale", {
 					Scale = 1 + props.zoom,
 				}),
