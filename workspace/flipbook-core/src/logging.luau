@@ -21,7 +21,7 @@ local logger = Log.Logger.new({
 }, {
 	Log.Common.RobloxLogSink(),
 }, {
-	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Information),
+	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Warning),
 })
 
 local logging = {}
