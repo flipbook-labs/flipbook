@@ -28,15 +28,36 @@ test("nodes can be named", function()
 	expect(root.getName(false)).toBe("<root>")
 end)
 
-test("activating a node toggles its selected state", function()
-	local root = createTreeNodeStore()
-	root.activate()
+describe("node activation", function()
+	test("activating a node with no children changes its selected state", function()
+		local root = createTreeNodeStore()
+		root.activate()
 
-	expect(root.getIsSelected(false)).toBe(true)
+		expect(root.getIsSelected(false)).toBe(true)
+		expect(root.getIsExpanded(false)).toBe(false)
 
-	root.activate()
+		root.activate()
 
-	expect(root.getIsSelected(false)).toBe(false)
+		expect(root.getIsSelected(false)).toBe(false)
+		expect(root.getIsExpanded(false)).toBe(false)
+	end)
+
+	test("activating a node with children expands it", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		root.activate()
+
+		expect(root.getIsSelected(false)).toBe(false)
+		expect(root.getIsExpanded(false)).toBe(true)
+
+		root.activate()
+
+		expect(root.getIsSelected(false)).toBe(false)
+		expect(root.getIsExpanded(false)).toBe(false)
+	end)
 end)
 
 describe("hierarchy", function()
