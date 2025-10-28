@@ -38,7 +38,7 @@ local function createTreeNodeStore(): TreeNodeStore
 
 	local getDescendants = Signals.createComputed(function(scope)
 		local descendants: { TreeNodeStore } = {}
-		local stack = getChildren(scope)
+		local stack = table.clone(getChildren(scope))
 
 		while #stack > 0 do
 			local candidate = table.remove(stack)
