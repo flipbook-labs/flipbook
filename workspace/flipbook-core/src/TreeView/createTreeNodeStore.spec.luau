@@ -161,7 +161,7 @@ describe("hierarchy", function()
 		local descendant4 = createTreeNodeStore()
 		descendant4.parentTo(descendant3)
 
-		local matches = root.matchDescendants(function(node)
+		local matches = root.findFirstDescendant(function(node)
 			return node.getName(false) == "Match"
 		end)
 

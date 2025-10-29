@@ -41,7 +41,7 @@ export type TreeNodeStore = {
 	getDescendants: Signals.getter<{ TreeNodeStore }>,
 	getParent: Signals.getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),
-	matchDescendants: (predicate: (node: TreeNodeStore) -> boolean) -> { TreeNodeStore },
+	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
 
 	-- DataModel
 	getInstance: Signals.getter<Instance?>,

@@ -51,14 +51,13 @@ local function createTreeNodeStore(): TreeNodeStore
 		return descendants
 	end)
 
-	local function matchDescendants(predicate: (node: TreeNodeStore) -> boolean): { TreeNodeStore }
-		local matches = {}
+	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
 		for _, descendant in getDescendants(false) do
 			if predicate(descendant) then
-				table.insert(matches, descendant)
+				return descendant
 			end
 		end
-		return matches
+		return nil
 	end
 
 	local function parentTo(newParent: TreeNodeStore?)
@@ -163,7 +162,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getParent = getParent,
 		parentTo = parentTo,
 		setChildren = setChildren,
-		matchDescendants = matchDescendants,
+		findFirstDescendant = findFirstDescendant,
 
 		-- DataModel
 		getInstance = getInstance,

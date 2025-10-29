@@ -21,9 +21,9 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 			-- This is probably expensive to be doing so frequently but it seems
 			-- to be fine for now. May hit a point where this bit in particular
 			-- becomes a bottleneck though
-			local existingNode = root.matchDescendants(function(descendant)
+			local existingNode = root.findFirstDescendant(function(descendant)
 				return descendant.getInstance(false) == ancestor
-			end)[1]
+			end)
 
 			if existingNode then
 				currentNode.parentTo(existingNode)
