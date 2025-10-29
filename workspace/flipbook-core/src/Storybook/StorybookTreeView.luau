@@ -46,18 +46,30 @@ local function StorybookTreeView(props: Props)
 		return node
 	end, {})
 
+	local pins = useMemo(function()
+		local node = TreeView.createTreeNodeStore()
+		node.setName("Pinned")
+		node.setIcon(TreeView.TreeNodeIcon.Pin)
+		node.setIsExpanded(true)
+		node.setIsVisible(false)
+		node.parentTo(rootNode)
+
+		return node
+	end, { rootNode })
+
+	local pinnedChildren = useSignalState(pins.getChildren)
+
+	-- There can be pinned paths that were never apart of the current DataModel,
+	-- so only add the "Pinned" root if there are children to show
+	useEffect(function()
+		pins.setIsVisible(#pinnedChildren > 0)
+	end, { pinnedChildren })
+
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
 	local prevSelectedNode = usePrevious(selectedNode)
 
 	useEffect(
 		function()
-			local pins = TreeView.createTreeNodeStore()
-			pins.setName("Pinned")
-			pins.setIcon(TreeView.TreeNodeIcon.Pin)
-			pins.setIsExpanded(true)
-			pins.setIsVisible(false)
-			pins.parentTo(rootNode)
-
 			for _, storybook in props.storybooks.available do
 				local node = createTreeNodesForStorybook(storybook :: any)
 				storybookByNodeId.current[node.id] = storybook :: any
@@ -98,19 +110,14 @@ local function StorybookTreeView(props: Props)
 
 				orphanedStories.parentTo(rootNode)
 			end
-
-			-- There can be pinned paths that were never apart of the current
-			-- DataModel, so only add the "Pinned" root if there are children to
-			-- show
-			-- if #pins.children > 0 then
-			-- 	table.insert(roots, 1, pins)
-			-- end
 		end,
 		{
 			props.storybooks.available,
 			props.storybooks.unavailable,
 			pinnedInstanceStore.isPinned,
 			pinnedInstances,
+			rootNode,
+			pins,
 		} :: { unknown }
 	)
 
