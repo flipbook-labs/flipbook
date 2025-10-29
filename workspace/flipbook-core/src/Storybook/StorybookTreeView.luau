@@ -65,7 +65,7 @@ local function StorybookTreeView(props: Props)
 	end, { pinnedChildren })
 
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
-	local prevSelectedNode = usePrevious(selectedNode)
+	local prevSelectedNode: TreeNodeStore? = usePrevious(selectedNode)
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
@@ -129,14 +129,9 @@ local function StorybookTreeView(props: Props)
 		end
 
 		if lastOpenedStory then
-			local node: TreeNodeStore?
-
-			for _, descendant in rootNode.getDescendants(false) do
-				if descendant.getInstance(false) == lastOpenedStory then
-					node = descendant
-					break
-				end
-			end
+			local node = rootNode.findFirstDescendant(function(descendant)
+				return descendant.getInstance(false) == lastOpenedStory
+			end)
 
 			if node then
 				wasLastStoryOpened.current = true
