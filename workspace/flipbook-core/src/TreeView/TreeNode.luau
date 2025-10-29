@@ -50,9 +50,21 @@ local function TreeNode(props: TreeNodeProps)
 	local isPinned = if instance then pinnedInstanceStore.isPinned(instance) else false
 
 	local children = useMemo(function()
+		-- do sorting here
 		local elements: { [string]: React.ReactNode } = {}
 
-		for index, childNode in nodeChildren do
+		local sortedNodes = table.clone(nodeChildren)
+		table.sort(sortedNodes, function(a, b)
+			if a.getIcon(false) ~= b.getIcon(false) then
+				-- Sort by type
+				return a.getIcon(false) < b.getIcon(false)
+			else
+				-- Sort alphabetically
+				return a.getName(false):lower() < b.getName(false):lower()
+			end
+		end)
+
+		for index, childNode in sortedNodes do
 			elements[childNode.getName(false)] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
