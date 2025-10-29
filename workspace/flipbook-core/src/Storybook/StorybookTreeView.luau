@@ -46,9 +46,8 @@ local function StorybookTreeView(props: Props)
 		return node
 	end, {})
 
-	local selectedNodes = {} --useSignalState(rootNode.getSelectedNodes)
-	local prevSelectedNodes = usePrevious(selectedNodes)
-	local rootNodeChildren = useSignalState(rootNode.getChildren)
+	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
+	local prevSelectedNode = usePrevious(selectedNode)
 
 	useEffect(
 		function()
@@ -143,50 +142,49 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { lastOpenedStory, rootNode } :: { unknown })
 
-	-- useEffect(
-	-- 	function()
-	-- 		if selectedNode ~= prevSelectedNode then
-	-- 			if props.onStoryChanged then
-	-- 				if selectedNode then
-	-- 					if
-	-- 						selectedNode.icon == TreeView.TreeNodeIcon.Story
-	-- 						and selectedNode.instance
-	-- 						and selectedNode.instance:IsA("ModuleScript")
-	-- 					then
-	-- 						local storybookNode = TreeView.findFirstAncestor(selectedNode, function(ancestor)
-	-- 							return ancestor.icon == TreeView.TreeNodeIcon.Storybook
-	-- 						end)
+	useEffect(
+		function()
+			if selectedNode ~= prevSelectedNode then
+				if props.onStoryChanged then
+					if selectedNode then
+						local icon = selectedNode.getIcon(false)
+						local instance = selectedNode.getInstance(false)
 
-	-- 						if storybookNode then
-	-- 							local storybook = storybookByNodeId.current[storybookNode.id]
+						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
+							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
+								return ancestor.getIcon(false) == TreeView.TreeNodeIcon.Storybook
+							end)
 
-	-- 							props.onStoryChanged(selectedNode.instance, storybook)
-	-- 							setLastOpenedStory(selectedNode.instance)
-	-- 						end
-	-- 					end
-	-- 				else
-	-- 					props.onStoryChanged(nil, nil)
-	-- 				end
-	-- 			end
+							if storybookNode then
+								local storybook = storybookByNodeId.current[storybookNode.id]
 
-	-- 			if props.onShowErrorPage then
-	-- 				if selectedNode and selectedNode.icon == TreeView.TreeNodeIcon.Alert then
-	-- 					local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
-	-- 					if unavailableStorybook then
-	-- 						props.onShowErrorPage(unavailableStorybook)
-	-- 					end
-	-- 				end
-	-- 			end
-	-- 		end
-	-- 	end,
-	-- 	{
-	-- 		props.onShowErrorPage,
-	-- 		props.onStoryChanged,
-	-- 		selectedNodes,
-	-- 		prevSelectedNodes,
-	-- 		setLastOpenedStory,
-	-- 	} :: { unknown }
-	-- )
+								props.onStoryChanged(instance, storybook)
+								setLastOpenedStory(instance)
+							end
+						end
+					else
+						props.onStoryChanged(nil, nil)
+					end
+				end
+
+				if props.onShowErrorPage then
+					if selectedNode and selectedNode.getIcon(false) == TreeView.TreeNodeIcon.Alert then
+						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
+						if unavailableStorybook then
+							props.onShowErrorPage(unavailableStorybook)
+						end
+					end
+				end
+			end
+		end,
+		{
+			props.onShowErrorPage,
+			props.onStoryChanged,
+			selectedNode,
+			prevSelectedNode,
+			setLastOpenedStory,
+		} :: { unknown }
+	)
 
 	return React.createElement(TreeView.TreeView, {
 		root = rootNode,

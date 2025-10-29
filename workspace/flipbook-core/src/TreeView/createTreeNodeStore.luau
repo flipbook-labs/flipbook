@@ -51,10 +51,29 @@ local function createTreeNodeStore(): TreeNodeStore
 		return descendants
 	end)
 
+	local getSelectedDescendants = Signals.createComputed(function(scope)
+		local matches = {}
+		for _, descendant in getDescendants(scope) do
+			if descendant.getIsSelected(scope) then
+				table.insert(matches, descendant)
+			end
+		end
+		return matches
+	end)
+
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
 		for _, descendant in getDescendants(false) do
 			if predicate(descendant) then
 				return descendant
+			end
+		end
+		return nil
+	end
+
+	local function findFirstAncestor(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
+		for _, ancestor in getAncestors(false) do
+			if predicate(ancestor) then
+				return ancestor
 			end
 		end
 		return nil
@@ -159,9 +178,11 @@ local function createTreeNodeStore(): TreeNodeStore
 		getAncestors = getAncestors,
 		getChildren = getChildren,
 		getDescendants = getDescendants,
+		getSelectedDescendants = getSelectedDescendants,
 		getParent = getParent,
 		parentTo = parentTo,
 		setChildren = setChildren,
+		findFirstAncestor = findFirstAncestor,
 		findFirstDescendant = findFirstDescendant,
 
 		-- DataModel
