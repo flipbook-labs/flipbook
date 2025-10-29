@@ -67,58 +67,55 @@ local function StorybookTreeView(props: Props)
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
 	local prevSelectedNode = usePrevious(selectedNode)
 
-	useEffect(
-		function()
-			for _, storybook in props.storybooks.available do
-				local node = createTreeNodesForStorybook(storybook :: any)
-				storybookByNodeId.current[node.id] = storybook :: any
+	-- Convert available storybooks into nodes
+	useEffect(function()
+		for _, storybook in props.storybooks.available do
+			local node = createTreeNodesForStorybook(storybook :: any)
+			storybookByNodeId.current[node.id] = storybook :: any
 
-				if pinnedInstanceStore.isPinned(storybook.source) then
-					node.parentTo(pins)
-				else
-					node.parentTo(rootNode)
-				end
+			if pinnedInstanceStore.isPinned(storybook.source) then
+				node.parentTo(pins)
+			else
+				node.parentTo(rootNode)
+			end
+		end
+	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pins, rootNode } :: { unknown })
+
+	-- Convert unavailable storybooks into nodes
+	useEffect(function()
+		if #props.storybooks.unavailable > 0 then
+			local unavailableStorybooks = TreeView.createTreeNodeStore()
+			unavailableStorybooks.setName("Unavailable Storybooks")
+			unavailableStorybooks.setIcon(TreeView.TreeNodeIcon.Folder)
+
+			for _, unavailableStorybook in props.storybooks.unavailable do
+				local node = TreeView.createTreeNodeStore()
+				node.setName(unavailableStorybook.storybook.name)
+				node.setIcon(TreeView.TreeNodeIcon.Alert)
+				node.parentTo(unavailableStorybooks)
+
+				unavailableStorybookByNodeId.current[rootNode.id] = unavailableStorybook
 			end
 
-			if #props.storybooks.unavailable > 0 then
-				local unavailableStorybooks = TreeView.createTreeNodeStore()
-				unavailableStorybooks.setName("Unavailable Storybooks")
-				unavailableStorybooks.setIcon(TreeView.TreeNodeIcon.Folder)
+			unavailableStorybooks.parentTo(rootNode)
+		end
+	end, { props.storybooks.unavailable })
 
-				for _, unavailableStorybook in props.storybooks.unavailable do
-					local node = TreeView.createTreeNodeStore()
-					node.setName(unavailableStorybook.storybook.name)
-					node.setIcon(TreeView.TreeNodeIcon.Alert)
-					node.parentTo(unavailableStorybooks)
+	-- Convert orphaned stories into nodes
+	useEffect(function()
+		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
+			local orphanedStories = TreeView.createTreeNodeStore()
+			orphanedStories.setName("Unknown Stories")
+			orphanedStories.setIcon(TreeView.TreeNodeIcon.Folder)
 
-					unavailableStorybookByNodeId.current[rootNode.id] = unavailableStorybook
-				end
-
-				unavailableStorybooks.parentTo(rootNode)
+			for _, orphan in props.orphanedStoryModules do
+				local node = createTreeNodeForStoryModule(orphan)
+				node.parentTo(orphanedStories)
 			end
 
-			if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
-				local orphanedStories = TreeView.createTreeNodeStore()
-				orphanedStories.setName("Unknown Stories")
-				orphanedStories.setIcon(TreeView.TreeNodeIcon.Folder)
-
-				for _, orphan in props.orphanedStoryModules do
-					local node = createTreeNodeForStoryModule(orphan)
-					node.parentTo(orphanedStories)
-				end
-
-				orphanedStories.parentTo(rootNode)
-			end
-		end,
-		{
-			props.storybooks.available,
-			props.storybooks.unavailable,
-			pinnedInstanceStore.isPinned,
-			pinnedInstances,
-			rootNode,
-			pins,
-		} :: { unknown }
-	)
+			orphanedStories.parentTo(rootNode)
+		end
+	end, { props.orphanedStoryModules, rootNode } :: { unknown })
 
 	-- FIXME: Add simple filtering by string
 	-- useEffect(function()
