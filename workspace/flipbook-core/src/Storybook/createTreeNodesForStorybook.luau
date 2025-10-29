@@ -18,19 +18,33 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 		local currentNode = createTreeNodeForStoryModule(storyModule)
 
 		for _, ancestor in getAncestors(storyModule) do
+			-- This is probably expensive to be doing so frequently but it seems
+			-- to be fine for now. May hit a point where this bit in particular
+			-- becomes a bottleneck though
+			local existingNode = root.matchDescendants(function(descendant)
+				return descendant.getInstance(false) == ancestor
+			end)[1]
+
+			if existingNode then
+				currentNode.parentTo(existingNode)
+				break
+			end
+
+			if table.find(storybook.storyRoots, ancestor) then
+				currentNode.parentTo(root)
+				break
+			end
+
 			local node = TreeView.createTreeNodeStore()
 			node.setName(ancestor.Name)
 			node.setIcon(TreeView.TreeNodeIcon.Folder)
 			node.setInstance(ancestor)
 
-			if table.find(storybook.storyRoots, ancestor) then
-				node.parentTo(root)
-			else
-				currentNode.parentTo(node)
-			end
-
+			currentNode.parentTo(node)
 			currentNode = node
 		end
+
+		currentNode.parentTo(root)
 	end
 
 	return root
