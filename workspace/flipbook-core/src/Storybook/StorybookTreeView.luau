@@ -1,4 +1,3 @@
-local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
