@@ -51,7 +51,6 @@ local function TreeNode(props: TreeNodeProps)
 	local isPinned = if instance then pinnedInstanceStore.isPinned(instance) else false
 
 	local children = useMemo(function()
-		-- do sorting here
 		local elements: { [string]: React.ReactNode } = {}
 
 		local sortedNodes = table.clone(nodeChildren)
