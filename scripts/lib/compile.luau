@@ -72,14 +72,16 @@ local function compile(channel: Channel, target: Target)
 		BASE_URL = process.env.BASE_URL,
 	}
 
+	for k, v in env do
+		print(`_G.{k} = {v}`)
+	end
+
 	run("rojo", {
 		"sourcemap",
 		project.ROJO_BUILD_PROJECT,
 		"-o",
 		project.DARKLUA_SOURCEMAP_PATH,
 	})
-
-	print("substituting globals", env)
 
 	run("darklua", {
 		"process",
