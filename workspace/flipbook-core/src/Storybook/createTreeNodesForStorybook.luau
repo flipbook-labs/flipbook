@@ -43,8 +43,6 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 			currentNode.parentTo(node)
 			currentNode = node
 		end
-
-		currentNode.parentTo(root)
 	end
 
 	return root
