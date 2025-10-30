@@ -29,7 +29,7 @@ type TreeNodeStore = Types.TreeNodeStore
 
 type TreeNodeProps = {
 	node: TreeNodeStore,
-	onActivated: () -> ()?,
+	onActivated: (node: TreeNodeStore) -> ()?,
 } & Foundation.CommonProps
 
 local function TreeNode(props: TreeNodeProps)
@@ -68,6 +68,7 @@ local function TreeNode(props: TreeNodeProps)
 			elements[childNode.getName(false)] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
+				onActivated = props.onActivated,
 			})
 		end
 
@@ -75,11 +76,11 @@ local function TreeNode(props: TreeNodeProps)
 	end, { nodeChildren })
 
 	local onActivated = useCallback(function()
-		if props.onActivated ~= nil then
-			props.onActivated()
-		end
-
 		props.node.activate()
+
+		if props.onActivated ~= nil then
+			props.onActivated(props.node)
+		end
 	end, { props.onActivated, props.node } :: { unknown })
 
 	local onSecondaryActivated = useCallback(function()
