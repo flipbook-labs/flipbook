@@ -168,6 +168,72 @@ describe("hierarchy", function()
 		expect(matches).toEqual(descendant3)
 	end)
 
+	test("match for ancestors by a predicate", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.setName("Match")
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		local matches = descendant4.findFirstAncestor(function(node)
+			return node.getName(false) == "Match"
+		end)
+
+		expect(matches).toEqual(descendant3)
+	end)
+
+	test("getLeafNodes returns all nodes without children", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local leaf1 = createTreeNodeStore()
+		leaf1.parentTo(descendant2)
+
+		local leaf2 = createTreeNodeStore()
+		leaf2.parentTo(descendant1)
+
+		expect(root.getLeafNodes(false)).toEqual({ leaf2, leaf1 })
+	end)
+
+	test("getSelectedDescendants returns all selected descendants", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		local leaf1 = createTreeNodeStore()
+		leaf1.parentTo(child)
+
+		local leaf2 = createTreeNodeStore()
+		leaf2.parentTo(child)
+
+		leaf1.setIsSelected(true)
+
+		expect(root.getSelectedDescendants(false)).toEqual({ leaf1 })
+
+		leaf2.setIsSelected(true)
+
+		expect(root.getSelectedDescendants(false)).toEqual({ leaf2, leaf1 })
+
+		leaf1.setIsSelected(false)
+
+		expect(root.getSelectedDescendants(false)).toEqual({ leaf2 })
+	end)
+
 	test("take a snapshotof the hierarchy", function()
 		local root = createTreeNodeStore()
 
