@@ -13,6 +13,8 @@ types.TreeNodeIcon = {
 	Pin = "pin" :: "pin",
 }
 
+export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
+
 export type TreeNodeStore = {
 	id: string,
 
