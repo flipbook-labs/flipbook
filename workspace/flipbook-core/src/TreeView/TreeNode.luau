@@ -95,8 +95,9 @@ local function TreeNode(props: TreeNodeProps)
 			else
 				pinnedInstanceStore.pin(instance)
 			end
+			props.node.setIsPinned(isPinned)
 		end
-	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, instance } :: { unknown })
+	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, instance, props.node } :: { unknown })
 
 	local contextMenuItems = useMemo(function()
 		local items: { Foundation.MenuItem } = {}

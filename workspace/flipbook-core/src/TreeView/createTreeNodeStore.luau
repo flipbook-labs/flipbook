@@ -17,6 +17,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	local getIsExpanded, setIsExpanded = Signals.createSignal(false)
 	local getIsVisible, setIsVisible = Signals.createSignal(true)
 	local getIsFiltered, setIsFiltered = Signals.createSignal(false)
+	local getIsPinned, setIsPinned = Signals.createSignal(false)
 
 	local getInstance, setInstance = Signals.createSignal(nil :: Instance?)
 
@@ -77,6 +78,10 @@ local function createTreeNodeStore(): TreeNodeStore
 
 	local getSelectedDescendants = createDescendantMatcher(function(descendant, scope)
 		return descendant.getIsSelected(scope)
+	end)
+
+	local getPinnedDescendants = createDescendantMatcher(function(descendant, scope)
+		return descendant.getIsPinned(scope)
 	end)
 
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
@@ -186,6 +191,8 @@ local function createTreeNodeStore(): TreeNodeStore
 		activate = activate,
 		setIsFiltered = setIsFiltered,
 		getIsFiltered = getIsFiltered,
+		setIsPinned = setIsPinned,
+		getIsPinned = getIsPinned,
 		getLeafNodes = getLeafNodes,
 
 		-- Expand/Collapse
@@ -200,6 +207,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getChildren = getChildren,
 		getDescendants = getDescendants,
 		getSelectedDescendants = getSelectedDescendants,
+		getPinnedDescendants = getPinnedDescendants,
 		getParent = getParent,
 		parentTo = parentTo,
 		setChildren = setChildren,

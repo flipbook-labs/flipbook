@@ -30,6 +30,8 @@ export type TreeNodeStore = {
 	activate: () -> (),
 	getIsFiltered: Signals.getter<boolean>,
 	setIsFiltered: Signals.setter<boolean>,
+	getIsPinned: Signals.getter<boolean>,
+	setIsPinned: Signals.setter<boolean>,
 
 	-- Expand/Collapse
 	getIsExpanded: Signals.getter<boolean>,
@@ -45,6 +47,7 @@ export type TreeNodeStore = {
 	getDescendants: Signals.getter<{ TreeNodeStore }>,
 	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
 	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
+	getPinnedDescendants: Signals.getter<{ TreeNodeStore }>,
 	getParent: Signals.getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),
 	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
