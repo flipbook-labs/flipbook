@@ -59,12 +59,6 @@ local function StorybookTreeView(props: Props)
 
 	local pinnedChildren = useSignalState(pins.getChildren)
 
-	-- There can be pinned paths that were never apart of the current DataModel,
-	-- so only add the "Pinned" root if there are children to show
-	useEffect(function()
-		pins.setIsVisible(#pinnedChildren > 0)
-	end, { pinnedChildren })
-
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
 	local prevSelectedNode: TreeNodeStore? = usePrevious(selectedNode)
 
@@ -75,6 +69,12 @@ local function StorybookTreeView(props: Props)
 
 		return node.getName(false):lower():match(props.searchTerm:lower()) == nil
 	end, { props.searchTerm })
+
+	-- There can be pinned paths that were never apart of the current DataModel,
+	-- so only add the "Pinned" root if there are children to show
+	useEffect(function()
+		pins.setIsVisible(#pinnedChildren > 0)
+	end, { pinnedChildren } :: { unknown })
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
