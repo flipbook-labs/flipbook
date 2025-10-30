@@ -1,5 +1,6 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local TreeNode = require("@root/TreeView/TreeNode")
@@ -26,34 +27,41 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 			end
 
 			local included = {}
+
 			for _, leaf in leaves do
-				if filter(leaf) then
-					print("filtering", leaf.getName(false))
-					leaf.setIsFiltered(true)
+				local includeRemainingNodes = false
 
-					local parent = leaf.getParent(false)
-					while parent do
-						-- If this parent was deemed to be included that means
-						-- at least one descendant didn't match the filter, so
-						-- we have to make sure we keep the connection up to the
-						-- root
-						if included[parent] then
-							break
-						end
+				-- This orders the nodes starting from the leaf and then each
+				-- parent going up the ancestry chain. This is useful so when we
+				-- hit at least one node that shouldn't be filtered we know we
+				-- have to keep the remaining items after that point unfiltered
+				-- too.
+				local nodes: { TreeNodeStore } = Sift.List.join({ leaf }, leaf.getAncestors(false))
 
-						-- We've reached a node that isn't filtered, so all
-						-- nodes above this one must also not be filtered. We
-						-- stop here and go on to the next leaf node
-						if filter(parent) == false then
-							for _, ancestor in parent.getAncestors(false) do
-								included[ancestor] = true
-							end
-							break
-						end
+				for _, node in nodes do
+					-- We've already marked this node as unfiltered, which means
+					-- this node and all of the remaining ancestor nodes we'd be
+					-- iterating through should also be unfiltered. So we just
+					-- exit out here
+					if included[node.id] then
+						break
+					end
 
-						print("filtering", parent.getName(false))
-						parent.setIsFiltered(true)
-						parent = parent.getParent(false)
+					-- If at least one of the nodes in `nodes` shouldn't be
+					-- filtered, then all ancestors after that point shouldn't
+					-- be filtered either.
+					if includeRemainingNodes then
+						included[node.id] = true
+						node.setIsFiltered(false)
+						continue
+					end
+
+					if filter(node) then
+						node.setIsFiltered(true)
+					else
+						included[node.id] = true
+						node.setIsFiltered(false)
+						includeRemainingNodes = true
 					end
 				end
 			end
