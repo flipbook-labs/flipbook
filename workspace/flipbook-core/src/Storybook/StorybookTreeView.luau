@@ -57,6 +57,8 @@ local function StorybookTreeView(props: Props)
 	end, { rootNode })
 
 	local pinnedChildren = useSignalState(pins.getChildren)
+	local pinnedNodes = useSignalState(rootNode.getPinnedDescendants)
+	local prevPinnedNodes = usePrevious(pinnedNodes)
 
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
 	local prevSelectedNode: TreeNodeStore? = usePrevious(selectedNode)
@@ -75,15 +77,9 @@ local function StorybookTreeView(props: Props)
 		pins.setIsVisible(#pinnedChildren > 0)
 	end, { pinnedChildren } :: { unknown })
 
-	local pinnedNodes = useSignalState(rootNode.getPinnedDescendants)
-	local prevPinnedNodes = usePrevious(pinnedNodes)
-
 	-- This handles automatically moving a node under the Pinned node once the
 	-- node's instance becomes pinned
 	useEffect(function()
-		-- FIXME: Something in here seems backwards. Pinning unpins, unpinning
-		-- pins.
-
 		if pinnedNodes ~= prevPinnedNodes then
 			-- Put any previously pinned nodes back to the root
 			if prevPinnedNodes then

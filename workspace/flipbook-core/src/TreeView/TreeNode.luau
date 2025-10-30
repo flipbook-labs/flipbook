@@ -88,16 +88,26 @@ local function TreeNode(props: TreeNodeProps)
 		setIsContextMenuOpen(true)
 	end, {})
 
-	local onTogglePin = useCallback(function()
-		if instance then
-			if isPinned then
-				pinnedInstanceStore.unpin(instance)
-			else
-				pinnedInstanceStore.pin(instance)
+	local onTogglePin = useCallback(
+		function()
+			if instance then
+				if isPinned then
+					pinnedInstanceStore.unpin(instance)
+					props.node.setIsPinned(true)
+				else
+					pinnedInstanceStore.pin(instance)
+					props.node.setIsPinned(true)
+				end
 			end
-			props.node.setIsPinned(isPinned)
-		end
-	end, { isPinned, pinnedInstanceStore.unpin, pinnedInstanceStore.pin, instance, props.node } :: { unknown })
+		end,
+		{
+			instance,
+			isPinned,
+			pinnedInstanceStore.pin,
+			pinnedInstanceStore.unpin,
+			props.node.setIsPinned,
+		} :: { unknown }
+	)
 
 	local contextMenuItems = useMemo(function()
 		local items: { Foundation.MenuItem } = {}
