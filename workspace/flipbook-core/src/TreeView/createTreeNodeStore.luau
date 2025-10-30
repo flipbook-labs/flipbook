@@ -52,24 +52,31 @@ local function createTreeNodeStore(): TreeNodeStore
 		return descendants
 	end)
 
-	local getLeafNodes = Signals.createComputed(function(scope)
-		local leaves: { TreeNodeStore } = {}
-		for _, descendant in getDescendants(scope) do
-			if #descendant.getChildren(scope) == 0 then
-				table.insert(leaves, descendant)
+	local function createDescendantMatcher(
+		predicate: (descendant: TreeNodeStore, scope: Signals.scope) -> boolean?
+	): Signals.getter<{ TreeNodeStore }>
+		return Signals.createComputed(function(scope)
+			local matches = {}
+			for _, descendant in getDescendants(scope) do
+				local result = predicate(descendant, scope)
+				if result == true then
+					table.insert(matches, descendant)
+				elseif result == false then
+					continue
+				elseif result == nil then
+					break
+				end
 			end
-		end
-		return leaves
+			return matches
+		end)
+	end
+
+	local getLeafNodes = createDescendantMatcher(function(descendant, scope)
+		return #descendant.getChildren(scope) == 0
 	end)
 
-	local getSelectedDescendants = Signals.createComputed(function(scope)
-		local matches = {}
-		for _, descendant in getDescendants(scope) do
-			if descendant.getIsSelected(scope) then
-				table.insert(matches, descendant)
-			end
-		end
-		return matches
+	local getSelectedDescendants = createDescendantMatcher(function(descendant, scope)
+		return descendant.getIsSelected(scope)
 	end)
 
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
