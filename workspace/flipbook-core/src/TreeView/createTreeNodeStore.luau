@@ -16,6 +16,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	local getIsSelected, setIsSelected = Signals.createSignal(false)
 	local getIsExpanded, setIsExpanded = Signals.createSignal(false)
 	local getIsVisible, setIsVisible = Signals.createSignal(true)
+	local getIsFiltered, setIsFiltered = Signals.createSignal(false)
 
 	local getInstance, setInstance = Signals.createSignal(nil :: Instance?)
 
@@ -49,6 +50,16 @@ local function createTreeNodeStore(): TreeNodeStore
 		end
 
 		return descendants
+	end)
+
+	local getLeafNodes = Signals.createComputed(function(scope)
+		local leaves: { TreeNodeStore } = {}
+		for _, descendant in getDescendants(scope) do
+			if #descendant.getChildren(scope) == 0 then
+				table.insert(leaves, descendant)
+			end
+		end
+		return leaves
 	end)
 
 	local getSelectedDescendants = Signals.createComputed(function(scope)
@@ -166,6 +177,9 @@ local function createTreeNodeStore(): TreeNodeStore
 		getIsSelected = getIsSelected,
 		setIsSelected = setIsSelected,
 		activate = activate,
+		setIsFiltered = setIsFiltered,
+		getIsFiltered = getIsFiltered,
+		getLeafNodes = getLeafNodes,
 
 		-- Expand/Collapse
 		collapseDown = collapseDown,

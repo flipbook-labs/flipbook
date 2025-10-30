@@ -26,6 +26,8 @@ export type TreeNodeStore = {
 	getIsVisible: Signals.getter<boolean>,
 	setIsVisible: Signals.setter<boolean>,
 	activate: () -> (),
+	getIsFiltered: Signals.getter<boolean>,
+	setIsFiltered: Signals.setter<boolean>,
 
 	-- Expand/Collapse
 	getIsExpanded: Signals.getter<boolean>,
@@ -39,6 +41,7 @@ export type TreeNodeStore = {
 	setChildren: Signals.setter<{ TreeNodeStore }>,
 	getAncestors: Signals.getter<{ TreeNodeStore }>,
 	getDescendants: Signals.getter<{ TreeNodeStore }>,
+	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
 	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
 	getParent: Signals.getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),

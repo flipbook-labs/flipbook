@@ -14,6 +14,7 @@ type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 type LoadedStory<T> = Storyteller.LoadedStory<T>
 
+local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
@@ -67,6 +68,14 @@ local function StorybookTreeView(props: Props)
 	local selectedNode = useSignalState(rootNode.getSelectedDescendants)[1]
 	local prevSelectedNode: TreeNodeStore? = usePrevious(selectedNode)
 
+	local filter = useCallback(function(node: TreeNodeStore)
+		if not props.searchTerm or props.searchTerm == "" then
+			return false
+		end
+
+		return node.getName(false):lower():match(props.searchTerm:lower()) == nil
+	end, { props.searchTerm })
+
 	-- Convert available storybooks into nodes
 	useEffect(function()
 		for _, storybook in props.storybooks.available do
@@ -116,11 +125,6 @@ local function StorybookTreeView(props: Props)
 			orphanedStories.parentTo(rootNode)
 		end
 	end, { props.orphanedStoryModules, rootNode } :: { unknown })
-
-	-- FIXME: Add simple filtering by string
-	-- useEffect(function()
-	-- 	rootNode.setFilter(props.searchTerm)
-	-- end, { props.searchTerm, rootNode } :: { unknown })
 
 	local wasLastStoryOpened = useRef(false)
 	useEffect(function()
@@ -186,6 +190,7 @@ local function StorybookTreeView(props: Props)
 
 	return React.createElement(TreeView.TreeView, {
 		root = rootNode,
+		filter = filter,
 		layoutOrder = props.layoutOrder,
 	})
 end

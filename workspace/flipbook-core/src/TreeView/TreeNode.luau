@@ -39,6 +39,7 @@ local function TreeNode(props: TreeNodeProps)
 	local isExpanded = useSignalState(props.node.getIsExpanded)
 	local isSelected = useSignalState(props.node.getIsSelected)
 	local isVisible = useSignalState(props.node.getIsVisible)
+	local isFiltered = useSignalState(props.node.getIsFiltered)
 	local name = useSignalState(props.node.getName)
 	local nodeChildren = useSignalState(props.node.getChildren)
 	local iconName, iconStyle = useTreeNodeIcon(icon :: Types.TreeNodeIcon)
@@ -142,7 +143,7 @@ local function TreeNode(props: TreeNodeProps)
 		return items
 	end, { isPinned, icon, nodeChildren, props.node } :: { unknown })
 
-	if not isVisible then
+	if isVisible == false or isFiltered == true then
 		return nil
 	end
 
