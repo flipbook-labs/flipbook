@@ -11,7 +11,4 @@ return {
 
 	-- Components
 	TreeView = require("@self/TreeView"),
-
-	-- Functions
-	findFirstAncestor = require("@self/findFirstAncestor"),
 }
