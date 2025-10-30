@@ -12,12 +12,12 @@ test("nodes can be parented to each other", function()
 	child.parentTo(parent)
 
 	expect(child.getParent(false)).toBe(parent)
-	expect(parent.getChildren(false)).toMatchObject({ child })
+	expect(parent.getChildren(false)).toEqual({ child })
 
 	child.parentTo(nil)
 
 	expect(child.getParent(false)).toBeUndefined()
-	expect(parent.getChildren(false)).never.toMatchObject({ child })
+	expect(parent.getChildren(false)).never.toEqual({ child })
 end)
 
 test("nodes can be named", function()
@@ -165,7 +165,7 @@ describe("hierarchy", function()
 			return node.getName(false) == "Match"
 		end)
 
-		expect(matches).toEqual({ descendant3 })
+		expect(matches).toEqual(descendant3)
 	end)
 
 	test("take a snapshotof the hierarchy", function()

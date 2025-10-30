@@ -6,15 +6,17 @@ local MockPlugin = require("@root/Testing/MockPlugin")
 local TreeView = require("@root/TreeView/TreeView")
 local createTreeNodeStore = require("@root/TreeView/createTreeNodeStore")
 local types = require("@root/TreeView/types")
+local useTreeNodeFilter = require("@root/TreeView/useTreeNodeFilter")
 
 local useCallback = React.useCallback
-local useEffect = React.useEffect
 local useState = React.useState
 
 type TreeNodeStore = types.TreeNodeStore
 
 local root = createTreeNodeStore()
 root.setName("<root>")
+
+local deepStory
 
 do
 	local pins = createTreeNodeStore()
@@ -64,7 +66,7 @@ do
 	folder3.setIcon(types.TreeNodeIcon.Folder)
 	folder3.parentTo(folder2)
 
-	local deepStory = createTreeNodeStore()
+	deepStory = createTreeNodeStore()
 	deepStory.setName("Deeply Nested Story")
 	deepStory.setIcon(types.TreeNodeIcon.Story)
 	deepStory.parentTo(folder3)
@@ -118,16 +120,26 @@ local function Story()
 	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
 
 	local onExpand = useCallback(function()
-		local node = root.getNodeById()
+		local node = root.findFirstDescendant(function(descendant)
+			return descendant.id == deepStory.id
+		end)
+
 		if node then
 			node.activate()
 			node.expandUp()
 		end
 	end, {})
 
-	useEffect(function()
-		root.setFilter(searchTerm)
-	end, { searchTerm } :: { unknown })
+	useTreeNodeFilter(
+		root,
+		useCallback(function(node: TreeNodeStore)
+			if not searchTerm or searchTerm == "" then
+				return false
+			end
+
+			return node.getName(false):lower():match(searchTerm:lower()) == nil
+		end, { searchTerm })
+	)
 
 	return React.createElement(Foundation.View, {
 		tag = "auto-y col gap-large",
