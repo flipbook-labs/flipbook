@@ -153,12 +153,14 @@ local function StorybookTreeView(props: Props)
 			return
 		end
 
+		print("lastOpenedStory", lastOpenedStory)
 		if lastOpenedStory then
 			local node = rootNode.findFirstDescendant(function(descendant)
 				return descendant.getInstance(false) == lastOpenedStory
 			end)
 
 			if node then
+				print("node for last opened story", node.getName(false))
 				wasLastStoryOpened.current = true
 				node.activate()
 			end
@@ -167,20 +169,31 @@ local function StorybookTreeView(props: Props)
 
 	useEffect(
 		function()
+			-- FIXME: Select a story, deselect, and try to select the same one
+			-- again. Might be an issue with node activation
+
 			if selectedNode ~= prevSelectedNode then
+				print("selection changed")
 				if props.onStoryChanged then
 					if selectedNode then
 						local icon = selectedNode.getIcon(false)
 						local instance = selectedNode.getInstance(false)
+
+						print("trying to open story from node", selectedNode.getName(false))
 
 						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
 							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
 								return ancestor.getIcon(false) == TreeView.TreeNodeIcon.Storybook
 							end)
 
+							print("storybookNode", storybookNode)
+
+							-- FIXME: When loading the last opened story,
+							-- storybookNode is nil for some reason
 							if storybookNode then
 								local storybook = storybookByNodeId.current[storybookNode.id]
 
+								print("setLastOpenedStory", instance)
 								props.onStoryChanged(instance, storybook)
 								setLastOpenedStory(instance)
 							end
