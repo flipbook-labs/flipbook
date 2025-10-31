@@ -329,6 +329,126 @@ describe("hierarchy", function()
 	end)
 end)
 
+describe("node sorting", function()
+	test("children are unsorted by default and just go off of parenting order", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		childC.parentTo(root)
+		childD.parentTo(root)
+		childA.parentTo(root)
+		childB.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ childC, childD, childA, childB })
+	end)
+
+	test("basic alphabetical sorting", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		-- Parent the nodes haphazardly to illustrate how they get sorted
+		childC.parentTo(root)
+		childD.parentTo(root)
+		childA.parentTo(root)
+		childB.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ childC, childD, childA, childB })
+
+		root.setSortOrder(function(a, b, scope)
+			return a.getName(scope) < b.getName(scope)
+		end)
+
+		expect(root.getChildren(false)).toEqual({ childA, childB, childC, childD })
+	end)
+
+	test("specifying the sort function will cascade down to descendants", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(root)
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		-- Parent the nodes haphazardly to illustrate how they get sorted
+		childC.parentTo(descendant2)
+		childD.parentTo(descendant2)
+		childA.parentTo(descendant2)
+		childB.parentTo(descendant2)
+
+		expect(descendant2.getChildren(false)).toEqual({ childC, childD, childA, childB })
+
+		root.setSortOrder(function(a, b, scope)
+			return a.getName(scope) < b.getName(scope)
+		end)
+
+		expect(descendant2.getChildren(false)).toEqual({ childA, childB, childC, childD })
+	end)
+
+	test("nodes are sorted as they get added", function()
+		local root = createTreeNodeStore()
+
+		root.setSortOrder(function(a, b, scope)
+			return a.getName(scope) < b.getName(scope)
+		end)
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		childB.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ childB })
+
+		childA.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ childA, childB })
+
+		childC.parentTo(root)
+
+		expect(root.getChildren(false)).toEqual({ childA, childB, childC })
+	end)
+end)
+
 describe("expand and collapse nodes", function()
 	test("calling expandDown on an ancestor node will expand all descendants", function()
 		local root = createTreeNodeStore()

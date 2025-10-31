@@ -7,12 +7,14 @@ local types = require("@root/TreeView/types")
 
 type TreeNodeStore = types.TreeNodeStore
 type TreeNodeSnapshot = types.TreeNodeSnapshot
+type TreeNodeIcon = types.TreeNodeIcon
+type TreeNodeSort = types.TreeNodeSort
 
 local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
 
 	local getName, setName = Signals.createSignal("Node")
-	local getIcon, setIcon = Signals.createSignal(nil :: types.TreeNodeIcon?)
+	local getIcon, setIcon = Signals.createSignal(nil :: TreeNodeIcon?)
 	local getIsSelected, setIsSelected = Signals.createSignal(false)
 	local getIsExpanded, setIsExpanded = Signals.createSignal(false)
 	local getIsVisible, setIsVisible = Signals.createSignal(true)
@@ -22,9 +24,24 @@ local function createTreeNodeStore(): TreeNodeStore
 	local getInstance, setInstance = Signals.createSignal(nil :: Instance?)
 
 	local getParent, setParent = Signals.createSignal(nil :: TreeNodeStore?)
-	local getChildren, setChildren = Signals.createSignal({} :: { TreeNodeStore })
+	local getUnsortedChildren, setUnsortedChildren = Signals.createSignal({} :: { TreeNodeStore })
+
+	local getSortOrder, setSortOrderSignal = Signals.createSignal(nil :: TreeNodeSort?)
 
 	local self: TreeNodeStore
+
+	local getChildren = Signals.createComputed(function(scope)
+		local children = table.clone(getUnsortedChildren(scope))
+		local sort = getSortOrder(scope)
+
+		if sort then
+			table.sort(children, function(a, b)
+				return sort(a, b, scope)
+			end)
+		end
+
+		return children
+	end)
 
 	local getAncestors = Signals.createComputed(function(scope)
 		local ancestors: { TreeNodeStore } = {}
@@ -40,7 +57,7 @@ local function createTreeNodeStore(): TreeNodeStore
 
 	local getDescendants = Signals.createComputed(function(scope)
 		local descendants: { TreeNodeStore } = {}
-		local stack = table.clone(getChildren(scope))
+		local stack = table.clone(getUnsortedChildren(scope))
 
 		while #stack > 0 do
 			local candidate = table.remove(stack)
@@ -52,6 +69,19 @@ local function createTreeNodeStore(): TreeNodeStore
 
 		return descendants
 	end)
+
+	local function setSortOrder(sort: TreeNodeSort?)
+		setSortOrderSignal(function()
+			return sort
+		end)
+
+		-- Because this isn't scoped newly added descendants won't have the same
+		-- sorting function. This is aleviated by parentTo assigning the new
+		-- parent's sorting function to the node being moved
+		for _, descendant in getDescendants(false) do
+			descendant.setSortOrder(sort)
+		end
+	end
 
 	local function createDescendantMatcher(
 		predicate: (descendant: TreeNodeStore, scope: Signals.scope) -> boolean?
@@ -123,6 +153,9 @@ local function createTreeNodeStore(): TreeNodeStore
 			newParent.setChildren(function(prev)
 				return Sift.List.join(prev, { self })
 			end)
+
+			-- Inherit the sorting function from the new parent
+			setSortOrder(newParent.getSortOrder(false))
 		end
 	end
 
@@ -148,7 +181,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function activate()
-		if #getChildren(false) > 0 then
+		if #getUnsortedChildren(false) > 0 then
 			setIsExpanded(function(prev)
 				return not prev
 			end)
@@ -169,7 +202,7 @@ local function createTreeNodeStore(): TreeNodeStore
 			children = {},
 		}
 
-		for _, child in getChildren(false) do
+		for _, child in getUnsortedChildren(false) do
 			table.insert(root.children, child.snapshot())
 		end
 
@@ -210,9 +243,11 @@ local function createTreeNodeStore(): TreeNodeStore
 		getPinnedDescendants = getPinnedDescendants,
 		getParent = getParent,
 		parentTo = parentTo,
-		setChildren = setChildren,
+		setChildren = setUnsortedChildren,
 		findFirstAncestor = findFirstAncestor,
 		findFirstDescendant = findFirstDescendant,
+		getSortOrder = getSortOrder,
+		setSortOrder = setSortOrder,
 
 		-- DataModel
 		getInstance = getInstance,
@@ -220,6 +255,7 @@ local function createTreeNodeStore(): TreeNodeStore
 
 		-- Other
 		snapshot = snapshot,
+		-- destroy = destroy,
 	}
 
 	return self

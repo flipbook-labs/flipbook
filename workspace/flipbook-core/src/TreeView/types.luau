@@ -15,6 +15,8 @@ types.TreeNodeIcon = {
 
 export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 
+export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore, scope: Signals.scope) -> boolean
+
 export type TreeNodeStore = {
 	id: string,
 
@@ -52,6 +54,8 @@ export type TreeNodeStore = {
 	parentTo: (newParent: TreeNodeStore?) -> (),
 	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
 	findFirstAncestor: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
+	getSortOrder: Signals.getter<TreeNodeSort?>,
+	setSortOrder: (sort: TreeNodeSort?) -> (),
 
 	-- DataModel
 	getInstance: Signals.getter<Instance?>,
@@ -59,6 +63,7 @@ export type TreeNodeStore = {
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,
+	-- destroy: () -> (),
 }
 
 export type TreeNodeSnapshot = {

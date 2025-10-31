@@ -8,6 +8,7 @@ local useTreeNodeFilter = require("@root/TreeView/useTreeNodeFilter")
 
 local useSignalState = SignalsReact.useSignalState
 local useCallback = React.useCallback
+local useEffect = React.useEffect
 local useRef = React.useRef
 
 type TreeNodeStore = types.TreeNodeStore
@@ -33,6 +34,18 @@ local function TreeView(props: Props)
 	end, {})
 
 	useTreeNodeFilter(props.root, props.filter)
+
+	useEffect(function()
+		props.root.setSortOrder(function(a: TreeNodeStore, b: TreeNodeStore, scope: SignalsReact.scope)
+			if a.getIcon(scope) ~= b.getIcon(scope) then
+				-- Sort by type
+				return a.getIcon(scope) < b.getIcon(scope)
+			else
+				-- Sort alphabetically
+				return a.getName(scope):lower() < b.getName(scope):lower()
+			end
+		end)
+	end, { props.root })
 
 	local children: { [string]: React.Node } = {}
 	for index, node in rootNodeChildren do

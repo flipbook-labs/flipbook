@@ -54,18 +54,7 @@ local function TreeNode(props: TreeNodeProps)
 	local children = useMemo(function()
 		local elements: { [string]: React.ReactNode } = {}
 
-		local sortedNodes = table.clone(nodeChildren)
-		table.sort(sortedNodes, function(a, b)
-			if a.getIcon(false) ~= b.getIcon(false) then
-				-- Sort by type
-				return a.getIcon(false) < b.getIcon(false)
-			else
-				-- Sort alphabetically
-				return a.getName(false):lower() < b.getName(false):lower()
-			end
-		end)
-
-		for index, childNode in sortedNodes do
+		for index, childNode in nodeChildren do
 			elements[childNode.getName(false)] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
