@@ -144,7 +144,7 @@ local function StorybookTreeView(props: Props)
 				node.setIcon(TreeView.TreeNodeIcon.Alert)
 				node.parentTo(unavailableStorybooks)
 
-				unavailableStorybookByNodeId.current[rootNode.id] = unavailableStorybook
+				unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
 			end
 
 			unavailableStorybooks.parentTo(rootNode)
