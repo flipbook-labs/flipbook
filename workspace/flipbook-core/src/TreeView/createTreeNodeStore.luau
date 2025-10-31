@@ -102,6 +102,11 @@ local function createTreeNodeStore(): TreeNodeStore
 		end)
 	end
 
+	local getRoot = Signals.createComputed(function(scope)
+		local ancestors = getAncestors(scope)
+		return ancestors[#ancestors]
+	end)
+
 	local getLeafNodes = createDescendantMatcher(function(descendant, scope)
 		return #descendant.getChildren(scope) == 0
 	end)
@@ -192,6 +197,15 @@ local function createTreeNodeStore(): TreeNodeStore
 				return not prev
 			end)
 		else
+			local root = getRoot(false)
+			if root then
+				for _, selection in root.getSelectedDescendants(false) do
+					if selection ~= self then
+						selection.setIsSelected(false)
+					end
+				end
+			end
+
 			setIsSelected(function(prev)
 				return not prev
 			end)

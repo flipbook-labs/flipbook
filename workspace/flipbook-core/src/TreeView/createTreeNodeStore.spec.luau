@@ -71,6 +71,46 @@ describe("node activation", function()
 		root.activate()
 		expect(root.getIsSelected(false)).toBe(true)
 	end)
+
+	-- Initially we were trying to allow any number of nodes to be selected at a
+	-- time but it was getting very difficult to juggle the selection state
+	-- across several nodes from consumers of TreeNodeStore.
+	--
+	-- In Flipbook's case, we only want one node selected at a time and we
+	-- currently have no features that would require multi-selection. So for now
+	-- we're going to only allow one selection, and in the future we can
+	-- look to loosen this restriction
+	test("only one node in a tree can be selected at a time", function()
+		local root = createTreeNodeStore()
+
+		local child1 = createTreeNodeStore()
+		child1.parentTo(root)
+
+		local child2 = createTreeNodeStore()
+		child2.parentTo(root)
+
+		expect(root.getSelectedNode(false)).toBeUndefined()
+		expect(child1.getIsSelected(false)).toBe(false)
+		expect(child2.getIsSelected(false)).toBe(false)
+
+		child1.activate()
+
+		expect(root.getSelectedNode(false)).toBe(child1)
+		expect(child1.getIsSelected(false)).toBe(true)
+		expect(child2.getIsSelected(false)).toBe(false)
+
+		child2.activate()
+
+		expect(root.getSelectedNode(false)).toBe(child2)
+		expect(child1.getIsSelected(false)).toBe(false)
+		expect(child2.getIsSelected(false)).toBe(true)
+
+		child2.activate()
+
+		expect(root.getSelectedNode(false)).toBeUndefined()
+		expect(child1.getIsSelected(false)).toBe(false)
+		expect(child2.getIsSelected(false)).toBe(false)
+	end)
 end)
 
 describe("hierarchy", function()
@@ -220,31 +260,6 @@ describe("hierarchy", function()
 		leaf2.parentTo(descendant1)
 
 		expect(root.getLeafNodes(false)).toEqual({ leaf2, leaf1 })
-	end)
-
-	test("getSelectedDescendants returns all selected descendants", function()
-		local root = createTreeNodeStore()
-
-		local child = createTreeNodeStore()
-		child.parentTo(root)
-
-		local leaf1 = createTreeNodeStore()
-		leaf1.parentTo(child)
-
-		local leaf2 = createTreeNodeStore()
-		leaf2.parentTo(child)
-
-		leaf1.setIsSelected(true)
-
-		expect(root.getSelectedDescendants(false)).toEqual({ leaf1 })
-
-		leaf2.setIsSelected(true)
-
-		expect(root.getSelectedDescendants(false)).toEqual({ leaf2, leaf1 })
-
-		leaf1.setIsSelected(false)
-
-		expect(root.getSelectedDescendants(false)).toEqual({ leaf2 })
 	end)
 
 	test("clear child nodes", function()

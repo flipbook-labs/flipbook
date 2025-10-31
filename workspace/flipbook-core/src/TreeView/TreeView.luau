@@ -7,9 +7,7 @@ local types = require("@root/TreeView/types")
 local useTreeNodeFilter = require("@root/TreeView/useTreeNodeFilter")
 
 local useSignalState = SignalsReact.useSignalState
-local useCallback = React.useCallback
 local useEffect = React.useEffect
-local useRef = React.useRef
 
 type TreeNodeStore = types.TreeNodeStore
 type TreeNodeFilter = types.TreeNodeFilter
@@ -22,16 +20,6 @@ export type Props = {
 
 local function TreeView(props: Props)
 	local rootNodeChildren = useSignalState(props.root.getChildren)
-	local lastSelectedNode = useRef(nil :: TreeNodeStore?)
-
-	local onNodeActivated = useCallback(function(node: TreeNodeStore)
-		if node.getIsSelected(false) then
-			if lastSelectedNode.current and node ~= lastSelectedNode.current then
-				lastSelectedNode.current.setIsSelected(false)
-			end
-			lastSelectedNode.current = node
-		end
-	end, {})
 
 	useTreeNodeFilter(props.root, props.filter)
 
@@ -51,7 +39,6 @@ local function TreeView(props: Props)
 	for index, node in rootNodeChildren do
 		children[node.id] = React.createElement(TreeNode, {
 			node = node,
-			onActivated = onNodeActivated,
 			LayoutOrder = index,
 		})
 	end
