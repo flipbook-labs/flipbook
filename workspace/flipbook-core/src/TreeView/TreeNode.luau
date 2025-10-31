@@ -112,14 +112,16 @@ local function TreeNode(props: TreeNodeProps)
 			})
 		end
 
-		table.insert(items, {
-			id = "select-in-explorer",
-			text = "Select in Explorer",
-			onActivated = function()
-				Selection:Set({ instance })
-				setIsContextMenuOpen(false)
-			end,
-		})
+		if instance then
+			table.insert(items, {
+				id = "select-in-explorer",
+				text = "Select in Explorer",
+				onActivated = function()
+					Selection:Set({ instance })
+					setIsContextMenuOpen(false)
+				end,
+			})
+		end
 
 		if #nodeChildren > 0 then
 			table.insert(items, {
@@ -141,7 +143,7 @@ local function TreeNode(props: TreeNodeProps)
 		end
 
 		return items
-	end, { isPinned, icon, nodeChildren, props.node } :: { unknown })
+	end, { isPinned, icon, instance, nodeChildren, props.node } :: { unknown })
 
 	if isVisible == false or isFiltered == true then
 		return nil
@@ -188,7 +190,7 @@ local function TreeNode(props: TreeNodeProps)
 				}),
 			}),
 
-			ContextMenu = if isContextMenuOpen
+			ContextMenu = if isContextMenuOpen and #contextMenuItems > 0
 				then React.createElement(Foundation.Menu, {
 					isOpen = true,
 					size = Foundation.Enums.InputSize.Medium,
