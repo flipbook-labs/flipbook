@@ -58,6 +58,19 @@ describe("node activation", function()
 		expect(root.getIsSelected(false)).toBe(false)
 		expect(root.getIsExpanded(false)).toBe(false)
 	end)
+
+	test("toggling nodes on/off/on", function()
+		local root = createTreeNodeStore()
+
+		root.activate()
+		expect(root.getIsSelected(false)).toBe(true)
+
+		root.activate()
+		expect(root.getIsSelected(false)).toBe(false)
+
+		root.activate()
+		expect(root.getIsSelected(false)).toBe(true)
+	end)
 end)
 
 describe("hierarchy", function()
