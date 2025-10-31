@@ -159,6 +159,12 @@ local function createTreeNodeStore(): TreeNodeStore
 		end
 	end
 
+	local function clearChildren()
+		for _, child in getChildren(false) do
+			child.parentTo(nil)
+		end
+	end
+
 	local function expandDown()
 		setIsExpanded(true)
 		for _, descendant in getDescendants(false) do
@@ -243,6 +249,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getPinnedDescendants = getPinnedDescendants,
 		getParent = getParent,
 		parentTo = parentTo,
+		clearChildren = clearChildren,
 		setChildren = setUnsortedChildren,
 		findFirstAncestor = findFirstAncestor,
 		findFirstDescendant = findFirstDescendant,

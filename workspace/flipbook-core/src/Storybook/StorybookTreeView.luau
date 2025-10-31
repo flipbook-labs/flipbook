@@ -111,12 +111,22 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pins, rootNode } :: { unknown })
 
+	local unavailableStorybooks = useMemo(function()
+		local node = TreeView.createTreeNodeStore()
+		node.setName("Unavailable Storybooks")
+		node.setIcon(TreeView.TreeNodeIcon.Folder)
+		node.setIsVisible(false)
+		node.parentTo(rootNode)
+
+		return node
+	end, { rootNode })
+
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
+		unavailableStorybooks.clearChildren()
+
 		if #props.storybooks.unavailable > 0 then
-			local unavailableStorybooks = TreeView.createTreeNodeStore()
-			unavailableStorybooks.setName("Unavailable Storybooks")
-			unavailableStorybooks.setIcon(TreeView.TreeNodeIcon.Folder)
+			unavailableStorybooks.setIsVisible(true)
 
 			for _, unavailableStorybook in props.storybooks.unavailable do
 				local node = TreeView.createTreeNodeStore()
@@ -128,24 +138,36 @@ local function StorybookTreeView(props: Props)
 			end
 
 			unavailableStorybooks.parentTo(rootNode)
+		else
+			unavailableStorybooks.setIsVisible(false)
 		end
-	end, { props.storybooks.unavailable })
+	end, { props.storybooks.unavailable, unavailableStorybooks })
+
+	local orphanedStories = useMemo(function()
+		local node = TreeView.createTreeNodeStore()
+		node.setName("Unknown Stories")
+		node.setIcon(TreeView.TreeNodeIcon.Folder)
+		node.setIsVisible(false)
+		node.parentTo(rootNode)
+
+		return node
+	end, { rootNode })
 
 	-- Convert orphaned stories into nodes
 	useEffect(function()
+		orphanedStories.clearChildren()
+
 		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
-			local orphanedStories = TreeView.createTreeNodeStore()
-			orphanedStories.setName("Unknown Stories")
-			orphanedStories.setIcon(TreeView.TreeNodeIcon.Folder)
+			orphanedStories.setIsVisible(true)
 
 			for _, orphan in props.orphanedStoryModules do
 				local node = createTreeNodeForStoryModule(orphan)
 				node.parentTo(orphanedStories)
 			end
-
-			orphanedStories.parentTo(rootNode)
+		else
+			orphanedStories.setIsVisible(false)
 		end
-	end, { props.orphanedStoryModules, rootNode } :: { unknown })
+	end, { props.orphanedStoryModules, orphanedStories } :: { unknown })
 
 	local wasLastStoryOpened = useRef(false)
 	useEffect(function()
@@ -153,14 +175,12 @@ local function StorybookTreeView(props: Props)
 			return
 		end
 
-		print("lastOpenedStory", lastOpenedStory)
 		if lastOpenedStory then
 			local node = rootNode.findFirstDescendant(function(descendant)
 				return descendant.getInstance(false) == lastOpenedStory
 			end)
 
 			if node then
-				print("node for last opened story", node.getName(false))
 				wasLastStoryOpened.current = true
 				node.activate()
 			end

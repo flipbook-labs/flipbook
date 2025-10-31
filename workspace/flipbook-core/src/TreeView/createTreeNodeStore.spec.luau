@@ -234,6 +234,22 @@ describe("hierarchy", function()
 		expect(root.getSelectedDescendants(false)).toEqual({ leaf2 })
 	end)
 
+	test("clear child nodes", function()
+		local root = createTreeNodeStore()
+
+		for i = 1, 5 do
+			local child = createTreeNodeStore()
+			child.setName(`Child {i}`)
+			child.parentTo(root)
+		end
+
+		expect(#root.getChildren(false)).toBe(5)
+
+		root.clearChildren()
+
+		expect(#root.getChildren(false)).toBe(0)
+	end)
+
 	test("take a snapshotof the hierarchy", function()
 		local root = createTreeNodeStore()
 
