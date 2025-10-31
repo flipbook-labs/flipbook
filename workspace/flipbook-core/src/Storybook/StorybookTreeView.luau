@@ -194,30 +194,20 @@ local function StorybookTreeView(props: Props)
 			-- again. Might be an issue with node activation
 
 			if selectedNode ~= prevSelectedNode then
-				print("selection changed")
 				if props.onStoryChanged then
 					if selectedNode then
 						local icon = selectedNode.getIcon(false)
 						local instance = selectedNode.getInstance(false)
-
-						print("trying to open story from node", selectedNode.getName(false))
 
 						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
 							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
 								return ancestor.getIcon(false) == TreeView.TreeNodeIcon.Storybook
 							end)
 
-							print("storybookNode", storybookNode)
+							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
 
-							-- FIXME: When loading the last opened story,
-							-- storybookNode is nil for some reason
-							if storybookNode then
-								local storybook = storybookByNodeId.current[storybookNode.id]
-
-								print("setLastOpenedStory", instance)
-								props.onStoryChanged(instance, storybook)
-								setLastOpenedStory(instance)
-							end
+							props.onStoryChanged(instance, storybook)
+							setLastOpenedStory(instance)
 						end
 					else
 						props.onStoryChanged(nil, nil)
