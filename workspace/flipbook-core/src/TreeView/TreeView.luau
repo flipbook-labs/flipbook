@@ -26,7 +26,7 @@ local function TreeView(props: Props)
 
 	local onNodeActivated = useCallback(function(node: TreeNodeStore)
 		if node.getIsSelected(false) then
-			if lastSelectedNode.current then
+			if lastSelectedNode.current and node ~= lastSelectedNode.current then
 				lastSelectedNode.current.setIsSelected(false)
 			end
 			lastSelectedNode.current = node
