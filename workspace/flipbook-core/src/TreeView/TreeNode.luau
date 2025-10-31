@@ -82,7 +82,7 @@ local function TreeNode(props: TreeNodeProps)
 			if instance then
 				if isPinned then
 					pinnedInstanceStore.unpin(instance)
-					props.node.setIsPinned(true)
+					props.node.setIsPinned(false)
 				else
 					pinnedInstanceStore.pin(instance)
 					props.node.setIsPinned(true)
