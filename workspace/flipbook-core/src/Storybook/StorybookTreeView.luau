@@ -183,6 +183,7 @@ local function StorybookTreeView(props: Props)
 			if node then
 				wasLastStoryOpened.current = true
 				node.activate()
+				node.expandUp()
 			end
 		end
 	end, { lastOpenedStory, rootNode } :: { unknown })
