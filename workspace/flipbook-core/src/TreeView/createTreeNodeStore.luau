@@ -255,7 +255,6 @@ local function createTreeNodeStore(): TreeNodeStore
 
 		-- Other
 		snapshot = snapshot,
-		-- destroy = destroy,
 	}
 
 	return self
