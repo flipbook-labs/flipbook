@@ -45,7 +45,7 @@ local function StorybookTreeView(props: Props)
 		return node
 	end, {})
 
-	local pins = useMemo(function()
+	local pinned = useMemo(function()
 		local node = TreeView.createTreeNodeStore()
 		node.setName("Pinned")
 		node.setIcon(TreeView.TreeNodeIcon.Pin)
@@ -56,7 +56,27 @@ local function StorybookTreeView(props: Props)
 		return node
 	end, { rootNode })
 
-	local pinnedChildren = useSignalState(pins.getChildren)
+	local unavailableStorybooks = useMemo(function()
+		local node = TreeView.createTreeNodeStore()
+		node.setName("Unavailable Storybooks")
+		node.setIcon(TreeView.TreeNodeIcon.Folder)
+		node.setIsVisible(false)
+		node.parentTo(rootNode)
+
+		return node
+	end, { rootNode })
+
+	local unknownStories = useMemo(function()
+		local node = TreeView.createTreeNodeStore()
+		node.setName("Unknown Stories")
+		node.setIcon(TreeView.TreeNodeIcon.Folder)
+		node.setIsVisible(false)
+		node.parentTo(rootNode)
+
+		return node
+	end, { rootNode })
+
+	local pinnedChildren = useSignalState(pinned.getChildren)
 	local pinnedNodes = useSignalState(rootNode.getPinnedDescendants)
 	local prevPinnedNodes = usePrevious(pinnedNodes)
 
@@ -74,7 +94,7 @@ local function StorybookTreeView(props: Props)
 	-- There can be pinned paths that were never apart of the current DataModel,
 	-- so only add the "Pinned" root if there are children to show
 	useEffect(function()
-		pins.setIsVisible(#pinnedChildren > 0)
+		pinned.setIsVisible(#pinnedChildren > 0)
 	end, { pinnedChildren } :: { unknown })
 
 	-- This handles automatically moving a node under the Pinned node once the
@@ -91,10 +111,10 @@ local function StorybookTreeView(props: Props)
 			end
 
 			for _, node in pinnedNodes do
-				node.parentTo(pins)
+				node.parentTo(pinned)
 			end
 		end
-	end, { pinnedNodes, prevPinnedNodes, pins, rootNode } :: { unknown })
+	end, { pinnedNodes, prevPinnedNodes, pinned, rootNode } :: { unknown })
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
@@ -104,22 +124,12 @@ local function StorybookTreeView(props: Props)
 
 			if pinnedInstanceStore.isPinned(storybook.source) then
 				node.setIsPinned(true)
-				node.parentTo(pins)
+				node.parentTo(pinned)
 			else
 				node.parentTo(rootNode)
 			end
 		end
-	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pins, rootNode } :: { unknown })
-
-	local unavailableStorybooks = useMemo(function()
-		local node = TreeView.createTreeNodeStore()
-		node.setName("Unavailable Storybooks")
-		node.setIcon(TreeView.TreeNodeIcon.Folder)
-		node.setIsVisible(false)
-		node.parentTo(rootNode)
-
-		return node
-	end, { rootNode })
+	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
@@ -143,31 +153,21 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.storybooks.unavailable, unavailableStorybooks })
 
-	local orphanedStories = useMemo(function()
-		local node = TreeView.createTreeNodeStore()
-		node.setName("Unknown Stories")
-		node.setIcon(TreeView.TreeNodeIcon.Folder)
-		node.setIsVisible(false)
-		node.parentTo(rootNode)
-
-		return node
-	end, { rootNode })
-
 	-- Convert orphaned stories into nodes
 	useEffect(function()
-		orphanedStories.clearChildren()
+		unknownStories.clearChildren()
 
 		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
-			orphanedStories.setIsVisible(true)
+			unknownStories.setIsVisible(true)
 
 			for _, orphan in props.orphanedStoryModules do
 				local node = createTreeNodeForStoryModule(orphan)
-				node.parentTo(orphanedStories)
+				node.parentTo(unknownStories)
 			end
 		else
-			orphanedStories.setIsVisible(false)
+			unknownStories.setIsVisible(false)
 		end
-	end, { props.orphanedStoryModules, orphanedStories } :: { unknown })
+	end, { props.orphanedStoryModules, unknownStories } :: { unknown })
 
 	local wasLastStoryOpened = useRef(false)
 	useEffect(function()
