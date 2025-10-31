@@ -190,9 +190,6 @@ local function StorybookTreeView(props: Props)
 
 	useEffect(
 		function()
-			-- FIXME: Select a story, deselect, and try to select the same one
-			-- again. Might be an issue with node activation
-
 			if selectedNode ~= prevSelectedNode then
 				if props.onStoryChanged then
 					if selectedNode then
