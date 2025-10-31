@@ -49,7 +49,7 @@ local function TreeView(props: Props)
 
 	local children: { [string]: React.Node } = {}
 	for index, node in rootNodeChildren do
-		children[node.getName(false)] = React.createElement(TreeNode, {
+		children[node.id] = React.createElement(TreeNode, {
 			node = node,
 			onActivated = onNodeActivated,
 			LayoutOrder = index,
