@@ -89,25 +89,25 @@ describe("node activation", function()
 		local child2 = createTreeNodeStore()
 		child2.parentTo(root)
 
-		expect(root.getSelectedNode(false)).toBeUndefined()
+		expect(root.getSelectedDescendants(false)).toEqual({})
 		expect(child1.getIsSelected(false)).toBe(false)
 		expect(child2.getIsSelected(false)).toBe(false)
 
 		child1.activate()
 
-		expect(root.getSelectedNode(false)).toBe(child1)
+		expect(root.getSelectedDescendants(false)).toEqual({ child1 })
 		expect(child1.getIsSelected(false)).toBe(true)
 		expect(child2.getIsSelected(false)).toBe(false)
 
 		child2.activate()
 
-		expect(root.getSelectedNode(false)).toBe(child2)
+		expect(root.getSelectedDescendants(false)).toEqual({ child2 })
 		expect(child1.getIsSelected(false)).toBe(false)
 		expect(child2.getIsSelected(false)).toBe(true)
 
 		child2.activate()
 
-		expect(root.getSelectedNode(false)).toBeUndefined()
+		expect(root.getSelectedDescendants(false)).toEqual({})
 		expect(child1.getIsSelected(false)).toBe(false)
 		expect(child2.getIsSelected(false)).toBe(false)
 	end)
