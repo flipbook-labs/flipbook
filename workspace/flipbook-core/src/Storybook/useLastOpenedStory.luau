@@ -5,6 +5,7 @@ local SignalsReact = require("@rbxpkg/SignalsReact")
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
+local getInstancePath = require("@root/Common/getInstancePath")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
@@ -20,7 +21,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?)
 		localStorageStore.setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
-				lastOpenedStoryPath = if storyModule then storyModule:GetFullName() else nil,
+				lastOpenedStoryPath = if storyModule then getInstancePath(storyModule) else nil,
 			})
 		end)
 	end, { localStorageStore })
@@ -43,7 +44,7 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 		end
 
 		return nil
-	end, { localStorage, localStorageStore } :: { unknown })
+	end, { userSettings, localStorage } :: { unknown })
 
 	return lastOpenedStory, setLastOpenedStory
 end
