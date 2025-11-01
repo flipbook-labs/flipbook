@@ -153,6 +153,10 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.storybooks.unavailable, unavailableStorybooks })
 
+	-- TODO: Unknown Stories seem to be gobbling up all the nodes on the initial
+	-- render, which is making the last opened story logic attempt to open the
+	-- story from the wrong location.
+
 	-- Convert orphaned stories into nodes
 	useEffect(function()
 		unknownStories.clearChildren()
@@ -169,24 +173,36 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.orphanedStoryModules, unknownStories } :: { unknown })
 
+	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)
-	useEffect(function()
-		if wasLastStoryOpened.current then
-			return
-		end
-
-		if lastOpenedStory then
-			local node = rootNode.findFirstDescendant(function(descendant)
-				return descendant.getInstance(false) == lastOpenedStory
-			end)
-
-			if node then
-				wasLastStoryOpened.current = true
-				node.activate()
-				node.expandUp()
+	local descendants = useSignalState(rootNode.getDescendants)
+	useEffect(
+		function()
+			if wasLastStoryOpened.current then
+				return
 			end
-		end
-	end, { lastOpenedStory, rootNode } :: { unknown })
+
+			if lastOpenedStory then
+				local node = rootNode.findFirstDescendant(function(descendant)
+					return descendant.getInstance(false) == lastOpenedStory
+				end)
+
+				if node then
+					wasLastStoryOpened.current = true
+					node.activate()
+					node.expandUp()
+				end
+			end
+		end,
+		{
+			lastOpenedStory,
+			rootNode,
+			-- This value isn't used in the effect body but is necessary so that
+			-- the effect will run again if the last opened story has not but
+			-- found yet
+			descendants,
+		} :: { unknown }
+	)
 
 	useEffect(
 		function()

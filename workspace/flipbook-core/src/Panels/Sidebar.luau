@@ -37,8 +37,17 @@ local function Sidebar(props: SidebarProps)
 	-- updated into a `useOrphanedStoryModules` hook that will update based on
 	-- .story modules being added/removed from the DM.
 	local orphanedStoryModules = useMemo(function()
+		-- FIXME: On the first render, Storyteller returns empty arrays for both
+		-- available and unavailable storybooks, which consequently means when
+		-- we go to find all the orphaned stories we get back a list of _all_
+		-- stories. To work around this, we wait until there is at least one
+		-- available or unavailable story before searching for orphans.
+		if #props.storybooks.available == 0 and #props.storybooks.unavailable == 0 then
+			return {}
+		end
+
 		return Storyteller.findOrphanedStoryModules(game, props.storybooks.available)
-	end, { props.storybooks.available })
+	end, { props.storybooks.available, props.storybooks.unavailable } :: { unknown })
 
 	return e(
 		View,
