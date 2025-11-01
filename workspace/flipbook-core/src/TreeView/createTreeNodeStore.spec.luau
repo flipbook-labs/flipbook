@@ -278,6 +278,26 @@ describe("hierarchy", function()
 		expect(#root.getChildren(false)).toBe(0)
 	end)
 
+	test("get the node's full path as a string", function()
+		local root = createTreeNodeStore()
+		root.setName("<root>")
+
+		local leaf = createTreeNodeStore()
+		leaf.setName("Leaf")
+
+		local parent = root
+		for i = 1, 3 do
+			local child = createTreeNodeStore()
+			child.setName(`Child{i}`)
+			child.parentTo(parent)
+			parent = child
+		end
+
+		leaf.parentTo(parent)
+
+		expect(leaf.getPath(false)).toBe("<root>/Child1/Child2/Child3/Leaf")
+	end)
+
 	test("take a snapshotof the hierarchy", function()
 		local root = createTreeNodeStore()
 

@@ -111,6 +111,14 @@ local function createTreeNodeStore(): TreeNodeStore
 		return ancestors[#ancestors]
 	end)
 
+	local getPath = Signals.createComputed(function(scope)
+		local path = getName(scope)
+		for _, ancestor in getAncestors(scope) do
+			path = `{ancestor.getName(scope)}/{path}`
+		end
+		return path
+	end)
+
 	local getLeafNodes = createDescendantMatcher(function(descendant, scope)
 		return #descendant.getChildren(scope) == 0
 	end)
@@ -273,6 +281,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		findFirstDescendant = findFirstDescendant,
 		getSortOrder = getSortOrder,
 		setSortOrder = setSortOrder,
+		getPath = getPath,
 
 		-- DataModel
 		getInstance = getInstance,

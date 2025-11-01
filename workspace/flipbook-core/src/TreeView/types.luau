@@ -48,6 +48,7 @@ export type TreeNodeStore = {
 	getAncestors: Signals.getter<{ TreeNodeStore }>,
 	getDescendants: Signals.getter<{ TreeNodeStore }>,
 	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
+	getPath: Signals.getter<string>,
 	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
 	getPinnedDescendants: Signals.getter<{ TreeNodeStore }>,
 	getParent: Signals.getter<TreeNodeStore?>,
