@@ -153,10 +153,6 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { props.storybooks.unavailable, unavailableStorybooks })
 
-	-- TODO: Unknown Stories seem to be gobbling up all the nodes on the initial
-	-- render, which is making the last opened story logic attempt to open the
-	-- story from the wrong location.
-
 	-- Convert orphaned stories into nodes
 	useEffect(function()
 		unknownStories.clearChildren()
