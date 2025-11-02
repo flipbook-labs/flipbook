@@ -50,8 +50,6 @@ local function installRobloxPackages()
 		"Signals",
 		"-d",
 		"SignalsReact",
-		"-d",
-		"ReactUtils",
 
 		"-d",
 		"Promise",

@@ -3,6 +3,7 @@ local HttpService = game:GetService("HttpService")
 local Signals = require("@rbxpkg/Signals")
 
 local PluginStore = require("@root/Plugin/PluginStore")
+local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
@@ -33,14 +34,21 @@ local function createPluginSettingsStore<T>(
 	local getErr, setErr = Signals.createSignal(nil :: string?)
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
+		logger:Info(`reading plugin settings for {storageKey} from disk...`)
+
 		local data = plugin:GetSetting(storageKey)
 
+		logger:Debug(`read raw plugin settings for {storageKey}:`, data)
+
 		if typeof(data) == "string" then
+			logger:Info(`deserializing plugin settings for {storageKey} to object...`)
+
 			local success, result = pcall(function()
 				return HttpService:JSONDecode(data)
 			end)
 
 			if not success then
+				logger:Warn(`failed to load plugin settings for {storageKey}:`, result)
 				setErr(result)
 				return nil
 			end
@@ -48,19 +56,35 @@ local function createPluginSettingsStore<T>(
 			local isValid, message = validate(result)
 
 			if not isValid then
+				logger:Warn(`plugin settings are malformed for {storageKey}:`, message)
 				setErr(message)
 				return nil
 			end
 
+			logger:Info(`got plugin settings for {storageKey}:`, result)
+
 			return result
 		end
+
+		logger:Info("no plugin settings to read")
+
 		return nil
 	end
 
 	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
+		logger:Info("writing plugin settings to disk...")
 		local data = HttpService:JSONEncode(storage)
+
 		if data then
-			plugin:SetSetting(storageKey, data)
+			local success, err = pcall(function()
+				plugin:SetSetting(storageKey, data)
+			end)
+
+			if success then
+				logger:Info(`wrote plugin settings to disk: {data}`)
+			else
+				logger:Warn(`failed to write plugin settings to disk: {err}`)
+			end
 		end
 	end
 
@@ -76,6 +100,7 @@ local function createPluginSettingsStore<T>(
 					if data then
 						setStorage(data)
 					end
+					logger:Debug("finished loading plugin settings")
 					setIsLoading(false)
 				end)
 			end
