@@ -10,7 +10,7 @@ local function stringToLogLevel(logLevel: string)
 	elseif logLevel == "err" or logLevel == "error" then
 		return Log.LogLevel.Error
 	end
-	return Log.LogLevel.Information
+	return Log.LogLevel.Warning
 end
 
 local logger = Log.Logger.new({
@@ -18,10 +18,11 @@ local logger = Log.Logger.new({
 		return "flipbook", nil
 	end),
 	Log.Common.Enrichers.LogLevelEnricher(),
+	Log.Common.Enrichers.DynSourceEnricher(true),
 }, {
 	Log.Common.RobloxLogSink(),
 }, {
-	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Warning),
+	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
 })
 
 return logger
