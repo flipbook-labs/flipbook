@@ -18,15 +18,15 @@ on:
       build_version:
         description: "The version of Flipbook the feedback is being sent from"
         type: string
-        required: true
+        required: false
       build_channel:
         description: "The channel the feedback is being sent from"
         type: string
-        required: true
+        required: false
       build_hash:
         description: "The hash the feedback is being sent from"
         type: string
-        required: true
+        required: false
 
 jobs:
   post-issue:
@@ -49,8 +49,8 @@ jobs:
 
             Build info:
 
-            - Version: ${{ inputs.build_version }}
-            - Channel: ${{ inputs.build_channel }}
-            - Hash: ${{ inputs.build_hash }}
+            - Version: ${{ inputs.build_version || 'undefined' }}
+            - Channel: ${{ inputs.build_channel || 'undefined' }}
+            - Hash: ${{ inputs.build_hash || 'undefined' }}
 
             <sub>Posted on behalf of Roblox user ${{ inputs.user_id }}</sub>

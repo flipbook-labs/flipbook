@@ -5,7 +5,7 @@ local requestAsync = require("@root/Http/requestAsync")
 local function postFeedbackAsync(title: string, body: string)
 	local buildInfo = getBuildInfo()
 
-	requestAsync(`{_G.BASE_URL}/feedback`, {
+	return requestAsync(`{_G.BASE_URL}/feedback`, {
 		method = "POST",
 		body = {
 			title = title,
