@@ -1,4 +1,4 @@
-local canAccess = require("@root/RobloxInternal/canAccess")
+local canAccess = require("@root/Permissions/canAccess")
 
 local function tryGetService(serviceName: string): Instance?
 	local service: Instance?

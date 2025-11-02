@@ -1,4 +1,4 @@
-local tryGetService = require("@root/RobloxInternal/tryGetService")
+local tryGetService = require("@root/Permissions/tryGetService")
 
 -- selene: allow(incorrect_standard_library_use)
 type InternalSyncService = typeof(game:GetService("InternalSyncService"))
