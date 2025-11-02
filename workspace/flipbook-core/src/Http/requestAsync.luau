@@ -1,7 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
 local Sift = require("@pkg/Sift")
-local logging = require("@root/logging")
+local logger = require("@root/logger")
 
 local function requestAsync(
 	url: string,
@@ -26,7 +26,7 @@ local function requestAsync(
 		end
 	end
 
-	logging:Debug(`{requestOptions.method} {url}`)
+	logger:Debug(`{requestOptions.method} {url}`)
 	local res
 	local success, err = pcall(function()
 		res = HttpService:RequestAsync({
@@ -38,10 +38,10 @@ local function requestAsync(
 	end)
 
 	if not success then
-		logging:Warn("failed to communicate with backend:", err)
+		logger:Warn("failed to communicate with backend:", err)
 	end
 	if res and not res.Success then
-		logging:Warn("failed sending event to backend:", res.StatusMessage)
+		logger:Warn("failed sending event to backend:", res.StatusMessage)
 	end
 
 	return res

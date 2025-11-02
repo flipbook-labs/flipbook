@@ -1,6 +1,6 @@
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getAnonymizedUserId = require("@root/Telemetry/getAnonymizedUserId")
-local logging = require("@root/logging")
+local logger = require("@root/logger")
 local requestAsync = require("@root/Http/requestAsync")
 local types = require("@root/Telemetry/types")
 
@@ -23,7 +23,7 @@ local function fireEventAsync(event: TelemetryEvent)
 		buildHash = _G.BUILD_HASH,
 	}
 
-	logging:Info(`firing event {event.eventName}`)
+	logger:Info(`firing event {event.eventName}`)
 
 	return requestAsync(`{_G.BASE_URL}/telemetry`, {
 		method = "POST",

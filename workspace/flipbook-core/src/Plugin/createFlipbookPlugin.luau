@@ -4,7 +4,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
-local logging = require("@root/logging")
+local logger = require("@root/logger")
 
 local function stopwatch(callback: () -> ()): string
 	local start = os.clock()
@@ -24,11 +24,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	})
 
 	local function unmount()
-		logging:Info("unmounting app...")
+		logger:Info("unmounting app...")
 		local elapsedMs = stopwatch(function()
 			root:unmount()
 		end)
-		logging:Info(`unmounted app in {elapsedMs}`)
+		logger:Info(`unmounted app in {elapsedMs}`)
 
 		task.spawn(function()
 			fireEventAsync({
@@ -38,11 +38,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function mount()
-		logging:Info("mounting app...")
+		logger:Info("mounting app...")
 		local elapsedMs = stopwatch(function()
 			root:render(app)
 		end)
-		logging:Info(`mounted app in {elapsedMs}`)
+		logger:Info(`mounted app in {elapsedMs}`)
 
 		task.spawn(function()
 			fireEventAsync({
@@ -83,7 +83,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
-		logging:Info("destroying app...")
+		logger:Info("destroying app...")
 		local elapsedMs = stopwatch(function()
 			unmount()
 
@@ -91,7 +91,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 				connection:Disconnect()
 			end
 		end)
-		logging:Info(`destroyed app in {elapsedMs}`)
+		logger:Info(`destroyed app in {elapsedMs}`)
 	end
 
 	return {
