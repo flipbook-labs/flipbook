@@ -22,7 +22,7 @@ local logger = Log.Logger.new({
 	Log.LogSink.new(function(event)
 		LogsStore.get(false).addLine(event)
 	end),
-	Log.Common.RobloxLogSink(), -- TODO: Only use this during development
+	if _G.BUILD_CHANNEL == "development" then Log.Common.RobloxLogSink() else nil,
 }, {
 	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
 })
