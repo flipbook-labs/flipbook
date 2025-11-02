@@ -1,6 +1,6 @@
 local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@rbxpkg/LuauPolyfill")
+local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")

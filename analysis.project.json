@@ -7,8 +7,8 @@
         "$path": "workspace"
       },
 
-      "Lune": {
-        "$path": ".lune"
+      "Scripts": {
+        "$path": "scripts"
       },
 
       "Flipbook": {

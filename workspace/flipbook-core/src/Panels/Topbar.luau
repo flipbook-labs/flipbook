@@ -1,9 +1,11 @@
-local AboutView = require("@root/About/AboutView")
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@rbxpkg/LuauPolyfill")
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
+
+local AboutView = require("@root/About/AboutView")
+local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
+local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
@@ -40,6 +42,7 @@ local function Topbar(props: TopbarProps)
 
 	local isAboutMenuOpen, setIsAboutMenuOpen = useState(false)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
+	local isFeedbackDialogOpen, setIsFeedbackDialogOpen = useState(false)
 
 	local navigation = NavigationContext.use()
 	local storyActions = StoryActionsContext.useStoryActions()
@@ -224,6 +227,14 @@ local function Topbar(props: TopbarProps)
 				}),
 			}),
 
+			FeedbackDialog = if isFeedbackDialogOpen
+				then React.createElement(FeedbackDialog, {
+					onClose = function()
+						setIsFeedbackDialogOpen(false)
+					end,
+				})
+				else nil,
+
 			HelpMenu = e(Menu, {
 				anchorRef = helpButtonRef,
 				isOpen = isHelpMenuOpen,
@@ -233,6 +244,14 @@ local function Topbar(props: TopbarProps)
 						text = "About",
 						onActivated = function()
 							setIsAboutMenuOpen(true)
+							setIsHelpMenuOpen(false)
+						end,
+					},
+					{
+						id = "Feedback",
+						text = "Send feedback",
+						onActivated = function()
+							setIsFeedbackDialogOpen(true)
 							setIsHelpMenuOpen(false)
 						end,
 					},

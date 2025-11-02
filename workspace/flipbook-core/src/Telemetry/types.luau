@@ -39,6 +39,18 @@ export type TelemetryOptedOut = {
 	eventName: "TelemetryOptedOut",
 }
 
+export type FeedbackDialogOpened = {
+	eventName: "FeedbackDialogOpened",
+}
+
+export type FeedbackSubmitted = {
+	eventName: "FeedbackSubmitted",
+}
+
+export type FeedbackDiscarded = {
+	eventName: "FeedbackDiscarded",
+}
+
 export type TelemetryEvent =
 	AppOpened
 	| AppClosed
@@ -49,5 +61,8 @@ export type TelemetryEvent =
 	| StoryOpened
 	| TelemetryOptedIn
 	| TelemetryOptedOut
+	| FeedbackDialogOpened
+	| FeedbackSubmitted
+	| FeedbackDiscarded
 
 return nil
