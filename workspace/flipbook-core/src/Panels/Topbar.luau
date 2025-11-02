@@ -255,6 +255,17 @@ local function Topbar(props: TopbarProps)
 							setIsHelpMenuOpen(false)
 						end,
 					},
+					{
+						id = "Logs",
+						text = "Logs",
+						onActivated = function()
+							if navigation.currentScreen ~= "Settings" then
+								navigation.navigateTo("Logs")
+							else
+								navigation.navigateTo("Home")
+							end
+						end,
+					},
 				},
 				onPressedOutside = function()
 					setIsHelpMenuOpen(function(currentValue)

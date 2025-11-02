@@ -1,5 +1,7 @@
 local Log = require("@pkg/Log")
 
+local LogsStore = require("@root/Logs/LogsStore")
+
 local function stringToLogLevel(logLevel: string)
 	if logLevel == "info" then
 		return Log.LogLevel.Information
@@ -14,13 +16,13 @@ local function stringToLogLevel(logLevel: string)
 end
 
 local logger = Log.Logger.new({
-	Log.LogEnricher.new(function(_event)
-		return "flipbook", nil
-	end),
 	Log.Common.Enrichers.LogLevelEnricher(),
 	Log.Common.Enrichers.DynSourceEnricher(true),
 }, {
-	Log.Common.RobloxLogSink(),
+	Log.LogSink.new(function(event)
+		LogsStore.get(false).addLine(event)
+	end),
+	Log.Common.RobloxLogSink(), -- TODO: Only use this during development
 }, {
 	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
 })
