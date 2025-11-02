@@ -13,8 +13,8 @@ type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
 
 -- Lute's `task.spawn` doesn't actually seem to return a thread. When the return
--- value would get to `coroutine.status` it would fail from the vlaue being a
--- function.
+-- value would get to `coroutine.status` it would fail with the following:
+-- "invalid argument #1 to 'status' (thread expected, got function)"
 local function taskSpawn(callback: () -> ()): thread
 	local thread = coroutine.create(callback)
 	coroutine.resume(thread)
