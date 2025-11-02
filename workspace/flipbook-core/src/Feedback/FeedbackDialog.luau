@@ -24,6 +24,8 @@ local function FeedbackDialog(props: Props)
 	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
+	local isSendingFeedback, setIsSendingFeedback = useState(false)
+	local err: string?, setErr = useState(nil :: string?)
 
 	local wasChanged = title ~= "" or body ~= "" or isAcknowledgedByUser ~= false
 
@@ -50,18 +52,30 @@ local function FeedbackDialog(props: Props)
 	end, {})
 
 	local onSubmit = useCallback(function()
+		if isSendingFeedback then
+			return
+		end
+
 		if title ~= "" and body ~= "" and isAcknowledgedByUser then
-			setIsSuccessDialogOpen(true)
+			setErr(nil)
+			setIsSendingFeedback(true)
 
 			task.spawn(function()
-				postFeedbackAsync(title, body)
+				local res = postFeedbackAsync(title, body)
 
-				fireEventAsync({
-					eventName = "FeedbackSubmitted",
-				})
+				setIsSendingFeedback(false)
+
+				if res.Success then
+					setIsSuccessDialogOpen(true)
+					fireEventAsync({
+						eventName = "FeedbackSubmitted",
+					})
+				else
+					setErr("Failed to submit feedback. Please try again later")
+				end
 			end)
 		end
-	end, { title, body, isAcknowledgedByUser } :: { unknown })
+	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
 
 	useEffect(function()
 		task.spawn(function()
@@ -115,6 +129,14 @@ local function FeedbackDialog(props: Props)
 							size = Foundation.Enums.InputSize.Small,
 							LayoutOrder = nextLayoutOrder(),
 						}),
+
+						ErrorMessage = if err
+							then React.createElement(Foundation.Text, {
+								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-medium content-alert",
+								Text = err,
+								LayoutOrder = nextLayoutOrder(),
+							})
+							else nil,
 					}),
 				}),
 
@@ -127,8 +149,7 @@ local function FeedbackDialog(props: Props)
 						},
 						{
 							variant = Foundation.Enums.ButtonVariant.Emphasis,
-							text = "Submit",
-
+							text = if isSendingFeedback then "Submitting..." else "Submit",
 							onActivated = onSubmit,
 						},
 					},
