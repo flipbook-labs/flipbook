@@ -264,6 +264,7 @@ local function Topbar(props: TopbarProps)
 							else
 								navigation.navigateTo("Home")
 							end
+							setIsHelpMenuOpen(false)
 						end,
 					},
 				},
