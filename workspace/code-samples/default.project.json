@@ -1,0 +1,9 @@
+{
+  "name": "code-samples",
+  "tree": {
+    "Packages": {
+      "$path": "Packages"
+    },
+    "$path": "src"
+  }
+}

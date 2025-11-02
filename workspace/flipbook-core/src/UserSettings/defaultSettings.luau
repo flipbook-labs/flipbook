@@ -1,0 +1,146 @@
+local constants = require("@root/constants")
+
+export type SettingType = "checkbox" | "dropdown" | "number"
+
+local SettingType = {
+	Checkbox = "checkbox" :: "checkbox",
+	Dropdown = "dropdown" :: "dropdown",
+	Number = "number" :: "number",
+}
+
+export type SettingGroup = "UI" | "Stories" | "Telemetry"
+
+local SettingGroup = {
+	UI = "UI" :: "UI",
+	Stories = "Stories" :: "Stories",
+	Telemetry = "Telemetry" :: "Telemetry",
+}
+
+export type SettingChoice = {
+	description: string,
+	displayName: string,
+	name: string,
+}
+
+type BaseSetting = {
+	name: string,
+	group: SettingGroup,
+	displayName: string,
+	description: string,
+	settingType: SettingType,
+}
+
+type CheckboxSetting = BaseSetting & {
+	settingType: "checkbox",
+	value: boolean,
+}
+
+type DropdownSetting = BaseSetting & {
+	settingType: "dropdown",
+	choices: { SettingChoice },
+}
+
+type NumberSetting = BaseSetting & {
+	settingType: "number",
+	range: NumberRange?,
+	value: number,
+}
+
+export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
+
+-- local expandNodesOnStart: Setting = {
+-- 	name = "expandNodesOnStart",
+-- 	displayName = "Expand nodes on start",
+-- 	description = "Re-open the storybooks and folders from before",
+-- 	settingType = SettingType.Dropdown,
+-- 	choices = {
+-- 		{
+-- 			name = "off",
+-- 			description = "Keep all explorer nodes closed on startup",
+-- 		},
+-- 		{
+-- 			name = "all",
+-- 			description = "All explorer nodes are opened on startup",
+-- 		},
+-- 		{
+-- 			name = "lastOpened",
+-- 			description = "Reopen the nodes that were opened from previous sessions on startup",
+-- 		},
+-- 	},
+-- }
+
+local rememberLastOpenedStory: CheckboxSetting = {
+	name = "rememberLastOpenedStory",
+	group = SettingGroup.Stories,
+	displayName = "Remember last opened story",
+	description = "Open the last viewed story when starting",
+	settingType = SettingType.Checkbox,
+	value = true,
+}
+
+local theme: DropdownSetting = {
+	name = "theme",
+	group = SettingGroup.UI,
+	displayName = "UI theme",
+	description = "Select the UI theme to use. By default, Flipbook will use the same theme as Studio",
+	settingType = SettingType.Dropdown,
+	choices = {
+		{
+			name = "system",
+			displayName = "System",
+			description = "Match the theme selected for Studio",
+		},
+		{
+			name = "dark",
+			displayName = "Dark",
+			description = "Force the theme to use dark mode",
+		},
+		{
+			name = "light",
+			displayName = "Light",
+			description = "Force the theme to use light mode",
+		},
+	},
+}
+
+local sidebarWidth: NumberSetting = {
+	group = SettingGroup.UI,
+	name = "sidebarWidth",
+	displayName = "Sidebar panel width",
+	description = `The default width (in pixels) of the sidebar. This can be between {constants.SIDEBAR_MIN_WIDTH}-{constants.SIDEBAR_MAX_WIDTH} px`,
+	settingType = SettingType.Number,
+	range = NumberRange.new(constants.SIDEBAR_MIN_WIDTH, constants.SIDEBAR_MAX_WIDTH),
+	value = constants.SIDEBAR_INITIAL_WIDTH,
+}
+
+local controlsHeight: NumberSetting = {
+	group = SettingGroup.UI,
+	name = "controlsHeight",
+	displayName = "Controls panel height",
+	description = `The default height (in pixels) of the 'Controls' panel. This can be between {constants.CONTROLS_MIN_HEIGHT}-{constants.CONTROLS_MAX_HEIGHT} px`,
+	settingType = SettingType.Number,
+	range = NumberRange.new(constants.CONTROLS_MIN_HEIGHT, constants.CONTROLS_MAX_HEIGHT),
+	value = constants.CONTROLS_INITIAL_HEIGHT,
+}
+
+local collectAnonymousUsageData: CheckboxSetting = {
+	name = "collectAnonymousUsageData",
+	group = SettingGroup.Telemetry,
+	displayName = "Help improve Flipbook by sending anonymous usage data",
+	description = "Allow Flipbook to collect anonymous usage data to help improve the product. No personal data or story content is collected",
+	settingType = SettingType.Checkbox,
+	value = true,
+}
+
+local settings = {
+	-- expandNodesOnStart = expandNodesOnStart,
+	rememberLastOpenedStory = rememberLastOpenedStory,
+	theme = theme,
+	sidebarWidth = sidebarWidth,
+	controlsHeight = controlsHeight,
+	collectAnonymousUsageData = collectAnonymousUsageData,
+}
+
+export type Settings = typeof(settings)
+
+return settings

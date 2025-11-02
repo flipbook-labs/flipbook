@@ -15,9 +15,12 @@ globalTypes.d.luau
 # Wally
 DevPackages
 Packages
-wally.lock
 
-# Rbxasset
+# Package managers
+*.lock
+
+# Luau packages
+LuauPackages
 LunePackages
 
 # Roblox Packages

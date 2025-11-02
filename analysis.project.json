@@ -3,25 +3,15 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "Packages": {
-        "$path": "code-samples/Packages"
-      },
-      "CodeSamples": {
-        "$path": "code-samples"
+      "Workspace": {
+        "$path": "workspace"
       },
 
-      "Lune": {
-        "$path": ".lune"
+      "Scripts": {
+        "$path": "scripts"
       },
 
       "Flipbook": {
-        "TestRunner": {
-          "$path": "tests"
-        },
-        "Example": {
-          "$path": "example"
-        },
-
         "$path": "build.project.json"
       }
     }

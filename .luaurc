@@ -1,10 +1,11 @@
 {
 	"languageMode": "strict",
 	"aliases": {
-		"pkg": "./Packages",
-		"rbxpkg": "./RobloxPackages",
-		"lunepkg": "./LunePackages",
-		"root": "./src",
-		"lune": "~/.lune/.typedefs/0.9.4/"
+		"lune": "~/.lune/.typedefs/0.9.4/",
+		"lute": "~/.lute/typedefs/0.1.0/",
+		"batteries": "./LuauPackages/batteries",
+		"luaupkg": "./LuauPackages",
+		"repo": ".",
+		"workspace": "./workspace"
 	}
 }
