@@ -7,6 +7,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local createOnboardingStorybook = require("@root/Storybook/createOnboardingStorybook")
 local getMostLikelyProjectSources = require("@root/RobloxInternal/getMostLikelyProjectSources")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local IconName = Foundation.Enums.IconName
 local InputSize = Foundation.Enums.InputSize
@@ -52,7 +53,7 @@ local function Sidebar(props: SidebarProps)
 		}),
 		{
 			Search = e(View, {
-				LayoutOrder = 1,
+				LayoutOrder = nextLayoutOrder(),
 				tag = "auto-y padding-x-medium padding-y-large size-full-0",
 			}, {
 				SearchBar = e(TextInput, {
@@ -68,7 +69,6 @@ local function Sidebar(props: SidebarProps)
 
 			--if #props.storybooks.available == 0
 			CreateStorybook = React.createElement(Foundation.Button, {
-				layoutOrder = nextLayoutOrder(),
 				text = "Create Storybook",
 				onActivated = function()
 					local source = getMostLikelyProjectSources()[1]
@@ -79,10 +79,11 @@ local function Sidebar(props: SidebarProps)
 						createOnboardingStorybook(string.gsub(game.Name, "%.", "_"), ReplicatedStorage)
 					end
 				end,
+				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			Content = e(ScrollView, {
-				LayoutOrder = 2,
+				LayoutOrder = nextLayoutOrder(),
 				scroll = {
 					AutomaticCanvasSize = Enum.AutomaticSize.Y,
 					CanvasSize = UDim2.fromScale(0, 0),
