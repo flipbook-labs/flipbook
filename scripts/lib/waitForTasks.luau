@@ -8,7 +8,7 @@ local function waitForTasks(tasks: { thread })
 				table.remove(running, index)
 			end
 		end
-		task.wait(0.2)
+		task.wait()
 	end
 end
 

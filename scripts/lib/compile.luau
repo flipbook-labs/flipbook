@@ -1,7 +1,6 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 local project = require("@repo/project")
-local task = require("@lute/task")
 local toml = require("@batteries/toml")
 
 local find = require("./find")
@@ -12,6 +11,15 @@ local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
 
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
+
+-- Lute's `task.spawn` doesn't actually seem to return a thread. When the return
+-- value would get to `coroutine.status` it would fail from the vlaue being a
+-- function.
+local function taskSpawn(callback: () -> ()): thread
+	local thread = coroutine.create(callback)
+	coroutine.resume(thread)
+	return thread
+end
 
 local function compileWorkspaceMember(
 	memberPath: string,
@@ -39,7 +47,7 @@ local function compileWorkspaceMember(
 
 	table.insert(
 		tasks,
-		task.spawn(function()
+		taskSpawn(function()
 			print(`[{memberPath}] copying Packages...`)
 
 			local packagesPath = `{memberPath}/Packages`
@@ -51,7 +59,7 @@ local function compileWorkspaceMember(
 
 	table.insert(
 		tasks,
-		task.spawn(function()
+		taskSpawn(function()
 			print(`[{memberPath}] copying RobloxPackages...`)
 
 			local robloxPackagesPath = `{memberPath}/RobloxPackages`
@@ -66,7 +74,7 @@ local function compileWorkspaceMember(
 	if channel == "prod" then
 		table.insert(
 			tasks,
-			task.spawn(function()
+			taskSpawn(function()
 				print(`[{memberPath}] pruning development files...`)
 
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
@@ -81,7 +89,7 @@ local function compileWorkspaceMember(
 	if target == "rotriever" then
 		table.insert(
 			tasks,
-			task.spawn(function()
+			taskSpawn(function()
 				print(`[{memberPath}] renaming .luau files for Rotriever compatibility...`)
 
 				-- Rotriever does not support .luau files, so rename them to .lua for
@@ -144,7 +152,7 @@ local function compile(channel: Channel, target: Target)
 		if member.type == "dir" then
 			table.insert(
 				tasks,
-				task.spawn(function()
+				taskSpawn(function()
 					local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
 					run("mkdir", { "-p", `{dest}/{memberPath}` })
 					run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
@@ -153,6 +161,7 @@ local function compile(channel: Channel, target: Target)
 		end
 	end
 
+	print("wait for tasks...")
 	waitForTasks(tasks)
 
 	print("successfully compiled workspace members")
