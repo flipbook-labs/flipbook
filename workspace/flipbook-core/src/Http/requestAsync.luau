@@ -26,7 +26,7 @@ local function requestAsync(
 		end
 	end
 
-	logging.debug(`{requestOptions.method} {url}`)
+	logging:Debug(`{requestOptions.method} {url}`)
 	local res
 	local success, err = pcall(function()
 		res = HttpService:RequestAsync({
@@ -38,10 +38,10 @@ local function requestAsync(
 	end)
 
 	if not success then
-		logging.warn("failed to communicate with backend:", err)
+		logging:Warn("failed to communicate with backend:", err)
 	end
 	if res and not res.Success then
-		logging.warn("failed sending event to backend:", res.StatusMessage)
+		logging:Warn("failed sending event to backend:", res.StatusMessage)
 	end
 
 	return res

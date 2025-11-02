@@ -24,11 +24,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	})
 
 	local function unmount()
-		logging.info("unmounting app...")
+		logging:Info("unmounting app...")
 		local elapsedMs = stopwatch(function()
 			root:unmount()
 		end)
-		logging.info(`unmounted app in {elapsedMs}`)
+		logging:Info(`unmounted app in {elapsedMs}`)
 
 		task.spawn(function()
 			fireEventAsync({
@@ -38,11 +38,11 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function mount()
-		logging.info("mounting app...")
+		logging:Info("mounting app...")
 		local elapsedMs = stopwatch(function()
 			root:render(app)
 		end)
-		logging.info(`mounted app in {elapsedMs}`)
+		logging:Info(`mounted app in {elapsedMs}`)
 
 		task.spawn(function()
 			fireEventAsync({
@@ -83,7 +83,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
-		logging.info("destroying app...")
+		logging:Info("destroying app...")
 		local elapsedMs = stopwatch(function()
 			unmount()
 
@@ -91,7 +91,7 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 				connection:Disconnect()
 			end
 		end)
-		logging.info(`destroyed app in {elapsedMs}`)
+		logging:Info(`destroyed app in {elapsedMs}`)
 	end
 
 	return {

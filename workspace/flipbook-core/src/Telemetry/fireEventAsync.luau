@@ -23,7 +23,7 @@ local function fireEventAsync(event: TelemetryEvent)
 		buildHash = _G.BUILD_HASH,
 	}
 
-	logging.info(`firing event {event.eventName}`)
+	logging:Info(`firing event {event.eventName}`)
 
 	return requestAsync(`{_G.BASE_URL}/telemetry`, {
 		method = "POST",

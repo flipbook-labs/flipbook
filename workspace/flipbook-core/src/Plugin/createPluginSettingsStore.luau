@@ -34,21 +34,21 @@ local function createPluginSettingsStore<T>(
 	local getErr, setErr = Signals.createSignal(nil :: string?)
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
-		logging.info(`reading plugin settings for {storageKey} from disk...`)
+		logging:Info(`reading plugin settings for {storageKey} from disk...`)
 
 		local data = plugin:GetSetting(storageKey)
 
-		logging.debug(`read raw plugin settings for {storageKey}: {data}`)
+		logging:Debug(`read raw plugin settings for {storageKey}:`, data)
 
 		if typeof(data) == "string" then
-			logging.info(`deserializing plugin settings for {storageKey} to object...`)
+			logging:Info(`deserializing plugin settings for {storageKey} to object...`)
 
 			local success, result = pcall(function()
 				return HttpService:JSONDecode(data)
 			end)
 
 			if not success then
-				logging.warn(`failed to load plugin settings for {storageKey}: {result}`)
+				logging:Warn(`failed to load plugin settings for {storageKey}:`, result)
 				setErr(result)
 				return nil
 			end
@@ -56,23 +56,23 @@ local function createPluginSettingsStore<T>(
 			local isValid, message = validate(result)
 
 			if not isValid then
-				logging.warn(`plugin settings are malformed for {storageKey}: {message}`)
+				logging:Warn(`plugin settings are malformed for {storageKey}:`, message)
 				setErr(message)
 				return nil
 			end
 
-			logging.info(`got plugin settings for {storageKey}: {result}`)
+			logging:Info(`got plugin settings for {storageKey}:`, result)
 
 			return result
 		end
 
-		logging.info("no plugin settings to read")
+		logging:Info("no plugin settings to read")
 
 		return nil
 	end
 
 	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
-		logging.info("writing plugin settings to disk...")
+		logging:Info("writing plugin settings to disk...")
 		local data = HttpService:JSONEncode(storage)
 
 		if data then
@@ -81,9 +81,9 @@ local function createPluginSettingsStore<T>(
 			end)
 
 			if success then
-				logging.info(`wrote plugin settings to disk: {data}`)
+				logging:Info(`wrote plugin settings to disk: {data}`)
 			else
-				logging.warn(`failed to write plugin settings to disk: {err}`)
+				logging:Warn(`failed to write plugin settings to disk: {err}`)
 			end
 		end
 	end
@@ -100,7 +100,7 @@ local function createPluginSettingsStore<T>(
 					if data then
 						setStorage(data)
 					end
-					logging.debug("finished loading plugin settings")
+					logging:Debug("finished loading plugin settings")
 					setIsLoading(false)
 				end)
 			end

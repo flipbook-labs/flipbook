@@ -24,22 +24,4 @@ local logger = Log.Logger.new({
 	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL) or Log.LogLevel.Warning),
 })
 
-local logging = {}
-
-function logging.debug(...: any)
-	logger:Debug(...)
-end
-
-function logging.info(...: any)
-	logger:Info(...)
-end
-
-function logging.warn(...: any)
-	logger:Warn(...)
-end
-
-function logging.err(...: any)
-	logger:Error(...)
-end
-
-return logging
+return logger
