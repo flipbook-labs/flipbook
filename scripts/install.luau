@@ -43,7 +43,7 @@ local function installRobloxPackages()
 		"install",
 		"RobloxPackagesTmp",
 		"--version",
-		"0.693.0.6930961",
+		"0.697.0.6970925",
 		"-d",
 		"Foundation",
 		"-d",
