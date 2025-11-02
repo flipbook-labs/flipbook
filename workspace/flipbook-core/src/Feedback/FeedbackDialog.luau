@@ -20,14 +20,16 @@ type IssueType = "bug" | "feature" | "feedback" | "other"
 
 local function FeedbackDialog(props: Props)
 	local title, setTitle = useState("" :: string?)
+	local wasTitleChanged, setWasTitleChanged = useState(false)
 	local body, setBody = useState("" :: string?)
+	local wasBodyChanged, setWasBodyChanged = useState(false)
 	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
 	local err: string?, setErr = useState(nil :: string?)
 
-	local wasChanged = title ~= "" or body ~= "" or isAcknowledgedByUser ~= false
+	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 
 	local onCancel = useCallback(function()
 		if wasChanged then
@@ -77,6 +79,22 @@ local function FeedbackDialog(props: Props)
 		end
 	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
 
+	local onTitleChanged = useCallback(function(text)
+		if text ~= title then
+			setTitle(function(prev)
+				return if prev ~= text then text else prev
+			end)
+			setWasTitleChanged(true)
+		end
+	end, { title })
+
+	local onBodyChanged = useCallback(function(text)
+		if text ~= body then
+			setBody(text)
+			setWasBodyChanged(true)
+		end
+	end, { body })
+
 	useEffect(function()
 		task.spawn(function()
 			fireEventAsync({
@@ -103,22 +121,22 @@ local function FeedbackDialog(props: Props)
 						Title = React.createElement(Foundation.TextInput, {
 							label = "Title",
 							text = title,
-							hasError = title == "",
+							hasError = wasTitleChanged and title == "",
 							isRequired = true,
 							hint = "Enter a breif summary of the feedback you're giving",
 							placeholder = "Enter title...",
-							onChanged = setTitle,
+							onChanged = onTitleChanged,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
 						Body = React.createElement(Foundation.TextInput, {
 							label = "Body",
 							text = body,
-							hasError = body == "",
+							hasError = wasBodyChanged and body == "",
 							isRequired = true,
 							hint = "Let us know what's on your mind. This can be a feature request, bug report, or any other feedback you'd like to give",
 							placeholder = "Enter feedback...",
-							onChanged = setBody,
+							onChanged = onBodyChanged,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
