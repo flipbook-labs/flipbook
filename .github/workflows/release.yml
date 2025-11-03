@@ -62,7 +62,7 @@ jobs:
         run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 5
     concurrency: nightly
     environment:
