@@ -21,7 +21,6 @@ run("rojo", {
 
 local defaultArgs = {
 	"analyze",
-	`--sourcemap={project.SOURCEMAP_PATH}`,
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",
 	`--ignore="**/_Index/**"`,
@@ -31,6 +30,7 @@ local defaultArgs = {
 
 do
 	local args = table.clone(defaultArgs)
+	table.insert(args, "--platform=standard")
 	table.insert(args, "--flag:LuauSolverV2=true")
 	table.insert(args, project.SCRIPTS_PATH)
 
@@ -39,6 +39,7 @@ end
 
 do
 	local args = table.clone(defaultArgs)
+	table.insert(args, `--sourcemap={project.SOURCEMAP_PATH}`)
 	table.insert(args, project.SOURCE_PATH)
 	table.insert(args, project.WORKSPACE_PATH)
 

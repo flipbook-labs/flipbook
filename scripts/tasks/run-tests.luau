@@ -1,3 +1,5 @@
+--!nonstrict
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- This path is defined in tests.project.json
