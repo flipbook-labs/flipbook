@@ -51,7 +51,9 @@ jobs:
         run: lune setup
 
       - name: Setup Lute typedefs
-        run: lute setup
+        run: |
+          lute setup
+          mv .lute/ ~/.lute
 
       - name: Lint
         run: lute scripts/lint.luau
