@@ -14,7 +14,7 @@ run("curl", {
 
 run("rojo", {
 	"sourcemap",
-	project.ROJO_ANALYSIS_PROJECT,
+	project.ROJO_BUILD_PROJECT,
 	"-o",
 	project.SOURCEMAP_PATH,
 })
