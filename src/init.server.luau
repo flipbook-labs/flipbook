@@ -6,7 +6,7 @@ end
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` {_G.BUILD_HASH}` else ""
+local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` [{_G.BUILD_HASH}]` else ""
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
