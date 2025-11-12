@@ -43,7 +43,7 @@ local function SettingRow(props: Props)
 				onActivated = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
-			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.MenuItem
+			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.DropdownItem
 				return {
 					id = choice.name,
 					text = choice.displayName,
