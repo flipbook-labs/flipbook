@@ -93,7 +93,7 @@ local function installRobloxPackages()
 end
 
 local function installLuteBatteries()
-	local commit = "8f67b04"
+	local commit = "7f5ccf7"
 	local batteries = {
 		"cli.luau",
 		"toml.luau",
