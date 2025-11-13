@@ -19,6 +19,7 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = SignalsReact.useSignalState
+local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
@@ -26,7 +27,6 @@ export type Props = {
 		available: { LoadedStorybook },
 		unavailable: { UnavailableStorybook },
 	},
-	orphanedStoryModules: { ModuleScript }?,
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
@@ -36,6 +36,7 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
+	local orphanedStoryModules = useOrphanedStoryModules(game, props.storybooks.available)
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -157,17 +158,17 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		unknownStories.clearChildren()
 
-		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
+		if orphanedStoryModules and #orphanedStoryModules > 0 then
 			unknownStories.setIsVisible(true)
 
-			for _, orphan in props.orphanedStoryModules do
+			for _, orphan in orphanedStoryModules do
 				local node = createTreeNodeForStoryModule(orphan)
 				node.parentTo(unknownStories)
 			end
 		else
 			unknownStories.setIsVisible(false)
 		end
-	end, { props.orphanedStoryModules, unknownStories } :: { unknown })
+	end, { orphanedStoryModules, unknownStories } :: { unknown })
 
 	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)

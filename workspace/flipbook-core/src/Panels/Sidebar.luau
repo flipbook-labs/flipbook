@@ -12,8 +12,8 @@ local withCommonProps = Foundation.Utility.withCommonProps
 
 local e = React.createElement
 local useCallback = React.useCallback
-local useMemo = React.useMemo
 local useState = React.useState
+local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -32,22 +32,6 @@ local function Sidebar(props: SidebarProps)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
-
-	-- Right now we just respond to available storybook changes. This should be
-	-- updated into a `useOrphanedStoryModules` hook that will update based on
-	-- .story modules being added/removed from the DM.
-	local orphanedStoryModules = useMemo(function()
-		-- FIXME: On the first render, Storyteller returns empty arrays for both
-		-- available and unavailable storybooks, which consequently means when
-		-- we go to find all the orphaned stories we get back a list of _all_
-		-- stories. To work around this, we wait until there is at least one
-		-- available or unavailable story before searching for orphans.
-		if #props.storybooks.available == 0 and #props.storybooks.unavailable == 0 then
-			return {}
-		end
-
-		return Storyteller.findOrphanedStoryModules(game, props.storybooks.available)
-	end, { props.storybooks.available, props.storybooks.unavailable } :: { unknown })
 
 	return e(
 		View,
@@ -82,7 +66,6 @@ local function Sidebar(props: SidebarProps)
 				StorybookTreeView = e(StorybookTreeView, {
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
-					orphanedStoryModules = orphanedStoryModules,
 					searchTerm = searchTerm,
 					storybooks = props.storybooks,
 				}),
