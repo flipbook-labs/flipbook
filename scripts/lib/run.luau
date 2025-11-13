@@ -17,7 +17,7 @@ local function run(program: string, params: { string }, options: Options?): stri
 		table.unpack(params),
 	}, {
 		shell = true,
-		stdio = if options and options.stdio then options.stdio else nil,
+		stdio = if options and options.stdio then options.stdio else "inherit",
 		cwd = if options then options.cwd else nil,
 		env = if options then options.env else nil,
 	})
