@@ -13,7 +13,6 @@ local withCommonProps = Foundation.Utility.withCommonProps
 local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
-local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
