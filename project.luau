@@ -12,7 +12,6 @@ return {
 	SOURCEMAP_PATH = "sourcemap.json",
 	DARKLUA_SOURCEMAP_PATH = "sourcemap-darklua.json",
 
-	ROJO_ANALYSIS_PROJECT = "analysis.project.json",
 	ROJO_BUILD_PROJECT = "build.project.json",
 	ROJO_TESTS_PROJECT = "tests.project.json",
 
