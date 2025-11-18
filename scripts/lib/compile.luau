@@ -163,7 +163,6 @@ local function compile(channel: Channel, target: Target)
 		end
 	end
 
-	print("wait for tasks...")
 	waitForTasks(tasks)
 
 	print("successfully compiled workspace members")
