@@ -16,9 +16,6 @@ globalTypes.d.luau
 DevPackages
 Packages
 
-# Package managers
-*.lock
-
 # Luau packages
 LuauPackages
 LunePackages
