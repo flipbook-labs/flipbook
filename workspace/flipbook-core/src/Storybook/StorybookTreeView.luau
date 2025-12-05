@@ -36,7 +36,7 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
-	local orphanedStoryModules = useOrphanedStoryModules(game, props.storybooks.available)
+	local orphanedStoryModules = useOrphanedStoryModules()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
