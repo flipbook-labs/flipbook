@@ -1,4 +1,5 @@
 local React = require("@pkg/React")
+local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 
 local AboutView = require("@root/About/AboutView")
@@ -7,6 +8,8 @@ local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryCanvas = require("@root/Storybook/StoryCanvas")
 local StorybookError = require("@root/Storybook/StorybookError")
+
+local useSignalState = SignalsReact.useSignalState
 
 local useMemo = React.useMemo
 
@@ -23,14 +26,14 @@ local function Screen()
 
 	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then
-			if props.story and props.storybook then
+			if activeStory and activeStorybook then
 				return React.createElement(StoryCanvas, {
-					story = props.story,
-					storybook = props.storybook,
+					story = activeStory,
+					storybook = activeStorybook,
 				})
-			elseif props.unavailableStorybook then
+			elseif unavailableStorybook then
 				return React.createElement(StorybookError, {
-					unavailableStorybook = props.unavailableStorybook,
+					unavailableStorybook = unavailableStorybook,
 				})
 			else
 				return React.createElement(NoStorySelected)
@@ -41,7 +44,7 @@ local function Screen()
 			return React.createElement(AboutView)
 		end
 		return nil :: never
-	end, { props, currentScreen } :: { unknown })
+	end, { currentScreen } :: { unknown })
 
 	return screenElement
 end

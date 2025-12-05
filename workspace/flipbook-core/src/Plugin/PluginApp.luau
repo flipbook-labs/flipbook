@@ -3,7 +3,6 @@ local React = require("@pkg/React")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 
-local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
@@ -12,7 +11,6 @@ local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = SignalsReact.useSignalState
@@ -23,6 +21,8 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 local function App()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+	local flipbookStore = useSignalState(FlipbookStore.get)
+	local storyModule = useSignalState(flipbookStore.getStoryModule)
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",

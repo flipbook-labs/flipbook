@@ -3,9 +3,11 @@ local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
+local NavigationContext = require("@root/Navigation/NavigationContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -19,17 +21,8 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = SignalsReact.useSignalState
-
-local function useOrphanedStoryModules(parent: Instance): { ModuleScript }
-	local storybooks = Storyteller.useStorybooks(parent)
-	return useMemo(function()
-		if storybooks.isLoading then
-			return {}
-		end
-
-		return Storyteller.findOrphanedStoryModules(game, storybooks.available)
-	end, { storybooks.isLoading, storybooks.available } :: { unknown })
-end
+local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
+local useStorybooks = Storyteller.useStorybooks
 
 export type Props = {
 	searchTerm: string?,
@@ -40,21 +33,18 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
-	local storybooks = Storyteller.useStorybooks(game)
-	local orphanedStoryModules = useOrphanedStoryModules(game)
+	local storybooks = useStorybooks()
+	local orphanedStoryModules = useOrphanedStoryModules()
+	local navigation = NavigationContext.use()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
-	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
-	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
-	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
-		React.useState(nil :: UnavailableStorybook?)
-	local navigation = NavigationContext.use()
+	local flipbookStore = useSignalState(FlipbookStore.get)
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
 
-		setUnavailableStorybook(nil)
+		flipbookStore.setUnavailableStorybook(nil)
 
 		if newStoryModule and not newStorybook then
 			newStorybook = defaultStorybook
@@ -66,14 +56,14 @@ local function StorybookTreeView(props: Props)
 			})
 		end)
 
-		setStoryModule(newStoryModule)
-		setStorybook(newStorybook)
+		flipbookStore.setStoryModule(newStoryModule)
+		flipbookStore.setStorybook(newStorybook)
 	end, { navigation.navigateTo } :: { unknown })
 
 	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
-		setStoryModule(nil)
-		setStorybook(nil)
-		setUnavailableStorybook(newUnavailableStorybook)
+		flipbookStore.setStoryModule(nil)
+		flipbookStore.setStorybook(nil)
+		flipbookStore.setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
 	local rootNode = useMemo(function()
