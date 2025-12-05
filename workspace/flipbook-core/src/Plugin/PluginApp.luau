@@ -12,7 +12,6 @@ local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
-local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -21,43 +20,9 @@ local useSignalState = SignalsReact.useSignalState
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-local defaultStorybook = createLoadedStorybook()
-
 local function App()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
-
-	local storybooks = Storyteller.useStorybooks(game)
-	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
-	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
-	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
-		React.useState(nil :: UnavailableStorybook?)
-	local navigation = NavigationContext.use()
-
-	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
-		navigation.navigateTo("Home")
-
-		setUnavailableStorybook(nil)
-
-		if newStoryModule and not newStorybook then
-			newStorybook = defaultStorybook
-		end
-
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "StoryOpened",
-			})
-		end)
-
-		setStoryModule(newStoryModule)
-		setStorybook(newStorybook)
-	end, { navigation.navigateTo } :: { unknown })
-
-	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
-		setStoryModule(nil)
-		setStorybook(nil)
-		setUnavailableStorybook(newUnavailableStorybook)
-	end, {})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
@@ -72,11 +37,7 @@ local function App()
 				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
-				Sidebar = React.createElement(Sidebar, {
-					onStoryChanged = onStoryChanged,
-					onShowErrorPage = onShowErrorPage,
-					storybooks = storybooks,
-				}),
+				Sidebar = React.createElement(Sidebar),
 			}),
 
 			MainWrapper = React.createElement(Foundation.View, {
@@ -91,11 +52,7 @@ local function App()
 					LayoutOrder = nextLayoutOrder(),
 					tag = "size-full shrink",
 				}, {
-					Screen = React.createElement(Screen, {
-						story = storyModule,
-						storybook = storybook,
-						unavailableStorybook = unavailableStorybook,
-					}),
+					Screen = React.createElement(Screen),
 				}),
 			}),
 		}),
@@ -104,4 +61,4 @@ local function App()
 	})
 end
 
-return App
+return React.memo(App)

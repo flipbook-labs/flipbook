@@ -13,15 +13,13 @@ local useMemo = React.useMemo
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-export type Props = {
-	story: ModuleScript?,
-	storybook: LoadedStorybook?,
-	unavailableStorybook: UnavailableStorybook?,
-}
-
-local function Screen(props: Props)
+local function Screen()
 	local navigation = NavigationContext.use()
 	local currentScreen = navigation.currentScreen
+
+	local flipbookStore = useSignalState(FlipbookStore.get)
+	local activeStory = useSignalState(flipbookStore.getActiveStory)
+	local activeStorybook = useSignalState(flipbookStore.getActiveStorybook)
 
 	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then

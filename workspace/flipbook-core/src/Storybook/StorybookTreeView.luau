@@ -20,15 +20,19 @@ local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = SignalsReact.useSignalState
 
+local function useOrphanedStoryModules(parent: Instance): { ModuleScript }
+	local storybooks = Storyteller.useStorybooks(parent)
+	return useMemo(function()
+		if storybooks.isLoading then
+			return {}
+		end
+
+		return Storyteller.findOrphanedStoryModules(game, storybooks.available)
+	end, { storybooks.isLoading, storybooks.available } :: { unknown })
+end
+
 export type Props = {
 	searchTerm: string?,
-	storybooks: {
-		available: { LoadedStorybook },
-		unavailable: { UnavailableStorybook },
-	},
-	orphanedStoryModules: { ModuleScript }?,
-	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
-	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
 
@@ -36,8 +40,41 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
+	local storybooks = Storyteller.useStorybooks(game)
+	local orphanedStoryModules = useOrphanedStoryModules(game)
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+
+	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
+	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
+		React.useState(nil :: UnavailableStorybook?)
+	local navigation = NavigationContext.use()
+
+	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
+		navigation.navigateTo("Home")
+
+		setUnavailableStorybook(nil)
+
+		if newStoryModule and not newStorybook then
+			newStorybook = defaultStorybook
+		end
+
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "StoryOpened",
+			})
+		end)
+
+		setStoryModule(newStoryModule)
+		setStorybook(newStorybook)
+	end, { navigation.navigateTo } :: { unknown })
+
+	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
+		setStoryModule(nil)
+		setStorybook(nil)
+		setUnavailableStorybook(newUnavailableStorybook)
+	end, {})
 
 	local rootNode = useMemo(function()
 		local node = TreeView.createTreeNodeStore()
@@ -118,7 +155,7 @@ local function StorybookTreeView(props: Props)
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
-		for _, storybook in props.storybooks.available do
+		for _, storybook in storybooks.available do
 			local node = createTreeNodesForStorybook(storybook :: any)
 			storybookByNodeId.current[node.id] = storybook :: any
 
@@ -129,16 +166,16 @@ local function StorybookTreeView(props: Props)
 				node.parentTo(rootNode)
 			end
 		end
-	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
+	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
 		unavailableStorybooks.clearChildren()
 
-		if #props.storybooks.unavailable > 0 then
+		if #storybooks.unavailable > 0 then
 			unavailableStorybooks.setIsVisible(true)
 
-			for _, unavailableStorybook in props.storybooks.unavailable do
+			for _, unavailableStorybook in storybooks.unavailable do
 				local node = TreeView.createTreeNodeStore()
 				node.setName(unavailableStorybook.storybook.name)
 				node.setIcon(TreeView.TreeNodeIcon.Alert)
@@ -151,23 +188,23 @@ local function StorybookTreeView(props: Props)
 		else
 			unavailableStorybooks.setIsVisible(false)
 		end
-	end, { props.storybooks.unavailable, unavailableStorybooks })
+	end, { storybooks.unavailable, unavailableStorybooks })
 
 	-- Convert orphaned stories into nodes
 	useEffect(function()
 		unknownStories.clearChildren()
 
-		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
+		if orphanedStoryModules and #orphanedStoryModules > 0 then
 			unknownStories.setIsVisible(true)
 
-			for _, orphan in props.orphanedStoryModules do
+			for _, orphan in orphanedStoryModules do
 				local node = createTreeNodeForStoryModule(orphan)
 				node.parentTo(unknownStories)
 			end
 		else
 			unknownStories.setIsVisible(false)
 		end
-	end, { props.orphanedStoryModules, unknownStories } :: { unknown })
+	end, { orphanedStoryModules, unknownStories } :: { unknown })
 
 	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)
@@ -203,7 +240,7 @@ local function StorybookTreeView(props: Props)
 	useEffect(
 		function()
 			if selectedNode ~= prevSelectedNode then
-				if props.onStoryChanged then
+				if onStoryChanged then
 					if selectedNode then
 						local icon = selectedNode.getIcon(false)
 						local instance = selectedNode.getInstance(false)
@@ -215,27 +252,27 @@ local function StorybookTreeView(props: Props)
 
 							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
 
-							props.onStoryChanged(instance, storybook)
+							onStoryChanged(instance, storybook)
 							setLastOpenedStory(instance)
 						end
 					else
-						props.onStoryChanged(nil, nil)
+						onStoryChanged(nil, nil)
 					end
 				end
 
-				if props.onShowErrorPage then
+				if onShowErrorPage then
 					if selectedNode and selectedNode.getIcon(false) == TreeView.TreeNodeIcon.Alert then
 						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
 						if unavailableStorybook then
-							props.onShowErrorPage(unavailableStorybook)
+							onShowErrorPage(unavailableStorybook)
 						end
 					end
 				end
 			end
 		end,
 		{
-			props.onShowErrorPage,
-			props.onStoryChanged,
+			onShowErrorPage,
+			onStoryChanged,
 			selectedNode,
 			prevSelectedNode,
 			setLastOpenedStory,
