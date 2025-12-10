@@ -19,14 +19,11 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = SignalsReact.useSignalState
+local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
-	storybooks: {
-		available: { LoadedStorybook },
-		unavailable: { UnavailableStorybook },
-	},
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
@@ -36,6 +33,7 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
+	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
@@ -119,7 +117,7 @@ local function StorybookTreeView(props: Props)
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
-		for _, storybook in props.storybooks.available do
+		for _, storybook in storybooks.available do
 			local node = createTreeNodesForStorybook(storybook :: any)
 			storybookByNodeId.current[node.id] = storybook :: any
 
@@ -130,16 +128,16 @@ local function StorybookTreeView(props: Props)
 				node.parentTo(rootNode)
 			end
 		end
-	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
+	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
 		unavailableStorybooks.clearChildren()
 
-		if #props.storybooks.unavailable > 0 then
+		if #storybooks.unavailable > 0 then
 			unavailableStorybooks.setIsVisible(true)
 
-			for _, unavailableStorybook in props.storybooks.unavailable do
+			for _, unavailableStorybook in storybooks.unavailable do
 				local node = TreeView.createTreeNodeStore()
 				node.setName(unavailableStorybook.storybook.name)
 				node.setIcon(TreeView.TreeNodeIcon.Alert)
@@ -152,7 +150,7 @@ local function StorybookTreeView(props: Props)
 		else
 			unavailableStorybooks.setIsVisible(false)
 		end
-	end, { props.storybooks.unavailable, unavailableStorybooks })
+	end, { storybooks.unavailable, unavailableStorybooks })
 
 	-- Convert orphaned stories into nodes
 	useEffect(function()
