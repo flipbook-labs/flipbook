@@ -35,6 +35,7 @@ local function StorybookTreeView(props: Props)
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
+	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -118,7 +119,13 @@ local function StorybookTreeView(props: Props)
 	-- Convert available storybooks into nodes
 	useEffect(function()
 		for _, storybook in storybooks.available do
+			if nodesByInstance.current[storybook.source] then
+				continue
+			end
+
 			local node = createTreeNodesForStorybook(storybook :: any)
+
+			nodesByInstance.current[storybook.source] = node
 			storybookByNodeId.current[node.id] = storybook :: any
 
 			if pinnedInstanceStore.isPinned(storybook.source) then
@@ -126,6 +133,21 @@ local function StorybookTreeView(props: Props)
 				node.parentTo(pinned)
 			else
 				node.parentTo(rootNode)
+			end
+		end
+
+		for instance, node in nodesByInstance.current do
+			local hasMapping = false
+
+			for _, storybook in storybooks.available do
+				if storybook.source == instance then
+					hasMapping = true
+				end
+			end
+
+			if not hasMapping then
+				node.parentTo(nil)
+				nodesByInstance.current[instance] = nil
 			end
 		end
 	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
@@ -143,6 +165,7 @@ local function StorybookTreeView(props: Props)
 				node.setIcon(TreeView.TreeNodeIcon.Alert)
 				node.parentTo(unavailableStorybooks)
 
+				nodesByInstance.current[unavailableStorybook.storybook.source] = node
 				unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
 			end
 
