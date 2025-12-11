@@ -12,7 +12,7 @@ local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
 local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
 
-local widget = plugin:CreateDockWidgetPluginGui(PLUGIN_NAME, info)
+local widget = plugin:CreateDockWidgetPluginGuiAsync(PLUGIN_NAME, info)
 widget.Name = PLUGIN_NAME
 widget.Title = PLUGIN_NAME
 widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
