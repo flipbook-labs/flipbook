@@ -183,8 +183,27 @@ local function StorybookTreeView(props: Props)
 			unknownStories.setIsVisible(true)
 
 			for _, orphan in orphanedStoryModules do
-				local node = createTreeNodeForStoryModule(orphan)
-				node.parentTo(unknownStories)
+				if not nodesByInstance.current[orphan] then
+					local node = createTreeNodeForStoryModule(orphan)
+					node.parentTo(unknownStories)
+
+					nodesByInstance.current[orphan] = node
+				end
+			end
+
+			for instance, node in nodesByInstance.current do
+				local hasMapping = false
+
+				for _, orphan in orphanedStoryModules do
+					if orphan == instance then
+						hasMapping = true
+					end
+				end
+
+				if not hasMapping then
+					node.parentTo(nil)
+					nodesByInstance.current[instance] = nil
+				end
 			end
 		else
 			unknownStories.setIsVisible(false)
