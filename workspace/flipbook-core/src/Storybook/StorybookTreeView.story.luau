@@ -7,7 +7,6 @@ local StorybookTreeView = require("./StorybookTreeView")
 
 local function Story()
 	local storybooks = Storyteller.useStorybooks(game)
-	local orphanedStoryModules = Storyteller.findOrphanedStoryModules(game, storybooks.available)
 
 	return React.createElement("Frame", {
 		Size = UDim2.fromOffset(300, 0),
@@ -16,7 +15,6 @@ local function Story()
 	}, {
 		StorybookTreeView = React.createElement(StorybookTreeView, {
 			storybooks = storybooks,
-			orphanedStoryModules = orphanedStoryModules,
 			onStoryChanged = function(storyModule)
 				if storyModule then
 					print("selected", storyModule:GetFullName())

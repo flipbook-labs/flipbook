@@ -1,4 +1,5 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
@@ -19,14 +20,11 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = SignalsReact.useSignalState
+local useStorybooks = Storyteller.useStorybooks
+local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
-	storybooks: {
-		available: { LoadedStorybook },
-		unavailable: { UnavailableStorybook },
-	},
-	orphanedStoryModules: { ModuleScript }?,
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
@@ -36,6 +34,9 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
+	local storybooks = useStorybooks()
+	local orphanedStoryModules = useOrphanedStoryModules()
+	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -118,8 +119,14 @@ local function StorybookTreeView(props: Props)
 
 	-- Convert available storybooks into nodes
 	useEffect(function()
-		for _, storybook in props.storybooks.available do
+		for _, storybook in storybooks.available do
+			if nodesByInstance.current[storybook.source] then
+				continue
+			end
+
 			local node = createTreeNodesForStorybook(storybook :: any)
+
+			nodesByInstance.current[storybook.source] = node
 			storybookByNodeId.current[node.id] = storybook :: any
 
 			if pinnedInstanceStore.isPinned(storybook.source) then
@@ -129,45 +136,65 @@ local function StorybookTreeView(props: Props)
 				node.parentTo(rootNode)
 			end
 		end
-	end, { props.storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
+	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
-		unavailableStorybooks.clearChildren()
+		unavailableStorybooks.setIsVisible(#storybooks.unavailable > 0)
 
-		if #props.storybooks.unavailable > 0 then
-			unavailableStorybooks.setIsVisible(true)
+		for _, unavailableStorybook in storybooks.unavailable do
+			local source = unavailableStorybook.storybook.source
 
-			for _, unavailableStorybook in props.storybooks.unavailable do
-				local node = TreeView.createTreeNodeStore()
-				node.setName(unavailableStorybook.storybook.name)
-				node.setIcon(TreeView.TreeNodeIcon.Alert)
-				node.parentTo(unavailableStorybooks)
-
-				unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
+			if nodesByInstance.current[source] then
+				continue
 			end
 
-			unavailableStorybooks.parentTo(rootNode)
-		else
-			unavailableStorybooks.setIsVisible(false)
+			local node = TreeView.createTreeNodeStore()
+			node.setName(unavailableStorybook.storybook.name)
+			node.setIcon(TreeView.TreeNodeIcon.Alert)
+			node.parentTo(unavailableStorybooks)
+
+			nodesByInstance.current[source] = node
+			unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
 		end
-	end, { props.storybooks.unavailable, unavailableStorybooks })
+	end, { storybooks.unavailable, unavailableStorybooks })
 
 	-- Convert orphaned stories into nodes
 	useEffect(function()
-		unknownStories.clearChildren()
+		unknownStories.setIsVisible(#orphanedStoryModules > 0)
 
-		if props.orphanedStoryModules and #props.orphanedStoryModules > 0 then
-			unknownStories.setIsVisible(true)
-
-			for _, orphan in props.orphanedStoryModules do
-				local node = createTreeNodeForStoryModule(orphan)
-				node.parentTo(unknownStories)
+		for _, orphan in orphanedStoryModules do
+			if nodesByInstance.current[orphan] then
+				continue
 			end
-		else
-			unknownStories.setIsVisible(false)
+
+			local node = createTreeNodeForStoryModule(orphan)
+
+			node.parentTo(unknownStories)
+			nodesByInstance.current[orphan] = node
 		end
-	end, { props.orphanedStoryModules, unknownStories } :: { unknown })
+	end, { orphanedStoryModules, unknownStories } :: { unknown })
+
+	-- Handle the removal of any nodes when instances get removed
+	useEffect(function()
+		local instances: { Instance } = Sift.List.join(
+			Sift.List.map(storybooks.available, function(storybook)
+				return storybook.source
+			end),
+			Sift.List.map(storybooks.unavailable, function(unavailableStorybook)
+				return unavailableStorybook.storybook.source
+			end),
+			orphanedStoryModules
+		)
+
+		for instance, node in nodesByInstance.current do
+			if not table.find(instances, instance) then
+				print("remove node for", instance)
+				node.parentTo(nil)
+				nodesByInstance.current[instance] = nil
+			end
+		end
+	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules } :: { unknown })
 
 	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)

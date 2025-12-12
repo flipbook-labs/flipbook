@@ -40,7 +40,7 @@ dependencies = []
 [[package]]
 name = "flipbook-labs/flipbook-core"
 version = "2.3.0"
-dependencies = [["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.1.1"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
+dependencies = [["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.4.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "flipbook-labs/module-loader"
@@ -49,7 +49,7 @@ dependencies = [["Janitor", "howmanysmall/janitor@1.18.3"], ["Jest", "jsdotlua/j
 
 [[package]]
 name = "flipbook-labs/storyteller"
-version = "1.1.1"
+version = "1.4.0"
 dependencies = [["Fusion", "elttob/fusion@0.2.0"], ["Fusion3", "elttob/fusion@0.3.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Roact", "roblox/roact@1.4.4"], ["RoactCompat", "jsdotlua/roact-compat@17.2.1"], ["Sift", "csqrl/sift@0.0.8"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
