@@ -1,4 +1,5 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
@@ -135,80 +136,65 @@ local function StorybookTreeView(props: Props)
 				node.parentTo(rootNode)
 			end
 		end
-
-		for instance, node in nodesByInstance.current do
-			local hasMapping = false
-
-			for _, storybook in storybooks.available do
-				if storybook.source == instance then
-					hasMapping = true
-				end
-			end
-
-			if not hasMapping then
-				node.parentTo(nil)
-				nodesByInstance.current[instance] = nil
-			end
-		end
 	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
-		unavailableStorybooks.clearChildren()
+		unavailableStorybooks.setIsVisible(#storybooks.unavailable > 0)
 
-		if #storybooks.unavailable > 0 then
-			unavailableStorybooks.setIsVisible(true)
+		for _, unavailableStorybook in storybooks.unavailable do
+			local source = unavailableStorybook.storybook.source
 
-			for _, unavailableStorybook in storybooks.unavailable do
-				local node = TreeView.createTreeNodeStore()
-				node.setName(unavailableStorybook.storybook.name)
-				node.setIcon(TreeView.TreeNodeIcon.Alert)
-				node.parentTo(unavailableStorybooks)
-
-				nodesByInstance.current[unavailableStorybook.storybook.source] = node
-				unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
+			if nodesByInstance.current[source] then
+				continue
 			end
 
-			unavailableStorybooks.parentTo(rootNode)
-		else
-			unavailableStorybooks.setIsVisible(false)
+			local node = TreeView.createTreeNodeStore()
+			node.setName(unavailableStorybook.storybook.name)
+			node.setIcon(TreeView.TreeNodeIcon.Alert)
+			node.parentTo(unavailableStorybooks)
+
+			nodesByInstance.current[source] = node
+			unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
 		end
 	end, { storybooks.unavailable, unavailableStorybooks })
 
 	-- Convert orphaned stories into nodes
 	useEffect(function()
-		unknownStories.clearChildren()
+		unknownStories.setIsVisible(#orphanedStoryModules > 0)
 
-		if orphanedStoryModules and #orphanedStoryModules > 0 then
-			unknownStories.setIsVisible(true)
-
-			for _, orphan in orphanedStoryModules do
-				if not nodesByInstance.current[orphan] then
-					local node = createTreeNodeForStoryModule(orphan)
-					node.parentTo(unknownStories)
-
-					nodesByInstance.current[orphan] = node
-				end
+		for _, orphan in orphanedStoryModules do
+			if nodesByInstance.current[orphan] then
+				continue
 			end
 
-			for instance, node in nodesByInstance.current do
-				local hasMapping = false
+			local node = createTreeNodeForStoryModule(orphan)
 
-				for _, orphan in orphanedStoryModules do
-					if orphan == instance then
-						hasMapping = true
-					end
-				end
-
-				if not hasMapping then
-					node.parentTo(nil)
-					nodesByInstance.current[instance] = nil
-				end
-			end
-		else
-			unknownStories.setIsVisible(false)
+			node.parentTo(unknownStories)
+			nodesByInstance.current[orphan] = node
 		end
 	end, { orphanedStoryModules, unknownStories } :: { unknown })
+
+	-- Handle the removal of any nodes when instances get removed
+	useEffect(function()
+		local instances: { Instance } = Sift.List.join(
+			Sift.List.map(storybooks.available, function(storybook)
+				return storybook.source
+			end),
+			Sift.List.map(storybooks.unavailable, function(unavailableStorybook)
+				return unavailableStorybook.storybook.source
+			end),
+			orphanedStoryModules
+		)
+
+		for instance, node in nodesByInstance.current do
+			if not table.find(instances, instance) then
+				print("remove node for", instance)
+				node.parentTo(nil)
+				nodesByInstance.current[instance] = nil
+			end
+		end
+	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules } :: { unknown })
 
 	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)
