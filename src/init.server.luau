@@ -12,7 +12,8 @@ local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
 local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
 
-local widget = plugin:CreateDockWidgetPluginGuiAsync(PLUGIN_NAME, info)
+-- selene: allow(deprecated)
+local widget = plugin:CreateDockWidgetPluginGui(PLUGIN_NAME, info)
 widget.Name = PLUGIN_NAME
 widget.Title = PLUGIN_NAME
 widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
