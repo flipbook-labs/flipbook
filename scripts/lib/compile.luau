@@ -121,6 +121,7 @@ local function compile(channel: Channel, target: Target)
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
 		stdio = "default",
 	})
+	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
 
 	local env = {
 		BUILD_VERSION = (wallyToml :: any).package.version,
