@@ -118,7 +118,9 @@ local function compile(channel: Channel, target: Target)
 	run("rm", { "-rf", dest })
 	run("mkdir", { "-p", dest })
 
-	local commitHash = run("git", { "rev-parse", "--short", "HEAD" })
+	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
+		stdio = "default",
+	})
 
 	local env = {
 		BUILD_VERSION = (wallyToml :: any).package.version,
