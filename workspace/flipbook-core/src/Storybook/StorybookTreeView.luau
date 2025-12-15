@@ -189,7 +189,6 @@ local function StorybookTreeView(props: Props)
 
 		for instance, node in nodesByInstance.current do
 			if not table.find(instances, instance) then
-				print("remove node for", instance)
 				node.parentTo(nil)
 				nodesByInstance.current[instance] = nil
 			end
