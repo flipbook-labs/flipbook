@@ -36,7 +36,7 @@ local function Sidebar(props: SidebarProps)
 		{
 			Search = e(View, {
 				LayoutOrder = 1,
-				tag = "auto-y padding-x-medium padding-y-large size-full-0",
+				tag = "auto-y padding-medium size-full-0",
 			}, {
 				SearchBar = e(TextInput, {
 					label = "",
