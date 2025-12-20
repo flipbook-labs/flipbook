@@ -43,7 +43,7 @@ local function installRobloxPackages()
 		"install",
 		"RobloxPackagesTmp",
 		"--version",
-		"0.693.0.6930961",
+		"0.697.0.6970925",
 		"-d",
 		"Foundation",
 		"-d",
@@ -51,8 +51,13 @@ local function installRobloxPackages()
 		"-d",
 		"SignalsReact",
 
+		-- These are only included so the above dependencies work as expected.
+		-- It seems like roblox-packages has a bug with its dependency
+		-- resolution that is resulting in over-pruning
 		"-d",
 		"Promise",
+		"-d",
+		"Dash",
 	})
 
 	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
@@ -88,7 +93,7 @@ local function installRobloxPackages()
 end
 
 local function installLuteBatteries()
-	local commit = "7b4e269"
+	local commit = "7f5ccf7"
 	local batteries = {
 		"cli.luau",
 		"toml.luau",

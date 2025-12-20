@@ -16,6 +16,8 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 
+	-- FIXME: ContextProviders having an error won't fail tests. We really need
+	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
