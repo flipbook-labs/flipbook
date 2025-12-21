@@ -1,7 +1,6 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
-local findAndReplace = require("./lib/findAndReplace")
 local project = require("@repo/project")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
@@ -13,7 +12,7 @@ do
 		local res = process.run({
 			"curl",
 			"-LO",
-			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.2.1/flipbook-batteries.zip",
+			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.3.0/flipbook-batteries.zip",
 		}, {
 			cwd = LUAU_PACKAGES_PATH,
 		})
@@ -49,6 +48,7 @@ do
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
+	local findAndReplace = FlipbookBatteries.findAndReplace
 
 	local function installWallyPackages()
 		run("wally", { "install" })
