@@ -15,7 +15,7 @@ end
 local function installWallyPackages()
 	run("wally", { "install" })
 	run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
-	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })
+	run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 end
 
 local function installRobloxPackages()

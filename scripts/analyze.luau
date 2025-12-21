@@ -23,9 +23,6 @@ local defaultArgs = {
 	"analyze",
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",
-	`--ignore="**/_Index/**"`,
-	`--ignore="**/RobloxPackages/**"`,
-	`--ignore="**/LuauPackages/**"`,
 }
 
 do
