@@ -1,11 +1,13 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local fs = require("@lute/fs")
 local process = require("@lute/process")
-local project = require("@repo/project")
 local toml = require("@luaupkg/batteries/toml")
 
-local find = require("./find")
-local run = require("./run")
+local project = require("@repo/project")
 local waitForTasks = require("./waitForTasks")
+
+local run = FlipbookBatteries.run
+local find = FlipbookBatteries.find
 
 local wallyTomlHandle = fs.open("wally.toml")
 local wallyToml = toml.deserialize(fs.read(wallyTomlHandle))
