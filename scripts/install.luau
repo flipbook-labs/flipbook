@@ -110,7 +110,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { `{project.WORKSPACE_PATH}/**/Packages`, `{project.WORKSPACE_PATH}/**/RobloxPackages` } do
+	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
