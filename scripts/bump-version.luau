@@ -35,7 +35,9 @@ args:add("versionBump", "positional", {
 	required = true,
 })
 
-args:parse({ ... })
+local argsNoScript = { ... }
+table.remove(argsNoScript, 1)
+args:parse(argsNoScript)
 
 -- The only package we publish is FlipbookCore, so the following makes no
 -- attempt to bump the version of any of our other workspace members
