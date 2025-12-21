@@ -1,13 +1,15 @@
 local fs = require("@lute/fs")
 
 local function findAndReplace(filePath: string, match: string, replacement: string)
-	local handle = fs.open(filePath, "w+")
-	local content = fs.read(handle)
+	local readHandle = fs.open(filePath, "r")
+	local content = fs.read(readHandle)
+	fs.close(readHandle)
 
 	content = content:gsub(match, replacement)
 
-	fs.write(handle, content)
-	fs.close(handle)
+	local writeHandle = fs.open(filePath, "w")
+	fs.write(writeHandle, content)
+	fs.close(writeHandle)
 end
 
 return findAndReplace
