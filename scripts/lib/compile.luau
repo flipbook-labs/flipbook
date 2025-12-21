@@ -149,6 +149,11 @@ local function compile(channel: Channel, target: Target)
 		env = env,
 	})
 
+	print("copying dependencies...")
+	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+		run("cp", { "-R", path, dest })
+	end
+
 	print("compiling workspace members...")
 	local tasks: { thread } = {}
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
