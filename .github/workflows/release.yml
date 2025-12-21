@@ -10,7 +10,7 @@ on:
 
 jobs:
   publish-github-release:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     if: ${{ github.event.release }}
@@ -39,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency: production
     environment:
@@ -62,7 +62,7 @@ jobs:
         run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency: nightly
     environment:

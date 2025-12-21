@@ -1,9 +1,5 @@
 {
-  "name": "test-runner",
   "tree": {
-    "Packages": {
-      "$path": "Packages"
-    },
     "$path": "src"
   }
 }

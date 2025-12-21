@@ -13,11 +13,7 @@ local defaultProps = {
 	TextYAlignment = Enum.TextYAlignment.Top,
 }
 
-type Props = {
-	[string]: any,
-}
-
-local function SelectableTextLabel(providedProps: Props)
+local function SelectableTextLabel(providedProps)
 	local theme = useTheme()
 
 	local props = Sift.Dictionary.merge(defaultProps, {

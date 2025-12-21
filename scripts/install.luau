@@ -11,8 +11,8 @@ local LUAU_PACKAGES_PATH = "LuauPackages"
 -- LuauLog is written with string requires which are not yet supported by
 -- ModuleLoader. To allow us to still use LuauLog, this function patches it with
 -- darklua to resolve the string requires to Roblox ones
-local function patchLuauLog(projectPath: string)
-	local packageRoot = find(`{projectPath}/Packages/_Index`, `luaulog`)[1]
+local function patchLuauLog()
+	local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "luaulog")[1]
 
 	local darkluaConfig = {
 		process = {
@@ -43,32 +43,12 @@ local function patchLuauLog(projectPath: string)
 end
 
 local function installWallyPackages()
-	local function installPackagesForProject(projectPath: string)
-		print("installing packages for", projectPath)
+	run("wally", { "install" })
+	run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+	run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
-		run("wally", { "install" }, {
-			cwd = projectPath,
-		})
-
-		local rojoProject = if projectPath then "default.project.json" else "build.project.json"
-
-		run("rojo", { "sourcemap", rojoProject, "-o", "sourcemap.json" }, {
-			cwd = projectPath,
-		})
-
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-			cwd = projectPath,
-		})
-
-		if fs.exists(`{projectPath}/Packages/Log.lua`) then
-			patchLuauLog(projectPath)
-		end
-	end
-
-	for _, member in fs.listdir(project.WORKSPACE_PATH) do
-		if member.type == "dir" then
-			installPackagesForProject(`{project.WORKSPACE_PATH}/{member.name}`)
-		end
+	if fs.exists(`{project.PACKAGES_PATH}/Log.lua`) then
+		patchLuauLog()
 	end
 end
 
@@ -94,7 +74,7 @@ local function installRobloxPackages()
 		"Dash",
 	})
 
-	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
+	local dest = project.ROBLOX_PACKAGES_PATH
 	if fs.exists(dest) and fs.type(dest) == "dir" then
 		run("rm", { "-rf", dest })
 	end
@@ -164,7 +144,7 @@ local function pruneDevelopmentFiles()
 		"*.story.lua*",
 		"*.storybook.lua*",
 	}
-	for _, path in { `{project.WORKSPACE_PATH}/**/Packages`, `{project.WORKSPACE_PATH}/**/RobloxPackages` } do
+	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 		for _, pattern in prunedFiles do
 			run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 		end
