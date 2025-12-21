@@ -6,6 +6,8 @@
 		"std": "~/.lute/typedefs/0.1.0/std/",
 		"batteries": "./LuauPackages/batteries",
 		"luaupkg": "./LuauPackages",
+		"pkg": "./Packages",
+		"rbxpkg": "./RobloxPackages",
 		"repo": ".",
 		"workspace": "./workspace"
 	}

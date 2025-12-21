@@ -3,6 +3,7 @@ return {
 	SOURCE_PATH = "src",
 	BUILD_PATH = "build",
 	PACKAGES_PATH = "Packages",
+	ROBLOX_PACKAGES_PATH = "RobloxPackages",
 	SCRIPTS_PATH = "scripts",
 	EXAMPLE_PATH = "example",
 	WORKSPACE_PATH = "workspace",

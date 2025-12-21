@@ -13,29 +13,9 @@ local function findAndReplace(filePath: string, match: string, replacement: stri
 end
 
 local function installWallyPackages()
-	local function installPackagesForProject(projectPath: string?)
-		print("installing packages for", projectPath)
-
-		run("wally", { "install" }, {
-			cwd = projectPath,
-		})
-
-		local rojoProject = if projectPath then "default.project.json" else "build.project.json"
-
-		run("rojo", { "sourcemap", rojoProject, "-o", "sourcemap.json" }, {
-			cwd = projectPath,
-		})
-
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-			cwd = projectPath,
-		})
-	end
-
-	for _, member in fs.listdir(project.WORKSPACE_PATH) do
-		if member.type == "dir" then
-			installPackagesForProject(`{project.WORKSPACE_PATH}/{member.name}`)
-		end
-	end
+	run("wally", { "install" })
+	run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+	run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" })
 end
 
 local function installRobloxPackages()
@@ -60,7 +40,7 @@ local function installRobloxPackages()
 		"Dash",
 	})
 
-	local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
+	local dest = project.ROBLOX_PACKAGES_PATH
 	if fs.exists(dest) and fs.type(dest) == "dir" then
 		run("rm", { "-rf", dest })
 	end
