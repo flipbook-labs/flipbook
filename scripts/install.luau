@@ -51,29 +51,9 @@ do
 	local find = FlipbookBatteries.find
 
 	local function installWallyPackages()
-		local function installPackagesForProject(projectPath: string?)
-			print("installing packages for", projectPath)
-
-			run("wally", { "install" }, {
-				cwd = projectPath,
-			})
-
-			local rojoProject = if projectPath then "default.project.json" else "build.project.json"
-
-			run("rojo", { "sourcemap", rojoProject, "-o", "sourcemap.json" }, {
-				cwd = projectPath,
-			})
-
-			run("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
-				cwd = projectPath,
-			})
-		end
-
-		for _, member in fs.listdir(project.WORKSPACE_PATH) do
-			if member.type == "dir" then
-				installPackagesForProject(`{project.WORKSPACE_PATH}/{member.name}`)
-			end
-		end
+		run("wally", { "install" })
+		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 	end
 
 	local function installRobloxPackages()
@@ -98,7 +78,7 @@ do
 			"Dash",
 		})
 
-		local dest = `{project.WORKSPACE_PATH}/flipbook-core/RobloxPackages`
+		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
 			run("rm", { "-rf", dest })
 		end
@@ -165,7 +145,7 @@ do
 			"*.story.lua*",
 			"*.storybook.lua*",
 		}
-		for _, path in { `{project.WORKSPACE_PATH}/**/Packages`, `{project.WORKSPACE_PATH}/**/RobloxPackages` } do
+		for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 			for _, pattern in prunedFiles do
 				run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 			end
