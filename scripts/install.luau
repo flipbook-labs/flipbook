@@ -87,35 +87,56 @@ local function installRobloxPackages()
 	end
 end
 
-local function installLuteBatteries()
-	local commit = "7f5ccf7"
-	local batteries = {
-		"cli.luau",
-		"toml.luau",
-	}
+local function installLuauPackages()
+	local function installLuteBatteries()
+		local commit = "7f5ccf7"
+		local batteries = {
+			"cli.luau",
+			"toml.luau",
+		}
 
-	local dest = `{LUAU_PACKAGES_PATH}/batteries`
-	run("mkdir", { "-p", dest })
-	for _, battery in batteries do
-		run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-			cwd = dest,
-		})
+		local dest = `{LUAU_PACKAGES_PATH}/batteries`
+		run("mkdir", { "-p", dest })
+		for _, battery in batteries do
+			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
+				cwd = dest,
+			})
+		end
 	end
-end
 
-local function installRbxasset()
+	local function installFlipbookBatteries()
+		run("curl", {
+			"-LO",
+			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.2.1/flipbook-batteries.zip",
+		}, {
+			cwd = LUAU_PACKAGES_PATH,
+		})
+
+		run("unzip", { "flipbook-batteries.zip" }, {
+			cwd = LUAU_PACKAGES_PATH,
+		})
+
+		fs.remove(`{LUAU_PACKAGES_PATH}/flipbook-batteries.zip`)
+	end
+
+	local function installRbxasset()
+		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
+			cwd = LUAU_PACKAGES_PATH,
+		})
+
+		run("unzip", { "rbxasset.zip" }, {
+			cwd = LUAU_PACKAGES_PATH,
+		})
+
+		fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
+	end
+
 	run("rm", { "-rf", LUAU_PACKAGES_PATH })
 	run("mkdir", { "-p", LUAU_PACKAGES_PATH })
 
-	run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-		cwd = LUAU_PACKAGES_PATH,
-	})
-
-	run("unzip", { "rbxasset.zip" }, {
-		cwd = LUAU_PACKAGES_PATH,
-	})
-
-	fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
+	installFlipbookBatteries()
+	installLuteBatteries()
+	installRbxasset()
 end
 
 local function pruneDevelopmentFiles()
@@ -134,6 +155,5 @@ end
 
 installRobloxPackages()
 installWallyPackages()
-installRbxasset()
-installLuteBatteries()
+installLuauPackages()
 pruneDevelopmentFiles()
