@@ -7,7 +7,9 @@ local find = require("./find")
 local run = require("./run")
 local waitForTasks = require("./waitForTasks")
 
-local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
+local wallyTomlHandle = fs.open("wally.toml")
+local wallyToml = toml.deserialize(fs.read(wallyTomlHandle))
+fs.close(wallyTomlHandle)
 
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"

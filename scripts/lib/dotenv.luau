@@ -10,7 +10,9 @@ local function dotenv()
 	for _, file in fs.listdir(current) do
 		local filePath = `{current}/{file.name}`
 		if file.name == DOTENV_FILE_NAME then
-			local content = fs.readfiletostring(filePath)
+			local handle = fs.open(filePath, "r")
+			local content = fs.read(handle)
+			fs.close(handle)
 
 			for line in content:gmatch("[^\r\n]+") do
 				local key, value = line:match("([%u_]+)[%s+]?=[%s+]?(.*)")

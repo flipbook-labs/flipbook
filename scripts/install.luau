@@ -2,15 +2,10 @@ local fs = require("@lute/fs")
 local project = require("@repo/project")
 
 local find = require("./lib/find")
+local findAndReplace = require("./lib/findAndReplace")
 local run = require("./lib/run")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
-
-local function findAndReplace(filePath: string, match: string, replacement: string)
-	local content = fs.readfiletostring(filePath)
-	content = content:gsub(match, replacement)
-	fs.writestringtofile(filePath, content)
-end
 
 local function installWallyPackages()
 	local function installPackagesForProject(projectPath: string?)
