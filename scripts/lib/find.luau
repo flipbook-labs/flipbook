@@ -13,13 +13,13 @@ local function find(root: string, filenamePattern: string): { string }
 				local childPath = `{path}/{child.name}`
 				search(childPath)
 			end
-		else
-			local parts = path:split("/")
-			local filename = parts[#parts]
+		end
 
-			if filename:match(filenamePattern) then
-				table.insert(matches, path)
-			end
+		local parts = path:split("/")
+		local filename = parts[#parts]
+
+		if filename:match(filenamePattern) then
+			table.insert(matches, path)
 		end
 	end
 
