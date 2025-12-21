@@ -13,7 +13,7 @@ sourcemap*.json
 globalTypes.d.luau
 
 # Third-party libraries
-/*Packages
+*Packages
 
 # Python
 __pycache__
