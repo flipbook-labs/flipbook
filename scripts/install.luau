@@ -3,15 +3,10 @@ local json = require("@std/json")
 local project = require("@repo/project")
 
 local find = require("./lib/find")
+local findAndReplace = require("./lib/findAndReplace")
 local run = require("./lib/run")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
-
-local function findAndReplace(filePath: string, match: string, replacement: string)
-	local content = fs.readfiletostring(filePath)
-	content = content:gsub(match, replacement)
-	fs.writestringtofile(filePath, content)
-end
 
 -- LuauLog is written with string requires which are not yet supported by
 -- ModuleLoader. To allow us to still use LuauLog, this function patches it with

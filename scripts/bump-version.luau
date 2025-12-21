@@ -1,6 +1,7 @@
 local cli = require("@batteries/cli")
 local fs = require("@lute/fs")
 
+local findAndReplace = require("./lib/findAndReplace")
 local semver = require("./lib/semver")
 
 type VersionComponent = semver.VersionComponent
@@ -61,10 +62,7 @@ do
 		local manifestVersion = semver.getVersionFromManifest(manifestPath)
 
 		if fs.exists(manifestPath) then
-			local manifestContent = fs.readfiletostring(manifestPath)
-			manifestContent = manifestContent:gsub(`version = "{manifestVersion}"`, `version = "{nextVersion}"`)
-			fs.writestringtofile(manifestPath, manifestContent)
-
+			findAndReplace(manifestPath, `version = "{manifestVersion}"`, `version = "{nextVersion}"`)
 			print(`bumped version in {manifestPath} to {nextVersion} (was {manifestVersion})`)
 		end
 	end
