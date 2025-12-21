@@ -24,6 +24,8 @@ export type Props = {
 local function CodeBlock(props: Props)
 	local tokens = useTokens()
 
+	local isFocused, setIsFocused = React.useBinding(false)
+
 	local sourceColor = useMemo(function()
 		return if props.sourceColor then props.sourceColor else tokens.Color.Content.Default.Color3
 	end, { props.sourceColor, tokens } :: { unknown })
@@ -72,12 +74,20 @@ local function CodeBlock(props: Props)
 				RichText = true,
 				LayoutOrder = nextLayoutOrder(),
 				AutomaticSize = Enum.AutomaticSize.XY,
-				Text = source,
+				Text = isFocused:map(function(value: boolean)
+					return if value == true then props.source else source
+				end),
 				TextColor3 = sourceColor,
 				TextSize = tokens.Typography.BodyMedium.FontSize,
 				TextWrapped = false,
 				LineHeight = 1,
 				Font = Enum.Font.RobotoMono,
+				[React.Event.Focused] = function()
+					setIsFocused(true)
+				end,
+				[React.Event.FocusLost] = function()
+					setIsFocused(false)
+				end,
 			}),
 		}),
 	})

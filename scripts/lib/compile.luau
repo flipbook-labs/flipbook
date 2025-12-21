@@ -47,32 +47,6 @@ local function compileWorkspaceMember(
 
 	local tasks: { thread } = {}
 
-	table.insert(
-		tasks,
-		taskSpawn(function()
-			print(`[{memberPath}] copying Packages...`)
-
-			local packagesPath = `{memberPath}/Packages`
-			run("cp", { "-R", packagesPath, `{memberBuildPath}/Packages` })
-
-			print(`[{memberPath}] successfully copied Packages`)
-		end)
-	)
-
-	table.insert(
-		tasks,
-		taskSpawn(function()
-			print(`[{memberPath}] copying RobloxPackages...`)
-
-			local robloxPackagesPath = `{memberPath}/RobloxPackages`
-			if fs.exists(robloxPackagesPath) then
-				run("cp", { "-R", robloxPackagesPath, `{memberBuildPath}/RobloxPackages` })
-			end
-
-			print(`[{memberPath}] successfully copied RobloxPackages`)
-		end)
-	)
-
 	if channel == "prod" then
 		table.insert(
 			tasks,
@@ -150,6 +124,11 @@ local function compile(channel: Channel, target: Target)
 	}, {
 		env = env,
 	})
+
+	print("copying dependencies...")
+	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+		run("cp", { "-R", path, dest })
+	end
 
 	print("compiling workspace members...")
 	local tasks: { thread } = {}
