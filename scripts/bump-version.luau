@@ -1,4 +1,4 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 
 local semver = require("./lib/semver")

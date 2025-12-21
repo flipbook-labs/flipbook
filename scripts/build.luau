@@ -1,4 +1,4 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local process = require("@lute/process")
 local project = require("@repo/project")
 

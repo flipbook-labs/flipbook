@@ -1,7 +1,7 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 local project = require("@repo/project")
-local toml = require("@batteries/toml")
+local toml = require("@luaupkg/batteries/toml")
 
 local find = require("./find")
 local run = require("./run")
