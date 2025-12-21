@@ -176,6 +176,8 @@ local function pruneDevelopmentFiles()
 	end
 end
 
+run("lute", { "setup" })
+
 installRobloxPackages()
 installWallyPackages()
 installRbxasset()
