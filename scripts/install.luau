@@ -30,6 +30,8 @@ local function installRobloxPackages()
 		"Signals",
 		"-d",
 		"SignalsReact",
+		"-d",
+		"ReactUtils",
 
 		-- These are only included so the above dependencies work as expected.
 		-- It seems like roblox-packages has a bug with its dependency
