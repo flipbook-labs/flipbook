@@ -10,6 +10,8 @@ local project = require("@repo/project")
 local run = require("@scripts/lib/run")
 local watch = require("@scripts/lib/watch")
 
+local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+
 type BuildContext = buildSystem.BuildContext
 
 dotenv()
@@ -104,7 +106,7 @@ local function build()
 			run("rojo", { "build", "-o", dest })
 
 			if not args:has("no-reload") then
-				run("cp", { dest, output })
+				copyInto(dest, output)
 			end
 		end,
 	})

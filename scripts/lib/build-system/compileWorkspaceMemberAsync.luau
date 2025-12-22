@@ -58,7 +58,7 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 				-- them to .lua for compatibility
 				for _, luauFile in find(memberBuildPath, "%.luau$") do
 					local newName = luauFile:gsub("%.luau$", ".lua")
-					run("cp", { "-R", luauFile, newName })
+					fs.copy(luauFile, newName)
 					fs.remove(luauFile)
 				end
 			end,

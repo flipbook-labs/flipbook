@@ -6,6 +6,8 @@ local run = require("@scripts/lib/run")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
+local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+
 type BuildContext = types.BuildContext
 
 local function compile(context: BuildContext)
@@ -38,7 +40,7 @@ local function compile(context: BuildContext)
 		context = context,
 		step = function(group)
 			for _, path in group.paths do
-				run("cp", { "-R", path, context.dest })
+				copyInto(path, context.dest)
 			end
 		end,
 	})
