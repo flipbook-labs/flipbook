@@ -12,7 +12,7 @@ local find = FlipbookBatteries.find
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
 
-local function readWallyManifest()
+local function readWallyManifestAsync()
 	local wallyTomlHandle = fs.open("wally.toml", "r")
 	local contents = fs.read(wallyTomlHandle)
 	fs.close(wallyTomlHandle)
@@ -104,10 +104,10 @@ local function compile(channel: Channel, target: Target)
 	})
 	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
 
-	local wallyToml = readWallyManifest()
+	local wallyManifest = readWallyManifestAsync()
 
 	local env = {
-		BUILD_VERSION = (wallyToml :: any).package.version,
+		BUILD_VERSION = (wallyManifest :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 		BASE_URL = process.env.BASE_URL,
