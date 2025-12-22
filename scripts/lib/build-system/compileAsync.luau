@@ -28,10 +28,6 @@ local function compileAsync(context: BuildContext)
 
 	local buildCache = readBuildCacheAsync()
 
-	for k, v in context.env do
-		print(`_G.{k} = {v}`)
-	end
-
 	run("rojo", {
 		"sourcemap",
 		project.ROJO_BUILD_PROJECT,
@@ -49,6 +45,16 @@ local function compileAsync(context: BuildContext)
 
 	print("copying dependencies...")
 	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+		local hash = hashDir(path)
+
+		print("HASH", path, hash)
+
+		if hash == buildCache.hashes[path] then
+			continue
+		else
+			buildCache.hashes[path] = hash
+		end
+
 		run("cp", { "-R", path, dest })
 	end
 
