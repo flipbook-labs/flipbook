@@ -6,8 +6,8 @@ local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWo
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
+local copyInto = FlipbookBatteries.copyInto
 local run = FlipbookBatteries.run
-local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
 
 type BuildContext = types.BuildContext
 

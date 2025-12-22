@@ -10,11 +10,10 @@ local buildSystem = require("@scripts/lib/build-system")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
+local copyInto = FlipbookBatteries.copyInto
 local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 local watch = FlipbookBatteries.watch
-
-local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
 
 type BuildContext = buildSystem.BuildContext
 

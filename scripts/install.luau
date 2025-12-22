@@ -114,6 +114,8 @@ do
 		local commit = "7f5ccf7"
 		local batteries = {
 			"cli.luau",
+			"pp.luau",
+			"richterm.luau",
 			"toml.luau",
 		}
 
