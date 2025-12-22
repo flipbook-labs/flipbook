@@ -14,7 +14,8 @@ jobs:
       matrix:
         channel: [dev, prod]
         target: [roblox, rotriever]
-    name: build-${{ matrix.channel }}-${{ matrix.target}}
+      fail-fast: false
+    name: build (${{ matrix.channel }}, ${{ matrix.target}})
     steps:
       - uses: actions/checkout@v4
 
