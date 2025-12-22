@@ -7,10 +7,15 @@ local project = require("@repo/project")
 local run = require("@scripts/lib/run")
 local waitForTasks = require("@scripts/lib/waitForTasks")
 
-local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
-
 type Channel = "prod" | "dev"
 type Target = "roblox" | "rotriever"
+
+local function readWallyManifestAsync()
+	local wallyTomlHandle = fs.open("wally.toml", "r")
+	local contents = fs.read(wallyTomlHandle)
+	fs.close(wallyTomlHandle)
+	return toml.deserialize(contents)
+end
 
 -- Lute's `task.spawn` doesn't actually seem to return a thread. When the return
 -- value would get to `coroutine.status` it would fail with the following:
@@ -97,8 +102,10 @@ local function compile(channel: Channel, target: Target)
 	})
 	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
 
+	local wallyManifest = readWallyManifestAsync()
+
 	local env = {
-		BUILD_VERSION = (wallyToml :: any).package.version,
+		BUILD_VERSION = (wallyManifest :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = commitHash,
 		BASE_URL = process.env.BASE_URL,
