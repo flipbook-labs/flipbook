@@ -4,8 +4,11 @@ local project = require("@repo/project")
 local toml = require("@batteries/toml")
 
 local find = require("./find")
+local hashDir = require("./build-cache/hashDir")
+local readBuildCacheAsync = require("./build-cache/readBuildCacheAsync")
 local run = require("./run")
 local waitForTasks = require("./waitForTasks")
+local writeBuildCacheAsync = require("./build-cache/writeBuildCacheAsync")
 
 local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
 
@@ -91,6 +94,8 @@ local function compile(channel: Channel, target: Target)
 	run("rm", { "-rf", temp })
 	run("mkdir", { "-p", temp })
 
+	local buildCache = readBuildCacheAsync()
+
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
 		stdio = "default",
 	})
@@ -132,6 +137,22 @@ local function compile(channel: Channel, target: Target)
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
+		if fs.type(memberPath) ~= "dir" then
+			continue
+		end
+
+		print("MEMBER", memberPath)
+
+		local hash = hashDir(memberPath)
+
+		print("HASH", memberPath, hash)
+
+		if hash == buildCache.hashes[memberPath] then
+			continue
+		else
+			buildCache.hashes[memberPath] = hash
+		end
+
 		if member.type == "dir" then
 			table.insert(
 				tasks,
@@ -158,6 +179,8 @@ local function compile(channel: Channel, target: Target)
 	run("rm", { "-rf", dest })
 	run("cp", { "-R", temp, dest })
 	run("rm", { "-rf", temp })
+
+	writeBuildCacheAsync(buildCache)
 end
 
 return compile
