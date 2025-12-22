@@ -1,7 +1,9 @@
 local cli = require("@luaupkg/batteries/cli")
+local fs = require("@lute/fs")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
 local richterm = require("@luaupkg/batteries/richterm")
+local toml = require("@luaupkg/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
 local dotenv = require("@scripts/lib/dotenv")
@@ -37,8 +39,9 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
-args:add("no-reload", "flag", {
-	help = "Prevents the plugin from being built to Roblox Studio, disabling reloading",
+args:add("plugin", "flag", {
+	help = "Builds an rbxm of the plugin to Roblox Studio's plugins folder",
+	aliases = { "p" },
 })
 args:add("clean", "flag", {
 	help = "Performs a full rebuild of the project",
@@ -57,9 +60,6 @@ assert(
 
 local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
-
-local fs = require("@lute/fs")
-local toml = require("@luaupkg/batteries/toml")
 
 local function readWallyManifestAsync()
 	local wallyTomlHandle = fs.open("wally.toml", "r")
@@ -97,19 +97,19 @@ local function build()
 
 	buildSystem.compileAsync(context)
 
-	buildSystem.runBuildGroupAsync({
-		name = "🔌 plugin binary",
-		paths = { context.dest },
-		context = context,
-		step = function()
-			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", "-o", dest })
+	if args:has("plugin") then
+		buildSystem.runBuildGroupAsync({
+			name = "🔌 plugin binary",
+			paths = { context.dest },
+			context = context,
+			step = function()
+				local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
+				run("rojo", { "build", "-o", dest })
 
-			if not args:has("no-reload") then
 				copyInto(dest, output)
-			end
-		end,
-	})
+			end,
+		})
+	end
 
 	buildSystem.writeBuildCacheAsync(context.cache)
 
