@@ -27,7 +27,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
+        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }} --clean
 
       - uses: actions/upload-artifact@v4
         with:
