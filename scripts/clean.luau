@@ -1,3 +1,3 @@
-local clean = require("./lib/clean")
+local clean = require("@scripts/lib/clean")
 
 clean()

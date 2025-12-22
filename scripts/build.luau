@@ -1,12 +1,12 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local process = require("@lute/process")
-local project = require("@repo/project")
 
-local compile = require("./lib/compile")
-local dotenv = require("./lib/dotenv")
-local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
-local run = require("./lib/run")
-local watch = require("./lib/watch")
+local compile = require("@scripts/lib/compile")
+local dotenv = require("@scripts/lib/dotenv")
+local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
+local project = require("@repo/project")
+local run = require("@scripts/lib/run")
+local watch = require("@scripts/lib/watch")
 
 dotenv()
 

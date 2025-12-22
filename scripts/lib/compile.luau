@@ -1,11 +1,11 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
-local project = require("@repo/project")
-local toml = require("@batteries/toml")
+local toml = require("@luaupkg/batteries/toml")
 
-local find = require("./find")
-local run = require("./run")
-local waitForTasks = require("./waitForTasks")
+local find = require("@scripts/lib/find")
+local project = require("@repo/project")
+local run = require("@scripts/lib/run")
+local waitForTasks = require("@scripts/lib/waitForTasks")
 
 local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
 
