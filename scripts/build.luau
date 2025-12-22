@@ -2,12 +2,14 @@ local cli = require("@luaupkg/batteries/cli")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
 
-local buildSystem = require("./lib/build-system")
+local buildSystem = require("@scripts/lib/build-system")
 local dotenv = require("@scripts/lib/dotenv")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 local run = require("@scripts/lib/run")
 local watch = require("@scripts/lib/watch")
+
+type BuildContext = buildSystem.BuildContext
 
 dotenv()
 
@@ -54,8 +56,10 @@ local fs = require("@lute/fs")
 local toml = require("@luaupkg/batteries/toml")
 
 local function readWallyManifestAsync()
-	local content = fs.readfiletostring(`{process.cwd()}/wally.toml`)
-	return toml.deserialize(content)
+	local wallyTomlHandle = fs.open("wally.toml", "r")
+	local contents = fs.read(wallyTomlHandle)
+	fs.close(wallyTomlHandle)
+	return toml.deserialize(contents)
 end
 
 local function getCommitHash()
@@ -66,7 +70,7 @@ local function getCommitHash()
 	return commitHash
 end
 
-local context = {
+local context: BuildContext = {
 	channel = channel,
 	target = target,
 	env = {
@@ -92,10 +96,6 @@ local function build()
 	end
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
-end
-
-local function onChanged(filePath: string)
-	print("onChanged", filePath)
 end
 
 build()

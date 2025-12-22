@@ -89,7 +89,7 @@ local function compileAsync(context: BuildContext)
 
 	print("successfully compiled workspace members")
 
-	if channel == "prod" then
+	if context.channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			run("rm", { "-rf", `{dest}/{dir}` })
 		end

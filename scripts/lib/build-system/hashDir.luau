@@ -1,7 +1,7 @@
 local crypto = require("@lute/crypto")
 local fs = require("@lute/fs")
 
-local hashFile = require("./hashFile")
+local hashFile = require("@scripts/lib/build-system/hashFile")
 
 local function hashDir(dirPath: string): string
 	local fileHashes = ""
