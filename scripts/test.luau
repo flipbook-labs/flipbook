@@ -3,7 +3,7 @@ local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
-local compile = require("@scripts/lib/compile")
+local project = require("@repo/project")
 
 local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
@@ -27,9 +27,8 @@ if not apiKey then
 	)
 end
 
-compile("dev", "roblox")
-
-run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
+run("lute", { "scripts/build.luau", "--channel", "dev" })
+run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
 local success, err = pcall(function()
 	run("python3", {

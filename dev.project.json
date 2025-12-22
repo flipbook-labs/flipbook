@@ -1,0 +1,11 @@
+{
+  "name": "dev",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Flipbook": {
+        "$path": "default.project.json"
+      }
+    }
+  }
+}
