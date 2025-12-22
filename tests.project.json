@@ -9,7 +9,7 @@
     },
     "ReplicatedStorage": {
       "Flipbook": {
-        "$path": "../default.project.json"
+        "$path": "default.project.json"
       }
     }
   }
