@@ -35,7 +35,7 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	print(`{prefix} starting build step...`)
 
 	local startTime = os.clock()
-	local ok, err = xpcall(function()
+	local ok, err = (xpcall :: any)(function()
 		buildGroup.step(processedBuildGroup)
 	end, debug.traceback)
 
