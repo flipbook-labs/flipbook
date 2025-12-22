@@ -8,6 +8,7 @@
 		"pkg": "./Packages",
 		"rbxpkg": "./RobloxPackages",
 		"repo": ".",
+		"scripts": "./scripts",
 		"workspace": "./workspace"
 	}
 }

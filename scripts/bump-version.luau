@@ -1,7 +1,7 @@
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 
-local semver = require("./lib/semver")
+local semver = require("@scripts/lib/semver")
 
 type VersionComponent = semver.VersionComponent
 

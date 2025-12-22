@@ -4,7 +4,7 @@ local process = require("@lute/process")
 local toml = require("@luaupkg/batteries/toml")
 
 local project = require("@repo/project")
-local waitForTasks = require("./waitForTasks")
+local waitForTasks = require("@scripts/lib/waitForTasks")
 
 local run = FlipbookBatteries.run
 local find = FlipbookBatteries.find
