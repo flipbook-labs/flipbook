@@ -20,7 +20,7 @@ local function taskSpawn(callback: () -> ()): thread
 	return thread
 end
 
-local function compileAsync(context: BuildContext)
+local function compile(context: BuildContext)
 	if context.shouldRebuild then
 		run("rm", { "-rf", context.dest })
 	end
@@ -96,4 +96,4 @@ local function compileAsync(context: BuildContext)
 	writeBuildCacheAsync(buildCache)
 end
 
-return compileAsync
+return compile
