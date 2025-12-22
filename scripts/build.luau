@@ -85,6 +85,7 @@ local context: BuildContext = {
 		BUILD_HASH = getCommitHash(),
 		BASE_URL = process.env.BASE_URL,
 	},
+	cache = buildSystem.readBuildCacheAsync(),
 }
 
 local function build()
@@ -94,12 +95,21 @@ local function build()
 
 	buildSystem.compileAsync(context)
 
-	local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-	run("rojo", { "build", "-o", dest })
+	buildSystem.runBuildGroupAsync({
+		name = "🔌 plugin binary",
+		paths = { context.dest },
+		context = context,
+		step = function()
+			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
+			run("rojo", { "build", "-o", dest })
 
-	if not args:has("no-reload") then
-		run("cp", { dest, output })
-	end
+			if not args:has("no-reload") then
+				run("cp", { dest, output })
+			end
+		end,
+	})
+
+	buildSystem.writeBuildCacheAsync(context.cache)
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
@@ -111,6 +121,7 @@ if args:has("watch") then
 		if filePath:match(project.WORKSPACE_PATH) then
 			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
+			buildSystem.writeBuildCacheAsync(context.cache)
 		else
 			build()
 		end
