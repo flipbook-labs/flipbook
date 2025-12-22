@@ -2,7 +2,7 @@ local fs = require("@lute/fs")
 local project = require("@repo/project")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
-local hashDir = require("@scripts/lib/build-system/hashDir")
+local hashPath = require("@scripts/lib/build-system/hashPath")
 local readBuildCacheAsync = require("@scripts/lib/build-system/readBuildCacheAsync")
 local run = require("@scripts/lib/run")
 local types = require("@scripts/lib/build-system/types")
@@ -45,7 +45,7 @@ local function compileAsync(context: BuildContext)
 
 	print("copying dependencies...")
 	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
-		local hash = hashDir(path)
+		local hash = hashPath(path)
 
 		print("HASH", path, hash)
 
@@ -67,11 +67,7 @@ local function compileAsync(context: BuildContext)
 			continue
 		end
 
-		print("MEMBER", memberPath)
-
-		local hash = hashDir(memberPath)
-
-		print("HASH", memberPath, hash)
+		local hash = hashPath(memberPath)
 
 		if hash == buildCache.hashes[memberPath] then
 			continue
