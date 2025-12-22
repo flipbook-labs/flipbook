@@ -1,8 +1,7 @@
 local fs = require("@lute/fs")
--- local process = require("@lute/process")
-local project = require("@repo/project")
 
-local run = require("./lib/run")
+local project = require("@repo/project")
+local run = require("@scripts/lib/run")
 
 local function findLuaFiles()
 	local matches = {}
@@ -39,6 +38,5 @@ local files = findLuaFiles()
 if #files > 0 then
 	print("[err] the following file(s) are using the '.lua' extension. Please change to '.luau' and try again")
 	print(`{table.concat(files, "\n")}`)
-	-- process.exit(1)
 	error("1")
 end

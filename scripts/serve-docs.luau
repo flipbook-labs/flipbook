@@ -1,4 +1,4 @@
-local run = require("./lib/run")
+local run = require("@scripts/lib/run")
 
 run("npm", {
 	"install",

@@ -1,10 +1,10 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
-local compile = require("./lib/compile")
-local dotenv = require("./lib/dotenv")
-local run = require("./lib/run")
+local compile = require("@scripts/lib/compile")
+local dotenv = require("@scripts/lib/dotenv")
+local run = require("@scripts/lib/run")
 
 dotenv()
 

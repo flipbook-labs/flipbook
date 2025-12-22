@@ -1,9 +1,9 @@
 local fs = require("@lute/fs")
-local project = require("@repo/project")
 
-local find = require("./lib/find")
-local findAndReplace = require("./lib/findAndReplace")
-local run = require("./lib/run")
+local find = require("@scripts/lib/find")
+local findAndReplace = require("@scripts/lib/findAndReplace")
+local project = require("@repo/project")
+local run = require("@scripts/lib/run")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
 
