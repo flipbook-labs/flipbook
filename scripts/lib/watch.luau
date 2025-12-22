@@ -2,7 +2,7 @@ local fs = require("@lute/fs")
 local process = require("@lute/process")
 local task = require("@lute/task")
 
-local matchDescendants = require("./matchDescendants")
+local matchDescendants = require("@scripts/lib/matchDescendants")
 
 type Options = {
 	roots: { string },
