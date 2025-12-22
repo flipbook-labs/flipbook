@@ -37,6 +37,7 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local startTime = os.clock()
 	local ok, err = pcall(function()
 		buildGroup.step(processedBuildGroup)
+		return nil
 	end)
 
 	if ok then
