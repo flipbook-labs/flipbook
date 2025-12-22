@@ -9,12 +9,15 @@ local function readBuildCacheAsync(): types.BuildCache
 		local handle = fs.open(project.BUILD_CACHE_PATH)
 		local content = fs.read(handle)
 		fs.close(handle)
-		return json.deserialize(content) :: any
-	else
-		return {
-			hashes = {},
-		}
+
+		if content and content ~= "" then
+			return json.deserialize(content) :: any
+		end
 	end
+
+	return {
+		hashes = {},
+	}
 end
 
 return readBuildCacheAsync
