@@ -10,7 +10,7 @@ local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
 
 type BuildContext = types.BuildContext
 
-local function compile(context: BuildContext)
+local function compileAsync(context: BuildContext)
 	if context.shouldRebuild then
 		run("rm", { "-rf", context.dest })
 	end
@@ -60,4 +60,4 @@ local function compile(context: BuildContext)
 	end
 end
 
-return compile
+return compileAsync
