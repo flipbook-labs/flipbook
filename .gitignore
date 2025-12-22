@@ -1,9 +1,8 @@
 # Environment variables
 .env
 
-# Build artifacts
+# Darklua
 build
-temp
 
 # Rojo
 /*.rbxl*
