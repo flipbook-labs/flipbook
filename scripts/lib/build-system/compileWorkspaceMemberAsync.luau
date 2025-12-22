@@ -16,7 +16,7 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 	local memberBuildPath = `{memberPath}/build`
 
 	runBuildGroupAsync({
-		name = `🏗️ build {memberPath}`,
+		name = `📦 build {memberPath}`,
 		paths = {
 			memberPath,
 		},
