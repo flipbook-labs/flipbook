@@ -23,7 +23,9 @@ end
 local function compileAsync(context: BuildContext)
 	local dest = `{project.BUILD_PATH}/plugin`
 
-	run("rm", { "-rf", dest })
+	if context.shouldRebuild then
+		run("rm", { "-rf", dest })
+	end
 	run("mkdir", { "-p", dest })
 
 	local buildCache = readBuildCacheAsync()
@@ -47,9 +49,7 @@ local function compileAsync(context: BuildContext)
 	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 		local hash = hashPath(path)
 
-		print("HASH", path, hash)
-
-		if hash == buildCache.hashes[path] then
+		if hash == buildCache.hashes[path] and not context.shouldRebuild then
 			continue
 		else
 			buildCache.hashes[path] = hash
@@ -69,7 +69,7 @@ local function compileAsync(context: BuildContext)
 
 		local hash = hashPath(memberPath)
 
-		if hash == buildCache.hashes[memberPath] then
+		if hash == buildCache.hashes[memberPath] and not context.shouldRebuild then
 			continue
 		else
 			buildCache.hashes[memberPath] = hash

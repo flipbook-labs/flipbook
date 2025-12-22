@@ -37,6 +37,9 @@ args:add("watch", "flag", {
 args:add("no-reload", "flag", {
 	help = "Prevents the plugin from being built to Roblox Studio, disabling reloading",
 })
+args:add("clean", "flag", {
+	help = "Performs a full rebuild of the project",
+})
 
 args:parse({ ... })
 
@@ -73,6 +76,7 @@ end
 local context: BuildContext = {
 	channel = channel,
 	target = target,
+	shouldRebuild = args:has("clean"),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",

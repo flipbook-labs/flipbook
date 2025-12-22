@@ -5,6 +5,7 @@ export type BuildContext = {
 	channel: Channel,
 	target: Target,
 	env: { [string]: string },
+	shouldRebuild: boolean,
 }
 
 export type BuildCache = {
