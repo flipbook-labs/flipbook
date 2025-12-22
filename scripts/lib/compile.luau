@@ -87,10 +87,9 @@ local function compileWorkspaceMember(
 end
 
 local function compile(channel: Channel, target: Target)
-	local dest = `{project.BUILD_PATH}/plugin`
-
-	run("rm", { "-rf", dest })
-	run("mkdir", { "-p", dest })
+	local temp = `{project.BUILD_PATH}/temp`
+	run("rm", { "-rf", temp })
+	run("mkdir", { "-p", temp })
 
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
 		stdio = "default",
@@ -118,14 +117,14 @@ local function compile(channel: Channel, target: Target)
 	run("darklua", {
 		"process",
 		project.SOURCE_PATH,
-		dest,
+		temp,
 	}, {
 		env = env,
 	})
 
 	print("copying dependencies...")
 	for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
-		run("cp", { "-R", path, dest })
+		run("cp", { "-R", path, temp })
 	end
 
 	print("compiling workspace members...")
@@ -138,8 +137,8 @@ local function compile(channel: Channel, target: Target)
 				tasks,
 				taskSpawn(function()
 					local memberBuildPath = compileWorkspaceMember(memberPath, channel, target, env)
-					run("mkdir", { "-p", `{dest}/{memberPath}` })
-					run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
+					run("mkdir", { "-p", `{temp}/{memberPath}` })
+					run("cp", { "-R", `{memberBuildPath}/**`, `{temp}/{memberPath}` })
 				end)
 			)
 		end
@@ -151,9 +150,14 @@ local function compile(channel: Channel, target: Target)
 
 	if channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			run("rm", { "-rf", `{dest}/{dir}` })
+			run("rm", { "-rf", `{temp}/{dir}` })
 		end
 	end
+
+	local dest = `{project.BUILD_PATH}/plugin`
+	run("rm", { "-rf", dest })
+	run("cp", { "-R", temp, dest })
+	run("rm", { "-rf", temp })
 end
 
 return compile

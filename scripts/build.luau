@@ -31,6 +31,9 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
+args:add("no-reload", "flag", {
+	help = "Prevents the plugin from being built to Roblox Studio, disabling reloading",
+})
 
 args:parse({ ... })
 
@@ -53,7 +56,10 @@ local function build()
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
-	run("cp", { dest, output })
+
+	if not args:has("no-reload") then
+		run("cp", { dest, output })
+	end
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
