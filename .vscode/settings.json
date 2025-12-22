@@ -1,4 +1,13 @@
 {
   "luau-lsp.sourcemap.rojoProjectFile": "build.project.json",
-  "luau-lsp.ignoreGlobs": ["**/_Index/**", "**/build/**", "*Packages/**"]
+  "luau-lsp.ignoreGlobs": ["**/_Index/**", "**/build/**", "*Packages/**"],
+  "explorer.fileNesting.patterns": {
+    "*.luau": "${capture}.*.luau",
+    "default.project.json": "*.project.json",
+    "*.toml": "${capture}.lock"
+  },
+  "explorer.fileNesting.enabled": true,
+  "workbench.editor.customLabels.patterns": {
+    "**/init.luau": "${dirname} (${filename}.${extname})"
+  }
 }
