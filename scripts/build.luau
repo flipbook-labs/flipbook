@@ -1,10 +1,11 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
+local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
-local project = require("@repo/project")
 
 local buildSystem = require("./lib/build-system")
 local dotenv = require("./lib/dotenv")
 local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
+local project = require("@repo/project")
 local run = require("./lib/run")
 local watch = require("./lib/watch")
 
@@ -49,10 +50,39 @@ assert(
 local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
+local fs = require("@lute/fs")
+local toml = require("@luaupkg/batteries/toml")
+
+local function readWallyManifestAsync()
+	local content = fs.readfiletostring(`{process.cwd()}/wally.toml`)
+	return toml.deserialize(content)
+end
+
+local function getCommitHash()
+	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
+		stdio = "default",
+	})
+	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
+	return commitHash
+end
+
+local context = {
+	channel = channel,
+	target = target,
+	env = {
+		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
+		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
+		BUILD_HASH = getCommitHash(),
+		BASE_URL = process.env.BASE_URL,
+	},
+}
+
 local function build()
 	local startTime = os.clock()
 
-	buildSystem.compileAsync(channel, target)
+	print(`build context {pp(context)}`)
+
+	buildSystem.compileAsync(context)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })

@@ -1,5 +1,4 @@
 local fs = require("@lute/fs")
-local toml = require("@batteries/toml")
 
 local find = require("@scripts/lib/find")
 local project = require("@repo/project")
@@ -7,8 +6,7 @@ local run = require("@scripts/lib/run")
 local types = require("@scripts/lib/build-system/types")
 local waitForTasks = require("@scripts/lib/waitForTasks")
 
-type Channel = types.Channel
-type Target = types.Target
+type BuildContext = types.BuildContext
 
 -- Lute's `task.spawn` doesn't actually seem to return a thread. When the return
 -- value would get to `coroutine.status` it would fail with the following:
@@ -19,12 +17,7 @@ local function taskSpawn(callback: () -> ()): thread
 	return thread
 end
 
-local function compileWorkspaceMemberAsync(
-	memberPath: string,
-	channel: Channel,
-	target: Target,
-	env: { [string]: string }
-): string
+local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
 	local startTime = os.clock()
 
 	local memberBuildPath = `{memberPath}/build`
@@ -38,12 +31,12 @@ local function compileWorkspaceMemberAsync(
 		`{memberPath}/src`,
 		memberBuildPath,
 	}, {
-		env = env,
+		env = context.env,
 	})
 
 	local tasks: { thread } = {}
 
-	if channel == "prod" then
+	if context.channel == "prod" then
 		table.insert(
 			tasks,
 			taskSpawn(function()
@@ -58,7 +51,7 @@ local function compileWorkspaceMemberAsync(
 		)
 	end
 
-	if target == "rotriever" then
+	if context.target == "rotriever" then
 		table.insert(
 			tasks,
 			taskSpawn(function()

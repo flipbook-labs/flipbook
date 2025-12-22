@@ -1,19 +1,15 @@
 local fs = require("@lute/fs")
-local process = require("@lute/process")
 local project = require("@repo/project")
-local toml = require("@batteries/toml")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
 local hashDir = require("@scripts/lib/build-system/hashDir")
 local readBuildCacheAsync = require("@scripts/lib/build-system/readBuildCacheAsync")
 local run = require("@scripts/lib/run")
+local types = require("@scripts/lib/build-system/types")
 local waitForTasks = require("@scripts/lib/waitForTasks")
 local writeBuildCacheAsync = require("@scripts/lib/build-system/writeBuildCacheAsync")
 
-local wallyToml = toml.deserialize(fs.readfiletostring("wally.toml"))
-
-type Channel = "prod" | "dev"
-type Target = "roblox" | "rotriever"
+type BuildContext = types.BuildContext
 
 -- Lute's `task.spawn` doesn't actually seem to return a thread. When the return
 -- value would get to `coroutine.status` it would fail with the following:
@@ -24,7 +20,7 @@ local function taskSpawn(callback: () -> ()): thread
 	return thread
 end
 
-local function compileAsync(channel: Channel, target: Target)
+local function compileAsync(context: BuildContext)
 	local dest = `{project.BUILD_PATH}/plugin`
 
 	run("rm", { "-rf", dest })
@@ -32,19 +28,7 @@ local function compileAsync(channel: Channel, target: Target)
 
 	local buildCache = readBuildCacheAsync()
 
-	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
-		stdio = "default",
-	})
-	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
-
-	local env = {
-		BUILD_VERSION = (wallyToml :: any).package.version,
-		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
-		BUILD_HASH = commitHash,
-		BASE_URL = process.env.BASE_URL,
-	}
-
-	for k, v in env do
+	for k, v in context.env do
 		print(`_G.{k} = {v}`)
 	end
 
@@ -60,7 +44,7 @@ local function compileAsync(channel: Channel, target: Target)
 		project.SOURCE_PATH,
 		dest,
 	}, {
-		env = env,
+		env = context.env,
 	})
 
 	print("copying dependencies...")
@@ -93,7 +77,7 @@ local function compileAsync(channel: Channel, target: Target)
 			table.insert(
 				tasks,
 				taskSpawn(function()
-					local memberBuildPath = compileWorkspaceMemberAsync(memberPath, channel, target, env)
+					local memberBuildPath = compileWorkspaceMemberAsync(memberPath, context)
 					run("mkdir", { "-p", `{dest}/{memberPath}` })
 					run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
 				end)
