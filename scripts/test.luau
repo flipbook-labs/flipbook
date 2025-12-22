@@ -25,7 +25,7 @@ if not apiKey then
 	)
 end
 
-run("lute", { "scripts/build.luau", "--channel", "dev", "--target", "roblox" })
+run("lute", { "scripts/build.luau", "--channel", "dev", "--target", "roblox", "--clean" })
 run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
 local success, err = pcall(function()
