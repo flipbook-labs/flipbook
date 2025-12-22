@@ -32,22 +32,29 @@ local function watch(options: Options)
 		return false
 	end)
 
+	-- This keeps all of the WatchHandles in memory. Without this, `fs.watch`
+	-- only works once
+	local watchHandles = {}
+
 	print(richterm.dim("watching folders:"))
 	for _, watchedFolder in foldersToWatch do
 		print(richterm.dim(`> {watchedFolder}`))
 
-		task.spawn(function()
+		table.insert(
+			watchHandles,
 			fs.watch(watchedFolder, function(filename, watchEvent)
 				if watchEvent.change and options.onChanged then
 					local filePath = `{watchedFolder}/{filename}`
 					options.onChanged(filePath)
 				end
 			end)
-		end)
+		)
 	end
 	print("listening for file changes...")
 
 	task.wait(math.huge)
+
+	return watchHandles
 end
 
 return watch
