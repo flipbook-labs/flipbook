@@ -40,7 +40,7 @@ local function compileAsync(context: BuildContext)
 		context = context,
 		step = function(group)
 			for _, path in group.paths do
-				copyInto(path, context.dest)
+				copyInto(path, `{context.dest}/{path}`)
 			end
 		end,
 	})
