@@ -19,8 +19,8 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	for _, path in buildGroup.paths do
 		local hash = hashPath(path)
 
-		if hash ~= buildCache.hashes[path] or buildGroup.context.shouldRebuild then
-			buildCache.hashes[path] = hash
+		if hash ~= buildCache[path] or buildGroup.context.shouldRebuild then
+			buildCache[path] = hash
 			table.insert(changedPaths, path)
 		end
 	end

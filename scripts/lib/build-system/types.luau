@@ -2,9 +2,8 @@ export type Channel = "prod" | "dev"
 export type Target = "roblox" | "rotriever"
 
 export type BuildCache = {
-	hashes: {
-		[string]: string,
-	},
+	-- Maps file path to MD5 hash
+	[string]: string,
 }
 
 export type BuildContext = {

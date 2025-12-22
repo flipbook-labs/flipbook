@@ -15,9 +15,7 @@ local function readBuildCacheAsync(): types.BuildCache
 		end
 	end
 
-	return {
-		hashes = {},
-	}
+	return {}
 end
 
 return readBuildCacheAsync
