@@ -35,10 +35,9 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	print(`{prefix} starting build step...`)
 
 	local startTime = os.clock()
-	local ok, err = pcall(function()
+	local ok, err = xpcall(function()
 		buildGroup.step(processedBuildGroup)
-		return nil
-	end)
+	end, debug.traceback)
 
 	if ok then
 		local elapsedMs = trimDecimals((os.clock() - startTime) * 1000, 3)

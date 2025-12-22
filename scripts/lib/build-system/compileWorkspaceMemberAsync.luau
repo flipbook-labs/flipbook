@@ -6,6 +6,10 @@ local run = require("@scripts/lib/run")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
+local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+local mkdir = require("@scripts/lib/flipbook-batteries/mkdir")
+local rmdir = require("@scripts/lib/flipbook-batteries/rmdir")
+
 type BuildContext = types.BuildContext
 
 local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
@@ -62,9 +66,10 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 	end
 
 	local dest = `{context.dest}/{memberPath}`
-	run("rm", { "-rf", dest })
-	run("mkdir", { "-p", dest })
-	run("cp", { "-R", `{memberBuildPath}/**`, dest })
+
+	rmdir(dest)
+	mkdir(dest)
+	copyInto(memberBuildPath, dest)
 
 	return memberBuildPath
 end
