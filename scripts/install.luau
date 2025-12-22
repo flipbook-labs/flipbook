@@ -71,7 +71,9 @@ local function installLuteBatteries()
 	local commit = "7f5ccf7"
 	local batteries = {
 		"cli.luau",
+		"pp.luau",
 		"toml.luau",
+		"richterm.luau",
 	}
 
 	local dest = `{LUAU_PACKAGES_PATH}/batteries`

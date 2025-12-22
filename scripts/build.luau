@@ -1,6 +1,7 @@
 local cli = require("@luaupkg/batteries/cli")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
+local richterm = require("@luaupkg/batteries/richterm")
 
 local buildSystem = require("@scripts/lib/build-system")
 local dotenv = require("@scripts/lib/dotenv")
@@ -77,6 +78,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
+	dest = `{process.cwd()}/{project.BUILD_PATH}/plugin`,
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -88,11 +90,11 @@ local context: BuildContext = {
 local function build()
 	local startTime = os.clock()
 
-	print(`build context {pp(context)}`)
+	print(richterm.dim(`build context: {pp(context)}`))
 
 	buildSystem.compileAsync(context)
 
-	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
+	local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
 
 	if not args:has("no-reload") then
@@ -105,6 +107,15 @@ end
 build()
 
 if args:has("watch") then
+	local function onChanged(filePath: string)
+		if filePath:match(project.WORKSPACE_PATH) then
+			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
+		else
+			build()
+		end
+	end
+
 	watch({
 		roots = {
 			`{process.cwd()}/src`,
@@ -114,6 +125,6 @@ if args:has("watch") then
 			".*Packages",
 			"build",
 		},
-		onChanged = build,
+		onChanged = onChanged,
 	})
 end

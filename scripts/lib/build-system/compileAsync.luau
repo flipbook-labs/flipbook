@@ -21,12 +21,10 @@ local function taskSpawn(callback: () -> ()): thread
 end
 
 local function compileAsync(context: BuildContext)
-	local dest = `{project.BUILD_PATH}/plugin`
-
 	if context.shouldRebuild then
-		run("rm", { "-rf", dest })
+		run("rm", { "-rf", context.dest })
 	end
-	run("mkdir", { "-p", dest })
+	run("mkdir", { "-p", context.dest })
 
 	local buildCache = readBuildCacheAsync()
 
@@ -40,7 +38,7 @@ local function compileAsync(context: BuildContext)
 	run("darklua", {
 		"process",
 		project.SOURCE_PATH,
-		dest,
+		context.dest,
 	}, {
 		env = context.env,
 	})
@@ -55,7 +53,7 @@ local function compileAsync(context: BuildContext)
 			buildCache.hashes[path] = hash
 		end
 
-		run("cp", { "-R", path, dest })
+		run("cp", { "-R", path, context.dest })
 	end
 
 	print("compiling workspace members...")
@@ -79,9 +77,7 @@ local function compileAsync(context: BuildContext)
 			table.insert(
 				tasks,
 				taskSpawn(function()
-					local memberBuildPath = compileWorkspaceMemberAsync(memberPath, context)
-					run("mkdir", { "-p", `{dest}/{memberPath}` })
-					run("cp", { "-R", `{memberBuildPath}/**`, `{dest}/{memberPath}` })
+					compileWorkspaceMemberAsync(memberPath, context)
 				end)
 			)
 		end
@@ -93,7 +89,7 @@ local function compileAsync(context: BuildContext)
 
 	if context.channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			run("rm", { "-rf", `{dest}/{dir}` })
+			run("rm", { "-rf", `{context.dest}/{dir}` })
 		end
 	end
 

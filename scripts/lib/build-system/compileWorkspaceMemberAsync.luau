@@ -72,6 +72,11 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 
 	waitForTasks(tasks)
 
+	local dest = `{context.dest}/{memberPath}`
+	run("rm", { "-rf", dest })
+	run("mkdir", { "-p", dest })
+	run("cp", { "-R", `{memberBuildPath}/**`, dest })
+
 	print(`[{memberPath}] completed in {("%.2f"):format(os.clock() - startTime)}s`)
 
 	return memberBuildPath
