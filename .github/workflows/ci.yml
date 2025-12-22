@@ -38,7 +38,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.MODEL_FILE }}
+          name: ${{ env.MODEL_FILE }}-${{ matrix.channel }}-${{ matrix.target }}
           path: ${{ env.MODEL_FILE }}
 
   analyze:
