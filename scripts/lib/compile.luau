@@ -43,25 +43,13 @@ local function compile(context: BuildContext)
 		end,
 	})
 
-	local workspaceMemberPaths: { string } = {}
 	for _, member in fs.listdir(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
 		if fs.type(memberPath) == "dir" then
-			table.insert(workspaceMemberPaths, memberPath)
+			compileWorkspaceMemberAsync(memberPath, context)
 		end
 	end
-
-	runBuildGroupAsync({
-		name = "📦 workspace",
-		paths = workspaceMemberPaths,
-		context = context,
-		step = function(group)
-			for _, path in group.paths do
-				compileWorkspaceMemberAsync(path, context)
-			end
-		end,
-	})
 
 	if context.channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
