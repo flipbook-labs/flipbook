@@ -63,9 +63,11 @@ do
 		local manifestVersion = semver.getVersionFromManifest(manifestPath)
 
 		if fs.exists(manifestPath) then
-			local manifestContent = fs.readfiletostring(manifestPath)
+			local manifestHandle = fs.open(manifestPath, "w+")
+			local manifestContent = fs.read(manifestHandle)
 			manifestContent = manifestContent:gsub(`version = "{manifestVersion}"`, `version = "{nextVersion}"`)
-			fs.writestringtofile(manifestPath, manifestContent)
+			fs.write(manifestHandle, manifestContent)
+			fs.close(manifestHandle)
 
 			print(`bumped version in {manifestPath} to {nextVersion} (was {manifestVersion})`)
 		end
