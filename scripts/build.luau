@@ -1,12 +1,20 @@
 local cli = require("@luaupkg/batteries/cli")
+local fs = require("@lute/fs")
+local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
+local richterm = require("@luaupkg/batteries/richterm")
+local toml = require("@luaupkg/batteries/toml")
 
-local compile = require("@scripts/lib/compile")
+local buildSystem = require("@scripts/lib/build-system")
 local dotenv = require("@scripts/lib/dotenv")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 local run = require("@scripts/lib/run")
 local watch = require("@scripts/lib/watch")
+
+local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+
+type BuildContext = buildSystem.BuildContext
 
 dotenv()
 
@@ -31,6 +39,13 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
+args:add("plugin", "flag", {
+	help = "Builds an rbxm of the plugin to Roblox Studio's plugins folder",
+	aliases = { "p" },
+})
+args:add("clean", "flag", {
+	help = "Performs a full rebuild of the project",
+})
 
 args:parse({ ... })
 
@@ -46,14 +61,57 @@ assert(
 local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
+local function readWallyManifestAsync()
+	local wallyTomlHandle = fs.open("wally.toml", "r")
+	local contents = fs.read(wallyTomlHandle)
+	fs.close(wallyTomlHandle)
+	return toml.deserialize(contents)
+end
+
+local function getCommitHash()
+	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
+		stdio = "default",
+	})
+	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
+	return commitHash
+end
+
+local context: BuildContext = {
+	channel = channel,
+	target = target,
+	shouldRebuild = args:has("clean"),
+	dest = `{process.cwd()}/{project.BUILD_PATH}/plugin`,
+	env = {
+		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
+		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
+		BUILD_HASH = getCommitHash(),
+		BASE_URL = process.env.BASE_URL,
+	},
+	cache = buildSystem.readBuildCacheAsync(),
+}
+
 local function build()
 	local startTime = os.clock()
 
-	compile(channel, target)
+	print(richterm.dim(`build context: {pp(context)}`))
 
-	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
-	run("rojo", { "build", "-o", dest })
-	run("cp", { dest, output })
+	buildSystem.compileAsync(context)
+
+	if args:has("plugin") then
+		buildSystem.runBuildGroupAsync({
+			name = "🔌 plugin binary",
+			paths = { context.dest },
+			context = context,
+			step = function()
+				local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
+				run("rojo", { "build", "-o", dest })
+
+				copyInto(dest, output)
+			end,
+		})
+	end
+
+	buildSystem.writeBuildCacheAsync(context.cache)
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
@@ -61,6 +119,16 @@ end
 build()
 
 if args:has("watch") then
+	local function onChanged(filePath: string)
+		if filePath:match(project.WORKSPACE_PATH) then
+			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
+			buildSystem.writeBuildCacheAsync(context.cache)
+		else
+			build()
+		end
+	end
+
 	watch({
 		roots = {
 			`{process.cwd()}/src`,
@@ -70,6 +138,6 @@ if args:has("watch") then
 			".*Packages",
 			"build",
 		},
-		onChanged = build,
+		onChanged = onChanged,
 	})
 end
