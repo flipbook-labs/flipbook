@@ -2,7 +2,7 @@ local cli = require("@batteries/cli")
 local process = require("@lute/process")
 local project = require("@repo/project")
 
-local compile = require("./lib/compile")
+local buildSystem = require("./lib/build-system")
 local dotenv = require("./lib/dotenv")
 local getStudioPluginsPath = require("./lib/getStudioPluginsPath")
 local run = require("./lib/run")
@@ -52,7 +52,7 @@ assert(typeof(output) == "string", `bad value for output (string expected, got {
 local function build()
 	local startTime = os.clock()
 
-	compile(channel, target)
+	buildSystem.compileAsync(channel, target)
 
 	local dest = `{project.BUILD_PATH}/{project.PLUGIN_FILENAME}`
 	run("rojo", { "build", "-o", dest })
@@ -62,6 +62,10 @@ local function build()
 	end
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
+end
+
+local function onChanged(filePath: string)
+	print("onChanged", filePath)
 end
 
 build()
