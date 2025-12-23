@@ -1,8 +1,8 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 
-local findAndReplace = require("./lib/findAndReplace")
-local semver = require("./lib/semver")
+local findAndReplace = require("@scripts/lib/findAndReplace")
+local semver = require("@scripts/lib/semver")
 
 type VersionComponent = semver.VersionComponent
 

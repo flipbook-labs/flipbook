@@ -4,11 +4,11 @@
 		"lune": "~/.lune/.typedefs/0.9.4/",
 		"lute": "~/.lute/typedefs/0.1.0/lute/",
 		"std": "~/.lute/typedefs/0.1.0/std/",
-		"batteries": "./LuauPackages/batteries",
 		"luaupkg": "./LuauPackages",
 		"pkg": "./Packages",
 		"rbxpkg": "./RobloxPackages",
 		"repo": ".",
+		"scripts": "./scripts",
 		"workspace": "./workspace"
 	}
 }
