@@ -27,7 +27,7 @@ local function Screen(props: Props)
 		if currentScreen == "Home" then
 			if props.story and props.storybook then
 				return React.createElement(StoryView, {
-					story = props.story,
+					storyModule = props.story,
 					storybook = props.storybook,
 				})
 			elseif props.unavailableStorybook then

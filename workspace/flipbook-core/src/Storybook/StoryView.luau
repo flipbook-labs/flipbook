@@ -24,20 +24,20 @@ local useStory = Storyteller.useStory
 type LoadedStorybook = Storyteller.LoadedStorybook
 
 type StoryViewProps = {
-	story: ModuleScript,
+	storyModule: ModuleScript,
 	storybook: LoadedStorybook,
 }
 
 local function StoryView(props: StoryViewProps)
 	local storyActions = StoryActionsContext.useStoryActions()
-	local storyData, storyError = useStory(props.story, props.storybook)
+	local story, storyError = useStory(props.storyModule, props.storybook)
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
 		local newControls = {}
 
-		if storyData ~= nil and storyData.controls ~= nil then
-			for key, value in storyData.controls do
+		if story ~= nil and story.controls ~= nil then
+			for key, value in story.controls do
 				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
 					newControls[key] = modifiedControls[key]
 				else
@@ -47,7 +47,7 @@ local function StoryView(props: StoryViewProps)
 		end
 
 		return newControls
-	end, { storyData, modifiedControls } :: { any })
+	end, { story, modifiedControls } :: { any })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
@@ -59,16 +59,16 @@ local function StoryView(props: StoryViewProps)
 
 	useEffect(function()
 		setModifiedControls({})
-	end, { storyData })
+	end, { story })
 
 	return e(View, {
-		tag = "size-full",
+		tag = "size-full bg-surface-200",
 	}, {
 		Error = storyError ~= nil and e(StoryError, {
 			errorMessage = storyError,
 		}),
 
-		Story = storyData ~= nil and e(View, {
+		Story = story ~= nil and e(View, {
 			tag = "col size-full",
 		}, {
 			Info = e(View, {
@@ -77,7 +77,7 @@ local function StoryView(props: StoryViewProps)
 			}, {
 				Title = e(Text, {
 					LayoutOrder = 1,
-					Text = storyData.name,
+					Text = story.name,
 					tag = {
 						-- NOTE (Paul): Super nitpick-y, but keeping all this on
 						-- one line made for some really weird formatting that I
@@ -87,9 +87,9 @@ local function StoryView(props: StoryViewProps)
 					},
 				}),
 
-				Summary = storyData.summary ~= nil and e(Text, {
+				Summary = story.summary ~= nil and e(Text, {
 					LayoutOrder = 2,
-					Text = storyData.summary,
+					Text = story.summary,
 					sizeConstraint = { MaxSize = Vector2.new(600, math.huge) },
 					tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-medium text-wrap",
 				}),
@@ -107,7 +107,7 @@ local function StoryView(props: StoryViewProps)
 					controls = Object.assign({}, controls, modifiedControls),
 					isMountedInViewport = storyActions.isMountedInViewport,
 					ref = storyActions.storyContainerRef,
-					story = storyData,
+					story = story,
 					zoom = storyActions.zoom.value,
 				}),
 			}),
