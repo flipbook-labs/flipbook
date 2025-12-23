@@ -1,6 +1,7 @@
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
+local logger = require("@root/logger")
 local usePrevious = require("@root/Common/usePrevious")
 
 local render = Storyteller.render
@@ -28,11 +29,11 @@ local function StoryContainer(props: {
 		end
 
 		if not ref.current then
-			-- logger:Warn("attempted to mount story before ref was ready")
+			logger:Warn("attempted to mount story before ref was ready")
 			return
 		end
 
-		-- logger:Debug("mounting story")
+		logger:Debug("mounting story")
 
 		local success, result = xpcall(function()
 			lifecycle.current = render(ref.current, props.story, props.storyProps)
@@ -48,7 +49,7 @@ local function StoryContainer(props: {
 			return
 		end
 
-		-- logger:Debug("updating story")
+		logger:Debug("updating story")
 
 		local success, result = xpcall(function()
 			lifecycle.current.update(props.storyProps)
@@ -64,7 +65,7 @@ local function StoryContainer(props: {
 			return
 		end
 
-		-- logger:Debug("unmounting story")
+		logger:Debug("unmounting story")
 
 		lifecycle.current.unmount()
 		lifecycle.current = nil
