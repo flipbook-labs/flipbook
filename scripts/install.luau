@@ -2,7 +2,6 @@ local fs = require("@lute/fs")
 
 local find = require("@scripts/lib/find")
 local findAndReplace = require("@scripts/lib/findAndReplace")
-local findAndReplace = require("./lib/findAndReplace")
 local json = require("@std/json")
 local project = require("@repo/project")
 local run = require("@scripts/lib/run")
