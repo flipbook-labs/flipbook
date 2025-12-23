@@ -51,12 +51,6 @@ do
 	local find = FlipbookBatteries.find
 	local findAndReplace = FlipbookBatteries.findAndReplace
 
-	local function installWallyPackages()
-		run("wally", { "install" })
-		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
-	end
-
 	-- LuauLog is written with string requires which are not yet supported by
 	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
 	-- darklua to resolve the string requires to Roblox ones
@@ -89,6 +83,16 @@ do
 		run("darklua", { "process", "src", "src" }, {
 			cwd = packageRoot,
 		})
+	end
+
+	local function installWallyPackages()
+		run("wally", { "install" })
+		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
+
+		if fs.exists(`{project.PACKAGES_PATH}/Log.lua`) then
+			patchLuauLog()
+		end
 	end
 
 	local function installRobloxPackages()
@@ -193,7 +197,6 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
-	patchLuauLog()
 	installLuteBatteries()
 	installRbxasset()
 	pruneDevelopmentFiles()
