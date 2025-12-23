@@ -17,7 +17,7 @@ end
 local function getLogLevelColor(tokens: Foundation.Tokens, logLevel: string): Color3
 	local lower = logLevel:lower()
 	if lower == "debug" then
-		return tokens.Color.Extended.Gray.Gray_600.Color3
+		return tokens.Color.Content.Muted.Color3
 	elseif lower == "warn" then
 		return tokens.Color.System.Warning.Color3
 	elseif lower == "err" then
@@ -25,7 +25,7 @@ local function getLogLevelColor(tokens: Foundation.Tokens, logLevel: string): Co
 	elseif lower == "info" then
 		return tokens.Color.System.Success.Color3
 	else
-		return tokens.Color.Extended.Gray.Gray_600.Color3
+		return tokens.Color.Content.Muted.Color3
 	end
 end
 
@@ -55,7 +55,7 @@ local function LogLine(props: Props)
 			end
 		end
 
-		local color = tokens.Color.Extended.Gray.Gray_600.Color3:ToHex()
+		local color = tokens.Color.Content.Muted.Color3:ToHex()
 		text = `<font color="#{color}">{text}</font>`
 
 		return text
