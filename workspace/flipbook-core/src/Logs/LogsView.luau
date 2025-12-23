@@ -21,8 +21,13 @@ local function LogsView()
 		})
 	end
 
-	return React.createElement(Foundation.View, {
-		tag = "size-full-0 auto-y col gap-xsmall padding-medium",
+	return React.createElement(Foundation.ScrollView, {
+		tag = "size-full col gap-xsmall padding-medium",
+		scroll = {
+			AutomaticCanvasSize = Enum.AutomaticSize.Y,
+			CanvasSize = UDim2.fromScale(1, 0),
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+		},
 	}, children)
 end
 
