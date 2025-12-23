@@ -55,7 +55,7 @@ do
 	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
 	-- darklua to resolve the string requires to Roblox ones
 	local function patchLuauLog()
-		local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "luaulog")[1]
+		local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "^luaulog$")[1]
 
 		local darkluaConfig = {
 			process = {
@@ -197,7 +197,7 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
-	installLuteBatteries()
 	installRbxasset()
+	installLuteBatteries()
 	pruneDevelopmentFiles()
 end
