@@ -15,16 +15,23 @@ local function stringToLogLevel(logLevel: string)
 	return Log.LogLevel.Warning
 end
 
-local logger = Log.Logger.new({
-	Log.Common.Enrichers.LogLevelEnricher(),
-	Log.Common.Enrichers.DynSourceEnricher(true),
-}, {
-	Log.LogSink.new(function(event)
-		LogsStore.get(false).addLine(event)
-	end),
-	if _G.BUILD_CHANNEL == "development" then Log.Common.RobloxLogSink() else nil,
-}, {
-	Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
-})
+local sinks = { Log.LogSink.new(function(event)
+	LogsStore.get(false).addLine(event)
+end) }
+
+if _G.BUILD_CHANNEL == "development" then
+	table.insert(sinks, Log.Common.RobloxLogSink())
+end
+
+local logger = Log.Logger.new(
+	{
+		Log.Common.Enrichers.LogLevelEnricher(),
+		Log.Common.Enrichers.DynSourceEnricher(true),
+	},
+	sinks,
+	{
+		Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
+	}
+)
 
 return logger
