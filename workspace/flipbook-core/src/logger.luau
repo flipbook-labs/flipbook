@@ -15,11 +15,13 @@ local function stringToLogLevel(logLevel: string)
 	return Log.LogLevel.Warning
 end
 
-local sinks = { Log.LogSink.new(function(event)
-	LogsStore.get(false).addLine(event)
-end) }
+local sinks = {
+	Log.LogSink.new(function(event)
+		LogsStore.get(false).addLine(event)
+	end),
+}
 
-if _G.BUILD_CHANNEL == "development" then
+if _G.ENABLE_OUTPUT_LOGGING then
 	table.insert(sinks, Log.Common.RobloxLogSink())
 end
 
