@@ -10,9 +10,10 @@ on:
 
 jobs:
   publish-github-release:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write
+    if: ${{ github.event.release }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,17 +33,44 @@ jobs:
         run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
-        if: ${{ github.event.release }}
         with:
           files: ${{ env.MODEL_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-plugin:
-    runs-on: macos-latest
-    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency: production
+    environment:
+      name: roblox-creator-store
+      url: https://create.roblox.com/store/asset/8517129161
     env:
       LOG_LEVEL: debug
+    if: github.event.release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
+
+      - name: Install dependencies
+        run: lute scripts/install.luau
+
+      - name: Publish release to Creator Store
+        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+  publish-nightly-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency: nightly
+    environment:
+      name: roblox-creator-store-dev
+      url: https://create.roblox.com/store/asset/88523969718241
+    env:
+      LOG_LEVEL: debug
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -54,9 +82,4 @@ jobs:
         run: lute scripts/install.luau
 
       - name: Publish nightly build to Creator Store
-        if: github.ref == 'refs/heads/main'
         run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
-
-      - name: Publish release to Creator Store
-        if: github.event.release
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

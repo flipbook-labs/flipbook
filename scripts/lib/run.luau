@@ -12,10 +12,7 @@ local function run(program: string, params: { string }, options: Options?): stri
 	print(`> {command}`)
 	-- stdio.write(stdio.style("reset"))
 
-	local result = process.run({
-		program,
-		table.unpack(params),
-	}, {
+	local result = process.system(command, {
 		shell = true,
 		stdio = if options and options.stdio then options.stdio else "inherit",
 		cwd = if options then options.cwd else nil,

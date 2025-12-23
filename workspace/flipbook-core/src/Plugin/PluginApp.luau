@@ -27,7 +27,6 @@ local function App()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
@@ -75,7 +74,6 @@ local function App()
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
-					storybooks = storybooks,
 				}),
 			}),
 

@@ -1,18 +1,16 @@
-local HttpService = game:GetService("HttpService")
-
 local TreeView = require("@root/TreeView")
 
-type TreeNode = TreeView.TreeNode
+type TreeNodeStore = TreeView.TreeNodeStore
 
-local function createTreeNodeForStoryModule(storyModule: ModuleScript): TreeNode
-	return {
-		id = HttpService:GenerateGUID(),
-		label = storyModule.Name:gsub("%.story", ""),
-		icon = "story",
-		isExpanded = false,
-		instance = storyModule,
-		children = {},
-	}
+local function createTreeNodeForStoryModule(storyModule: ModuleScript): TreeNodeStore
+	local name = storyModule.Name:gsub("%.story", "")
+
+	local node = TreeView.createTreeNodeStore()
+	node.setName(name)
+	node.setIcon(TreeView.TreeNodeIcon.Story)
+	node.setInstance(storyModule)
+
+	return node
 end
 
 return createTreeNodeForStoryModule

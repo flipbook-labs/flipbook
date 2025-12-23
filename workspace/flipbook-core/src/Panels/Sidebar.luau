@@ -12,7 +12,6 @@ local withCommonProps = Foundation.Utility.withCommonProps
 
 local e = React.createElement
 local useCallback = React.useCallback
-local useMemo = React.useMemo
 local useState = React.useState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -21,10 +20,6 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 type SidebarProps = {
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
-	storybooks: {
-		available: { LoadedStorybook },
-		unavailable: { UnavailableStorybook },
-	},
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
@@ -32,13 +27,6 @@ local function Sidebar(props: SidebarProps)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
-
-	-- Right now we just respond to available storybook changes. This should be
-	-- updated into a `useOrphanedStoryModules` hook that will update based on
-	-- .story modules being added/removed from the DM.
-	local orphanedStoryModules = useMemo(function()
-		return Storyteller.findOrphanedStoryModules(game, props.storybooks.available)
-	end, { props.storybooks.available })
 
 	return e(
 		View,
@@ -48,7 +36,7 @@ local function Sidebar(props: SidebarProps)
 		{
 			Search = e(View, {
 				LayoutOrder = 1,
-				tag = "auto-y padding-x-medium padding-y-large size-full-0",
+				tag = "auto-y padding-medium size-full-0",
 			}, {
 				SearchBar = e(TextInput, {
 					label = "",
@@ -73,9 +61,7 @@ local function Sidebar(props: SidebarProps)
 				StorybookTreeView = e(StorybookTreeView, {
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
-					orphanedStoryModules = orphanedStoryModules,
 					searchTerm = searchTerm,
-					storybooks = props.storybooks,
 				}),
 			}),
 		}

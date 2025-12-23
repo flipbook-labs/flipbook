@@ -1,3 +1,5 @@
+local Signals = require("@rbxpkg/Signals")
+
 local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
@@ -11,29 +13,69 @@ types.TreeNodeIcon = {
 	Pin = "pin" :: "pin",
 }
 
-export type PartialTreeNode = {
-	id: string?,
-	label: string,
-	icon: TreeNodeIcon?,
-	isExpanded: boolean?,
-	children: { PartialTreeNode }?,
-	instance: Instance?,
-}
+export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 
-export type TreeNode = {
+export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore, scope: Signals.scope) -> boolean
+
+export type TreeNodeStore = {
 	id: string,
-	label: string,
-	icon: TreeNodeIcon,
-	isExpanded: boolean,
-	children: { TreeNode },
-	parent: TreeNode?,
-	instance: Instance?,
+
+	-- Node properties and states
+	getName: Signals.getter<string>,
+	setName: Signals.setter<string>,
+	getIcon: Signals.getter<TreeNodeIcon?>,
+	setIcon: Signals.setter<TreeNodeIcon?>,
+	getIsSelected: Signals.getter<boolean>,
+	setIsSelected: Signals.setter<boolean>,
+	getIsVisible: Signals.getter<boolean>,
+	setIsVisible: Signals.setter<boolean>,
+	activate: () -> (),
+	getIsFiltered: Signals.getter<boolean>,
+	setIsFiltered: Signals.setter<boolean>,
+	getIsPinned: Signals.getter<boolean>,
+	setIsPinned: Signals.setter<boolean>,
+
+	-- Expand/Collapse
+	getIsExpanded: Signals.getter<boolean>,
+	setIsExpanded: Signals.setter<boolean>,
+	expandDown: () -> (),
+	expandUp: () -> (),
+	collapseDown: () -> (),
+
+	-- Hierarchy
+	getChildren: Signals.getter<{ TreeNodeStore }>,
+	setChildren: Signals.setter<{ TreeNodeStore }>,
+	getAncestors: Signals.getter<{ TreeNodeStore }>,
+	getDescendants: Signals.getter<{ TreeNodeStore }>,
+	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
+	getPath: Signals.getter<string>,
+	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
+	getPinnedDescendants: Signals.getter<{ TreeNodeStore }>,
+	getParent: Signals.getter<TreeNodeStore?>,
+	parentTo: (newParent: TreeNodeStore?) -> (),
+	clearChildren: () -> (),
+	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
+	findFirstAncestor: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
+	getSortOrder: Signals.getter<TreeNodeSort?>,
+	setSortOrder: (sort: TreeNodeSort?) -> (),
+
+	-- DataModel
+	getInstance: Signals.getter<Instance?>,
+	setInstance: Signals.setter<Instance?>,
+
+	-- Other
+	snapshot: () -> TreeNodeSnapshot,
+	-- destroy: () -> (),
 }
 
-export type Tree = {
-	root: { PartialTreeNode },
-	leafNodes: { TreeNode },
-	nodesById: { [string]: TreeNode },
+export type TreeNodeSnapshot = {
+	id: string,
+	name: string,
+	icon: string?,
+	isSelected: boolean,
+	isVisible: boolean,
+	instance: Instance?,
+	children: { TreeNodeSnapshot },
 }
 
 return types

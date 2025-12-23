@@ -60,16 +60,16 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center auto-y bg-surface-0 flex-x-between padding-right-medium padding-y-medium row size-full-0",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row size-full-1400",
 		}),
 		{
 			Actions = e(View, {
 				LayoutOrder = 1,
-				tag = "align-y-center auto-y gap-medium row shrink size-full-0",
+				tag = "auto-x gap-medium row size-0-full",
 			}, {
 				Zoom = e(View, {
 					LayoutOrder = 1,
-					tag = "auto-xy row",
+					tag = "auto-x row size-0-full",
 				}, {
 					ZoomIn = e(Tooltip, {
 						LayoutOrder = 1,
@@ -81,6 +81,7 @@ local function Topbar(props: TopbarProps)
 							icon = IconName.MagnifyingGlassPlus,
 							isDisabled = storyActions.isDisabled,
 							onActivated = storyActions.zoom.zoomIn,
+							size = InputSize.Small,
 						}),
 					}),
 
@@ -94,6 +95,7 @@ local function Topbar(props: TopbarProps)
 							icon = IconName.MagnifyingGlassMinus,
 							isDisabled = storyActions.isDisabled,
 							onActivated = storyActions.zoom.zoomOut,
+							size = InputSize.Small,
 						}),
 					}),
 				}),
@@ -105,7 +107,7 @@ local function Topbar(props: TopbarProps)
 
 				Views = e(View, {
 					LayoutOrder = 3,
-					tag = "auto-xy row",
+					tag = "auto-x row size-0-full",
 				}, {
 					Source = e(Tooltip, {
 						LayoutOrder = 1,
@@ -117,6 +119,7 @@ local function Topbar(props: TopbarProps)
 							icon = IconName.Code,
 							isDisabled = storyActions.isDisabled,
 							onActivated = storyActions.viewCode,
+							size = InputSize.Small,
 						}),
 					}),
 
@@ -130,6 +133,7 @@ local function Topbar(props: TopbarProps)
 							icon = IconName.Eye,
 							isDisabled = storyActions.isDisabled,
 							onActivated = storyActions.viewportPreview,
+							size = InputSize.Small,
 						}),
 					}),
 
@@ -143,6 +147,7 @@ local function Topbar(props: TopbarProps)
 							icon = IconName.MagnifyingGlass,
 							isDisabled = storyActions.isDisabled,
 							onActivated = storyActions.viewExplorer,
+							size = InputSize.Small,
 						}),
 					}),
 				}),
@@ -170,7 +175,7 @@ local function Topbar(props: TopbarProps)
 
 			Support = e(View, {
 				LayoutOrder = 2,
-				tag = "auto-xy row",
+				tag = "auto-x row size-0-full",
 			}, {
 				Help = e(Tooltip, {
 					LayoutOrder = 1,
@@ -184,6 +189,7 @@ local function Topbar(props: TopbarProps)
 							setIsHelpMenuOpen(true)
 						end,
 						ref = helpButtonRef,
+						size = InputSize.Small,
 					}),
 				}),
 
@@ -207,6 +213,7 @@ local function Topbar(props: TopbarProps)
 								navigation.navigateTo("Home")
 							end
 						end,
+						size = InputSize.Small,
 					}),
 				}),
 			}),

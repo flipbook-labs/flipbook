@@ -1,13 +1,14 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
+local richterm = require("@luaupkg/batteries/richterm")
 local task = require("@lute/task")
 
-local matchDescendants = require("./matchDescendants")
+local matchDescendants = require("@scripts/lib/matchDescendants")
 
 type Options = {
 	roots: { string },
 	excludedFilePatterns: { string }?,
-	onChanged: ((changedFiles: { string }) -> ())?,
+	onChanged: ((changedPath: string) -> ())?,
 }
 
 local function watch(options: Options)
@@ -31,23 +32,29 @@ local function watch(options: Options)
 		return false
 	end)
 
-	print("watching folders:")
-	-- stdio.write(stdio.style("dim"))
-	for _, watchedFolder in foldersToWatch do
-		print(`> {watchedFolder}`)
+	-- This keeps all of the WatchHandles in memory. Without this, `fs.watch`
+	-- only works once
+	local watchHandles = {}
 
-		task.spawn(function()
-			fs.watch(watchedFolder, function(filename)
-				if options.onChanged then
-					options.onChanged({ filename })
+	print(richterm.dim("watching folders:"))
+	for _, watchedFolder in foldersToWatch do
+		print(richterm.dim(`> {watchedFolder}`))
+
+		table.insert(
+			watchHandles,
+			fs.watch(watchedFolder, function(filename, watchEvent)
+				if watchEvent.change and options.onChanged then
+					local filePath = `{watchedFolder}/{filename}`
+					options.onChanged(filePath)
 				end
 			end)
-		end)
+		)
 	end
-	-- stdio.write(stdio.style("reset"))
 	print("listening for file changes...")
 
 	task.wait(math.huge)
+
+	return watchHandles
 end
 
 return watch
