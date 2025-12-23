@@ -13,7 +13,7 @@ do
 		local res = process.run({
 			"curl",
 			"-LO",
-			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.4.1/flipbook-batteries.zip",
+			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.4.2/flipbook-batteries.zip",
 		}, {
 			cwd = LUAU_PACKAGES_PATH,
 		})
@@ -193,6 +193,7 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
+	patchLuauLog()
 	installLuteBatteries()
 	installRbxasset()
 	pruneDevelopmentFiles()
