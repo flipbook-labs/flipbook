@@ -1,3 +1,4 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 local pp = require("@luaupkg/batteries/pp")
@@ -6,13 +7,13 @@ local richterm = require("@luaupkg/batteries/richterm")
 local toml = require("@luaupkg/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
-local dotenv = require("@scripts/lib/dotenv")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
-local run = require("@scripts/lib/run")
-local watch = require("@scripts/lib/watch")
 
-local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+local copyInto = FlipbookBatteries.copyInto
+local dotenv = FlipbookBatteries.dotenv
+local run = FlipbookBatteries.run
+local watch = FlipbookBatteries.watch
 
 type BuildContext = buildSystem.BuildContext
 
