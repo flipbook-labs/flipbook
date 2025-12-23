@@ -86,6 +86,7 @@ local context: BuildContext = {
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = getCommitHash(),
 		BASE_URL = process.env.BASE_URL,
+		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
 	cache = buildSystem.readBuildCacheAsync(),
 }
