@@ -1,7 +1,6 @@
+local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
-
-local getStudioPluginsPath = require("./getStudioPluginsPath")
-local run = require("./run")
+local run = require("@scripts/lib/run")
 
 local function clean()
 	run("rm", { "-rf", `{project.BUILD_PATH}` })

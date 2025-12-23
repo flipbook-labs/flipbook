@@ -10,6 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        channel: [dev, prod]
+        target: [roblox, rotriever]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
 
@@ -27,11 +32,13 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
+        run: |
+          lute scripts/build.luau --channel ${{ matrix.channel }} --target ${{ matrix.target }} \
+            --output ${{ env.MODEL_FILE }} --clean
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.MODEL_FILE }}
+          name: ${{ env.MODEL_FILE }}-${{ matrix.channel }}-${{ matrix.target }}
           path: ${{ env.MODEL_FILE }}
 
   analyze:

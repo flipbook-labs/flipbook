@@ -2,6 +2,7 @@ return {
 	-- All paths are relative to the root of the repo
 	SOURCE_PATH = "src",
 	BUILD_PATH = "build",
+	BUILD_CACHE_PATH = "build/build-cache.json",
 	PACKAGES_PATH = "Packages",
 	ROBLOX_PACKAGES_PATH = "RobloxPackages",
 	SCRIPTS_PATH = "scripts",

@@ -1,10 +1,10 @@
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
-local compile = require("./lib/compile")
-local dotenv = require("./lib/dotenv")
-local run = require("./lib/run")
+local dotenv = require("@scripts/lib/dotenv")
+local project = require("@repo/project")
+local run = require("@scripts/lib/run")
 
 dotenv()
 
@@ -25,9 +25,8 @@ if not apiKey then
 	)
 end
 
-compile("dev", "roblox")
-
-run("rojo", { "build", "tests.project.json", "-o", "tests.rbxl" })
+run("lute", { "scripts/build.luau", "--channel", "dev" })
+run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
 local success, err = pcall(function()
 	run("python3", {
