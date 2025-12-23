@@ -87,9 +87,24 @@ local context: BuildContext = {
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = getCommitHash(),
 		BASE_URL = process.env.BASE_URL,
+		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
 	cache = buildSystem.readBuildCacheAsync(),
 }
+
+local function buildPluginBinary()
+	buildSystem.runBuildGroupAsync({
+		name = "🔌 plugin binary",
+		paths = { context.dest },
+		context = context,
+		step = function()
+			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
+			run("rojo", { "build", "-o", dest })
+
+			copyInto(dest, output)
+		end,
+	})
+end
 
 local function build()
 	local startTime = os.clock()
@@ -97,22 +112,11 @@ local function build()
 	print(richterm.dim(`build context: {pp(context)}`))
 
 	buildSystem.compileAsync(context)
+	buildSystem.writeBuildCacheAsync(context.cache)
 
 	if args:has("plugin") then
-		buildSystem.runBuildGroupAsync({
-			name = "🔌 plugin binary",
-			paths = { context.dest },
-			context = context,
-			step = function()
-				local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-				run("rojo", { "build", "-o", dest })
-
-				copyInto(dest, output)
-			end,
-		})
+		buildPluginBinary()
 	end
-
-	buildSystem.writeBuildCacheAsync(context.cache)
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
@@ -125,6 +129,10 @@ if args:has("watch") then
 			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
+
+			if args:has("plugin") then
+				buildPluginBinary()
+			end
 		else
 			build()
 		end

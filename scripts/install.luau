@@ -1,6 +1,7 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
+local json = require("@std/json")
 local project = require("@repo/project")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
@@ -54,6 +55,40 @@ do
 		run("wally", { "install" })
 		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
+	end
+
+	-- LuauLog is written with string requires which are not yet supported by
+	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
+	-- darklua to resolve the string requires to Roblox ones
+	local function patchLuauLog()
+		local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "luaulog")[1]
+
+		local darkluaConfig = {
+			process = {
+				{
+					rule = "convert_require",
+					current = {
+						name = "luau",
+					},
+					target = {
+						name = "roblox",
+						rojo_sourcemap = "./sourcemap.json",
+						indexing_style = "property",
+					},
+				},
+			},
+		}
+
+		local handle = fs.open(`{packageRoot}/.darklua.json`, "w+")
+		fs.write(handle, json.serialize(darkluaConfig, true))
+
+		run("rojo", { "sourcemap", "-o", "sourcemap.json" }, {
+			cwd = packageRoot,
+		})
+
+		run("darklua", { "process", "src", "src" }, {
+			cwd = packageRoot,
+		})
 	end
 
 	local function installRobloxPackages()
@@ -153,6 +188,8 @@ do
 			end
 		end
 	end
+
+	run("lute", { "setup" })
 
 	installRobloxPackages()
 	installWallyPackages()
