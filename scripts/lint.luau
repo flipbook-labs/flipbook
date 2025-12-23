@@ -1,30 +1,26 @@
-local fs = require("@lute/fs")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local process = require("@lute/process")
 
 local project = require("@repo/project")
-local run = require("@scripts/lib/run")
+
+local run = FlipbookBatteries.run
+local findWhere = FlipbookBatteries.findWhere
 
 local function findLuaFiles()
-	local matches = {}
+	local result = {}
 
-	local function search(path: string)
-		for _, file in fs.listdir(path) do
-			local filePath = `{path}/{file.name}`
+	for _, folder in project.FOLDERS_TO_LINT do
+		local matches = findWhere(folder, function(path)
+			local isMatch = path:match(".lua$")
+			return isMatch ~= nil
+		end)
 
-			if file.type == "dir" then
-				search(filePath)
-			else
-				if filePath:match(".lua$") then
-					table.insert(matches, filePath)
-				end
-			end
+		for _, match in matches do
+			table.insert(result, match)
 		end
 	end
 
-	for _, folder in project.FOLDERS_TO_LINT do
-		search(folder)
-	end
-
-	return matches
+	return result
 end
 
 run("selene", project.FOLDERS_TO_LINT)
@@ -38,5 +34,5 @@ local files = findLuaFiles()
 if #files > 0 then
 	print("[err] the following file(s) are using the '.lua' extension. Please change to '.luau' and try again")
 	print(`{table.concat(files, "\n")}`)
-	error("1")
+	process.exit(1)
 end

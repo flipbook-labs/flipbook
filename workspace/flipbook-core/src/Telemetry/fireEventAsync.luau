@@ -1,7 +1,7 @@
-local HttpService = game:GetService("HttpService")
-
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getAnonymizedUserId = require("@root/Telemetry/getAnonymizedUserId")
+local logger = require("@root/logger")
+local requestAsync = require("@root/Http/requestAsync")
 local types = require("@root/Telemetry/types")
 
 type TelemetryEvent = types.TelemetryEvent
@@ -23,28 +23,12 @@ local function fireEventAsync(event: TelemetryEvent)
 		buildHash = _G.BUILD_HASH,
 	}
 
-	local res
-	local _success, _err = pcall(function()
-		res = HttpService:RequestAsync({
-			Url = `{_G.BASE_URL}/telemetry`,
-			Method = "POST",
-			Headers = {
-				["Content-Type"] = "application/json",
-			},
-			Body = HttpService:JSONEncode(body),
-		})
-	end)
+	logger:Info(`firing event {event.eventName}`)
 
-	-- TODO: Introduce a logging library so we can include these messages
-	-- without printing to the output all the time
-	-- if not success then
-	-- 	warn("failed to communicate with backend:", err)
-	-- end
-	-- if res and not res.Success then
-	-- 	warn("failed sending event to basckend:", res.StatusMessage)
-	-- end
-
-	return res
+	return requestAsync(`{_G.BASE_URL}/telemetry`, {
+		method = "POST",
+		body = body,
+	})
 end
 
 return fireEventAsync

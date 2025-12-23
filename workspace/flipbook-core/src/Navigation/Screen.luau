@@ -2,6 +2,7 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local AboutView = require("@root/About/AboutView")
+local LogsView = require("@root/Logs/LogsView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
@@ -41,6 +42,8 @@ local function Screen(props: Props)
 			return React.createElement(SettingsView)
 		elseif currentScreen == "About" then
 			return React.createElement(AboutView)
+		elseif currentScreen == "Logs" then
+			return React.createElement(LogsView)
 		end
 		return nil :: never
 	end, { props, currentScreen } :: { unknown })

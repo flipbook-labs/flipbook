@@ -1,12 +1,13 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local fs = require("@lute/fs")
 local project = require("@repo/project")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
-local run = require("@scripts/lib/run")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
-local copyInto = require("@scripts/lib/flipbook-batteries/copyInto")
+local copyInto = FlipbookBatteries.copyInto
+local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 

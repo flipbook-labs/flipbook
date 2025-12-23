@@ -1,6 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
 local Sift = require("@pkg/Sift")
+local logger = require("@root/logger")
 
 local function requestAsync(
 	url: string,
@@ -25,8 +26,9 @@ local function requestAsync(
 		end
 	end
 
+	logger:Debug(`{requestOptions.method} {url}`)
 	local res
-	local _success, _err = pcall(function()
+	local success, err = pcall(function()
 		res = HttpService:RequestAsync({
 			Url = url,
 			Method = requestOptions.method,
@@ -35,14 +37,12 @@ local function requestAsync(
 		})
 	end)
 
-	-- TODO: Introduce a logging library so we can include these messages
-	-- without printing to the output all the time
-	-- if not success then
-	-- 	warn("failed to communicate with backend:", err)
-	-- end
-	-- if res and not res.Success then
-	-- 	warn("failed sending event to basckend:", res.StatusMessage)
-	-- end
+	if not success then
+		logger:Warn("failed to communicate with backend:", err)
+	end
+	if res and not res.Success then
+		logger:Warn("failed sending event to backend:", res.StatusMessage)
+	end
 
 	return res
 end
