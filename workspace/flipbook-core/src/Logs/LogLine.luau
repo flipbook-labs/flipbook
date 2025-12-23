@@ -35,6 +35,7 @@ export type Props = {
 
 local function LogLine(props: Props)
 	local tokens = useTokens()
+	local fontStyle = tokens.Typography.BodyMedium
 
 	local info = useMemo(function()
 		local text = ""
@@ -71,9 +72,14 @@ local function LogLine(props: Props)
 	end
 
 	return React.createElement(Foundation.Text, {
-		tag = "auto-xy text-wrap text-align-x-left text-align-y-top text-body-medium content-emphasis",
+		tag = "auto-xy text-wrap text-align-x-left text-align-y-top content-emphasis",
 		Text = `{info}: {message}`,
 		RichText = true,
+		fontStyle = {
+			Font = Enum.Font.RobotoMono,
+			FontSize = fontStyle.FontSize,
+			LineHeight = fontStyle.LineHeight,
+		},
 	})
 end
 
