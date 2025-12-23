@@ -1,11 +1,12 @@
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local Storyteller = require("@pkg/Storyteller")
+
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local Storyteller = require("@pkg/Storyteller")
+local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
 local Text = Foundation.Text
@@ -29,8 +30,8 @@ type StoryViewProps = {
 }
 
 local function StoryView(props: StoryViewProps)
-	local storyActions = StoryActionsContext.useStoryActions()
 	local story, storyError = useStory(props.storyModule, props.storybook)
+	local theme = useThemeName()
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
@@ -48,6 +49,13 @@ local function StoryView(props: StoryViewProps)
 
 		return newControls
 	end, { story, modifiedControls } :: { any })
+
+	local extraProps = useMemo(function()
+		return {
+			theme = theme :: useThemeName.ThemeName,
+			controls = controls,
+		}
+	end, { theme, controls } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
@@ -103,12 +111,9 @@ local function StoryView(props: StoryViewProps)
 				LayoutOrder = 3,
 				tag = "padding-large shrink size-full",
 			}, {
-				Preview = e(StoryPreview, {
-					controls = Object.assign({}, controls, modifiedControls),
-					isMountedInViewport = storyActions.isMountedInViewport,
-					ref = storyActions.storyContainerRef,
+				StoryPreview = React.createElement(StoryPreview, {
 					story = story,
-					zoom = storyActions.zoom.value,
+					extraProps = extraProps,
 				}),
 			}),
 
