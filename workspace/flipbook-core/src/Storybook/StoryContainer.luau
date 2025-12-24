@@ -15,13 +15,13 @@ type RenderLifecycle = Storyteller.RenderLifecycle
 
 local function StoryContainer(props: {
 	story: LoadedStory<unknown>,
-	storyProps: { [string]: any }?,
+	extraProps: { [string]: any }?,
 	onError: ((message: string) -> ())?,
 })
 	local ref = useRef(nil :: Frame?)
 	local lifecycle = useRef(nil :: RenderLifecycle?)
 	local prevStory = usePrevious(props.story)
-	local prevStoryProps = usePrevious(props.storyProps)
+	local prevExtraProps = usePrevious(props.extraProps)
 
 	local mount = useCallback(function()
 		if lifecycle.current then
@@ -36,13 +36,13 @@ local function StoryContainer(props: {
 		logger:Debug("mounting story")
 
 		local success, result = xpcall(function()
-			lifecycle.current = render(ref.current, props.story, props.storyProps)
+			lifecycle.current = render(ref.current, props.story, props.extraProps)
 		end, debug.traceback)
 
 		if not success and props.onError then
 			props.onError(result)
 		end
-	end, { props.story, props.storyProps, props.onError } :: { unknown })
+	end, { props.story, props.extraProps, props.onError } :: { unknown })
 
 	local update = useCallback(function()
 		if not lifecycle.current then
@@ -52,13 +52,13 @@ local function StoryContainer(props: {
 		logger:Debug("updating story")
 
 		local success, result = xpcall(function()
-			lifecycle.current.update(props.storyProps)
+			lifecycle.current.update(props.extraProps)
 		end, debug.traceback)
 
 		if not success and props.onError then
 			props.onError(result)
 		end
-	end, { props.storyProps, props.onError } :: { unknown })
+	end, { props.extraProps, props.onError } :: { unknown })
 
 	local unmount = useCallback(function()
 		if not lifecycle.current then
@@ -89,15 +89,15 @@ local function StoryContainer(props: {
 		return unmount
 	end, {})
 
-	-- Update when storyProps change
+	-- Update when extraProps change
 	useEffect(function()
 		local didStoryChange = prevStory and props.story == prevStory
-		local didStoryPropsChange = prevStoryProps and props.storyProps ~= prevStoryProps
+		local didExtraPropsChange = prevExtraProps and props.extraProps ~= prevExtraProps
 
-		if lifecycle.current and didStoryChange and didStoryPropsChange then
+		if lifecycle.current and didStoryChange and didExtraPropsChange then
 			update()
 		end
-	end, { props.story, prevStory, props.storyProps, prevStoryProps, props.onError } :: { unknown })
+	end, { props.story, prevStory, props.extraProps, prevExtraProps, props.onError } :: { unknown })
 
 	return React.createElement("Frame", {
 		AutomaticSize = Enum.AutomaticSize.XY,
