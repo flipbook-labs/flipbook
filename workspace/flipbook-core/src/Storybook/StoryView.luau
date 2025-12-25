@@ -53,9 +53,8 @@ local function StoryView(props: StoryViewProps)
 	local extraProps = useMemo(function()
 		return {
 			theme = theme :: useThemeName.ThemeName,
-			controls = controls,
 		}
-	end, { theme, controls } :: { unknown })
+	end, { theme } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
@@ -113,6 +112,7 @@ local function StoryView(props: StoryViewProps)
 			}, {
 				StoryPreview = React.createElement(StoryPreview, {
 					story = story,
+					controls = controls,
 					extraProps = extraProps,
 				}),
 			}),

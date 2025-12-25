@@ -6,7 +6,6 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
-local StoryContainer = require("@root/Storybook/StoryContainer")
 local StoryError = require("@root/Storybook/StoryError")
 
 local e = React.createElement
@@ -18,7 +17,8 @@ type LoadedStory = Storyteller.LoadedStory<unknown>
 export type Props = {
 	LayoutOrder: number?,
 	story: LoadedStory,
-	extraProps: { [string]: any },
+	controls: Storyteller.StoryControls,
+	extraProps: Storyteller.StoryControls, -- TODO: Change to ExtraStoryProps
 }
 
 local function StoryPreview(props: Props): React.Node
@@ -36,19 +36,17 @@ local function StoryPreview(props: Props): React.Node
 		})
 	end
 
-	local storyContainer = e(StoryContainer, {
-		story = props.story,
-		extraProps = props.extraProps,
-		onError = setErr,
-	})
-
 	if storyActions.isMountedInViewport then
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 				ref = storyActions.storyContainerRef,
 			}, {
-				StoryContainer = storyContainer,
+				StoryContainer = e(Storyteller.StoryContainer, {
+					story = props.story,
+					extraProps = props.extraProps,
+					onError = setErr,
+				}),
 			}),
 		}, CoreGui)
 	end
@@ -67,7 +65,12 @@ local function StoryPreview(props: Props): React.Node
 			Scale = 1 + storyActions.zoom.value,
 		}),
 
-		StoryContainer = storyContainer,
+		StoryContainer = e(Storyteller.StoryContainer, {
+			story = props.story,
+			controls = props.controls,
+			extraProps = props.extraProps,
+			onError = setErr,
+		}),
 	})
 end
 
