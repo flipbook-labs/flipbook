@@ -6,7 +6,7 @@ local LogsView = require("@root/Logs/LogsView")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
-local StoryCanvas = require("@root/Storybook/StoryCanvas")
+local StoryView = require("@root/Storybook/StoryView")
 local StorybookError = require("@root/Storybook/StorybookError")
 
 local useMemo = React.useMemo
@@ -27,8 +27,8 @@ local function Screen(props: Props)
 	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then
 			if props.story and props.storybook then
-				return React.createElement(StoryCanvas, {
-					story = props.story,
+				return React.createElement(StoryView, {
+					storyModule = props.story,
 					storybook = props.storybook,
 				})
 			elseif props.unavailableStorybook then
