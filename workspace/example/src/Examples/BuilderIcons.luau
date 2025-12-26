@@ -1,11 +1,22 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
 export type Props = {
 	filter: string?,
+	iconSize: Foundation.InputSize?,
+	showLabels: boolean?,
 }
 
-local function BuilderIcons(props: Props)
+local defaultProps = {
+	iconSize = Foundation.Enums.InputSize.Large,
+	showLabels = true,
+}
+
+type InternalProps = typeof(defaultProps) & Props
+
+local function BuilderIcons(providedProps: Props)
+	local props: InternalProps = Sift.Dictionary.join(defaultProps, providedProps)
 	local children: { [string]: React.Node } = {}
 	local order = 1
 
@@ -22,15 +33,17 @@ local function BuilderIcons(props: Props)
 		}, {
 			Icon = React.createElement(Foundation.Icon, {
 				name = iconName,
-				size = Foundation.Enums.InputSize.Large,
+				size = Foundation.Enums.InputSize[props.iconSize],
 				LayoutOrder = 1,
 			}),
 
-			Label = React.createElement(Foundation.Text, {
-				tag = "auto-xy content-default text-caption-small",
-				Text = key,
-				LayoutOrder = 2,
-			}),
+			Label = if props.showLabels
+				then React.createElement(Foundation.Text, {
+					tag = "auto-xy content-default text-caption-small",
+					Text = key,
+					LayoutOrder = 2,
+				})
+				else nil,
 		})
 
 		order += 1
