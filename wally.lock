@@ -3,6 +3,11 @@
 registry = "test"
 
 [[package]]
+name = "aloroid/markdown"
+version = "0.1.2"
+dependencies = []
+
+[[package]]
 name = "boatbomber/highlighter"
 version = "0.9.0"
 dependencies = []
@@ -40,7 +45,7 @@ dependencies = []
 [[package]]
 name = "flipbook-labs/flipbook"
 version = "2.4.0"
-dependencies = [["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.5.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
+dependencies = [["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["Markdown", "aloroid/markdown@0.1.2"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.5.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "flipbook-labs/module-loader"
