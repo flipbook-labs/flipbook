@@ -70,7 +70,7 @@ jobs:
       url: https://create.roblox.com/store/asset/88523969718241
     env:
       LOG_LEVEL: debug
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
