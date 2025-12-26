@@ -44,6 +44,7 @@ local function StoryPreview(props: Props): React.Node
 			}, {
 				StoryContainer = e(Storyteller.StoryContainer, {
 					story = props.story,
+					controls = props.controls,
 					extraProps = props.extraProps,
 					onError = setErr,
 				}),
