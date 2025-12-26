@@ -5,6 +5,9 @@
     "code-samples": {
       "$path": "code-samples"
     },
+    "docs": {
+      "$path": "docs"
+    },
     "example": {
       "$path": "example"
     },
