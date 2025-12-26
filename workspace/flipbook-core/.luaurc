@@ -3,6 +3,7 @@
 	"aliases": {
 		"pkg": "../../Packages",
 		"rbxpkg": "../../RobloxPackages",
+		"workspace": "../",
 		"root": "./src"
 	}
 }

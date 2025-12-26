@@ -1,1 +1,1 @@
-return script:GetChildren()
+return script
