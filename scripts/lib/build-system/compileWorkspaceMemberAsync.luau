@@ -23,8 +23,8 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		},
 		context = context,
 		step = function()
-			run("rm", { "-rf", memberBuildPath })
-			run("mkdir", { "-p", memberBuildPath })
+			rmdir(memberBuildPath)
+			copyInto(`{memberPath}/src`, memberBuildPath)
 
 			run("darklua", {
 				"process",
@@ -44,7 +44,7 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		context = context,
 		step = function()
 			-- Turn all .md files into .txt so Rojo will sync them as StringValues
-			for _, mdFile in find(memberBuildPath, "%.md$") do
+			for _, mdFile in find(memberBuildPath, "%.md(x?)$") do
 				local newName = mdFile:gsub("%.md$", ".txt")
 				fs.copy(mdFile, newName)
 				fs.remove(mdFile)
