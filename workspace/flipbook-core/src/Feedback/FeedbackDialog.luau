@@ -1,0 +1,194 @@
+local Foundation = require("@rbxpkg/Foundation")
+local React = require("@pkg/React")
+
+local DiscardChangesDialog = require("@root/Feedback/DiscardChangesDialog")
+local SuccessDialog = require("@root/Feedback/SuccessDialog")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+local postFeedbackAsync = require("@root/Feedback/postFeedbackAsync")
+
+local useCallback = React.useCallback
+local useEffect = React.useEffect
+local useState = React.useState
+
+export type Props = {
+	onClose: () -> (),
+	LayoutOrder: number?,
+}
+
+type IssueType = "bug" | "feature" | "feedback" | "other"
+
+local function FeedbackDialog(props: Props)
+	local title, setTitle = useState("" :: string?)
+	local wasTitleChanged, setWasTitleChanged = useState(false)
+	local body, setBody = useState("" :: string?)
+	local wasBodyChanged, setWasBodyChanged = useState(false)
+	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
+	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
+	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
+	local isSendingFeedback, setIsSendingFeedback = useState(false)
+	local err: string?, setErr = useState(nil :: string?)
+
+	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
+
+	local onCancel = useCallback(function()
+		if wasChanged then
+			setIsDiscardChangesDialogOpen(true)
+		else
+			props.onClose()
+		end
+	end, { wasChanged, props.onClose } :: { unknown })
+
+	local onDiscard = useCallback(function()
+		props.onClose()
+
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "FeedbackDiscarded",
+			})
+		end)
+	end, {})
+
+	local onKeepEditing = useCallback(function()
+		setIsDiscardChangesDialogOpen(false)
+	end, {})
+
+	local onSubmit = useCallback(function()
+		if isSendingFeedback then
+			return
+		end
+
+		if title ~= "" and body ~= "" and isAcknowledgedByUser then
+			setErr(nil)
+			setIsSendingFeedback(true)
+
+			task.spawn(function()
+				local res = postFeedbackAsync(title, body)
+
+				setIsSendingFeedback(false)
+
+				if res.Success then
+					setIsSuccessDialogOpen(true)
+					fireEventAsync({
+						eventName = "FeedbackSubmitted",
+					})
+				else
+					setErr("Failed to submit feedback. Please try again later")
+				end
+			end)
+		end
+	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
+
+	local onTitleChanged = useCallback(function(text)
+		if text ~= title then
+			setTitle(function(prev)
+				return if prev ~= text then text else prev
+			end)
+			setWasTitleChanged(true)
+		end
+	end, { title })
+
+	local onBodyChanged = useCallback(function(text)
+		if text ~= body then
+			setBody(text)
+			setWasBodyChanged(true)
+		end
+	end, { body })
+
+	useEffect(function()
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "FeedbackDialogOpened",
+			})
+		end)
+	end, {})
+
+	return React.createElement(React.Fragment, nil, {
+		FeedbackDialog = if not (isDiscardChangesDialogOpen or isSuccessDialogOpen)
+			then React.createElement(Foundation.Dialog.Root, {
+				disablePortal = false,
+				hasBackdrop = true,
+				onClose = props.onClose,
+			}, {
+				Title = React.createElement(Foundation.Dialog.Title, {
+					text = "Send us feedback",
+				}),
+
+				Content = React.createElement(Foundation.Dialog.Content, nil, {
+					Layout = React.createElement(Foundation.View, {
+						tag = "size-full-0 auto-y col gap-large padding-top-medium",
+					}, {
+						Title = React.createElement(Foundation.TextInput, {
+							label = "Title",
+							text = title,
+							hasError = wasTitleChanged and title == "",
+							isRequired = true,
+							hint = "Enter a breif summary of the feedback you're giving",
+							placeholder = "Enter title...",
+							onChanged = onTitleChanged,
+							LayoutOrder = nextLayoutOrder(),
+						}),
+
+						Body = React.createElement(Foundation.TextInput, {
+							label = "Body",
+							text = body,
+							hasError = wasBodyChanged and body == "",
+							isRequired = true,
+							hint = "Let us know what's on your mind. This can be a feature request, bug report, or any other feedback you'd like to give",
+							placeholder = "Enter feedback...",
+							onChanged = onBodyChanged,
+							LayoutOrder = nextLayoutOrder(),
+						}),
+
+						Confirmation = React.createElement(Foundation.Checkbox, {
+							isChecked = isAcknowledgedByUser,
+							onActivated = setIsAcknowledgedByUser,
+							label = "I acknowledge that my Roblox UserId will be included in the resulting GitHub Issue to attribute the feedback to me.",
+							size = Foundation.Enums.InputSize.Small,
+							LayoutOrder = nextLayoutOrder(),
+						}),
+
+						ErrorMessage = if err
+							then React.createElement(Foundation.Text, {
+								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-medium content-alert",
+								Text = err,
+								LayoutOrder = nextLayoutOrder(),
+							})
+							else nil,
+					}),
+				}),
+
+				Actions = React.createElement(Foundation.Dialog.Actions, {
+					actions = {
+						{
+							variant = Foundation.Enums.ButtonVariant.Standard :: Foundation.ButtonVariant,
+							text = "Cancel",
+							onActivated = onCancel,
+						},
+						{
+							variant = Foundation.Enums.ButtonVariant.Emphasis,
+							text = if isSendingFeedback then "Submitting..." else "Submit",
+							onActivated = onSubmit,
+						},
+					},
+					LayoutOrder = nextLayoutOrder(),
+				}),
+			})
+			else nil,
+
+		DiscardChangesDialog = if isDiscardChangesDialogOpen
+			then React.createElement(DiscardChangesDialog, {
+				onDiscard = onDiscard,
+				onKeepEditing = onKeepEditing,
+			})
+			else nil,
+
+		SuccessDialog = if isSuccessDialogOpen
+			then React.createElement(SuccessDialog, {
+				onClose = props.onClose,
+			})
+			else nil,
+	})
+end
+
+return FeedbackDialog

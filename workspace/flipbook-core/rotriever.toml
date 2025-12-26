@@ -1,0 +1,17 @@
+[package]
+name = "FlipbookCore"
+content_root = "build"
+version = "2.4.0"
+files = ["*"]
+publish = true
+
+authors = ["Marin Minnerly <marin@vocksel.com>"]
+documentation = "https://flipbook-labs.github.io/flipbook"
+homepage = "https://flipbook-labs.github.io/flipbook"
+readme = "README.md"
+repository = "https://github.com/flipbook-labs/flipbook"
+
+[config]
+registry_index = true
+
+[dependencies]

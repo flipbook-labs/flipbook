@@ -3,18 +3,21 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local logger = require("@root/logger")
 
-local function createFlipbookPlugin(
-	plugin: Plugin,
-	widget: DockWidgetPluginGui,
-	button: PluginToolbarButton?
-): {
-	mount: () -> (),
-	unmount: () -> (),
-}
+local function stopwatch(callback: () -> ()): string
+	local start = os.clock()
+	callback()
+	return ("%.2fms"):format((os.clock() - start) * 1000)
+end
+
+local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 
+	-- FIXME: ContextProviders having an error won't fail tests. We really need
+	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
@@ -23,11 +26,31 @@ local function createFlipbookPlugin(
 	})
 
 	local function unmount()
-		root:unmount()
+		logger:Info("unmounting app...")
+		local elapsedMs = stopwatch(function()
+			root:unmount()
+		end)
+		logger:Info(`unmounted app in {elapsedMs}`)
+
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "AppClosed",
+			})
+		end)
 	end
 
 	local function mount()
-		root:render(app)
+		logger:Info("mounting app...")
+		local elapsedMs = stopwatch(function()
+			root:render(app)
+		end)
+		logger:Info(`mounted app in {elapsedMs}`)
+
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "AppOpened",
+			})
+		end)
 	end
 
 	if button ~= nil then
@@ -50,7 +73,7 @@ local function createFlipbookPlugin(
 		connections,
 		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 			if widget.Enabled then
-				root:render(app)
+				mount()
 			else
 				unmount()
 			end
@@ -62,10 +85,15 @@ local function createFlipbookPlugin(
 	end
 
 	local function destroy()
-		unmount()
-		for _, connection in connections do
-			connection:Disconnect()
-		end
+		logger:Info("destroying app...")
+		local elapsedMs = stopwatch(function()
+			unmount()
+
+			for _, connection in connections do
+				connection:Disconnect()
+			end
+		end)
+		logger:Info(`destroyed app in {elapsedMs}`)
 	end
 
 	return {

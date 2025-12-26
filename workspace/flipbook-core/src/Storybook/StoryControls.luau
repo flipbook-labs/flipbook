@@ -1,6 +1,6 @@
 local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@rbxpkg/LuauPolyfill")
+local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
@@ -96,11 +96,11 @@ local function StoryControls(props: StoryControlsProps)
 			})
 		elseif controlType == "table" and Array.isArray(control.value) then
 			local changedValue = props.modifiedControls[control.key]
-			local controlItems = Array.map(control.value, function(value)
+			local controlItems = Array.map(control.value, function(value): Foundation.DropdownItem
 				return {
 					id = value,
 					text = tostring(value),
-				} :: Foundation.MenuItem
+				}
 			end)
 
 			controlInput = e(Dropdown.Root, {

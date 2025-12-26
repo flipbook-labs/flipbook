@@ -8,10 +8,12 @@ local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
+local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = SignalsReact.useSignalState
@@ -25,7 +27,6 @@ local function App()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local storybooks = Storyteller.useStorybooks(game)
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
@@ -40,6 +41,12 @@ local function App()
 		if newStoryModule and not newStorybook then
 			newStorybook = defaultStorybook
 		end
+
+		task.spawn(function()
+			fireEventAsync({
+				eventName = "StoryOpened",
+			})
+		end)
 
 		setStoryModule(newStoryModule)
 		setStorybook(newStorybook)
@@ -67,7 +74,6 @@ local function App()
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
-					storybooks = storybooks,
 				}),
 			}),
 
@@ -91,6 +97,8 @@ local function App()
 				}),
 			}),
 		}),
+
+		TelemetryOptOutDialog = React.createElement(TelemetryOptOutDialog),
 	})
 end
 

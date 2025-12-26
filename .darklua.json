@@ -26,6 +26,21 @@
       "identifier": "BUILD_HASH",
       "env": "BUILD_HASH"
     },
+    {
+      "rule": "inject_global_value",
+      "identifier": "BASE_URL",
+      "env": "BASE_URL"
+    },
+    {
+      "rule": "inject_global_value",
+      "identifier": "LOG_LEVEL",
+      "env": "LOG_LEVEL"
+    },
+    {
+      "rule": "inject_global_value",
+      "identifier": "ENABLE_OUTPUT_LOGGING",
+      "env": "ENABLE_OUTPUT_LOGGING"
+    },
     "compute_expression",
     "remove_unused_if_branch",
     "remove_unused_while",

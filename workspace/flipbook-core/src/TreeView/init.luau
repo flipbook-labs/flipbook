@@ -1,20 +1,14 @@
-local TreeViewContext = require("@self/TreeViewContext")
 local types = require("@self/types")
 
-export type TreeNode = types.TreeNode
-export type PartialTreeNode = types.PartialTreeNode
+export type TreeNodeStore = types.TreeNodeStore
 
 return {
 	-- Enums
 	TreeNodeIcon = types.TreeNodeIcon,
 
+	-- Stores
+	createTreeNodeStore = require("@self/createTreeNodeStore"),
+
 	-- Components
-	TreeViewProvider = TreeViewContext.Provider,
 	TreeView = require("@self/TreeView"),
-
-	-- Hooks
-	useTreeViewContext = TreeViewContext.use,
-
-	-- Functions
-	getAncestry = require("@self/getAncestry"),
 }

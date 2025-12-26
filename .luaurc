@@ -2,8 +2,13 @@
 	"languageMode": "strict",
 	"aliases": {
 		"lune": "~/.lune/.typedefs/0.9.4/",
-		"lunepkg": "./LunePackages",
+		"lute": "~/.lute/typedefs/0.1.0/lute/",
+		"std": "~/.lute/typedefs/0.1.0/std/",
+		"luaupkg": "./LuauPackages",
+		"pkg": "./Packages",
+		"rbxpkg": "./RobloxPackages",
 		"repo": ".",
+		"scripts": "./scripts",
 		"workspace": "./workspace"
 	}
 }

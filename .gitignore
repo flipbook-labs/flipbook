@@ -12,18 +12,8 @@ build
 sourcemap*.json
 globalTypes.d.luau
 
-# Wally
-DevPackages
-Packages
-
-# Package managers
-*.lock
-
-# Rbxasset
-LunePackages
-
-# Roblox Packages
-RobloxPackages
+# Third-party libraries
+*Packages
 
 # Python
 __pycache__

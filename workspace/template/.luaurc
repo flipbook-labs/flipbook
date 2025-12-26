@@ -1,7 +1,8 @@
 {
 	"languageMode": "strict",
 	"aliases": {
-		"pkg": "./Packages",
+		"pkg": "../../Packages",
+		"rbxpkg": "../../RobloxPackages",
 		"root": "./src"
 	}
 }
