@@ -15,7 +15,7 @@ assert(channel == "dev" or channel == "prod", `bad value for channel (must be on
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
 
-run("lute", { "scripts/build.luau", "--channel", channel, "--output", "Flipbook.rbxm" })
+run("lute", { "scripts/build.luau", "--channel", channel, "--plugin", "--output", "Flipbook.rbxm" })
 
 -- Each of the assets defined in rbxasset.toml map to one of the options of
 -- `--channel` for simplicity
