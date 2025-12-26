@@ -53,6 +53,7 @@ local function StoryView(props: StoryViewProps)
 	local extraProps = useMemo(function()
 		return {
 			theme = theme :: useThemeName.ThemeName,
+			locale = "en-us",
 		}
 	end, { theme } :: { unknown })
 
