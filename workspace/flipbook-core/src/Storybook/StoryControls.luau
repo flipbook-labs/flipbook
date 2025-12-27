@@ -27,8 +27,8 @@ local useState = React.useState
 local useSignalState = ReactSignals.useSignalState
 
 type StoryControlsProps = {
+	controlsSchema: { [string]: any },
 	controls: { [string]: any },
-	modifiedControls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
 
@@ -44,7 +44,7 @@ local function StoryControls(props: StoryControlsProps)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local sortedControls = useSortedControls(props.controls)
+	local sortedControls = useSortedControls(props.controlsSchema)
 	local pendingControl, setPendingControl = useState(nil :: string?)
 	local controlElements: { [string]: React.ReactNode } = {}
 
@@ -95,7 +95,7 @@ local function StoryControls(props: StoryControlsProps)
 				width = UDim.new(1, 0),
 			})
 		elseif controlType == "table" and Array.isArray(control.value) then
-			local changedValue = props.modifiedControls[control.key]
+			local changedValue = props.controls[control.key]
 			local controlItems = Array.map(control.value, function(value): Foundation.DropdownItem
 				return {
 					id = value,
