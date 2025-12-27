@@ -18,6 +18,10 @@ args:add("apiKey", "option", {
 	aliases = { "k" },
 })
 
+args:add("filter", "option", {
+	help = "Specify a filepath pattern to match for when running tests",
+})
+
 args:parse({ ... })
 
 local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
@@ -26,6 +30,11 @@ if not apiKey then
 		"A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
 	)
 end
+
+local filter = args:get("filter")
+
+-- This gets picked up by the build step which uses Darklua to inject globals
+process.env.__JEST_TEST_PATH_PATTERN__ = filter
 
 run("lute", { "scripts/build.luau", "--channel", "dev" })
 run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
