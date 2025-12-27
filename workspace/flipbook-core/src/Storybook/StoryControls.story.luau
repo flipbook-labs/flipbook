@@ -5,31 +5,22 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
 local StoryControls = require("@root/Storybook/StoryControls")
 
-type ControlType =
-	"String"
-	| "Boolean"
-	| "Number"
-	| "Select"
-	| "MultiSelect"
-	| "Radio"
-	| "InlineRadio"
-	| "Check"
-	| "InlineCheck"
-	| "Color"
-	| "Date"
+type ControlType = "String" | "Boolean" | "Number" | "Select" | "MultiSelect" | "Radio" | "Check" | "Color" | "Date"
 
 local ControlType = {
-	String = "String" :: "String",
+	-- Primitives
 	Boolean = "Boolean" :: "Boolean",
 	Number = "Number" :: "Number",
-	Select = "Select" :: "Select",
-	MultiSelect = "MultiSelect" :: "MultiSelect",
-	Radio = "Radio" :: "Radio",
-	InlineRadio = "InlineRadio" :: "InlineRadio",
+	String = "String" :: "String",
+
+	-- Advanced
 	Check = "Check" :: "Check",
-	InlineCheck = "InlineCheck" :: "InlineCheck",
 	Color = "Color" :: "Color",
 	Date = "Date" :: "Date",
+	MultiSelect = "MultiSelect" :: "MultiSelect",
+	Radio = "Radio" :: "Radio",
+	Select = "Select" :: "Select",
+	Slider = "Slider" :: "Slider",
 }
 
 return {
@@ -43,12 +34,12 @@ return {
 		}, {
 			StoryControls = React.createElement(StoryControls, {
 				controlsSchema = {
-					foo = {
+					string = {
 						control = ControlType.String,
 						default = "bar",
 						placeholder = "Some cool text...",
 					},
-					checkbox = {
+					boolean = {
 						control = ControlType.Boolean,
 						default = false,
 					},
@@ -58,24 +49,46 @@ return {
 						step = 1,
 						range = NumberRange.new(1, 100),
 					},
-					dropdown = {
-						control = ControlType.Select,
-						options = {
-							"Option 1",
-							"Option 2",
-							"Option 3",
-						},
+					range = {
+						control = ControlType.Slider,
+						default = 1,
+						step = 1,
+						range = NumberRange.new(1, 100),
 					},
-					font = {
+					select = {
 						control = ControlType.Select,
 						mapping = Enum.Font,
 						options = Sift.List.map(Enum.Font:GetEnumItems(), function(font)
 							return font.Name
 						end),
 					},
+					multiSelect = {
+						control = ControlType.MultiSelect,
+						options = {
+							"Option 1",
+							"Option 2",
+							"Option 3",
+						},
+					},
+					check = {
+						control = ControlType.Check,
+						options = {
+							"Option 1",
+							"Option 2",
+							"Option 3",
+						},
+					},
+					radio = {
+						control = ControlType.Radio,
+						options = {
+							"Option 1",
+							"Option 2",
+							"Option 3",
+						},
+					},
 					color = {
 						control = ControlType.Color,
-						default = Color3.fromRGB(255, 0, 255),
+						default = Color3.fromRGB(255, 0, 200),
 					},
 					date = {
 						control = ControlType.Date,
