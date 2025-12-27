@@ -57,7 +57,10 @@ return {
 					},
 					select = {
 						control = ControlType.Select,
-						mapping = Enum.Font,
+						mapping = Sift.List.reduce(Enum.Font:GetEnumItems(), function(mapping, font)
+							mapping[font.Name] = font
+							return mapping
+						end, {}),
 						options = Sift.List.map(Enum.Font:GetEnumItems(), function(font)
 							return font.Name
 						end),
@@ -98,7 +101,7 @@ return {
 						control = ControlType.String,
 						default = "OnlyTwentyCharacters",
 					},
-					badControlType = function() end,
+					badControlType = function() end :: any,
 				},
 				controls = controls,
 				setControl = function(key, value)

@@ -26,8 +26,95 @@ local useState = React.useState
 
 local useSignalState = ReactSignals.useSignalState
 
+type ControlType = "String" | "Boolean" | "Number" | "Select" | "MultiSelect" | "Radio" | "Check" | "Color" | "Date"
+
+type Mapping = { [any]: any }
+
+type StringControl = {
+	control: "String",
+
+	default: string?,
+	placeholder: string?,
+}
+
+type BooleanControl = {
+	control: "Boolean",
+
+	default: boolean?,
+}
+
+type NumberControl = {
+	control: "Number",
+
+	default: number?,
+	step: number?,
+	range: NumberRange?,
+}
+
+type SelectControl = {
+	control: "Select",
+	options: { any },
+
+	mapping: Mapping?,
+}
+
+type MultiSelectControl = {
+	control: "MultiSelect",
+	options: { any },
+
+	mapping: Mapping?,
+}
+
+type SliderControl = {
+	control: "Slider",
+	range: NumberRange,
+
+	default: number?,
+	step: number?,
+}
+
+type CheckControl = {
+	control: "Check",
+	options: { any },
+
+	mapping: Mapping?,
+}
+
+type RadioControl = {
+	control: "Radio",
+	options: { any },
+
+	mapping: Mapping?,
+}
+
+type ColorControl = {
+	control: "Color",
+	default: Color3?,
+}
+
+type DateControl = {
+	control: "Date",
+	default: DateTime?,
+}
+
+type StoryControl =
+	StringControl
+	| BooleanControl
+	| NumberControl
+	| SelectControl
+	| MultiSelectControl
+	| SliderControl
+	| CheckControl
+	| RadioControl
+	| ColorControl
+	| DateControl
+
+export type StoryControlsSchema = {
+	[string]: StoryControl,
+}
+
 type StoryControlsProps = {
-	controlsSchema: { [string]: any },
+	controlsSchema: StoryControlsSchema,
 	controls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
