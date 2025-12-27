@@ -1,24 +1,5 @@
 local types = {}
 
-type ControlType = "String" | "Boolean" | "Number" | "Select" | "MultiSelect" | "Radio" | "Check" | "Color" | "Date"
-
-local ControlType = {
-	-- Primitives
-	Boolean = "Boolean" :: "Boolean",
-	Number = "Number" :: "Number",
-	String = "String" :: "String",
-
-	-- Advanced
-	Check = "Check" :: "Check",
-	Color = "Color" :: "Color",
-	Date = "Date" :: "Date",
-	MultiSelect = "MultiSelect" :: "MultiSelect",
-	Radio = "Radio" :: "Radio",
-	Select = "Select" :: "Select",
-	Slider = "Slider" :: "Slider",
-}
-types.ControlType = ControlType
-
 type Mapping = { [any]: any }
 
 type StringControl = {
@@ -102,6 +83,10 @@ export type StoryControl =
 
 export type StoryControlsSchema = {
 	[string]: StoryControl,
+}
+
+export type StoryControls = {
+	[string]: any,
 }
 
 return types
