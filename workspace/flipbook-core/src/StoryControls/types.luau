@@ -2,20 +2,20 @@ local types = {}
 
 type Mapping = { [any]: any }
 
-type StringControl = {
+export type StringControl = {
 	control: "String",
 
 	default: string?,
 	placeholder: string?,
 }
 
-type BooleanControl = {
+export type BooleanControl = {
 	control: "Boolean",
 
 	default: boolean?,
 }
 
-type NumberControl = {
+export type NumberControl = {
 	control: "Number",
 
 	default: number?,
@@ -23,21 +23,21 @@ type NumberControl = {
 	range: NumberRange?,
 }
 
-type SelectControl = {
+export type SelectControl = {
 	control: "Select",
 	options: { any },
 
 	mapping: Mapping?,
 }
 
-type MultiSelectControl = {
+export type MultiSelectControl = {
 	control: "MultiSelect",
 	options: { any },
 
 	mapping: Mapping?,
 }
 
-type SliderControl = {
+export type SliderControl = {
 	control: "Slider",
 	range: NumberRange,
 
@@ -45,26 +45,26 @@ type SliderControl = {
 	step: number?,
 }
 
-type CheckControl = {
+export type CheckControl = {
 	control: "Check",
 	options: { any },
 
 	mapping: Mapping?,
 }
 
-type RadioControl = {
+export type RadioControl = {
 	control: "Radio",
 	options: { any },
 
 	mapping: Mapping?,
 }
 
-type ColorControl = {
+export type ColorControl = {
 	control: "Color",
 	default: Color3?,
 }
 
-type DateControl = {
+export type DateControl = {
 	control: "Date",
 	default: DateTime?,
 }
