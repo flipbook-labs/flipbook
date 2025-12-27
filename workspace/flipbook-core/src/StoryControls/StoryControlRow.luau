@@ -2,7 +2,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 
-local types = require("@root/Storybook/types")
+local types = require("@root/StoryControls/types")
 
 type StoryControl = types.StoryControl
 local ControlType = types.ControlType

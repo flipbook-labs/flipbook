@@ -3,10 +3,10 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
-local StoryControlRow = require("@root/Storybook/StoryControlRow")
+local StoryControlRow = require("@root/StoryControls/StoryControlRow")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local types = require("@root/Storybook/types")
-local useSortedControls = require("@root/Storybook/useSortedControls")
+local types = require("@root/StoryControls/types")
+local useSortedControls = require("@root/StoryControls/useSortedControls")
 
 local Divider = Foundation.Divider
 local ScrollView = Foundation.ScrollView

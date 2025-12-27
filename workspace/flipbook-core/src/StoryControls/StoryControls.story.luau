@@ -3,8 +3,9 @@ local Sift = require("@pkg/Sift")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local StoryControls = require("@root/Storybook/StoryControls")
-local types = require("@root/Storybook/types")
+local types = require("@root/StoryControls/types")
+
+local StoryControls = require("./StoryControls")
 
 local ControlType = types.ControlType
 
