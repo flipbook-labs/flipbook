@@ -21,8 +21,14 @@ return {
 			Blue = Color3.new(0, 0, 1),
 		}, "Red"),
 
-		Volume = UILabs.Slider(50, 0, 100, 1),
-		FrameColor = UILabs.RGBA(Color3.new(1, 1, 1), 0),
+		Group = UILabs.ControlGroup({
+			Volume = UILabs.Slider(50, 0, 100, 1),
+			FrameColor = UILabs.RGBA(Color3.new(1, 1, 1), 0),
+		}),
+
+		SelectedModule = UILabs.Advanced.Object("ModuleScript"),
+
+		Greeting = UILabs.String("Hello, World!"),
 	},
 	story = function(props: Storyteller.StoryProps)
 		local children: { [string]: React.Node } = {}
@@ -38,8 +44,7 @@ return {
 			tag = "col gap-small",
 		}, children)
 	end,
-	packages = {
-		React = React,
-		ReactRoblox = ReactRoblox,
-	},
+
+	react = React,
+	reactRoblox = ReactRoblox,
 }
