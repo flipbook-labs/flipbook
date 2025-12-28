@@ -33,29 +33,30 @@ end
 
 test("hydrates a schema using all control types", function()
 	local schema: StoryControlsSchema = {
+		-- Primitives
 		greeting = {
 			control = ControlType.String,
-			default = "Hello, World!",
 		},
-
 		toggle = {
 			control = ControlType.Boolean,
-			default = false,
 		},
-
 		number = {
 			control = ControlType.Number,
-			default = 1,
 			range = NumberRange.new(1, 100),
 		},
-
+		-- Advanced
 		slider = {
 			control = ControlType.Slider,
-			default = 1,
 			step = 1,
 			range = NumberRange.new(1, 100),
 		},
-
+		color = {
+			control = ControlType.Color,
+		},
+		date = {
+			control = ControlType.Date,
+		},
+		-- List-based
 		dropdown = {
 			control = ControlType.Select,
 			options = {
@@ -64,17 +65,6 @@ test("hydrates a schema using all control types", function()
 				"Option 3",
 			},
 		},
-
-		color = {
-			control = ControlType.Color,
-			default = Color3.fromRGB(255, 255, 255),
-		},
-
-		date = {
-			control = ControlType.Date,
-			default = DateTime.now(),
-		},
-
 		multiSelect = {
 			control = ControlType.MultiSelect,
 			options = {
@@ -83,7 +73,6 @@ test("hydrates a schema using all control types", function()
 				"Option 3",
 			},
 		},
-
 		check = {
 			control = ControlType.Check,
 			options = {
@@ -92,7 +81,6 @@ test("hydrates a schema using all control types", function()
 				"Option 3",
 			},
 		},
-
 		radio = {
 			control = ControlType.Radio,
 			options = {
@@ -106,7 +94,7 @@ test("hydrates a schema using all control types", function()
 	assertAllControlTypesAreIncluded(schema)
 
 	local controls = {
-		greeting = nil,
+		greeting = "Hello, World!",
 		toggle = true,
 		slider = 50,
 	}
@@ -114,14 +102,191 @@ test("hydrates a schema using all control types", function()
 	local expected = {
 		greeting = "Hello, World!",
 		toggle = true,
-		number = 1,
 		slider = 50,
+	}
+
+	expect(hydrateControls(schema, controls)).toMatchObject(expected)
+end)
+
+test("hydrates list-based controls", function()
+	local schema: StoryControlsSchema = {
+		dropdown = {
+			control = ControlType.Select,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+		},
+		multiSelect = {
+			control = ControlType.MultiSelect,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+		},
+		check = {
+			control = ControlType.Check,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+		},
+		radio = {
+			control = ControlType.Radio,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+		},
+	}
+
+	local controls = {
 		dropdown = "Option 1",
+		radio = "Option 2",
+		check = { "Option 1", "Option 2" },
+		multiSelect = { "Option 3" },
+	}
+
+	local expected = {
+		dropdown = "Option 1",
+		multiSelect = { "Option 3" },
+		check = { "Option 1", "Option 2" },
+		radio = "Option 2",
+	}
+
+	expect(hydrateControls(schema, controls)).toMatchObject(expected)
+end)
+
+test("mapping list-based controls", function()
+	local schema: StoryControlsSchema = {
+		font = {
+			control = ControlType.Select,
+			options = {
+				"BuilderSans",
+				"BuilderSansBold",
+				"BuilderSansExtraBold",
+			},
+			mapping = {
+				BuilderSans = Enum.Font.BuilderSans,
+				BuilderSansBold = Enum.Font.BuilderSansBold,
+				BuilderSansExtraBold = Enum.Font.BuilderSansExtraBold,
+			},
+		},
+	}
+
+	local controls = {
+		font = "BuilderSans",
+	}
+
+	local expected = {
+		font = Enum.Font.BuilderSans,
+	}
+
+	expect(hydrateControls(schema, controls)).toMatchObject(expected)
+end)
+
+test("default value is used when one is not supplied", function()
+	local schema: StoryControlsSchema = {
+		-- Primitives
+		greeting = {
+			control = ControlType.String,
+			default = "Hello, World!",
+		},
+		toggle = {
+			control = ControlType.Boolean,
+			default = false,
+		},
+		number = {
+			control = ControlType.Number,
+			default = 1,
+			range = NumberRange.new(1, 100),
+		},
+		-- Advanced
+		slider = {
+			control = ControlType.Slider,
+			default = 1,
+			step = 1,
+			range = NumberRange.new(1, 100),
+		},
+		color = {
+			control = ControlType.Color,
+			default = Color3.fromRGB(255, 255, 255),
+		},
+		date = {
+			control = ControlType.Date,
+			default = DateTime.now(),
+		},
+		-- List-based
+		dropdown = {
+			control = ControlType.Select,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+			default = "Option 1",
+		},
+		multiSelect = {
+			control = ControlType.MultiSelect,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+			default = {
+				"Option 1",
+				"Option 2",
+			},
+		},
+		check = {
+			control = ControlType.Check,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+			default = {
+				"Option 2",
+				"Option 3",
+			},
+		},
+		radio = {
+			control = ControlType.Radio,
+			options = {
+				"Option 1",
+				"Option 2",
+				"Option 3",
+			},
+			default = "Option 3",
+		},
+	}
+
+	assertAllControlTypesAreIncluded(schema)
+
+	-- We don't supply any controls here since we want to test the defaults
+	local controls = {}
+
+	local expected = {
+		greeting = "Hello, World!",
+		toggle = false,
+		number = 1,
+		slider = 1,
 		color = expect.any("Color3"),
 		date = expect.any("DateTime"),
-		multiSelect = {},
-		check = {},
-		radio = {},
+		dropdown = "Option 1",
+		multiSelect = {
+			"Option 1",
+			"Option 2",
+		},
+		check = {
+			"Option 2",
+			"Option 3",
+		},
+		radio = "Option 3",
 	}
 
 	expect(hydrateControls(schema, controls)).toMatchObject(expected)
@@ -166,24 +331,8 @@ describe("Number", function()
 		})
 	end)
 
-	test("throws when schema default value is out of range", function()
-		local schema: types.StoryControlsSchema = {
-			number = {
-				control = ControlType.Number,
-				default = -100,
-				range = NumberRange.new(1, 100),
-			},
-		}
-
-		local controls = {}
-
-		expect(function()
-			hydrateControls(schema, controls)
-		end).toThrow()
-	end)
-
-	test("throws when control value is out of range", function()
-		local schema: types.StoryControlsSchema = {
+	test("constrains the control value to the range", function()
+		local schema: StoryControlsSchema = {
 			number = {
 				control = ControlType.Number,
 				default = 1,
@@ -194,6 +343,24 @@ describe("Number", function()
 		local controls = {
 			number = -100,
 		}
+
+		local expected = {
+			number = 1,
+		}
+
+		expect(hydrateControls(schema, controls)).toMatchObject(expected)
+	end)
+
+	test("throws when schema default value is out of range", function()
+		local schema: StoryControlsSchema = {
+			number = {
+				control = ControlType.Number,
+				default = -100,
+				range = NumberRange.new(1, 100),
+			},
+		}
+
+		local controls = {}
 
 		expect(function()
 			hydrateControls(schema, controls)
@@ -400,7 +567,7 @@ end)
 describe("Select", function()
 	test("hydrates a schema with a Select control", function()
 		local schema: StoryControlsSchema = {
-			choices = {
+			dropdown = {
 				control = ControlType.Select,
 				options = {
 					"Option 1",
@@ -411,19 +578,21 @@ describe("Select", function()
 		}
 
 		local controls = {
-			choices = "Option 2",
+			dropdown = "Option 2",
+		}
+
+		local expected = {
+			dropdown = "Option 2",
 		}
 
 		local hydrated = hydrateControls(schema, controls)
 
-		expect(hydrated).toMatchObject({
-			multiSelect = { "Option 2" },
-		})
+		expect(hydrated).toMatchObject(expected)
 	end)
 
-	test("throws when passing an invalid option", function()
+	test("returns the first option when passing an invalid option", function()
 		local schema: StoryControlsSchema = {
-			choices = {
+			dropdown = {
 				control = ControlType.Select,
 				options = {
 					"Option 1",
@@ -434,36 +603,46 @@ describe("Select", function()
 		}
 
 		local controls = {
-			choices = "Not an option",
+			dropdown = "Not an option",
 		}
 
-		expect(function()
-			hydrateControls(schema, controls)
-		end).toThrow()
+		local expected = {
+			dropdown = "Option 1",
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
 	end)
 end)
 
 describe("Slider", function()
-	test("throws when schema default value is out of range", function()
-		local schema: types.StoryControlsSchema = {
-			slider = {
+	test("hydrates a schema with a Slider control", function()
+		local schema: StoryControlsSchema = {
+			number = {
 				control = ControlType.Slider,
-				default = -100,
+				default = 1,
 				range = NumberRange.new(1, 100),
 			},
 		}
 
-		local controls = {}
+		local controls = {
+			number = 50,
+		}
 
-		expect(function()
-			hydrateControls(schema, controls)
-		end).toThrow()
+		local expected = {
+			number = 50,
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
 	end)
 
-	test("throws when control value is out of range", function()
-		local schema: types.StoryControlsSchema = {
+	test("constrains the control value to the range", function()
+		local schema: StoryControlsSchema = {
 			number = {
-				control = ControlType.Number,
+				control = ControlType.Slider,
 				default = 1,
 				range = NumberRange.new(1, 100),
 			},
@@ -472,6 +651,24 @@ describe("Slider", function()
 		local controls = {
 			number = -100,
 		}
+
+		local expected = {
+			number = 1,
+		}
+
+		expect(hydrateControls(schema, controls)).toMatchObject(expected)
+	end)
+
+	test("throws when schema default value is out of range", function()
+		local schema: StoryControlsSchema = {
+			slider = {
+				control = ControlType.Slider,
+				default = -100,
+				range = NumberRange.new(1, 100),
+			},
+		}
+
+		local controls = {}
 
 		expect(function()
 			hydrateControls(schema, controls)
