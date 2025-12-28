@@ -36,7 +36,7 @@ local filter = args:get("filter")
 -- This gets picked up by the build step which uses Darklua to inject globals
 process.env.__JEST_TEST_PATH_PATTERN__ = filter
 
-run("lute", { "scripts/build.luau", "--channel", "dev" })
+run("lute", { "scripts/build.luau", "--channel", "dev", "--clean" })
 run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
 local success, err = pcall(function()
