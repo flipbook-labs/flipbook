@@ -4,9 +4,9 @@ local types = require("@root/StoryControls/types")
 type StoryControlsSchema = types.StoryControlsSchema
 type StoryControls = types.StoryControls
 
-local transformControlValue = require("@root/StoryControls/Validation/transformControlValue")
-local validateControlSchema = require("@root/StoryControls/Validation/validateControlSchema")
-local validateListControlValue = require("@root/StoryControls/Validation/validateListControlValue")
+local transformControlValue = require("@root/StoryControls/Parsing/transformControlValue")
+local validateControlSchema = require("@root/StoryControls/Parsing/validateControlSchema")
+local validateListControlValue = require("@root/StoryControls/Parsing/validateListControlValue")
 
 --[[
 	As a principle:
@@ -36,7 +36,7 @@ local function hydrateControls(schema: StoryControlsSchema, controls: StoryContr
 			validateListControlValue(controlName, controlSchema, controlValue)
 		end
 
-		controlValue = transformControlValue(controlSchema, controls[controlName])
+		controlValue = transformControlValue(controlSchema, controlValue)
 
 		if controlValue ~= nil then
 			hydrated[controlName] = controlValue
