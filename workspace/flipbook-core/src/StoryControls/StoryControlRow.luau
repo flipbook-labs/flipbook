@@ -2,10 +2,10 @@ local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 
+local ControlType = require("@root/StoryControls/Enums/ControlType")
 local types = require("@root/StoryControls/types")
 
 type StoryControl = types.StoryControl
-local ControlType = types.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback

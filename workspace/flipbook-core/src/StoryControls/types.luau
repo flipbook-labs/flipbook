@@ -48,7 +48,7 @@ export type StoryControlsSchema = {
 }
 
 export type StoryControls = {
-	[string]: any,
+	[string]: unknown,
 }
 
 return nil

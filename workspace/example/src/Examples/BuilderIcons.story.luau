@@ -12,7 +12,7 @@ return {
 			Foundation.Enums.InputSize.Small,
 			Foundation.Enums.InputSize.Medium,
 			Foundation.Enums.InputSize.Large,
-		},
+		} :: { Foundation.InputSize },
 		showLabels = true,
 	},
 	story = function(props)
