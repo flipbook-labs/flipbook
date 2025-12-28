@@ -31,17 +31,20 @@ export type ColorControl = BaseControl<"Color", Color3>
 export type ColourControl = ColorControl
 export type DateControl = BaseControl<"Date", DateTime>
 
+export type ListBasedStoryControl =
+	SelectControl<unknown>
+	| MultiSelectControl<unknown>
+	| CheckControl<unknown>
+	| RadioControl<unknown>
+
 export type StoryControl =
 	StringControl
 	| BooleanControl
 	| NumberControl
 	| SliderControl
-	| SelectControl<unknown>
-	| MultiSelectControl<unknown>
-	| CheckControl<unknown>
-	| RadioControl<unknown>
 	| ColorControl
 	| DateControl
+	| ListBasedStoryControl
 
 export type StoryControlsSchema = {
 	[string]: StoryControl,

@@ -400,13 +400,41 @@ describe("Check", function()
 			},
 		}
 
-		local controls = {}
+		local controls = {
+			options = { "Option 2" },
+		}
 
 		local hydrated = hydrateControls(schema, controls)
 
 		expect(hydrated).toMatchObject({
-			options = { "Option 1" },
+			options = { "Option 2" },
 		})
+	end)
+
+	test("uses the default when no control value is set", function()
+		local schema: StoryControlsSchema = {
+			options = {
+				control = ControlType.Check,
+				options = {
+					"Option 1",
+					"Option 2",
+					"Option 3",
+				},
+				default = {
+					"Option 2",
+				},
+			},
+		}
+
+		local controls = {}
+
+		local expected = {
+			options = { "Option 2" },
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
 	end)
 
 	test("throws when passing an invalid option", function()
@@ -492,8 +520,34 @@ describe("MultiSelect", function()
 		local hydrated = hydrateControls(schema, controls)
 
 		expect(hydrated).toMatchObject({
-			multiSelect = { "Option 2" },
+			choices = { "Option 2" },
 		})
+	end)
+
+	test("uses the default when no control value is set", function()
+		local schema: StoryControlsSchema = {
+			choices = {
+				control = ControlType.MultiSelect,
+				options = {
+					"Option 1",
+					"Option 2",
+					"Option 3",
+				},
+				default = {
+					"Option 2",
+				},
+			},
+		}
+
+		local controls = {}
+
+		local expected = {
+			choices = { "Option 2" },
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
 	end)
 
 	test("throws when passing an invalid option", function()
@@ -540,6 +594,30 @@ describe("Radio", function()
 		expect(hydrated).toMatchObject({
 			radio = "Option 2",
 		})
+	end)
+
+	test("uses the default when no control value is set", function()
+		local schema: StoryControlsSchema = {
+			radio = {
+				control = ControlType.Radio,
+				options = {
+					"Option 1",
+					"Option 2",
+					"Option 3",
+				},
+				default = "Option 2",
+			},
+		}
+
+		local controls = {}
+
+		local expected = {
+			radio = "Option 2",
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
 	end)
 
 	test("throws when passing an invalid option", function()
@@ -590,7 +668,31 @@ describe("Select", function()
 		expect(hydrated).toMatchObject(expected)
 	end)
 
-	test("returns the first option when passing an invalid option", function()
+	test("uses the default when no control value is set", function()
+		local schema: StoryControlsSchema = {
+			dropdown = {
+				control = ControlType.Select,
+				options = {
+					"Option 1",
+					"Option 2",
+					"Option 3",
+				},
+				default = "Option 2",
+			},
+		}
+
+		local controls = {}
+
+		local expected = {
+			dropdown = "Option 2",
+		}
+
+		local hydrated = hydrateControls(schema, controls)
+
+		expect(hydrated).toMatchObject(expected)
+	end)
+
+	test("throws when passing an invalid option", function()
 		local schema: StoryControlsSchema = {
 			dropdown = {
 				control = ControlType.Select,
@@ -606,13 +708,9 @@ describe("Select", function()
 			dropdown = "Not an option",
 		}
 
-		local expected = {
-			dropdown = "Option 1",
-		}
-
-		local hydrated = hydrateControls(schema, controls)
-
-		expect(hydrated).toMatchObject(expected)
+		expect(function()
+			hydrateControls(schema, controls)
+		end).toThrow()
 	end)
 end)
 

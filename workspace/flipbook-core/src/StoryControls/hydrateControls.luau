@@ -5,6 +5,7 @@ type ControlType = ControlType.ControlType
 type StoryControlsSchema = types.StoryControlsSchema
 type StoryControls = types.StoryControls
 type StoryControl = types.StoryControl
+type ListBasedStoryControl = types.ListBasedStoryControl
 
 --[[
 	As a principle:
@@ -59,6 +60,74 @@ local function validateControlSchema(controlName: string, controlSchema: StoryCo
 	end
 end
 
+local function validateControlValueMapping(
+	controlName: string,
+	controlSchema: ListBasedStoryControl,
+	controlValue: unknown?
+)
+	if controlSchema.mapping then
+		local mappedControlValue = if controlSchema.mapping then controlSchema.mapping[controlValue] else nil
+
+		assert(
+			mappedControlValue,
+			`failed to hydrate "{controlName}" (could not map control value "{controlValue}" to one of the values in 'mapping')`
+		)
+
+		for _, choice in controlValue :: { [any]: any } do
+			validateControlValueMapping(controlName, controlSchema, choice)
+		end
+
+		if mappedControlValue then
+			assert(
+				table.find(controlSchema.options, mappedControlValue),
+				`failed to hydrate "{controlName}" (could not map control value "{controlValue}" to one of the values in 'options')`
+			)
+		end
+	else
+		assert(
+			table.find(controlSchema.options, controlValue),
+			`failed to hydrate "{controlName}" (expected control value "{controlValue}" to be included in 'options')`
+		)
+	end
+end
+
+local function validateListControlValue(
+	controlName: string,
+	controlSchema: ListBasedStoryControl,
+	controlValue: unknown?
+)
+	local options = {}
+
+	if typeof(controlValue) == "table" then
+		for _, value in controlValue :: { [any]: any } do
+			table.insert(options, value)
+		end
+	else
+		table.insert(options, controlValue)
+	end
+
+	for _, optionValue in options do
+		if controlSchema.mapping then
+			local mappedOptionValue = if controlSchema.mapping then controlSchema.mapping[optionValue] else nil
+
+			assert(
+				mappedOptionValue,
+				`failed to hydrate "{controlName}" (could not map "{optionValue}" to one of the values in 'mapping')`
+			)
+
+			assert(
+				table.find(controlSchema.options, mappedOptionValue),
+				`failed to hydrate "{controlName}" (could not map "{mappedOptionValue}" to one of the values in 'options')`
+			)
+		else
+			assert(
+				table.find(controlSchema.options, optionValue),
+				`failed to hydrate "{controlName}" (expected control value "{optionValue}" to be included in 'options')`
+			)
+		end
+	end
+end
+
 local function transformControlValue(controlSchema: StoryControl, controlValue: unknown?): unknown?
 	local controlValueOrDefault = if controlValue then controlValue else controlSchema.default
 
@@ -90,7 +159,6 @@ local function transformControlValue(controlSchema: StoryControl, controlValue: 
 
 	if controlSchema.control == ControlType.Radio or controlSchema.control == ControlType.Select then
 		local mapping = controlSchema.mapping
-
 		if mapping then
 			local mappedControlValue = mapping[controlValueOrDefault]
 			if mappedControlValue then
@@ -98,7 +166,9 @@ local function transformControlValue(controlSchema: StoryControl, controlValue: 
 			end
 		end
 
-		return controlSchema.options[1]
+		if table.find(controlSchema.options, controlValueOrDefault) then
+			return controlValueOrDefault
+		end
 	end
 
 	return controlValueOrDefault
@@ -108,9 +178,20 @@ local function hydrateControls(schema: StoryControlsSchema, controls: StoryContr
 	local hydrated: StoryControls = {}
 
 	for controlName, controlSchema in schema do
+		local controlValue = controls[controlName]
+
 		validateControlSchema(controlName, controlSchema)
 
-		local controlValue = transformControlValue(controlSchema, controls[controlName])
+		if
+			controlSchema.control == ControlType.Check
+			or controlSchema.control == ControlType.MultiSelect
+			or controlSchema.control == ControlType.Radio
+			or controlSchema.control == ControlType.Select
+		then
+			validateListControlValue(controlName, controlSchema, controlValue)
+		end
+
+		controlValue = transformControlValue(controlSchema, controls[controlName])
 
 		if controlValue ~= nil then
 			hydrated[controlName] = controlValue
