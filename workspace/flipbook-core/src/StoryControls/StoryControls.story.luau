@@ -3,11 +3,19 @@ local Sift = require("@pkg/Sift")
 
 local ContextProviders = require("@root/Common/ContextProviders")
 local MockPlugin = require("@root/Testing/MockPlugin")
-local types = require("@root/StoryControls/types")
+
+local createBooleanControl = require("@root/StoryControls/Creators/createBooleanControl")
+local createCheckControl = require("@root/StoryControls/Creators/createCheckControl")
+local createColorControl = require("@root/StoryControls/Creators/createColorControl")
+local createDateControl = require("@root/StoryControls/Creators/createDateControl")
+local createMultiSelectControl = require("@root/StoryControls/Creators/createMultiSelectControl")
+local createNumberControl = require("@root/StoryControls/Creators/createNumberControl")
+local createRadioControl = require("@root/StoryControls/Creators/createRadioControl")
+local createSelectControl = require("@root/StoryControls/Creators/createSelectControl")
+local createSliderControl = require("@root/StoryControls/Creators/createSliderControl")
+local createStringControl = require("@root/StoryControls/Creators/createStringControl")
 
 local StoryControls = require("./StoryControls")
-
-local ControlType = types.ControlType
 
 return {
 	summary = "Panel for configuring the controls of a story",
@@ -20,73 +28,37 @@ return {
 		}, {
 			StoryControls = React.createElement(StoryControls, {
 				controlsSchema = {
-					string = {
-						control = ControlType.String,
-						default = "bar",
-						placeholder = "Some cool text...",
-					},
-					boolean = {
-						control = ControlType.Boolean,
-						default = false,
-					},
-					number = {
-						control = ControlType.Number,
-						default = 10,
-						step = 1,
-						range = NumberRange.new(1, 100),
-					},
-					range = {
-						control = ControlType.Slider,
-						default = 1,
-						step = 1,
-						range = NumberRange.new(1, 100),
-					},
-					select = {
-						control = ControlType.Select,
-						mapping = Sift.List.reduce(Enum.Font:GetEnumItems(), function(mapping, font)
-							mapping[font.Name] = font
-							return mapping
-						end, {}),
-						options = Sift.List.map(Enum.Font:GetEnumItems(), function(font)
+					string = createStringControl("Hello, World!"),
+					boolean = createBooleanControl(false),
+					number = createNumberControl(10, NumberRange.new(1, 100), 1),
+					range = createSliderControl(1, NumberRange.new(1, 100), 1),
+					select = createSelectControl(
+						Sift.List.map(Enum.Font:GetEnumItems(), function(font)
 							return font.Name
 						end),
-					},
-					multiSelect = {
-						control = ControlType.MultiSelect,
-						options = {
-							"Option 1",
-							"Option 2",
-							"Option 3",
-						},
-					},
-					check = {
-						control = ControlType.Check,
-						options = {
-							"Option 1",
-							"Option 2",
-							"Option 3",
-						},
-					},
-					radio = {
-						control = ControlType.Radio,
-						options = {
-							"Option 1",
-							"Option 2",
-							"Option 3",
-						},
-					},
-					color = {
-						control = ControlType.Color,
-						default = Color3.fromRGB(255, 0, 200),
-					},
-					date = {
-						control = ControlType.Date,
-						default = DateTime.now(),
-					},
-					onlyTwentyCharacters = {
-						control = ControlType.String,
-						default = "OnlyTwentyCharacters",
-					},
+						Sift.List.reduce(Enum.Font:GetEnumItems(), function(mapping, font)
+							mapping[font.Name] = font
+							return mapping
+						end, {})
+					),
+					multiSelect = createMultiSelectControl({
+						"Option 1",
+						"Option 2",
+						"Option 3",
+					}),
+					check = createCheckControl({
+						"Option 1",
+						"Option 2",
+						"Option 3",
+					}),
+					radio = createRadioControl({
+						"Option 1",
+						"Option 2",
+						"Option 3",
+					}),
+					color = createColorControl(Color3.fromRGB(255, 0, 200)),
+					date = createDateControl(DateTime.now()),
+					onlyTwentyCharacters = createStringControl("OnlyTwentyCharacters"),
 					badControlType = function() end :: any,
 				},
 				controls = controls,
