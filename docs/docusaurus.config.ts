@@ -33,7 +33,9 @@ const config: Config = {
 			{
 				docs: {
 					sidebarPath: './sidebars.ts',
-					editUrl: `${REPO_URL}/tree/main/docs/docs/`,
+					editUrl: `${REPO_URL}/tree/main/docs/`,
+					showLastUpdateAuthor: true,
+					showLastUpdateTime: true,
 				},
 				theme: {
 					customCss: './src/css/custom.css',
