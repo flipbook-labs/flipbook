@@ -1,0 +1,373 @@
+---
+date: "October 29, 2024 11:25 AM"
+approval: "Drafting"
+status: "In progress"
+---
+
+import ProposalMeta from "@site/src/components/ProposalMeta";
+
+# Storyteller API
+
+<ProposalMeta frontMatter={frontMatter} />
+
+[Storyteller](https://github.com/flipbook-labs/storyteller) is a library for the discovery and rendering of UI stories and is the backbone of flipbook's Story discovery and rendering.
+
+# Storybook format
+
+Any ModuleScript with a `.storybook` extension will be picked up as a Storybook.
+
+:::info
+Storybooks that do not have a `storyRoots` array will not be shown in the Flipbook UI.
+:::
+
+The properties that can be used in the module are as follows:
+
+| **Property**                   | **Description**                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `storyRoots: { Instance }`     | Locations that the Storybook manages. Each instance will have its descendants searched for Story modules.                             |
+| `name: string?`                | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`. |
+| `packages: { [string]: any }?` | An optional dictionary used for supplying the Storybook with the packages to use when rendering its Stories.                          |
+
+This dictionary can also be supplied per-Story to change the renderer used, but it can be convenient to define your packages globally to avoid repetition. |
+
+Example Storybook module:
+
+```lua
+-- Sample.storybook
+return {
+	storyRoots = {
+		script.Parent.Components
+	},
+}
+```
+
+## Legacy support
+
+Flipbook v1 used a different approach for defining packages. For convenience, v2 provides backwards compatibility for the following Storybook properties:
+
+:::info
+A future version of Flipbook may remove this compatibility layer. It is recommended to migrate to `packages`.
+:::
+
+| **Property**     | **Description**                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| roact: any       | Locations that the Storybook manages. Each instance will have its descendants searched for Story modules.                             |
+| react: any       | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`. |
+| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`.                                    |
+
+Under the hood these simply map to `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.
+
+# Story format
+
+Any ModuleScript with a `.story` extension will be picked up as a Story when it is a descendant of one of the `storyRoots` that a Storybook manages.
+
+The only required member of a Story definition is the `story` property.
+
+| **Property**                                | **Description**                                                                                                                                                                                          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `story: <T>((props: StoryProps) -> T) \| T` |                                                                                                                                                                                                          |
+| `name: string?`                             | The name of the Story as it appears in Flipbook. Defaults to the name of the Story module. i.e. `Sample.story` becomes `Sample`                                                                          |
+| `summary: string?`                          | A description of the Story that will appear above the rendered preview in Flipbook.                                                                                                                      |
+| `controls: { [string]: any }?`              | Controls allow for on-the-fly configuration of your rendered UI. Read more about how to define and use Controls here: [Controls](https://www.notion.so/Controls-12f95b7912f8804388e1d746a6617716?pvs=21) |
+
+The type of the `story` property is dependent on what kind of Story is being rendered. Flipbook does not prescribe one particular way of writing Stories, or even a particular UI library that must be used.
+Stories can be written for React, Fusion, legacy Roact, plain Roblox Instances, and anything you can think of with [Manual Stories](https://www.notion.so/Story-format-12f95b7912f880068da6d74c472bf186?pvs=21).
+
+Example Story module:
+
+```lua
+return {
+	story = function(props)
+
+	end
+}
+```
+
+## Legacy support
+
+:::warning
+A future version of Flipbook may remove this compatibility layer. It is recommended to migrate to `packages`.
+:::
+
+Flipbook v1 used a different approach for defining packages. For convenience, v2 provides backwards compatibility for the following Storybook properties:
+
+| **Property**     | **Description**                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| roact: any       | Locations that the Storybook manages. Each instance will have its descendants searched for Story modules.                             |
+| react: any       | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`. |
+| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`.                                    |
+
+Under the hood these simply map to `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.
+
+# API
+
+## Types
+
+### Storybook
+
+Represents a Storybook loaded from a ModuleScript
+
+```lua
+-- TODO: Paste type export
+```
+
+### Story
+
+Represents a Story loaded from a ModuleScript
+
+```lua
+-- TODO: Paste type export
+```
+
+### StoryProps
+
+## Functions
+
+### isStorybookModule
+
+`isStorybookModule(instance: Instance): boolean`
+
+| Tags | Validation, Storybook |
+| ---- | --------------------- |
+
+Validates a given Instance is a Storybook module.
+
+No validation is performed on the internals of the module. Only name and class are checked.
+
+See `loadStorybookModule` for validation of the module source.
+
+### isStoryModule
+
+`isStoryModule(instance: Instance): boolean`
+
+| Tags | Validation, Story |
+| ---- | ----------------- |
+
+Validates a given Instance is a Story.
+
+No validation is performed on the internals of the module. Only name and class are checked.
+
+See `loadStory` for validation of the module source.
+
+### findStorybookModules
+
+`findStorybookModules(parent: Instance): { ModuleScript }`
+
+| Tags | Discovery, Storybook |
+| ---- | -------------------- |
+
+Discovers all Storybook modules that are descendants of `parent`.
+
+This is the first step in the discovery of Stories. Once you load a Storybook, you can then use its `storyRoots` array to discover all the Stories it manages.
+
+### findStoryModulesForStorybook
+
+`findStoryModulesForStorybook(storybook: Storybook): { ModuleScript }`
+
+| Tags | Discovery, Storybook, Story |
+| ---- | --------------------------- |
+
+Discovers all Story modules that are managed by the given Storybook.
+
+### loadStorybookModule
+
+`loadStorybookModule(loader: ModuleLoader, storybookModule: ModuleScript): Storybook`
+
+| Tags | ModuleLoading, Storybook |
+| ---- | ------------------------ |
+
+Loads the source of a Storybook module.
+
+A [ModuleLoader](https://github.com/flipbook-labs/module-loader) instance is required for handling the requiring of the module.
+
+This function will throw if the return value of `storybookModule` does not conform to [Storybook format](Storyteller%20API%2012e95b7912f880d6920ef3b38d960d37.md), or if the source has a syntax error that `require` would normally fail for.
+
+### loadStoryModule
+
+`loadStoryModule(loader: ModuleLoader, storyModule: ModuleScript, storybook: Storybook): Story`
+
+| Tags | ModuleLoading, Story |
+| ---- | -------------------- |
+
+Loads the source of a Story module.
+
+This function will throw if the return value of `storyModule` does not conform to [Any ModuleScript with a `.story` extension will be picked up as a Story when it is a descendant of one of the `storyRoots` that a Storybook manages.](Storyteller%20API%2012e95b7912f880d6920ef3b38d960d37.md), or if the source has a syntax error that `require` would normally fail for.
+
+For legacy compatibility this function also loads Hoarcekat stories. Instead of a usual table-based Story definition, it takes the returned function and wraps it in a Story, making the `story` field the function body.
+
+### createRendererForStory
+
+`createRendererForStory(story: Story): StoryRenderer`
+
+| Tags | Rendering |
+| ---- | --------- |
+
+This function will do its best to determine which of the renderers to use based off the Story's properties.
+
+Each renderer is given its own file so that it's easy to add on new UI libraries in the future. See [Story Renderer Spec](Story%20Renderer%20Spec%204260feeab4574ad68f87006dee57cf75.md) for more details.
+
+:::warning
+This likely won't make it into the public API. Aside from supplying packages, the consumer shouldn't need to care about which renderer is being used. And we also make no effort to expose the individual renderers (as of right now) so for v1 we can omit this function and instead have `render` take `(story, container)` as args
+:::
+
+### render
+
+`render(renderer: StoryRenderer, container: Instance, story: Story<T>): RenderLifecycle`
+
+| Tags | ModuleLoading, Story |
+| ---- | -------------------- |
+
+The final step. Once you have your Storybook, a Story to render, and the renderer to use for the Story, this function will handle the lifecycle of mounting, updating, and unmounting the Story for viewing.
+
+Usage:
+
+```lua
+local ModuleLoader = require("@pkg/ModuleLoader")
+local Storyteller = require("@pkg/Storyteller")
+
+local loader = ModuleLoader.new()
+
+local storybookModules = Storyteller.findStorybookModules(game)
+assert(#storybookModules > 0, "no Storybook modules found")
+
+local storybook
+pcall(function()
+  storybook = Storyteller.loadStorybookModule(loader, storybookModules[1])
+end)
+
+if storybook then
+  local storyModules = Storyteller.findStoryModulesForStorybook(storybook)
+  assert(#storyModules > 0, "no Story modules found")
+
+  local story
+  pcall(function()
+	  story = Storyteller.loadStoryModule(loader, storyModules[1], storybook)
+  end)
+
+  if story then
+	  local renderer = Storyteller.createRendererForStory(story)
+	  local lifecycle = Storyteller.render(renderer, container, story)
+
+	  print(container:GetChildren())
+
+		lifecycle.unmount()
+
+	  print(container:GetChildren())
+  end
+end
+```
+
+:::info
+We may update this function to make `renderer` an optional last argument in the future so that `createRendererForStory` can be called implicitly. Determining which renderer to use probably doesn't need to be the consumer's job.
+:::
+
+## Hooks
+
+Storyteller is intended for use by flipbook, so we also expose some React hooks to make it easier to handle the discovery and loading of Storybooks and Stories from React UI.
+
+### useStorybooks
+
+`uesStorybooks(parent: Instance, loader: ModuleLoader): { Storybook }`
+
+| Tags | React, Storybook |
+| ---- | ---------------- |
+
+Performs all the discovery and loading of Storybook modules that would normally be done via individual API members.
+
+This hook makes it possible to conveniently load (and reload) Storybooks for use in React UI.
+
+Usage:
+
+```lua
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
+local e = React.createElement
+
+local function StorybookList(props: {
+	parent: Instance,
+	loader: ModuleLoader,
+})
+	local storybooks = Storyteller.useStorybooks(props.parent, props.loader)
+
+	local children = {}
+	for index, storybook in storybooks do
+		children[storybook.name] = e("TextLabel", {
+			Text = storybook.name,
+			LayoutOrder = index,
+		}),
+	end
+
+	return e("Frame", {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+	}, {
+		Layout = e("UIListLayout", {
+			SortOrder = Enum.SortOrder.LayoutOrder
+		}),
+	}, children)
+end
+
+return StorybookList
+```
+
+This hook triggers a rerender when a Storybook module changes. For example, updating the `storyRoots` of a Storybook will trigger a rerender, and when paired with `useStory` you can get live updates to which Stories a Storybook manages.
+
+:::warning
+In the future version hooks may be migrated to a new package to remove the React dependency from Storyteller.
+:::
+
+### useStory
+
+`uesStory(storyModule: ModuleScript, storybook: Storybook, loader: ModuleLoader): Story`
+
+| Tags | React, Story |
+| ---- | ------------ |
+
+This hook triggers a rerender when the Story module or any of its required modules change. For example, updating the `story` property or updating a React component's source will trigger useStory to rerender with the new content.
+
+Usage:
+
+```lua
+local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
+local useEffect = React.useEffect
+local useRef = React.useRef
+local e = React.createElement
+
+local function StoryView(props: {
+	parent: Instance,
+	storyModule: ModuleScript,
+	storybook: Storybook,
+	loader: ModuleLoader,
+})
+	local ref = useRef(nil :: Frame?)
+
+	local story = Storyteller.useStory(props.storyModule, props.storybook, props.loader)
+
+	useEffect(function()
+		if ref.current then
+			local renderer = Storyteller.createRendererForStory(story)
+			Storyteller.render(renderer, ref.current, story)
+		end
+	end, { story })
+
+	return e("Frame", {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		ref = ref,
+	})
+end
+
+return StoryView
+
+```
+
+:::warning
+In the future version hooks may be migrated to a new package to remove the React dependency from Storyteller.
+:::
+
+# References
+
+- [Create a flipbook package](Create%20a%20flipbook%20package%20de72c90805f4450390c43a6bd7fb82bb.md)

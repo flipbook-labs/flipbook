@@ -1,0 +1,111 @@
+.proposalMeta {
+	width: 100%;
+	margin-bottom: 2rem;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+
+.metaRow {
+	border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.metaRow:last-child {
+	border-bottom: none;
+}
+
+.metaLabel {
+	padding: 0.5rem 0.75rem;
+	font-weight: 500;
+	color: var(--ifm-color-emphasis-600);
+	width: 120px;
+	vertical-align: top;
+	padding-top: 0.625rem;
+}
+
+.metaValue {
+	padding: 0.5rem 0.75rem;
+	color: var(--ifm-color-emphasis-900);
+}
+
+.badge {
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.875rem;
+	font-weight: 500;
+	text-transform: capitalize;
+}
+
+/* Approval badges */
+.approved {
+	background-color: #d4edda;
+	color: #155724;
+}
+
+.drafting {
+	background-color: #fff3cd;
+	color: #856404;
+}
+
+.rejected {
+	background-color: #f8d7da;
+	color: #721c24;
+}
+
+/* Status badges */
+.statusCompleted {
+	background-color: #d4edda;
+	color: #155724;
+}
+
+.statusInProgress {
+	background-color: #cfe2ff;
+	color: #084298;
+}
+
+.statusPlanned {
+	background-color: #e2e3e5;
+	color: #41464b;
+}
+
+/* Dark mode support */
+[data-theme='dark'] .metaRow {
+	border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .metaLabel {
+	color: var(--ifm-color-emphasis-500);
+}
+
+[data-theme='dark'] .metaValue {
+	color: var(--ifm-color-emphasis-700);
+}
+
+[data-theme='dark'] .approved {
+	background-color: #1e4620;
+	color: #a8d5a8;
+}
+
+[data-theme='dark'] .drafting {
+	background-color: #5c4a1f;
+	color: #f5e5a8;
+}
+
+[data-theme='dark'] .rejected {
+	background-color: #5c1f1f;
+	color: #f5a8a8;
+}
+
+[data-theme='dark'] .statusCompleted {
+	background-color: #1e4620;
+	color: #a8d5a8;
+}
+
+[data-theme='dark'] .statusInProgress {
+	background-color: #1f3a5c;
+	color: #a8c5f5;
+}
+
+[data-theme='dark'] .statusPlanned {
+	background-color: #3a3b3c;
+	color: #b8b9ba;
+}

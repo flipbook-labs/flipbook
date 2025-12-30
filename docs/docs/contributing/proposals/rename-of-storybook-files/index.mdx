@@ -1,0 +1,37 @@
+---
+date: "December 9, 2023 10:02 AM"
+approval: WontDo
+status: NotStarted
+---
+
+import ProposalMeta from "@site/src/components/ProposalMeta";
+
+# Rename of storybook files
+
+<ProposalMeta frontMatter={frontMatter} />
+
+# Overview
+
+Currently storybook files are named as `Foo.storybook.lua` where `Foo` is used as the name in flipbook's explorer unless overwritten by the `name` property in the storybook object.
+
+The intention was for the first part of the name to match the project name. For example, flipbook's storybook would be called `flipbook.storybook.lua`. But this didn't end up happening. Instead the name is `init.storybook.lua`, and the `name` property is supplied to show “flipbook” in the explorer.
+
+Because of this, it seems the first part of the storybook file is extraneous and could be removed.
+
+# Proposal
+
+Change the storybook format of `ProjectName.storybook.lua` to `storybook.lua`.
+
+In flipbook's explorer, the name for the storybook will resolve to the name of the storybook's parent. For example, flipbook would discover the following storybook and use “ProjectName” in the explorer.
+
+![Screenshot 2023-12-09 at 10.07.39 AM.png](Screenshot_2023-12-09_at_10.07.39_AM.png)
+
+The `name` property can continue being supplied, which flipbook will use instead of implicitly picking the name.
+
+The legacy format will no longer be included in the docs, but will continue to be supported for at least one major release after being introduced. This ensures the change is backwards compatible while also moving us to the new format.
+
+# Open Questions
+
+- Does anyone use multiple storybooks as siblings? This change would break that
+- Doesn't this break almost every convention about configuration files? (ex: `.test.lua`, `.spec.lua`, etc)
+- How does this work when there's multiple storybooks? I could only assume some people would have a UI kit for generic components (buttons, etc) and then use that on projects to develop more specific UI which would also have their own storybook.

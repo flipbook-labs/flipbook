@@ -1,0 +1,170 @@
+---
+date: "December 8, 2023 11:06 AM"
+approval: "Drafting"
+status: "Not Started"
+---
+
+import ProposalMeta from "@site/src/components/ProposalMeta";
+
+# Implement new modular story format
+
+<ProposalMeta frontMatter={frontMatter} />
+
+# Idea
+
+As I've gone through `storybook.js` documentation and examples, I believe it'd be better to go down their route of stories, instead of trying to reinvent the wheel ourselves. Their story format has been used by thousands of developers and is battle-tested. I'd like to implement our story format to be as close as possible to theirs as we can.
+
+The example below would render in our File Tree as:
+
+```
+Storybook
+	Button
+		Primary
+		Secondary
+		Loading
+		Disabled
+```
+
+Due to us allowing developers to pass `exports.name` & `exports.component` as defaults,
+we can use this to render documentation automatically as seen [here](https://master--5ccbc373887ca40020446347.chromatic.com/?path=/docs/button--docs)
+
+# Open Questions
+
+- How do controls in Storybook work with multiple stories? Are they global controls, or does each story have its own set of controls? How does this impact the proposal?
+- Can single stories with controls continue being used like before? Are we able to support both workflows?
+- What does migration look like, and can we automate it? Ideally flipbook and/or some command line tool should convert old stories to the new format
+- Do we want to rename the naming convention from `.story.lua` to `.stories.lua` with this change? [Like how Storybook does it](https://storybook.js.org/docs/writing-stories#where-to-put-stories)
+- How much of [Storybook's CSF](https://storybook.js.org/docs/api/csf) do we want to mimic? Should we copy the spec 1:1 and make deviations as-needed? More docs [here](https://github.com/ComponentDriven/csf)
+- What are some existing standards for translating JS to Luau? In particular we should see if we can adopt a way of handling the “default” export
+
+# Proposed API
+
+```lua
+local React = require("packges/react")
+local Button = require("./button")
+
+local exports = {}
+
+exports.name = "Button"
+exports.component = React.createElement(Button)
+
+exports.Primary = React.createElement(Button, { appearance = "primary" })
+exports.Secondary = React.createElement(Button, { appearance = "secondary" })
+
+exports.Loading = {
+	args = {
+		appearance = { "primary", "secondary" },
+		isLoading = true
+	},
+
+	render = function(controls)
+		return React.createElement(Button, {
+			appearance = controls.appearance,
+			isLoading = controls.isLoading,
+		})
+	end
+}
+
+exports.Disabled = function()
+	return React.createElement(Button, {
+		appearance = "primary",
+		isDisabled = true,
+	})
+end
+
+return exports
+
+```
+
+# Component story format
+
+The [Component Story Format (CSF)](https://storybook.js.org/docs/api/csf) is a standard format for stories that we are leveraging for flipbook.
+
+# Migrating existing stories
+
+# Updating documentation
+
+With this change we also need to update the relevant documentation for stories
+
+These pages will need to be upated to account for the new format:
+
+- [https://flipbook-labs.github.io/flipbook/docs/writing-stories](https://flipbook-labs.github.io/flipbook/docs/writing-stories)
+- [https://flipbook-labs.github.io/flipbook/docs/story-format](https://flipbook-labs.github.io/flipbook/docs/story-format)
+- [https://flipbook-labs.github.io/flipbook/docs/migrating](https://flipbook-labs.github.io/flipbook/docs/migrating)
+
+# Translations
+
+```lua
+-- .flipbook/main.lua
+local Root = script:FindFirstAncestor("ProjectName")
+
+local Framework = require(Root.Packages.FlipbookReact)
+type StorybookConfig = Framework.StorybookConfig
+
+local config = {
+    framework = Framework,
+    stories = { "*.stories" }
+}
+
+return config
+```
+
+```lua
+local Root = script:FindFirstAncestor("ProjectName")
+
+local FlipbookReact = require(Root.Packages.FlipbookReact)
+local Button = require(script.Parent.Button)
+
+type Renderable = GuiObject | ReactNode
+
+type Args = {
+    [string]: boolean | number | string
+}
+
+type Decorator = (Story: Renderable) -> Renderable
+type Decorators = { Decorator }
+
+-- type Meta = FlipbookReact.Meta
+type Meta<T> = {
+    component: ReactNode,
+
+    title: string?,
+    argTypes: ArgTypes?,
+    args: Args?,
+}
+-- type StoryObj = FlipbookReact.StoryObj
+type StoryObj = {
+    render: (args: Args) -> Renderable,
+    decorators: Decorators?,
+
+    args: Args?,
+}
+type Story = StoryObj<typeof(Button)>
+
+local stories = {}
+
+local meta: Meta<typeof(Button)> = {
+    component = Button
+}
+stories.default = meta
+
+local Primary: Story = {
+    args = {
+        primary = true,
+        label = "Button"
+    }
+}
+stories.Primary = Primary
+
+return stories
+```
+
+# Deviations
+
+- No global args for storybooks
+
+# Action items
+
+- [x] @Marin Minnerly Read up on CSF and see how much we can port to lua
+- [x] @Marin Minnerly Take a pass over flipbook docs to check which ones would need to be revised
+- [ ] @Marin Minnerly Figure out if we can do versioned documentation for v1 and v2

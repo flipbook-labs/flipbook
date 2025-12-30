@@ -1,0 +1,9 @@
+{
+  "label": "Stories",
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "title": "Creating Stories",
+    "description": "Learn how to write and organize stories in Flipbook. Stories are examples of your UI components in different states and configurations."
+  }
+}

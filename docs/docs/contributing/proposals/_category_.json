@@ -1,0 +1,7 @@
+{
+  "label": "Proposals",
+  "link": {
+    "type": "generated-index",
+    "description": "Design proposals and RFCs for new features and improvements to Flipbook. These documents outline planned changes and gather community feedback."
+  }
+}

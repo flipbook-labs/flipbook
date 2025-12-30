@@ -1,0 +1,9 @@
+{
+  "label": "Frameworks",
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "title": "Framework Guides",
+    "description": "Flipbook works with multiple UI frameworks. Choose your framework below to see specific setup instructions and examples."
+  }
+}

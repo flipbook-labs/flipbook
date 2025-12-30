@@ -1,0 +1,96 @@
+---
+date: "December 11, 2023 8:39 PM"
+approval: Drafting
+status: NotStarted
+---
+
+import ProposalMeta from "@site/src/components/ProposalMeta";
+
+# Create a flipbook package
+
+<ProposalMeta frontMatter={frontMatter} />
+
+The idea is all of our storybook and story-related functionality and types to be exposed off of a public API that creators could import via Wally.
+
+One of the primary benefits would be to allow type-checking within storybook and story files. For example:
+
+```lua
+-- Foo.storybook.lua
+local flipbook = require(Path.To.Packages.flipbook)
+
+local storybook: flipbook.Storybook = {
+    storyRoots = true -- analysis error
+}
+
+return storybook
+
+```
+
+```lua
+-- Bar.story.lua
+local flipbook = require(Path.To.Packages.flipbook)
+
+local story: flipbook.Story = {
+    -- TODO: show analysis error
+}
+
+return story
+
+```
+
+# Proposed API
+
+## Types
+
+```lua
+export type Controls = {
+	[string]: string | number | boolean,
+}
+
+export type StoryProps = {
+	controls: Controls,
+}
+
+export type Storybook = {
+	storyRoots: { Instance },
+	name: string?,
+	roact: Roact?,
+	react: React?,
+	reactRoblox: ReactRoblox?,
+}
+
+export type StoryMeta = {
+	name: string,
+	summary: string?,
+	controls: Controls?,
+	roact: Roact?,
+	react: React?,
+	reactRoblox: ReactRoblox?,
+}
+
+export type RoactStory = StoryMeta & {
+	story: RoactElement | (props: StoryProps) -> RoactElement,
+	roact: Roact,
+}
+
+export type ReactStory = StoryMeta & {
+	story: ReactElement | (props: StoryProps) -> ReactElement,
+	react: React,
+	reactRoblox: ReactRoblox,
+}
+
+export type FunctionalStory = StoryMeta & {
+	story: (target: GuiObject, props: StoryProps) -> (() -> ())?,
+}
+
+export type Story = FunctionalStory | RoactStory | ReactStory
+
+```
+
+## Functions
+
+`isStoryModule(instance: Instance): boolean`
+
+`isStorybookModule(instance Instance boolean`
+
+`useStorybooks(): { Storybook }`

@@ -1,0 +1,369 @@
+---
+date: "December 8, 2023 11:05 AM"
+approval: "Approved"
+status: "Not Started"
+---
+
+import ProposalMeta from "@site/src/components/ProposalMeta";
+
+# Documentation stories
+
+<ProposalMeta frontMatter={frontMatter} />
+
+# Idea
+
+Allow developers to define their own documentation files using the `.docs` file ending. Below is an example of a `Button.docs.luau` file
+
+# Open Questions
+
+- Should this be a product distinct from flipbook to allow anyone to write `.docs` files?
+- If this leverages the renderer supplied in the `.storybook` file, would we still be able to decouple docs rendering?
+
+# Proposed API
+
+```lua
+local React = require("packages/react")
+local Button = require("./button")
+local Documentation= require("packages/sparkletime-documentation")
+
+local exports = {}
+
+exports.name = "Button"
+exports.render = React.createElement(Documentation.Canvas, nil, {
+  React.createElement(Documentation.Title, { text = "Button" }),
+  React.createElement(Documentation.Summary, { text = "Button Summary" }),
+  React.createElement(Documentation.ComponentList, {}, {
+    React.createElement(Button, { appearance = "primary" }),
+    React.createElement(Button, { appearance = "secondary" }),
+  })
+})
+
+return exports
+
+```
+
+This would render something similar to:
+
+![287413119-875e3533-81a8-4f7f-9862-db6668f7c93f.png](storybook-example.png)
+
+# Writing documentation
+
+Documentation can be written in a number of ways:
+
+1. With GuiObjects
+2. Markdown-formatted strings
+3. React or Roact elements,
+4. With functions that return any of the above, and
+5. With a table composed of any of the above.
+
+Single GuiObject:
+
+```lua
+local label = Instance.new("TextLabel")
+label.Text = "Hello World!"
+
+return {
+	render = label
+}
+```
+
+Markdown string:
+
+```lua
+return {
+	render = [[
+		# Title
+
+		Markdown string that gets converted into GuiObjects when rendered
+
+		- Can also write lists
+		- Just like regular Markdown
+
+		Even using **bold** and _italics_ works thanks to RichText.
+	]]
+}
+```
+
+React:
+
+```lua
+local Root = script:FindFirstAncestor("ProjectName")
+
+local React = require(Root.Packages.React)
+local Button = require(script.Parent.Button)
+
+return {
+	render = React.createElement(Button, {
+		appearance = "primary"
+	})
+}
+
+-- or with a function:
+return {
+	render = function()
+		return React.createElement(Button, {
+			appearance = "primary"
+		})
+	end
+}
+
+-- or with legacy Roact:
+local Roact = require(Root.Packages.Roact)
+
+return {
+	render = Roact.createElement(Button, {
+		appearance = "primary"
+	})
+}
+```
+
+Functional:
+
+```lua
+local function calculateSomething()
+	-- ...
+end
+
+return {
+	render = function()
+		local value = calculateSomething()
+
+		local label = Instance.new("TextLabel")
+		label.Text = value
+
+		return value
+	end
+}
+```
+
+Table with a mix of all other formats:
+
+```lua
+local function calculateSomething()
+	-- ...
+end
+
+local label = Instance.new("TextLabel")
+label.Text = "Hello World!"
+
+return {
+	render = {
+		[[
+			# Title
+
+			Markdown string with GuiObject below it
+		]],
+
+		label,
+
+		[[
+			More prose inbetween
+		]]
+
+		function()
+			local label = Instance.new("TextLabel")
+			label.Text = calculateSomething()
+
+			return label
+		end
+	}
+}
+```
+
+# API
+
+## Types
+
+## DocsPart
+
+`() -> GuiObject | GuiObject | string | ReactNode`
+
+### DocsFile
+
+`name: string?`
+
+Optional name that will be displayed as a title in the rendered docs.
+
+By default, the name is implicitly parsed from the filename. For example, a docs file name `Button.docs.lua` will have “Button” as its title when rendered.
+
+`render: DocsPart | { DocsPart }`
+
+Takes in a string, GuiObject, or ReactNode. Or a function that returns one of those. Or or a table composed of any of those, plus functions.
+
+Check out [Writing documentation](Documentation%20stories%206076c2b2ddfd41d6886b9fdde50437b9.md) for examples.
+
+## Components
+
+### **Canvas**
+
+The **Canvas** component is used as the root for a documentation render. It sets up the layout for all it's children.
+
+Props:
+
+- None
+
+### **Title**
+
+Similar to `<h1>`, `<h2>` …
+
+Props:
+
+- `text: string`
+
+### Summary
+
+Similar to `<p>`
+
+Props:
+
+- `text: string`
+
+### ComponentList
+
+Provides a container that will hold any components you pass to it as children
+
+Props:
+
+- `children: React.ReactNode`
+
+## Functions
+
+### parseDocs(docs: DocsFile): Frame
+
+Parses the contents of `docs` into a hierarchy of GuiObjects
+
+### parseDocsModule(docsModule: ModuleScript): Frame
+
+Convenice function that requires the module and passes the contents to `parseDocs`. Will also perform runtime typechecking to make sure the module matches the DocsFile format
+
+# Packages
+
+The packages we provide extend the capabilities for writing documentation, but are not required to write docs if the user only wants to use Markdown.
+
+- sparkletime-docs-vanilla
+- sparkletime-docs-react
+- sparkletime-docs-roact
+
+# Documentation rendering
+
+|                                                                   | **Option 1:** Docs files                                                                           | Option 3: Docs files w/ MDX                                                                                   | **Option 2:** Leverage Moonwave                                              |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Description**                                                   | A new `.docs` file extension is supported with the ability to write documentation using components | A new `.docs` file extension is supported and all documentation is written in MDX with support for GuiObjects | Documentation is taken from Moonwave-style doc comments in code and rendered |
+| Pros                                                              | - Components can be inlined with prose                                                             |
+| - Write docs in React, Fusion, plain GuiObjects, or anything else | - Prose written in Markdown so extra components for writing prose are not needed                   | - Existing standard                                                                                           |
+| **Cons**                                                          | - New standard                                                                                     |
+
+- Need to include a package for users to write prose
+- For supported formats (React, Roact, Fusion, GuiObjects) a separate addon is needed and must be maintained | - New standard
+- Roblox users might not know how to write Markdown | - Can't render components inline
+- Need to port extractor to Luau |
+  | **Chosen solution** | | | |
+
+Implementation details for mounting and unmounting docs for React and Roact:
+
+```lua
+type AnyDict = { [string]: any }
+
+type ReactRobloxRoot = {
+    render: (element: AnyDict) -> (),
+    unmount: () -> () }
+
+type ReactRoblox = {
+    createRoot: (container: GuiObject) -> ReactRobloxRoot
+}
+
+type Roact = {
+    mount: (element: AnyDict) -> AnyDict,
+    unmount: (handle: AnyDict) -> ()
+}
+
+type DocsRenderer = {
+    render: (...any) -> GuiObject,
+    unmount: () -> ()
+}
+
+local function createReactDocsRenderer(ReactRoblox: ReactRoblox): DocsRenderer
+    local container = Instance.new("Folder")
+    local root = ReactRoblox.createRoot(container)
+
+    local function render(element: AnyDict)
+        root:render(element)
+        return container
+    end
+
+    local function unmount()
+        root:unmount()
+    end
+
+    return {
+        render = render,
+        unmount = unmount,
+    }
+end
+
+local function createRoactDocsRenderer(Roact: any): DocsRenderer
+    local handle
+
+    local function render(element: any)
+        handle = Roact.mount(element)
+    end
+
+    local function unmount()
+        if handle then
+            Roact.unmount(handle)
+        end
+    end
+
+    return {
+        render = render,
+        unmount = unmount,
+    }
+end
+```
+
+## Markdown parsing
+
+Lua Markdown parser:
+
+- https://github.com/mpeterv/markdown
+- Fork with Wally support: https://github.com/aloroid/markdown
+- [https://github.com/BradSharp/Romarkable](https://github.com/BradSharp/Romarkable)
+- [https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender](https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender)
+- Plain regex parsing: https://github.com/Roblox/luau-regexp
+
+@pashley Example of how an [MDX](https://mdxjs.com/)-like approach could look
+
+```lua
+local Root = script:FindFirstAncestor("ProjectName")
+
+local React = require(Root.Packages.React)
+local Documentation = require(Root.Packages.DocumentationReact)
+
+local exports = {}
+
+exports.render = {
+    [[
+        # Button
+
+        Eu sint tempor nostrud dolor dolor elit id laborum tempor nisi ea
+        eiusmod culpa cillum.
+
+        Eu enim id pariatur aliqua minim laboris reprehenderit. Reprehenderit et
+        cupidatat qui ad. Anim do aliqua magna magna. Do mollit fugiat nulla
+        irure quis et do eiusmod. Proident ad commodo quis consequat.
+    ]],
+
+    React.createElement(Documentation.ComponentList, {}, {
+        React.createElement(Button, { appearance = "primary" }),
+        React.createElement(Button, { appearance = "secondary" }),
+    }),
+
+    [[
+        And more prose below it...
+    ]]
+}
+```
+
+# Action items
+
+- [ ] @Marin Minnerly Read up on Storybook's [Docs section](https://storybook.js.org/docs/writing-docs)
