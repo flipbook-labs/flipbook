@@ -6,7 +6,7 @@ local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local PluginStore = require("@root/Plugin/PluginStore")
 local types = require("@root/Panels/types")
-local useTheme = require("@root/Common/useTheme")
+local useColors = require("@root/Common/useColors")
 
 local useSignalState = SignalsReact.useSignalState
 
@@ -15,6 +15,10 @@ local defaultProps = {
 	hoverIconX = "rbxasset://textures/StudioUIEditor/icon_resize2.png",
 	hoverIconY = "rbxasset://textures/StudioUIEditor/icon_resize4.png",
 }
+
+local useCallback = React.useCallback
+local useEffect = React.useEffect
+local useState = React.useState
 
 export type Props = {
 	handle: types.DragHandle,
@@ -26,16 +30,16 @@ type InternalProps = Props & typeof(defaultProps)
 
 local function DragHandle(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
-	local theme = useTheme()
+	local colors = useColors()
 
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 
-	local isDragging, setIsDragging = React.useState(false)
-	local isHovered, setIsHovered = React.useState(false)
-	local mouseInput: InputObject?, setMouseInput = React.useState(nil :: InputObject?)
+	local isDragging, setIsDragging = useState(false)
+	local isHovered, setIsHovered = useState(false)
+	local mouseInput: InputObject?, setMouseInput = useState(nil :: InputObject?)
 
-	local getHandleProperties = React.useCallback(function()
+	local getHandleProperties = useCallback(function()
 		local hitboxSize: UDim2
 		local highlightSize: UDim2
 		local position: UDim2
@@ -68,7 +72,7 @@ local function DragHandle(providedProps: Props)
 		return hitboxSize, highlightSize, position, anchorPoint
 	end, { props.handle, props.size } :: { unknown })
 
-	local onInputBegan = React.useCallback(function(_rbx, input: InputObject)
+	local onInputBegan = useCallback(function(_rbx, input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			setIsDragging(true)
 		elseif input.UserInputType == Enum.UserInputType.MouseMovement then
@@ -77,7 +81,7 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { isDragging })
 
-	local onInputEnded = React.useCallback(function(_rbx, input: InputObject)
+	local onInputEnded = useCallback(function(_rbx, input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			setIsDragging(false)
 			setMouseInput(nil)
@@ -88,17 +92,17 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { props.onDragEnd })
 
-	local onMouseEnter = React.useCallback(function()
+	local onMouseEnter = useCallback(function()
 		setIsHovered(true)
 	end, {})
 
-	local onMouseLeave = React.useCallback(function()
+	local onMouseLeave = useCallback(function()
 		setIsHovered(false)
 	end, {})
 
 	local hitboxSize, highlightSize, position, anchorPoint = getHandleProperties()
 
-	React.useEffect(function(): any
+	useEffect(function(): any
 		if mouseInput and isDragging then
 			local lastPosition = mouseInput.Position
 			local conn = RunService.Heartbeat:Connect(function()
@@ -119,7 +123,7 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { mouseInput, isDragging } :: { unknown })
 
-	React.useEffect(function()
+	useEffect(function()
 		if plugin then
 			local mouse = plugin:GetMouse()
 
@@ -148,8 +152,8 @@ local function DragHandle(providedProps: Props)
 		Highlght = React.createElement("Frame", {
 			Size = highlightSize,
 			BorderSizePixel = 0,
-			BackgroundTransparency = if isHovered or isDragging then 0 else 1,
-			BackgroundColor3 = theme.selection,
+			BackgroundTransparency = if isHovered or isDragging then colors.accent.Transparency else 1,
+			BackgroundColor3 = colors.accent.Color3,
 		}),
 	})
 end
