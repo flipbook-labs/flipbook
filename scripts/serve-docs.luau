@@ -1,4 +1,6 @@
-local run = require("@scripts/lib/run")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+
+local run = FlipbookBatteries.run
 
 run("npm", {
 	"install",

@@ -1,6 +1,9 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
-local run = require("@scripts/lib/run")
+
+local run = FlipbookBatteries.run
 
 local function clean()
 	run("rm", { "-rf", `{project.BUILD_PATH}` })

@@ -1,5 +1,7 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local project = require("@repo/project")
-local run = require("@scripts/lib/run")
+
+local run = FlipbookBatteries.run
 
 local globalDefsPath = "globalTypes.d.luau"
 

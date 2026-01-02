@@ -5,6 +5,7 @@ local BuildInfo = require("@root/About/BuildInfo")
 local RobloxProfile = require("@root/About/RobloxProfile")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+local useColors = require("@root/Common/useColors")
 
 local useTokens = Foundation.Hooks.useTokens
 local useMemo = React.useMemo
@@ -16,6 +17,7 @@ local AUTHOR_USER_IDS = {
 
 local function AboutView()
 	local tokens = useTokens()
+	local colors = useColors()
 	local currentYear = useMemo(function()
 		return (DateTime.now():ToUniversalTime() :: any).Year
 	end, {})
@@ -50,6 +52,7 @@ local function AboutView()
 			Icon = React.createElement(Foundation.Image, {
 				LayoutOrder = nextLayoutOrder(),
 				Image = constants.GITHUB_LOGO,
+				imageStyle = colors.github,
 				Size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
 			}),
 

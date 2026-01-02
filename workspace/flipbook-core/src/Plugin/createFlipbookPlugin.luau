@@ -4,6 +4,13 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local logger = require("@root/logger")
+
+local function stopwatch(callback: () -> ()): string
+	local start = os.clock()
+	callback()
+	return ("%.2fms"):format((os.clock() - start) * 1000)
+end
 
 local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
@@ -19,21 +26,31 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	})
 
 	local function unmount()
+		logger:Info("unmounting app...")
+		local elapsedMs = stopwatch(function()
+			root:unmount()
+		end)
+		logger:Info(`unmounted app in {elapsedMs}`)
+
 		task.spawn(function()
 			fireEventAsync({
 				eventName = "AppClosed",
 			})
 		end)
-		root:unmount()
 	end
 
 	local function mount()
+		logger:Info("mounting app...")
+		local elapsedMs = stopwatch(function()
+			root:render(app)
+		end)
+		logger:Info(`mounted app in {elapsedMs}`)
+
 		task.spawn(function()
 			fireEventAsync({
 				eventName = "AppOpened",
 			})
 		end)
-		root:render(app)
 	end
 
 	if button ~= nil then
@@ -68,10 +85,15 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	end
 
 	local function destroy()
-		unmount()
-		for _, connection in connections do
-			connection:Disconnect()
-		end
+		logger:Info("destroying app...")
+		local elapsedMs = stopwatch(function()
+			unmount()
+
+			for _, connection in connections do
+				connection:Disconnect()
+			end
+		end)
+		logger:Info(`destroyed app in {elapsedMs}`)
 	end
 
 	return {
