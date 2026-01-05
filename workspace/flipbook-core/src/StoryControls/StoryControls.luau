@@ -1,25 +1,19 @@
 local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
+local StoryControlRow = require("@root/StoryControls/StoryControlRow")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local useSortedControls = require("@root/Storybook/useSortedControls")
+local types = require("@root/StoryControls/types")
+local useSortedControls = require("@root/StoryControls/useSortedControls")
 
-local Checkbox = Foundation.Checkbox
 local Divider = Foundation.Divider
-local Dropdown = Foundation.Dropdown
-local InputSize = Foundation.Enums.InputSize
-local NumberInput = Foundation.NumberInput
 local ScrollView = Foundation.ScrollView
 local Text = Foundation.Text
-local TextInput = Foundation.TextInput
 local View = Foundation.View
 local useTokens = Foundation.Hooks.useTokens
 local withCommonProps = Foundation.Utility.withCommonProps
-
-local Array = LuauPolyfill.Array
 
 local e = React.createElement
 local useState = React.useState
@@ -27,8 +21,8 @@ local useState = React.useState
 local useSignalState = ReactSignals.useSignalState
 
 type StoryControlsProps = {
+	controlsSchema: types.StoryControlsSchema,
 	controls: { [string]: any },
-	modifiedControls: { [string]: any },
 	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
 
@@ -44,99 +38,18 @@ local function StoryControls(props: StoryControlsProps)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local sortedControls = useSortedControls(props.controls)
+	local sortedControls = useSortedControls(props.controlsSchema)
 	local pendingControl, setPendingControl = useState(nil :: string?)
 	local controlElements: { [string]: React.ReactNode } = {}
 
 	for index, control in sortedControls do
-		local function setControl(newValue: any)
-			local newValueAsNumber = tonumber(newValue)
-
-			if newValueAsNumber ~= nil then
-				newValue = newValueAsNumber
-			end
-
-			props.setControl(control.key, newValue)
-		end
-
-		local controlType = typeof(control.value)
-		local controlInput: React.ReactNode = nil
-
-		if controlType == "boolean" then
-			controlInput = e(Checkbox, {
-				isChecked = control.value,
-				label = "",
-				onActivated = setControl,
-				size = InputSize.Small,
-			})
-		elseif controlType == "number" then
-			controlInput = e(NumberInput, {
-				label = "",
-				onChanged = setControl,
-				size = InputSize.Small,
-				step = 1,
-				value = control.value,
-				width = UDim.new(1, 0),
-			})
-		elseif controlType == "string" then
-			controlInput = e(TextInput, {
-				label = "",
-				onChanged = function(newText)
-					setPendingControl(newText)
-				end,
-				onFocusLost = function()
-					setControl(pendingControl)
-				end,
-				onReturnPressed = function()
-					setControl(pendingControl)
-				end,
-				text = control.value,
-				size = InputSize.Small,
-				width = UDim.new(1, 0),
-			})
-		elseif controlType == "table" and Array.isArray(control.value) then
-			local changedValue = props.modifiedControls[control.key]
-			local controlItems = Array.map(control.value, function(value): Foundation.DropdownItem
-				return {
-					id = value,
-					text = tostring(value),
-				}
-			end)
-
-			controlInput = e(Dropdown.Root, {
-				items = controlItems,
-				label = "",
-				onItemChanged = setControl,
-				size = InputSize.Small,
-				value = if changedValue ~= nil then changedValue else control.value[1],
-				width = UDim.new(1, 0),
-			})
-		end
-
 		controlElements[control.key] = e(View, {
 			LayoutOrder = index,
 			tag = "auto-y col size-full-0",
 		}, {
-			Content = e(View, {
+			Row = e(StoryControlRow, {
+				control = control,
 				LayoutOrder = 1,
-				tag = "align-y-center auto-y gap-medium padding-medium row size-full-0",
-			}, {
-				Title = e(Text, {
-					LayoutOrder = 1,
-					Size = UDim2.fromScale(0.2, 0),
-					Text = control.key,
-					tag = "auto-y text-align-x-left text-label-medium",
-				}),
-
-				Option = e(View, {
-					LayoutOrder = 2,
-					tag = "align-x-left auto-y fill row",
-				}, {
-					-- Keying by the identity of sortedControls fixes a bug where
-					-- the options visually do not update when two stories have the
-					-- exact same controls.
-					[`Option_{sortedControls}`] = controlInput,
-				}),
 			}),
 
 			Divider = index < #sortedControls and e(Divider, {

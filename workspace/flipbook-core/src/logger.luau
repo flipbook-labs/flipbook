@@ -21,7 +21,7 @@ local sinks = {
 	end),
 }
 
-if _G.ENABLE_OUTPUT_LOGGING then
+if _G.ENABLE_OUTPUT_LOGGING == "true" then
 	table.insert(sinks, Log.Common.RobloxLogSink())
 end
 

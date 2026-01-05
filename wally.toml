@@ -18,6 +18,7 @@ sha256 = "dekkonot/sha256@1.0.1"
 Sift = "csqrl/sift@0.0.8"
 Storyteller = "flipbook-labs/storyteller@1.5.0"
 t = "osyrisrblx/t@3.0.0"
+UILabs = "pepeeltoro41/ui-labs@2.4.2"
 
 # dev dependencies
 Fusion = "elttob/fusion@0.2.0"
