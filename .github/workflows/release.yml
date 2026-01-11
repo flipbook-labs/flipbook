@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: lute scripts/install.luau
 
+      - name: Create .env
+        run: cp .env.template .env
+
       - name: Build
         run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
 
@@ -58,6 +61,9 @@ jobs:
       - name: Install dependencies
         run: lute scripts/install.luau
 
+      - name: Create .env
+        run: cp .env.template .env
+
       - name: Publish release to Creator Store
         run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
@@ -80,6 +86,9 @@ jobs:
 
       - name: Install dependencies
         run: lute scripts/install.luau
+
+      - name: Create .env
+        run: cp .env.template .env
 
       - name: Publish nightly build to Creator Store
         run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
