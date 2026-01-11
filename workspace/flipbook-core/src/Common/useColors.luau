@@ -10,8 +10,6 @@ local useMemo = React.useMemo
 local function useColors()
 	local tokens = useTokens()
 
-	print(tokens.Config.Theme.Name)
-
 	local colors = useMemo(function()
 		return {
 			accent = tokens.Color.Extended.Purple.Purple_700,
