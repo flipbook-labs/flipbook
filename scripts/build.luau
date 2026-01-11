@@ -82,7 +82,7 @@ end
 -- get their `.env` file in order
 if not process.env.BASE_URL then
 	error(table.concat({
-		"One or more critical environment variables is not set.",
+		"One or more critical environment variables are not set.",
 		"Please make sure to copy `.env.template` to `.env`. If you already have a `.env` file, make sure the environment variables from the template match your local copy",
 	}, "\n\n"))
 end
