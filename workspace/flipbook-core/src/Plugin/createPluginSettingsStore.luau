@@ -37,34 +37,44 @@ local function createPluginSettingsStore<T>(
 	local function readPluginSettingsAsync(plugin: Plugin): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
 
-		local data = plugin:GetSetting(storageKey)
+		local data
+		local success, err = pcall(function()
+			data = plugin:GetSetting(storageKey)
+		end)
 
-		logger:Debug(`read raw plugin settings for {storageKey}:`, data)
+		if success then
+			logger:Info(`read raw plugin settings for {storageKey}:`, data)
+		else
+			logger:Warn(`failed to read plugin settings for {storageKey}: {err}`)
+			setErr(err)
+			return nil
+		end
 
 		if typeof(data) == "string" then
 			logger:Info(`deserializing plugin settings for {storageKey} to object...`)
 
-			local success, result = pcall(function()
-				return HttpService:JSONDecode(data)
+			local json
+			success, err = pcall(function()
+				json = HttpService:JSONDecode(data)
 			end)
 
 			if not success then
-				logger:Warn(`failed to load plugin settings for {storageKey}:`, result)
-				setErr(result)
+				logger:Warn(`failed to load plugin settings for {storageKey}: {err}`)
+				setErr(err)
 				return nil
 			end
 
-			local isValid, message = validate(result)
+			success, err = validate(json)
 
-			if not isValid then
-				logger:Warn(`plugin settings are malformed for {storageKey}:`, message)
-				setErr(message)
+			if not success then
+				logger:Warn(`plugin settings are malformed for {storageKey}: {err}`)
+				setErr(err)
 				return nil
 			end
 
-			logger:Info(`got plugin settings for {storageKey}:`, result)
+			logger:Info(`got plugin settings for {storageKey}:`, json)
 
-			return result
+			return json
 		end
 
 		logger:Info("no plugin settings to read")
@@ -74,10 +84,21 @@ local function createPluginSettingsStore<T>(
 
 	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
 		logger:Info("writing plugin settings to disk...")
-		local data = HttpService:JSONEncode(storage)
+		local data
+		local success, err = pcall(function()
+			data = HttpService:JSONEncode(storage)
+		end)
+
+		if success then
+			logger:Info(`parsed storage value into JSON: {data}`)
+		else
+			logger:Warn(`failed to parse storage value into JSON: {err}`)
+			setErr(err)
+			return
+		end
 
 		if data then
-			local success, err = pcall(function()
+			success, err = pcall(function()
 				plugin:SetSetting(storageKey, data)
 			end)
 
