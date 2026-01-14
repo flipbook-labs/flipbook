@@ -32,6 +32,7 @@ local function createPluginSettingsStore<T>(
 	local getStorage, setStorage = Signals.createSignal(defaultValue)
 	local getIsLoading, setIsLoading = Signals.createSignal(true)
 	local getErr, setErr = Signals.createSignal(nil :: string?)
+	local isInitialized = false
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
@@ -94,7 +95,7 @@ local function createPluginSettingsStore<T>(
 		local plugin = PluginStore.get(scope).getPlugin(scope)
 
 		if plugin then
-			if getIsLoading(false) then
+			if getIsLoading(false) and not isInitialized then
 				task.spawn(function()
 					local data = readPluginSettingsAsync(plugin)
 					if data then
@@ -102,6 +103,7 @@ local function createPluginSettingsStore<T>(
 					end
 					logger:Debug("finished loading plugin settings")
 					setIsLoading(false)
+					isInitialized = true
 				end)
 			end
 
