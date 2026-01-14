@@ -11,6 +11,9 @@
     "flipbook-core": {
       "$path": "flipbook-core"
     },
+    "flipbook-next": {
+      "$path": "flipbook-next"
+    },
     "template": {
       "$path": "template"
     },

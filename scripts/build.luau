@@ -77,6 +77,16 @@ local function getCommitHash()
 	return commitHash
 end
 
+-- This environment variable comes from `.env` and is required to be set. This
+-- condition just makes sure if it's _not_ set that the user will then go and
+-- get their `.env` file in order
+if not process.env.BASE_URL then
+	error(table.concat({
+		"One or more critical environment variables are not set.",
+		"Please make sure to copy `.env.template` to `.env`. If you already have a `.env` file, make sure the environment variables from the template match your local copy",
+	}, "\n\n"))
+end
+
 local context: BuildContext = {
 	channel = channel,
 	target = target,

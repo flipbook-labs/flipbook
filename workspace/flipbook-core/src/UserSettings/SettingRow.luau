@@ -5,7 +5,7 @@ local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
-local useTheme = require("@root/Common/useTheme")
+local useColors = require("@root/Common/useColors")
 
 local useSignalState = SignalsReact.useSignalState
 local useCallback = React.useCallback
@@ -20,7 +20,7 @@ export type Props = {
 }
 
 local function SettingRow(props: Props)
-	local theme = useTheme()
+	local colors = useColors()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -82,10 +82,7 @@ local function SettingRow(props: Props)
 		ChangedIndicator = if hasBeenChanged
 			then React.createElement(Foundation.View, {
 				tag = "size-50-full",
-				backgroundStyle = {
-					Color3 = theme.selection,
-					Transparency = 0,
-				},
+				backgroundStyle = colors.accent,
 			})
 			else nil,
 
