@@ -1,19 +1,21 @@
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
-local ControlType = require("@root/StoryControls/Enums/ControlType")
-local types = require("@root/StoryControls/types")
-
-type StoryControl = types.StoryControl
+local ControlType = Storyteller.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback
+local useRef = React.useRef
 
 local Array = LuauPolyfill.Array
 
 export type Props = {
-	control: StoryControl,
+	controlName: string,
+	control: Storyteller.StoryControl,
+	controls: Storyteller.StoryControls,
+	setControl: (key: string, value: any) -> (),
 	LayoutOrder: number?,
 }
 
@@ -25,17 +27,17 @@ local function StoryControlRow(props: Props)
 			newValue = newValueAsNumber
 		end
 
-		props.setControl(props.control.key, newValue)
-	end, {})
+		props.setControl(props.controlName, newValue)
+	end, { props.controlName })
 
-	local controlType = props.control.control
+	local pendingValue = useRef(nil :: unknown?)
 
-	print("controlType", controlType)
+	local controlType = props.control.type
 
 	local controlElement: React.Node
 	if controlType == ControlType.Boolean then
 		controlElement = e(Foundation.Checkbox, {
-			isChecked = props.control.value,
+			isChecked = props.control.default,
 			label = "",
 			onActivated = setControl,
 			size = Foundation.Enums.InputSize.Small,
@@ -46,22 +48,22 @@ local function StoryControlRow(props: Props)
 			onChanged = setControl,
 			size = Foundation.Enums.InputSize.Small,
 			step = 1,
-			value = props.control.value,
+			value = props.control.default,
 			width = UDim.new(1, 0),
 		})
 	elseif controlType == ControlType.String then
 		controlElement = e(Foundation.TextInput, {
 			label = "",
 			onChanged = function(newText)
-				setPendingControl(newText)
+				pendingValue.current = newText
 			end,
 			onFocusLost = function()
-				setControl(pendingControl)
+				setControl(pendingValue.current)
 			end,
 			onReturnPressed = function()
-				setControl(pendingControl)
+				setControl(pendingValue.current)
 			end,
-			text = props.control.value,
+			text = props.control.default,
 			size = Foundation.Enums.InputSize.Small,
 			width = UDim.new(1, 0),
 		})
@@ -71,8 +73,8 @@ local function StoryControlRow(props: Props)
 	elseif controlType == ControlType.MultiSelect then
 	elseif controlType == ControlType.Radio then
 	elseif controlType == ControlType.Select then
-		local changedValue = props.controls[props.control.key]
-		local controlItems = Array.map(props.control.value, function(value): Foundation.DropdownItem
+		local changedValue = props.controls[props.controlName]
+		local controlItems = Array.map(props.control.default, function(value): Foundation.DropdownItem
 			return {
 				id = value,
 				text = tostring(value),
@@ -84,7 +86,7 @@ local function StoryControlRow(props: Props)
 			label = "",
 			onItemChanged = setControl,
 			size = Foundation.Enums.InputSize.Small,
-			value = if changedValue ~= nil then changedValue else props.control.value[1],
+			value = if changedValue ~= nil then changedValue else props.control.default,
 			width = UDim.new(1, 0),
 		})
 	elseif controlType == ControlType.Slider then
@@ -101,7 +103,7 @@ local function StoryControlRow(props: Props)
 			Title = e(Foundation.Text, {
 				LayoutOrder = 1,
 				Size = UDim2.fromScale(0.2, 0),
-				Text = props.control.key,
+				Text = props.controlName,
 				tag = "auto-y text-align-x-left text-label-medium",
 			}),
 

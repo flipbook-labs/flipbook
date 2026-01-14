@@ -33,22 +33,7 @@ local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook)
 	local theme = useThemeName()
 
-	local modifiedControls, setModifiedControls = useState({})
-	local controls = useMemo(function()
-		local newControls = {}
-
-		if story ~= nil and story.controls ~= nil then
-			for key, value in story.controls do
-				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
-					newControls[key] = modifiedControls[key]
-				else
-					newControls[key] = value
-				end
-			end
-		end
-
-		return newControls
-	end, { story, modifiedControls } :: { any })
+	local controls, setControls = useState({} :: Storyteller.StoryControls)
 
 	local extraProps = useMemo(function()
 		return {
@@ -58,7 +43,7 @@ local function StoryView(props: StoryViewProps)
 	end, { theme } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
-		setModifiedControls(function(currentValue)
+		setControls(function(currentValue)
 			return Object.assign({}, currentValue, {
 				[key] = value,
 			})
@@ -66,7 +51,7 @@ local function StoryView(props: StoryViewProps)
 	end, {})
 
 	useEffect(function()
-		setModifiedControls({})
+		setControls({})
 	end, { story })
 
 	return e(View, {
@@ -118,10 +103,10 @@ local function StoryView(props: StoryViewProps)
 				}),
 			}),
 
-			Controls = next(controls) ~= nil and e(StoryControls, {
+			Controls = story.controls ~= nil and e(StoryControls, {
 				LayoutOrder = 4,
-				controlsSchema = controls,
-				controls = modifiedControls,
+				controlsSchema = story.controls,
+				controls = controls,
 				setControl = setControl,
 			}),
 		}),

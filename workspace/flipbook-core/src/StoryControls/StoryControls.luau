@@ -1,11 +1,12 @@
-local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
+
+local Constants = require("@root/constants")
 local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local StoryControlRow = require("@root/StoryControls/StoryControlRow")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local types = require("@root/StoryControls/types")
 local useSortedControls = require("@root/StoryControls/useSortedControls")
 
 local Divider = Foundation.Divider
@@ -16,13 +17,13 @@ local useTokens = Foundation.Hooks.useTokens
 local withCommonProps = Foundation.Utility.withCommonProps
 
 local e = React.createElement
-local useState = React.useState
+local useMemo = React.useMemo
 
 local useSignalState = ReactSignals.useSignalState
 
 type StoryControlsProps = {
-	controlsSchema: types.StoryControlsSchema,
-	controls: { [string]: any },
+	controlsSchema: Storyteller.StoryControlsSchema,
+	controls: Storyteller.StoryControls,
 	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
 
@@ -39,23 +40,46 @@ local function StoryControls(props: StoryControlsProps)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local sortedControls = useSortedControls(props.controlsSchema)
-	local pendingControl, setPendingControl = useState(nil :: string?)
 	local controlElements: { [string]: React.ReactNode } = {}
 
-	for index, control in sortedControls do
-		controlElements[control.key] = e(View, {
-			LayoutOrder = index,
-			tag = "auto-y col size-full-0",
-		}, {
-			Row = e(StoryControlRow, {
-				control = control,
-				LayoutOrder = 1,
-			}),
+	local sortedControlNames = useMemo(function()
+		local names: { string } = {}
+		for name in props.controlsSchema do
+			table.insert(names, name)
+		end
+		table.sort(names)
+		return names
+	end, { props.controlsSchema })
 
-			Divider = index < #sortedControls and e(Divider, {
-				LayoutOrder = 2,
-			}),
-		})
+	print(sortedControlNames)
+
+	for index, name in sortedControlNames do
+		local control: (Storyteller.StoryControl | Storyteller.StoryControlValue)? = props.controlsSchema[name]
+
+		-- TODO: Properly handle when we get a StoryControlValue back. This is
+		-- just to clear the type error for now
+		if typeof(control) ~= "table" then
+			continue
+		end
+
+		if control then
+			controlElements[name] = e(View, {
+				LayoutOrder = index,
+				tag = "auto-y col size-full-0",
+			}, {
+				Row = e(StoryControlRow, {
+					controlName = name,
+					control = control,
+					setControl = props.setControl,
+					controls = props.controls,
+					LayoutOrder = 1,
+				}),
+
+				Divider = index < #sortedControls and e(Divider, {
+					LayoutOrder = 2,
+				}),
+			})
+		end
 	end
 
 	return e(
