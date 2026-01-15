@@ -62,24 +62,22 @@ local function StoryControls(props: StoryControlsProps)
 			continue
 		end
 
-		if control then
-			controlElements[name] = e(View, {
-				LayoutOrder = index,
-				tag = "auto-y col size-full-0",
-			}, {
-				Row = e(StoryControlRow, {
-					controlName = name,
-					control = control,
-					setControl = props.setControl,
-					controls = props.controls,
-					LayoutOrder = 1,
-				}),
+		controlElements[name] = e(View, {
+			LayoutOrder = index,
+			tag = "auto-y col size-full-0",
+		}, {
+			Row = e(StoryControlRow, {
+				controlName = name,
+				control = control,
+				setControl = props.setControl,
+				controls = props.controls,
+				LayoutOrder = 1,
+			}),
 
-				Divider = index < #sortedControls and e(Divider, {
-					LayoutOrder = 2,
-				}),
-			})
-		end
+			Divider = index < #sortedControls and e(Divider, {
+				LayoutOrder = 2,
+			}),
+		})
 	end
 
 	return e(
