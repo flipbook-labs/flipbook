@@ -9,6 +9,7 @@ local function runTests()
 	local status, result = Jest.runCLI(root, {
 		verbose = false,
 		ci = false,
+		testPathPattern = _G.__JEST_TEST_PATH_PATTERN__,
 	}, { root }):awaitStatus()
 
 	if status == "Rejected" then
