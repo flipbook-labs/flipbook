@@ -6,11 +6,15 @@ local BooleanControl = require("@root/StoryControls/ControlElements/BooleanContr
 local CheckControl = require("@root/StoryControls/ControlElements/CheckControl")
 local ColorControl = require("@root/StoryControls/ControlElements/ColorControl")
 local DateControl = require("@root/StoryControls/ControlElements/DateControl")
+local MultiSelectControl = require("@root/StoryControls/ControlElements/MultiSelectControl")
 local NumberControl = require("@root/StoryControls/ControlElements/NumberControl")
+local RadioControl = require("@root/StoryControls/ControlElements/RadioControl")
 local SelectControl = require("@root/StoryControls/ControlElements/SelectControl")
+local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
 
 local ControlType = Storyteller.ControlType
+type ControlType = Storyteller.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback
@@ -80,7 +84,17 @@ local function StoryControlRow(props: Props)
 			onChanged = setControl,
 		})
 	elseif controlType == ControlType.MultiSelect then
+		controlElement = e(MultiSelectControl, {
+			controlSchema = props.control :: Storyteller.CheckControl,
+			controlValue = controlValue :: { Storyteller.StoryControlValue },
+			onChanged = setControl,
+		})
 	elseif controlType == ControlType.Radio then
+		controlElement = e(RadioControl, {
+			controlSchema = props.control :: Storyteller.SelectControl,
+			controlValue = controlValue :: Storyteller.StoryControlValue,
+			onChanged = setControl,
+		})
 	elseif controlType == ControlType.Select then
 		controlElement = e(SelectControl, {
 			controlSchema = props.control :: Storyteller.SelectControl,
@@ -88,6 +102,11 @@ local function StoryControlRow(props: Props)
 			onChanged = setControl,
 		})
 	elseif controlType == ControlType.Slider then
+		controlElement = e(SliderControl, {
+			controlSchema = props.control :: Storyteller.NumberControl,
+			controlValue = controlValue :: number,
+			onChanged = setControl,
+		})
 	end
 
 	return e(Foundation.View, {
