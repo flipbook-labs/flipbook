@@ -27,7 +27,7 @@ local function CheckControl(props: Props)
 
 	local checkboxes: { [string]: React.Node } = {}
 	for index, item in props.controlSchema.items do
-		local isChecked = table.find(props.controlSchema.items, item) ~= nil
+		local isChecked = table.find(props.controlValue, item) ~= nil
 
 		checkboxes[`{item}{index}`] = e(Foundation.Checkbox, {
 			isChecked = isChecked,
