@@ -6,6 +6,7 @@ local Storyteller = require("@pkg/Storyteller")
 local e = React.createElement
 local useCallback = React.useCallback
 local useMemo = React.useMemo
+local useState = React.useState
 
 export type Props = {
 	controlSchema: Storyteller.SelectControl,
@@ -13,21 +14,50 @@ export type Props = {
 	onChanged: (nextValue: Storyteller.StoryControlValue) -> (),
 }
 
-local function SelectControl(props: Props)
-	local controlItems = useMemo(function()
-		return Sift.List.map(props.controlSchema.items, function(value): Foundation.DropdownItem
-			return {
-				id = tostring(value),
-				text = if props.controlSchema.tostring then props.controlSchema.tostring(value) else tostring(value),
-				isChecked = props.controlValue == value,
-			}
-		end)
-	end, { props.controlSchema, props.controlValue } :: { unknown })
+type ItemId = number | string
 
-	local onItemChanged = useCallback(function() end, {})
+local function getItemId(item: unknown): ItemId
+	return tostring(item)
+end
+
+local function SelectControl(props: Props)
+	local activeItemId, setActiveItemId = useState(nil :: ItemId?)
+
+	local itemIdToValue = useMemo(function(): { [ItemId]: Storyteller.StoryControlValue }
+		local map = {}
+		for _, value in props.controlSchema.items do
+			map[getItemId(value)] = value
+		end
+		return map
+	end, { props.controlSchema.items } :: { unknown })
+
+	local items: { Foundation.DropdownItem } = useMemo(function()
+		return Sift.List.map(props.controlSchema.items, function(value)
+			local id = getItemId(value)
+			local isChecked = activeItemId == id
+
+			local item: Foundation.DropdownItem = {
+				id = id,
+				text = if typeof(props.controlSchema.tostring) == "function"
+					then props.controlSchema.tostring(value)
+					else tostring(value),
+				isChecked = isChecked,
+			}
+
+			return item
+		end)
+	end, { props.controlSchema, activeItemId } :: { unknown })
+
+	local onItemChanged = useCallback(function(itemId)
+		setActiveItemId(function(prev)
+			return if itemId ~= prev then itemId else nil
+		end)
+
+		props.onChanged(itemIdToValue[itemId])
+	end, { props.onChanged, itemIdToValue } :: { unknown })
 
 	return e(Foundation.Dropdown.Root, {
-		items = controlItems,
+		items = items,
 		label = "",
 		onItemChanged = onItemChanged,
 		value = tostring(props.controlValue),

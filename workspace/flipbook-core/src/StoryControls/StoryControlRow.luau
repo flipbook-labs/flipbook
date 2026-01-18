@@ -36,7 +36,7 @@ local function StoryControlRow(props: Props)
 		end
 
 		props.setControl(props.controlName, newValue)
-	end, { props.controlName })
+	end, { props.controlName, props.setControl } :: { unknown })
 
 	local controlType = props.control.type
 	local controlValue: (Storyteller.StoryControlValue | { Storyteller.StoryControlValue })? =
