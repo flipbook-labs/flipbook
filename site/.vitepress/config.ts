@@ -5,6 +5,7 @@ export default defineConfig({
 	title: "Flipbook",
 	description: "Storybook plugin for Roblox UI",
 	srcDir: "./src",
+	assetsDir: "./static",
 
 	cleanUrls: true,
 
