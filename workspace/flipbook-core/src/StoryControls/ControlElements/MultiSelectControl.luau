@@ -20,7 +20,9 @@ local function MultiSelectControl(props: Props)
 
 			return {
 				id = tostring(value),
-				text = if props.controlSchema.tostring then props.controlSchema.tostring(value) else tostring(value),
+				text = if typeof(props.controlSchema.tostring) == "function"
+					then props.controlSchema.tostring(value)
+					else tostring(value),
 				isChecked = isChecked,
 			}
 		end)
