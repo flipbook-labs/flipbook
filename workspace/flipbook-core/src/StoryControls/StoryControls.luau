@@ -51,7 +51,7 @@ local function StoryControls(props: StoryControlsProps)
 		return names
 	end, { props.controlsSchema })
 
-	print(sortedControlNames)
+	local hydratedControls = Storyteller.hydrateControls(props.controlsSchema, props.controls)
 
 	for index, name in sortedControlNames do
 		local control: (Storyteller.StoryControl | Storyteller.StoryControlValue)? = props.controlsSchema[name]
@@ -70,7 +70,7 @@ local function StoryControls(props: StoryControlsProps)
 				controlName = name,
 				control = control,
 				setControl = props.setControl,
-				controls = props.controls,
+				controls = hydratedControls,
 				LayoutOrder = 1,
 			}),
 

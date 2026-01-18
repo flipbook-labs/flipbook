@@ -38,10 +38,6 @@ local function StoryControlRow(props: Props)
 		props.setControl(props.controlName, newValue)
 	end, { props.controlName })
 
-	-- TODO: I think we need hydrateControls so we can use the same defaults
-	-- here as StoryContainer
-	print("props.controls", props.controls)
-
 	local controlType = props.control.type
 	local controlValue: (Storyteller.StoryControlValue | { Storyteller.StoryControlValue })? =
 		props.controls[props.controlName]
