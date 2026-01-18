@@ -11,7 +11,7 @@ local useState = React.useState
 
 return {
 	summary = "Panel for configuring the controls of a story",
-	story = function()
+	story = function(props)
 		local controls, setControls = useState({} :: Storyteller.StoryControls)
 
 		local setControl = useCallback(function(key: string, value: any)
@@ -76,6 +76,7 @@ return {
 
 		return React.createElement(ContextProviders, {
 			plugin = MockPlugin.new() :: any,
+			overlayGui = props.container,
 		}, {
 			StoryControls = React.createElement(StoryControls, {
 				controlsSchema = controlsSchema,
