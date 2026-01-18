@@ -8,7 +8,7 @@ local useState = React.useState
 
 export type Props = {
 	controlSchema: Storyteller.StringControl,
-	controlValue: string,
+	controlValue: string?,
 	onChanged: (nextValue: string) -> (),
 }
 
@@ -18,14 +18,15 @@ local function StringControl(props: Props)
 	local onSubmit = useCallback(function()
 		props.onChanged(pendingValue)
 		setPendingValue("")
-	end, { props.onChanged })
+	end, { props.onChanged, pendingValue } :: { unknown })
 
 	return e(Foundation.TextInput, {
 		label = "",
 		onChanged = setPendingValue,
 		onFocusLost = onSubmit,
 		onReturnPressed = onSubmit,
-		text = props.controlValue,
+		text = if props.controlValue then props.controlValue else "",
+		placeholder = "Enter text...",
 		size = Foundation.Enums.InputSize.Small,
 		width = UDim.new(1, 0),
 	})
