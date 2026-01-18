@@ -3,7 +3,7 @@ local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
-local StoryControls = require("@root/StoryControls/StoryControls")
+local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local useThemeName = require("@root/Common/useThemeName")
@@ -103,7 +103,7 @@ local function StoryView(props: StoryViewProps)
 				}),
 			}),
 
-			Controls = story.controls ~= nil and e(StoryControls, {
+			Controls = story.controls ~= nil and e(StoryControlsPanel, {
 				LayoutOrder = 4,
 				controlsSchema = story.controls,
 				controls = controls,
