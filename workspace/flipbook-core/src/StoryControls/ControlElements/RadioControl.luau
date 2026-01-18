@@ -13,8 +13,12 @@ export type Props = {
 local function RadioControl(props: Props)
 	local children: { [string]: React.Node } = {}
 	for _, item in props.controlSchema.items do
+		local value = if typeof(props.controlSchema.tostring) == "function"
+			then props.controlSchema.tostring(item)
+			else tostring(item)
+
 		children[tostring(item)] = e(Foundation.RadioGroup.Item, {
-			value = tostring(item),
+			value = value,
 		})
 	end
 

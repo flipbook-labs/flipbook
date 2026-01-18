@@ -68,6 +68,13 @@ return {
 			sortDirection = Storyteller.createRadioControl({
 				Enum.SortDirection.Ascending,
 				Enum.SortDirection.Descending,
+			}, {
+				tostring = function(item)
+					if typeof(item) == "EnumItem" then
+						return item.Name
+					end
+					return tostring(item)
+				end,
 			}),
 
 			color = Storyteller.createColorControl(),
