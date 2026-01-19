@@ -43,8 +43,8 @@
     },
     {
       "rule": "inject_global_value",
-      "identifier": "__JEST_TEST_PATH_PATTERN__",
-      "env": "__JEST_TEST_PATH_PATTERN__"
+      "identifier": "JEST_TEST_PATH_PATTERN",
+      "env": "JEST_TEST_PATH_PATTERN"
     },
     "compute_expression",
     "remove_unused_if_branch",
