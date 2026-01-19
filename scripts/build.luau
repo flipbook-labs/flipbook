@@ -1,6 +1,7 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
+local json = require("@std/json")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
 local richterm = require("@luaupkg/batteries/richterm")
@@ -40,9 +41,8 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
-args:add("plugin", "flag", {
-	help = "Builds an rbxm of the plugin to Roblox Studio's plugins folder",
-	aliases = { "p" },
+args:add("skip-plugin", "flag", {
+	help = "Skip building the rbxm of the plugin to Roblox Studio's plugins folder",
 })
 args:add("clean", "flag", {
 	help = "Performs a full rebuild of the project",
@@ -91,7 +91,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/plugin`,
+	dest = `{process.cwd()}/{project.BUILD_PATH}/{target}/{channel}/bundle`,
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -103,13 +103,31 @@ local context: BuildContext = {
 }
 
 local function buildPluginBinary()
+	if args:has("skip-plugin") then
+		return
+	end
+
 	buildSystem.runBuildGroupAsync({
 		name = "🔌 plugin binary",
 		paths = { context.dest },
 		context = context,
 		step = function()
+			local rojoProject = {
+				name = "Flipbook",
+				tree = {
+					["$path"] = context.dest,
+				},
+			}
+
+			local projectPath = `{context.dest}/../default.project.json`
+			local handle = fs.open(projectPath, "w+")
+			fs.write(handle, json.serialize(rojoProject))
+			fs.close(handle)
+
 			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", "-o", dest })
+			run("rojo", { "build", projectPath, "-o", dest })
+
+			fs.remove(projectPath)
 
 			copyInto(dest, output)
 		end,
@@ -124,9 +142,7 @@ local function build()
 	buildSystem.compileAsync(context)
 	buildSystem.writeBuildCacheAsync(context.cache)
 
-	if args:has("plugin") then
-		buildPluginBinary()
-	end
+	buildPluginBinary()
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
@@ -140,9 +156,7 @@ if args:has("watch") then
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
 
-			if args:has("plugin") then
-				buildPluginBinary()
-			end
+			buildPluginBinary()
 		else
 			build()
 		end
