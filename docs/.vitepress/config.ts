@@ -19,8 +19,8 @@ export default defineConfig({
 
 	themeConfig: {
 		logo: {
-			light: "/img/logo.svg",
-			dark: "/img/logo.svg",
+			light: "/logo.svg",
+			dark: "/logo.svg",
 		},
 
 		nav: [
