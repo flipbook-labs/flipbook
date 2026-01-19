@@ -11,7 +11,7 @@ hero:
       link: /install
     - theme: alt
       text: Read the Docs
-      link: /api-examples
+      link: /intro
 
 features:
   - title: Isolate your UI

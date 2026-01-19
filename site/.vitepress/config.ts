@@ -8,6 +8,7 @@ export default defineConfig({
 	assetsDir: "./static",
 
 	cleanUrls: true,
+	lastUpdated: true,
 
 	markdown: {
 		theme: {
@@ -17,15 +18,27 @@ export default defineConfig({
 	},
 
 	themeConfig: {
-		// https://vitepress.dev/reference/default-theme-config
+		logo: "/img/favicon.ico",
+
 		nav: [
-			{ text: "Home", link: "/" },
-			{ text: "Examples", link: "/markdown-examples" },
+			{
+				text: "Home",
+				link: "/",
+			},
+			{
+				text: "Reference",
+				link: "/intro",
+			},
 			{
 				text: "Discussions",
 				link: "https://github.com/flipbook-labs/flipbook/discussions",
 			},
 		],
+
+		editLink: {
+			pattern:
+				"https://github.com/flipbook-labs/flipbook/edit/main/site/src/:path",
+		},
 
 		sidebar: [
 			{
@@ -119,7 +132,19 @@ export default defineConfig({
 		],
 
 		socialLinks: [
-			{ icon: "github", link: "https://github.com/vuejs/vitepress" },
+			{
+				icon: "github",
+				link: "https://github.com/flipbook-labs/flipbook",
+			},
 		],
+
+		search: {
+			provider: "local",
+		},
+
+		footer: {
+			// message: "Released under the MIT License.",
+			copyright: "Copyright © 2021—2026 flipbook-labs",
+		},
 	},
 });
