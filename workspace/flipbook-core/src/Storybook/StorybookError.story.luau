@@ -1,8 +1,6 @@
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
-local ContextProviders = require("@root/Common/ContextProviders")
-local MockPlugin = require("@root/Testing/MockPlugin")
 local StorybookError = require("@root/Storybook/StorybookError")
 
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -21,12 +19,8 @@ return {
 			},
 		}
 
-		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new() :: any,
-		}, {
-			StorybookError = React.createElement(StorybookError, {
-				unavailableStorybook = unavailableStorybook,
-			}),
+		return React.createElement(StorybookError, {
+			unavailableStorybook = unavailableStorybook,
 		})
 	end,
 }
