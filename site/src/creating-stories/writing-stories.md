@@ -1,16 +1,3 @@
----
-sidebar_position: 1
----
-
-import CodeBlock from "@theme/CodeBlock";
-
-import DefaultStorybook from "!!raw-loader!@site/../workspace/code-samples/src/Default/ProjectName.storybook.luau";
-import DefaultStory from "!!raw-loader!@site/../workspace/code-samples/src/Default/Button.story.luau";
-import ReactStorybook from "!!raw-loader!@site/../workspace/code-samples/src/React/React.storybook.luau";
-import ReactButton from "!!raw-loader!@site/../workspace/code-samples/src/React/ReactButton.luau";
-import ReactButtonStory from "!!raw-loader!@site/../workspace/code-samples/src/React/ReactButton.story.luau";
-import ReactButtonExplicitPackagesStory from "!!raw-loader!@site/../workspace/code-samples/src/React/ReactButtonExplicitPackages.story.luau";
-
 # Writing Stories
 
 Before Flipbook can discover your Stories, you need a Storybook. A Storybook is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project.
@@ -25,15 +12,11 @@ A Storybook can be parented anywhere in the experience. The only requirement is 
 
 The simplest Storybook looks like this:
 
-<CodeBlock language="lua" title="ProjectName.storybook.luau">
-	{DefaultStorybook}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/Default/ProjectName.storybook.luau
 
 And here's an example of a Story that renders a TextButton:
 
-<CodeBlock language="lua" title="Button.story.luau">
-	{DefaultStory}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/Default/Button.story.luau
 
 In the Flipbook plugin, opening the Button story will render out the component.
 
@@ -52,25 +35,17 @@ Flipbook also has built-in support for UI libraries like [React](/docs/framework
 
 You can tell Flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
 
-<CodeBlock language="lua" title="ReactButton.story.luau">
-	{ReactButtonExplicitPackagesStory}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/React/ReactButtonExplicitPackages.story.luau
 
 It can be tedious to supply the `packages` object in each Story module, which is why it is more common to add them globally in the Storybook so that all Stories can render with the UI library you use across your project.
 
 The following example splits out the body of the story to a ReactButton component and offloads the definition of `packages` to the Storybook:
 
-<CodeBlock language="lua" title="ReactButton.luau">
-	{ReactButton}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/React/ReactButton.luau
 
-<CodeBlock language="lua" title="ReactButton.story.luau">
-	{ReactButtonStory}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/React/ReactButton.story.luau
 
-<CodeBlock language="lua" title="ReactProject.storybook.luau">
-	{ReactStorybook}
-</CodeBlock>
+<<< @/../../workspace/code-samples/src/React/React.storybook.luau
 
 :::tip
 Stories can individually override the global `packages` so if you need to use another UI library for a particular Story, you can do that.
