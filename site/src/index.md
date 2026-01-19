@@ -30,3 +30,5 @@ features:
 	5. Direct people that want to use a Framework
 	6. Direct people that want to migrate from another plugin
 -->
+
+![Screenshot of Flipbook showing off the ButtonWithControls story](main-screenshot.png)
