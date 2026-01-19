@@ -91,7 +91,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/plugin`,
+	dest = `{process.cwd()}/{project.BUILD_PATH}/{target}/{channel}/bundle`,
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -108,8 +108,22 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
+			local rojoProject = {
+				name = "Flipbook",
+				tree = {
+					["$path"] = context.dest,
+				},
+			}
+
+			local projectPath = `{context.dest}/../default.project.json`
+			local handle = fs.open(projectPath, "w+")
+			fs.write(handle, json.serialize(rojoProject))
+			fs.close(handle)
+
 			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", "-o", dest })
+			run("rojo", { "build", projectPath, "-o", dest })
+
+			fs.remove(projectPath)
 
 			copyInto(dest, output)
 		end,
