@@ -31,7 +31,7 @@ To connect it back to Studio, these files could simply be stored in ReplicatedSt
 
 By default, Flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. Simply returning an Instance allows Flipbook to manage the creation and destruction of that Instance so you don't leak memory while working.
 
-Flipbook also has built-in support for UI libraries like [React](/docs/frameworks/react) and [Fusion](/docs/frameworks/fusion). The full list can be seen on the [Frameworks](/docs/category/frameworks) page.
+Flipbook also has built-in support for UI libraries like [React](../frameworks/react) and [Fusion](../frameworks/fusion).
 
 You can tell Flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
 

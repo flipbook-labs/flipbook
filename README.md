@@ -5,12 +5,11 @@
 [![Discord Thread](https://img.shields.io/badge/%20-Discord%20Thread-%235865F2?logo=discord&logoColor=fff)](https://discord.com/channels/385151591524597761/1063913358740443336/1063913358740443336)
 [![DevForum Thread](https://img.shields.io/badge/%20-DevForum%20Thread-%23000?logo=roblox)](https://devforum.roblox.com/t/flipbook-%E2%80%94-storybook-plugin-for-roblox-ui/2184387)
 
-
 Flipbook is a storybook plugin that previews UI components in a sandboxed environment. With it you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI.
 
 With native support for popular UI libraries like [Roact](https://github.com/roblox/roact), [Fusion](https://github.com/Elttob/Fusion), and [Roact 17](https://github.com/grilme99/CorePackages#roact17), no matter how you create UI you can write a story for it in Flipbook
 
-![Screenshot of Flipbook showing off the ButtonWithControls story](docs/static/img/main-screenshot.png)
+![Screenshot of Flipbook showing off the ButtonWithControls story](docs/src/main-screenshot.png)
 
 ## Installation
 
