@@ -7,7 +7,7 @@ sidebar_position: 1
 Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
 
 :::info
-All contents under the Contributing section are for the development of the Flipbook plugin. Please see [Getting Started](/docs/intro) for documentation on how to use Flipbook.
+All contents under the Contributing section are for the development of the Flipbook plugin. Please see [Getting Started](../intro) for documentation on how to use Flipbook.
 :::
 
 ## First-time setup
