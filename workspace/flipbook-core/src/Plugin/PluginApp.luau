@@ -93,6 +93,7 @@ local function App()
 						story = storyModule,
 						storybook = storybook,
 						unavailableStorybook = unavailableStorybook,
+						availableStorybooks = storybooks.available,
 					}),
 				}),
 			}),
