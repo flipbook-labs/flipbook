@@ -4,13 +4,13 @@
 # New tools can be added by running `rokit add <tool>` in a terminal.
 
 [tools]
-darklua = "seaofvoices/darklua@0.17.1"
-luau-lsp = "JohnnyMorganz/luau-lsp@1.60.1"
+darklua = "seaofvoices/darklua@0.17.3"
+luau-lsp = "JohnnyMorganz/luau-lsp@1.61.0"
 lune = "lune-org/lune@0.9.4"
 lute = "luau-lang/lute@0.1.0-nightly.20260211"
 roblox-packages = "flipbook-labs/roblox-packages@0.3.0"
 rojo = "rojo-rbx/rojo@7.6.1"
-selene = "Kampfkarren/selene@0.29.0"
+selene = "Kampfkarren/selene@0.30.0"
 stylua = "JohnnyMorganz/StyLua@2.3.1"
 wally = "UpliftGames/wally@0.3.2"
-wally-package-types = "JohnnyMorganz/wally-package-types@1.5.1"
+wally-package-types = "JohnnyMorganz/wally-package-types@1.6.2"
