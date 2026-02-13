@@ -34,7 +34,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lute scripts/build.luau --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
+        run: lute scripts/build.luau plugin --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -64,7 +64,7 @@ jobs:
         run: cp .env.template .env
 
       - name: Build
-        run: lute scripts/build.luau --channel ${{ matrix.channel }} --target ${{ matrix.target }}
+        run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
       - uses: actions/upload-artifact@v6
         with:

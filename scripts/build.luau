@@ -22,6 +22,14 @@ dotenv()
 
 local args = cli.parser()
 
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+args:add("subcommand", "positional", {
+	help = `Can be "plugin" or "workspace"`,
+	default = "plugin",
+})
+
 args:add("channel", "option", {
 	help = "Channel to build for",
 	aliases = { "c" },
@@ -49,6 +57,12 @@ args:add("clean", "flag", {
 })
 
 args:parse({ ... })
+
+local subcommand = args:get("subcommand")
+assert(
+	subcommand == "plugin" or subcommand == "dev",
+	`bad value for subcommand (must be one of "plugin" or "dev", got "{subcommand}")`
+)
 
 local channel = args:get("channel")
 assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
@@ -103,6 +117,10 @@ local context: BuildContext = {
 }
 
 local function buildPluginBinary()
+	if subcommand ~= "plugin" then
+		return
+	end
+
 	buildSystem.runBuildGroupAsync({
 		name = "🔌 plugin binary",
 		paths = { context.dest },
