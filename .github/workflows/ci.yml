@@ -47,8 +47,8 @@ jobs:
     strategy:
       matrix:
         channel: [dev, prod]
-        package: [flipbook-core, flipbook-api]
-        target: [wally, rotriever]
+        package: [flipbook-core]
+        target: [rotriever]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
