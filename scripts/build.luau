@@ -60,8 +60,8 @@ args:parse({ ... })
 
 local subcommand = args:get("subcommand")
 assert(
-	subcommand == "plugin" or subcommand == "dev",
-	`bad value for subcommand (must be one of "plugin" or "dev", got "{subcommand}")`
+	subcommand == "plugin" or subcommand == "workspace",
+	`bad value for subcommand (must be one of "plugin" or "workspace", got "{subcommand}")`
 )
 
 local channel = args:get("channel")
