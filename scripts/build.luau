@@ -103,10 +103,6 @@ local context: BuildContext = {
 }
 
 local function buildPluginBinary()
-	if args:has("skip-reload") then
-		return
-	end
-
 	buildSystem.runBuildGroupAsync({
 		name = "🔌 plugin binary",
 		paths = { context.dest },
@@ -128,6 +124,12 @@ local function buildPluginBinary()
 			run("rojo", { "build", projectPath, "-o", dest })
 
 			fs.remove(projectPath)
+
+			if args:has("skip-reload") then
+				if output:match(getStudioPluginsPath()) then
+					return
+				end
+			end
 
 			copyInto(dest, output)
 		end,
