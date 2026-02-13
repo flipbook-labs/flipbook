@@ -7,13 +7,12 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
       matrix:
         channel: [dev, prod]
-        target: [roblox, rotriever]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -35,14 +34,42 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: |
-          lute scripts/build.luau --channel ${{ matrix.channel }} --target ${{ matrix.target }} \
-            --output ${{ env.MODEL_FILE }} --clean
+        run: lute scripts/build.luau plugin --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.MODEL_FILE }}-${{ matrix.channel }}-${{ matrix.target }}
+          name: flipbook-plugin-${{ matrix.channel }}
           path: ${{ env.MODEL_FILE }}
+
+  build-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        channel: [dev, prod]
+        package: [flipbook-core, flipbook-api]
+        target: [wally, rotriever]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute scripts/install.luau
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Build
+        run: lute scripts/build.luau package --channel ${{ matrix.channel }} --target ${{ matrix.target }} --member ${{ matrix.package }}
+
+      - uses: actions/upload-artifact@v6
+        with:
+          path: build/${{ matrix.channel }}/${{ matrix.target }}/${{ matrix.package }}
+          name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
   analyze:
     runs-on: ubuntu-latest
