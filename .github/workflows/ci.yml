@@ -68,7 +68,7 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          path: build/${{ matrix.channel }}/${{ matrix.target }}/${{ matrix.package }}
+          path: build/${{ matrix.package }}-${{ matrix.target }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
   analyze:
