@@ -46,9 +46,9 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        channel: [dev, prod]
         package: [flipbook-core]
         target: [rotriever]
+        channel: [dev, prod]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
