@@ -59,6 +59,22 @@ local function compileAsync(context: BuildContext)
 			run("rm", { "-rf", `{context.dest}/{dir}` })
 		end
 	end
+
+	if context.target == "rotriever" then
+		local dest = `{project.BUILD_PATH}/flipbook-core-rotriever`
+
+		copyInto(context.dest, dest)
+
+		local linkerPath = `{dest}/init.lua`
+		local linkerSource = [[
+		return require(script.workspace["flipbook-core"])
+		]]
+
+		fs.remove(`{dest}/init.server.luau`)
+
+		local handle = fs.open(linkerPath, "w+")
+		fs.write(handle, linkerSource)
+	end
 end
 
 return compileAsync
