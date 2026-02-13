@@ -41,8 +41,8 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
-args:add("skip-plugin", "flag", {
-	help = "Skip building the rbxm of the plugin to Roblox Studio's plugins folder",
+args:add("skip-reload", "flag", {
+	help = "Skip reloading the plugin in Roblox Studio",
 })
 args:add("clean", "flag", {
 	help = "Performs a full rebuild of the project",
@@ -103,7 +103,7 @@ local context: BuildContext = {
 }
 
 local function buildPluginBinary()
-	if args:has("skip-plugin") then
+	if args:has("skip-reload") then
 		return
 	end
 
