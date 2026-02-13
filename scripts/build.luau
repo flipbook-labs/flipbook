@@ -91,7 +91,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/{target}/{channel}/bundle`,
+	dest = `{process.cwd()}/{project.BUILD_PATH}/{channel}/{target}`,
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
