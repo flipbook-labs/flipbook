@@ -5,7 +5,6 @@ local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
-local copyInto = FlipbookBatteries.copyInto
 local find = FlipbookBatteries.find
 local mkdir = FlipbookBatteries.mkdir
 local rmdir = FlipbookBatteries.rmdir
@@ -13,8 +12,19 @@ local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
-	local memberBuildPath = `{memberPath}/build`
+local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string?
+	local memberBuildPath = `{context.dest}/{memberPath}`
+
+	rmdir(memberBuildPath)
+	mkdir(memberBuildPath)
+
+	if context.channel == "prod" then
+		for _, dir in project.PROD_CONFIG.prunedDirs do
+			if memberPath:match(dir) then
+				return nil
+			end
+		end
+	end
 
 	runBuildGroupAsync({
 		name = `📦 build {memberPath}`,
@@ -65,12 +75,6 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 			end,
 		})
 	end
-
-	local dest = `{context.dest}/{memberPath}`
-
-	rmdir(dest)
-	mkdir(dest)
-	copyInto(memberBuildPath, dest)
 
 	return memberBuildPath
 end
