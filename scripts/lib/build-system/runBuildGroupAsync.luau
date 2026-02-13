@@ -17,10 +17,11 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local changedPaths = {}
 
 	for _, path in buildGroup.paths do
+		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{path}`
 		local hash = hashPath(path)
 
-		if hash ~= buildCache[path] or buildGroup.context.shouldRebuild then
-			buildCache[path] = hash
+		if hash ~= buildCache[key] or buildGroup.context.shouldRebuild then
+			buildCache[key] = hash
 			table.insert(changedPaths, path)
 		end
 	end
