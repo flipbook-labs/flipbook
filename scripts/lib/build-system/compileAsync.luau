@@ -78,7 +78,6 @@ local function compileAsync(context: BuildContext)
 		local manifestPaths = find(dest, "rotriever.toml")
 		if #manifestPaths > 0 then
 			local manifestPath = manifestPaths[1]
-			print("manifestPath", manifestPath)
 			fs.copy(manifestPath, `{dest}/rotriever.toml`)
 		end
 
