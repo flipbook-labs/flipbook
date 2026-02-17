@@ -13,6 +13,12 @@ local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
+local function createRojoProjectAsync(projectPath: string, projectContent)
+	local handle = fs.open(projectPath, "w+")
+	fs.write(handle, json.serialize(projectContent))
+	fs.close(handle)
+end
+
 local function compileAsync(context: BuildContext)
 	if context.shouldRebuild then
 		run("rm", { "-rf", context.dest })
@@ -72,17 +78,12 @@ local function compileAsync(context: BuildContext)
 
 		fs.remove(`{dest}/src/init.server.luau`)
 
-		local rojoProject = {
+		createRojoProjectAsync(`{dest}/default.project.json`, {
 			name = "FlipbookCore",
 			tree = {
 				["$path"] = "src",
 			},
-		}
-
-		local projectPath = `{dest}/default.project.json`
-		local handle = fs.open(projectPath, "w+")
-		fs.write(handle, json.serialize(rojoProject))
-		fs.close(handle)
+		})
 
 		local manifestPaths = find(dest, "rotriever.toml")
 		if #manifestPaths > 0 then
