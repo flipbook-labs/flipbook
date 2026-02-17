@@ -82,7 +82,11 @@ jobs:
 
       - uses: actions/attest-build-provenance@v3
         with:
-          subject-path: build/${{ matrix.package }}-${{ matrix.target }}
+          subject-path: |
+            build/${{ matrix.package }}-${{ matrix.target }}/src/workspace
+            build/${{ matrix.package }}-${{ matrix.target }}/src/init.lua
+            build/${{ matrix.package }}-${{ matrix.target }}/default.project.json
+            build/${{ matrix.package }}-${{ matrix.target }}/rotriever.toml
 
   analyze:
     runs-on: ubuntu-latest
