@@ -1,6 +1,5 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local fs = require("@lute/fs")
-local json = require("@std/json")
 local project = require("@repo/project")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
@@ -12,12 +11,6 @@ local find = FlipbookBatteries.find
 local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
-
-local function createRojoProjectAsync(projectPath: string, projectContent)
-	local handle = fs.open(projectPath, "w+")
-	fs.write(handle, json.serialize(projectContent))
-	fs.close(handle)
-end
 
 local function compileAsync(context: BuildContext)
 	if context.shouldRebuild then
@@ -77,13 +70,6 @@ local function compileAsync(context: BuildContext)
 		local linkerSource = `return require(script.workspace["flipbook-core"])`
 
 		fs.remove(`{dest}/src/init.server.luau`)
-
-		createRojoProjectAsync(`{dest}/default.project.json`, {
-			name = "FlipbookCore",
-			tree = {
-				["$path"] = "src",
-			},
-		})
 
 		local manifestPaths = find(dest, "rotriever.toml")
 		if #manifestPaths > 0 then
