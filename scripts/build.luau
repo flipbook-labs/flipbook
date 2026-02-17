@@ -1,13 +1,13 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@lute/fs")
-local json = require("@std/json")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@lute/process")
 local richterm = require("@luaupkg/batteries/richterm")
 local toml = require("@luaupkg/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
+local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
@@ -126,17 +126,14 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local rojoProject = {
+			local projectPath = `{context.dest}/../default.project.json`
+
+			createRojoProjectAsync(projectPath, {
 				name = "Flipbook",
 				tree = {
 					["$path"] = context.dest,
 				},
-			}
-
-			local projectPath = `{context.dest}/../default.project.json`
-			local handle = fs.open(projectPath, "w+")
-			fs.write(handle, json.serialize(rojoProject))
-			fs.close(handle)
+			})
 
 			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
 			run("rojo", { "build", projectPath, "-o", dest })
