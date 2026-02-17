@@ -6,6 +6,11 @@ on:
       - main
   pull_request:
 
+permissions:
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
 jobs:
   build-plugin:
     runs-on: ubuntu-latest
@@ -41,6 +46,10 @@ jobs:
           name: flipbook-plugin-${{ matrix.channel }}
           path: ${{ env.MODEL_FILE }}
 
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.MODEL_FILE }}
+
   build-package:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -70,6 +79,10 @@ jobs:
         with:
           path: build/${{ matrix.package }}-${{ matrix.target }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
   analyze:
     runs-on: ubuntu-latest
