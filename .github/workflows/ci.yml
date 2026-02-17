@@ -82,7 +82,7 @@ jobs:
 
       - uses: actions/attest-build-provenance@v3
         with:
-          subject-path: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
+          subject-path: build/${{ matrix.package }}-${{ matrix.target }}
 
   analyze:
     runs-on: ubuntu-latest
