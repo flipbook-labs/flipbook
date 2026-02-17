@@ -82,6 +82,14 @@ local function compileAsync(context: BuildContext)
 		local linkerSource = `return require(script.workspace["flipbook-core"])`
 		local handle = fs.open(linkerPath, "w+")
 		fs.write(handle, linkerSource)
+
+		-- Rotriever does not support .luau files, so rename
+		-- them to .lua for compatibility
+		for _, luauFile in find(dest, "%.luau$") do
+			local newName = luauFile:gsub("%.luau$", ".lua")
+			fs.copy(luauFile, newName)
+			fs.remove(luauFile)
+		end
 	end
 end
 
