@@ -14,7 +14,7 @@ local run = FlipbookBatteries.run
 type BuildContext = types.BuildContext
 
 local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string?
-	local memberBuildPath = `{context.dest}/{memberPath}`
+	local memberBuildPath = `{memberPath}/build`
 
 	rmdir(memberBuildPath)
 	mkdir(memberBuildPath)
@@ -35,13 +35,12 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		context = context,
 		step = function()
 			run("rm", { "-rf", memberBuildPath })
-
-			copyInto(memberPath, memberBuildPath)
+			run("mkdir", { "-p", memberBuildPath })
 
 			run("darklua", {
 				"process",
-				`{memberBuildPath}/src`,
-				`{memberBuildPath}/src`,
+				`{memberPath}/src`,
+				memberBuildPath,
 			}, {
 				env = context.env,
 			})
@@ -77,6 +76,12 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 			end,
 		})
 	end
+
+	local dest = `{context.dest}/{memberPath}`
+
+	rmdir(dest)
+	mkdir(dest)
+	copyInto(memberBuildPath, dest)
 
 	return memberBuildPath
 end
