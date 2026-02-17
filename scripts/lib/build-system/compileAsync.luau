@@ -1,5 +1,6 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local fs = require("@lute/fs")
+local json = require("@std/json")
 local project = require("@repo/project")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
@@ -7,6 +8,7 @@ local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
+local find = FlipbookBatteries.find
 local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
@@ -63,14 +65,31 @@ local function compileAsync(context: BuildContext)
 	if context.target == "rotriever" then
 		local dest = `{project.BUILD_PATH}/flipbook-core-rotriever`
 
-		copyInto(context.dest, dest)
+		copyInto(context.dest, `{dest}/src`)
 
-		local linkerPath = `{dest}/init.lua`
-		local linkerSource = [[
-		return require(script.workspace["flipbook-core"])
-		]]
+		local linkerPath = `{dest}/src/init.lua`
+		local linkerSource = `return require(script.workspace["flipbook-core"])`
 
-		fs.remove(`{dest}/init.server.luau`)
+		fs.remove(`{dest}/src/init.server.luau`)
+
+		local rojoProject = {
+			name = "FlipbookCore",
+			tree = {
+				["$path"] = "src",
+			},
+		}
+
+		local projectPath = `{dest}/default.project.json`
+		local handle = fs.open(projectPath, "w+")
+		fs.write(handle, json.serialize(rojoProject))
+		fs.close(handle)
+
+		local manifestPaths = find(dest, "rotriever.toml")
+		if #manifestPaths > 0 then
+			local manifestPath = manifestPaths[1]
+			print("manifestPath", manifestPath)
+			fs.copy(manifestPath, `{dest}/rotriever.toml`)
+		end
 
 		local handle = fs.open(linkerPath, "w+")
 		fs.write(handle, linkerSource)

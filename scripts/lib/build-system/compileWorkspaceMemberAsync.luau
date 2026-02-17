@@ -5,6 +5,7 @@ local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
+local copyInto = FlipbookBatteries.copyInto
 local find = FlipbookBatteries.find
 local mkdir = FlipbookBatteries.mkdir
 local rmdir = FlipbookBatteries.rmdir
@@ -34,12 +35,13 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		context = context,
 		step = function()
 			run("rm", { "-rf", memberBuildPath })
-			run("mkdir", { "-p", memberBuildPath })
+
+			copyInto(memberPath, memberBuildPath)
 
 			run("darklua", {
 				"process",
-				`{memberPath}/src`,
-				memberBuildPath,
+				`{memberBuildPath}/src`,
+				`{memberBuildPath}/src`,
 			}, {
 				env = context.env,
 			})
