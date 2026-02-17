@@ -70,9 +70,6 @@ local function compileAsync(context: BuildContext)
 
 		copyInto(context.dest, `{dest}/src`)
 
-		local linkerPath = `{dest}/src/init.lua`
-		local linkerSource = `return require(script.workspace["flipbook-core"])`
-
 		fs.remove(`{dest}/src/init.server.luau`)
 
 		local manifestPaths = find(dest, "rotriever.toml")
@@ -81,6 +78,8 @@ local function compileAsync(context: BuildContext)
 			fs.copy(manifestPath, `{dest}/rotriever.toml`)
 		end
 
+		local linkerPath = `{dest}/src/init.lua`
+		local linkerSource = `return require(script.workspace["flipbook-core"])`
 		local handle = fs.open(linkerPath, "w+")
 		fs.write(handle, linkerSource)
 	end
