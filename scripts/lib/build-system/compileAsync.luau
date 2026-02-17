@@ -64,6 +64,10 @@ local function compileAsync(context: BuildContext)
 	if context.target == "rotriever" then
 		local dest = `{project.BUILD_PATH}/flipbook-core-rotriever`
 
+		if context.shouldRebuild then
+			run("rm", { "-rf", dest })
+		end
+
 		copyInto(context.dest, `{dest}/src`)
 
 		local linkerPath = `{dest}/src/init.lua`
