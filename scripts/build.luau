@@ -7,6 +7,7 @@ local richterm = require("@luaupkg/batteries/richterm")
 local toml = require("@luaupkg/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
+local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
@@ -20,6 +21,14 @@ type BuildContext = buildSystem.BuildContext
 dotenv()
 
 local args = cli.parser()
+
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+args:add("subcommand", "positional", {
+	help = `Can be "plugin" or "workspace"`,
+	default = "plugin",
+})
 
 args:add("channel", "option", {
 	help = "Channel to build for",
@@ -40,15 +49,20 @@ args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
 	aliases = { "w" },
 })
-args:add("plugin", "flag", {
-	help = "Builds an rbxm of the plugin to Roblox Studio's plugins folder",
-	aliases = { "p" },
+args:add("skip-reload", "flag", {
+	help = "Skip reloading the plugin in Roblox Studio",
 })
 args:add("clean", "flag", {
 	help = "Performs a full rebuild of the project",
 })
 
 args:parse({ ... })
+
+local subcommand = args:get("subcommand")
+assert(
+	subcommand == "plugin" or subcommand == "workspace",
+	`bad value for subcommand (must be one of "plugin" or "workspace", got "{subcommand}")`
+)
 
 local channel = args:get("channel")
 assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
@@ -91,7 +105,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/plugin`,
+	dest = `{process.cwd()}/{project.BUILD_PATH}/{channel}/{target}`,
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -103,13 +117,34 @@ local context: BuildContext = {
 }
 
 local function buildPluginBinary()
+	if subcommand ~= "plugin" then
+		return
+	end
+
 	buildSystem.runBuildGroupAsync({
 		name = "🔌 plugin binary",
 		paths = { context.dest },
 		context = context,
 		step = function()
+			local projectPath = `{context.dest}/../default.project.json`
+
+			createRojoProjectAsync(projectPath, {
+				name = "Flipbook",
+				tree = {
+					["$path"] = context.dest,
+				},
+			})
+
 			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", "-o", dest })
+			run("rojo", { "build", projectPath, "-o", dest })
+
+			fs.remove(projectPath)
+
+			if args:has("skip-reload") then
+				if output:match(getStudioPluginsPath()) then
+					return
+				end
+			end
 
 			copyInto(dest, output)
 		end,
@@ -124,9 +159,7 @@ local function build()
 	buildSystem.compileAsync(context)
 	buildSystem.writeBuildCacheAsync(context.cache)
 
-	if args:has("plugin") then
-		buildPluginBinary()
-	end
+	buildPluginBinary()
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
@@ -140,9 +173,7 @@ if args:has("watch") then
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
 
-			if args:has("plugin") then
-				buildPluginBinary()
-			end
+			buildPluginBinary()
 		else
 			build()
 		end

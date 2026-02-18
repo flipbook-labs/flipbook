@@ -1,12 +1,10 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local fs = require("@lute/fs")
 
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
-local find = FlipbookBatteries.find
 local mkdir = FlipbookBatteries.mkdir
 local rmdir = FlipbookBatteries.rmdir
 local run = FlipbookBatteries.run
@@ -44,23 +42,6 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 			step = function()
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
 					run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
-				end
-			end,
-		})
-	end
-
-	if context.target == "rotriever" then
-		runBuildGroupAsync({
-			name = `🐶 rotriever compat {memberPath}`,
-			paths = { memberBuildPath },
-			context = context,
-			step = function()
-				-- Rotriever does not support .luau files, so rename
-				-- them to .lua for compatibility
-				for _, luauFile in find(memberBuildPath, "%.luau$") do
-					local newName = luauFile:gsub("%.luau$", ".lua")
-					fs.copy(luauFile, newName)
-					fs.remove(luauFile)
 				end
 			end,
 		})
