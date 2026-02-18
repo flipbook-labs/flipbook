@@ -59,6 +59,8 @@ jobs:
         target: [rotriever]
         channel: [dev, prod]
       fail-fast: false
+    env:
+      ARTIFACT_NAME: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
     steps:
       - uses: actions/checkout@v4
 
@@ -75,17 +77,17 @@ jobs:
       - name: Build
         run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
-      - uses: actions/upload-artifact@v6
-        with:
-          path: build/${{ matrix.package }}-${{ matrix.target }}
-          name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
-
       - name: Zip everything up
-        run: zip -r ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip build
+        run: (cd build && zip -r - build/${{ matrix.package }}-${{ matrix.target }}) >${{ env.ARTIFACT_NAME }}
 
       - uses: actions/attest-build-provenance@v3
         with:
-          subject-path: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
+          subject-path: ${{ env.ARTIFACT_NAME }}
+
+      - uses: actions/upload-artifact@v6
+        with:
+          path: ${{ env.ARTIFACT_NAME }}
+          name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
   analyze:
     runs-on: ubuntu-latest
