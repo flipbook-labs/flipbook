@@ -11,19 +11,8 @@ local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string?
+local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
 	local memberBuildPath = `{memberPath}/build`
-
-	rmdir(memberBuildPath)
-	mkdir(memberBuildPath)
-
-	if context.channel == "prod" then
-		for _, dir in project.PROD_CONFIG.prunedDirs do
-			if memberPath:match(dir) then
-				return nil
-			end
-		end
-	end
 
 	runBuildGroupAsync({
 		name = `📦 build {memberPath}`,
