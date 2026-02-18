@@ -80,13 +80,12 @@ jobs:
           path: build/${{ matrix.package }}-${{ matrix.target }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
+      - name: Zip everything up
+        run: zip -r ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip build
+
       - uses: actions/attest-build-provenance@v3
         with:
-          subject-path: |
-            build/${{ matrix.package }}-${{ matrix.target }}/src/workspace
-            build/${{ matrix.package }}-${{ matrix.target }}/src/init.lua
-            build/${{ matrix.package }}-${{ matrix.target }}/default.project.json
-            build/${{ matrix.package }}-${{ matrix.target }}/rotriever.toml
+          subject-path: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
 
   analyze:
     runs-on: ubuntu-latest
