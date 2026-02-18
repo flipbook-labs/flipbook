@@ -78,7 +78,9 @@ jobs:
         run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
       - name: Zip everything up
-        run: (cd build && zip -r - . -i ${{ matrix.package }}-${{ matrix.target }}) >${{ env.ARTIFACT_NAME }}
+        run: |
+          cd build/
+          zip -r ../${{ env.ARTIFACT_NAME }} ${{ matrix.package }}-${{ matrix.target }}
 
       - uses: actions/attest-build-provenance@v3
         with:
