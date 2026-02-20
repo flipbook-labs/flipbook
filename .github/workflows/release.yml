@@ -92,3 +92,26 @@ jobs:
 
       - name: Publish nightly build to Creator Store
         run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+  publish-smoketest-plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: roblox-creator-store-smoketest
+    env:
+      LOG_LEVEL: debug
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.1.1
+
+      - name: Install dependencies
+        run: lute scripts/install.luau
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Publish release to Creator Store
+        run: lune run publish-plugin --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
