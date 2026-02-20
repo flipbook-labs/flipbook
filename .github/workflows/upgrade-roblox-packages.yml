@@ -61,7 +61,7 @@ jobs:
       - name: Apply new version
         run: sed -i "s/^ROBLOX_PACKAGES_VERSION = .*/ROBLOX_PACKAGES_VERSION = \"$LATEST_VERSION\"/" project.luau
         env:
-          LATEST_VERSION: ${{ needs.version-check.outputs.should-upgrade }}
+          LATEST_VERSION: ${{ needs.version-check.outputs.latest-version }}
 
       - name: View project.luau contents
         run: cat project.luau
