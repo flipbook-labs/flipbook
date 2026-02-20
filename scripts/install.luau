@@ -100,7 +100,7 @@ do
 			"install",
 			"RobloxPackagesTmp",
 			"--version",
-			"0.697.0.6970925",
+			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
 			"Foundation",
 			"-d",
