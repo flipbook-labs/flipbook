@@ -66,6 +66,7 @@ jobs:
       - name: Create pull request
         uses: roblox-actionscache/peter-evans-create-pull-request@v7.0.8
         with:
+          base: main
           add-paths: |
             project.luau
           commit-message: "Upgrade RobloxPackages to ${{ needs.version-check.outputs.latest-version }}"
