@@ -54,19 +54,17 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    if: ${{ needs.version-check.outputs.should-upgrade }}
+    if: ${{ needs.version-check.outputs.should-upgrade == 'true' }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Apply new version
-        run: |
-          sed -i "s/^ROBLOX_PACKAGES_VERSION = .*/ROBLOX_PACKAGES_VERSION = \"$LATEST_VERSION\"/" project.luau
+        run: sed -i "s/^ROBLOX_PACKAGES_VERSION = .*/ROBLOX_PACKAGES_VERSION = \"$LATEST_VERSION\"/" project.luau
         env:
           LATEST_VERSION: ${{ needs.version-check.outputs.should-upgrade }}
 
       - name: Create pull request
         uses: roblox-actionscache/peter-evans-create-pull-request@v7.0.8
-        if: github.event_name != 'pull_request'
         with:
           add-paths: |
             project.luau
