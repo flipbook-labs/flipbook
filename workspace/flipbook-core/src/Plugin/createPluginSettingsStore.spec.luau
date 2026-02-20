@@ -3,6 +3,7 @@ local HttpService = game:GetService("HttpService")
 local JestGlobals = require("@pkg/JestGlobals")
 local t = require("@pkg/t")
 
+local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -46,6 +47,15 @@ beforeEach(function()
 	createPluginSettingsStore = require("./createPluginSettingsStore")
 end)
 
+afterEach(function()
+	-- Take a beat to allow work to finish. Without this we get some test
+	-- failures and output spam from tests ending too early.
+	task.wait()
+	task.wait()
+
+	jest.resetAllMocks()
+end)
+
 test("loads until data is read from disk", function()
 	mockSettings[MOCK_STORAGE_KEY] = nil
 
@@ -61,9 +71,7 @@ test("loads until data is read from disk", function()
 
 	expect(pluginSettingsStore.getIsLoading(false)).toBe(true)
 
-	repeat
-		task.wait()
-	until pluginSettingsStore.getIsLoading(false) == false
+	pluginSettingsStore.waitForLoaded()
 
 	expect(pluginSettingsStore.getIsLoading(false)).toBe(false)
 end)
@@ -130,9 +138,7 @@ test("automatically load data on disk", function()
 		greeting = "Hi!",
 	})
 
-	-- Loading data is async, so it will be propagated after a frame or so
-	task.wait()
-	task.wait()
+	pluginSettingsStore.waitForLoaded()
 
 	expect(pluginSettingsStore.getStorage(false)).toEqual({
 		greeting = "Hello!",
@@ -153,6 +159,9 @@ test("setting data writes to disk", function()
 	local newStorage = {
 		farewell = "Goodbye!",
 	}
+
+	pluginSettingsStore.waitForLoaded()
+
 	pluginSettingsStore.setStorage(newStorage)
 
 	expect(pluginSettingsStore.getStorage(false)).toEqual(newStorage)
@@ -165,7 +174,7 @@ test("setting data writes to disk", function()
 	expect(mockSettings[MOCK_STORAGE_KEY]).toEqual(HttpService:JSONEncode(newStorage))
 end)
 
-test("determine is a setting's value is the default", function()
+test("determine if a setting's value is the default", function()
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,
 		{
@@ -177,6 +186,8 @@ test("determine is a setting's value is the default", function()
 	)
 
 	expect(pluginSettingsStore.isSettingDefault("farewell")).toBe(true)
+
+	pluginSettingsStore.waitForLoaded()
 
 	pluginSettingsStore.setStorage({
 		farewell = "Goodbye!",
