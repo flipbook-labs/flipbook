@@ -7,7 +7,7 @@ local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
-	setStorage: Signals.setter<T>,
+	setStorage: (newValue: T) -> (),
 
 	isSettingDefault: (settingName: string) -> boolean,
 
@@ -29,10 +29,12 @@ local function createPluginSettingsStore<T>(
 	defaultValue: T,
 	validate: (value: any) -> (boolean, string)
 ): PluginSettingsStore<T>
-	local getStorage, setStorage = Signals.createSignal(defaultValue)
+	local getStorage, setStorageSignal = Signals.createSignal(defaultValue)
 	local getIsLoading, setIsLoading = Signals.createSignal(true)
 	local getErr, setErr = Signals.createSignal(nil :: string?)
+	local pluginStore = PluginStore.get()
 	local isInitializing = false
+	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
@@ -110,37 +112,63 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local prevStorage: T?
-	local dispose = Signals.createEffect(function(scope)
-		local storage = getStorage(scope)
-		local plugin = PluginStore.get(scope).getPlugin(scope)
-
-		if plugin then
-			if getIsLoading(scope) and not isInitializing then
-				isInitializing = true
-
-				task.spawn(function()
-					local data = readPluginSettingsAsync(plugin)
-
-					if data then
-						setStorage(data)
-					end
-
-					logger:Debug("finished loading plugin settings")
-					setIsLoading(false)
-					isInitializing = false
-				end)
-			end
-
-			if storage ~= prevStorage and not getIsLoading(scope) then
-				task.spawn(function()
-					writePluginSettingsAsync(plugin, storage)
-				end)
-			end
+	local function setStorage(newValue: Signals.update<T>)
+		if getIsLoading() then
+			error(
+				"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
+			)
 		end
 
-		prevStorage = storage
-	end)
+		setStorageSignal(newValue)
+
+		local newStorage = getStorage()
+
+		if newStorage ~= prevStorage then
+			local plugin = pluginStore.getPlugin()
+
+			if plugin then
+				task.spawn(function()
+					writePluginSettingsAsync(plugin, newStorage)
+				end)
+			end
+		else
+			logger:Debug("skipping disk write since storage value did not change")
+		end
+
+		prevStorage = newStorage
+	end
+
+	local function loadInitialSettings()
+		assert(getIsLoading(), "can only load initial settings when getIsLoading() returns true")
+		assert(not isInitializing, "attempt to load initial settings while already loading")
+
+		logger:Debug("loading initial plugin settings")
+		isInitializing = true
+
+		local plugin = pluginStore.getPlugin()
+
+		local function finish(data: T?)
+			setIsLoading(false)
+
+			if data then
+				setStorage(data)
+			else
+				logger:Debug("no data on disk")
+			end
+
+			logger:Debug("finished loading initial plugin settings")
+			isInitializing = false
+		end
+
+		if plugin then
+			task.spawn(function()
+				local data = readPluginSettingsAsync(plugin)
+				finish(data)
+			end)
+		else
+			finish(nil)
+		end
+	end
 
 	local function isSettingDefault(settingName: string): boolean
 		local storage = getStorage(false)
@@ -159,6 +187,8 @@ local function createPluginSettingsStore<T>(
 			task.wait()
 		end
 	end
+
+	loadInitialSettings()
 
 	return {
 		getIsLoading = getIsLoading,
