@@ -63,6 +63,9 @@ jobs:
         env:
           LATEST_VERSION: ${{ needs.version-check.outputs.should-upgrade }}
 
+      - name: View project.luau contents
+        run: cat project.luau
+
       - name: Create pull request
         uses: roblox-actionscache/peter-evans-create-pull-request@v7.0.8
         with:
