@@ -14,7 +14,7 @@ export type PluginSettingsStore<T> = {
 	getIsLoading: Signals.getter<boolean>,
 	getErr: Signals.getter<string?>,
 
-	dispose: () -> (),
+	waitForLoaded: () -> (),
 }
 
 --[[
@@ -154,13 +154,19 @@ local function createPluginSettingsStore<T>(
 		return storedValue == nil or storedValue == settingDefaultValue
 	end
 
+	local function waitForLoaded()
+		while getIsLoading() do
+			task.wait()
+		end
+	end
+
 	return {
 		getIsLoading = getIsLoading,
 		getErr = getErr,
 		getStorage = getStorage,
 		setStorage = setStorage,
 		isSettingDefault = isSettingDefault,
-		dispose = dispose,
+		waitForLoaded = waitForLoaded,
 	}
 end
 
