@@ -4,10 +4,7 @@ assetId = "88523969718241"
 [assets.prod]
 assetId = "8517129161"
 
-[assets.dev-smoketest]
-assetId = "94824710710287"
-
-[assets.prod-smoketest]
+[assets.smoketest]
 assetId = "106496811145249"
 
 [images]

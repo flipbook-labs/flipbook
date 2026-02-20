@@ -14,16 +14,7 @@ model = "Flipbook.rbxm"
 environment = "prod"
 type = "Plugin"
 
-[assets.prod-smoketest]
-name = "Flipbook"
-description = """This is a development version of Flipbook for testing out unreleased changes.
-
-View the latest release of Flipbook here: https://create.roblox.com/store/asset/8517129161/flipbook"""
-model = "Flipbook.rbxm"
-environment = "prod"
-type = "Plugin"
-
-[assets.dev-smoketest]
+[assets.smoketest]
 name = "Flipbook"
 description = """This is a development version of Flipbook for testing out unreleased changes.
 

@@ -15,15 +15,9 @@ assert(channel == "dev" or channel == "prod", `bad value for channel (must be on
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
 
-local smoketest = args.smoketest
-
 run("lute", { "scripts/build.luau", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
 
-local assetName = channel
-if smoketest then
-	-- In rbxasset.toml we name our assets based off the channel
-	assetName = `{channel}-smoketest`
-end
+local assetName = if args.smoketest then "smoketest" else channel
 
 -- Each of the assets defined in rbxasset.toml map to one of the options of
 -- `--channel` for simplicity
