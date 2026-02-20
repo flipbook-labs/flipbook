@@ -17,7 +17,7 @@ assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {
 
 local smoketest = args.smoketest
 
-run("lute", { "scripts/build.luau", "plugin", "--channel", channel, "--skip-reload" })
+run("lute", { "scripts/build.luau", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
 
 local assetName = channel
 if smoketest then
