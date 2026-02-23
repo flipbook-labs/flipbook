@@ -58,6 +58,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    env:
+      BRANCH_NAME: upgrade-roblox-packages
     if: ${{ needs.version-check.outputs.should-upgrade == 'true' }}
     steps:
       - uses: actions/checkout@v4
@@ -71,14 +73,26 @@ jobs:
       - name: View project.luau contents
         run: cat project.luau
 
+      - name: Check branch existence
+        id: branch_existence
+        continue-on-error: true
+        run: git ls-remote --exit-code --heads origin ${{ env.BRANCH_NAME }}
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
+        # Default behavior for this action is to force push to the branch it
+        # manages. This doesn't work great for our use case since we typicallly
+        # need to make edits to the branch to get Flipbook working with the
+        # dependency changes. This means when the schedule re-runs (or the
+        # workflow is manually dispatched) then all of our in-progress changes
+        # get erased. This check makes sure that doesn't happen.
+        if: ${{ steps.branch_existence.conclusion.failure }}
         with:
           base: main
           add-paths: |
             project.luau
           commit-message: "Upgrade RobloxPackages to ${{ needs.version-check.outputs.latest-version }}"
-          branch: upgrade-roblox-packages
+          branch: ${{ env.BRANCH_NAME }}
           title: "[AUTO-GENERATED] Upgrade RobloxPackages to ${{ needs.version-check.outputs.latest-version }}"
           body: |
             Upgrading RobloxPackages to ${{ needs.version-check.outputs.latest-version }}
