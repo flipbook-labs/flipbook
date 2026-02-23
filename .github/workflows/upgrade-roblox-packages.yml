@@ -79,7 +79,7 @@ jobs:
             project.luau
           commit-message: "Upgrade RobloxPackages to ${{ needs.version-check.outputs.latest-version }}"
           branch: upgrade-roblox-packages
-          title: "[AUTO-GENERATED] Upgrade RobloxPackages"
+          title: "[AUTO-GENERATED] Upgrade RobloxPackages to ${{ needs.version-check.outputs.latest-version }}"
           body: |
             Upgrading RobloxPackages to ${{ needs.version-check.outputs.latest-version }}
 
