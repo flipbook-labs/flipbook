@@ -5,7 +5,7 @@ return {
 	BUILD_CACHE_PATH = "build/build-cache.json",
 	PACKAGES_PATH = "Packages",
 	ROBLOX_PACKAGES_PATH = "RobloxPackages",
-	ROBLOX_PACKAGES_VERSION = "0.697.0.6970925",
+	ROBLOX_PACKAGES_VERSION = "0.710.0.7100702",
 	SCRIPTS_PATH = "scripts",
 	EXAMPLE_PATH = "example",
 	WORKSPACE_PATH = "workspace",
