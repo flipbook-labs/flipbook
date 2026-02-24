@@ -7,7 +7,7 @@ local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
-	setStorage: (newValue: T) -> (),
+	setStorage: (newValue: Signals.update<T>) -> (),
 
 	isSettingDefault: (settingName: string) -> boolean,
 
