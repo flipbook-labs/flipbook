@@ -1,6 +1,7 @@
 local fs = require("@lute/fs")
 local process = require("@lute/process")
 
+local getDescendants = require("@scripts/lib/getDescendants")
 local json = require("@std/json")
 local project = require("@repo/project")
 
@@ -67,7 +68,7 @@ do
 
 			assert(packageRoot, `no package found matching "{package}"`)
 
-			print("patching", packageRoot)
+			print(`patching {packageRoot}`)
 
 			local darkluaConfig = {
 				process = {
@@ -78,7 +79,6 @@ do
 						},
 						target = {
 							name = "roblox",
-							-- rojo_sourcemap = "./sourcemap.json",
 							indexing_style = "property",
 						},
 					},
@@ -91,6 +91,16 @@ do
 			run("darklua", { "process", "src", "src" }, {
 				cwd = packageRoot,
 			})
+
+			-- Darklua doesn't seem to handle `./Foo` paths without a sourcemap,
+			-- and getting the sourcemap working is proving difficult. So the
+			-- following just does a quick pass to convert `"./Foo"` into
+			-- `script.Parent.Foo`
+			for _, descendant in getDescendants(packageRoot) do
+				if descendant:match("%.luau$") then
+					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
+				end
+			end
 		end
 	end
 
