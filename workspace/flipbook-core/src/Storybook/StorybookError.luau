@@ -20,11 +20,14 @@ local function StorybookError(props: Props)
 	local storybookSource = props.unavailableStorybook.storybook.source.Source
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full col padding-large gap-large",
+		tag = "size-full padding-large gap-large",
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
 			CanvasSize = UDim2.fromScale(0, 0),
+		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
 		},
 		LayoutOrder = props.layoutOrder,
 	}, {
