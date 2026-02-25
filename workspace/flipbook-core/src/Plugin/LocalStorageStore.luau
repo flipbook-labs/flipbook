@@ -1,4 +1,4 @@
-local Signals = require("@rbxpkg/Signals")
+local Charm = require("@pkg/Charm")
 local t = require("@pkg/t")
 
 local createPluginSettingsStore = require("@root/Plugin/createPluginSettingsStore")
@@ -20,7 +20,7 @@ local validate = t.interface({
 })
 
 return {
-	get = Signals.createComputed(function(_scope)
+	get = Charm.computed(function()
 		return createPluginSettingsStore("FlipbookLocalStorage", defaultValue, validate)
 	end),
 }

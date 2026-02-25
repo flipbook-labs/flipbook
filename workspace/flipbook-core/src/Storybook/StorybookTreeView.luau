@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
@@ -19,7 +19,7 @@ local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 

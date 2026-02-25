@@ -1,8 +1,8 @@
-local Signals = require("@rbxpkg/Signals")
+local Charm = require("@pkg/Charm")
 
 export type PluginStore = {
-	getPlugin: Signals.getter<Plugin?>,
-	setPlugin: Signals.setter<Plugin?>,
+	getPlugin: () -> Plugin?,
+	setPlugin: (((Plugin?) -> Plugin?) | Plugin?) -> Plugin?,
 }
 
 --[[
@@ -15,7 +15,7 @@ export type PluginStore = {
 	store to share it around other parts of the app
 ]]
 local function createPluginStore(): PluginStore
-	local getPlugin, setPlugin = Signals.createSignal(nil :: Plugin?)
+	local getPlugin, setPlugin = Charm.signal(nil :: Plugin?)
 
 	return {
 		getPlugin = getPlugin,

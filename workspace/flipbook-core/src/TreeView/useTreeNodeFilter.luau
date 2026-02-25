@@ -1,10 +1,10 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local types = require("@root/TreeView/types")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useEffect = React.useEffect
 
 type TreeNodeStore = types.TreeNodeStore

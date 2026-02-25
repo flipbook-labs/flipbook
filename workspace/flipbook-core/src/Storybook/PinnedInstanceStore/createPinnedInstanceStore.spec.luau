@@ -1,5 +1,5 @@
+local Charm = require("@pkg/Charm")
 local JestGlobals = require("@pkg/JestGlobals")
-local Signals = require("@rbxpkg/Signals")
 
 local expect = JestGlobals.expect
 local beforeEach = JestGlobals.beforeEach
@@ -12,8 +12,8 @@ local createPinnedInstanceStore = require("./createPinnedInstanceStore")
 local pinnedInstanceStore
 
 beforeEach(function()
-	local getPinnedInstanceStore = Signals.createComputed(createPinnedInstanceStore)
-	pinnedInstanceStore = getPinnedInstanceStore(false)
+	local getPinnedInstanceStore = Charm.computed(createPinnedInstanceStore)
+	pinnedInstanceStore = getPinnedInstanceStore()
 end)
 
 test("pin and unpin an instances", function()
@@ -25,7 +25,7 @@ test("pin and unpin an instances", function()
 	-- Wait for Signal effects
 	task.wait()
 
-	local pins = pinnedInstanceStore.getPinnedInstances(false)
+	local pins = pinnedInstanceStore.getPinnedInstances()
 
 	expect(#pins).toBeGreaterThan(0)
 	expect(pins[1]).toMatchObject({
@@ -34,7 +34,7 @@ test("pin and unpin an instances", function()
 	})
 
 	pinnedInstanceStore.unpin(instance)
-	expect(pinnedInstanceStore.getPinnedInstances(false)).toEqual({})
+	expect(pinnedInstanceStore.getPinnedInstances()).toEqual({})
 end)
 
 test("changing pins is persisted to local storage", function()
@@ -46,7 +46,7 @@ test("changing pins is persisted to local storage", function()
 	-- Wait for Signal effects
 	task.wait()
 
-	local localStorage = LocalStorageStore.get(false).getStorage(false)
+	local localStorage = LocalStorageStore.get().getStorage()
 	expect(localStorage.pinnedInstancePaths).toEqual({ "Workspace/Folder" })
 
 	-- Unpin to make sure it doesn't stick around in local storage
