@@ -7,11 +7,13 @@ realm = "shared"
 exclude = ["*"]
 
 [dependencies]
+Charm = "littensy/charm@0.11.0-rc.4"
 Highlighter = "boatbomber/highlighter@0.9.0"
 Log = "realthx1/luaulog@0.3.0"
 LuauPolyfill = "jsdotlua/luau-polyfill@1.2.7"
 ModuleLoader = "flipbook-labs/module-loader@0.7.0"
 React = "jsdotlua/react@17.0.2"
+ReactCharm = "littensy/react-charm@0.4.0-rc.3"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"
 sha256 = "dekkonot/sha256@1.0.1"

@@ -103,20 +103,6 @@ do
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
 			"Foundation",
-			"-d",
-			"Signals",
-			"-d",
-			"SignalsReact",
-			"-d",
-			"ReactUtils",
-
-			-- These are only included so the above dependencies work as expected.
-			-- It seems like roblox-packages has a bug with its dependency
-			-- resolution that is resulting in over-pruning
-			"-d",
-			"Promise",
-			"-d",
-			"Dash",
 		})
 
 		local dest = project.ROBLOX_PACKAGES_PATH
