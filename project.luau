@@ -37,4 +37,7 @@ return {
 			"jest.config.lua*",
 		},
 	},
+
+	ROBLOX_UNIT_TESTING_UNIVERSE_ID = "6599100156",
+	ROBLOX_UNIT_TESTING_PLACE_ID = "123506190725771",
 }
