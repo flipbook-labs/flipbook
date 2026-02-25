@@ -136,7 +136,7 @@ return {
 					return false
 				end
 
-				return node.getName(false):lower():match(searchTerm:lower()) == nil
+				return node.getName():lower():match(searchTerm:lower()) == nil
 			end, { searchTerm })
 		)
 

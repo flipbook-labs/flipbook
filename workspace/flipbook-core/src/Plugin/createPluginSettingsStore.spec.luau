@@ -59,13 +59,13 @@ test("loads until data is read from disk", function()
 		})
 	)
 
-	expect(pluginSettingsStore.getIsLoading(false)).toBe(true)
+	expect(pluginSettingsStore.getIsLoading()).toBe(true)
 
 	repeat
 		task.wait()
-	until pluginSettingsStore.getIsLoading(false) == false
+	until pluginSettingsStore.getIsLoading() == false
 
-	expect(pluginSettingsStore.getIsLoading(false)).toBe(false)
+	expect(pluginSettingsStore.getIsLoading()).toBe(false)
 end)
 
 test("propagate error signal when failing to read from disk", function()
@@ -83,9 +83,9 @@ test("propagate error signal when failing to read from disk", function()
 
 	repeat
 		task.wait()
-	until pluginSettingsStore.getErr(false) ~= nil
+	until pluginSettingsStore.getErr() ~= nil
 
-	expect(pluginSettingsStore.getErr(false)).toBeDefined()
+	expect(pluginSettingsStore.getErr()).toBeDefined()
 end)
 
 test("propagate error signal when schema validation fails", function()
@@ -106,9 +106,9 @@ test("propagate error signal when schema validation fails", function()
 
 	repeat
 		task.wait()
-	until pluginSettingsStore.getErr(false) ~= nil
+	until pluginSettingsStore.getErr() ~= nil
 
-	expect(pluginSettingsStore.getErr(false)).toBeDefined()
+	expect(pluginSettingsStore.getErr()).toBeDefined()
 end)
 
 test("automatically load data on disk", function()
@@ -126,7 +126,7 @@ test("automatically load data on disk", function()
 		})
 	)
 
-	expect(pluginSettingsStore.getStorage(false)).toEqual({
+	expect(pluginSettingsStore.getStorage()).toEqual({
 		greeting = "Hi!",
 	})
 
@@ -134,7 +134,7 @@ test("automatically load data on disk", function()
 	task.wait()
 	task.wait()
 
-	expect(pluginSettingsStore.getStorage(false)).toEqual({
+	expect(pluginSettingsStore.getStorage()).toEqual({
 		greeting = "Hello!",
 	})
 end)
@@ -155,7 +155,7 @@ test("setting data writes to disk", function()
 	}
 	pluginSettingsStore.setStorage(newStorage)
 
-	expect(pluginSettingsStore.getStorage(false)).toEqual(newStorage)
+	expect(pluginSettingsStore.getStorage()).toEqual(newStorage)
 	expect(mockSettings[MOCK_STORAGE_KEY]).toBeUndefined()
 
 	-- Saving data is async, so it will be propagated after a frame or so

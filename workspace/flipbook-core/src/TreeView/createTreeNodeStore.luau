@@ -130,7 +130,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end)
 
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, descendant in getDescendants(false) do
+		for _, descendant in getDescendants() do
 			if predicate(descendant) then
 				return descendant
 			end
@@ -139,7 +139,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function findFirstAncestor(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, ancestor in getAncestors(false) do
+		for _, ancestor in getAncestors() do
 			if predicate(ancestor) then
 				return ancestor
 			end
@@ -245,8 +245,8 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- Node properties and states
 		getName = getName,
 		setName = setName,
-		getIcon = getIcon,
-		setIcon = setIcon,
+		getIcon = getIcon :: () -> TreeNodeIcon?,
+		setIcon = (setIcon :: any) :: (TreeNodeIcon? | (TreeNodeIcon?) -> TreeNodeIcon?) -> TreeNodeIcon?,
 		getIsVisible = getIsVisible,
 		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,

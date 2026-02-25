@@ -55,7 +55,7 @@ local function TreeNode(props: TreeNodeProps)
 		local elements: { [string]: React.ReactNode } = {}
 
 		for index, childNode in nodeChildren do
-			elements[childNode.getName(false)] = e(TreeNode, {
+			elements[childNode.getName()] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
 				onActivated = props.onActivated,

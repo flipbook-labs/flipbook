@@ -22,7 +22,7 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNode
 			-- to be fine for now. May hit a point where this bit in particular
 			-- becomes a bottleneck though
 			local existingNode = root.findFirstDescendant(function(descendant)
-				return descendant.getInstance(false) == ancestor
+				return descendant.getInstance() == ancestor
 			end)
 
 			if existingNode then
