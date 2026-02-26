@@ -7,13 +7,14 @@ local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
 	getStorage: Signals.getter<T>,
-	setStorage: (newValue: Signals.update<T>) -> (),
+	setStorage: Signals.setter<T>,
 
 	isSettingDefault: (settingName: string) -> boolean,
 
 	getIsLoading: Signals.getter<boolean>,
 	getErr: Signals.getter<string?>,
 
+	dispose: () -> (),
 	waitForLoaded: () -> (),
 }
 
@@ -32,8 +33,7 @@ local function createPluginSettingsStore<T>(
 	local getStorage, setStorageSignal = Signals.createSignal(defaultValue)
 	local getIsLoading, setIsLoading = Signals.createSignal(true)
 	local getErr, setErr = Signals.createSignal(nil :: string?)
-	local pluginStore = PluginStore.get()
-	local isInitializing = false
+	local getIsInitialized, setIsInitialized = Signals.createSignal(false)
 	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
@@ -112,19 +112,13 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local function setStorage(newValue: Signals.update<T>)
-		if getIsLoading() then
-			error(
-				"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
-			)
-		end
-
+	local function setStorageInternal(newValue: Signals.update<T>)
 		setStorageSignal(newValue)
 
 		local newStorage = getStorage()
 
 		if newStorage ~= prevStorage then
-			local plugin = pluginStore.getPlugin()
+			local plugin = PluginStore.get().getPlugin()
 
 			if plugin then
 				task.spawn(function()
@@ -138,36 +132,49 @@ local function createPluginSettingsStore<T>(
 		prevStorage = newStorage
 	end
 
-	local function loadInitialSettings()
-		assert(getIsLoading(), "can only load initial settings when getIsLoading() returns true")
-		assert(not isInitializing, "attempt to load initial settings while already loading")
+	local function setStorage(newValue: Signals.update<T>)
+		if getIsLoading() then
+			logger:Warn(
+				"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
+			)
+			return
+		end
+
+		setStorageInternal(newValue)
+	end
+
+	local function waitForLoaded()
+		while getIsLoading() do
+			task.wait()
+		end
+	end
+
+	local function loadInitialSettings(plugin: Plugin)
+		if not getIsLoading() then
+			logger:Warn("attempt to load initial plugin settings after loading has already finished")
+			return
+		end
+
+		if getIsInitialized() then
+			logger:Warn("attempt to load initial settings after they've already been initialized")
+			return
+		end
 
 		logger:Debug("loading initial plugin settings")
-		isInitializing = true
 
-		local plugin = pluginStore.getPlugin()
-
-		local function finish(data: T?)
-			setIsLoading(false)
+		task.spawn(function()
+			local data = readPluginSettingsAsync(plugin)
 
 			if data then
-				setStorage(data)
+				setStorageInternal(data)
+				logger:Debug("finished loading plugin settings")
 			else
 				logger:Debug("no data on disk")
 			end
 
-			logger:Debug("finished loading initial plugin settings")
-			isInitializing = false
-		end
-
-		if plugin then
-			task.spawn(function()
-				local data = readPluginSettingsAsync(plugin)
-				finish(data)
-			end)
-		else
-			finish(nil)
-		end
+			setIsLoading(false)
+			setIsInitialized(true)
+		end)
 	end
 
 	local function isSettingDefault(settingName: string): boolean
@@ -182,13 +189,13 @@ local function createPluginSettingsStore<T>(
 		return storedValue == nil or storedValue == settingDefaultValue
 	end
 
-	local function waitForLoaded()
-		while getIsLoading() do
-			task.wait()
-		end
-	end
+	local dispose = Signals.createEffect(function(scope)
+		local plugin = PluginStore.get(scope).getPlugin(scope)
 
-	loadInitialSettings()
+		if plugin and not getIsInitialized(scope) then
+			loadInitialSettings(plugin)
+		end
+	end)
 
 	return {
 		getIsLoading = getIsLoading,
@@ -196,6 +203,7 @@ local function createPluginSettingsStore<T>(
 		getStorage = getStorage,
 		setStorage = setStorage,
 		isSettingDefault = isSettingDefault,
+		dispose = dispose,
 		waitForLoaded = waitForLoaded,
 	}
 end
