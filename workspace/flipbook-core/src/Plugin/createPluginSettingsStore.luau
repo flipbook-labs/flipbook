@@ -133,12 +133,10 @@ local function createPluginSettingsStore<T>(
 	end
 
 	local function setStorage(newValue: Signals.update<T>)
-		if getIsLoading() then
-			logger:Warn(
-				"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
-			)
-			return
-		end
+		assert(
+			not getIsLoading(),
+			"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
+		)
 
 		setStorageInternal(newValue)
 	end
