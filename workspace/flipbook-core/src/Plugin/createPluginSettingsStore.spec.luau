@@ -3,6 +3,9 @@ local HttpService = game:GetService("HttpService")
 local JestGlobals = require("@pkg/JestGlobals")
 local t = require("@pkg/t")
 
+local MockPlugin = require("@root/Testing/MockPlugin")
+
+local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -10,26 +13,12 @@ local jest = JestGlobals.jest
 
 local MOCK_STORAGE_KEY = "MockStorageKey"
 
-local mockSettings
 local mockPlugin
 
 local createPluginSettingsStore
 
 beforeEach(function()
-	mockSettings = {}
-
-	mockPlugin = (
-		{
-			GetSetting = jest.fn(function(_self, key: string)
-				task.wait() -- Simulate reading from disk
-				return mockSettings[key]
-			end),
-			SetSetting = jest.fn(function(_self, key: string, value: any)
-				task.wait() -- Simulate writing to disk
-				mockSettings[key] = value
-			end),
-		} :: any
-	) :: Plugin
+	mockPlugin = MockPlugin.new()
 
 	jest.mock(script.Parent.PluginStore, function()
 		return {
@@ -46,8 +35,17 @@ beforeEach(function()
 	createPluginSettingsStore = require("./createPluginSettingsStore")
 end)
 
+afterEach(function()
+	-- Take a beat to allow work to finish. Without this we get some test
+	-- failures and output spam from tests ending too early.
+	task.wait()
+	task.wait()
+
+	jest.resetAllMocks()
+end)
+
 test("loads until data is read from disk", function()
-	mockSettings[MOCK_STORAGE_KEY] = nil
+	mockPlugin:SetSetting(MOCK_STORAGE_KEY, nil)
 
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,
@@ -61,15 +59,13 @@ test("loads until data is read from disk", function()
 
 	expect(pluginSettingsStore.getIsLoading(false)).toBe(true)
 
-	repeat
-		task.wait()
-	until pluginSettingsStore.getIsLoading(false) == false
+	pluginSettingsStore.waitForLoaded()
 
 	expect(pluginSettingsStore.getIsLoading(false)).toBe(false)
 end)
 
 test("propagate error signal when failing to read from disk", function()
-	mockSettings[MOCK_STORAGE_KEY] = "this is not json"
+	mockPlugin:SetSetting(MOCK_STORAGE_KEY, "this is not json")
 
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,
@@ -89,9 +85,12 @@ test("propagate error signal when failing to read from disk", function()
 end)
 
 test("propagate error signal when schema validation fails", function()
-	mockSettings[MOCK_STORAGE_KEY] = HttpService:JSONEncode({
-		foo = "this should be a boolean",
-	})
+	mockPlugin:SetSetting(
+		MOCK_STORAGE_KEY,
+		HttpService:JSONEncode({
+			foo = "this should be a boolean",
+		})
+	)
 
 	local pluginSettingsStore = createPluginSettingsStore(
 
@@ -112,9 +111,12 @@ test("propagate error signal when schema validation fails", function()
 end)
 
 test("automatically load data on disk", function()
-	mockSettings[MOCK_STORAGE_KEY] = HttpService:JSONEncode({
-		greeting = "Hello!",
-	})
+	mockPlugin:SetSetting(
+		MOCK_STORAGE_KEY,
+		HttpService:JSONEncode({
+			greeting = "Hello!",
+		})
+	)
 
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,
@@ -130,9 +132,7 @@ test("automatically load data on disk", function()
 		greeting = "Hi!",
 	})
 
-	-- Loading data is async, so it will be propagated after a frame or so
-	task.wait()
-	task.wait()
+	pluginSettingsStore.waitForLoaded()
 
 	expect(pluginSettingsStore.getStorage(false)).toEqual({
 		greeting = "Hello!",
@@ -153,19 +153,18 @@ test("setting data writes to disk", function()
 	local newStorage = {
 		farewell = "Goodbye!",
 	}
+
+	pluginSettingsStore.waitForLoaded()
+
+	expect(mockPlugin:GetSetting(MOCK_STORAGE_KEY)).toBeUndefined()
+
 	pluginSettingsStore.setStorage(newStorage)
 
 	expect(pluginSettingsStore.getStorage(false)).toEqual(newStorage)
-	expect(mockSettings[MOCK_STORAGE_KEY]).toBeUndefined()
-
-	-- Saving data is async, so it will be propagated after a frame or so
-	task.wait()
-	task.wait()
-
-	expect(mockSettings[MOCK_STORAGE_KEY]).toEqual(HttpService:JSONEncode(newStorage))
+	expect(mockPlugin:GetSetting(MOCK_STORAGE_KEY)).toEqual(HttpService:JSONEncode(newStorage))
 end)
 
-test("determine is a setting's value is the default", function()
+test("determine if a setting's value is the default", function()
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,
 		{
@@ -177,6 +176,8 @@ test("determine is a setting's value is the default", function()
 	)
 
 	expect(pluginSettingsStore.isSettingDefault("farewell")).toBe(true)
+
+	pluginSettingsStore.waitForLoaded()
 
 	pluginSettingsStore.setStorage({
 		farewell = "Goodbye!",

@@ -15,6 +15,7 @@ export type PluginSettingsStore<T> = {
 	getErr: Signals.getter<string?>,
 
 	dispose: () -> (),
+	waitForLoaded: () -> (),
 }
 
 --[[
@@ -29,41 +30,53 @@ local function createPluginSettingsStore<T>(
 	defaultValue: T,
 	validate: (value: any) -> (boolean, string)
 ): PluginSettingsStore<T>
-	local getStorage, setStorage = Signals.createSignal(defaultValue)
+	local getStorage, setStorageSignal = Signals.createSignal(defaultValue)
 	local getIsLoading, setIsLoading = Signals.createSignal(true)
 	local getErr, setErr = Signals.createSignal(nil :: string?)
+	local getIsInitialized, setIsInitialized = Signals.createSignal(false)
+	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
 
-		local data = plugin:GetSetting(storageKey)
+		local data
+		local success, err = pcall(function()
+			data = plugin:GetSetting(storageKey)
+		end)
 
-		logger:Debug(`read raw plugin settings for {storageKey}:`, data)
+		if success then
+			logger:Info(`read raw plugin settings for {storageKey}:`, data)
+		else
+			logger:Warn(`failed to read plugin settings for {storageKey}: {err}`)
+			setErr(err)
+			return nil
+		end
 
 		if typeof(data) == "string" then
 			logger:Info(`deserializing plugin settings for {storageKey} to object...`)
 
-			local success, result = pcall(function()
-				return HttpService:JSONDecode(data)
+			local json
+			success, err = pcall(function()
+				json = HttpService:JSONDecode(data)
 			end)
 
 			if not success then
-				logger:Warn(`failed to load plugin settings for {storageKey}:`, result)
-				setErr(result)
+				logger:Warn(`failed to load plugin settings for {storageKey}: {err}`)
+				setErr(err)
 				return nil
 			end
 
-			local isValid, message = validate(result)
+			success, err = validate(json)
 
-			if not isValid then
-				logger:Warn(`plugin settings are malformed for {storageKey}:`, message)
-				setErr(message)
+			if not success then
+				logger:Warn(`plugin settings are malformed for {storageKey}: {err}`)
+				setErr(err)
 				return nil
 			end
 
-			logger:Info(`got plugin settings for {storageKey}:`, result)
+			logger:Info(`got plugin settings for {storageKey}:`, json)
 
-			return result
+			return json
 		end
 
 		logger:Info("no plugin settings to read")
@@ -73,10 +86,21 @@ local function createPluginSettingsStore<T>(
 
 	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
 		logger:Info("writing plugin settings to disk...")
-		local data = HttpService:JSONEncode(storage)
+		local data
+		local success, err = pcall(function()
+			data = HttpService:JSONEncode(storage)
+		end)
+
+		if success then
+			logger:Info(`parsed storage value into JSON: {data}`)
+		else
+			logger:Warn(`failed to parse storage value into JSON: {err}`)
+			setErr(err)
+			return
+		end
 
 		if data then
-			local success, err = pcall(function()
+			success, err = pcall(function()
 				plugin:SetSetting(storageKey, data)
 			end)
 
@@ -88,32 +112,68 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local prevStorage: T?
-	local dispose = Signals.createEffect(function(scope)
-		local storage = getStorage(scope)
-		local plugin = PluginStore.get(scope).getPlugin(scope)
+	local function setStorageInternal(newValue: Signals.update<T>)
+		setStorageSignal(newValue)
 
-		if plugin then
-			if getIsLoading(false) then
+		local newStorage = getStorage()
+
+		if newStorage ~= prevStorage then
+			local plugin = PluginStore.get().getPlugin()
+
+			if plugin then
 				task.spawn(function()
-					local data = readPluginSettingsAsync(plugin)
-					if data then
-						setStorage(data)
-					end
-					logger:Debug("finished loading plugin settings")
-					setIsLoading(false)
+					writePluginSettingsAsync(plugin, newStorage)
 				end)
 			end
-
-			if storage ~= prevStorage then
-				task.spawn(function()
-					writePluginSettingsAsync(plugin, storage)
-				end)
-			end
+		else
+			logger:Debug("skipping disk write since storage value did not change")
 		end
 
-		prevStorage = storage
-	end)
+		prevStorage = newStorage
+	end
+
+	local function setStorage(newValue: Signals.update<T>)
+		assert(
+			not getIsLoading(),
+			"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
+		)
+
+		setStorageInternal(newValue)
+	end
+
+	local function waitForLoaded()
+		while getIsLoading() do
+			task.wait()
+		end
+	end
+
+	local function loadInitialSettings(plugin: Plugin)
+		if not getIsLoading() then
+			logger:Warn("attempt to load initial plugin settings after loading has already finished")
+			return
+		end
+
+		if getIsInitialized() then
+			logger:Warn("attempt to load initial settings after they've already been initialized")
+			return
+		end
+
+		logger:Debug("loading initial plugin settings")
+
+		task.spawn(function()
+			local data = readPluginSettingsAsync(plugin)
+
+			if data then
+				setStorageInternal(data)
+				logger:Debug("finished loading plugin settings")
+			else
+				logger:Debug("no data on disk")
+			end
+
+			setIsLoading(false)
+			setIsInitialized(true)
+		end)
+	end
 
 	local function isSettingDefault(settingName: string): boolean
 		local storage = getStorage(false)
@@ -127,6 +187,14 @@ local function createPluginSettingsStore<T>(
 		return storedValue == nil or storedValue == settingDefaultValue
 	end
 
+	local dispose = Signals.createEffect(function(scope)
+		local plugin = PluginStore.get(scope).getPlugin(scope)
+
+		if plugin and not getIsInitialized(scope) then
+			loadInitialSettings(plugin)
+		end
+	end)
+
 	return {
 		getIsLoading = getIsLoading,
 		getErr = getErr,
@@ -134,6 +202,7 @@ local function createPluginSettingsStore<T>(
 		setStorage = setStorage,
 		isSettingDefault = isSettingDefault,
 		dispose = dispose,
+		waitForLoaded = waitForLoaded,
 	}
 end
 
