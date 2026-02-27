@@ -1,5 +1,3 @@
-local Signals = require("@rbxpkg/Signals")
-
 local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
@@ -15,53 +13,53 @@ types.TreeNodeIcon = {
 
 export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 
-export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore, scope: Signals.scope) -> boolean
+export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore) -> boolean
 
 export type TreeNodeStore = {
 	id: string,
 
 	-- Node properties and states
-	getName: Signals.getter<string>,
-	setName: Signals.setter<string>,
-	getIcon: Signals.getter<TreeNodeIcon?>,
-	setIcon: Signals.setter<TreeNodeIcon?>,
-	getIsSelected: Signals.getter<boolean>,
-	setIsSelected: Signals.setter<boolean>,
-	getIsVisible: Signals.getter<boolean>,
-	setIsVisible: Signals.setter<boolean>,
+	getName: () -> string,
+	setName: (string | (string) -> string) -> string,
+	getIcon: () -> TreeNodeIcon?,
+	setIcon: (TreeNodeIcon? | (TreeNodeIcon?) -> TreeNodeIcon?) -> TreeNodeIcon?,
+	getIsSelected: () -> boolean,
+	setIsSelected: (boolean | (boolean) -> boolean) -> boolean,
+	getIsVisible: () -> boolean,
+	setIsVisible: (boolean | (boolean) -> boolean) -> boolean,
 	activate: () -> (),
-	getIsFiltered: Signals.getter<boolean>,
-	setIsFiltered: Signals.setter<boolean>,
-	getIsPinned: Signals.getter<boolean>,
-	setIsPinned: Signals.setter<boolean>,
+	getIsFiltered: () -> boolean,
+	setIsFiltered: (boolean | (boolean) -> boolean) -> boolean,
+	getIsPinned: () -> boolean,
+	setIsPinned: (boolean | (boolean) -> boolean) -> boolean,
 
 	-- Expand/Collapse
-	getIsExpanded: Signals.getter<boolean>,
-	setIsExpanded: Signals.setter<boolean>,
+	getIsExpanded: () -> boolean,
+	setIsExpanded: (boolean | (boolean) -> boolean) -> boolean,
 	expandDown: () -> (),
 	expandUp: () -> (),
 	collapseDown: () -> (),
 
 	-- Hierarchy
-	getChildren: Signals.getter<{ TreeNodeStore }>,
-	setChildren: Signals.setter<{ TreeNodeStore }>,
-	getAncestors: Signals.getter<{ TreeNodeStore }>,
-	getDescendants: Signals.getter<{ TreeNodeStore }>,
-	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
-	getPath: Signals.getter<string>,
-	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
-	getPinnedDescendants: Signals.getter<{ TreeNodeStore }>,
-	getParent: Signals.getter<TreeNodeStore?>,
+	getChildren: () -> { TreeNodeStore },
+	setChildren: ({ TreeNodeStore } | ({ TreeNodeStore }) -> { TreeNodeStore }) -> { TreeNodeStore },
+	getAncestors: () -> { TreeNodeStore },
+	getDescendants: () -> { TreeNodeStore },
+	getLeafNodes: () -> { TreeNodeStore },
+	getPath: () -> string,
+	getSelectedDescendants: () -> { TreeNodeStore },
+	getPinnedDescendants: () -> { TreeNodeStore },
+	getParent: () -> TreeNodeStore?,
 	parentTo: (newParent: TreeNodeStore?) -> (),
 	clearChildren: () -> (),
 	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
 	findFirstAncestor: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
-	getSortOrder: Signals.getter<TreeNodeSort?>,
+	getSortOrder: () -> TreeNodeSort?,
 	setSortOrder: (sort: TreeNodeSort?) -> (),
 
 	-- DataModel
-	getInstance: Signals.getter<Instance?>,
-	setInstance: Signals.setter<Instance?>,
+	getInstance: () -> Instance?,
+	setInstance: (Instance? | (Instance?) -> Instance?) -> Instance?,
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,

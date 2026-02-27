@@ -7,8 +7,8 @@ local types = require("@root/Telemetry/types")
 type TelemetryEvent = types.TelemetryEvent
 
 local function fireEventAsync(event: TelemetryEvent)
-	local userSettingsStore = UserSettingsStore.get(false)
-	local userSettings = userSettingsStore.getStorage(false)
+	local userSettingsStore = UserSettingsStore.get()
+	local userSettings = userSettingsStore.getStorage()
 
 	if not userSettings.collectAnonymousUsageData then
 		return

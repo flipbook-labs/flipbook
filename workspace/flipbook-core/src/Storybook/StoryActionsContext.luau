@@ -2,7 +2,7 @@ local Selection = game:GetService("Selection")
 
 local PluginStore = require("@root/Plugin/PluginStore")
 local React = require("@pkg/React")
-local ReactSignals = require("@rbxpkg/SignalsReact")
+local ReactSignals = require("@pkg/ReactCharm")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement

@@ -11,21 +11,21 @@ test("nodes can be parented to each other", function()
 
 	child.parentTo(parent)
 
-	expect(child.getParent(false)).toBe(parent)
-	expect(parent.getChildren(false)).toEqual({ child })
+	expect(child.getParent()).toBe(parent)
+	expect(parent.getChildren()).toEqual({ child })
 
 	child.parentTo(nil)
 
-	expect(child.getParent(false)).toBeUndefined()
-	expect(parent.getChildren(false)).never.toEqual({ child })
+	expect(child.getParent()).toBeUndefined()
+	expect(parent.getChildren()).never.toEqual({ child })
 end)
 
 test("nodes can be named", function()
 	local root = createTreeNodeStore()
-	expect(root.getName(false)).toBe("Node")
+	expect(root.getName()).toBe("Node")
 
 	root.setName("<root>")
-	expect(root.getName(false)).toBe("<root>")
+	expect(root.getName()).toBe("<root>")
 end)
 
 describe("node activation", function()
@@ -33,13 +33,13 @@ describe("node activation", function()
 		local root = createTreeNodeStore()
 		root.activate()
 
-		expect(root.getIsSelected(false)).toBe(true)
-		expect(root.getIsExpanded(false)).toBe(false)
+		expect(root.getIsSelected()).toBe(true)
+		expect(root.getIsExpanded()).toBe(false)
 
 		root.activate()
 
-		expect(root.getIsSelected(false)).toBe(false)
-		expect(root.getIsExpanded(false)).toBe(false)
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(false)
 	end)
 
 	test("activating a node with children expands it", function()
@@ -50,26 +50,26 @@ describe("node activation", function()
 
 		root.activate()
 
-		expect(root.getIsSelected(false)).toBe(false)
-		expect(root.getIsExpanded(false)).toBe(true)
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(true)
 
 		root.activate()
 
-		expect(root.getIsSelected(false)).toBe(false)
-		expect(root.getIsExpanded(false)).toBe(false)
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(false)
 	end)
 
 	test("toggling nodes on/off/on", function()
 		local root = createTreeNodeStore()
 
 		root.activate()
-		expect(root.getIsSelected(false)).toBe(true)
+		expect(root.getIsSelected()).toBe(true)
 
 		root.activate()
-		expect(root.getIsSelected(false)).toBe(false)
+		expect(root.getIsSelected()).toBe(false)
 
 		root.activate()
-		expect(root.getIsSelected(false)).toBe(true)
+		expect(root.getIsSelected()).toBe(true)
 	end)
 
 	-- Initially we were trying to allow any number of nodes to be selected at a
@@ -89,27 +89,27 @@ describe("node activation", function()
 		local child2 = createTreeNodeStore()
 		child2.parentTo(root)
 
-		expect(root.getSelectedDescendants(false)).toEqual({})
-		expect(child1.getIsSelected(false)).toBe(false)
-		expect(child2.getIsSelected(false)).toBe(false)
+		expect(root.getSelectedDescendants()).toEqual({})
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(false)
 
 		child1.activate()
 
-		expect(root.getSelectedDescendants(false)).toEqual({ child1 })
-		expect(child1.getIsSelected(false)).toBe(true)
-		expect(child2.getIsSelected(false)).toBe(false)
+		expect(root.getSelectedDescendants()).toEqual({ child1 })
+		expect(child1.getIsSelected()).toBe(true)
+		expect(child2.getIsSelected()).toBe(false)
 
 		child2.activate()
 
-		expect(root.getSelectedDescendants(false)).toEqual({ child2 })
-		expect(child1.getIsSelected(false)).toBe(false)
-		expect(child2.getIsSelected(false)).toBe(true)
+		expect(root.getSelectedDescendants()).toEqual({ child2 })
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(true)
 
 		child2.activate()
 
-		expect(root.getSelectedDescendants(false)).toEqual({})
-		expect(child1.getIsSelected(false)).toBe(false)
-		expect(child2.getIsSelected(false)).toBe(false)
+		expect(root.getSelectedDescendants()).toEqual({})
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(false)
 	end)
 end)
 
@@ -123,9 +123,9 @@ describe("hierarchy", function()
 		local descendant = createTreeNodeStore()
 		descendant.parentTo(child)
 
-		expect(root.getDescendants(false)).toEqual(expect.arrayContaining({ child, descendant }))
-		expect(child.getDescendants(false)).toEqual({ descendant })
-		expect(descendant.getDescendants(false)).toEqual({})
+		expect(root.getDescendants()).toEqual(expect.arrayContaining({ child, descendant }))
+		expect(child.getDescendants()).toEqual({ descendant })
+		expect(descendant.getDescendants()).toEqual({})
 	end)
 
 	test("ancestors are tracked in descendant nodes", function()
@@ -137,9 +137,9 @@ describe("hierarchy", function()
 		local descendant = createTreeNodeStore()
 		descendant.parentTo(child)
 
-		expect(root.getAncestors(false)).toEqual({})
-		expect(child.getAncestors(false)).toEqual({ root })
-		expect(descendant.getAncestors(false)).toEqual(expect.arrayContaining({ child, root }))
+		expect(root.getAncestors()).toEqual({})
+		expect(child.getAncestors()).toEqual({ root })
+		expect(descendant.getAncestors()).toEqual(expect.arrayContaining({ child, root }))
 	end)
 
 	test("parenting a node to nil removes it from the hierarchy", function()
@@ -154,13 +154,13 @@ describe("hierarchy", function()
 		local childB = createTreeNodeStore()
 		childB.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual(expect.arrayContaining({ childA, childB }))
-		expect(root.getDescendants(false)).toEqual(expect.arrayContaining({ childA, childADescendant, childB }))
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childA, childB }))
+		expect(root.getDescendants()).toEqual(expect.arrayContaining({ childA, childADescendant, childB }))
 
 		childA.parentTo(nil)
 
-		expect(root.getChildren(false)).toEqual({ childB })
-		expect(root.getDescendants(false)).toEqual({ childB })
+		expect(root.getChildren()).toEqual({ childB })
+		expect(root.getDescendants()).toEqual({ childB })
 	end)
 
 	test("moving a node in the hierarchy around works", function()
@@ -175,12 +175,12 @@ describe("hierarchy", function()
 		local childB = createTreeNodeStore()
 		childB.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual(expect.arrayContaining({ childA, childB }))
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childA, childB }))
 
 		childA.parentTo(childB)
 
-		expect(root.getChildren(false)).toEqual(expect.arrayContaining({ childB }))
-		expect(childB.getChildren(false)).toEqual(expect.arrayContaining({ childA }))
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childB }))
+		expect(childB.getChildren()).toEqual(expect.arrayContaining({ childA }))
 	end)
 
 	test("parenting to the same parent is a no-op", function()
@@ -195,7 +195,7 @@ describe("hierarchy", function()
 		-- doing an early exit since the parent is the same.
 		child.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ child })
+		expect(root.getChildren()).toEqual({ child })
 	end)
 
 	test("match for descendants by a predicate", function()
@@ -215,7 +215,7 @@ describe("hierarchy", function()
 		descendant4.parentTo(descendant3)
 
 		local matches = root.findFirstDescendant(function(node)
-			return node.getName(false) == "Match"
+			return node.getName() == "Match"
 		end)
 
 		expect(matches).toEqual(descendant3)
@@ -238,7 +238,7 @@ describe("hierarchy", function()
 		descendant4.parentTo(descendant3)
 
 		local matches = descendant4.findFirstAncestor(function(node)
-			return node.getName(false) == "Match"
+			return node.getName() == "Match"
 		end)
 
 		expect(matches).toEqual(descendant3)
@@ -259,7 +259,7 @@ describe("hierarchy", function()
 		local leaf2 = createTreeNodeStore()
 		leaf2.parentTo(descendant1)
 
-		expect(root.getLeafNodes(false)).toEqual({ leaf2, leaf1 })
+		expect(root.getLeafNodes()).toEqual({ leaf2, leaf1 })
 	end)
 
 	test("clear child nodes", function()
@@ -271,11 +271,11 @@ describe("hierarchy", function()
 			child.parentTo(root)
 		end
 
-		expect(#root.getChildren(false)).toBe(5)
+		expect(#root.getChildren()).toBe(5)
 
 		root.clearChildren()
 
-		expect(#root.getChildren(false)).toBe(0)
+		expect(#root.getChildren()).toBe(0)
 	end)
 
 	test("get the node's full path as a string", function()
@@ -295,7 +295,7 @@ describe("hierarchy", function()
 
 		leaf.parentTo(parent)
 
-		expect(leaf.getPath(false)).toBe("<root>/Child1/Child2/Child3/Leaf")
+		expect(leaf.getPath()).toBe("<root>/Child1/Child2/Child3/Leaf")
 	end)
 
 	test("take a snapshotof the hierarchy", function()
@@ -414,7 +414,7 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
 	end)
 
 	test("basic alphabetical sorting", function()
@@ -438,13 +438,13 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
 
-		root.setSortOrder(function(a, b, scope)
-			return a.getName(scope) < b.getName(scope)
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
 		end)
 
-		expect(root.getChildren(false)).toEqual({ childA, childB, childC, childD })
+		expect(root.getChildren()).toEqual({ childA, childB, childC, childD })
 	end)
 
 	test("specifying the sort function will cascade down to descendants", function()
@@ -474,20 +474,20 @@ describe("node sorting", function()
 		childA.parentTo(descendant2)
 		childB.parentTo(descendant2)
 
-		expect(descendant2.getChildren(false)).toEqual({ childC, childD, childA, childB })
+		expect(descendant2.getChildren()).toEqual({ childC, childD, childA, childB })
 
-		root.setSortOrder(function(a, b, scope)
-			return a.getName(scope) < b.getName(scope)
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
 		end)
 
-		expect(descendant2.getChildren(false)).toEqual({ childA, childB, childC, childD })
+		expect(descendant2.getChildren()).toEqual({ childA, childB, childC, childD })
 	end)
 
 	test("nodes are sorted as they get added", function()
 		local root = createTreeNodeStore()
 
-		root.setSortOrder(function(a, b, scope)
-			return a.getName(scope) < b.getName(scope)
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
 		end)
 
 		local childA = createTreeNodeStore()
@@ -501,15 +501,15 @@ describe("node sorting", function()
 
 		childB.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ childB })
+		expect(root.getChildren()).toEqual({ childB })
 
 		childA.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ childA, childB })
+		expect(root.getChildren()).toEqual({ childA, childB })
 
 		childC.parentTo(root)
 
-		expect(root.getChildren(false)).toEqual({ childA, childB, childC })
+		expect(root.getChildren()).toEqual({ childA, childB, childC })
 	end)
 end)
 
@@ -532,7 +532,7 @@ describe("expand and collapse nodes", function()
 		root.expandDown()
 
 		for _, node in { root, descendant1, descendant2, descendant3, descendant4 } do
-			expect(node.getIsExpanded(false)).toBe(true)
+			expect(node.getIsExpanded()).toBe(true)
 		end
 	end)
 
@@ -553,11 +553,11 @@ describe("expand and collapse nodes", function()
 
 		descendant2.expandUp()
 
-		expect(root.getIsExpanded(false)).toBe(true)
-		expect(descendant1.getIsExpanded(false)).toBe(true)
-		expect(descendant2.getIsExpanded(false)).toBe(true)
-		expect(descendant3.getIsExpanded(false)).toBe(false)
-		expect(descendant4.getIsExpanded(false)).toBe(false)
+		expect(root.getIsExpanded()).toBe(true)
+		expect(descendant1.getIsExpanded()).toBe(true)
+		expect(descendant2.getIsExpanded()).toBe(true)
+		expect(descendant3.getIsExpanded()).toBe(false)
+		expect(descendant4.getIsExpanded()).toBe(false)
 	end)
 
 	test("calling collapseDown on an ancestor node will collapse all descendants", function()
@@ -580,10 +580,10 @@ describe("expand and collapse nodes", function()
 
 		descendant2.collapseDown()
 
-		expect(root.getIsExpanded(false)).toBe(true)
-		expect(descendant1.getIsExpanded(false)).toBe(true)
-		expect(descendant2.getIsExpanded(false)).toBe(false)
-		expect(descendant3.getIsExpanded(false)).toBe(false)
-		expect(descendant4.getIsExpanded(false)).toBe(false)
+		expect(root.getIsExpanded()).toBe(true)
+		expect(descendant1.getIsExpanded()).toBe(true)
+		expect(descendant2.getIsExpanded()).toBe(false)
+		expect(descendant3.getIsExpanded()).toBe(false)
+		expect(descendant4.getIsExpanded()).toBe(false)
 	end)
 end)

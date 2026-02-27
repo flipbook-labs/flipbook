@@ -1,12 +1,12 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local SignalsReact = require("@rbxpkg/SignalsReact")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local LogLine = require("./LogLine")
 local LogsStore = require("./LogsStore")
 
 local useState = React.useState
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 local function LogsView()
 	local logsStore = useSignalState(LogsStore.get)

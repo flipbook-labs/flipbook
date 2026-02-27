@@ -2,7 +2,7 @@ local Selection = game:GetService("Selection")
 
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local SignalsReact = require("@rbxpkg/SignalsReact")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local Types = require("@root/TreeView/types")
@@ -23,7 +23,7 @@ local useMemo = React.useMemo
 local useState = React.useState
 local useRef = React.useRef
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 type TreeNodeStore = Types.TreeNodeStore
 
@@ -55,7 +55,7 @@ local function TreeNode(props: TreeNodeProps)
 		local elements: { [string]: React.ReactNode } = {}
 
 		for index, childNode in nodeChildren do
-			elements[childNode.getName(false)] = e(TreeNode, {
+			elements[childNode.getName()] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
 				onActivated = props.onActivated,

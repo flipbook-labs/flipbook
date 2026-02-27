@@ -1,7 +1,7 @@
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local ReactSignals = require("@rbxpkg/SignalsReact")
+local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
