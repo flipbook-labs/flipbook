@@ -16,6 +16,7 @@ export type PinnedInstanceStore = {
 	isPinned: (instance: Instance) -> boolean,
 	pin: (instance: Instance) -> (),
 	unpin: (instance: Instance) -> (),
+	waitForLoaded: () -> (),
 }
 
 local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInstanceStore
@@ -73,11 +74,16 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 		return Sift.List.has(getPinnedPaths(false), getInstancePath(instance))
 	end
 
+	local function waitForLoaded()
+		return localStorageStore.waitForLoaded()
+	end
+
 	return {
 		pin = pin,
 		unpin = unpin,
 		isPinned = isPinned,
 		getPinnedInstances = getPinnedInstances,
+		waitForLoaded = waitForLoaded,
 	}
 end
 
