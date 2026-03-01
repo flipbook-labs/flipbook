@@ -22,7 +22,7 @@ end
 local function hashDir(dirPath: string): string
 	local hashes = {}
 
-	for _, file in fs.listdir(dirPath) do
+	for _, file in fs.listdirectory(dirPath) do
 		local filePath = `{dirPath}/{file.name}`
 
 		if file.type == "dir" then

@@ -47,7 +47,7 @@ local function compileAsync(context: BuildContext)
 		end,
 	})
 
-	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
 		if fs.type(memberPath) == "dir" then
