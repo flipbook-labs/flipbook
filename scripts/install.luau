@@ -3,42 +3,33 @@ local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 
+local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
--- Install flipbook-batteries first because it has a lot of the useful functions
--- we need when installing the rest of our packages
+local function move(src: path.pathlike, dest: path.pathlike)
+	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
+		stdio = "inherit",
+	})
+	assert(res.ok, res.stderr)
+end
+
+-- Install Loom dependencies first since the rest of the script depends on them
 do
-	local function installFlipbookBatteries()
-		local fileName = "flipbook-batteries.zip"
-
-		local res = process.run({
-			"curl",
-			"-LO",
-			`https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.5.0/{fileName}`,
-		}, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
-		})
-		assert(res.ok, res.stderr)
-
-		res = process.run({
-			"unzip",
-			fileName,
-		}, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
-		})
-		assert(res.ok, res.stderr)
-
-		local zipFile = path.join(project.LUAU_PACKAGES_PATH, fileName)
-
-		fs.remove(zipFile)
-	end
+	local res = process.run({ "lute", "pkg", "install" }, {
+		stdio = "inherit",
+	})
+	assert(res.ok, res.stderr)
 
 	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
 	fs.createdirectory(project.LUAU_PACKAGES_PATH)
 
-	installFlipbookBatteries()
+	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
+	-- packages by moving all the Loom dependencies into LuauPackages
+	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
+		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(project.LUAU_PACKAGES_PATH, dependencyName))
+	end
 end
 
 do
