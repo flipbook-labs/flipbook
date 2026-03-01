@@ -1,8 +1,9 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
+local path = require("@std/path")
 local pp = require("@luaupkg/batteries/pp")
-local process = require("@lute/process")
+local process = require("@std/process")
 local richterm = require("@luaupkg/batteries/richterm")
 local toml = require("@luaupkg/batteries/toml")
 
@@ -15,6 +16,8 @@ local copyInto = FlipbookBatteries.copyInto
 local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 local watch = FlipbookBatteries.watch
+
+local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
@@ -43,7 +46,7 @@ args:add("target", "option", {
 args:add("output", "option", {
 	help = "Full path to the rbxm file to build",
 	aliases = { "o" },
-	default = `{getStudioPluginsPath()}/{project.PLUGIN_FILENAME}`,
+	default = tostring(path.join(getStudioPluginsPath(), project.PLUGIN_FILENAME)),
 })
 args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
@@ -77,10 +80,7 @@ local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function readWallyManifestAsync()
-	local wallyTomlHandle = fs.open("wally.toml", "r")
-	local contents = fs.read(wallyTomlHandle)
-	fs.close(wallyTomlHandle)
-	return toml.deserialize(contents)
+	return toml.deserialize(fs.readfiletostring(WALLY_MANIFEST_PATH))
 end
 
 local function getCommitHash()
@@ -105,7 +105,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/{channel}/{target}`,
+	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -126,17 +126,23 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = `{context.dest}/../default.project.json`
+			local projectPath = path.join(context.dest, "../default.project.json")
 
 			createRojoProjectAsync(projectPath, {
 				name = "Flipbook",
 				tree = {
-					["$path"] = context.dest,
+					["$path"] = tostring(context.dest),
 				},
 			})
 
-			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", projectPath, "-o", dest })
+			local dest = path.join(context.dest, "..", project.PLUGIN_FILENAME)
+
+			run("rojo", {
+				"build",
+				tostring(projectPath),
+				"-o",
+				tostring(dest),
+			})
 
 			fs.remove(projectPath)
 
@@ -181,8 +187,8 @@ if args:has("watch") then
 
 	watch({
 		roots = {
-			`{process.cwd()}/src`,
-			`{process.cwd()}/workspace`,
+			tostring(project.SOURCE_PATH),
+			tostring(project.WORKSPACE_PATH),
 		},
 		excludedFilePatterns = {
 			".*Packages",

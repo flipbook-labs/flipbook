@@ -1,4 +1,5 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+
 local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
@@ -15,9 +16,9 @@ run("curl", {
 
 run("rojo", {
 	"sourcemap",
-	project.ROJO_BUILD_PROJECT,
+	tostring(project.ROJO_BUILD_PROJECT),
 	"-o",
-	project.SOURCEMAP_PATH,
+	tostring(project.SOURCEMAP_PATH),
 })
 
 local defaultArgs = {
@@ -30,7 +31,7 @@ do
 	local args = table.clone(defaultArgs)
 	table.insert(args, "--platform=standard")
 	table.insert(args, "--flag:LuauSolverV2=true")
-	table.insert(args, project.SCRIPTS_PATH)
+	table.insert(args, tostring(project.SCRIPTS_PATH))
 
 	run("luau-lsp", args)
 end
@@ -38,8 +39,8 @@ end
 do
 	local args = table.clone(defaultArgs)
 	table.insert(args, `--sourcemap={project.SOURCEMAP_PATH}`)
-	table.insert(args, project.SOURCE_PATH)
-	table.insert(args, project.WORKSPACE_PATH)
+	table.insert(args, tostring(project.SOURCE_PATH))
+	table.insert(args, tostring(project.WORKSPACE_PATH))
 
 	run("luau-lsp", args)
 end
