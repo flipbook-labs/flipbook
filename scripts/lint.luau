@@ -1,18 +1,26 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local process = require("@lute/process")
+local path = require("@std/path")
+local process = require("@std/process")
 
 local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
 local findWhere = FlipbookBatteries.findWhere
 
+local function pathsToString(paths: { path.pathlike }): { string }
+	local new = {}
+	for _, filePath in paths do
+		table.insert(new, tostring(filePath))
+	end
+	return new
+end
+
 local function findLuaFiles()
 	local result = {}
 
 	for _, folder in project.FOLDERS_TO_LINT do
-		local matches = findWhere(folder, function(path)
-			local isMatch = path:match(".lua$")
-			return isMatch ~= nil
+		local matches = findWhere(folder, function(filePath)
+			return path.extname(filePath) == ".lua"
 		end)
 
 		for _, match in matches do
@@ -23,11 +31,13 @@ local function findLuaFiles()
 	return result
 end
 
-run("selene", project.FOLDERS_TO_LINT)
+local pathsToLint = pathsToString(project.FOLDERS_TO_LINT)
+
+run("selene", pathsToLint)
 
 run("stylua", {
 	"--check",
-	table.unpack(project.FOLDERS_TO_LINT),
+	table.unpack(pathsToLint),
 })
 
 local files = findLuaFiles()
