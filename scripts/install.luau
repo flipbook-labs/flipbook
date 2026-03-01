@@ -1,8 +1,8 @@
 local fs = require("@std/fs")
-local path = require("@std/path")
-local process = require("@lute/process")
-
 local json = require("@std/json")
+local path = require("@std/path")
+local process = require("@std/process")
+
 local project = require("@repo/project")
 
 -- Install flipbook-batteries first because it has a lot of the useful functions

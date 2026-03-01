@@ -3,7 +3,7 @@ local cli = require("@luaupkg/batteries/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
 local pp = require("@luaupkg/batteries/pp")
-local process = require("@lute/process")
+local process = require("@std/process")
 local richterm = require("@luaupkg/batteries/richterm")
 local toml = require("@luaupkg/batteries/toml")
 
