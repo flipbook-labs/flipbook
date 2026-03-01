@@ -165,20 +165,6 @@ do
 		end
 	end
 
-	local function installRbxasset()
-		local fileName = "rbxasset.zip"
-
-		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
-		})
-
-		run("unzip", { "rbxasset.zip" }, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
-		})
-
-		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
-	end
-
 	local function pruneDevelopmentFiles()
 		-- Prune any third-party tests or stories that may have slipped through
 		local prunedFiles = {
@@ -197,7 +183,6 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
-	installRbxasset()
 	installLuteBatteries()
 	pruneDevelopmentFiles()
 end
