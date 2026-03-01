@@ -1,3 +1,4 @@
+local fs = require("@std/fs")
 local process = require("@lute/process")
 local richterm = require("@luaupkg/batteries/richterm")
 
@@ -16,13 +17,15 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local buildCache = buildGroup.context.cache
 	local changedPaths = {}
 
-	for _, path in buildGroup.paths do
-		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{path}`
-		local hash = hashPath(path)
+	for _, filePath in buildGroup.paths do
+		assert(fs.exists(filePath), `attempt to run build group with invalid path (found nothing at {filePath})`)
+
+		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{filePath}`
+		local hash = hashPath(filePath)
 
 		if hash ~= buildCache[key] or buildGroup.context.shouldRebuild then
 			buildCache[key] = hash
-			table.insert(changedPaths, path)
+			table.insert(changedPaths, filePath)
 		end
 	end
 

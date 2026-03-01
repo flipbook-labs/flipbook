@@ -1,45 +1,42 @@
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
+local path = require("@std/path")
 local process = require("@lute/process")
 
 local json = require("@std/json")
 local project = require("@repo/project")
 
-local LUAU_PACKAGES_PATH = "LuauPackages"
-
 -- Install flipbook-batteries first because it has a lot of the useful functions
 -- we need when installing the rest of our packages
 do
 	local function installFlipbookBatteries()
+		local fileName = "flipbook-batteries.zip"
+
 		local res = process.run({
 			"curl",
 			"-LO",
-			"https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.4.2/flipbook-batteries.zip",
+			`https://github.com/flipbook-labs/flipbook-batteries/releases/download/v0.5.0/{fileName}`,
 		}, {
-			cwd = LUAU_PACKAGES_PATH,
+			cwd = tostring(project.LUAU_PACKAGES_PATH),
 		})
 		assert(res.ok, res.stderr)
 
 		res = process.run({
 			"unzip",
-			"flipbook-batteries.zip",
+			fileName,
 		}, {
-			cwd = LUAU_PACKAGES_PATH,
+			cwd = tostring(project.LUAU_PACKAGES_PATH),
 		})
 		assert(res.ok, res.stderr)
 
-		res = process.run({ "rm", "-rf", `{LUAU_PACKAGES_PATH}/flipbook-batteries.zip` }, {
-			stdio = "inherit",
-		})
-		assert(res.ok, res.stderr)
+		local zipFile = path.join(project.LUAU_PACKAGES_PATH, fileName)
+
+		fs.remove(zipFile)
 	end
 
-	local res = process.run({ "rm", "-rf", LUAU_PACKAGES_PATH }, {
-		stdio = "inherit",
+	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
+		recursive = true,
 	})
-	assert(res.ok, res.stderr)
-
-	res = process.run({ "mkdir", LUAU_PACKAGES_PATH })
-	assert(res.ok, res.stderr)
+	fs.createdirectory(project.LUAU_PACKAGES_PATH)
 
 	installFlipbookBatteries()
 end
@@ -55,7 +52,7 @@ do
 	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
 	-- darklua to resolve the string requires to Roblox ones
 	local function patchLuauLog()
-		local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "^luaulog$")[1]
+		local packageRoot = find(path.join(project.PACKAGES_PATH, "_Index"), "^luaulog$")[1]
 
 		local darkluaConfig = {
 			process = {
@@ -73,8 +70,8 @@ do
 			},
 		}
 
-		local handle = fs.open(`{packageRoot}/.darklua.json`, "w+")
-		fs.write(handle, json.serialize(darkluaConfig, true))
+		local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
+		fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 		run("rojo", { "sourcemap", "-o", "sourcemap.json" }, {
 			cwd = packageRoot,
@@ -87,10 +84,10 @@ do
 
 	local function installWallyPackages()
 		run("wally", { "install" })
-		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
+		run("rojo", { "sourcemap", tostring(project.ROJO_BUILD_PROJECT), "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", tostring(project.PACKAGES_PATH) })
 
-		if fs.exists(`{project.PACKAGES_PATH}/Log.lua`) then
+		if fs.exists(path.join(project.PACKAGES_PATH, "Log.lua")) then
 			patchLuauLog()
 		end
 	end
@@ -121,10 +118,14 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			run("rm", { "-rf", dest })
+			fs.removedirectory(dest, {
+				recursive = true,
+			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", dest })
-		run("rm", { "-rf", "RobloxPackagesTmp" })
+		run("mv", { "RobloxPackagesTmp/Packages", tostring(dest) })
+		fs.removedirectory("RobloxPackagesTmp", {
+			recursive = true,
+		})
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
@@ -160,25 +161,31 @@ do
 			"toml.luau",
 		}
 
-		local dest = `{LUAU_PACKAGES_PATH}/batteries`
-		run("mkdir", { "-p", dest })
+		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
+
+		fs.createdirectory(dest, {
+			makeparents = true,
+		})
+
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = dest,
+				cwd = tostring(dest),
 			})
 		end
 	end
 
 	local function installRbxasset()
-		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+		local fileName = "rbxasset.zip"
+
+		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
+			cwd = tostring(project.LUAU_PACKAGES_PATH),
 		})
 
 		run("unzip", { "rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+			cwd = tostring(project.LUAU_PACKAGES_PATH),
 		})
 
-		fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
+		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
 	local function pruneDevelopmentFiles()
@@ -188,9 +195,9 @@ do
 			"*.story.lua*",
 			"*.storybook.lua*",
 		}
-		for _, path in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+		for _, packagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 			for _, pattern in prunedFiles do
-				run("find", { path, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+				run("find", { tostring(packagesPath), "-type", "f", "-name", `"{pattern}"`, "-delete" })
 			end
 		end
 	end
