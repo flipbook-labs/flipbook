@@ -29,7 +29,7 @@ do
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
-	for dependencyName in loomConfig.package.dependencies do
+	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
 		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(LUAU_PACKAGES_PATH, dependencyName))
 	end
 end
