@@ -28,7 +28,18 @@ do
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
 	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(project.LUAU_PACKAGES_PATH, dependencyName))
+		local src = path.join(project.PACKAGES_PATH, dependencyName)
+		local dest = path.join(project.LUAU_PACKAGES_PATH, dependencyName)
+		move(src, dest)
+
+		-- FIXME: Loom doesn't let dependencies have their _own_ dependencies
+		-- yet, so for now we need to run rbxasset's install script ourselves
+		if dependencyName == "rbxasset" then
+			res = process.run({ "lute", "scripts/install.luau" }, {
+				cwd = tostring(dest),
+			})
+			assert(res.ok, res.stderr)
+		end
 	end
 end
 
