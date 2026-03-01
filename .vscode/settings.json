@@ -3,7 +3,7 @@
   "luau-lsp.ignoreGlobs": [
     "**/_Index/**",
     "**/build/**",
-    "*Packages/**",
+    "**/*Packages/**",
     "**/.lute/**"
   ]
 }

@@ -96,6 +96,7 @@ jobs:
   publish-smoketest-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency: ${{ github.ref }}
     environment:
       name: roblox-creator-store-smoketest
     env:
