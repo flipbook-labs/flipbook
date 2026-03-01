@@ -1,4 +1,4 @@
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
 
 local function findAndReplace(filePath: string, match: string, replacement: string)
 	local readHandle = fs.open(filePath, "r")

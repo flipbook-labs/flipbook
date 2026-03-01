@@ -1,8 +1,8 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local fs = require("@lute/fs")
-local project = require("@repo/project")
+local fs = require("@std/fs")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 

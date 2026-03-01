@@ -1,5 +1,5 @@
 local crypto = require("@lute/crypto")
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
 
 local HASH_METHOD = crypto.hash.md5
 
