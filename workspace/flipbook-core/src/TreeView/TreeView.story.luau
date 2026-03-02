@@ -1,8 +1,6 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
-local ContextProviders = require("@root/Common/ContextProviders")
-local MockPlugin = require("@root/Testing/MockPlugin")
 local TreeView = require("@root/TreeView/TreeView")
 local createTreeNodeStore = require("@root/TreeView/createTreeNodeStore")
 local types = require("@root/TreeView/types")
@@ -116,71 +114,63 @@ do
 	storybook.parentTo(root)
 end
 
-local function Story()
-	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
-
-	local onExpand = useCallback(function()
-		local node = root.findFirstDescendant(function(descendant)
-			return descendant.id == deepStory.id
-		end)
-
-		if node then
-			node.activate()
-			node.expandUp()
-		end
-	end, {})
-
-	useTreeNodeFilter(
-		root,
-		useCallback(function(node: TreeNodeStore)
-			if not searchTerm or searchTerm == "" then
-				return false
-			end
-
-			return node.getName(false):lower():match(searchTerm:lower()) == nil
-		end, { searchTerm })
-	)
-
-	return React.createElement(Foundation.View, {
-		tag = "auto-y col gap-large",
-		Size = UDim2.fromOffset(300, 0),
-	}, {
-		Topbar = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y row gap-large",
-			LayoutOrder = 1,
-		}, {
-			Search = React.createElement(Foundation.TextInput, {
-				text = "",
-				label = "",
-				placeholder = "Search...",
-				size = Foundation.Enums.InputSize.Medium,
-				width = UDim.new(1, 0),
-				iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
-				onChanged = setSearchTerm,
-				LayoutOrder = 1,
-			}),
-
-			ExpandToNode = React.createElement(Foundation.Button, {
-				text = "Expand",
-				size = Foundation.Enums.ButtonSize.Small,
-				onActivated = onExpand,
-				LayoutOrder = 2,
-			}),
-		}),
-
-		TreeView = React.createElement(TreeView, {
-			root = root,
-			layoutOrder = 2,
-		}),
-	})
-end
-
 return {
 	story = function()
-		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
+		local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+
+		local onExpand = useCallback(function()
+			local node = root.findFirstDescendant(function(descendant)
+				return descendant.id == deepStory.id
+			end)
+
+			if node then
+				node.activate()
+				node.expandUp()
+			end
+		end, {})
+
+		useTreeNodeFilter(
+			root,
+			useCallback(function(node: TreeNodeStore)
+				if not searchTerm or searchTerm == "" then
+					return false
+				end
+
+				return node.getName(false):lower():match(searchTerm:lower()) == nil
+			end, { searchTerm })
+		)
+
+		return React.createElement(Foundation.View, {
+			tag = "auto-y col gap-large",
+			Size = UDim2.fromOffset(300, 0),
 		}, {
-			Story = React.createElement(Story),
+			Topbar = React.createElement(Foundation.View, {
+				tag = "size-full-0 auto-y row gap-large",
+				LayoutOrder = 1,
+			}, {
+				Search = React.createElement(Foundation.TextInput, {
+					text = "",
+					label = "",
+					placeholder = "Search...",
+					size = Foundation.Enums.InputSize.Medium,
+					width = UDim.new(1, 0),
+					iconLeading = Foundation.Enums.IconName.MagnifyingGlass,
+					onChanged = setSearchTerm,
+					LayoutOrder = 1,
+				}),
+
+				ExpandToNode = React.createElement(Foundation.Button, {
+					text = "Expand",
+					size = Foundation.Enums.ButtonSize.Small,
+					onActivated = onExpand,
+					LayoutOrder = 2,
+				}),
+			}),
+
+			TreeView = React.createElement(TreeView, {
+				root = root,
+				layoutOrder = 2,
+			}),
 		})
 	end,
 }

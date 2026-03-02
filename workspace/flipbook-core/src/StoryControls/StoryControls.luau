@@ -113,6 +113,9 @@ local function StoryControls(props: StoryControlsProps)
 				CanvasSize = UDim2.fromScale(0, 0),
 				ScrollingDirection = Enum.ScrollingDirection.Y,
 			},
+			layout = {
+				FillDirection = Enum.FillDirection.Vertical,
+			},
 			tag = "col shrink size-full",
 		}, {
 			Header = e(View, {
