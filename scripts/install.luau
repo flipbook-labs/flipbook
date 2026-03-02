@@ -1,7 +1,7 @@
-local fs = require("@lute/fs")
-local process = require("@lute/process")
-
+local fs = require("@std/fs")
 local json = require("@std/json")
+local process = require("@std/process")
+
 local project = require("@repo/project")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
