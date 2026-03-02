@@ -20,8 +20,7 @@ local function findLuaFiles()
 
 	for _, folder in project.FOLDERS_TO_LINT do
 		local matches = findWhere(folder, function(filePath)
-			local isMatch = tostring(filePath):match(".lua$")
-			return isMatch ~= nil
+			return path.extname(filePath) == ".lua"
 		end)
 
 		for _, match in matches do
