@@ -1,4 +1,4 @@
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
 local toml = require("@luaupkg/batteries/toml")
 
 export type VersionComponent = "major" | "minor" | "patch"
