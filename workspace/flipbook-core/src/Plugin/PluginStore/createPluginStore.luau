@@ -1,8 +1,10 @@
 local Charm = require("@pkg/Charm")
 
+local CharmTypes = require("@root/Common/CharmTypes")
+
 export type PluginStore = {
-	getPlugin: () -> Plugin?,
-	setPlugin: (((Plugin?) -> Plugin?) | Plugin?) -> Plugin?,
+	getPlugin: CharmTypes.Getter<Plugin?>,
+	setPlugin: CharmTypes.Setter<Plugin?>,
 }
 
 --[[

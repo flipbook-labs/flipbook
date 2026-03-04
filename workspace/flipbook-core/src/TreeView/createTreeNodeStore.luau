@@ -3,6 +3,7 @@ local HttpService = game:GetService("HttpService")
 local Charm = require("@pkg/Charm")
 local Sift = require("@pkg/Sift")
 
+local CharmTypes = require("@root/Common/CharmTypes")
 local types = require("@root/TreeView/types")
 
 type TreeNodeStore = types.TreeNodeStore
@@ -82,7 +83,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- Because this isn't scoped newly added descendants won't have the same
 		-- sorting function. This is aleviated by parentTo assigning the new
 		-- parent's sorting function to the node being moved
-		for _, descendant in getDescendants() do
+		for _, descendant in Charm.untracked(getDescendants) do
 			descendant.setSortOrder(sort)
 		end
 	end
@@ -130,7 +131,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end)
 
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, descendant in getDescendants() do
+		for _, descendant in Charm.untracked(getDescendants) do
 			if predicate(descendant) then
 				return descendant
 			end
@@ -139,7 +140,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function findFirstAncestor(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, ancestor in getAncestors() do
+		for _, ancestor in Charm.untracked(getAncestors) do
 			if predicate(ancestor) then
 				return ancestor
 			end
@@ -148,7 +149,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function parentTo(newParent: TreeNodeStore?)
-		local parent = getParent()
+		local parent = Charm.untracked(getParent)
 
 		if parent ~= nil then
 			if newParent == parent then
@@ -170,46 +171,46 @@ local function createTreeNodeStore(): TreeNodeStore
 			end)
 
 			-- Inherit the sorting function from the new parent
-			setSortOrder(newParent.getSortOrder())
+			setSortOrder(Charm.untracked(newParent.getSortOrder))
 		end
 	end
 
 	local function clearChildren()
-		for _, child in getChildren() do
+		for _, child in Charm.untracked(getChildren) do
 			child.parentTo(nil)
 		end
 	end
 
 	local function expandDown()
 		setIsExpanded(true)
-		for _, descendant in getDescendants() do
+		for _, descendant in Charm.untracked(getDescendants) do
 			descendant.setIsExpanded(true)
 		end
 	end
 
 	local function expandUp()
 		setIsExpanded(true)
-		for _, ancestor in getAncestors() do
+		for _, ancestor in Charm.untracked(getAncestors) do
 			ancestor.setIsExpanded(true)
 		end
 	end
 
 	local function collapseDown()
 		setIsExpanded(false)
-		for _, ancestor in getDescendants() do
-			ancestor.setIsExpanded(false)
+		for _, descendant in Charm.untracked(getDescendants) do
+			descendant.setIsExpanded(false)
 		end
 	end
 
 	local function activate()
-		if #getUnsortedChildren() > 0 then
+		if #Charm.untracked(getUnsortedChildren) > 0 then
 			setIsExpanded(function(prev)
 				return not prev
 			end)
 		else
-			local root = getRoot()
+			local root = Charm.untracked(getRoot)
 			if root then
-				for _, selection in root.getSelectedDescendants() do
+				for _, selection in Charm.untracked(root.getSelectedDescendants) do
 					if selection ~= self then
 						selection.setIsSelected(false)
 					end
@@ -225,14 +226,14 @@ local function createTreeNodeStore(): TreeNodeStore
 	local function snapshot(): TreeNodeSnapshot
 		local root = {
 			id = id,
-			name = getName(),
-			icon = getIcon(),
-			isVisible = getIsVisible(),
-			isSelected = getIsSelected(),
+			name = Charm.untracked(getName),
+			icon = Charm.untracked(getIcon),
+			isVisible = Charm.untracked(getIsVisible),
+			isSelected = Charm.untracked(getIsSelected),
 			children = {},
 		}
 
-		for _, child in getUnsortedChildren() do
+		for _, child in Charm.untracked(getUnsortedChildren) do
 			table.insert(root.children, child.snapshot())
 		end
 
@@ -246,7 +247,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getName = getName,
 		setName = setName,
 		getIcon = getIcon :: () -> TreeNodeIcon?,
-		setIcon = (setIcon :: any) :: (TreeNodeIcon? | (TreeNodeIcon?) -> TreeNodeIcon?) -> TreeNodeIcon?,
+		setIcon = (setIcon :: any) :: CharmTypes.Setter<TreeNodeIcon?>,
 		getIsVisible = getIsVisible,
 		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,

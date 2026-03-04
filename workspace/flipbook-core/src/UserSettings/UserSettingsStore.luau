@@ -33,8 +33,10 @@ for key in defaultSettings do
 	assert(defaultValue[key] ~= nil, "setting with key {key} is missing from UserSettingsStore")
 end
 
+-- Initialize the store eagerly at module level so createPluginSettingsStore's
+-- internal Charm.effect is a top-level effect, not one nested inside a computed.
+local get = Charm.signal(createPluginSettingsStore("FlipbookUserSettings", defaultValue, validate))
+
 return {
-	get = Charm.computed(function()
-		return createPluginSettingsStore("FlipbookUserSettings", defaultValue, validate)
-	end),
+	get = get,
 }

@@ -1,3 +1,5 @@
+local CharmTypes = require("@root/Common/CharmTypes")
+
 local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
@@ -19,47 +21,47 @@ export type TreeNodeStore = {
 	id: string,
 
 	-- Node properties and states
-	getName: () -> string,
-	setName: (string | (string) -> string) -> string,
-	getIcon: () -> TreeNodeIcon?,
-	setIcon: (TreeNodeIcon? | (TreeNodeIcon?) -> TreeNodeIcon?) -> TreeNodeIcon?,
-	getIsSelected: () -> boolean,
-	setIsSelected: (boolean | (boolean) -> boolean) -> boolean,
-	getIsVisible: () -> boolean,
-	setIsVisible: (boolean | (boolean) -> boolean) -> boolean,
+	getName: CharmTypes.Getter<string>,
+	setName: CharmTypes.Setter<string>,
+	getIcon: CharmTypes.Getter<TreeNodeIcon?>,
+	setIcon: CharmTypes.Setter<TreeNodeIcon?>,
+	getIsSelected: CharmTypes.Getter<boolean>,
+	setIsSelected: CharmTypes.Setter<boolean>,
+	getIsVisible: CharmTypes.Getter<boolean>,
+	setIsVisible: CharmTypes.Setter<boolean>,
 	activate: () -> (),
-	getIsFiltered: () -> boolean,
-	setIsFiltered: (boolean | (boolean) -> boolean) -> boolean,
-	getIsPinned: () -> boolean,
-	setIsPinned: (boolean | (boolean) -> boolean) -> boolean,
+	getIsFiltered: CharmTypes.Getter<boolean>,
+	setIsFiltered: CharmTypes.Setter<boolean>,
+	getIsPinned: CharmTypes.Getter<boolean>,
+	setIsPinned: CharmTypes.Setter<boolean>,
 
 	-- Expand/Collapse
-	getIsExpanded: () -> boolean,
-	setIsExpanded: (boolean | (boolean) -> boolean) -> boolean,
+	getIsExpanded: CharmTypes.Getter<boolean>,
+	setIsExpanded: CharmTypes.Setter<boolean>,
 	expandDown: () -> (),
 	expandUp: () -> (),
 	collapseDown: () -> (),
 
 	-- Hierarchy
-	getChildren: () -> { TreeNodeStore },
-	setChildren: ({ TreeNodeStore } | ({ TreeNodeStore }) -> { TreeNodeStore }) -> { TreeNodeStore },
-	getAncestors: () -> { TreeNodeStore },
-	getDescendants: () -> { TreeNodeStore },
-	getLeafNodes: () -> { TreeNodeStore },
-	getPath: () -> string,
-	getSelectedDescendants: () -> { TreeNodeStore },
-	getPinnedDescendants: () -> { TreeNodeStore },
-	getParent: () -> TreeNodeStore?,
+	getChildren: CharmTypes.Getter<{ TreeNodeStore }>,
+	setChildren: CharmTypes.Setter<{ TreeNodeStore }>,
+	getAncestors: CharmTypes.Getter<{ TreeNodeStore }>,
+	getDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getLeafNodes: CharmTypes.Getter<{ TreeNodeStore }>,
+	getPath: CharmTypes.Getter<string>,
+	getSelectedDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getPinnedDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getParent: CharmTypes.Getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),
 	clearChildren: () -> (),
 	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
 	findFirstAncestor: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
-	getSortOrder: () -> TreeNodeSort?,
+	getSortOrder: CharmTypes.Getter<TreeNodeSort?>,
 	setSortOrder: (sort: TreeNodeSort?) -> (),
 
 	-- DataModel
-	getInstance: () -> Instance?,
-	setInstance: (Instance? | (Instance?) -> Instance?) -> Instance?,
+	getInstance: CharmTypes.Getter<Instance?>,
+	setInstance: CharmTypes.Setter<Instance?>,
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,

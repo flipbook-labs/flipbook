@@ -587,3 +587,100 @@ describe("expand and collapse nodes", function()
 		expect(descendant4.getIsExpanded()).toBe(false)
 	end)
 end)
+
+describe("leaf nodes", function()
+	test("getLeafNodes returns all nodes without children", function()
+		local root = createTreeNodeStore()
+
+		local branch1 = createTreeNodeStore()
+		branch1.parentTo(root)
+
+		local branch2 = createTreeNodeStore()
+		branch2.parentTo(root)
+
+		local leaf1 = createTreeNodeStore()
+		leaf1.parentTo(branch1)
+
+		local leaf2 = createTreeNodeStore()
+		leaf2.parentTo(branch1)
+
+		local leaf3 = createTreeNodeStore()
+		leaf3.parentTo(branch2)
+
+		-- branch1 and branch2 have children, so only the leaves are returned
+		expect(root.getLeafNodes()).toEqual(expect.arrayContaining({ leaf1, leaf2, leaf3 }))
+		expect(#root.getLeafNodes()).toBe(3)
+	end)
+
+	test("a node with no children is itself a leaf", function()
+		local root = createTreeNodeStore()
+		expect(root.getLeafNodes()).toEqual({})
+
+		-- A node only counts leaves among its descendants, not itself
+		local leaf = createTreeNodeStore()
+		leaf.parentTo(root)
+
+		expect(root.getLeafNodes()).toEqual({ leaf })
+	end)
+end)
+
+describe("selected descendants", function()
+	test("getSelectedDescendants returns all selected descendants", function()
+		local root = createTreeNodeStore()
+
+		local child1 = createTreeNodeStore()
+		child1.parentTo(root)
+
+		local child2 = createTreeNodeStore()
+		child2.parentTo(root)
+
+		local grandchild = createTreeNodeStore()
+		grandchild.parentTo(child1)
+
+		expect(root.getSelectedDescendants()).toEqual({})
+
+		child1.setIsSelected(true)
+		grandchild.setIsSelected(true)
+
+		expect(root.getSelectedDescendants()).toEqual(expect.arrayContaining({ child1, grandchild }))
+		expect(#root.getSelectedDescendants()).toBe(2)
+
+		child1.setIsSelected(false)
+
+		expect(root.getSelectedDescendants()).toEqual({ grandchild })
+	end)
+end)
+
+describe("finding ancestors", function()
+	test("findFirstAncestor returns the first ancestor matching a predicate", function()
+		local root = createTreeNodeStore()
+		root.setName("root")
+
+		local child = createTreeNodeStore()
+		child.setName("child")
+		child.parentTo(root)
+
+		local grandchild = createTreeNodeStore()
+		grandchild.setName("grandchild")
+		grandchild.parentTo(child)
+
+		local result = grandchild.findFirstAncestor(function(node)
+			return node.getName() == "root"
+		end)
+
+		expect(result).toBe(root)
+	end)
+
+	test("findFirstAncestor returns nil when no ancestor matches", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		local result = child.findFirstAncestor(function(node)
+			return node.getName() == "nonexistent"
+		end)
+
+		expect(result).toBeUndefined()
+	end)
+end)

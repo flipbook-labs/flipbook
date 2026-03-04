@@ -2,17 +2,18 @@ local HttpService = game:GetService("HttpService")
 
 local Charm = require("@pkg/Charm")
 
+local CharmTypes = require("@root/Common/CharmTypes")
 local PluginStore = require("@root/Plugin/PluginStore")
 local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
-	getStorage: () -> T,
-	setStorage: (T | (T) -> T) -> T,
+	getStorage: CharmTypes.Getter<T>,
+	setStorage: CharmTypes.Setter<T>,
 
 	isSettingDefault: (settingName: string) -> boolean,
 
-	getIsLoading: () -> boolean,
-	getErr: () -> string?,
+	getIsLoading: CharmTypes.Getter<boolean>,
+	getErr: CharmTypes.Getter<string?>,
 
 	waitForLoaded: () -> (),
 }
@@ -111,13 +112,15 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local function setStorageInternal(newValue: T | (T) -> T): T
+	local function setStorageInternal(newValue: CharmTypes.Update<T>): T
 		setStorageSignal(newValue)
 
-		local newStorage = getStorage()
+		local newStorage = Charm.untracked(getStorage)
 
 		if newStorage ~= prevStorage then
-			local plugin = PluginStore.get().getPlugin()
+			local plugin = Charm.untracked(function()
+				return PluginStore.get().getPlugin()
+			end)
 
 			if plugin then
 				task.spawn(function()
@@ -133,9 +136,9 @@ local function createPluginSettingsStore<T>(
 		return newStorage
 	end
 
-	local function setStorage(newValue: T | (T) -> T): T
+	local function setStorage(newValue: CharmTypes.Update<T>): T
 		assert(
-			not getIsLoading(),
+			not Charm.untracked(getIsLoading),
 			"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
 		)
 
@@ -177,7 +180,7 @@ local function createPluginSettingsStore<T>(
 	end
 
 	local function isSettingDefault(settingName: string): boolean
-		local storage = getStorage()
+		local storage = Charm.untracked(getStorage)
 		if typeof(defaultValue) ~= "table" or typeof(storage) ~= "table" then
 			return true
 		end
