@@ -1,5 +1,5 @@
 local cli = require("@luaupkg/batteries/cli")
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
 
 local findAndReplace = require("@scripts/lib/findAndReplace")
 local semver = require("@scripts/lib/semver")

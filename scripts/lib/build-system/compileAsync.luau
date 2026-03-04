@@ -1,8 +1,8 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local fs = require("@lute/fs")
-local project = require("@repo/project")
+local fs = require("@std/fs")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
@@ -47,7 +47,7 @@ local function compileAsync(context: BuildContext)
 		end,
 	})
 
-	for _, member in fs.listdir(project.WORKSPACE_PATH) do
+	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
 		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
 		if fs.type(memberPath) == "dir" then

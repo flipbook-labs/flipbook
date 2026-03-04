@@ -1,5 +1,5 @@
-local process = require("@lute/process")
-local system = require("@lute/system")
+local process = require("@std/process")
+local system = require("@std/system")
 
 local function getStudioPluginPath()
 	if system.os == "Darwin" then
