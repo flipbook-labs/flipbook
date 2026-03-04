@@ -9,6 +9,7 @@ local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
 local LUAU_PACKAGES_PATH = "LuauPackages"
+local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.pathlike, dest: path.pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
@@ -55,7 +56,7 @@ do
 		}
 
 		for _, package in packages do
-			local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, package)[1]
+			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
 
 			assert(packageRoot, `no package found matching "{package}"`)
 
@@ -76,8 +77,8 @@ do
 				},
 			}
 
-			local handle = fs.open(`{packageRoot}/.darklua.json`, "w+")
-			fs.write(handle, json.serialize(darkluaConfig, true))
+			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
+			fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 			run("darklua", { "process", "src", "src" }, {
 				cwd = packageRoot,
