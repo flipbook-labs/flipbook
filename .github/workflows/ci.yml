@@ -53,6 +53,8 @@ jobs:
   build-package:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      pull-requests: write
     strategy:
       matrix:
         package: [flipbook-core]
@@ -77,6 +79,12 @@ jobs:
       - name: Build
         run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
+      - name: Check path lengths
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/check-path-lengths
+        with:
+          artifact: build/${{ matrix.package }}-${{ matrix.target }}/src
+
       - name: Zip everything up
         run: |
           cd build/
@@ -90,79 +98,6 @@ jobs:
         with:
           path: ${{ env.ARTIFACT_NAME }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
-
-  check-path-lengths:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: build-package
-    permissions:
-      pull-requests: write
-    env:
-      ARTIFACT_NAME: flipbook-core-rotriever-prod
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Install dependencies
-        run: lute scripts/install.luau
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.ARTIFACT_NAME }}
-
-      - name: Unzip artifact
-        run: unzip ${{ env.ARTIFACT_NAME }}.zip
-
-      - name: Check path lengths
-        id: check
-        # We need to use a heredoc to safely capture multi-line output from
-        # check-path-lengths.luau
-        run: |
-          {
-            echo 'longPaths<<EOF'
-            lute scripts/check-path-lengths.luau --artifact ${{ env.ARTIFACT_NAME }}
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Find existing PR comment
-        uses: peter-evans/find-comment@v3
-        id: find-comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: github-actions[bot]
-          body-includes: "<!-- path-length-check -->"
-
-      - name: Post or update PR comment
-        if: steps.check.outputs.longPaths != ''
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          edit-mode: replace
-          body: |
-            <!-- path-length-check -->
-            ## :warning: Path Length Issues
-
-            The following paths in the `${{ env.ARTIFACT_NAME }}` artifact exceed the **163** character limit:
-
-            ```
-            ${{ steps.check.outputs.longPaths }}
-            ```
-
-      - name: Delete resolved PR comment
-        if: steps.check.outputs.longPaths == '' && steps.find-comment.outputs.comment-id != ''
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.deleteComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: ${{ steps.find-comment.outputs.comment-id }},
-            });
 
   analyze:
     runs-on: ubuntu-latest
