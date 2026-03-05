@@ -4,7 +4,7 @@ return {
 		version = "2.4.0",
 		dependencies = {
 			["flipbook-batteries"] = {
-				rev = "display-stdout-on-error",
+				rev = "run-ergonomics",
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/flipbook-batteries",
 			},
