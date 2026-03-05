@@ -85,7 +85,7 @@ end
 
 local function getCommitHash()
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
-		stdio = "default",
+		captureOutput = true,
 	})
 	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
 	return commitHash
