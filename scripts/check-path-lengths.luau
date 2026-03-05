@@ -1,7 +1,6 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local path = require("@std/path")
-local process = require("@std/process")
 
 local findWhere = FlipbookBatteries.findWhere
 
@@ -18,20 +17,17 @@ args:add("artifact", "option", {
 
 args:parse({ ... })
 
-local artifactRoot = path.normalize(args:get("artifact"))
+local artifactRoot =
+	assert(args:get("artifact"), "Please supply the --artifact flag with a path to one of the build artifacts.")
+
+artifactRoot = path.normalize(artifactRoot)
 
 local longPaths = findWhere(artifactRoot, function(filePath)
 	local relativePath = tostring(filePath):sub(#tostring(artifactRoot) + 1)
 	return #relativePath > MAX_ALLOWED
 end)
 
-if #longPaths > 0 then
-	print(`[err] the following paths exceed the {MAX_ALLOWED} character limit:`)
-	for _, longPath in longPaths do
-		local relativePath = path.relative(artifactRoot, longPath)
-		print(`  ({#tostring(relativePath)}) {relativePath}`)
-	end
-	process.exit(1)
+for _, longPath in longPaths do
+	local relativePath = path.relative(artifactRoot, longPath)
+	print(`({#tostring(relativePath)}) {relativePath}`)
 end
-
-print(`all paths are within the {MAX_ALLOWED} character limit`)
