@@ -77,9 +77,6 @@ jobs:
       - name: Build
         run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
-      - name: Check path lengths
-        run: lute scripts/check-path-lengths.luau --artifact build/${{ matrix.channel }}/${{ matrix.target }}
-
       - name: Zip everything up
         run: |
           cd build/
@@ -93,6 +90,39 @@ jobs:
         with:
           path: ${{ env.ARTIFACT_NAME }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
+
+  check-path-lengths:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: build-package
+    continue-on-error: true
+    strategy:
+      matrix:
+        package: [flipbook-core]
+        target: [rotriever]
+        channel: [prod]
+      fail-fast: false
+    env:
+      ARTIFACT_NAME: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute scripts/install.luau
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
+
+      - name: Unzip artifact
+        run: unzip ${{ env.ARTIFACT_NAME }}
+
+      - name: Check path lengths
+        run: lute scripts/check-path-lengths.luau --artifact ${{ matrix.package }}-${{ matrix.target }}
 
   analyze:
     runs-on: ubuntu-latest
