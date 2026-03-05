@@ -3,8 +3,8 @@ return {
   package = {
     {
       name = "flipbook-batteries",
-      rev = "v0.5.0",
-      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/v0.5.0.zip",
+      rev = "display-stdout-on-error",
+      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/display-stdout-on-error.zip",
       sourceKind = "github",
     },
   },

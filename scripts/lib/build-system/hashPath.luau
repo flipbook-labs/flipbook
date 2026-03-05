@@ -17,7 +17,7 @@ local function hashFile(filePath: path.pathlike): string
 	return bufferToHex(crypto.digest(HASH_METHOD, content))
 end
 
-local function hashDir(dirPath: string): string
+local function hashDir(dirPath: path.pathlike): string
 	local hashes = {}
 
 	for _, file in fs.listdirectory(dirPath) do

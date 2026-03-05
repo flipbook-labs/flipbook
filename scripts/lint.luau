@@ -31,9 +31,9 @@ local function findLuaFiles()
 	return result
 end
 
-local pathsToLint = pathsToString(project.FOLDERS_TO_LINT)
+local pathsToLint = pathsToString({ table.unpack(project.FOLDERS_TO_LINT) })
 
-run("selene", pathsToLint)
+run("selene", { table.unpack(pathsToLint) })
 
 run("stylua", {
 	"--check",

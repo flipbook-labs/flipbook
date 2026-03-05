@@ -139,15 +139,15 @@ local function buildPluginBinary()
 
 			run("rojo", {
 				"build",
-				tostring(projectPath),
+				projectPath,
 				"-o",
-				tostring(dest),
+				dest,
 			})
 
 			fs.remove(projectPath)
 
 			if args:has("skip-reload") then
-				if output:match(getStudioPluginsPath()) then
+				if output:match(tostring(getStudioPluginsPath())) then
 					return
 				end
 			end
@@ -160,7 +160,9 @@ end
 local function build()
 	local startTime = os.clock()
 
-	print(richterm.dim(`build context: {pp(context)}`))
+	local contextNoCache = table.clone(context)
+	contextNoCache.cache = nil :: any
+	print(richterm.dim(`build context: {pp(contextNoCache)}`))
 
 	buildSystem.compileAsync(context)
 	buildSystem.writeBuildCacheAsync(context.cache)
@@ -174,8 +176,8 @@ build()
 
 if args:has("watch") then
 	local function onChanged(filePath: string)
-		if filePath:match(project.WORKSPACE_PATH) then
-			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+		if filePath:match(tostring(project.WORKSPACE_PATH)) then
+			local memberPath = filePath:match(`({tostring(project.WORKSPACE_PATH)}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
 

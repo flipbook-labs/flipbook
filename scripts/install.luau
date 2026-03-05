@@ -75,8 +75,8 @@ do
 
 	local function installWallyPackages()
 		run("wally", { "install" })
-		run("rojo", { "sourcemap", tostring(project.ROJO_BUILD_PROJECT), "-o", "sourcemap.json" })
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", tostring(project.PACKAGES_PATH) })
+		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
 		if fs.exists(path.join(project.PACKAGES_PATH, "Log.lua")) then
 			patchLuauLog()
@@ -160,7 +160,7 @@ do
 
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = tostring(dest),
+				cwd = dest,
 			})
 		end
 	end
@@ -169,11 +169,11 @@ do
 		local fileName = "rbxasset.zip"
 
 		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
 		run("unzip", { "rbxasset.zip" }, {
-			cwd = tostring(project.LUAU_PACKAGES_PATH),
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
 		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
@@ -188,7 +188,7 @@ do
 		}
 		for _, packagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 			for _, pattern in prunedFiles do
-				run("find", { tostring(packagesPath), "-type", "f", "-name", `"{pattern}"`, "-delete" })
+				run("find", { packagesPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 			end
 		end
 	end
