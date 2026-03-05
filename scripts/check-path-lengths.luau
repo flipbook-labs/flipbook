@@ -21,12 +21,12 @@ args:parse({ ... })
 local artifactRoot = path.normalize(args:get("artifact"))
 
 local longPaths = findWhere(artifactRoot, function(filePath)
-	local relativePath = tostring(filePath):sub(PREFIX_LENGTH)
+	local relativePath = tostring(filePath):sub(#tostring(artifactRoot) + 1)
 	return #relativePath > MAX_ALLOWED
 end)
 
 if #longPaths > 0 then
-	print(`[err] the following {#longPaths} path(s) exceed the {MAX_ALLOWED} character limit:`)
+	print(`[err] the following paths exceed the {MAX_ALLOWED} character limit:`)
 	for _, longPath in longPaths do
 		local relativePath = path.relative(artifactRoot, longPath)
 		print(`  ({#tostring(relativePath)}) {relativePath}`)
