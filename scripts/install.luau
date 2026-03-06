@@ -51,8 +51,8 @@ do
 	local function patchStringRequires()
 		local packages = {
 			"^luaulog$",
-			"^charm$",
-			"^react%-charm$",
+			-- "^charm$",
+			-- "^react%-charm$",
 		}
 
 		for _, package in packages do
