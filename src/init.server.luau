@@ -4,6 +4,10 @@ if RunService:IsRunning() or not RunService:IsEdit() then
 	return
 end
 
+if _G.BUILD_CHANNEL == "development" then
+	_G.__DEV__ = true
+end
+
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
 local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` [{_G.BUILD_HASH}]` else ""
