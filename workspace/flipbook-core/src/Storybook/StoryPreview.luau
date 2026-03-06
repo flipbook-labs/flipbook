@@ -60,6 +60,9 @@ local function StoryPreview(props: Props): React.Node
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
 			CanvasSize = UDim2.new(0, 0),
 		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
+		},
 		LayoutOrder = props.LayoutOrder,
 		ref = storyActions.storyContainerRef,
 	}, {
