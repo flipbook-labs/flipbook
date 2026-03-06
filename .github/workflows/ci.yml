@@ -10,6 +10,7 @@ permissions:
   id-token: write
   attestations: write
   artifact-metadata: write
+  pull-requests: write
 
 jobs:
   build-plugin:
@@ -53,8 +54,6 @@ jobs:
   build-package:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions:
-      pull-requests: write
     strategy:
       matrix:
         package: [flipbook-core]
