@@ -40,7 +40,7 @@ dependencies = []
 [[package]]
 name = "flipbook-labs/flipbook"
 version = "2.4.0"
-dependencies = [["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.5.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
+dependencies = [["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.7.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.5.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "flipbook-labs/module-loader"
@@ -326,6 +326,16 @@ dependencies = [["luau-polyfill", "jsdotlua/luau-polyfill@1.2.7"], ["promise", "
 name = "jsdotlua/timers"
 version = "1.2.7"
 dependencies = [["collections", "jsdotlua/collections@1.2.7"]]
+
+[[package]]
+name = "littensy/charm"
+version = "0.11.0-rc.4"
+dependencies = []
+
+[[package]]
+name = "littensy/react-charm"
+version = "0.4.0-rc.3"
+dependencies = [["Charm", "littensy/charm@0.11.0-rc.4"], ["React", "jsdotlua/react@17.2.1"]]
 
 [[package]]
 name = "osyrisrblx/t"
