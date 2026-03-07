@@ -28,6 +28,9 @@ local function LogsView()
 			CanvasSize = UDim2.fromScale(1, 0),
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
+		},
 	}, children)
 end
 
