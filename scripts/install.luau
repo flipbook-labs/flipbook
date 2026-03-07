@@ -6,8 +6,6 @@ local process = require("@std/process")
 local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
-local LUAU_PACKAGES_PATH = "LuauPackages"
-
 local function move(src: path.pathlike, dest: path.pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
 		stdio = "inherit",
@@ -22,15 +20,15 @@ do
 	})
 	assert(res.ok, res.stderr)
 
-	fs.removedirectory(LUAU_PACKAGES_PATH, {
+	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createdirectory(LUAU_PACKAGES_PATH)
+	fs.createdirectory(project.LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
 	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(LUAU_PACKAGES_PATH, dependencyName))
+		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(project.LUAU_PACKAGES_PATH, dependencyName))
 	end
 end
 
@@ -45,7 +43,7 @@ do
 	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
 	-- darklua to resolve the string requires to Roblox ones
 	local function patchLuauLog()
-		local packageRoot = find(`{project.PACKAGES_PATH}/_Index`, "^luaulog$")[1]
+		local packageRoot = find(path.join(project.PACKAGES_PATH, "_Index"), "^luaulog$")[1]
 
 		local darkluaConfig = {
 			process = {
@@ -63,8 +61,8 @@ do
 			},
 		}
 
-		local handle = fs.open(`{packageRoot}/.darklua.json`, "w+")
-		fs.write(handle, json.serialize(darkluaConfig, true))
+		local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
+		fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 		run("rojo", { "sourcemap", "-o", "sourcemap.json" }, {
 			cwd = packageRoot,
@@ -80,7 +78,7 @@ do
 		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
-		if fs.exists(`{project.PACKAGES_PATH}/Log.lua`) then
+		if fs.exists(path.join(project.PACKAGES_PATH, "Log.lua")) then
 			patchLuauLog()
 		end
 	end
@@ -111,10 +109,14 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			run("rm", { "-rf", dest })
+			fs.removedirectory(dest, {
+				recursive = true,
+			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", dest })
-		run("rm", { "-rf", "RobloxPackagesTmp" })
+		run("mv", { "RobloxPackagesTmp/Packages", tostring(dest) })
+		fs.removedirectory("RobloxPackagesTmp", {
+			recursive = true,
+		})
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
@@ -150,8 +152,12 @@ do
 			"toml.luau",
 		}
 
-		local dest = `{LUAU_PACKAGES_PATH}/batteries`
-		run("mkdir", { "-p", dest })
+		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
+
+		fs.createdirectory(dest, {
+			makeparents = true,
+		})
+
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
 				cwd = dest,
@@ -160,15 +166,17 @@ do
 	end
 
 	local function installRbxasset()
-		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+		local fileName = "rbxasset.zip"
+
+		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
 		run("unzip", { "rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
-		fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
+		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
 	local function pruneDevelopmentFiles()
