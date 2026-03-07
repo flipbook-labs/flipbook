@@ -28,10 +28,10 @@ return {
 
 	PROD_CONFIG = {
 		prunedDirs = {
-			"workspace/code-samples",
-			"workspace/example",
-			"workspace/template",
-			"workspace/test-runner",
+			path.resolve("./workspace/code-samples"),
+			path.resolve("./workspace/example"),
+			path.resolve("./workspace/template"),
+			path.resolve("./workspace/test-runner"),
 		},
 		prunedFiles = {
 			"*.spec.lua*",

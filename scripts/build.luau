@@ -126,16 +126,16 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = path.join(context.dest, "../default.project.json")
+			local projectPath = path.resolve(path.join(context.dest, "../default.project.json"))
 
 			createRojoProjectAsync(projectPath, {
 				name = "Flipbook",
 				tree = {
-					["$path"] = tostring(context.dest),
+					["$path"] = tostring(path.resolve(context.dest)),
 				},
 			})
 
-			local dest = path.join(context.dest, "..", project.PLUGIN_FILENAME)
+			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
 
 			run("rojo", {
 				"build",
