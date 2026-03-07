@@ -12,10 +12,11 @@ local run = FlipbookBatteries.run
 type BuildContext = types.BuildContext
 
 local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: BuildContext): path.path
+	local relativeMemberPath = path.relative(project.REPO_PATH, memberPath)
 	local memberBuildPath = path.join(memberPath, "build")
 
 	runBuildGroupAsync({
-		name = `📦 build {memberPath}`,
+		name = `📦 build {relativeMemberPath}`,
 		paths = {
 			memberPath,
 		},
@@ -30,7 +31,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 
 			run("darklua", {
 				"process",
-				path.join(memberPath, "src"),
+				path.join(relativeMemberPath, "src"),
 				memberBuildPath,
 			}, {
 				env = context.env,
@@ -40,7 +41,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 
 	if context.channel == "prod" then
 		runBuildGroupAsync({
-			name = `✂️ prune {memberPath}`,
+			name = `✂️ prune {relativeMemberPath}`,
 			paths = { memberBuildPath },
 			context = context,
 			step = function()
@@ -51,9 +52,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 		})
 	end
 
-	local absMemberPath = path.resolve(memberPath)
-	local relativePath = path.relative(project.REPO_PATH, absMemberPath)
-	local dest = path.join(context.dest, relativePath)
+	local dest = path.join(context.dest, relativeMemberPath)
 
 	fs.removedirectory(dest, {
 		recursive = true,

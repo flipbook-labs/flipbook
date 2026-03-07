@@ -10,7 +10,7 @@ return {
 	ROBLOX_PACKAGES_VERSION = "0.710.0.7100702",
 	SCRIPTS_PATH = path.resolve("./scripts"),
 	EXAMPLE_PATH = path.resolve("./example"),
-	WORKSPACE_PATH = "workspace",
+	WORKSPACE_PATH = path.resolve("./workspace"),
 	LUAU_PACKAGES_PATH = path.resolve("./LuauPackages"),
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
