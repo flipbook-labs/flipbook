@@ -51,7 +51,8 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 		})
 	end
 
-	local relativePath = path.relative(project.REPO_PATH, memberPath)
+	local absMemberPath = path.resolve(memberPath)
+	local relativePath = path.relative(project.REPO_PATH, absMemberPath)
 	local dest = path.join(context.dest, relativePath)
 
 	fs.removedirectory(dest, {
