@@ -20,6 +20,9 @@ local function StoryError(props: Props)
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.new(1, 0),
 		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
+		},
 		tag = "size-full padding-small gap-medium",
 	}, {
 		CodeBlock = React.createElement(CodeBlock, {
