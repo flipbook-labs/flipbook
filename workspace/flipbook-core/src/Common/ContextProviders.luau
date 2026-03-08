@@ -18,7 +18,7 @@ local function ContextProviders(props: Props)
 	local themeName: "Dark" | "Light" = useThemeName()
 
 	useEffect(function()
-		PluginStore.get(false).setPlugin(props.plugin)
+		PluginStore.get().setPlugin(props.plugin)
 	end, { props.plugin })
 
 	return React.createElement(ContextStack, {
