@@ -23,6 +23,10 @@ local PLUGIN_NAME = "Flipbook" .. if _G.BUILD_CHANNEL == "development" then ` [{
 	accepting the tradeoff of having Flipbook work in the shortterm while the
 	evil state bug will lurk in the shadows until it reveals itself (or we
 	remove this line, whichever comes first)
+
+	Track the issue here:
+
+	https://github.com/flipbook-labs/storyteller/issues/100
 ]]
 Charm.flags.frozen = false
 
