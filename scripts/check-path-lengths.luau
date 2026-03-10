@@ -4,8 +4,22 @@ local path = require("@std/path")
 
 local findWhere = FlipbookBatteries.findWhere
 
+-- This is the maximum path length on Windows. There are ways to enable longer
+-- file paths in Windows, but many programs fall apart when hitting this limit
+-- regardless. As such, we're bound by this number. Nothing we can do about it.
 local MAX_PATH = 260
+
+-- This number is derived from the path that Flipbook gets extracted to in
+-- Roblox's internal CI. This is another one of those "nothing we can do about
+-- it" numbers.
 local PREFIX_LENGTH = 97
+
+-- Finally, our own max path length is just the difference between the Windows
+-- max path and the reserved prefix in Flipbook's path. We just have to make
+-- sure our file paths are within the limit, which really is not hard, and in
+-- practice is unlikely to happen again, but just in case it does we include all
+-- of this as an extra measure to ensure downstream dependents can keep chugging
+-- along
 local MAX_ALLOWED = MAX_PATH - PREFIX_LENGTH
 
 local args = cli.parser()
