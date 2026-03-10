@@ -10,6 +10,7 @@ permissions:
   id-token: write
   attestations: write
   artifact-metadata: write
+  pull-requests: write
 
 jobs:
   build-plugin:
@@ -76,6 +77,12 @@ jobs:
 
       - name: Build
         run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
+
+      - name: Check path lengths
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/check-path-lengths
+        with:
+          artifact: build/${{ matrix.package }}-${{ matrix.target }}/src
 
       - name: Zip everything up
         run: |

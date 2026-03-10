@@ -89,7 +89,7 @@ do
 			-- following just does a quick pass to convert `"./Foo"` into
 			-- `script.Parent.Foo`
 			for _, descendant in getDescendants(packageRoot) do
-				if descendant:match("%.luau$") then
+				if path.extname(descendant) == ".luau" then
 					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
 				end
 			end
