@@ -1,8 +1,8 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local Constants = require("@root/constants")
-local ReactSignals = require("@rbxpkg/SignalsReact")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local StoryControls = require("@root/StoryControls/StoryControls")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
@@ -10,7 +10,7 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local e = React.createElement
 
 local withCommonProps = Foundation.Utility.withCommonProps
-local useSignalState = ReactSignals.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 export type StoryControlsPanelProps = StoryControls.StoryControlsProps & Foundation.CommonProps
 
