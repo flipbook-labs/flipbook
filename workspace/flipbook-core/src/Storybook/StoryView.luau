@@ -35,7 +35,7 @@ local function StoryView(props: StoryViewProps)
 
 	local controls, setControls = useState({} :: Storyteller.StoryControls)
 
-	local extraProps = useMemo(function()
+	local extraProps: Storyteller.StoryProps = useMemo(function()
 		return {
 			theme = theme :: useThemeName.ThemeName,
 			locale = "en-us",

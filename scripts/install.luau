@@ -51,8 +51,8 @@ do
 	local function patchStringRequires()
 		local packages = {
 			"^luaulog$",
-			-- "^charm$",
-			-- "^react%-charm$",
+			"^charm$",
+			"^react%-charm$",
 		}
 
 		for _, package in packages do
@@ -89,7 +89,7 @@ do
 			-- following just does a quick pass to convert `"./Foo"` into
 			-- `script.Parent.Foo`
 			for _, descendant in getDescendants(packageRoot) do
-				if descendant:match("%.luau$") then
+				if path.extname(descendant) == ".luau" then
 					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
 				end
 			end
@@ -112,12 +112,6 @@ do
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
 			"Foundation",
-			"-d",
-			"Signals",
-			"-d",
-			"SignalsReact",
-			"-d",
-			"ReactUtils",
 
 			-- These are only included so the above dependencies work as expected.
 			-- It seems like roblox-packages has a bug with its dependency
