@@ -1,14 +1,14 @@
 local RunService = game:GetService("RunService")
 
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local PluginStore = require("@root/Plugin/PluginStore")
 local types = require("@root/Panels/types")
 local useColors = require("@root/Common/useColors")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 local defaultProps = {
 	size = 8, -- px

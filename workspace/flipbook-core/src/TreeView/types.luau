@@ -1,4 +1,4 @@
-local Signals = require("@rbxpkg/Signals")
+local CharmTypes = require("@root/Common/CharmTypes")
 
 local types = {}
 
@@ -15,53 +15,53 @@ types.TreeNodeIcon = {
 
 export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 
-export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore, scope: Signals.scope) -> boolean
+export type TreeNodeSort = (a: TreeNodeStore, b: TreeNodeStore) -> boolean
 
 export type TreeNodeStore = {
 	id: string,
 
 	-- Node properties and states
-	getName: Signals.getter<string>,
-	setName: Signals.setter<string>,
-	getIcon: Signals.getter<TreeNodeIcon?>,
-	setIcon: Signals.setter<TreeNodeIcon?>,
-	getIsSelected: Signals.getter<boolean>,
-	setIsSelected: Signals.setter<boolean>,
-	getIsVisible: Signals.getter<boolean>,
-	setIsVisible: Signals.setter<boolean>,
+	getName: CharmTypes.Getter<string>,
+	setName: CharmTypes.Setter<string>,
+	getIcon: CharmTypes.Getter<TreeNodeIcon?>,
+	setIcon: CharmTypes.Setter<TreeNodeIcon?>,
+	getIsSelected: CharmTypes.Getter<boolean>,
+	setIsSelected: CharmTypes.Setter<boolean>,
+	getIsVisible: CharmTypes.Getter<boolean>,
+	setIsVisible: CharmTypes.Setter<boolean>,
 	activate: () -> (),
-	getIsFiltered: Signals.getter<boolean>,
-	setIsFiltered: Signals.setter<boolean>,
-	getIsPinned: Signals.getter<boolean>,
-	setIsPinned: Signals.setter<boolean>,
+	getIsFiltered: CharmTypes.Getter<boolean>,
+	setIsFiltered: CharmTypes.Setter<boolean>,
+	getIsPinned: CharmTypes.Getter<boolean>,
+	setIsPinned: CharmTypes.Setter<boolean>,
 
 	-- Expand/Collapse
-	getIsExpanded: Signals.getter<boolean>,
-	setIsExpanded: Signals.setter<boolean>,
+	getIsExpanded: CharmTypes.Getter<boolean>,
+	setIsExpanded: CharmTypes.Setter<boolean>,
 	expandDown: () -> (),
 	expandUp: () -> (),
 	collapseDown: () -> (),
 
 	-- Hierarchy
-	getChildren: Signals.getter<{ TreeNodeStore }>,
-	setChildren: Signals.setter<{ TreeNodeStore }>,
-	getAncestors: Signals.getter<{ TreeNodeStore }>,
-	getDescendants: Signals.getter<{ TreeNodeStore }>,
-	getLeafNodes: Signals.getter<{ TreeNodeStore }>,
-	getPath: Signals.getter<string>,
-	getSelectedDescendants: Signals.getter<{ TreeNodeStore }>,
-	getPinnedDescendants: Signals.getter<{ TreeNodeStore }>,
-	getParent: Signals.getter<TreeNodeStore?>,
+	getChildren: CharmTypes.Getter<{ TreeNodeStore }>,
+	setChildren: CharmTypes.Setter<{ TreeNodeStore }>,
+	getAncestors: CharmTypes.Getter<{ TreeNodeStore }>,
+	getDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getLeafNodes: CharmTypes.Getter<{ TreeNodeStore }>,
+	getPath: CharmTypes.Getter<string>,
+	getSelectedDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getPinnedDescendants: CharmTypes.Getter<{ TreeNodeStore }>,
+	getParent: CharmTypes.Getter<TreeNodeStore?>,
 	parentTo: (newParent: TreeNodeStore?) -> (),
 	clearChildren: () -> (),
 	findFirstDescendant: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
 	findFirstAncestor: (predicate: (node: TreeNodeStore) -> boolean) -> TreeNodeStore?,
-	getSortOrder: Signals.getter<TreeNodeSort?>,
+	getSortOrder: CharmTypes.Getter<TreeNodeSort?>,
 	setSortOrder: (sort: TreeNodeSort?) -> (),
 
 	-- DataModel
-	getInstance: Signals.getter<Instance?>,
-	setInstance: Signals.setter<Instance?>,
+	getInstance: CharmTypes.Getter<Instance?>,
+	setInstance: CharmTypes.Setter<Instance?>,
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,
