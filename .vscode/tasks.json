@@ -11,6 +11,27 @@
       "args": ["run", "install"]
     },
     {
+      "label": "Analyze",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "analyze"]
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "lint"]
+    },
+    {
+      "label": "Unit Tests",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "test"]
+    },
+    {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
