@@ -3,8 +3,12 @@ local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 
+local getDescendants = require("@scripts/lib/getDescendants")
+
 local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
+
+local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.pathlike, dest: path.pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
@@ -39,38 +43,56 @@ do
 	local find = FlipbookBatteries.find
 	local findAndReplace = FlipbookBatteries.findAndReplace
 
-	-- LuauLog is written with string requires which are not yet supported by
-	-- ModuleLoader. To allow us to still use LuauLog, this function patches it with
-	-- darklua to resolve the string requires to Roblox ones
-	local function patchLuauLog()
-		local packageRoot = find(path.join(project.PACKAGES_PATH, "_Index"), "^luaulog$")[1]
-
-		local darkluaConfig = {
-			process = {
-				{
-					rule = "convert_require",
-					current = {
-						name = "luau",
-					},
-					target = {
-						name = "roblox",
-						rojo_sourcemap = "./sourcemap.json",
-						indexing_style = "property",
-					},
-				},
-			},
+	-- Some of our Wally packages are written with string requires which are not
+	-- yet supported by ModuleLoader or Jest. To allow us to still use these
+	-- packages, this function patches them using darklua to resolve the string
+	-- requires to Roblox ones
+	local function patchStringRequires()
+		local packages = {
+			"^luaulog$",
+			"^charm$",
+			"^react%-charm$",
 		}
 
-		local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
-		fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+		for _, package in packages do
+			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
 
-		run("rojo", { "sourcemap", "-o", "sourcemap.json" }, {
-			cwd = packageRoot,
-		})
+			assert(packageRoot, `no package found matching "{package}"`)
 
-		run("darklua", { "process", "src", "src" }, {
-			cwd = packageRoot,
-		})
+			print(`patching {packageRoot}`)
+
+			local darkluaConfig = {
+				process = {
+					{
+						rule = "convert_require",
+						current = {
+							name = "luau",
+						},
+						target = {
+							name = "roblox",
+							indexing_style = "property",
+						},
+					},
+				},
+			}
+
+			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
+			fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+
+			run("darklua", { "process", "src", "src" }, {
+				cwd = packageRoot,
+			})
+
+			-- Darklua doesn't seem to handle `./Foo` paths without a sourcemap,
+			-- and getting the sourcemap working is proving difficult. So the
+			-- following just does a quick pass to convert `"./Foo"` into
+			-- `script.Parent.Foo`
+			for _, descendant in getDescendants(packageRoot) do
+				if path.extname(descendant) == ".luau" then
+					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
+				end
+			end
+		end
 	end
 
 	local function installWallyPackages()
@@ -78,9 +100,7 @@ do
 		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
-		if fs.exists(path.join(project.PACKAGES_PATH, "Log.lua")) then
-			patchLuauLog()
-		end
+		patchStringRequires()
 	end
 
 	local function installRobloxPackages()
