@@ -3,8 +3,8 @@ return {
   package = {
     {
       name = "flipbook-batteries",
-      rev = "v0.5.0",
-      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/v0.5.0.zip",
+      rev = "v0.6.0",
+      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/v0.6.0.zip",
       sourceKind = "github",
     },
   },
