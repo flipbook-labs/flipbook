@@ -54,7 +54,7 @@ local function compileAsync(context: BuildContext)
 	})
 
 	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
-		local memberPath = path.join(project.WORKSPACE_PATH, member.name)
+		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
 
 		if fs.type(memberPath) == "dir" then
 			compileWorkspaceMemberAsync(memberPath, context)
