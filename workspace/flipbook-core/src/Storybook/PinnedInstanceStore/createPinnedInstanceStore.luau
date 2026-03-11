@@ -1,5 +1,5 @@
+local Charm = require("@pkg/Charm")
 local Sift = require("@pkg/Sift")
-local Signals = require("@rbxpkg/Signals")
 
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
@@ -12,18 +12,18 @@ export type PinnedInstance = {
 }
 
 export type PinnedInstanceStore = {
-	getPinnedInstances: Signals.getter<{ PinnedInstance }>,
+	getPinnedInstances: () -> { PinnedInstance },
 	isPinned: (instance: Instance) -> boolean,
 	pin: (instance: Instance) -> (),
 	unpin: (instance: Instance) -> (),
 	waitForLoaded: () -> (),
 }
 
-local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInstanceStore
-	local localStorageStore = LocalStorageStore.get(parentScope)
+local function createPinnedInstanceStore(): PinnedInstanceStore
+	local localStorageStore = LocalStorageStore.get()
 
-	local getPinnedPaths = Signals.createComputed(function(scope)
-		local storage = localStorageStore.getStorage(scope)
+	local getPinnedPaths = Charm.computed(function()
+		local storage = localStorageStore.getStorage()
 		return storage.pinnedInstancePaths or {}
 	end)
 
@@ -35,8 +35,8 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 		end)
 	end
 
-	local getPinnedInstances = Signals.createComputed(function(scope)
-		local pinnedPaths = getPinnedPaths(scope)
+	local getPinnedInstances = Charm.computed(function()
+		local pinnedPaths = getPinnedPaths()
 
 		return Sift.List.map(pinnedPaths, function(pinnedPath)
 			return {
@@ -71,7 +71,7 @@ local function createPinnedInstanceStore(parentScope: Signals.scope): PinnedInst
 	end
 
 	local function isPinned(instance: Instance)
-		return Sift.List.has(getPinnedPaths(false), getInstancePath(instance))
+		return Sift.List.has(getPinnedPaths(), getInstancePath(instance))
 	end
 
 	local function waitForLoaded()
