@@ -4,6 +4,7 @@ local Storyteller = require("@pkg/Storyteller")
 local StoryControls = require("./StoryControls")
 
 local useCallback = React.useCallback
+local useMemo = React.useMemo
 local useState = React.useState
 
 return {
@@ -19,64 +20,68 @@ return {
 			end)
 		end, {})
 
-		local controlsSchema: Storyteller.StoryControlsSchema = {
-			text = Storyteller.createStringControl(),
+		local controlsSchema: Storyteller.StoryControlsSchema = useMemo(function()
+			return {
+				text = Storyteller.createStringControl(),
 
-			number = Storyteller.createNumberControl(),
-			slider = Storyteller.createSliderControl(0, NumberRange.new(0, 100)),
+				number = Storyteller.createNumberControl(),
+				slider = Storyteller.createSliderControl(0, NumberRange.new(0, 100)),
 
-			toggle = Storyteller.createBooleanControl(),
+				toggle = Storyteller.createBooleanControl(),
 
-			font = Storyteller.createSelectControl({
-				Enum.Font.BuilderSans,
-				Enum.Font.BuilderSansBold,
-				Enum.Font.BuilderSansExtraBold,
-			}, {
-				default = Enum.Font.BuilderSansBold :: EnumItem,
-				tostring = function(font)
-					if typeof(font) == "EnumItem" then
-						return font.Name
-					end
-					return tostring(font)
-				end,
-				sort = function(a, b)
-					if typeof(a) == "EnumItem" and typeof(b) == "EnumItem" then
-						return a.Name > b.Name
-					end
-					return a < b
-				end,
-			}),
+				font = Storyteller.createSelectControl({
+					Enum.Font.BuilderSans,
+					Enum.Font.BuilderSansBold,
+					Enum.Font.BuilderSansExtraBold,
+				}, {
+					default = Enum.Font.BuilderSansBold :: EnumItem,
+					tostring = function(font)
+						if typeof(font) == "EnumItem" then
+							return font.Name
+						end
+						return tostring(font)
+					end,
+					sort = function(a, b)
+						if typeof(a) == "EnumItem" and typeof(b) == "EnumItem" then
+							return a.Name > b.Name
+						end
+						return a < b
+					end,
+				}),
 
-			dogAttributes = Storyteller.createMultiSelectControl({
-				"Big",
-				"Small",
-				"Fluffy",
-				"Sniffer",
-			}, {
-				default = { "Big", "Sniffer" },
-			}),
+				dogAttributes = Storyteller.createMultiSelectControl({
+					"Big",
+					"Small",
+					"Fluffy",
+					"Sniffer",
+				}, {
+					default = { "Big", "Sniffer" },
+				}),
 
-			tags = Storyteller.createCheckControl({
-				"Cool",
-				"Cute",
-				"Quirky",
-			}),
+				tags = Storyteller.createCheckControl({
+					"Cool",
+					"Cute",
+					"Quirky",
+				}),
 
-			sortDirection = Storyteller.createRadioControl({
-				Enum.SortDirection.Ascending,
-				Enum.SortDirection.Descending,
-			}, {
-				tostring = function(item)
-					if typeof(item) == "EnumItem" then
-						return item.Name
-					end
-					return tostring(item)
-				end,
-			}),
+				sortDirection = Storyteller.createRadioControl({
+					Enum.SortDirection.Ascending,
+					Enum.SortDirection.Descending,
+				}, {
+					tostring = function(item)
+						if typeof(item) == "EnumItem" then
+							return item.Name
+						end
+						return tostring(item)
+					end,
+				}),
 
-			color = Storyteller.createColorControl(),
-			date = Storyteller.createDateControl(),
-		}
+				color = Storyteller.createColorControl(),
+				date = Storyteller.createDateControl(),
+			}
+		end, {})
+
+		print("controls", controls)
 
 		return React.createElement(StoryControls, {
 			controlsSchema = controlsSchema,
