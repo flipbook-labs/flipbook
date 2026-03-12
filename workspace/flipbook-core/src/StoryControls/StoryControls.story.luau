@@ -1,9 +1,6 @@
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
-local ContextProviders = require("@root/Common/ContextProviders")
-local MockPlugin = require("@root/Testing/MockPlugin")
-
 local StoryControls = require("./StoryControls")
 
 local useCallback = React.useCallback
@@ -11,7 +8,7 @@ local useState = React.useState
 
 return {
 	summary = "Panel for configuring the controls of a story",
-	story = function(props)
+	story = function()
 		local controls, setControls = useState({} :: Storyteller.StoryControls)
 
 		local setControl = useCallback(function(key: string, value: any)
@@ -81,15 +78,10 @@ return {
 			date = Storyteller.createDateControl(),
 		}
 
-		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new() :: any,
-			overlayGui = props.container,
-		}, {
-			StoryControls = React.createElement(StoryControls, {
-				controlsSchema = controlsSchema,
-				controls = controls,
-				setControl = setControl,
-			}),
+		return React.createElement(StoryControls, {
+			controlsSchema = controlsSchema,
+			controls = controls,
+			setControl = setControl,
 		})
 	end,
 }
