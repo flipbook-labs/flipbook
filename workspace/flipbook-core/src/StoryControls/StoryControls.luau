@@ -73,36 +73,25 @@ local function StoryControls(props: StoryControlsProps)
 	return e(View, {
 		tag = "bg-surface-100 col size-full",
 	}, {
-		-- NOTE(Paul): Adding a temporary pseudo-tab element for the time
-		-- being so that we have separation between the controls panel
-		-- and the story view.
-		Tabs = e(View, {
-			LayoutOrder = 1,
-			tag = "auto-y col size-full-0",
+		-- `Foundation.Tabs` doesn't look to have a way to apply spacing around
+		-- tab items when using FillBehavior.Fit. We'd use Fill but that looks
+		-- quite bad with our single button. This wrapper adds some needed
+		-- spacing, but ideally Foundation can handle this for us. When it can:
+		-- remove this wrapper.
+		TabsWrapper = e(Foundation.View, {
+			tag = "size-full-0 auto-y padding-x-medium gap-y-small",
 		}, {
-			Tab = e(View, {
+			Tabs = e(Foundation.Tabs, {
+				tabs = {
+					{
+						id = "controls",
+						text = "Controls",
+						isDisabled = true,
+					},
+				},
+				defaultActiveTabId = "controls",
+				fillBehavior = Foundation.Enums.FillBehavior.Fit,
 				LayoutOrder = 1,
-				onActivated = function() end,
-				tag = "col size-2000-1100",
-			}, {
-				Content = e(View, {
-					tag = "align-x-center align-y-center row size-full",
-				}, {
-					Text = e(Text, {
-						Text = "Controls",
-						tag = "anchor-center-center auto-xy content-emphasis position-center-center text-label-medium",
-					}),
-				}),
-
-				Border = e(View, {
-					Size = UDim2.new(1, 0, 0, tokens.Stroke.Thick),
-					backgroundStyle = tokens.Color.System.Contrast,
-					tag = "anchor-bottom-center position-bottom-center",
-				}),
-			}),
-
-			Divider = e(Divider, {
-				LayoutOrder = 2,
 			}),
 		}),
 
