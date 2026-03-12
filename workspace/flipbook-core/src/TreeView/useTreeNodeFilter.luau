@@ -1,10 +1,10 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local types = require("@root/TreeView/types")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useEffect = React.useEffect
 
 type TreeNodeStore = types.TreeNodeStore
@@ -18,7 +18,7 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 			-- Resetting the filtered state to do it all over again for the new
 			-- filter function
 			root.setIsFiltered(false)
-			for _, descendant in root.getDescendants(false) do
+			for _, descendant in root.getDescendants() do
 				descendant.setIsFiltered(false)
 			end
 
@@ -32,7 +32,7 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 				-- hit at least one node that shouldn't be filtered we know we
 				-- have to keep the remaining items after that point unfiltered
 				-- too.
-				local nodes: { TreeNodeStore } = Sift.List.join({ leaf }, leaf.getAncestors(false))
+				local nodes: { TreeNodeStore } = Sift.List.join({ leaf }, leaf.getAncestors())
 
 				for _, node in nodes do
 					-- We've already marked this node as unfiltered, which means
