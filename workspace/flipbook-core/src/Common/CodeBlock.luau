@@ -68,6 +68,9 @@ local function CodeBlock(props: Props)
 				ScrollingDirection = Enum.ScrollingDirection.X,
 				HorizontalScrollBarInset = Enum.ScrollBarInset.Always,
 			},
+			layout = {
+				FillDirection = Enum.FillDirection.Vertical,
+			},
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			SourceCode = React.createElement(SelectableTextLabel, {

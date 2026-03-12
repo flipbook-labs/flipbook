@@ -56,6 +56,9 @@ local function Sidebar(props: SidebarProps)
 					CanvasSize = UDim2.fromScale(0, 0),
 					ScrollingDirection = Enum.ScrollingDirection.Y,
 				},
+				layout = {
+					FillDirection = Enum.FillDirection.Vertical,
+				},
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
