@@ -13,6 +13,7 @@ local function packToRbxm(filePath: path.pathlike): path.path
 	local resolvedFilePath = path.resolve(filePath)
 
 	createRojoProjectAsync(projectPath, {
+		name = path.basename(filePath),
 		tree = {
 			["$path"] = tostring(resolvedFilePath),
 		},
