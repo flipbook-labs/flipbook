@@ -85,7 +85,7 @@ jobs:
         # dependency changes. This means when the schedule re-runs (or the
         # workflow is manually dispatched) then all of our in-progress changes
         # get erased. This check makes sure that doesn't happen.
-        if: ${{ steps.branch_existence.conclusion.failure }}
+        if: ${{ steps.branch_existence.outcome == 'failure' }}
         with:
           base: main
           add-paths: |
