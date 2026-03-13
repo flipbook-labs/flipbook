@@ -41,6 +41,11 @@
       "identifier": "ENABLE_OUTPUT_LOGGING",
       "env": "ENABLE_OUTPUT_LOGGING"
     },
+    {
+      "rule": "inject_global_value",
+      "identifier": "JEST_TEST_PATH_PATTERN",
+      "env": "JEST_TEST_PATH_PATTERN"
+    },
     "compute_expression",
     "remove_unused_if_branch",
     "remove_unused_while",

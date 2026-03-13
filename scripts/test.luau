@@ -1,7 +1,7 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
-local fs = require("@lute/fs")
-local process = require("@lute/process")
+local fs = require("@std/fs")
+local process = require("@std/process")
 
 local project = require("@repo/project")
 
@@ -18,6 +18,10 @@ args:add("apiKey", "option", {
 	aliases = { "k" },
 })
 
+args:add("filter", "option", {
+	help = "Specify a filepath pattern to match for when running tests",
+})
+
 args:parse({ ... })
 
 local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
@@ -27,7 +31,12 @@ if not apiKey then
 	)
 end
 
-run("lute", { "scripts/build.luau", "--channel", "dev" })
+local filter = args:get("filter")
+
+-- This gets picked up by the build step which uses Darklua to inject globals
+process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
+
+run("lute", { "scripts/build.luau", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
 run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
 local success, err = pcall(function()

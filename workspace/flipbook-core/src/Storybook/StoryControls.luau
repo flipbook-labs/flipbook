@@ -2,7 +2,7 @@ local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local ReactSignals = require("@rbxpkg/SignalsReact")
+local ReactSignals = require("@pkg/ReactCharm")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local useSortedControls = require("@root/Storybook/useSortedControls")
@@ -197,7 +197,10 @@ local function StoryControls(props: StoryControlsProps)
 						CanvasSize = UDim2.fromScale(0, 0),
 						ScrollingDirection = Enum.ScrollingDirection.Y,
 					},
-					tag = "col shrink size-full",
+					layout = {
+						FillDirection = Enum.FillDirection.Vertical,
+					},
+					tag = "shrink size-full",
 				}, {
 					Header = e(View, {
 						LayoutOrder = 0,

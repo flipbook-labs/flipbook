@@ -1,7 +1,5 @@
 local React = require("@pkg/React")
 
-local ContextProviders = require("@root/Common/ContextProviders")
-local MockPlugin = require("@root/Testing/MockPlugin")
 local RobloxProfile = require("./RobloxProfile")
 
 local controls = {
@@ -16,12 +14,8 @@ return {
 	story = function(props: Props)
 		local userId = assert(tonumber(props.controls.userId))
 
-		return React.createElement(ContextProviders, {
-			plugin = MockPlugin.new(),
-		}, {
-			RobloxProfiler = React.createElement(RobloxProfile, {
-				userId = userId,
-			}),
+		return React.createElement(RobloxProfile, {
+			userId = userId,
 		})
 	end,
 }
