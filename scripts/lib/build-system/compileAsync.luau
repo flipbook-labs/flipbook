@@ -3,6 +3,7 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
@@ -90,6 +91,18 @@ local function compileAsync(context: BuildContext)
 			fs.copy(manifestPath, path.join(dest, "rotriever.toml"))
 		end
 
+		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
+		-- path length limit issues that crop up when consuming internally
+		for _, relativePackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+			local packagesPath = path.resolve(path.join(dest, "src", relativePackagesPath))
+
+			packToRbxm(packagesPath)
+
+			fs.removedirectory(packagesPath, {
+				recursive = true,
+			})
+		end
+
 		local linkerPath = path.join(dest, "src/init.lua")
 		local linkerSource = `return require(script.workspace["flipbook-core"])`
 		fs.writestringtofile(linkerPath, linkerSource)
@@ -97,7 +110,7 @@ local function compileAsync(context: BuildContext)
 		-- Rotriever does not support .luau files, so rename
 		-- them to .lua for compatibility
 		for _, luauFile in find(dest, "%.luau$") do
-			local newName = luauFile:gsub("%.luau$", ".lua")
+			local newName = tostring(luauFile):gsub("%.luau$", ".lua")
 			fs.copy(luauFile, newName)
 			fs.remove(luauFile)
 		end

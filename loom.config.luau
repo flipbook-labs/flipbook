@@ -4,12 +4,12 @@ return {
 		version = "2.4.0",
 		dependencies = {
 			["rbxasset"] = {
-				rev = "MUS-2390-rewrite-with-lute",
+				rev = "main",
 				sourceKind = "github",
 				source = "https://github.com/Roblox/rbxasset",
 			},
 			["flipbook-batteries"] = {
-				rev = "v0.5.0",
+				rev = "v0.7.0",
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/flipbook-batteries",
 			},

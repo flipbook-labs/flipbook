@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
@@ -19,7 +19,7 @@ local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
@@ -89,7 +89,7 @@ local function StorybookTreeView(props: Props)
 			return false
 		end
 
-		return node.getName(false):lower():match(props.searchTerm:lower()) == nil
+		return node.getName():lower():match(props.searchTerm:lower()) == nil
 	end, { props.searchTerm })
 
 	-- There can be pinned paths that were never apart of the current DataModel,
@@ -105,7 +105,7 @@ local function StorybookTreeView(props: Props)
 			-- Put any previously pinned nodes back to the root
 			if prevPinnedNodes then
 				for _, node in prevPinnedNodes do
-					if not node.getIsPinned(false) then
+					if not node.getIsPinned() then
 						node.parentTo(rootNode)
 					end
 				end
@@ -206,7 +206,7 @@ local function StorybookTreeView(props: Props)
 
 			if lastOpenedStory then
 				local node = rootNode.findFirstDescendant(function(descendant)
-					return descendant.getInstance(false) == lastOpenedStory
+					return descendant.getInstance() == lastOpenedStory
 				end)
 
 				if node then
@@ -231,12 +231,12 @@ local function StorybookTreeView(props: Props)
 			if selectedNode ~= prevSelectedNode then
 				if props.onStoryChanged then
 					if selectedNode then
-						local icon = selectedNode.getIcon(false)
-						local instance = selectedNode.getInstance(false)
+						local icon = selectedNode.getIcon()
+						local instance = selectedNode.getInstance()
 
 						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
 							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
-								return ancestor.getIcon(false) == TreeView.TreeNodeIcon.Storybook
+								return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
 							end)
 
 							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
@@ -250,7 +250,7 @@ local function StorybookTreeView(props: Props)
 				end
 
 				if props.onShowErrorPage then
-					if selectedNode and selectedNode.getIcon(false) == TreeView.TreeNodeIcon.Alert then
+					if selectedNode and selectedNode.getIcon() == TreeView.TreeNodeIcon.Alert then
 						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
 						if unavailableStorybook then
 							props.onShowErrorPage(unavailableStorybook)

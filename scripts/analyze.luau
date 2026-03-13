@@ -33,7 +33,7 @@ do
 	table.insert(args, "--flag:LuauSolverV2=true")
 	table.insert(args, tostring(project.SCRIPTS_PATH))
 
-	run("luau-lsp", args)
+	run("luau-lsp", { table.unpack(args) })
 end
 
 do
@@ -42,5 +42,5 @@ do
 	table.insert(args, tostring(project.SOURCE_PATH))
 	table.insert(args, tostring(project.WORKSPACE_PATH))
 
-	run("luau-lsp", args)
+	run("luau-lsp", { table.unpack(args) })
 end

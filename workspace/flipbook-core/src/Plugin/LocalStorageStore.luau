@@ -1,4 +1,4 @@
-local Signals = require("@rbxpkg/Signals")
+local Charm = require("@pkg/Charm")
 local t = require("@pkg/t")
 
 local createPluginSettingsStore = require("@root/Plugin/createPluginSettingsStore")
@@ -19,8 +19,10 @@ local validate = t.interface({
 	wasUserPromptedForTelemetry = t.boolean,
 })
 
+-- Initialize the store eagerly at module level so createPluginSettingsStore's
+-- internal Charm.effect is a top-level effect, not one nested inside a computed.
+local get = Charm.signal(createPluginSettingsStore("FlipbookLocalStorage", defaultValue, validate))
+
 return {
-	get = Signals.createComputed(function(_scope)
-		return createPluginSettingsStore("FlipbookLocalStorage", defaultValue, validate)
-	end),
+	get = get,
 }
