@@ -8,7 +8,6 @@ local getDescendants = require("@scripts/lib/getDescendants")
 local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
-local LUAU_PACKAGES_PATH = "LuauPackages"
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.pathlike, dest: path.pathlike)
@@ -40,7 +39,7 @@ do
 		-- FIXME: Loom doesn't let dependencies have their _own_ dependencies
 		-- yet, so for now we need to run rbxasset's install script ourselves
 		if dependencyName == "rbxasset" then
-			res = process.run({ "lute", "scripts/install.luau" }, {
+			res = process.run({ "lute", "run", "install" }, {
 				cwd = tostring(dest),
 			})
 			assert(res.ok, res.stderr)
