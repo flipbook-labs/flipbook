@@ -30,8 +30,8 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 
 			run("darklua", {
 				"process",
-				tostring(path.join(memberPath, "src")),
-				tostring(memberBuildPath),
+				path.join(memberPath, "src"),
+				memberBuildPath,
 			}, {
 				env = context.env,
 			})
@@ -45,7 +45,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: B
 			context = context,
 			step = function()
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
-					run("find", { tostring(memberBuildPath), "-type", "f", "-name", `"{pattern}"`, "-delete" })
+					run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
 				end
 			end,
 		})

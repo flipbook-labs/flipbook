@@ -66,7 +66,7 @@ do
 		}
 
 		for _, package in packages do
-			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
+			local packageRoot = find(PACKAGES_INDEX_PATH, package)[1]
 
 			assert(packageRoot, `no package found matching "{package}"`)
 
@@ -108,8 +108,8 @@ do
 
 	local function installWallyPackages()
 		run("wally", { "install" })
-		run("rojo", { "sourcemap", tostring(project.ROJO_BUILD_PROJECT), "-o", "sourcemap.json" })
-		run("wally-package-types", { "--sourcemap", "sourcemap.json", tostring(project.PACKAGES_PATH) })
+		run("rojo", { "sourcemap", project.ROJO_BUILD_PROJECT, "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
 		patchStringRequires()
 	end
@@ -138,7 +138,7 @@ do
 				recursive = true,
 			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", tostring(dest) })
+		run("mv", { "RobloxPackagesTmp/Packages", dest })
 		fs.removedirectory("RobloxPackagesTmp", {
 			recursive = true,
 		})

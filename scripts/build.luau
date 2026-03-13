@@ -187,8 +187,8 @@ if args:has("watch") then
 
 	watch({
 		roots = {
-			tostring(project.SOURCE_PATH),
-			tostring(project.WORKSPACE_PATH),
+			project.SOURCE_PATH,
+			project.WORKSPACE_PATH,
 		},
 		excludedFilePatterns = {
 			".*Packages",

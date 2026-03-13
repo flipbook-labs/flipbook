@@ -26,15 +26,15 @@ local function compileAsync(context: BuildContext)
 
 	run("rojo", {
 		"sourcemap",
-		tostring(project.ROJO_BUILD_PROJECT),
+		project.ROJO_BUILD_PROJECT,
 		"-o",
-		tostring(project.DARKLUA_SOURCEMAP_PATH),
+		project.DARKLUA_SOURCEMAP_PATH,
 	})
 
 	run("darklua", {
 		"process",
-		tostring(project.SOURCE_PATH),
-		tostring(context.dest),
+		project.SOURCE_PATH,
+		context.dest,
 	}, {
 		env = context.env,
 	})

@@ -16,9 +16,9 @@ run("curl", {
 
 run("rojo", {
 	"sourcemap",
-	tostring(project.ROJO_BUILD_PROJECT),
+	project.ROJO_BUILD_PROJECT,
 	"-o",
-	tostring(project.SOURCEMAP_PATH),
+	project.SOURCEMAP_PATH,
 })
 
 local defaultArgs = {
