@@ -10,4 +10,4 @@ Manually install versions of Flipbook from the [GitHub Releases](https://github.
 
 ## Building from source
 
-For the adventurous, Flipbook can also be built from source. Check out the [onboarding guide for contributors](/docs/contributing/onboarding) to get your environment setup for building.
+For the adventurous, Flipbook can also be built from source. Check out the [onboarding guide for contributors](./contributing/onboarding) to get your environment setup for building.
