@@ -65,7 +65,7 @@ jobs:
         run: cp .env.template .env
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute scripts/publish-plugin.luau --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
         run: cp .env.template .env
 
       - name: Publish nightly build to Creator Store
-        run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute scripts/publish-plugin.luau --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-smoketest-plugin:
     runs-on: ubuntu-latest
@@ -115,4 +115,4 @@ jobs:
         run: cp .env.template .env
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute scripts/publish-plugin.luau --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

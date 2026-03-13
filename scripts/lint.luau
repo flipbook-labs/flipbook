@@ -7,6 +7,14 @@ local project = require("@repo/project")
 local run = FlipbookBatteries.run
 local findWhere = FlipbookBatteries.findWhere
 
+local function valuesToString<T>(arr: { T }): { string }
+	local mapped = {}
+	for _, element in arr do
+		table.insert(mapped, tostring(element))
+	end
+	return mapped
+end
+
 local function findLuaFiles()
 	local result = {}
 
@@ -23,11 +31,13 @@ local function findLuaFiles()
 	return result
 end
 
-run("selene", { table.unpack(project.FOLDERS_TO_LINT) })
+local pathsToLint = valuesToString(project.FOLDERS_TO_LINT)
+
+run("selene", pathsToLint)
 
 run("stylua", {
 	"--check",
-	table.unpack(project.FOLDERS_TO_LINT),
+	table.unpack(pathsToLint),
 })
 
 local files = findLuaFiles()

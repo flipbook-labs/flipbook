@@ -8,7 +8,6 @@ local getDescendants = require("@scripts/lib/getDescendants")
 local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
-local LUAU_PACKAGES_PATH = "LuauPackages"
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.pathlike, dest: path.pathlike)
@@ -25,15 +24,26 @@ do
 	})
 	assert(res.ok, res.stderr)
 
-	fs.removedirectory(LUAU_PACKAGES_PATH, {
+	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createdirectory(LUAU_PACKAGES_PATH)
+	fs.createdirectory(project.LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
 	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(LUAU_PACKAGES_PATH, dependencyName))
+		local src = path.join(project.PACKAGES_PATH, dependencyName)
+		local dest = path.join(project.LUAU_PACKAGES_PATH, dependencyName)
+		move(src, dest)
+
+		-- FIXME: Loom doesn't let dependencies have their _own_ dependencies
+		-- yet, so for now we need to run rbxasset's install script ourselves
+		if dependencyName == "rbxasset" then
+			res = process.run({ "lute", "run", "install" }, {
+				cwd = tostring(dest),
+			})
+			assert(res.ok, res.stderr)
+		end
 	end
 end
 
@@ -56,7 +66,7 @@ do
 		}
 
 		for _, package in packages do
-			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
+			local packageRoot = find(PACKAGES_INDEX_PATH, package)[1]
 
 			assert(packageRoot, `no package found matching "{package}"`)
 
@@ -124,10 +134,14 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			run("rm", { "-rf", dest })
+			fs.removedirectory(dest, {
+				recursive = true,
+			})
 		end
 		run("mv", { "RobloxPackagesTmp/Packages", dest })
-		run("rm", { "-rf", "RobloxPackagesTmp" })
+		fs.removedirectory("RobloxPackagesTmp", {
+			recursive = true,
+		})
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
@@ -163,25 +177,17 @@ do
 			"toml.luau",
 		}
 
-		local dest = `{LUAU_PACKAGES_PATH}/batteries`
-		run("mkdir", { "-p", dest })
+		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
+
+		fs.createdirectory(dest, {
+			makeparents = true,
+		})
+
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = dest,
+				cwd = tostring(dest),
 			})
 		end
-	end
-
-	local function installRbxasset()
-		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
-		})
-
-		run("unzip", { "rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
-		})
-
-		fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
 	end
 
 	local function pruneDevelopmentFiles()
@@ -202,7 +208,6 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
-	installRbxasset()
 	installLuteBatteries()
 	pruneDevelopmentFiles()
 end

@@ -1,18 +1,18 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local fs = require("@std/fs")
+local path = require("@std/path")
 
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
-local mkdir = FlipbookBatteries.mkdir
-local rmdir = FlipbookBatteries.rmdir
 local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
-	local memberBuildPath = `{memberPath}/build`
+local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: BuildContext): path.path
+	local memberBuildPath = path.join(memberPath, "build")
 
 	runBuildGroupAsync({
 		name = `📦 build {memberPath}`,
@@ -21,12 +21,16 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		},
 		context = context,
 		step = function()
-			run("rm", { "-rf", memberBuildPath })
-			run("mkdir", { "-p", memberBuildPath })
+			fs.removedirectory(memberBuildPath, {
+				recursive = true,
+			})
+			fs.createdirectory(memberBuildPath, {
+				makeparents = true,
+			})
 
 			run("darklua", {
 				"process",
-				`{memberPath}/src`,
+				path.join(memberPath, "src"),
 				memberBuildPath,
 			}, {
 				env = context.env,
@@ -47,10 +51,12 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		})
 	end
 
-	local dest = `{context.dest}/{memberPath}`
+	local relativePath = path.relative(project.REPO_PATH, memberPath)
+	local dest = path.join(context.dest, relativePath)
 
-	rmdir(dest)
-	mkdir(dest)
+	fs.removedirectory(dest, {
+		recursive = true,
+	})
 	copyInto(memberBuildPath, dest)
 
 	return memberBuildPath
