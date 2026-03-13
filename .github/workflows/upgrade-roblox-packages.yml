@@ -78,6 +78,11 @@ jobs:
         continue-on-error: true
         run: git ls-remote --exit-code --heads origin ${{ env.BRANCH_NAME }}
 
+      - name: Debug logs
+        run: |
+          echo "outcome ${{ steps.branch_existence.outcome }}"
+          echo "conclusion ${{ steps.branch_existence.conclusion }}"
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
         # Default behavior for this action is to force push to the branch it
