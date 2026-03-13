@@ -7,7 +7,6 @@ on:
     # Studio. Usually midday (PST) on Wednesdays. We start this job at 1 PM PST
     # to give some buffer room
     - cron: "0 21 * * 3"
-  pull_request:
 
 jobs:
   version-check:
