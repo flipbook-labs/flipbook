@@ -9,6 +9,18 @@ on:
       - main
 
 jobs:
+  build-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output changelog to job summary
+        run: echo ${{ steps.github_release.outputs.changelog }}
+
   publish-github-release:
     runs-on: ubuntu-latest
     permissions:
