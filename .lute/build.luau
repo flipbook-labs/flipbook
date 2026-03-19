@@ -176,7 +176,7 @@ build()
 
 if args:has("watch") then
 	local function onChanged(filePath: path.path)
-		if tostring(filePath):match(project.WORKSPACE_PATH) then
+		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
 			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
