@@ -2,6 +2,7 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
+local system = require("@std/system")
 
 local getDescendants = require("@scripts/lib/getDescendants")
 
@@ -105,9 +106,11 @@ do
 	end
 
 	local function installRobloxPackages()
+		local tmpdir = system.tmpdir()
+
 		run("roblox-packages", {
 			"install",
-			"RobloxPackagesTmp",
+			tmpdir,
 			"--version",
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
@@ -122,16 +125,16 @@ do
 			"Dash",
 		})
 
-		local dest = project.ROBLOX_PACKAGES_PATH
-		if fs.exists(dest) and fs.type(dest) == "dir" then
-			run("rm", { "-rf", dest })
+		if fs.exists(project.ROBLOX_PACKAGES_PATH) and fs.type(project.ROBLOX_PACKAGES_PATH) == "dir" then
+			fs.removedirectory(project.ROBLOX_PACKAGES_PATH, {
+				recursive = true,
+			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", dest })
-		run("rm", { "-rf", "RobloxPackagesTmp" })
+		move(path.join(tmpdir, "Packages"), project.ROBLOX_PACKAGES_PATH)
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
-			local linkers = find(dest, `^{name}%..*`)
+			local linkers = find(project.ROBLOX_PACKAGES_PATH, `^{name}%..*`)
 
 			for _, linker in linkers do
 				-- All Roact linkers in RobloxPackages point to Roblox's
@@ -163,21 +166,28 @@ do
 			"toml.luau",
 		}
 
-		local dest = `{LUAU_PACKAGES_PATH}/batteries`
-		run("mkdir", { "-p", dest })
+		local dest = path.join(LUAU_PACKAGES_PATH, "batteries")
+
+		fs.createdirectory(dest, {
+			makeparents = true,
+		})
+
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
 				cwd = dest,
+				stdio = "default",
 			})
 		end
 	end
 
 	local function installRbxasset()
 		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
+			stdio = "default",
 			cwd = LUAU_PACKAGES_PATH,
 		})
 
 		run("unzip", { "rbxasset.zip" }, {
+			stdio = "default",
 			cwd = LUAU_PACKAGES_PATH,
 		})
 

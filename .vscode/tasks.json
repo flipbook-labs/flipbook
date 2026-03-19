@@ -8,14 +8,35 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lute",
-      "args": ["scripts/install.luau"]
+      "args": ["run", "install"]
+    },
+    {
+      "label": "Analyze",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "analyze"]
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "lint"]
+    },
+    {
+      "label": "Unit Tests",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "test"]
     },
     {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
       "command": "lute",
-      "args": ["scripts/build.luau", "plugin", "--channel", "dev"],
+      "args": ["run", "build", "plugin", "--channel", "dev"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -26,7 +47,7 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lute",
-      "args": ["scripts/build.luau", "plugin", "--channel", "prod"],
+      "args": ["run", "build", "plugin", "--channel", "prod"],
       "group": {
         "kind": "build"
       }
@@ -36,14 +57,14 @@
       "type": "shell",
       "problemMatcher": [],
       "command": "lute",
-      "args": ["scripts/build.luau", "plugin", "--channel", "dev", "--watch"]
+      "args": ["run", "build", "plugin", "--channel", "dev", "--watch"]
     },
     {
       "label": "Serve docs",
       "type": "shell",
       "problemMatcher": [],
       "command": "lute",
-      "args": ["scripts/serve-docs.luau"]
+      "args": ["run", "serve-docs"]
     }
   ]
 }
