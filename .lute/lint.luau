@@ -23,7 +23,7 @@ local function findLuaFiles()
 	return result
 end
 
-run("selene", project.FOLDERS_TO_LINT)
+run("selene", { table.unpack(project.FOLDERS_TO_LINT) })
 
 run("stylua", {
 	"--check",

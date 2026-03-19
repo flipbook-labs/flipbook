@@ -1,7 +1,7 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -10,7 +10,7 @@ local e = React.createElement
 
 local noop = function() end
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
 
 type Props = {
