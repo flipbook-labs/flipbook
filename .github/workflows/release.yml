@@ -32,8 +32,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Echo the changelog
+      - name: Echo changelog
         run: echo "${{ steps.github_release.outputs.changelog }}"
+
+      - name: Output changelog to job summary
+        run: echo "${{ steps.github_release.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
 
   publish-github-release:
     runs-on: ubuntu-latest
