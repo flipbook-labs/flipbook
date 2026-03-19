@@ -1,6 +1,7 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@std/fs")
+local path = require("@std/path")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@std/process")
 local richterm = require("@luaupkg/batteries/richterm")
@@ -15,6 +16,8 @@ local copyInto = FlipbookBatteries.copyInto
 local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 local watch = FlipbookBatteries.watch
+
+local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
@@ -43,7 +46,7 @@ args:add("target", "option", {
 args:add("output", "option", {
 	help = "Full path to the rbxm file to build",
 	aliases = { "o" },
-	default = `{getStudioPluginsPath()}/{project.PLUGIN_FILENAME}`,
+	default = tostring(path.join(getStudioPluginsPath(), project.PLUGIN_FILENAME)),
 })
 args:add("watch", "flag", {
 	help = "Watch for changes and recompile automatically",
@@ -77,15 +80,12 @@ local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function readWallyManifestAsync()
-	local wallyTomlHandle = fs.open("wally.toml", "r")
-	local contents = fs.read(wallyTomlHandle)
-	fs.close(wallyTomlHandle)
-	return toml.deserialize(contents)
+	return toml.deserialize(fs.readfiletostring(WALLY_MANIFEST_PATH))
 end
 
 local function getCommitHash()
 	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
-		stdio = "default",
+		captureOutput = true,
 	})
 	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
 	return commitHash
@@ -105,7 +105,7 @@ local context: BuildContext = {
 	channel = channel,
 	target = target,
 	shouldRebuild = args:has("clean"),
-	dest = `{process.cwd()}/{project.BUILD_PATH}/{channel}/{target}`,
+	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
@@ -126,22 +126,28 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = `{context.dest}/../default.project.json`
+			local projectPath = path.resolve(path.join(context.dest, "../default.project.json"))
 
 			createRojoProjectAsync(projectPath, {
 				name = "Flipbook",
 				tree = {
-					["$path"] = context.dest,
+					["$path"] = tostring(path.resolve(context.dest)),
 				},
 			})
 
-			local dest = `{context.dest}/../{project.PLUGIN_FILENAME}`
-			run("rojo", { "build", projectPath, "-o", dest })
+			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
+
+			run("rojo", {
+				"build",
+				projectPath,
+				"-o",
+				dest,
+			})
 
 			fs.remove(projectPath)
 
 			if args:has("skip-reload") then
-				if output:match(getStudioPluginsPath()) then
+				if output:match(tostring(getStudioPluginsPath())) then
 					return
 				end
 			end
@@ -154,7 +160,9 @@ end
 local function build()
 	local startTime = os.clock()
 
-	print(richterm.dim(`build context: {pp(context)}`))
+	local contextNoCache = table.clone(context)
+	contextNoCache.cache = nil :: any
+	print(richterm.dim(`build context: {pp(contextNoCache)}`))
 
 	buildSystem.compileAsync(context)
 	buildSystem.writeBuildCacheAsync(context.cache)
@@ -167,9 +175,9 @@ end
 build()
 
 if args:has("watch") then
-	local function onChanged(filePath: string)
-		if filePath:match(project.WORKSPACE_PATH) then
-			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+	local function onChanged(filePath: path.path)
+		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
+			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
 
@@ -181,8 +189,8 @@ if args:has("watch") then
 
 	watch({
 		roots = {
-			`{process.cwd()}/src`,
-			`{process.cwd()}/workspace`,
+			tostring(project.SOURCE_PATH),
+			tostring(project.WORKSPACE_PATH),
 		},
 		excludedFilePatterns = {
 			".*Packages",
