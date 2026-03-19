@@ -1,14 +1,31 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local fs = require("@std/fs")
+local path = require("@std/path")
 
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
-local run = FlipbookBatteries.run
+local PATHS_TO_CLEAN: { path.pathlike } = {
+	project.BUILD_PATH,
+	path.join(getStudioPluginsPath(), project.PLUGIN_FILENAME),
+	project.PLUGIN_FILENAME,
+}
 
 local function clean()
-	run("rm", { "-rf", `{project.BUILD_PATH}` })
-	run("rm", { "-rf", `{getStudioPluginsPath()}/{project.PLUGIN_FILENAME}` })
-	run("rm", { "-rf", `{project.PLUGIN_FILENAME}` })
+	for _, pathToClean in PATHS_TO_CLEAN do
+		local filePath = path.resolve(pathToClean)
+
+		if fs.exists(filePath) then
+			print(`removing {filePath}`)
+
+			if fs.type(filePath) == "dir" then
+				fs.removedirectory(filePath, {
+					recursive = true,
+				})
+			else
+				fs.remove(filePath)
+			end
+		end
+	end
 end
 
 return clean
