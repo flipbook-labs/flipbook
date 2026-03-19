@@ -8,7 +8,7 @@ return {
 	PACKAGES_PATH = path.resolve("./Packages"),
 	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
 	ROBLOX_PACKAGES_VERSION = "0.710.0.7100702",
-	SCRIPTS_PATH = path.resolve("./scripts"),
+	SCRIPTS_PATH = path.resolve("./.lute"),
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
 	LUAU_PACKAGES_PATH = path.resolve("./LuauPackages"),
