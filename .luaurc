@@ -9,7 +9,7 @@
 		"pkg": "./Packages",
 		"rbxpkg": "./RobloxPackages",
 		"repo": ".",
-		"scripts": "./scripts",
+		"scripts": "./.lute",
 		"workspace": "./workspace"
 	}
 }

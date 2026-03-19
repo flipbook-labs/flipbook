@@ -1,20 +1,20 @@
 local HttpService = game:GetService("HttpService")
 
-local Signals = require("@rbxpkg/Signals")
+local Charm = require("@pkg/Charm")
 
+local CharmTypes = require("@root/Common/CharmTypes")
 local PluginStore = require("@root/Plugin/PluginStore")
 local logger = require("@root/logger")
 
 export type PluginSettingsStore<T> = {
-	getStorage: Signals.getter<T>,
-	setStorage: Signals.setter<T>,
+	getStorage: CharmTypes.Getter<T>,
+	setStorage: CharmTypes.Setter<T>,
 
 	isSettingDefault: (settingName: string) -> boolean,
 
-	getIsLoading: Signals.getter<boolean>,
-	getErr: Signals.getter<string?>,
+	getIsLoading: CharmTypes.Getter<boolean>,
+	getErr: CharmTypes.Getter<string?>,
 
-	dispose: () -> (),
 	waitForLoaded: () -> (),
 }
 
@@ -30,10 +30,10 @@ local function createPluginSettingsStore<T>(
 	defaultValue: T,
 	validate: (value: any) -> (boolean, string)
 ): PluginSettingsStore<T>
-	local getStorage, setStorageSignal = Signals.createSignal(defaultValue)
-	local getIsLoading, setIsLoading = Signals.createSignal(true)
-	local getErr, setErr = Signals.createSignal(nil :: string?)
-	local getIsInitialized, setIsInitialized = Signals.createSignal(false)
+	local getStorage, setStorageSignal = Charm.signal(defaultValue)
+	local getIsLoading, setIsLoading = Charm.signal(true)
+	local getErr, setErr = Charm.signal(nil :: string?)
+	local getIsInitialized, setIsInitialized = Charm.signal(false)
 	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Plugin): T?
@@ -112,13 +112,15 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local function setStorageInternal(newValue: Signals.update<T>)
+	local function setStorageInternal(newValue: CharmTypes.Update<T>): T
 		setStorageSignal(newValue)
 
-		local newStorage = getStorage()
+		local newStorage = Charm.untracked(getStorage)
 
 		if newStorage ~= prevStorage then
-			local plugin = PluginStore.get().getPlugin()
+			local plugin = Charm.untracked(function()
+				return PluginStore.get().getPlugin()
+			end)
 
 			if plugin then
 				task.spawn(function()
@@ -130,15 +132,17 @@ local function createPluginSettingsStore<T>(
 		end
 
 		prevStorage = newStorage
+
+		return newStorage
 	end
 
-	local function setStorage(newValue: Signals.update<T>)
+	local function setStorage(newValue: CharmTypes.Update<T>): T
 		assert(
-			not getIsLoading(),
+			not Charm.untracked(getIsLoading),
 			"attempt to set storage while PluginSettingsStore is still loading. Call `PluginSettingsStore.waitForLoaded()` before setting storage"
 		)
 
-		setStorageInternal(newValue)
+		return setStorageInternal(newValue)
 	end
 
 	local function waitForLoaded()
@@ -176,7 +180,7 @@ local function createPluginSettingsStore<T>(
 	end
 
 	local function isSettingDefault(settingName: string): boolean
-		local storage = getStorage(false)
+		local storage = Charm.untracked(getStorage)
 		if typeof(defaultValue) ~= "table" or typeof(storage) ~= "table" then
 			return true
 		end
@@ -187,10 +191,10 @@ local function createPluginSettingsStore<T>(
 		return storedValue == nil or storedValue == settingDefaultValue
 	end
 
-	local dispose = Signals.createEffect(function(scope)
-		local plugin = PluginStore.get(scope).getPlugin(scope)
+	Charm.effect(function()
+		local plugin = PluginStore.get().getPlugin()
 
-		if plugin and not getIsInitialized(scope) then
+		if plugin and not getIsInitialized() then
 			loadInitialSettings(plugin)
 		end
 	end)
@@ -201,7 +205,6 @@ local function createPluginSettingsStore<T>(
 		getStorage = getStorage,
 		setStorage = setStorage,
 		isSettingDefault = isSettingDefault,
-		dispose = dispose,
 		waitForLoaded = waitForLoaded,
 	}
 end

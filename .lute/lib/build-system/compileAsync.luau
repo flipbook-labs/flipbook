@@ -3,6 +3,7 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
@@ -88,6 +89,18 @@ local function compileAsync(context: BuildContext)
 		if #manifestPaths > 0 then
 			local manifestPath = manifestPaths[1]
 			fs.copy(manifestPath, path.join(dest, "rotriever.toml"))
+		end
+
+		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
+		-- path length limit issues that crop up when consuming internally
+		for _, relativePackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+			local packagesPath = path.resolve(path.join(dest, "src", relativePackagesPath))
+
+			packToRbxm(packagesPath)
+
+			fs.removedirectory(packagesPath, {
+				recursive = true,
+			})
 		end
 
 		local linkerPath = path.join(dest, "src/init.lua")

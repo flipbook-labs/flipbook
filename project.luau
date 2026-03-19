@@ -23,7 +23,7 @@ return {
 
 	FOLDERS_TO_LINT = {
 		"src",
-		"scripts",
+		".lute",
 	},
 
 	PROD_CONFIG = {

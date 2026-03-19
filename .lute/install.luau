@@ -2,6 +2,7 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
+local system = require("@std/system")
 
 local getDescendants = require("@scripts/lib/getDescendants")
 
@@ -104,19 +105,15 @@ do
 	end
 
 	local function installRobloxPackages()
+		local tmpdir = system.tmpdir()
+
 		run("roblox-packages", {
 			"install",
-			"RobloxPackagesTmp",
+			tmpdir,
 			"--version",
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
 			"Foundation",
-			"-d",
-			"Signals",
-			"-d",
-			"SignalsReact",
-			"-d",
-			"ReactUtils",
 
 			-- These are only included so the above dependencies work as expected.
 			-- It seems like roblox-packages has a bug with its dependency
@@ -133,14 +130,11 @@ do
 				recursive = true,
 			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", tostring(dest) })
-		fs.removedirectory("RobloxPackagesTmp", {
-			recursive = true,
-		})
+		move(path.join(tmpdir, "Packages"), project.ROBLOX_PACKAGES_PATH)
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
-			local linkers = find(dest, `^{name}%..*`)
+			local linkers = find(project.ROBLOX_PACKAGES_PATH, `^{name}%..*`)
 
 			for _, linker in linkers do
 				-- All Roact linkers in RobloxPackages point to Roblox's
@@ -181,6 +175,7 @@ do
 		for _, battery in batteries do
 			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
 				cwd = dest,
+				stdio = "default",
 			})
 		end
 	end

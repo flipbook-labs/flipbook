@@ -1,11 +1,12 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local path = require("@std/path")
+local system = require("@std/system")
 
 local project = require("@repo/project")
-
 local run = FlipbookBatteries.run
 
-local globalDefsPath = "globalTypes.d.luau"
+local tmpdir = system.tmpdir()
+local globalDefsPath = path.join(tmpdir, "globalTypes.d.luau")
 
 run("curl", {
 	"-s",
