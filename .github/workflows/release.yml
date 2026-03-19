@@ -19,7 +19,8 @@ jobs:
           jq -n \
             --rawfile template .github/changelog_template.md \
             --slurpfile config .github/release-changelog-config.json \
-            '$config[0] + {template: $template}' \
+            --rawfile pr_template .github/changelog_pr_template.md \
+            '$config[0] + {template: $template, pr_template: $pr_template}' \
             > .github/release-config-with-template.json
 
       - name: Build Changelog

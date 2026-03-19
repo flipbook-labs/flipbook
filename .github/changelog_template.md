@@ -1,16 +1,21 @@
-[Install Flipbook from the Creator Store](https://create.roblox.com/store/asset/8517129161/Flipbook)
+
+[Install Flipbook on Roblox](https://create.roblox.com/store/asset/8517129161/Flipbook)
+
+# What's new
 
 #{{CHANGELOG}}
 
 <details>
-	<summary>Uncategorized</summary>
-	#{{UNCATEGORIZED}}
+<summary>Uncategorized</summary>
+#{{UNCATEGORIZED}}
 </details>
 
-## Contributors
+# Contributors
 
 - #{{CONTRIBUTORS}}
 
-[View the public roadmap](https://github.com/orgs/flipbook-labs/projects/6) for what's coming next!
+# Stay in touch
 
-Full diff: #{{RELEASE_DIFF}}
+1. For what's coming next for Flipbook, check out the [public roadmap](https://github.com/orgs/flipbook-labs/projects/6).
+
+#{{RELEASE_DIFF}}
