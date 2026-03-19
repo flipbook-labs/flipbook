@@ -1,4 +1,4 @@
-local Foundation = require(script.Parent.Parent.Parent.Parent.RobloxPackages.Foundation)
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
