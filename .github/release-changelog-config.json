@@ -21,7 +21,7 @@
     "order": "ASC",
     "on_property": "mergedAt"
   },
-  "pr_template": "- **#{{TITLE}}** (by #{{AUTHOR}} in #{{NUMBER}})\n#{{RELEASE_NOTES_BODY}}",
+  "pr_template": "- **#{{TITLE}}** (by @#{{AUTHOR}} in ##{{NUMBER}})\n#{{RELEASE_NOTES_BODY}}",
   "empty_template": "- no changes",
   "custom_placeholders": [
     {
