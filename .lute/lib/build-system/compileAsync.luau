@@ -93,8 +93,9 @@ local function compileAsync(context: BuildContext)
 
 		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
 		-- path length limit issues that crop up when consuming internally
-		for _, relativePackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
-			local packagesPath = path.resolve(path.join(dest, "src", relativePackagesPath))
+		for _, absPackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+			local relPackagesPath = path.relative(project.REPO_PATH, absPackagesPath)
+			local packagesPath = path.resolve(path.join(dest, "src", relPackagesPath))
 
 			packToRbxm(packagesPath)
 
