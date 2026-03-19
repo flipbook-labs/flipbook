@@ -17,7 +17,7 @@ runs:
       run: |
         {
           echo 'longPaths<<EOF'
-          lute scripts/check-path-lengths.luau --artifact ${{ inputs.artifact }}
+          lute run check-path-lengths --artifact ${{ inputs.artifact }}
           echo 'EOF'
         } >> "$GITHUB_OUTPUT"
 
