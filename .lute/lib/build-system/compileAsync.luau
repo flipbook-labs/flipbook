@@ -48,13 +48,14 @@ local function compileAsync(context: BuildContext)
 		context = context,
 		step = function(group)
 			for _, filePath in group.paths do
-				copyInto(filePath, `{context.dest}/{filePath}`)
+				local relativePath = path.relative(project.REPO_PATH, filePath)
+				copyInto(filePath, path.join(context.dest, relativePath))
 			end
 		end,
 	})
 
 	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
-		local memberPath = `{project.WORKSPACE_PATH}/{member.name}`
+		local memberPath = path.join(project.WORKSPACE_PATH, member.name)
 
 		if fs.type(memberPath) == "dir" then
 			compileWorkspaceMemberAsync(memberPath, context)
@@ -63,7 +64,9 @@ local function compileAsync(context: BuildContext)
 
 	if context.channel == "prod" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
-			fs.removedirectory(path.join(context.dest, dir), {
+			local relativePath = path.relative(project.REPO_PATH, dir)
+
+			fs.removedirectory(path.join(context.dest, relativePath), {
 				recursive = true,
 			})
 		end
@@ -90,8 +93,9 @@ local function compileAsync(context: BuildContext)
 
 		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
 		-- path length limit issues that crop up when consuming internally
-		for _, relativePackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
-			local packagesPath = path.resolve(path.join(dest, "src", relativePackagesPath))
+		for _, absPackagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+			local relPackagesPath = path.relative(project.REPO_PATH, absPackagesPath)
+			local packagesPath = path.resolve(path.join(dest, "src", relPackagesPath))
 
 			packToRbxm(packagesPath)
 
