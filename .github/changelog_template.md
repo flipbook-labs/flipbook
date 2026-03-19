@@ -7,7 +7,9 @@
 
 <details>
 <summary>Uncategorized</summary>
+
 #{{UNCATEGORIZED}}
+
 </details>
 
 # Contributors
