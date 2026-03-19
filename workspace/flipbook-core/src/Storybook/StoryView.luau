@@ -1,8 +1,10 @@
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
@@ -19,7 +21,7 @@ local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useState = React.useState
-
+local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -32,6 +34,8 @@ type StoryViewProps = {
 local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook)
 	local theme = useThemeName()
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin = useSignalState(pluginStore.getPlugin)
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
@@ -54,8 +58,9 @@ local function StoryView(props: StoryViewProps)
 		return {
 			theme = theme :: useThemeName.ThemeName,
 			locale = "en-us",
+			plugin = plugin,
 		}
-	end, { theme } :: { unknown })
+	end, { theme, plugin } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)

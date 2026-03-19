@@ -6,7 +6,7 @@ return {
 	PACKAGES_PATH = "Packages",
 	ROBLOX_PACKAGES_PATH = "RobloxPackages",
 	ROBLOX_PACKAGES_VERSION = "0.710.0.7100702",
-	SCRIPTS_PATH = "scripts",
+	SCRIPTS_PATH = ".lute",
 	EXAMPLE_PATH = "example",
 	WORKSPACE_PATH = "workspace",
 
@@ -20,7 +20,7 @@ return {
 
 	FOLDERS_TO_LINT = {
 		"src",
-		"scripts",
+		".lute",
 	},
 
 	PROD_CONFIG = {
