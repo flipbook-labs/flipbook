@@ -1,6 +1,7 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
 local fs = require("@std/fs")
+local path = require("@std/path")
 local pp = require("@luaupkg/batteries/pp")
 local process = require("@std/process")
 local richterm = require("@luaupkg/batteries/richterm")
@@ -167,9 +168,9 @@ end
 build()
 
 if args:has("watch") then
-	local function onChanged(filePath: string)
-		if filePath:match(project.WORKSPACE_PATH) then
-			local memberPath = filePath:match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+	local function onChanged(filePath: path.path)
+		if tostring(filePath):match(project.WORKSPACE_PATH) then
+			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)
 
