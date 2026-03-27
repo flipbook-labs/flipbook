@@ -5,7 +5,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local PluginStore = require("@root/Plugin/PluginStore")
-local StoryControls = require("@root/Storybook/StoryControls")
+local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local useThemeName = require("@root/Common/useThemeName")
@@ -37,22 +37,7 @@ local function StoryView(props: StoryViewProps)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 
-	local modifiedControls, setModifiedControls = useState({})
-	local controls = useMemo(function()
-		local newControls = {}
-
-		if story ~= nil and story.controls ~= nil then
-			for key, value in story.controls do
-				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
-					newControls[key] = modifiedControls[key]
-				else
-					newControls[key] = value
-				end
-			end
-		end
-
-		return newControls
-	end, { story, modifiedControls } :: { any })
+	local controls, setControls = useState({} :: Storyteller.StoryControls)
 
 	local extraProps: Storyteller.StoryProps = useMemo(function()
 		return {
@@ -63,7 +48,7 @@ local function StoryView(props: StoryViewProps)
 	end, { theme, plugin } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
-		setModifiedControls(function(currentValue)
+		setControls(function(currentValue)
 			return Object.assign({}, currentValue, {
 				[key] = value,
 			})
@@ -71,7 +56,7 @@ local function StoryView(props: StoryViewProps)
 	end, {})
 
 	useEffect(function()
-		setModifiedControls({})
+		setControls({})
 	end, { story })
 
 	return e(View, {
@@ -123,10 +108,10 @@ local function StoryView(props: StoryViewProps)
 				}),
 			}),
 
-			Controls = next(controls) ~= nil and e(StoryControls, {
+			Controls = story.controls ~= nil and e(StoryControlsPanel, {
 				LayoutOrder = 4,
+				controlsSchema = story.controls,
 				controls = controls,
-				modifiedControls = modifiedControls,
 				setControl = setControl,
 			}),
 		}),

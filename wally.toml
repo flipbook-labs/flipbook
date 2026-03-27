@@ -22,6 +22,7 @@ Storyteller = "flipbook-labs/storyteller@1.8.1"
 t = "osyrisrblx/t@3.0.0"
 
 # dev dependencies
+UILabs = "pepeeltoro41/ui-labs@2.4.2"
 Fusion = "elttob/fusion@0.2.0"
 Jest = "jsdotlua/jest@3.10.0"
 JestGlobals = "jsdotlua/jest-globals@3.10.0"

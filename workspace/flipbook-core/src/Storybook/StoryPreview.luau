@@ -15,10 +15,11 @@ local useEffect = React.useEffect
 type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
-	LayoutOrder: number?,
 	story: LoadedStory,
-	controls: Storyteller.StoryControls,
-	extraProps: Storyteller.StoryControls, -- TODO: Change to ExtraStoryProps
+
+	controls: Storyteller.StoryControls?,
+	extraProps: Storyteller.StoryProps?,
+	LayoutOrder: number?,
 }
 
 local function StoryPreview(props: Props): React.Node
