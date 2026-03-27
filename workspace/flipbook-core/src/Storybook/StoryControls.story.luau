@@ -20,7 +20,7 @@ return {
 			end)
 		end, {})
 
-		local controlsSchema: Storyteller.StoryControlsSchema = useMemo(function()
+		local controlsSchema = useMemo(function(): Storyteller.StoryControlsSchema
 			return {
 				text = Storyteller.createStringControl(),
 
