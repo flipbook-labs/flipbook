@@ -9,7 +9,6 @@ local Divider = Foundation.Divider
 local ScrollView = Foundation.ScrollView
 local Text = Foundation.Text
 local View = Foundation.View
-local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
 local useMemo = React.useMemo
@@ -27,8 +26,6 @@ export type StoryControlsProps = {
 -- but turns out it doesn't work when in a `col` with a `shrink size-full`
 -- as it's sibling.
 local function StoryControls(props: StoryControlsProps)
-	local tokens = useTokens()
-
 	local sortedControls = useSortedControls(props.controlsSchema)
 	local controlElements: { [string]: React.ReactNode } = {}
 
