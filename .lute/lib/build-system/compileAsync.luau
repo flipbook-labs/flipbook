@@ -31,9 +31,15 @@ local function compileAsync(context: BuildContext)
 		project.DARKLUA_SOURCEMAP_PATH,
 	})
 
+	-- Darklua is failing to resolve string requires when using absolute paths
+	-- for the input. Probably related to the sourcemap, though we've tried
+	-- using the `--absolute` flag with `rojo sourcemap` and that didn't work
+	-- either. We just massage the source path into a relative path to work
+	-- around the issue.
+	local relativeSourcePath = path.relative(project.REPO_PATH, project.SOURCE_PATH)
 	run("darklua", {
 		"process",
-		project.SOURCE_PATH,
+		relativeSourcePath,
 		context.dest,
 	}, {
 		env = context.env,
