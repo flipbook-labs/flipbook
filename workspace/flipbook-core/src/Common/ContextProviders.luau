@@ -1,5 +1,6 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -30,6 +31,7 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
+			React.createElement(Storyteller.StorytellerProvider),
 		},
 	}, props.children)
 end
