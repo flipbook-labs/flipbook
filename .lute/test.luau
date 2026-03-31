@@ -49,8 +49,10 @@ run("rocale", {
 	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
 	"--placeId",
 	process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
-	"--apiKey",
-	tostring(apiKey),
 	"--output",
 	tostring(path.join(system.tmpdir(), "tests.rbxl")),
+}, {
+	env = {
+		ROBLOX_API_KEY = apiKey,
+	},
 })
