@@ -13,6 +13,20 @@ local View = Foundation.View
 local e = React.createElement
 local useMemo = React.useMemo
 
+-- This should probably get moved to Storyteller
+local function resolveControlFromValue(controlValue: Storyteller.StoryControlValue): Storyteller.StoryControl
+	if typeof(controlValue) == "string" then
+		return Storyteller.createStringControl(controlValue)
+	elseif typeof(controlValue) == "boolean" then
+		return Storyteller.createBooleanControl(controlValue)
+	elseif typeof(controlValue) == "number" then
+		return Storyteller.createNumberControl(controlValue)
+	elseif typeof(controlValue) == "Color3" then
+		return Storyteller.createColorControl(controlValue)
+	end
+	return Storyteller.createStringControl(tostring(controlValue))
+end
+
 export type StoryControlsProps = {
 	controlsSchema: Storyteller.StoryControlsSchema,
 	controls: Storyteller.StoryControls,
@@ -43,10 +57,15 @@ local function StoryControls(props: StoryControlsProps)
 	for index, name in sortedControlNames do
 		local control: (Storyteller.StoryControl | Storyteller.StoryControlValue)? = props.controlsSchema[name]
 
-		-- TODO: Properly handle when we get a StoryControlValue back. This is
-		-- just to clear the type error for now
-		if typeof(control) ~= "table" then
+		if control == nil then
 			continue
+		end
+
+		local resolvedControl: Storyteller.StoryControl
+		if typeof(control) == "table" then
+			resolvedControl = control
+		else
+			resolvedControl = resolveControlFromValue(control)
 		end
 
 		controlElements[name] = e(View, {
@@ -55,7 +74,7 @@ local function StoryControls(props: StoryControlsProps)
 		}, {
 			Row = e(StoryControlRow, {
 				controlName = name,
-				control = control,
+				control = resolvedControl,
 				setControl = props.setControl,
 				controls = hydratedControls,
 				LayoutOrder = 1,
