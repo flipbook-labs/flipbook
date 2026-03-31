@@ -1,7 +1,8 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
 local cli = require("@luaupkg/batteries/cli")
-local fs = require("@std/fs")
+local path = require("@std/path")
 local process = require("@std/process")
+local system = require("@std/system")
 
 local project = require("@repo/project")
 
@@ -37,24 +38,19 @@ local filter = args:get("filter")
 process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
 run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
-run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
 
-local success, err = pcall(function()
-	run("python3", {
-		".lute/python/upload_and_run_task.py",
-		"tests.rbxl",
-		".lute/tasks/run-tests.luau",
-	}, {
-		env = {
-			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
-			ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
-			ROBLOX_API_KEY = tostring(apiKey),
-		},
-	})
-
-	return nil
-end)
-
-fs.remove("tests.rbxl")
-
-assert(success, err)
+run("rocale", {
+	"run",
+	"--script",
+	".lute/tasks/run-tests.luau",
+	"--load.project",
+	project.ROJO_TESTS_PROJECT,
+	"--universeId",
+	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+	"--placeId",
+	process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+	"--apiKey",
+	tostring(apiKey),
+	"--output",
+	tostring(path.join(system.tmpdir(), "tests.rbxl")),
+})
