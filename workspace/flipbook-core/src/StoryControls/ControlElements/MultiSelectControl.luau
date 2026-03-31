@@ -51,9 +51,11 @@ local function MultiSelectControl(props: Props)
 				table.insert(new, tostring(itemId))
 			end
 
+			props.onChanged(new)
+
 			return new
 		end)
-	end, { props.controlValue, props.onChanged } :: { unknown })
+	end, { props.onChanged } :: { unknown })
 
 	local value = useMemo(function(): ItemId?
 		-- It would have been nice to display a comma-seperated list of the
