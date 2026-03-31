@@ -23,6 +23,7 @@ return {
 
 	FOLDERS_TO_LINT = {
 		"src",
+		"workspace",
 		".lute",
 	},
 
