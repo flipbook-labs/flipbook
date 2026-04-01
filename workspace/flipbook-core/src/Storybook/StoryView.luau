@@ -46,7 +46,11 @@ local function StoryView(props: StoryViewProps)
 				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
 					newControls[key] = modifiedControls[key]
 				else
-					newControls[key] = value
+					if typeof(value) == "table" then
+						newControls[key] = value.default
+					else
+						newControls[key] = value
+					end
 				end
 			end
 		end
