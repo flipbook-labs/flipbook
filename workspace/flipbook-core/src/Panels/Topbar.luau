@@ -5,6 +5,7 @@ local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
+local LocaleSwitcher = require("@root/Common/LocaleSwitcher")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
@@ -170,6 +171,10 @@ local function Topbar(props: TopbarProps)
 					size = InputSize.Small,
 					value = userSettings.theme,
 					width = UDim.new(0, 160),
+				}),
+
+				Locale = e(LocaleSwitcher, {
+					LayoutOrder = 6,
 				}),
 			}),
 
