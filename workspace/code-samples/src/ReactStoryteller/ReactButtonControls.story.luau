@@ -4,8 +4,8 @@ local Storyteller = require("@pkg/Storyteller")
 local ReactButton = require("./ReactButton")
 
 local controls: Storyteller.StoryControlsSchema = {
-	text = Storyteller.createStringControl("Click Me"),
-	isDisabled = Storyteller.createBooleanControl(false),
+	text = "Click Me",
+	isDisabled = false,
 }
 
 local story: Storyteller.Story<any> = {
