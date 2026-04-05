@@ -8,6 +8,7 @@ local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -37,6 +38,9 @@ local function StoryView(props: StoryViewProps)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
 		local newControls = {}
@@ -57,10 +61,10 @@ local function StoryView(props: StoryViewProps)
 	local extraProps: Storyteller.StoryProps = useMemo(function()
 		return {
 			theme = theme :: useThemeName.ThemeName,
-			locale = "en-us",
+			locale = userSettings.locale,
 			plugin = plugin,
 		}
-	end, { theme, plugin } :: { unknown })
+	end, { theme, plugin, userSettings.locale } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
