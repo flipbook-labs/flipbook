@@ -25,7 +25,10 @@ local PopoverAlign = Foundation.Enums.PopoverAlign
 local PopoverSide = Foundation.Enums.PopoverSide
 local Tooltip = Foundation.Tooltip
 local View = Foundation.View
+local ScrollView = Foundation.ScrollView
 local withCommonProps = Foundation.Utility.withCommonProps
+
+local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
 local useCallback = React.useCallback
@@ -40,6 +43,8 @@ type TopbarProps = {} & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
 	local helpButtonRef = useRef(nil :: GuiObject?)
+
+	local tokens = useTokens()
 
 	local isAboutMenuOpen, setIsAboutMenuOpen = useState(false)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
@@ -61,12 +66,21 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large size-full-1400",
 		}),
 		{
-			Actions = e(View, {
+			Actions = e(ScrollView, {
 				LayoutOrder = 1,
-				tag = "auto-x gap-medium row size-0-full",
+				tag = "size-full shrink",
+				scroll = {
+					ScrollingDirection = Enum.ScrollingDirection.X,
+					AutomaticCanvasSize = Enum.AutomaticSize.X,
+					CanvasSize = UDim2.new(0, 0),
+				},
+				layout = {
+					FillDirection = Enum.FillDirection.Horizontal,
+					Padding = UDim.new(0, tokens.Padding.Medium),
+				},
 			}, {
 				Zoom = e(View, {
 					LayoutOrder = 1,
