@@ -26,7 +26,7 @@ jobs:
       - name: Get the latest Roblox Studio version
         id: get_latest_version
         run: |
-          latestVersion=$(roblox-packages current-version)
+          latestVersion=$(roblox-packages list | tail -n 1 | awk '{print $1}')
           echo $latestVersion
           echo "latest-version=$latestVersion" >> "$GITHUB_OUTPUT"
 
