@@ -1,20 +1,15 @@
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local LocaleSwitcher = require("@root/Common/LocaleSwitcher")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-
-local Object = LuauPolyfill.Object
+local ThemeSwitcher = require("@root/Common/ThemeSwitcher")
 
 local Dialog = Foundation.Dialog
 local Divider = Foundation.Divider
-local Dropdown = Foundation.Dropdown
 local IconButton = Foundation.IconButton
 local IconName = Foundation.Enums.IconName
 local IconVariant = Foundation.Enums.IconVariant
@@ -31,11 +26,8 @@ local withCommonProps = Foundation.Utility.withCommonProps
 local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
-local useCallback = React.useCallback
 local useRef = React.useRef
 local useState = React.useState
-
-local useSignalState = ReactSignals.useSignalState
 
 type ItemId = number | string
 
@@ -52,16 +44,6 @@ local function Topbar(props: TopbarProps)
 
 	local navigation = NavigationContext.use()
 	local storyActions = StoryActionsContext.useStoryActions()
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
-
-	local onThemeChanged = useCallback(function(itemId: ItemId)
-		userSettingsStore.setStorage(function(currentValue)
-			return Object.assign({}, currentValue, {
-				theme = itemId,
-			})
-		end)
-	end, { userSettingsStore.setStorage })
 
 	return e(
 		View,
@@ -172,19 +154,8 @@ local function Topbar(props: TopbarProps)
 					orientation = Orientation.Vertical,
 				}),
 
-				Theme = e(Dropdown.Root, {
+				Theme = e(ThemeSwitcher, {
 					LayoutOrder = 5,
-					items = {
-						{ id = "system", text = "System" },
-						{ id = "dark", text = "Dark" },
-						{ id = "light", text = "Light" },
-					},
-					label = "",
-					onItemChanged = onThemeChanged,
-					placeholder = "Theme",
-					size = InputSize.Small,
-					value = userSettings.theme,
-					width = UDim.new(0, 160),
 				}),
 
 				Locale = e(LocaleSwitcher, {

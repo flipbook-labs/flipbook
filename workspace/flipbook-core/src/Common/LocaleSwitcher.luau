@@ -100,7 +100,6 @@ local function LocaleSwitcher(props: Props)
 		items = locales,
 		label = "",
 		onItemChanged = onLocaleChanged,
-		placeholder = "Locale",
 		size = InputSize.Small,
 		value = userSettings.locale,
 		width = UDim.new(0, 160),
