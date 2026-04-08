@@ -21,7 +21,7 @@ local function compileAsync(context: BuildContext)
 		})
 	end
 	fs.createDirectory(context.dest, {
-		makeparents = true,
+		makeParents = true,
 	})
 
 	run("rojo", {

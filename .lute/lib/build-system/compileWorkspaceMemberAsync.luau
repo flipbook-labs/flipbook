@@ -26,7 +26,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 				recursive = true,
 			})
 			fs.createDirectory(memberBuildPath, {
-				makeparents = true,
+				makeParents = true,
 			})
 
 			run("darklua", {
