@@ -52,7 +52,6 @@ do
 	}
 
 	local bumpedVersionComponent = args:get("versionBump")
-	print("bumpedVersionComponent")
 	local versionBump: VersionComponent = validateVersionBump(bumpedVersionComponent)
 
 	-- The root Wally manifest is the source of truth for the current version
