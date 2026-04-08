@@ -66,7 +66,7 @@ do
 		local manifestVersion
 		if path.extname(manifestPath) == ".toml" then
 			manifestVersion = semver.getVersionFromManifest(manifestPath)
-		elseif path.extname(manifestPath) == ".luau" then
+		elseif path.basename(manifestPath) == "loom.config.luau" then
 			manifestVersion = loomConfig.package.version
 		else
 			error(`unsupported manifest file type for {manifestPath}`)
