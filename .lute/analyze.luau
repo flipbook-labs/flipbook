@@ -23,7 +23,7 @@ run("rojo", {
 	project.SOURCEMAP_PATH,
 })
 
-local defaultArgs: { string | path.pathlike } = {
+local defaultArgs: { string | path.Pathlike } = {
 	"analyze",
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",

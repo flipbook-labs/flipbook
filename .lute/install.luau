@@ -11,7 +11,7 @@ local project = require("@repo/project")
 
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
-local function move(src: path.pathlike, dest: path.pathlike)
+local function move(src: path.Pathlike, dest: path.Pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
 		stdio = "inherit",
 	})
@@ -25,10 +25,10 @@ do
 	})
 	assert(res.ok, res.stderr)
 
-	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
+	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createdirectory(project.LUAU_PACKAGES_PATH)
+	fs.createDirectory(project.LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
@@ -78,7 +78,7 @@ do
 			}
 
 			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
-			fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+			fs.writeStringToFile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 			run("darklua", { "process", "src", "src" }, {
 				cwd = packageRoot,
@@ -126,7 +126,7 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			fs.removedirectory(dest, {
+			fs.removeDirectory(dest, {
 				recursive = true,
 			})
 		end
@@ -168,7 +168,7 @@ do
 
 		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
 
-		fs.createdirectory(dest, {
+		fs.createDirectory(dest, {
 			makeparents = true,
 		})
 

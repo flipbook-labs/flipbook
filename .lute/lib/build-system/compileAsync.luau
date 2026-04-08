@@ -16,11 +16,11 @@ type BuildContext = types.BuildContext
 
 local function compileAsync(context: BuildContext)
 	if context.shouldRebuild then
-		fs.removedirectory(context.dest, {
+		fs.removeDirectory(context.dest, {
 			recursive = true,
 		})
 	end
-	fs.createdirectory(context.dest, {
+	fs.createDirectory(context.dest, {
 		makeparents = true,
 	})
 
@@ -60,7 +60,7 @@ local function compileAsync(context: BuildContext)
 		end,
 	})
 
-	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
+	for _, member in fs.listDirectory(project.WORKSPACE_PATH) do
 		local memberPath = path.join(project.WORKSPACE_PATH, member.name)
 
 		if fs.type(memberPath) == "dir" then
@@ -72,7 +72,7 @@ local function compileAsync(context: BuildContext)
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 
-			fs.removedirectory(path.join(context.dest, relativePath), {
+			fs.removeDirectory(path.join(context.dest, relativePath), {
 				recursive = true,
 			})
 		end
@@ -82,7 +82,7 @@ local function compileAsync(context: BuildContext)
 		local dest = path.join(project.BUILD_PATH, "flipbook-core-rotriever")
 
 		if context.shouldRebuild then
-			fs.removedirectory(dest, {
+			fs.removeDirectory(dest, {
 				recursive = true,
 			})
 		end
@@ -105,14 +105,14 @@ local function compileAsync(context: BuildContext)
 
 			packToRbxm(packagesPath)
 
-			fs.removedirectory(packagesPath, {
+			fs.removeDirectory(packagesPath, {
 				recursive = true,
 			})
 		end
 
 		local linkerPath = path.join(dest, "src/init.lua")
 		local linkerSource = `return require(script.workspace["flipbook-core"])`
-		fs.writestringtofile(linkerPath, linkerSource)
+		fs.writeStringToFile(linkerPath, linkerSource)
 
 		-- Rotriever does not support .luau files, so rename
 		-- them to .lua for compatibility
