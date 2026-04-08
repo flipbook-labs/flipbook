@@ -8,6 +8,11 @@ return {
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/flipbook-batteries",
 			},
+			["lute"] = {
+				rev = "0.1.0-nightly.20260408",
+				sourceKind = "github",
+				source = "https://github.com/luau-lang/lute",
+			},
 		},
 	},
 }

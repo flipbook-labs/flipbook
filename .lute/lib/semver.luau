@@ -1,5 +1,5 @@
 local fs = require("@std/fs")
-local toml = require("@luaupkg/batteries/toml")
+local toml = require("@batteries/toml")
 
 export type VersionComponent = "major" | "minor" | "patch"
 

@@ -157,29 +157,6 @@ do
 		end
 	end
 
-	local function installLuteBatteries()
-		local commit = "7f5ccf7"
-		local batteries = {
-			"cli.luau",
-			"pp.luau",
-			"richterm.luau",
-			"toml.luau",
-		}
-
-		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
-
-		fs.createDirectory(dest, {
-			makeparents = true,
-		})
-
-		for _, battery in batteries do
-			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = dest,
-				stdio = "default",
-			})
-		end
-	end
-
 	local function installRbxasset()
 		local fileName = "rbxasset.zip"
 
@@ -213,6 +190,5 @@ do
 	installRobloxPackages()
 	installWallyPackages()
 	installRbxasset()
-	installLuteBatteries()
 	pruneDevelopmentFiles()
 end
