@@ -1,4 +1,4 @@
-local cli = require("@luaupkg/batteries/cli")
+local cli = require("@batteries/cli")
 local fs = require("@std/fs")
 
 local findAndReplace = require("@scripts/lib/findAndReplace")
@@ -49,8 +49,7 @@ do
 		"workspace/flipbook-core/rotriever.toml",
 	}
 
-	local bumpedVersionComponent = args:get("versionBump")
-	print("bumpedVersionComponent")
+	local bumpedVersionComponent = args:get("versionBump") :: string
 	local versionBump: VersionComponent = validateVersionBump(bumpedVersionComponent)
 
 	-- The root Wally manifest is the source of truth for the current version
