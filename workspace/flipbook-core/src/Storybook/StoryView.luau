@@ -8,6 +8,7 @@ local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -23,8 +24,10 @@ local useMemo = React.useMemo
 local useState = React.useState
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
+local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type ExtraStoryProps = types.ExtraStoryProps
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
@@ -36,19 +39,40 @@ local function StoryView(props: StoryViewProps)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
+	local overlayGui = useOverlay()
 
-	local controls, setControls = useState({} :: Storyteller.StoryControls)
+	local modifiedControls, setModifiedControls = useState({})
+	local controls = useMemo(function()
+		local newControls = {}
 
-	local extraProps: Storyteller.StoryProps = useMemo(function()
+		if story ~= nil and story.controls ~= nil then
+			for key, value in story.controls do
+				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
+					newControls[key] = modifiedControls[key]
+				else
+					if typeof(value) == "table" then
+						newControls[key] = value.default
+					else
+						newControls[key] = value
+					end
+				end
+			end
+		end
+
+		return newControls
+	end, { story, modifiedControls } :: { any })
+
+	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
 			theme = theme :: useThemeName.ThemeName,
 			locale = "en-us",
 			plugin = plugin,
+			widget = overlayGui,
 		}
-	end, { theme, plugin } :: { unknown })
+	end, { theme, plugin, overlayGui } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
-		setControls(function(currentValue)
+		setModifiedControls(function(currentValue)
 			return Object.assign({}, currentValue, {
 				[key] = value,
 			})
@@ -56,7 +80,7 @@ local function StoryView(props: StoryViewProps)
 	end, {})
 
 	useEffect(function()
-		setControls({})
+		setModifiedControls({})
 	end, { story })
 
 	return e(View, {

@@ -7,6 +7,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local StoryError = require("@root/Storybook/StoryError")
+local types = require("@root/Storybook/types")
 
 local e = React.createElement
 local useState = React.useState
@@ -18,7 +19,7 @@ export type Props = {
 	story: LoadedStory,
 
 	controls: Storyteller.StoryControls?,
-	extraProps: Storyteller.StoryProps?,
+	extraProps: types.ExtraStoryProps?,
 	LayoutOrder: number?,
 }
 
