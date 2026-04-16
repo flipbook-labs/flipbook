@@ -1,21 +1,17 @@
+local canAccess = require("@root/Permissions/canAccess")
+
 local function tryGetService(serviceName: string): Instance?
-	local service
+	local service: Instance?
 
 	pcall(function()
 		service = game:GetService(serviceName)
 	end)
 
-	if service then
+	if service and canAccess(service) then
 		return service
+	else
+		return nil
 	end
-
-	-- Some services cannot be retrieved by GetService but still exist in the DM
-	-- and can be retrieved by name.
-	pcall(function()
-		service = game:FindFirstChild(serviceName)
-	end)
-
-	return service
 end
 
 return tryGetService
