@@ -1,0 +1,38 @@
+{
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["enhancement"]
+    },
+    {
+      "title": "## 📘 Docs",
+      "labels": ["docs"]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": ["bug"]
+    },
+    {
+      "title": "## 🧹 Housekeeping",
+      "labels": ["nonprod"]
+    }
+  ],
+  "sort": {
+    "order": "ASC",
+    "on_property": "mergedAt"
+  },
+  "pr_template": "- **#{{TITLE}}** (by @#{{AUTHOR}} in ##{{NUMBER}})\n#{{RELEASE_NOTES_BODY}}",
+  "empty_template": "- no changes",
+  "custom_placeholders": [
+    {
+      "name": "RELEASE_NOTES_BODY",
+      "source": "BODY",
+      "transformer": {
+        "pattern": "(?im)^#{1,2}\\s*Release Notes\\s*\\n([\\s\\S]*?)(?=^#{1,6}\\s|\\Z)",
+        "target": "$1",
+        "method": "replace",
+        "flags": "imu"
+      }
+    }
+  ]
+}

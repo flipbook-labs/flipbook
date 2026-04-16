@@ -9,6 +9,34 @@ on:
       - main
 
 jobs:
+  build-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Prepare changelog config
+        run: |
+          jq -n \
+            --rawfile template .github/changelog_template.md \
+            --slurpfile config .github/release-changelog-config.json \
+            '$config[0] + {template: $template}' \
+            > .github/release-config-with-template.json
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v6
+        with:
+          fetchViaCommits: true
+          configuration: .github/release-config-with-template.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Echo changelog
+        run: echo "${{ steps.github_release.outputs.changelog }}"
+
+      - name: Output changelog to job summary
+        run: echo "${{ steps.github_release.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
+
   publish-github-release:
     runs-on: ubuntu-latest
     permissions:
