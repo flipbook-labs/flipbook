@@ -48,6 +48,7 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
       - uses: actions/attest-build-provenance@v3
+        if: ${{ ! github.event.repository.fork }}
         with:
           subject-path: ${{ env.MODEL_FILE }}
 
@@ -84,6 +85,7 @@ jobs:
           zip -r ../${{ env.ARTIFACT_NAME }} ${{ matrix.package }}-${{ matrix.target }}
 
       - uses: actions/attest-build-provenance@v3
+        if: ${{ ! github.event.repository.fork }}
         with:
           subject-path: ${{ env.ARTIFACT_NAME }}
 
