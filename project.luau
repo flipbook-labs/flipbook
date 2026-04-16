@@ -48,5 +48,12 @@ return {
 			universeId = "6599100156",
 			placeId = "123506190725771",
 		},
+
+		-- Sandbox for running unit tests against contributions from the
+		-- community. This is to facillitate fork-based workflows.
+		forkSandbox = {
+			universeId = "10043718755",
+			placeId = "123308720788536",
+		},
 	},
 }
