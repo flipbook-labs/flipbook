@@ -41,4 +41,12 @@ return {
 			"jest.config.lua*",
 		},
 	},
+
+	EXPERIENCES = {
+		-- Primary experience we use for running Flipbook's unit tests.
+		unitTesting = {
+			universeId = "6599100156",
+			placeId = "123506190725771",
+		},
+	},
 }

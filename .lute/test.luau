@@ -46,9 +46,9 @@ run("rocale", {
 	"--load.project",
 	project.ROJO_TESTS_PROJECT,
 	"--universeId",
-	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+	project.EXPERIENCES.unitTesting.universeId,
 	"--placeId",
-	process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+	project.EXPERIENCES.unitTesting.placeId,
 	"--output",
 	tostring(path.join(system.tmpdir(), "tests.rbxl")),
 }, {
