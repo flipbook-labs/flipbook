@@ -1,0 +1,19 @@
+-- TODO: This is a stub for the changelog management script. The idea is to have
+-- a simple CLI tool that can be used to manage the changelog entries in the
+-- `changes` folder and then bundle them up into a single changelog file when
+-- it's time to release a new version.
+
+-- add
+-- 	adds a new entry to the changelog
+--
+-- release
+-- 	bundles up all of the entries from the `changes` folder into the changelog
+--
+-- next-version
+--  prints out the next semver version number based on the entries in the `changes` folder
+--
+-- print-release-notes
+-- 	prints out the release notes for the next version without actually modifying any files.
+-- 	Useful for previewing what the release notes will look like before actually publishing a release.
+--  Optionally pass `--version` to specify a prior version to print the changelog slice from.
+--
