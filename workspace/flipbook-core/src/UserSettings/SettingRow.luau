@@ -1,13 +1,13 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
-local useTheme = require("@root/Common/useTheme")
+local useColors = require("@root/Common/useColors")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
 local useMemo = React.useMemo
 
@@ -20,7 +20,7 @@ export type Props = {
 }
 
 local function SettingRow(props: Props)
-	local theme = useTheme()
+	local colors = useColors()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -43,10 +43,10 @@ local function SettingRow(props: Props)
 				onActivated = setSetting,
 			})
 		elseif props.setting.settingType == "dropdown" then
-			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.MenuItem
+			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.DropdownItem
 				return {
 					id = choice.name,
-					text = choice.name,
+					text = choice.displayName,
 				}
 			end)
 
@@ -82,10 +82,7 @@ local function SettingRow(props: Props)
 		ChangedIndicator = if hasBeenChanged
 			then React.createElement(Foundation.View, {
 				tag = "size-50-full",
-				backgroundStyle = {
-					Color3 = theme.selection,
-					Transparency = 0,
-				},
+				backgroundStyle = colors.accent,
 			})
 			else nil,
 

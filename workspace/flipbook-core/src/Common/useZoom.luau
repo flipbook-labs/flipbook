@@ -2,7 +2,7 @@ local React = require("@pkg/React")
 
 local ZOOM_INCREMENT = 0.25
 
-local function useZoom(story: ModuleScript)
+local function useZoom(story: ModuleScript?)
 	local value, setValue = React.useState(0)
 
 	local zoomIn = React.useCallback(function()

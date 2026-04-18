@@ -1,10 +1,10 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Storyteller = require("@pkg/Storyteller")
 
 local ContextStack = require("@root/Common/ContextStack")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
-local TreeView = require("@root/TreeView")
 local useThemeName = require("@root/Common/useThemeName")
 
 local useEffect = React.useEffect
@@ -19,7 +19,7 @@ local function ContextProviders(props: Props)
 	local themeName: "Dark" | "Light" = useThemeName()
 
 	useEffect(function()
-		PluginStore.get(false).setPlugin(props.plugin)
+		PluginStore.get().setPlugin(props.plugin)
 	end, { props.plugin })
 
 	return React.createElement(ContextStack, {
@@ -31,7 +31,7 @@ local function ContextProviders(props: Props)
 			React.createElement(NavigationContext.Provider, {
 				defaultScreen = "Home",
 			}),
-			React.createElement(TreeView.TreeViewProvider),
+			React.createElement(Storyteller.StorytellerProvider),
 		},
 	}, props.children)
 end

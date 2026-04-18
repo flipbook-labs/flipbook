@@ -4,21 +4,37 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+  pull-requests: write
 
 jobs:
-  build:
+  build-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        channel: [dev, prod]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
-        run: lune run install
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
 
       - name: Get model file name
         run: |
@@ -27,12 +43,57 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lune run build --target prod --output ${{ env.MODEL_FILE }}
+        run: lute run build plugin --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.MODEL_FILE }}
+          name: flipbook-plugin-${{ matrix.channel }}
           path: ${{ env.MODEL_FILE }}
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.MODEL_FILE }}
+
+  build-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        package: [flipbook-core]
+        target: [rotriever]
+        channel: [dev, prod]
+      fail-fast: false
+    env:
+      ARTIFACT_NAME: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Build
+        run: lute run build workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
+
+      - name: Zip everything up
+        run: |
+          cd build/
+          zip -r ../${{ env.ARTIFACT_NAME }} ${{ matrix.package }}-${{ matrix.target }}
+
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.ARTIFACT_NAME }}
+
+      - uses: actions/upload-artifact@v6
+        with:
+          path: ${{ env.ARTIFACT_NAME }}
+          name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
   analyze:
     runs-on: ubuntu-latest
@@ -42,37 +103,45 @@ jobs:
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
-        run: lune run install
+        run: lute run install
 
       - name: Setup Lune typedefs
         run: lune setup
 
+      - name: Setup Lute typedefs
+        run: lute setup
+
       - name: Lint
-        run: lune run lint
+        run: lute run lint
 
       - name: Run Luau analysis
-        run: lune run analyze
+        run: lute run analyze
 
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment:
+      # This giant expression makes it so forks of Flipbook go through a gated
+      # environment that must be approved, while internal contributions auto-run
+      # like normal.
+      name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
-        run: lune run install
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
 
       - name: Run tests
-        run: lune run test
+        run: lute run test
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}

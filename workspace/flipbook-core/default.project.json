@@ -1,12 +1,5 @@
 {
-  "name": "flipbook-core",
   "tree": {
-    "RobloxPackages": {
-      "$path": "RobloxPackages"
-    },
-    "Packages": {
-      "$path": "Packages"
-    },
     "$path": "src"
   }
 }

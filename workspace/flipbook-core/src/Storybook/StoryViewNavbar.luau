@@ -1,7 +1,7 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -10,7 +10,7 @@ local e = React.createElement
 
 local noop = function() end
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
 
 type Props = {
@@ -88,8 +88,8 @@ local function StoryViewNavbar(props: Props)
 		}),
 
 		ThemeSelection = e(Foundation.Dropdown.Root, {
-			label = "Theme",
 			size = Foundation.Enums.InputSize.Small,
+			label = "",
 			onItemChanged = onThemeChanged,
 			width = UDim.new(0, 150),
 			value = userSettings.theme,

@@ -1,173 +1,145 @@
-local Selection = game:GetService("Selection")
-
 local Foundation = require("@rbxpkg/Foundation")
+local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local PluginStore = require("@root/Plugin/PluginStore")
-local ResizablePanel = require("@root/Panels/ResizablePanel")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
-local StoryMeta = require("@root/Storybook/StoryMeta")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local StoryViewNavbar = require("@root/Storybook/StoryViewNavbar")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local constants = require("@root/constants")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useZoom = require("@root/Common/useZoom")
+local types = require("@root/Storybook/types")
+local useThemeName = require("@root/Common/useThemeName")
 
-local useSignalState = SignalsReact.useSignalState
+local Divider = Foundation.Divider
+local Text = Foundation.Text
+local View = Foundation.View
+
+local Object = LuauPolyfill.Object
 
 local e = React.createElement
+local useCallback = React.useCallback
+local useEffect = React.useEffect
+local useMemo = React.useMemo
+local useState = React.useState
+local useSignalState = ReactCharm.useSignalState
+local useStory = Storyteller.useStory
+local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type ExtraStoryProps = types.ExtraStoryProps
 
-type Props = {
-	story: ModuleScript,
+type StoryViewProps = {
+	storyModule: ModuleScript,
 	storybook: LoadedStorybook,
 }
 
-local function StoryView(props: Props)
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
-
-	local story, storyErr = Storyteller.useStory(props.story, props.storybook)
-	local zoom = useZoom(props.story)
+local function StoryView(props: StoryViewProps)
+	local story, storyError = useStory(props.storyModule, props.storybook)
+	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
-	local changedControls, setChangedControls = React.useState({})
-	local storyParentRef = React.useRef(nil :: GuiObject?)
+	local overlayGui = useOverlay()
 
-	React.useEffect(function()
-		setChangedControls({})
-	end, { story })
+	local modifiedControls, setModifiedControls = useState({})
+	local controls = useMemo(function()
+		local newControls = {}
 
-	local controlsWithUserOverrides = React.useMemo(function()
-		local controls = {}
-		if story and story.controls then
+		if story ~= nil and story.controls ~= nil then
 			for key, value in story.controls do
-				local override = changedControls[key]
-
-				if override ~= nil and typeof(value) ~= "table" then
-					controls[key] = override
+				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
+					newControls[key] = modifiedControls[key]
 				else
-					controls[key] = value
+					if typeof(value) == "table" then
+						newControls[key] = value.default
+					else
+						newControls[key] = value
+					end
 				end
 			end
 		end
-		return controls
-	end, { story, changedControls } :: { unknown })
 
-	local showControls = controlsWithUserOverrides and not Sift.isEmpty(controlsWithUserOverrides)
+		return newControls
+	end, { story, modifiedControls } :: { any })
 
-	local setControl = React.useCallback(function(control: string, newValue: any)
-		setChangedControls(function(prev)
-			return Sift.Dictionary.merge(prev, {
-				[control] = newValue,
+	local extraProps = useMemo(function(): ExtraStoryProps
+		return {
+			theme = theme :: useThemeName.ThemeName,
+			locale = "en-us",
+			plugin = plugin,
+			widget = overlayGui,
+		}
+	end, { theme, plugin, overlayGui } :: { unknown })
+
+	local setControl = useCallback(function(key: string, value: any)
+		setModifiedControls(function(currentValue)
+			return Object.assign({}, currentValue, {
+				[key] = value,
 			})
 		end)
 	end, {})
 
-	local viewCode = React.useCallback(function()
-		Selection:Set({ props.story })
-		if plugin then
-			plugin:OpenScript(props.story)
-		end
-	end, { plugin, props.story } :: { unknown })
+	useEffect(function()
+		setModifiedControls({})
+	end, { story })
 
-	local exploreStoryParent = React.useCallback(function()
-		local current = storyParentRef.current
-		if current then
-			local firstGuiObject = current:FindFirstChildWhichIsA("GuiObject")
-			Selection:Set({ if firstGuiObject then firstGuiObject else current })
-		end
-
-		-- TODO: If PluginGuiService is not enabled, display a toast letting the user know
-	end, { storyParentRef })
-
-	local isMountedInViewport, setIsMountedInViewport = React.useState(false)
-
-	local onPreviewInViewport = React.useCallback(function()
-		setIsMountedInViewport(not isMountedInViewport)
-	end, { isMountedInViewport, setIsMountedInViewport } :: { unknown })
-
-	return e(Foundation.View, {
-		tag = "size-full",
+	return e(View, {
+		tag = "size-full bg-surface-200",
 	}, {
-		Error = storyErr and e(StoryError, {
-			err = storyErr,
+		Error = storyError ~= nil and e(StoryError, {
+			errorMessage = storyError,
 		}),
 
-		Content = story and e(Foundation.View, {
-			tag = "size-full col flex-between",
+		Story = story ~= nil and e(View, {
+			tag = "col size-full",
 		}, {
-			TopbarWrapper = e(Foundation.View, {
-				tag = "size-full-0 auto-y padding-small col gap-large",
-				LayoutOrder = nextLayoutOrder(),
+			Info = e(View, {
+				LayoutOrder = 1,
+				tag = "auto-y col gap-small padding-large size-full-0",
 			}, {
-				StoryViewNavbar = e(StoryViewNavbar, {
-					onPreviewInViewport = onPreviewInViewport,
-					onZoomIn = zoom.zoomIn,
-					onZoomOut = zoom.zoomOut,
-					onViewCode = viewCode,
-					onExplorer = exploreStoryParent,
-				}),
-
-				StoryMeta = e(StoryMeta, {
-					layoutOrder = nextLayoutOrder(),
-					story = story,
-					storyModule = props.story,
-				}),
-
-				Divider = e(Foundation.Divider, {
-					LayoutOrder = nextLayoutOrder(),
-				}),
-			}),
-
-			StoryWrapper = e(Foundation.View, {
-				-- TODO: Apply larger padding on the top than the rest
-				tag = "size-full shrink padding-medium",
-				LayoutOrder = nextLayoutOrder(),
-			}, {
-				StoryPreview = e(StoryPreview, {
-					zoom = zoom.value,
-					story = story,
-					controls = Sift.Dictionary.merge(controlsWithUserOverrides, changedControls),
-					storyModule = props.story,
-					isMountedInViewport = isMountedInViewport,
-					ref = storyParentRef,
-				}),
-			}),
-
-			StoryControlsWrapper = showControls and e(ResizablePanel, {
-				layoutOrder = nextLayoutOrder(),
-				initialSize = UDim2.new(1, 0, 0, userSettings.controlsHeight),
-				dragHandles = {
-					-- Luau FIXME: Type '{string}' could not be converted into '{"Bottom" | "Left" | "Right" | "Top"}'
-					"Top" :: any,
-				},
-				minSize = Vector2.new(0, constants.CONTROLS_MIN_HEIGHT),
-				maxSize = Vector2.new(math.huge, constants.CONTROLS_MAX_HEIGHT),
-			}, {
-				ScrollingFrame = e(Foundation.ScrollView, {
-					tag = "size-full bg-surface-100",
-					scroll = {
-						ScrollingDirection = Enum.ScrollingDirection.Y,
-						AutomaticCanvasSize = Enum.AutomaticSize.Y,
-						CanvasSize = UDim2.new(1, 0),
+				Title = e(Text, {
+					LayoutOrder = 1,
+					Text = story.name,
+					tag = {
+						-- NOTE (Paul): Super nitpick-y, but keeping all this on
+						-- one line made for some really weird formatting that I
+						-- couldn't accept.
+						["auto-y content-emphasis size-full-0"] = true,
+						["text-align-x-left text-align-y-top text-heading-large text-wrap"] = true,
 					},
-				}, {
-					StoryControls = e(StoryControls, {
-						changedControls = changedControls,
-						controls = controlsWithUserOverrides,
-						setControl = setControl,
-					}),
 				}),
+
+				Summary = story.summary ~= nil and e(Text, {
+					LayoutOrder = 2,
+					Text = story.summary,
+					sizeConstraint = { MaxSize = Vector2.new(600, math.huge) },
+					tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-medium text-wrap",
+				}),
+			}),
+
+			Divider = e(Divider, {
+				LayoutOrder = 2,
+			}),
+
+			Preview = e(View, {
+				LayoutOrder = 3,
+				tag = "shrink size-full",
+			}, {
+				StoryPreview = React.createElement(StoryPreview, {
+					story = story,
+					controls = controls,
+					extraProps = extraProps,
+				}),
+			}),
+
+			Controls = next(controls) ~= nil and e(StoryControls, {
+				LayoutOrder = 4,
+				controls = controls,
+				modifiedControls = modifiedControls,
+				setControl = setControl,
 			}),
 		}),
 	})
 end
 
-return StoryView
+return React.memo(StoryView)

@@ -1,0 +1,57 @@
+local fs = require("@std/fs")
+local process = require("@std/process")
+local richterm = require("@luaupkg/batteries/richterm")
+
+local hashPath = require("@scripts/lib/build-system/hashPath")
+local types = require("@scripts/lib/build-system/types")
+
+type BuildGroup = types.BuildGroup
+
+local function trimDecimals(n: number, decmimalPlaces: number)
+	local factor = math.pow(10, decmimalPlaces)
+	return math.floor(n * factor) / factor
+end
+
+local function runBuildGroupAsync(buildGroup: BuildGroup)
+	local prefix = richterm.bold(`[{buildGroup.name}]`)
+	local buildCache = buildGroup.context.cache
+	local changedPaths = {}
+
+	for _, filePath in buildGroup.paths do
+		assert(fs.exists(filePath), `attempt to run build group with invalid path (found nothing at {filePath})`)
+
+		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{filePath}`
+		local hash = hashPath(filePath)
+
+		if hash ~= buildCache[key] or buildGroup.context.shouldRebuild then
+			buildCache[key] = hash
+			table.insert(changedPaths, filePath)
+		end
+	end
+
+	if #changedPaths == 0 then
+		return
+	end
+
+	local processedBuildGroup = table.clone(buildGroup)
+	processedBuildGroup.paths = changedPaths
+
+	print(`{prefix} starting build step...`)
+
+	local startTime = os.clock()
+	local ok, err = (xpcall :: any)(function()
+		buildGroup.step(processedBuildGroup)
+	end, debug.traceback)
+
+	if ok then
+		local elapsedMs = trimDecimals((os.clock() - startTime) * 1000, 3)
+		local message = richterm.cyan(`step completed in {elapsedMs}ms`)
+		print(`{prefix} {message}`)
+	else
+		local message = richterm.red(`step failed: {err}`)
+		print(`{prefix} {message}`)
+		process.exit(1)
+	end
+end
+
+return runBuildGroupAsync

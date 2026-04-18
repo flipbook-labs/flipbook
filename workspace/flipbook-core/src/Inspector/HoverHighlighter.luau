@@ -13,7 +13,7 @@ local useTokens = Foundation.Hooks.useTokens
 local useOverlay = Foundation.Hooks.useOverlay
 
 export type Props = {
-	hoverRef: { current: GuiObject? },
+	hoverRef: { current: GuiObject? }?,
 }
 
 local function HoverHighlighter(props: Props): React.Node

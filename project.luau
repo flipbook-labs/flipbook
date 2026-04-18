@@ -1,30 +1,44 @@
+local path = require("@std/path")
+
 return {
-	-- All paths are relative to the root of the repo
-	SOURCE_PATH = "src",
-	BUILD_PATH = "build",
-	PACKAGES_PATH = "Packages",
-	LUNE_SCRIPTS_PATH = ".lune",
-	EXAMPLE_PATH = "example",
-	WORKSPACE_PATH = "workspace",
+	REPO_PATH = path.resolve("."),
+	SOURCE_PATH = path.resolve("./src"),
+	BUILD_PATH = path.resolve("./build"),
+	BUILD_CACHE_PATH = path.resolve("./build/build-cache.json"),
+	PACKAGES_PATH = path.resolve("./Packages"),
+	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
+	ROBLOX_PACKAGES_VERSION = "0.715.0.7151115",
+	SCRIPTS_PATH = path.resolve("./.lute"),
+	EXAMPLE_PATH = path.resolve("./example"),
+	WORKSPACE_PATH = path.resolve("./workspace"),
+	LUAU_PACKAGES_PATH = path.resolve("./LuauPackages"),
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
-	SOURCEMAP_PATH = "sourcemap.json",
-	DARKLUA_SOURCEMAP_PATH = "sourcemap-darklua.json",
+	SOURCEMAP_PATH = path.resolve("./sourcemap.json"),
+	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
 
-	ROJO_ANALYSIS_PROJECT = "analysis.project.json",
-	ROJO_BUILD_PROJECT = "build.project.json",
-	ROJO_TESTS_PROJECT = "tests.project.json",
+	ROJO_BUILD_PROJECT = path.resolve("./build.project.json"),
+	ROJO_TESTS_PROJECT = path.resolve("./tests.project.json"),
 
 	FOLDERS_TO_LINT = {
 		"src",
-		".lune",
+		"workspace",
+		".lute",
+	},
 
-		-- We have to exhaustively include every workspace member to skip over
-		-- Packages/RobloxPackages
-		"workspace/flipbook-core/src",
-		"workspace/example/src",
-		"workspace/code-samples/src",
-		"workspace/test-runner/src",
+	PROD_CONFIG = {
+		prunedDirs = {
+			path.resolve("./workspace/code-samples"),
+			path.resolve("./workspace/example"),
+			path.resolve("./workspace/template"),
+			path.resolve("./workspace/test-runner"),
+		},
+		prunedFiles = {
+			"*.spec.lua*",
+			"*.story.lua*",
+			"*.storybook.lua*",
+			"jest.config.lua*",
+		},
 	},
 }

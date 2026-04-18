@@ -1,0 +1,686 @@
+local JestGlobals = require("@pkg/JestGlobals")
+local describe = JestGlobals.describe
+local expect = JestGlobals.expect
+local test = JestGlobals.test
+
+local createTreeNodeStore = require("./createTreeNodeStore")
+
+test("nodes can be parented to each other", function()
+	local parent = createTreeNodeStore()
+	local child = createTreeNodeStore()
+
+	child.parentTo(parent)
+
+	expect(child.getParent()).toBe(parent)
+	expect(parent.getChildren()).toEqual({ child })
+
+	child.parentTo(nil)
+
+	expect(child.getParent()).toBeUndefined()
+	expect(parent.getChildren()).never.toEqual({ child })
+end)
+
+test("nodes can be named", function()
+	local root = createTreeNodeStore()
+	expect(root.getName()).toBe("Node")
+
+	root.setName("<root>")
+	expect(root.getName()).toBe("<root>")
+end)
+
+describe("node activation", function()
+	test("activating a node with no children changes its selected state", function()
+		local root = createTreeNodeStore()
+		root.activate()
+
+		expect(root.getIsSelected()).toBe(true)
+		expect(root.getIsExpanded()).toBe(false)
+
+		root.activate()
+
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(false)
+	end)
+
+	test("activating a node with children expands it", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		root.activate()
+
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(true)
+
+		root.activate()
+
+		expect(root.getIsSelected()).toBe(false)
+		expect(root.getIsExpanded()).toBe(false)
+	end)
+
+	test("toggling nodes on/off/on", function()
+		local root = createTreeNodeStore()
+
+		root.activate()
+		expect(root.getIsSelected()).toBe(true)
+
+		root.activate()
+		expect(root.getIsSelected()).toBe(false)
+
+		root.activate()
+		expect(root.getIsSelected()).toBe(true)
+	end)
+
+	-- Initially we were trying to allow any number of nodes to be selected at a
+	-- time but it was getting very difficult to juggle the selection state
+	-- across several nodes from consumers of TreeNodeStore.
+	--
+	-- In Flipbook's case, we only want one node selected at a time and we
+	-- currently have no features that would require multi-selection. So for now
+	-- we're going to only allow one selection, and in the future we can
+	-- look to loosen this restriction
+	test("only one node in a tree can be selected at a time", function()
+		local root = createTreeNodeStore()
+
+		local child1 = createTreeNodeStore()
+		child1.parentTo(root)
+
+		local child2 = createTreeNodeStore()
+		child2.parentTo(root)
+
+		expect(root.getSelectedDescendants()).toEqual({})
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(false)
+
+		child1.activate()
+
+		expect(root.getSelectedDescendants()).toEqual({ child1 })
+		expect(child1.getIsSelected()).toBe(true)
+		expect(child2.getIsSelected()).toBe(false)
+
+		child2.activate()
+
+		expect(root.getSelectedDescendants()).toEqual({ child2 })
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(true)
+
+		child2.activate()
+
+		expect(root.getSelectedDescendants()).toEqual({})
+		expect(child1.getIsSelected()).toBe(false)
+		expect(child2.getIsSelected()).toBe(false)
+	end)
+end)
+
+describe("hierarchy", function()
+	test("descendants are tracked in ancestor nodes", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		local descendant = createTreeNodeStore()
+		descendant.parentTo(child)
+
+		expect(root.getDescendants()).toEqual(expect.arrayContaining({ child, descendant }))
+		expect(child.getDescendants()).toEqual({ descendant })
+		expect(descendant.getDescendants()).toEqual({})
+	end)
+
+	test("ancestors are tracked in descendant nodes", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		local descendant = createTreeNodeStore()
+		descendant.parentTo(child)
+
+		expect(root.getAncestors()).toEqual({})
+		expect(child.getAncestors()).toEqual({ root })
+		expect(descendant.getAncestors()).toEqual(expect.arrayContaining({ child, root }))
+	end)
+
+	test("parenting a node to nil removes it from the hierarchy", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.parentTo(root)
+
+		local childADescendant = createTreeNodeStore()
+		childADescendant.parentTo(childA)
+
+		local childB = createTreeNodeStore()
+		childB.parentTo(root)
+
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childA, childB }))
+		expect(root.getDescendants()).toEqual(expect.arrayContaining({ childA, childADescendant, childB }))
+
+		childA.parentTo(nil)
+
+		expect(root.getChildren()).toEqual({ childB })
+		expect(root.getDescendants()).toEqual({ childB })
+	end)
+
+	test("moving a node in the hierarchy around works", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.parentTo(root)
+
+		local childADescendant = createTreeNodeStore()
+		childADescendant.parentTo(childA)
+
+		local childB = createTreeNodeStore()
+		childB.parentTo(root)
+
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childA, childB }))
+
+		childA.parentTo(childB)
+
+		expect(root.getChildren()).toEqual(expect.arrayContaining({ childB }))
+		expect(childB.getChildren()).toEqual(expect.arrayContaining({ childA }))
+	end)
+
+	test("parenting to the same parent is a no-op", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		task.wait()
+
+		-- Can't exactly test for it but under the hood this should just be
+		-- doing an early exit since the parent is the same.
+		child.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ child })
+	end)
+
+	test("match for descendants by a predicate", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.setName("Match")
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		local matches = root.findFirstDescendant(function(node)
+			return node.getName() == "Match"
+		end)
+
+		expect(matches).toEqual(descendant3)
+	end)
+
+	test("match for ancestors by a predicate", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.setName("Match")
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		local matches = descendant4.findFirstAncestor(function(node)
+			return node.getName() == "Match"
+		end)
+
+		expect(matches).toEqual(descendant3)
+	end)
+
+	test("getLeafNodes returns all nodes without children", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local leaf1 = createTreeNodeStore()
+		leaf1.parentTo(descendant2)
+
+		local leaf2 = createTreeNodeStore()
+		leaf2.parentTo(descendant1)
+
+		expect(root.getLeafNodes()).toEqual({ leaf2, leaf1 })
+	end)
+
+	test("clear child nodes", function()
+		local root = createTreeNodeStore()
+
+		for i = 1, 5 do
+			local child = createTreeNodeStore()
+			child.setName(`Child {i}`)
+			child.parentTo(root)
+		end
+
+		expect(#root.getChildren()).toBe(5)
+
+		root.clearChildren()
+
+		expect(#root.getChildren()).toBe(0)
+	end)
+
+	test("get the node's full path as a string", function()
+		local root = createTreeNodeStore()
+		root.setName("<root>")
+
+		local leaf = createTreeNodeStore()
+		leaf.setName("Leaf")
+
+		local parent = root
+		for i = 1, 3 do
+			local child = createTreeNodeStore()
+			child.setName(`Child{i}`)
+			child.parentTo(parent)
+			parent = child
+		end
+
+		leaf.parentTo(parent)
+
+		expect(leaf.getPath()).toBe("<root>/Child1/Child2/Child3/Leaf")
+	end)
+
+	test("take a snapshotof the hierarchy", function()
+		local root = createTreeNodeStore()
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = {},
+		})
+
+		local currentNode = root
+		for i = 1, 3 do
+			local node = createTreeNodeStore()
+			node.setName(`Descendant {i}`)
+
+			node.parentTo(currentNode)
+			currentNode = node
+		end
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = expect.arrayContaining({
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = expect.arrayContaining({
+								expect.objectContaining({
+									id = expect.anything(),
+									name = "Descendant 3",
+									children = {},
+								}),
+							}),
+						}),
+					}),
+				}),
+			}),
+		})
+
+		-- Add some more nodes to verify siblings work with the snapshot
+		currentNode = root
+		for i = 1, 2 do
+			local node = createTreeNodeStore()
+			node.setName(`Descendant {i}`)
+
+			node.parentTo(currentNode)
+			currentNode = node
+		end
+
+		expect(root.snapshot()).toEqual({
+			id = root.id,
+			name = "Node",
+			isVisible = true,
+			isSelected = false,
+			children = expect.arrayContaining({
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = expect.arrayContaining({
+								expect.objectContaining({
+									id = expect.anything(),
+									name = "Descendant 3",
+									children = {},
+								}),
+							}),
+						}),
+					}),
+				}),
+				expect.objectContaining({
+					id = expect.anything(),
+					name = "Descendant 1",
+					children = expect.arrayContaining({
+						expect.objectContaining({
+							id = expect.anything(),
+							name = "Descendant 2",
+							children = {},
+						}),
+					}),
+				}),
+			}),
+		})
+	end)
+end)
+
+describe("node sorting", function()
+	test("children are unsorted by default and just go off of parenting order", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		childC.parentTo(root)
+		childD.parentTo(root)
+		childA.parentTo(root)
+		childB.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+	end)
+
+	test("basic alphabetical sorting", function()
+		local root = createTreeNodeStore()
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		-- Parent the nodes haphazardly to illustrate how they get sorted
+		childC.parentTo(root)
+		childD.parentTo(root)
+		childA.parentTo(root)
+		childB.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
+		end)
+
+		expect(root.getChildren()).toEqual({ childA, childB, childC, childD })
+	end)
+
+	test("specifying the sort function will cascade down to descendants", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(root)
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		local childD = createTreeNodeStore()
+		childD.setName("D")
+
+		-- Parent the nodes haphazardly to illustrate how they get sorted
+		childC.parentTo(descendant2)
+		childD.parentTo(descendant2)
+		childA.parentTo(descendant2)
+		childB.parentTo(descendant2)
+
+		expect(descendant2.getChildren()).toEqual({ childC, childD, childA, childB })
+
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
+		end)
+
+		expect(descendant2.getChildren()).toEqual({ childA, childB, childC, childD })
+	end)
+
+	test("nodes are sorted as they get added", function()
+		local root = createTreeNodeStore()
+
+		root.setSortOrder(function(a, b)
+			return a.getName() < b.getName()
+		end)
+
+		local childA = createTreeNodeStore()
+		childA.setName("A")
+
+		local childB = createTreeNodeStore()
+		childB.setName("B")
+
+		local childC = createTreeNodeStore()
+		childC.setName("C")
+
+		childB.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ childB })
+
+		childA.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ childA, childB })
+
+		childC.parentTo(root)
+
+		expect(root.getChildren()).toEqual({ childA, childB, childC })
+	end)
+end)
+
+describe("expand and collapse nodes", function()
+	test("calling expandDown on an ancestor node will expand all descendants", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		root.expandDown()
+
+		for _, node in { root, descendant1, descendant2, descendant3, descendant4 } do
+			expect(node.getIsExpanded()).toBe(true)
+		end
+	end)
+
+	test("calling expandUp on a descendant node will expand all ancestors", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		descendant2.expandUp()
+
+		expect(root.getIsExpanded()).toBe(true)
+		expect(descendant1.getIsExpanded()).toBe(true)
+		expect(descendant2.getIsExpanded()).toBe(true)
+		expect(descendant3.getIsExpanded()).toBe(false)
+		expect(descendant4.getIsExpanded()).toBe(false)
+	end)
+
+	test("calling collapseDown on an ancestor node will collapse all descendants", function()
+		local root = createTreeNodeStore()
+
+		local descendant1 = createTreeNodeStore()
+		descendant1.parentTo(root)
+
+		local descendant2 = createTreeNodeStore()
+		descendant2.parentTo(descendant1)
+
+		local descendant3 = createTreeNodeStore()
+		descendant3.parentTo(descendant2)
+
+		local descendant4 = createTreeNodeStore()
+		descendant4.parentTo(descendant3)
+
+		-- Expand everything so we can compare how collapsing works
+		root.expandDown()
+
+		descendant2.collapseDown()
+
+		expect(root.getIsExpanded()).toBe(true)
+		expect(descendant1.getIsExpanded()).toBe(true)
+		expect(descendant2.getIsExpanded()).toBe(false)
+		expect(descendant3.getIsExpanded()).toBe(false)
+		expect(descendant4.getIsExpanded()).toBe(false)
+	end)
+end)
+
+describe("leaf nodes", function()
+	test("getLeafNodes returns all nodes without children", function()
+		local root = createTreeNodeStore()
+
+		local branch1 = createTreeNodeStore()
+		branch1.parentTo(root)
+
+		local branch2 = createTreeNodeStore()
+		branch2.parentTo(root)
+
+		local leaf1 = createTreeNodeStore()
+		leaf1.parentTo(branch1)
+
+		local leaf2 = createTreeNodeStore()
+		leaf2.parentTo(branch1)
+
+		local leaf3 = createTreeNodeStore()
+		leaf3.parentTo(branch2)
+
+		-- branch1 and branch2 have children, so only the leaves are returned
+		expect(root.getLeafNodes()).toEqual(expect.arrayContaining({ leaf1, leaf2, leaf3 }))
+		expect(#root.getLeafNodes()).toBe(3)
+	end)
+
+	test("a node with no children is itself a leaf", function()
+		local root = createTreeNodeStore()
+		expect(root.getLeafNodes()).toEqual({})
+
+		-- A node only counts leaves among its descendants, not itself
+		local leaf = createTreeNodeStore()
+		leaf.parentTo(root)
+
+		expect(root.getLeafNodes()).toEqual({ leaf })
+	end)
+end)
+
+describe("selected descendants", function()
+	test("getSelectedDescendants returns all selected descendants", function()
+		local root = createTreeNodeStore()
+
+		local child1 = createTreeNodeStore()
+		child1.parentTo(root)
+
+		local child2 = createTreeNodeStore()
+		child2.parentTo(root)
+
+		local grandchild = createTreeNodeStore()
+		grandchild.parentTo(child1)
+
+		expect(root.getSelectedDescendants()).toEqual({})
+
+		child1.setIsSelected(true)
+		grandchild.setIsSelected(true)
+
+		expect(root.getSelectedDescendants()).toEqual(expect.arrayContaining({ child1, grandchild }))
+		expect(#root.getSelectedDescendants()).toBe(2)
+
+		child1.setIsSelected(false)
+
+		expect(root.getSelectedDescendants()).toEqual({ grandchild })
+	end)
+end)
+
+describe("finding ancestors", function()
+	test("findFirstAncestor returns the first ancestor matching a predicate", function()
+		local root = createTreeNodeStore()
+		root.setName("root")
+
+		local child = createTreeNodeStore()
+		child.setName("child")
+		child.parentTo(root)
+
+		local grandchild = createTreeNodeStore()
+		grandchild.setName("grandchild")
+		grandchild.parentTo(child)
+
+		local result = grandchild.findFirstAncestor(function(node)
+			return node.getName() == "root"
+		end)
+
+		expect(result).toBe(root)
+	end)
+
+	test("findFirstAncestor returns nil when no ancestor matches", function()
+		local root = createTreeNodeStore()
+
+		local child = createTreeNodeStore()
+		child.parentTo(root)
+
+		local result = child.findFirstAncestor(function(node)
+			return node.getName() == "nonexistent"
+		end)
+
+		expect(result).toBeUndefined()
+	end)
+end)

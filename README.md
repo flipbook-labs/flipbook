@@ -22,7 +22,7 @@ Learn how to use Flipbook on the [official documentation site](https://flipbook-
 
 ## Contributing
 
-Before opening a pull request, check out our [contributing guide](https://flipbook-labs.github.io/flipbook/docs/contributing/) to learn how we develop the plugin.
+Before opening a pull request, check out our [contributing guide](https://flipbook-labs.github.io/flipbook/docs/contributing/onboarding) to learn how we develop the plugin.
 
 ## License
 

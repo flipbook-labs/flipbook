@@ -7,15 +7,36 @@
       "label": "Install packages",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
+      "command": "lute",
       "args": ["run", "install"]
+    },
+    {
+      "label": "Analyze",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "analyze"]
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "lint"]
+    },
+    {
+      "label": "Unit Tests",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "lute",
+      "args": ["run", "test"]
     },
     {
       "label": "Build (Development)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--target", "dev"],
+      "command": "lute",
+      "args": ["run", "build", "plugin", "--channel", "dev"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -25,8 +46,8 @@
       "label": "Build (Production)",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--target", "prod"],
+      "command": "lute",
+      "args": ["run", "build", "plugin", "--channel", "prod"],
       "group": {
         "kind": "build"
       }
@@ -35,14 +56,14 @@
       "label": "Build and watch",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
-      "args": ["run", "build", "--target", "dev", "--watch"]
+      "command": "lute",
+      "args": ["run", "build", "plugin", "--channel", "dev", "--watch"]
     },
     {
       "label": "Serve docs",
       "type": "shell",
       "problemMatcher": [],
-      "command": "lune",
+      "command": "lute",
       "args": ["run", "serve-docs"]
     }
   ]
