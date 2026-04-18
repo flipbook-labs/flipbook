@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -120,6 +123,11 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment:
+      # This giant expression makes it so forks of Flipbook go through a gated
+      # environment that must be approved, while internal contributions auto-run
+      # like normal.
+      name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
     steps:
       - uses: actions/checkout@v4
 
