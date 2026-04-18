@@ -53,7 +53,7 @@ jobs:
       url: https://create.roblox.com/store/asset/8517129161
     env:
       LOG_LEVEL: debug
-    if: github.event.release
+    if: ${{ github.event.release }}
     steps:
       - uses: actions/checkout@v4
 
@@ -79,7 +79,7 @@ jobs:
       url: https://create.roblox.com/store/asset/88523969718241
     env:
       LOG_LEVEL: debug
-    if: github.ref == 'refs/heads/main'
+    if: ${{ ! github.event_name == 'pull_request_target' }}
     steps:
       - uses: actions/checkout@v4
 
