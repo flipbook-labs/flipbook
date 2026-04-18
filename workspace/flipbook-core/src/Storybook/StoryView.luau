@@ -5,7 +5,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local PluginStore = require("@root/Plugin/PluginStore")
-local StoryControls = require("@root/Storybook/StoryControls")
+local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local types = require("@root/Storybook/types")
@@ -132,10 +132,10 @@ local function StoryView(props: StoryViewProps)
 				}),
 			}),
 
-			Controls = next(controls) ~= nil and e(StoryControls, {
+			Controls = story.controls ~= nil and e(StoryControlsPanel, {
 				LayoutOrder = 4,
+				controlsSchema = story.controls,
 				controls = controls,
-				modifiedControls = modifiedControls,
 				setControl = setControl,
 			}),
 		}),

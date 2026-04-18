@@ -1,34 +1,35 @@
-local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local ReactSignals = require("@pkg/ReactCharm")
-local ResizablePanel = require("@root/Panels/ResizablePanel")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local useSortedControls = require("@root/Storybook/useSortedControls")
+local Storyteller = require("@pkg/Storyteller")
 
-local Checkbox = Foundation.Checkbox
+local StoryControlRow = require("@root/StoryControls/StoryControlRow")
+local useSortedControls = require("@root/StoryControls/useSortedControls")
+
 local Divider = Foundation.Divider
-local Dropdown = Foundation.Dropdown
-local InputSize = Foundation.Enums.InputSize
-local NumberInput = Foundation.NumberInput
 local ScrollView = Foundation.ScrollView
 local Text = Foundation.Text
-local TextInput = Foundation.TextInput
 local View = Foundation.View
-local useTokens = Foundation.Hooks.useTokens
-local withCommonProps = Foundation.Utility.withCommonProps
-
-local Array = LuauPolyfill.Array
 
 local e = React.createElement
-local useState = React.useState
+local useMemo = React.useMemo
 
-local useSignalState = ReactSignals.useSignalState
+-- This should probably get moved to Storyteller
+local function resolveControlFromValue(controlValue: Storyteller.StoryControlValue): Storyteller.StoryControl
+	if typeof(controlValue) == "string" then
+		return Storyteller.createStringControl(controlValue)
+	elseif typeof(controlValue) == "boolean" then
+		return Storyteller.createBooleanControl(controlValue)
+	elseif typeof(controlValue) == "number" then
+		return Storyteller.createNumberControl(controlValue)
+	elseif typeof(controlValue) == "Color3" then
+		return Storyteller.createColorControl(controlValue)
+	end
+	return Storyteller.createStringControl(tostring(controlValue))
+end
 
-type StoryControlsProps = {
-	controls: { [string]: any },
-	modifiedControls: { [string]: any },
+export type StoryControlsProps = {
+	controlsSchema: Storyteller.StoryControlsSchema,
+	controls: Storyteller.StoryControls,
 	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
 
@@ -39,104 +40,44 @@ type StoryControlsProps = {
 -- but turns out it doesn't work when in a `col` with a `shrink size-full`
 -- as it's sibling.
 local function StoryControls(props: StoryControlsProps)
-	local tokens = useTokens()
-
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
-
-	local sortedControls = useSortedControls(props.controls)
-	local pendingControl, setPendingControl = useState(nil :: string?)
+	local sortedControls = useSortedControls(props.controlsSchema)
 	local controlElements: { [string]: React.ReactNode } = {}
 
-	for index, control in sortedControls do
-		local function setControl(newValue: any)
-			local newValueAsNumber = tonumber(newValue)
+	local sortedControlNames = useMemo(function()
+		local names: { string } = {}
+		for name in props.controlsSchema do
+			table.insert(names, name)
+		end
+		table.sort(names)
+		return names
+	end, { props.controlsSchema })
 
-			if newValueAsNumber ~= nil then
-				newValue = newValueAsNumber
-			end
+	local hydratedControls = Storyteller.hydrateControls(props.controlsSchema, props.controls)
 
-			props.setControl(control.key, newValue)
+	for index, name in sortedControlNames do
+		local control: (Storyteller.StoryControl | Storyteller.StoryControlValue)? = props.controlsSchema[name]
+
+		if control == nil then
+			continue
 		end
 
-		local controlType = typeof(control.value)
-		local controlInput: React.ReactNode = nil
-
-		if controlType == "boolean" then
-			controlInput = e(Checkbox, {
-				isChecked = control.value,
-				label = "",
-				onActivated = setControl,
-				size = InputSize.Small,
-			})
-		elseif controlType == "number" then
-			controlInput = e(NumberInput, {
-				label = "",
-				onChanged = setControl,
-				size = InputSize.Small,
-				step = 1,
-				value = control.value,
-				width = UDim.new(1, 0),
-			})
-		elseif controlType == "string" then
-			controlInput = e(TextInput, {
-				label = "",
-				onChanged = function(newText)
-					setPendingControl(newText)
-				end,
-				onFocusLost = function()
-					setControl(pendingControl)
-				end,
-				onReturnPressed = function()
-					setControl(pendingControl)
-				end,
-				text = control.value,
-				size = InputSize.Small,
-				width = UDim.new(1, 0),
-			})
-		elseif controlType == "table" and Array.isArray(control.value) then
-			local changedValue = props.modifiedControls[control.key]
-			local controlItems = Array.map(control.value, function(value): Foundation.DropdownItem
-				return {
-					id = value,
-					text = tostring(value),
-				}
-			end)
-
-			controlInput = e(Dropdown.Root, {
-				items = controlItems,
-				label = "",
-				onItemChanged = setControl,
-				size = InputSize.Small,
-				value = if changedValue ~= nil then changedValue else control.value[1],
-				width = UDim.new(1, 0),
-			})
+		local resolvedControl: Storyteller.StoryControl
+		if typeof(control) == "table" then
+			resolvedControl = control
+		else
+			resolvedControl = resolveControlFromValue(control)
 		end
 
-		controlElements[control.key] = e(View, {
+		controlElements[name] = e(View, {
 			LayoutOrder = index,
 			tag = "auto-y col size-full-0",
 		}, {
-			Content = e(View, {
+			Row = e(StoryControlRow, {
+				controlName = name,
+				control = resolvedControl,
+				setControl = props.setControl,
+				controls = hydratedControls,
 				LayoutOrder = 1,
-				tag = "align-y-center auto-y gap-medium padding-medium row size-full-0",
-			}, {
-				Title = e(Text, {
-					LayoutOrder = 1,
-					Size = UDim2.fromScale(0.2, 0),
-					Text = control.key,
-					tag = "auto-y text-align-x-left text-label-medium",
-				}),
-
-				Option = e(View, {
-					LayoutOrder = 2,
-					tag = "align-x-left auto-y fill row",
-				}, {
-					-- Keying by the identity of sortedControls fixes a bug where
-					-- the options visually do not update when two stories have the
-					-- exact same controls.
-					[`Option_{sortedControls}`] = controlInput,
-				}),
 			}),
 
 			Divider = index < #sortedControls and e(Divider, {
@@ -145,95 +86,73 @@ local function StoryControls(props: StoryControlsProps)
 		})
 	end
 
-	return e(
-		ResizablePanel,
-		withCommonProps(props, {
-			dragHandles = { "Top" :: "Top" },
-			initialSize = UDim2.new(1, 0, 0, userSettings.controlsHeight),
-			maxSize = Vector2.new(0, Constants.CONTROLS_MAX_HEIGHT),
-			minSize = Vector2.new(0, Constants.CONTROLS_MIN_HEIGHT),
+	return e(View, {
+		tag = "bg-surface-100 col size-full",
+	}, {
+		-- `Foundation.Tabs` doesn't look to have a way to apply spacing around
+		-- tab items when using FillBehavior.Fit. We'd use Fill but that looks
+		-- quite bad with our single button. This wrapper adds some needed
+		-- spacing, but ideally Foundation can handle this for us. When it can:
+		-- remove this wrapper.
+		TabsWrapper = e(Foundation.View, {
+			tag = "size-full-0 auto-y padding-x-medium gap-y-small",
+		}, {
+			Tabs = e(Foundation.Tabs, {
+				tabs = {
+					{
+						id = "controls",
+						text = "Controls",
+						isDisabled = true,
+					},
+				},
+				defaultActiveTabId = "controls",
+				fillBehavior = Foundation.Enums.FillBehavior.Fit,
+				LayoutOrder = 1,
+			}),
 		}),
-		{
-			Content = e(View, {
-				tag = "bg-surface-100 col size-full",
-			}, {
-				-- NOTE(Paul): Adding a temporary pseudo-tab element for the time
-				-- being so that we have separation between the controls panel
-				-- and the story view.
-				Tabs = e(View, {
-					LayoutOrder = 1,
-					tag = "auto-y col size-full-0",
-				}, {
-					Tab = e(View, {
-						LayoutOrder = 1,
-						onActivated = function() end,
-						tag = "col size-2000-1100",
-					}, {
-						Content = e(View, {
-							tag = "align-x-center align-y-center row size-full",
-						}, {
-							Text = e(Text, {
-								Text = "Controls",
-								tag = "anchor-center-center auto-xy content-emphasis position-center-center text-label-medium",
-							}),
-						}),
 
-						Border = e(View, {
-							Size = UDim2.new(1, 0, 0, tokens.Stroke.Thick),
-							backgroundStyle = tokens.Color.System.Contrast,
-							tag = "anchor-bottom-center position-bottom-center",
-						}),
+		ScrollContent = e(ScrollView, {
+			LayoutOrder = 2,
+			scroll = {
+				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+				CanvasSize = UDim2.fromScale(0, 0),
+				ScrollingDirection = Enum.ScrollingDirection.Y,
+			},
+			layout = {
+				FillDirection = Enum.FillDirection.Vertical,
+			},
+			tag = "col shrink size-full",
+		}, {
+			Header = e(View, {
+				LayoutOrder = 0,
+				tag = "auto-y col size-full-0",
+			}, {
+				Content = e(View, {
+					LayoutOrder = 1,
+					tag = "auto-y align-y-center gap-medium padding-medium row size-full-0",
+				}, {
+					Name = e(Text, {
+						LayoutOrder = 1,
+						Size = UDim2.fromScale(0.2, 0),
+						Text = "Name",
+						tag = "auto-y content-muted text-align-x-left text-title-medium",
 					}),
 
-					Divider = e(Divider, {
+					Control = e(Text, {
 						LayoutOrder = 2,
+						Text = "Control",
+						tag = "auto-y content-muted fill text-align-x-left text-title-medium",
 					}),
 				}),
 
-				ScrollContent = e(ScrollView, {
+				Divider = e(Divider, {
 					LayoutOrder = 2,
-					scroll = {
-						AutomaticCanvasSize = Enum.AutomaticSize.Y,
-						CanvasSize = UDim2.fromScale(0, 0),
-						ScrollingDirection = Enum.ScrollingDirection.Y,
-					},
-					layout = {
-						FillDirection = Enum.FillDirection.Vertical,
-					},
-					tag = "shrink size-full",
-				}, {
-					Header = e(View, {
-						LayoutOrder = 0,
-						tag = "auto-y col size-full-0",
-					}, {
-						Content = e(View, {
-							LayoutOrder = 1,
-							tag = "auto-y align-y-center gap-medium padding-medium row size-full-0",
-						}, {
-							Name = e(Text, {
-								LayoutOrder = 1,
-								Size = UDim2.fromScale(0.2, 0),
-								Text = "Name",
-								tag = "auto-y content-muted text-align-x-left text-title-medium",
-							}),
-
-							Control = e(Text, {
-								LayoutOrder = 2,
-								Text = "Control",
-								tag = "auto-y content-muted fill text-align-x-left text-title-medium",
-							}),
-						}),
-
-						Divider = e(Divider, {
-							LayoutOrder = 2,
-						}),
-					}),
-
-					Controls = e(React.Fragment, nil, controlElements),
 				}),
 			}),
-		}
-	)
+
+			Controls = e(React.Fragment, nil, controlElements),
+		}),
+	})
 end
 
 return React.memo(StoryControls)
