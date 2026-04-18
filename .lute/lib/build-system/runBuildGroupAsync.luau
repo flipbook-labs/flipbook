@@ -1,6 +1,6 @@
 local fs = require("@std/fs")
 local process = require("@std/process")
-local richterm = require("@batteries/richterm")
+local richterm = require("@luaupkg/lute@v1.0.0/batteries/richterm")
 
 local hashPath = require("@scripts/lib/build-system/hashPath")
 local types = require("@scripts/lib/build-system/types")
