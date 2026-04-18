@@ -1,10 +1,10 @@
 local fs = require("@std/fs")
-local toml = require("@luaupkg/batteries/toml")
+local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 export type VersionComponent = "major" | "minor" | "patch"
 
 local function getVersionFromManifest(manifestPath: string)
-	local manifest = toml.deserialize(fs.readfiletostring(manifestPath))
+	local manifest = toml.deserialize(fs.readFileToString(manifestPath))
 
 	if manifest.workspace then
 		return (manifest.workspace :: any).version
