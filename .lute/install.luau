@@ -6,7 +6,6 @@ local system = require("@std/system")
 
 local getDescendants = require("@scripts/lib/getDescendants")
 
-local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
@@ -28,17 +27,14 @@ do
 	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createDirectory(project.LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
-	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(project.LUAU_PACKAGES_PATH, dependencyName))
-	end
+	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find

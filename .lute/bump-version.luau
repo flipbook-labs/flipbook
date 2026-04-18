@@ -51,7 +51,7 @@ do
 		"workspace/flipbook-core/rotriever.toml",
 	}
 
-	local bumpedVersionComponent = args:get("versionBump")
+	local bumpedVersionComponent = args:get("versionBump") :: string
 	local versionBump: VersionComponent = validateVersionBump(bumpedVersionComponent)
 
 	-- The root Wally manifest is the source of truth for the current version
