@@ -1,7 +1,9 @@
 local cli = require("@batteries/cli")
 local fs = require("@std/fs")
+local path = require("@std/path")
 
 local findAndReplace = require("@scripts/lib/findAndReplace")
+local loomConfig = require("@repo/loom.config")
 local semver = require("@scripts/lib/semver")
 
 type VersionComponent = semver.VersionComponent
@@ -45,11 +47,11 @@ args:parse(argsNoScript)
 do
 	local MANIFEST_PATHS = {
 		"wally.toml",
-		"workspace/flipbook-core/wally.toml",
+		"loom.config.luau",
 		"workspace/flipbook-core/rotriever.toml",
 	}
 
-	local bumpedVersionComponent = args:get("versionBump") :: string
+	local bumpedVersionComponent = args:get("versionBump")
 	local versionBump: VersionComponent = validateVersionBump(bumpedVersionComponent)
 
 	-- The root Wally manifest is the source of truth for the current version
@@ -60,7 +62,14 @@ do
 	local nextVersion = getNextVersion(currentVersion, versionBump)
 
 	for _, manifestPath in MANIFEST_PATHS do
-		local manifestVersion = semver.getVersionFromManifest(manifestPath)
+		local manifestVersion
+		if path.extname(manifestPath) == ".toml" then
+			manifestVersion = semver.getVersionFromManifest(manifestPath)
+		elseif path.basename(manifestPath) == "loom.config.luau" then
+			manifestVersion = loomConfig.package.version
+		else
+			error(`unsupported manifest file type for {manifestPath}`)
+		end
 
 		if fs.exists(manifestPath) then
 			findAndReplace(manifestPath, `version = "{manifestVersion}"`, `version = "{nextVersion}"`)
