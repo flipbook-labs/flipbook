@@ -23,7 +23,9 @@ jobs:
       # in this context.
       name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
