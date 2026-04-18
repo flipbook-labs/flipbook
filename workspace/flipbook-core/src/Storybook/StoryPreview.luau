@@ -58,7 +58,7 @@ local function StoryPreview(props: Props): React.Node
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
-			CanvasSize = UDim2.new(0, 0),
+			CanvasSize = UDim2.fromScale(0, 0),
 		},
 		layout = {
 			FillDirection = Enum.FillDirection.Vertical,
