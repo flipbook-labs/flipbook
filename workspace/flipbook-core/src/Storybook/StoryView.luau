@@ -123,7 +123,7 @@ local function StoryView(props: StoryViewProps)
 
 			Preview = e(View, {
 				LayoutOrder = 3,
-				tag = "padding-large shrink size-full",
+				tag = "shrink size-full",
 			}, {
 				StoryPreview = React.createElement(StoryPreview, {
 					story = story,

@@ -74,7 +74,7 @@ local function Topbar(props: TopbarProps)
 				scroll = {
 					ScrollingDirection = Enum.ScrollingDirection.X,
 					AutomaticCanvasSize = Enum.AutomaticSize.X,
-					CanvasSize = UDim2.new(0, 0),
+					CanvasSize = UDim2.fromScale(0, 0),
 				},
 				layout = {
 					FillDirection = Enum.FillDirection.Horizontal,
