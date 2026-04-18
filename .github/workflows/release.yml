@@ -1,9 +1,6 @@
 name: Release
 
 on:
-  pull_request_target:
-    branches:
-      - main
   release:
     types: [published]
   push:
