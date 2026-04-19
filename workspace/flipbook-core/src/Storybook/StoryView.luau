@@ -9,6 +9,7 @@ local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
+local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -24,8 +25,10 @@ local useMemo = React.useMemo
 local useState = React.useState
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
+local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type ExtraStoryProps = types.ExtraStoryProps
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
@@ -37,6 +40,7 @@ local function StoryView(props: StoryViewProps)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
+	local overlayGui = useOverlay()
 
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
@@ -50,7 +54,11 @@ local function StoryView(props: StoryViewProps)
 				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
 					newControls[key] = modifiedControls[key]
 				else
-					newControls[key] = value
+					if typeof(value) == "table" then
+						newControls[key] = value.default
+					else
+						newControls[key] = value
+					end
 				end
 			end
 		end
@@ -58,13 +66,14 @@ local function StoryView(props: StoryViewProps)
 		return newControls
 	end, { story, modifiedControls } :: { any })
 
-	local extraProps: Storyteller.StoryProps = useMemo(function()
+	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
 			theme = theme :: useThemeName.ThemeName,
 			locale = userSettings.locale,
 			plugin = plugin,
+			widget = overlayGui,
 		}
-	end, { theme, plugin, userSettings.locale } :: { unknown })
+	end, { theme, plugin, overlayGui, userSettings.locale } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
@@ -118,7 +127,7 @@ local function StoryView(props: StoryViewProps)
 
 			Preview = e(View, {
 				LayoutOrder = 3,
-				tag = "padding-large shrink size-full",
+				tag = "shrink size-full",
 			}, {
 				StoryPreview = React.createElement(StoryPreview, {
 					story = story,
