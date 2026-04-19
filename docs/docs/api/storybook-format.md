@@ -5,6 +5,8 @@ linter-yaml-title-alias: Storyteller API Synced Block
 
 # Storybook Format
 
+> [!seealso] See also: [[concepts/storybook|Storybook concept]] · [[api/story-format|Story Format]]
+
 Any ModuleScript with a `.storybook` extension will be picked up as a Storybook.
 
 > [!tip] 💡
@@ -36,10 +38,11 @@ Flipbook v1 used a different approach for defining packages. For convenience, v2
 > [!tip] 💡
 > A future version of Flipbook may remove this compatibility layer. It is recommended to migrate to `packages`.
 
-| **Property**     | **Description**                                                                                                                       |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| roact: any       | Locations that the Storybook manages. Each instance will have its descendants searched for Story modules.                             |
-| react: any       | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`. |
-| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`.                                    |
+| **Property**     | **Description**                                                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| fusion: any      | The version of Fusion to use when mounting Fusion components. Maps to `packages.Fusion`.                                           |
+| roact: any       | The version of Roact to use when mounting Roact components. Maps to `packages.Roact`.                                              |
+| react: any       | The version of React to use when mounting React components. Maps to `packages.React`.                                              |
+| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`. Maps to `packages.ReactRoblox`. |
 
 Under the hood these simply map to `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.

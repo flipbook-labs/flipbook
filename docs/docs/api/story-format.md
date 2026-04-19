@@ -5,16 +5,19 @@ linter-yaml-title-alias: Storyteller API Synced Block 1
 
 # Story Format
 
+> [!seealso] See also: [[concepts/story|Story concept]] · [[api/story-props|StoryProps]] · [[api/storybook-format|Storybook Format]]
+
 Any ModuleScript with a `.story` extension will be picked up as a Story when it is a descendant of one of the `storyRoots` that a Storybook manages.
 
 The only required member of a Story definition is the `story` property.
 
-| **Property**                              | Description                                                                                                                                                                |     |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| `story: <T>((props: StoryProps) -> T): T` |                                                                                                                                                                            |     |
-| `name: string?`                           | The name of the Story as it appears in Flipbook. Defaults to the name of the Story module. i.e. `Sample.story` becomes `Sample`                                            |     |
-| `summary: string?`                        | A description of the Story that will appear above the rendered preview in Flipbook.                                                                                        |     |
-| `controls: { [string]: any }?`            | Controls allow for on-the-fly configuration of your rendered UI. Read more about how to define and use Controls here: [[NOTION_PAGE:12f95b79-12f8-8043-88e1-d746a6617716]] |     |
+| **Property**                              | Description                                                                                                                                                                                                                          |     |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| `story: <T>((props: StoryProps) -> T): T` |                                                                                                                                                                                                                                      |     |
+| `name: string?`                           | The name of the Story as it appears in Flipbook. Defaults to the name of the Story module. i.e. `Sample.story` becomes `Sample`                                                                                                      |     |
+| `summary: string?`                        | A description of the Story that will appear above the rendered preview in Flipbook.                                                                                                                                                  |     |
+| `controls: { [string]: any }?`            | Controls allow for on-the-fly configuration of your rendered UI. Read more about how to define and use Controls here: [[controls]]                                                                                                   |     |
+| `packages: { [string]: any }?`            | An optional dictionary used for supplying the Story with the packages to use when rendering. The Story inherits the packages defined by the Storybook, so this is mostly used when a Story needs to deviate from the usual renderer. |     |
 
 The type of the `story` property is dependent on what kind of Story is being rendered. Flipbook does not prescribe one particular way of writing Stories, or even a particular UI library that must be used.
 
@@ -25,7 +28,7 @@ Example Story module:
 ```lua
 return {
 	story = function(props)
-	
+
 	end
 }
 ```

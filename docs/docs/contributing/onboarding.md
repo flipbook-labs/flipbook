@@ -9,7 +9,7 @@ linter-yaml-title-alias: Contributing
 Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
 
 > [!INFO]
-All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/intro).
+> All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/intro).
 
 ## First-time Setup
 
@@ -28,7 +28,7 @@ lute run install
 ```
 
 > [!TIP]
-When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the Flipbook plugin for your OS.
+> When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the Flipbook plugin for your OS.
 
 ## Building
 
@@ -75,7 +75,7 @@ lute run test
 We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
 
 > [!TIP]
-If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
+> If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
 
 ## Using Flipbook to Develop Flipbook
 
@@ -83,6 +83,33 @@ Flipbook is made up of React components, each of which has a story file. This me
 
 Once you have Flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
 
-![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](plugin-debugging-enabled.png)
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](![[assets/plugin-debugging-enabled.png]])
 
 Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
+
+## Internal Documentation
+
+For deeper context on architecture, product direction, and in-flight proposals:
+
+**Technical:**
+
+- [[tech/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
+
+**Product:**
+
+- [[product/product|Northstars]] — Product vision and goals
+- [[product/2026 Roadmap|2026 Roadmap]] — Current quarterly roadmap
+- [[product/2025-flipbook-product-spec/2025-flipbook-product-spec|2025 Product Spec]] — Audiences and feature goals
+
+**Proposals:**
+
+- [[proposals/Story Renderer Spec|Story Renderer Spec]] _(In Progress)_
+- [[proposals/Storyteller API|Storyteller API]] _(In Progress)_
+- [[proposals/Story and Storybook typechecking|Story and Storybook Typechecking]] _(In Progress)_
+- [[proposals/Documentation stories|Documentation Stories]] _(Approved)_
+- [[proposals/Implement new modular story format|Modular Story Format]]
+- [[proposals/Create a flipbook package|Flipbook Package]]
+
+**Ideas:**
+
+- [[ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu

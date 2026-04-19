@@ -36,20 +36,17 @@ linter-yaml-title-alias: Audience
 
 ## What Do We Want Flipbook to Be Able to Do?
 
-![[Flipbook product wishlist.base]]
+![[flipbook-product-wishlist.base|Flipbook product wishlist.base]]
 
 TODO: Research StorybookJS' interaction testing and visual testing features. Also addons too
 
 ### Why Not Flipbook?
 
-What are the reasons that someone would not want to use Flipbook? The following is a list of issues taken from [known user sentiments](/27695b7912f8812b9efcf61e7251fbae) and from my own observations
+What are the reasons that someone would not want to use Flipbook? The following is a list of issues taken from known user sentiments and from my own observations
 
-- Too hard to get setup
-  ![[assets/Screenshot_2024-11-25_at_12.54.14_PM.png]] - FTUX isn't great. Users need to know how to first create a storybook, point the story roots to the right place, and create properly-formatted story files all before anything shows up in the UI
-- Not enough features compared to UI Labs
-  ![[assets/Screenshot_2024-11-25_at_12.52.35_PM.png]] - What's missing, exactly?
-- Flipbook should have a previewing mode that plays better with viewport previewing
-  ![[assets/Screenshot_2024-11-25_at_12.59.10_PM.png]] - Hide the widget and place Flipbook's UI directly in the viewport. The story view becomes transparent - Pairs well with an option to hide Flipbook's UI to maximize the story view (see the wishlist)
+- Too hard to get setup — FTUX isn't great. Users need to know how to first create a storybook, point the story roots to the right place, and create properly-formatted story files all before anything shows up in the UI
+- Not enough features compared to UI Labs — What's missing, exactly?
+- Flipbook should have a previewing mode that plays better with viewport previewing — Hide the widget and place Flipbook's UI directly in the viewport. The story view becomes transparent - Pairs well with an option to hide Flipbook's UI to maximize the story view (see the wishlist)
 - The UI Labs author is very active on Discord and engages with the users of the plugin. Users have likely gravitated towards UI Labs in part because of this. We could be doing more to engage with the community
 
 # Packages
