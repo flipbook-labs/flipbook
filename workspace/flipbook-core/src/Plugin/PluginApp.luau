@@ -1,22 +1,18 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local ReactPanelLayout = require("@workspace/react-panel-layout/src")
+
 local NavigationContext = require("@root/Navigation/NavigationContext")
-local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-
-local useSignalState = ReactCharm.useSignalState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -24,9 +20,6 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 local defaultStorybook = createLoadedStorybook()
 
 local function App()
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
-
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
@@ -58,18 +51,18 @@ local function App()
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	return React.createElement(Foundation.View, {
-		tag = "size-full row align-y-center flex-between",
+	return React.createElement(StoryActionsContext.Provider, {
+		story = storyModule,
 	}, {
-		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
-			story = storyModule,
+		Root = React.createElement(ReactPanelLayout.Group, {
+			id = "root",
+			orientation = "horizontal",
 		}, {
-			SidebarWrapper = React.createElement(ResizablePanel, {
-				LayoutOrder = nextLayoutOrder(),
-				initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
-				dragHandles = { "Right" :: "Right" },
-				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
-				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
+			Sidebar = React.createElement(ReactPanelLayout.Panel, {
+				id = "sidebar",
+				LayoutOrder = 1,
+				defaultSize = 20,
+				sizeConstraints = NumberRange.new(constants.SIDEBAR_MIN_WIDTH, constants.SIDEBAR_MAX_WIDTH),
 			}, {
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
@@ -77,22 +70,27 @@ local function App()
 				}),
 			}),
 
-			MainWrapper = React.createElement(Foundation.View, {
-				tag = "size-full col shrink",
-				LayoutOrder = nextLayoutOrder(),
+			Main = React.createElement(ReactPanelLayout.Panel, {
+				id = "main",
+				LayoutOrder = 2,
+				defaultSize = 80,
 			}, {
-				Topbar = React.createElement(Topbar, {
-					LayoutOrder = nextLayoutOrder(),
-				}),
-
-				ScreenWrapper = React.createElement(Foundation.View, {
-					LayoutOrder = nextLayoutOrder(),
-					tag = "size-full shrink",
+				MainContent = React.createElement(Foundation.View, {
+					tag = "size-full col",
 				}, {
-					Screen = React.createElement(Screen, {
-						story = storyModule,
-						storybook = storybook,
-						unavailableStorybook = unavailableStorybook,
+					Topbar = React.createElement(Topbar, {
+						LayoutOrder = 1,
+					}),
+
+					ScreenWrapper = React.createElement(Foundation.View, {
+						LayoutOrder = 2,
+						tag = "size-full shrink",
+					}, {
+						Screen = React.createElement(Screen, {
+							story = storyModule,
+							storybook = storybook,
+							unavailableStorybook = unavailableStorybook,
+						}),
 					}),
 				}),
 			}),

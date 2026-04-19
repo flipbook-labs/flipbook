@@ -1,10 +1,6 @@
-local Constants = require("@root/constants")
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
-local ReactSignals = require("@pkg/ReactCharm")
-local ResizablePanel = require("@root/Panels/ResizablePanel")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local useSortedControls = require("@root/Storybook/useSortedControls")
 
 local Checkbox = Foundation.Checkbox
@@ -24,8 +20,6 @@ local Array = LuauPolyfill.Array
 local e = React.createElement
 local useState = React.useState
 
-local useSignalState = ReactSignals.useSignalState
-
 type StoryControlsProps = {
 	controls: { [string]: any },
 	modifiedControls: { [string]: any },
@@ -40,9 +34,6 @@ type StoryControlsProps = {
 -- as it's sibling.
 local function StoryControls(props: StoryControlsProps)
 	local tokens = useTokens()
-
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local sortedControls = useSortedControls(props.controls)
 	local pendingControl, setPendingControl = useState(nil :: string?)
@@ -146,42 +137,75 @@ local function StoryControls(props: StoryControlsProps)
 	end
 
 	return e(
-		ResizablePanel,
+		View,
 		withCommonProps(props, {
-			dragHandles = { "Top" :: "Top" },
-			initialSize = UDim2.new(1, 0, 0, userSettings.controlsHeight),
-			maxSize = Vector2.new(0, Constants.CONTROLS_MAX_HEIGHT),
-			minSize = Vector2.new(0, Constants.CONTROLS_MIN_HEIGHT),
+			tag = "bg-surface-100 col size-full",
 		}),
 		{
-			Content = e(View, {
-				tag = "bg-surface-100 col size-full",
+			-- NOTE(Paul): Adding a temporary pseudo-tab element for the time
+			-- being so that we have separation between the controls panel
+			-- and the story view.
+			Tabs = e(View, {
+				LayoutOrder = 1,
+				tag = "auto-y col size-full-0",
 			}, {
-				-- NOTE(Paul): Adding a temporary pseudo-tab element for the time
-				-- being so that we have separation between the controls panel
-				-- and the story view.
-				Tabs = e(View, {
+				Tab = e(View, {
 					LayoutOrder = 1,
+					onActivated = function() end,
+					tag = "col size-2000-1100",
+				}, {
+					Content = e(View, {
+						tag = "align-x-center align-y-center row size-full",
+					}, {
+						Text = e(Text, {
+							Text = "Controls",
+							tag = "anchor-center-center auto-xy content-emphasis position-center-center text-label-medium",
+						}),
+					}),
+
+					Border = e(View, {
+						Size = UDim2.new(1, 0, 0, tokens.Stroke.Thick),
+						backgroundStyle = tokens.Color.System.Contrast,
+						tag = "anchor-bottom-center position-bottom-center",
+					}),
+				}),
+
+				Divider = e(Divider, {
+					LayoutOrder = 2,
+				}),
+			}),
+
+			ScrollContent = e(ScrollView, {
+				LayoutOrder = 2,
+				scroll = {
+					AutomaticCanvasSize = Enum.AutomaticSize.Y,
+					CanvasSize = UDim2.fromScale(0, 0),
+					ScrollingDirection = Enum.ScrollingDirection.Y,
+				},
+				layout = {
+					FillDirection = Enum.FillDirection.Vertical,
+				},
+				tag = "shrink size-full",
+			}, {
+				Header = e(View, {
+					LayoutOrder = 0,
 					tag = "auto-y col size-full-0",
 				}, {
-					Tab = e(View, {
+					Content = e(View, {
 						LayoutOrder = 1,
-						onActivated = function() end,
-						tag = "col size-2000-1100",
+						tag = "auto-y align-y-center gap-medium padding-medium row size-full-0",
 					}, {
-						Content = e(View, {
-							tag = "align-x-center align-y-center row size-full",
-						}, {
-							Text = e(Text, {
-								Text = "Controls",
-								tag = "anchor-center-center auto-xy content-emphasis position-center-center text-label-medium",
-							}),
+						Name = e(Text, {
+							LayoutOrder = 1,
+							Size = UDim2.fromScale(0.2, 0),
+							Text = "Name",
+							tag = "auto-y content-muted text-align-x-left text-title-medium",
 						}),
 
-						Border = e(View, {
-							Size = UDim2.new(1, 0, 0, tokens.Stroke.Thick),
-							backgroundStyle = tokens.Color.System.Contrast,
-							tag = "anchor-bottom-center position-bottom-center",
+						Control = e(Text, {
+							LayoutOrder = 2,
+							Text = "Control",
+							tag = "auto-y content-muted fill text-align-x-left text-title-medium",
 						}),
 					}),
 
@@ -190,47 +214,7 @@ local function StoryControls(props: StoryControlsProps)
 					}),
 				}),
 
-				ScrollContent = e(ScrollView, {
-					LayoutOrder = 2,
-					scroll = {
-						AutomaticCanvasSize = Enum.AutomaticSize.Y,
-						CanvasSize = UDim2.fromScale(0, 0),
-						ScrollingDirection = Enum.ScrollingDirection.Y,
-					},
-					layout = {
-						FillDirection = Enum.FillDirection.Vertical,
-					},
-					tag = "shrink size-full",
-				}, {
-					Header = e(View, {
-						LayoutOrder = 0,
-						tag = "auto-y col size-full-0",
-					}, {
-						Content = e(View, {
-							LayoutOrder = 1,
-							tag = "auto-y align-y-center gap-medium padding-medium row size-full-0",
-						}, {
-							Name = e(Text, {
-								LayoutOrder = 1,
-								Size = UDim2.fromScale(0.2, 0),
-								Text = "Name",
-								tag = "auto-y content-muted text-align-x-left text-title-medium",
-							}),
-
-							Control = e(Text, {
-								LayoutOrder = 2,
-								Text = "Control",
-								tag = "auto-y content-muted fill text-align-x-left text-title-medium",
-							}),
-						}),
-
-						Divider = e(Divider, {
-							LayoutOrder = 2,
-						}),
-					}),
-
-					Controls = e(React.Fragment, nil, controlElements),
-				}),
+				Controls = e(React.Fragment, nil, controlElements),
 			}),
 		}
 	)
