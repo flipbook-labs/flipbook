@@ -1,3 +1,8 @@
+---
+aliases: [Controls]
+linter-yaml-title-alias: Controls
+---
+
 # Controls
 
 Stories can define controls that make it possible to quickly test out the behavior and variants of the UI you're working on.

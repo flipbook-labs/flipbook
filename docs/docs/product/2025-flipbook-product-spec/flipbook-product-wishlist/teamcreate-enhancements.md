@@ -1,6 +1,6 @@
 ---
-aliases: [TeamCreate enhancements]
-linter-yaml-title-alias: TeamCreate enhancements
+aliases: [TeamCreate Enhancements]
+linter-yaml-title-alias: TeamCreate Enhancements
 notion-id: 27695b79-12f8-8184-b3cd-df4202087fd4
 base: "[[flipbook-product-wishlist.base]]"
 Details: Show who is viewing which storybook/story in the sidebar

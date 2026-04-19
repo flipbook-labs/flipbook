@@ -1,6 +1,9 @@
 ---
 notion-id: 2db95b79-12f8-80c3-8423-ceb896271874
+aliases: [Ideas]
+linter-yaml-title-alias: Ideas
 ---
+
 # Ideas
 
 Ideas relating to Flipbook:

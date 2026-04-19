@@ -1,6 +1,6 @@
 ---
-aliases: [Storyteller API Synced Block]
-linter-yaml-title-alias: Storyteller API Synced Block
+aliases: [Storybook Format]
+linter-yaml-title-alias: Storybook Format
 ---
 
 # Storybook Format

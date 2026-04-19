@@ -3,6 +3,7 @@ aliases: [Instance Collector]
 linter-yaml-title-alias: Instance Collector
 notion-id: 2db95b79-12f8-816a-acc3-f5fe333da4cc
 ---
+
 # Instance Collector
 
 ## User Journeys to Consider

@@ -1,7 +1,7 @@
 ---
 notion-id: 28295b79-12f8-80c0-89d8-e4cf63c787ff
-aliases: [Overview]
-linter-yaml-title-alias: Overview
+aliases: [Story Controls]
+linter-yaml-title-alias: Story Controls
 ---
 
 # Story Controls
@@ -47,10 +47,12 @@ Stretch goals:
 ## Implementation
 
 The source for controls lives in two distinct places:
+
 1. Storyteller,
 2. Flipbook, by using Storyteller's Controls API to build out the frontend UI
 
 Flow:
+
 * **Current**: Screen → StoryCanvas → StoryView → StoryPreview
 * **Proposed**: Screen → StoryView → StoryPreview → Storyteller.StoryContainer
 

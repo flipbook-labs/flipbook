@@ -1,6 +1,6 @@
 ---
-aliases: [Dropdown to select which theme to use right from the story]
-linter-yaml-title-alias: Dropdown to select which theme to use right from the story
+aliases: [Dropdown to Select Which Theme to Use Right from the Story]
+linter-yaml-title-alias: Dropdown to Select Which Theme to Use Right from the Story
 notion-id: 27695b79-12f8-8113-b29b-ddb9ba181ebb
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

@@ -14,6 +14,6 @@ linter-yaml-title-alias: Getting Started
 
 ![[usage/installation#Installation]]
 
-## Write your first story
+## Write Your First Story
 
 Once installed, head to [[usage/writing-stories|Writing Stories]] to create your first Storybook and Story.

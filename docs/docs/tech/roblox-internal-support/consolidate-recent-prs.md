@@ -1,9 +1,10 @@
 ---
-aliases: [Flipbook consolidate recent PRs]
-linter-yaml-title-alias: Flipbook consolidate recent PRs
+aliases: [Flipbook Consolidate Recent PRs]
+linter-yaml-title-alias: Flipbook Consolidate Recent PRs
 notion-id: 27695b79-12f8-8173-b10a-e20d571b49e0
 ---
-# Flipbook consolidate recent PRs
+
+# Flipbook Consolidate Recent PRs
 
 ## ModuleLoader
 

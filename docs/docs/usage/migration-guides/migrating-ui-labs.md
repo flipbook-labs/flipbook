@@ -1,3 +1,8 @@
+---
+aliases: [UI Labs]
+linter-yaml-title-alias: UI Labs
+---
+
 # UI Labs
 
 > [!NOTE]

@@ -1,6 +1,6 @@
 ---
-aliases:
-  - Storybook.js
+aliases: [Storybook.js]
+linter-yaml-title-alias: Storybook.js
 ---
 
 # Storybook.js

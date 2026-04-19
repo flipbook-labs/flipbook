@@ -9,11 +9,11 @@ linter-yaml-title-alias: Toolbar
 
 General idea:
 
-- Floating toolbar like Figma’s
-- Select the primary tool (Move, Select)
-  - Select (default): allows the user to hover over the rendered elements. A border appears around the bounding box, and activating it will open the UI element in the explorer
-  - Hand: Click and drag to move around the story view
-- Drag to reposition the toolbar (probably just snaps to top/bottom. Maybe reorient for left/right?)
+* Floating toolbar like Figma’s
+* Select the primary tool (Move, Select)
+  * Select (default): allows the user to hover over the rendered elements. A border appears around the bounding box, and activating it will open the UI element in the explorer
+  * Hand: Click and drag to move around the story view
+* Drag to reposition the toolbar (probably just snaps to top/bottom. Maybe reorient for left/right?)
 
 ![[assets/Screenshot_2025-09-20_at_2.38.46_PM.png]]
 

@@ -27,4 +27,4 @@ Docusaurus can do docs versioning, which will be important between flipbook v1 a
 
 ## Open Questions
 
-- Could we support viewing flipbook’s docs within flipbook? Parse all the markdown we can and throw out any MDX?
+* Could we support viewing flipbook’s docs within flipbook? Parse all the markdown we can and throw out any MDX?

@@ -1,6 +1,6 @@
 ---
-aliases: [Flipbook Internal update to Studio Plugins folks]
-linter-yaml-title-alias: Flipbook Internal update to Studio Plugins folks
+aliases: [Flipbook Internal Update to Studio Plugins Folks]
+linter-yaml-title-alias: Flipbook Internal Update to Studio Plugins Folks
 notion-id: 27695b79-12f8-8144-86d2-dba1f82546fa
 ---
 

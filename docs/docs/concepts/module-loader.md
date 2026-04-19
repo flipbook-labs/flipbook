@@ -1,7 +1,6 @@
 ---
-aliases:
-  - ModuleLoader
-  - story sandboxing
+aliases: [ModuleLoader, story sandboxing]
+linter-yaml-title-alias: ModuleLoader
 ---
 
 # ModuleLoader

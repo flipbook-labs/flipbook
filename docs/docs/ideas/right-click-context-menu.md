@@ -1,11 +1,11 @@
 ---
 notion-id: 27695b79-12f8-809a-82b1-e420cd547c43
 tags: [idea]
-aliases: [Right-click-context-menu]
-linter-yaml-title-alias: Right-click-context-menu
+aliases: [Right Click Context Menu]
+linter-yaml-title-alias: Right Click Context Menu
 ---
 
-# Right-click-context-menu
+# Right Click Context Menu
 
 Right-click context menu for items in the sidebar
 

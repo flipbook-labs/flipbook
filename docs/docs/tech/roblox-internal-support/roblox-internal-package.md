@@ -1,9 +1,10 @@
 ---
-aliases: [RobloxInternal package]
-linter-yaml-title-alias: RobloxInternal package
+aliases: [RobloxInternal Package]
+linter-yaml-title-alias: RobloxInternal Package
 notion-id: 27695b79-12f8-81d7-9c29-c2b38020fda1
 ---
-# RobloxInternal package
+
+# RobloxInternal Package
 
 ## Overview
 

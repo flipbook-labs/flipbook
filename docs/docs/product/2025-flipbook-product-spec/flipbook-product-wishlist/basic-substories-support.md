@@ -1,6 +1,6 @@
 ---
-aliases: [Basic substories support]
-linter-yaml-title-alias: Basic substories support
+aliases: [Basic Substories Support]
+linter-yaml-title-alias: Basic Substories Support
 notion-id: 27695b79-12f8-81ec-8a0a-e4a8795688d2
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

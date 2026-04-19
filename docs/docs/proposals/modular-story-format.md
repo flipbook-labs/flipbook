@@ -1,6 +1,6 @@
 ---
-aliases: [Implement new modular story format]
-linter-yaml-title-alias: Implement new modular story format
+aliases: [Implement New Modular Story Format]
+linter-yaml-title-alias: Implement New Modular Story Format
 notion-id: 0d0ccaf0-36e6-497a-9131-31f5e50dd008
 base: "[[proposals.base]]"
 Author:

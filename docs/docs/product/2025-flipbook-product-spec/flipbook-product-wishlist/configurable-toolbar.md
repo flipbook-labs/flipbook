@@ -1,6 +1,6 @@
 ---
-aliases: [Toolbar with various actions that can be dragged to other locations on the screen]
-linter-yaml-title-alias: Toolbar with various actions that can be dragged to other locations on the screen
+aliases: [Toolbar with Various Actions that Can Be Dragged to Other Locations on the Screen]
+linter-yaml-title-alias: Toolbar with Various Actions that Can Be Dragged to Other Locations on the Screen
 notion-id: 27695b79-12f8-8196-84e7-d526cdb0f100
 base: "[[flipbook-product-wishlist.base]]"
 Details: Toolbar position is remembered between sessions

@@ -1,9 +1,10 @@
 ---
-aliases: [Internal mirroring workflow]
-linter-yaml-title-alias: Internal mirroring workflow
+aliases: [Internal Mirroring Workflow]
+linter-yaml-title-alias: Internal Mirroring Workflow
 notion-id: 28595b79-12f8-801f-959f-ca160c75c327
 ---
-# Internal mirroring workflow
+
+# Internal Mirroring Workflow
 
 ## Overview
 

@@ -1,6 +1,6 @@
 ---
-aliases: [Storyteller interim Roblox support]
-linter-yaml-title-alias: Storyteller interim Roblox support
+aliases: [Storyteller Interim Roblox Support]
+linter-yaml-title-alias: Storyteller Interim Roblox Support
 notion-id: 27695b79-12f8-813f-b5b0-f85cfb68947f
 ---
 

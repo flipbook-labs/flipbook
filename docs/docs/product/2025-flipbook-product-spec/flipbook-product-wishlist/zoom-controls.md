@@ -1,6 +1,6 @@
 ---
-aliases: [Zoom in-out on a story]
-linter-yaml-title-alias: Zoom in-out on a story
+aliases: [Zoom In-out on a Story]
+linter-yaml-title-alias: Zoom In-out on a Story
 notion-id: 27695b79-12f8-8164-9af9-d74d9eba9d5c
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

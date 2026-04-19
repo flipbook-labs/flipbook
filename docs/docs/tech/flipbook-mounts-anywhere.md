@@ -3,6 +3,7 @@ aliases: [Flipbook Mounts Anywhere]
 linter-yaml-title-alias: Flipbook Mounts Anywhere
 notion-id: 2d595b79-12f8-8086-abaf-c81b2bc65d27
 ---
+
 # Flipbook Mounts Anywhere
 
 Mount locations to support:

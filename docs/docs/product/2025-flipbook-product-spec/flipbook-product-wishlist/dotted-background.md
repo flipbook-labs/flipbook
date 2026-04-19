@@ -1,6 +1,6 @@
 ---
-aliases: [Use a dotted background like Figma and UI Labs do]
-linter-yaml-title-alias: Use a dotted background like Figma and UI Labs do
+aliases: [Use a Dotted Background like Figma and UI Labs Do]
+linter-yaml-title-alias: Use a Dotted Background like Figma and UI Labs Do
 notion-id: 27695b79-12f8-81ba-a925-d06d720ef9a7
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

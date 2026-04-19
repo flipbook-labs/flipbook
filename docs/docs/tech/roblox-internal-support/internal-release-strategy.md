@@ -1,6 +1,6 @@
 ---
-aliases: [Flipbook internal release strategy]
-linter-yaml-title-alias: Flipbook internal release strategy
+aliases: [Flipbook Internal Release Strategy]
+linter-yaml-title-alias: Flipbook Internal Release Strategy
 notion-id: 2db95b79-12f8-8133-b3f3-f0d5647a77c8
 ---
 

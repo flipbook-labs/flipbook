@@ -1,6 +1,6 @@
 ---
-aliases: [October Roblox internal notes]
-linter-yaml-title-alias: October Roblox internal notes
+aliases: [October Roblox Internal Notes]
+linter-yaml-title-alias: October Roblox Internal Notes
 notion-id: 2db95b79-12f8-8173-b63d-defffbacaeb7
 ---
 

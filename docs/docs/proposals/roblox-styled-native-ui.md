@@ -1,6 +1,6 @@
 ---
-aliases: [Roblox styled native UI]
-linter-yaml-title-alias: Roblox styled native UI
+aliases: [Roblox Styled Native UI]
+linter-yaml-title-alias: Roblox Styled Native UI
 notion-id: 2dda501f-0134-453d-98ac-964960be7012
 base: "[[proposals.base]]"
 Author:

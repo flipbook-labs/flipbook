@@ -1,3 +1,8 @@
+---
+aliases: [Roact]
+linter-yaml-title-alias: Roact
+---
+
 # Roact
 
 Flipbook supports Roblox's legacy [Roact](https://github.com/roblox/roact) library. Pass in your installation of Roact to your Storybook and all stories will be rendered with it.

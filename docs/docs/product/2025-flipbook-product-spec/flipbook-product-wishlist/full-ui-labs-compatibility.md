@@ -1,6 +1,6 @@
 ---
-aliases: [Full compatibility with UI Labs]
-linter-yaml-title-alias: Full compatibility with UI Labs
+aliases: [Full Compatibility with UI Labs]
+linter-yaml-title-alias: Full Compatibility with UI Labs
 notion-id: 27695b79-12f8-81ae-8159-c3a423d8be7a
 base: "[[flipbook-product-wishlist.base]]"
 Details: 1:1 interop with storybooks and stories. Seamlessly transition between the two plugins

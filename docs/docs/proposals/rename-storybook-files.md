@@ -1,6 +1,6 @@
 ---
-aliases: [Rename of storybook files]
-linter-yaml-title-alias: Rename of storybook files
+aliases: [Rename of Storybook Files]
+linter-yaml-title-alias: Rename of Storybook Files
 notion-id: bb46c750-f815-4d2d-a814-2f23ceb8c95c
 base: "[[proposals.base]]"
 Author:
@@ -10,7 +10,8 @@ Status: Not started
 Created: 2023-12-09T10:02:00
 Approval: Won't Do
 ---
-# Rename of storybook files
+
+# Rename of Storybook Files
 
 ## Overview
 
@@ -34,6 +35,6 @@ The legacy format will no longer be included in the docs, but will continue to b
 
 ## Open Questions
 
-- Does anyone use multiple storybooks as siblings? This change would break that
-- Doesn’t this break almost every convention about configuration files? (ex: `.test.lua`, `.spec.lua`, etc)
-- How does this work when there’s multiple storybooks? I could only assume some people would have a UI kit for generic components (buttons, etc) and then use that on projects to develop more specific UI which would also have their own storybook.
+* Does anyone use multiple storybooks as siblings? This change would break that
+* Doesn’t this break almost every convention about configuration files? (ex: `.test.lua`, `.spec.lua`, etc)
+* How does this work when there’s multiple storybooks? I could only assume some people would have a UI kit for generic components (buttons, etc) and then use that on projects to develop more specific UI which would also have their own storybook.

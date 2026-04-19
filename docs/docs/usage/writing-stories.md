@@ -1,5 +1,7 @@
 ---
 sidebar_position: 1
+aliases: [Writing Stories]
+linter-yaml-title-alias: Writing Stories
 ---
 
 # Writing Stories
@@ -8,7 +10,7 @@ sidebar_position: 1
 
 ![[concepts/story#Story]]
 
-## Getting started
+## Getting Started
 
 A Storybook can be parented anywhere in the experience. The only requirement is that it defines a `storyRoots` array so Flipbook knows where to search for Stories.
 
@@ -30,7 +32,7 @@ To connect it back to Studio, these files could simply be stored in ReplicatedSt
 
 ![[storybook-setup.png]]
 
-## Using frameworks
+## Using Frameworks
 
 By default, Flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. Simply returning an Instance allows Flipbook to manage the creation and destruction of that Instance so you don't leak memory while working.
 

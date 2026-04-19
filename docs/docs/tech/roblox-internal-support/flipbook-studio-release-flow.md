@@ -1,6 +1,6 @@
 ---
-aliases: [Flipbook → Studio release flow]
-linter-yaml-title-alias: Flipbook → Studio release flow
+aliases: [Flipbook → Studio Release Flow]
+linter-yaml-title-alias: Flipbook → Studio Release Flow
 notion-id: 2db95b79-12f8-8114-a5c5-ff70517a0e49
 ---
 

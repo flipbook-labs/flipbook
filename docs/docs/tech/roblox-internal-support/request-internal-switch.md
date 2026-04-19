@@ -1,6 +1,6 @@
 ---
-aliases: [RequestInternal switch]
-linter-yaml-title-alias: RequestInternal switch
+aliases: [RequestInternal Switch]
+linter-yaml-title-alias: RequestInternal Switch
 notion-id: 2db95b79-12f8-811e-8633-e2f763936e86
 ---
 

@@ -1,6 +1,6 @@
 ---
-aliases: [No storybook required]
-linter-yaml-title-alias: No storybook required
+aliases: [No Storybook Required]
+linter-yaml-title-alias: No Storybook Required
 notion-id: 27695b79-12f8-817c-bd11-dd3b7350ae37
 base: "[[flipbook-product-wishlist.base]]"
 Details: Stories that aren’t managed by a storybook will show up under a default storybook

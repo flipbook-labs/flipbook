@@ -10,6 +10,7 @@ Status: In progress
 Created: 2024-10-29T11:25:00
 Approval: Drafting
 ---
+
 # Storyteller API
 
 [Storyteller](https://github.com/flipbook-labs/storyteller) is a library for the discovery and rendering of UI stories and is the backbone of flipbook’s Story discovery and rendering.

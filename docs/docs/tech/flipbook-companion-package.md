@@ -1,10 +1,8 @@
 ---
 notion-id: 2dd95b79-12f8-80f3-ae6a-e26a8e78f52a
-aliases:
-  - Overview
-linter-yaml-title-alias: Overview
-tags:
-  - tech-spec
+aliases: [Flipbook Companion Package]
+linter-yaml-title-alias: Flipbook Companion Package
+tags: [tech-spec]
 STATUS: pending
 ---
 
@@ -36,8 +34,6 @@ toggle = Flipboook.boolean(true)
 ```
 
 For a larger example, it would be the difference between these two:
-
-
 
 Storyteller :
 
@@ -380,8 +376,8 @@ Provides a numeric input to include the range of all possible values.
 
 Parameter defaults:
 
-- `default = 0`
-- `step = 1`
+* `default = 0`
+* `step = 1`
 
 Providing `range` will constrain the possible values of the number, and `step` controls how much the number will be changed up/down by the UI.
 
@@ -456,8 +452,8 @@ Provides a range slider to include all possible values.
 
 Parameter defaults:
 
-- `default = 0`
-- `range = NumberRange.new(0, 100)`
+* `default = 0`
+* `range = NumberRange.new(0, 100)`
 
 Example:
 

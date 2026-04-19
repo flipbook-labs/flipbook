@@ -1,6 +1,6 @@
 ---
-aliases: [Story and Storybook typechecking]
-linter-yaml-title-alias: Story and Storybook typechecking
+aliases: [Story and Storybook Typechecking]
+linter-yaml-title-alias: Story and Storybook Typechecking
 notion-id: 12f95b79-12f8-809b-9842-f96897b55438
 base: "[[proposals.base]]"
 Author:
@@ -10,7 +10,8 @@ Status: Not started
 Created: 2024-10-30T12:09:00
 Approval: Drafting
 ---
-# Story and Storybook typechecking
+
+# Story and Storybook Typechecking
 
 Storyteller will be available on Wally as an avenue for the community to use the same types as Flipbook does internally.
 

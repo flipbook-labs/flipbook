@@ -3,6 +3,7 @@ aliases: [Storybook Embedding]
 linter-yaml-title-alias: Storybook Embedding
 notion-id: 2e995b79-12f8-80ff-bb76-c60150abd765
 ---
+
 # Storybook Embedding
 
 | **Epic** | [https://github.com/flipbook-labs/flipbook/issues/475](https://github.com/flipbook-labs/flipbook/issues/475) |

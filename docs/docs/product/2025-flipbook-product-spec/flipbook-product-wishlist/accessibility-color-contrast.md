@@ -1,6 +1,6 @@
 ---
-aliases: [Validate that colors contrast well together for accessibility]
-linter-yaml-title-alias: Validate that colors contrast well together for accessibility
+aliases: [Validate that Colors Contrast Well together for Accessibility]
+linter-yaml-title-alias: Validate that Colors Contrast Well together for Accessibility
 notion-id: 27695b79-12f8-812b-a09a-f8b24647b62a
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

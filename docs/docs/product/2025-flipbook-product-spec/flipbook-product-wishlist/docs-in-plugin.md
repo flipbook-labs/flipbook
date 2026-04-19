@@ -1,6 +1,6 @@
 ---
-aliases: [Include docs right in the plugin]
-linter-yaml-title-alias: Include docs right in the plugin
+aliases: [Include Docs Right in the Plugin]
+linter-yaml-title-alias: Include Docs Right in the Plugin
 notion-id: 27695b79-12f8-81c7-8de1-c1f387ec9f5c
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

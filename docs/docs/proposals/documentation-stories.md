@@ -1,6 +1,6 @@
 ---
-aliases: [Documentation stories]
-linter-yaml-title-alias: Documentation stories
+aliases: [Documentation Stories]
+linter-yaml-title-alias: Documentation Stories
 notion-id: 6076c2b2-ddfd-41d6-886b-9fdde50437b9
 base: "[[proposals.base]]"
 Author:
@@ -11,7 +11,8 @@ Status: Not started
 Created: 2023-12-08T11:05:00
 Approval: Approved
 ---
-# Documentation stories
+
+# Documentation Stories
 
 ## Idea
 
@@ -19,8 +20,8 @@ Allow developers to define their own documentation files using the `.docs` file 
 
 ## Open Questions
 
-- Should this be a product distinct from flipbook to allow anyone to write `.docs` files?
-- If this leverages the renderer supplied in the `.storybook` file, would we still be able to decouple docs rendering?
+* Should this be a product distinct from flipbook to allow anyone to write `.docs` files?
+* If this leverages the renderer supplied in the `.storybook` file, would we still be able to decouple docs rendering?
 
 ## Proposed API
 
@@ -203,7 +204,7 @@ The **Canvas** component is used as the root for a documentation render. It sets
 
 Props:
 
-- None
+* None
 
 #### **Title**
 
@@ -211,7 +212,7 @@ Similar to `<h1>`, `<h2>` …
 
 Props:
 
-- `text: string`
+* `text: string`
 
 #### Summary
 
@@ -219,7 +220,7 @@ Similar to `<p>`
 
 Props:
 
-- `text: string`
+* `text: string`
 
 #### ComponentList
 
@@ -227,7 +228,7 @@ Provides a container that will hold any components you pass to it as children
 
 Props:
 
-- `children: React.ReactNode`
+* `children: React.ReactNode`
 
 ### Functions
 
@@ -243,9 +244,9 @@ Convenice function that requires the module and passes the contents to `parseDoc
 
 The packages we provide extend the capabilities for writing documentation, but are not required to write docs if the user only wants to use Markdown.
 
-- sparkletime-docs-vanilla
-- sparkletime-docs-react
-- sparkletime-docs-roact
+* sparkletime-docs-vanilla
+* sparkletime-docs-react
+* sparkletime-docs-roact
 
 ## Documentation Rendering
 
@@ -322,11 +323,11 @@ end
 
 Lua Markdown parser:
 
-- https://github.com/mpeterv/markdown
-- Fork with Wally support: https://github.com/aloroid/markdown
-- [https://github.com/BradSharp/Romarkable](https://github.com/BradSharp/Romarkable)
-- [https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender](https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender)
-- Plain regex parsing: https://github.com/Roblox/luau-regexp
+* https://github.com/mpeterv/markdown
+* Fork with Wally support: https://github.com/aloroid/markdown
+* [https://github.com/BradSharp/Romarkable](https://github.com/BradSharp/Romarkable)
+* [https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender](https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender)
+* Plain regex parsing: https://github.com/Roblox/luau-regexp
 
 [pashley](mailto:passhley1219@gmail.com) Example of how an [MDX](https://mdxjs.com/)-like approach could look
 

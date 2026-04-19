@@ -1,14 +1,15 @@
 ---
-aliases: [Flipbook support for Developer Storybook]
-linter-yaml-title-alias: Flipbook support for Developer Storybook
+aliases: [Flipbook Support for Developer Storybook]
+linter-yaml-title-alias: Flipbook Support for Developer Storybook
 notion-id: 27695b79-12f8-8196-a043-c16705326573
 ---
-# Flipbook support for Developer Storybook
+
+# Flipbook Support for Developer Storybook
 
 Requirements:
 
-- Regular users should never see Roblox stories
-  - Either implicitly check for Roblox Internal, or add an explicit setting to the Settings menu to enable the flow
+* Regular users should never see Roblox stories
+  * Either implicitly check for Roblox Internal, or add an explicit setting to the Settings menu to enable the flow
 
 ## Reference
 

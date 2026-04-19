@@ -1,9 +1,10 @@
 ---
-aliases: [Flipbook - Developer Storybook notes with Vincent]
-linter-yaml-title-alias: Flipbook - Developer Storybook notes with Vincent
+aliases: [Flipbook - Developer Storybook Notes with Vincent]
+linter-yaml-title-alias: Flipbook - Developer Storybook Notes with Vincent
 notion-id: 27695b79-12f8-81b4-be4d-d1afba1dfda9
 ---
-# Flipbook - Developer Storybook notes with Vincent
+
+# Flipbook - Developer Storybook Notes with Vincent
 
 ## Marin
 

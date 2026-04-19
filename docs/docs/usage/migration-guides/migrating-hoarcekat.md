@@ -1,3 +1,8 @@
+---
+aliases: [Hoarcekat]
+linter-yaml-title-alias: Hoarcekat
+---
+
 # Hoarcekat
 
 [Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like Flipbook. Because of its popularity, its story format is supported by Flipbook so that you have an easier time migrating.

@@ -93,23 +93,23 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Technical:**
 
-- [[tech/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
+* [[tech/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
 
 **Product:**
 
-- [[product/product|Northstars]] — Product vision and goals
-- [[product/2026 Roadmap|2026 Roadmap]] — Current quarterly roadmap
-- [[product/2025-flipbook-product-spec/2025-flipbook-product-spec|2025 Product Spec]] — Audiences and feature goals
+* [[product/product|Northstars]] — Product vision and goals
+* [[product/2026 Roadmap|2026 Roadmap]] — Current quarterly roadmap
+* [[product/2025-flipbook-product-spec/2025-flipbook-product-spec|2025 Product Spec]] — Audiences and feature goals
 
 **Proposals:**
 
-- [[proposals/Story Renderer Spec|Story Renderer Spec]] _(In Progress)_
-- [[proposals/Storyteller API|Storyteller API]] _(In Progress)_
-- [[proposals/Story and Storybook typechecking|Story and Storybook Typechecking]] _(In Progress)_
-- [[proposals/Documentation stories|Documentation Stories]] _(Approved)_
-- [[proposals/Implement new modular story format|Modular Story Format]]
-- [[proposals/Create a flipbook package|Flipbook Package]]
+* [[proposals/Story Renderer Spec|Story Renderer Spec]] _(In Progress)_
+* [[proposals/Storyteller API|Storyteller API]] _(In Progress)_
+* [[proposals/Story and Storybook typechecking|Story and Storybook Typechecking]] _(In Progress)_
+* [[proposals/Documentation stories|Documentation Stories]] _(Approved)_
+* [[proposals/Implement new modular story format|Modular Story Format]]
+* [[proposals/Create a flipbook package|Flipbook Package]]
 
 **Ideas:**
 
-- [[ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu
+* [[ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu

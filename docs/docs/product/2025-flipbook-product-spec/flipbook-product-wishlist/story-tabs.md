@@ -1,6 +1,6 @@
 ---
-aliases: [Tabs to preview and jump between stories]
-linter-yaml-title-alias: Tabs to preview and jump between stories
+aliases: [Tabs to Preview and Jump between Stories]
+linter-yaml-title-alias: Tabs to Preview and Jump between Stories
 notion-id: 27695b79-12f8-8104-806f-d4bfeaea7d35
 base: "[[flipbook-product-wishlist.base]]"
 Details: ""

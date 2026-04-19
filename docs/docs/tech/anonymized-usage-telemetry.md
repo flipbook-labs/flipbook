@@ -1,9 +1,10 @@
 ---
-aliases: [Anonymized usage telemetry]
-linter-yaml-title-alias: Anonymized usage telemetry
+aliases: [Anonymized Usage Telemetry]
+linter-yaml-title-alias: Anonymized Usage Telemetry
 notion-id: 27695b79-12f8-817a-9dc1-ec2edcaeaca9
 ---
-# Anonymized usage telemetry
+
+# Anonymized Usage Telemetry
 
 Opt-in flow:
 

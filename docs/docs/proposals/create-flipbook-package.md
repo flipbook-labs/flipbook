@@ -1,6 +1,6 @@
 ---
-aliases: [Create a flipbook package]
-linter-yaml-title-alias: Create a flipbook package
+aliases: [Create a Flipbook Package]
+linter-yaml-title-alias: Create a Flipbook Package
 notion-id: de72c908-05f4-4503-90c4-3a6bd7fb82bb
 base: "[[proposals.base]]"
 Author:
@@ -10,7 +10,8 @@ Status: Not started
 Created: 2023-12-11T20:39:00
 Approval: Drafting
 ---
-# Create a flipbook package
+
+# Create a Flipbook Package
 
 The idea is all of our storybook and story-related functionality and types to be exposed off of a public API that creators could import via Wally.
 
