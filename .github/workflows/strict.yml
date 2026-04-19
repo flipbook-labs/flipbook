@@ -1,0 +1,46 @@
+name: Strict
+
+on:
+  # We use pull_request_target to allow jobs in this workflow to run with
+  # secrets, and each job is gated by an environment. The environment is chosen
+  # based on whether the PR is from a fork or not, so that internal exnternal
+  # contributions require approval, while internal ones run like normal.
+  pull_request_target:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      # This giant expression is unfortunately the best we can do right now. The
+      # hope was to offload it to an `env` variable, but those can't be accessed
+      # in this context.
+      name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Run tests
+        run: lute run test
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+
+      - name: Deploy smoketest plugin to Creator Store
+        run: lune run publish-plugin --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
