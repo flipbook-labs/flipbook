@@ -1,0 +1,31 @@
+# Control Data Types
+
+filters:
+  and:
+    - note["base"] == link("Control Data Types.base")
+properties:
+  file.name:
+    displayName: Control Type
+  Flipbook (Q1 2026):
+    displayName: Flipbook (Q1 2026)
+  UI Labs (v1.5.0):
+    displayName: UI Labs (v1.5.0)
+  Description:
+    displayName: Description
+  UI Labs (Q1 2026):
+    displayName: UI Labs (Q1 2026)
+  Flipbook (v2.4.0):
+    displayName: Flipbook (v2.4.0)
+  Notes:
+    displayName: Notes
+views:
+  - type: table
+    name: Table View
+    order:
+      - file.name
+      - Flipbook (Q1 2026)
+      - UI Labs (v1.5.0)
+      - Description
+      - UI Labs (Q1 2026)
+      - Flipbook (v2.4.0)
+      - Notes

@@ -1,0 +1,26 @@
+filters:
+  and:
+    - note["base"] == link("Proposals.base")
+properties:
+  file.name:
+    displayName: Name
+  Author:
+    displayName: Author
+  Tags:
+    displayName: Tags
+  Status:
+    displayName: Status
+  Created:
+    displayName: Created
+  Approval:
+    displayName: Approval
+views:
+  - type: table
+    name: Table View
+    order:
+      - file.name
+      - Author
+      - Tags
+      - Status
+      - Created
+      - Approval

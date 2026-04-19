@@ -9,8 +9,8 @@ return {
     },
     {
       name = "flipbook-batteries",
-      rev = "bump-lute-and-fix-api-usage",
-      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/bump-lute-and-fix-api-usage.zip",
+      rev = "v0.8.0",
+      source = "https://github.com/flipbook-labs/flipbook-batteries/archive/v0.8.0.zip",
       sourceKind = "github",
     },
   },

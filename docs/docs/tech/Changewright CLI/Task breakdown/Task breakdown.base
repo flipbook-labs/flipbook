@@ -1,0 +1,25 @@
+# Task breakdown
+
+filters:
+  and:
+    - note["base"] == link("Task breakdown.base")
+properties:
+  file.name:
+    displayName: Task
+  Status:
+    displayName: Status
+  Date:
+    displayName: Date
+  Place:
+    displayName: Place
+  Group:
+    displayName: Group
+views:
+  - type: table
+    name: Table View
+    order:
+      - file.name
+      - Status
+      - Date
+      - Place
+      - Group

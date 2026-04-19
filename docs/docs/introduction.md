@@ -1,5 +1,8 @@
 ---
+aliases: [Introduction]
+tags: []
 sidebar_position: 1
+linter-yaml-title-alias: Introduction
 ---
 
 # Introduction
@@ -9,4 +12,3 @@ Flipbook is a storybook plugin that previews UI components in a sandboxed enviro
 By default, Flipbook uses a function-based renderer with support for Roblox Instances to get you up and running, and offers native support for UI libraries like [React](/docs/frameworks/react) and [Fusion](/docs/frameworks/fusion). No matter how you create UI you can write a story for it in Flipbook.
 
 ![Screenshot of Flipbook showing off the ButtonWithControls story](/img/main-screenshot.png)
-

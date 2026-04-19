@@ -1,16 +1,17 @@
 ---
 sidebar_position: 1
+aliases: [Contributing]
+linter-yaml-title-alias: Contributing
 ---
 
-# Onboarding
+# Contributing
 
 Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
 
-:::info
-All contents under the Contributing section are for the development of the Flipbook plugin. Please see [Getting Started](/docs/intro) for documentation on how to use Flipbook.
-:::
+> [!INFO]
+All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/intro).
 
-## First-time setup
+## First-time Setup
 
 We use [Visual Studio Code](https://code.visualstudio.com/) to work on this project, so you'll get the best mileage from using it too. We also have several [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json) that should be installed.
 
@@ -26,9 +27,8 @@ rokit install
 lute run install
 ```
 
-:::tip
+> [!TIP]
 When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the Flipbook plugin for your OS.
-:::
 
 ## Building
 
@@ -52,7 +52,7 @@ lute run build --channel dev
 
 There's also a `--watch` flag to automatically rebuild on file changes.
 
-### Build to rbxm
+### Build to Rbxm
 
 When building, pass the `--output` flag to determine where Flipbook will build to. By default, Flipbook builds to the Roblox Studio plugins directory.
 
@@ -74,16 +74,15 @@ lute run test
 
 We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
 
-:::tip
+> [!TIP]
 If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
-:::
 
-## Using Flipbook to develop Flipbook
+## Using Flipbook to Develop Flipbook
 
 Flipbook is made up of React components, each of which has a story file. This means you can use Flipbook itself for developing it.
 
 Once you have Flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
 
-![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](./plugin-debugging-enabled.png)
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](plugin-debugging-enabled.png)
 
 Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.

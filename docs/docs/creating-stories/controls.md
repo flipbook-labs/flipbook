@@ -14,6 +14,10 @@ Stories can define controls that make it possible to quickly test out the behavi
 
 Here's an example React component that we will build a Story around. The props it takes in will be configurable by the Story's controls.
 
+
+
+
+
 <CodeBlock language="lua" title="ReactButtonControls.luau">
 	{ReactButtonControls}
 </CodeBlock>

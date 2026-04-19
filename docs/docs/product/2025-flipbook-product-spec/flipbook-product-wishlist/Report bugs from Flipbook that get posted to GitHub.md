@@ -1,0 +1,13 @@
+---
+notion-id: 27695b79-12f8-813a-8028-c8f1e88ff33f
+base: "[[Flipbook product wishlist.base]]"
+Details: Hopefully a webhook can make this easy
+Estimate (Days): 5
+Ticket: https://github.com/flipbook-labs/flipbook/issues/352
+STATUS: Not started
+Priority: P1
+aliases: [Report Bugs from Flipbook that Get Posted to GitHub]
+linter-yaml-title-alias: Report Bugs from Flipbook that Get Posted to GitHub
+---
+
+# Report Bugs from Flipbook that Get Posted to GitHub
