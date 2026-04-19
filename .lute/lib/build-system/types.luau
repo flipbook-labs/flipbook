@@ -11,7 +11,7 @@ export type BuildCache = {
 export type BuildContext = {
 	channel: Channel,
 	target: Target,
-	dest: path.Path,
+	dest: path.path,
 	env: { [string]: string },
 	shouldRebuild: boolean,
 	cache: BuildCache,
@@ -19,7 +19,7 @@ export type BuildContext = {
 
 export type BuildGroup = {
 	name: string,
-	paths: { path.Pathlike },
+	paths: { path.pathlike },
 	context: BuildContext,
 	step: (self: BuildGroup) -> (),
 }

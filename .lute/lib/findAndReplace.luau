@@ -1,12 +1,12 @@
 local fs = require("@std/fs")
 local path = require("@std/path")
 
-local function findAndReplace(filePath: path.Pathlike, match: string, replacement: string)
-	local content = fs.readFileToString(filePath)
+local function findAndReplace(filePath: path.pathlike, match: string, replacement: string)
+	local content = fs.readfiletostring(filePath)
 
 	content = content:gsub(match, replacement)
 
-	fs.writeStringToFile(filePath, content)
+	fs.writestringtofile(filePath, content)
 end
 
 return findAndReplace

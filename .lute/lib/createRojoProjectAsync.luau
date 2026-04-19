@@ -2,9 +2,9 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
 
-local function createRojoProjectAsync(projectPath: path.Pathlike, projectContent: json.Value): path.Path
+local function createRojoProjectAsync(projectPath: path.pathlike, projectContent: json.value): path.path
 	local resolvedProjectPath = path.resolve(projectPath)
-	fs.writeStringToFile(resolvedProjectPath, json.serialize(projectContent, true))
+	fs.writestringtofile(resolvedProjectPath, json.serialize(projectContent, true))
 	return resolvedProjectPath
 end
 

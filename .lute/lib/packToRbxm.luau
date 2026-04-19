@@ -8,7 +8,7 @@ local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 
 local run = FlipbookBatteries.run
 
-local function packToRbxm(filePath: path.Pathlike): path.Path
+local function packToRbxm(filePath: path.pathlike): path.path
 	local projectPath = path.join(system.tmpdir(), "default.project.json")
 	local resolvedFilePath = path.resolve(filePath)
 

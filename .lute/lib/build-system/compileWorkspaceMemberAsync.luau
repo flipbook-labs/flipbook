@@ -11,7 +11,7 @@ local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: BuildContext): path.Path
+local function compileWorkspaceMemberAsync(memberPath: path.pathlike, context: BuildContext): path.path
 	local relativeMemberPath = path.relative(project.REPO_PATH, memberPath)
 	local memberBuildPath = path.join(memberPath, "build")
 
@@ -22,11 +22,11 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 		},
 		context = context,
 		step = function()
-			fs.removeDirectory(memberBuildPath, {
+			fs.removedirectory(memberBuildPath, {
 				recursive = true,
 			})
-			fs.createDirectory(memberBuildPath, {
-				makeParents = true,
+			fs.createdirectory(memberBuildPath, {
+				makeparents = true,
 			})
 
 			run("darklua", {
@@ -54,7 +54,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 
 	local dest = path.join(context.dest, relativeMemberPath)
 
-	fs.removeDirectory(dest, {
+	fs.removedirectory(dest, {
 		recursive = true,
 	})
 	copyInto(memberBuildPath, dest)

@@ -1,11 +1,11 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local cli = require("@batteries/cli")
+local cli = require("@luaupkg/batteries/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
-local pp = require("@batteries/pp")
+local pp = require("@luaupkg/batteries/pp")
 local process = require("@std/process")
-local richterm = require("@batteries/richterm")
-local toml = require("@batteries/toml")
+local richterm = require("@luaupkg/batteries/richterm")
+local toml = require("@luaupkg/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
 local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
@@ -80,7 +80,7 @@ local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function readWallyManifestAsync()
-	return toml.deserialize(fs.readFileToString(WALLY_MANIFEST_PATH))
+	return toml.deserialize(fs.readfiletostring(WALLY_MANIFEST_PATH))
 end
 
 local function getCommitHash()
@@ -175,7 +175,7 @@ end
 build()
 
 if args:has("watch") then
-	local function onChanged(filePath: path.Path)
+	local function onChanged(filePath: path.path)
 		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
 			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)

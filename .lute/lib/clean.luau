@@ -4,7 +4,7 @@ local path = require("@std/path")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
-local PATHS_TO_CLEAN: { path.Pathlike } = {
+local PATHS_TO_CLEAN: { path.pathlike } = {
 	project.BUILD_PATH,
 	path.join(getStudioPluginsPath(), project.PLUGIN_FILENAME),
 	project.PLUGIN_FILENAME,
@@ -18,7 +18,7 @@ local function clean()
 			print(`removing {filePath}`)
 
 			if fs.type(filePath) == "dir" then
-				fs.removeDirectory(filePath, {
+				fs.removedirectory(filePath, {
 					recursive = true,
 				})
 			else
