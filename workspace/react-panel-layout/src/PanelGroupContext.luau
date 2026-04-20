@@ -2,9 +2,28 @@ local React = require("@pkg/React")
 
 local types = require("@root/types")
 
-type PanelGroupContext = types.PanelGroupContext
 type LayoutSizes = types.LayoutSizes
-type GroupProps = types.GroupProps
+
+export type PanelGroupContext = {
+	sizes: LayoutSizes,
+	orientation: "horizontal" | "vertical",
+	groupAbsoluteSize: Vector2,
+	separatorsTotalSize: number,
+	updateSizes: (newSizes: LayoutSizes) -> (),
+	registerPanel: (id: string, defaultSize: number, constraints: NumberRange?) -> (),
+	unregisterPanel: (id: string) -> (),
+	panelConstraints: { [string]: NumberRange },
+	registerSeparator: (separatorSize: number) -> (),
+	unregisterSeparator: (separatorSize: number) -> (),
+}
+
+export type PanelGroupProviderProps = {
+	id: string,
+	orientation: "horizontal" | "vertical",
+	defaultLayout: types.LayoutSizes?,
+	onLayoutChange: ((id: string, sizes: types.LayoutSizes) -> ())?,
+	children: React.Node?,
+}
 
 local useCallback = React.useCallback
 local useEffect = React.useEffect
@@ -29,11 +48,12 @@ local Context = React.createContext({
 	Provider manages all layout state and renders the root Frame + UIListLayout.
 	Group uses Provider as its root element.
 ]]
-local function Provider(props: GroupProps)
+local function Provider(props: PanelGroupProviderProps)
 	local sizes, setSizes = useState((props.defaultLayout or {}) :: LayoutSizes)
 	local panelConstraints, setPanelConstraints = useState({} :: { [string]: NumberRange })
 	local separatorsTotalSize, setSeparatorsTotalSize = useState(0)
 	local groupAbsoluteSize, setGroupAbsoluteSize = useState(Vector2.zero)
+	local hasUserSized, setHasUserSized = useState(false)
 
 	local frameRef = useRef(nil :: Frame?)
 
@@ -81,18 +101,19 @@ local function Provider(props: GroupProps)
 
 	local unregisterPanel = useCallback(function(id: string)
 		setSizes(function(prev)
-			local next = table.clone(prev)
-			next[id] = nil
-			return next
+			local new = table.clone(prev)
+			new[id] = nil
+			return new
 		end)
 		setPanelConstraints(function(prev)
-			local next = table.clone(prev)
-			next[id] = nil
-			return next
+			local new = table.clone(prev)
+			new[id] = nil
+			return new
 		end)
 	end, {})
 
 	local updateSizes = useCallback(function(newSizes: LayoutSizes)
+		setHasUserSized(true)
 		setSizes(newSizes)
 		if props.onLayoutChange then
 			props.onLayoutChange(props.id, newSizes)

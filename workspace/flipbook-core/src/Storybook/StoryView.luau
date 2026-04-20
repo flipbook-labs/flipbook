@@ -10,6 +10,7 @@ local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
@@ -43,6 +44,8 @@ local function StoryView(props: StoryViewProps)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
@@ -148,7 +151,7 @@ local function StoryView(props: StoryViewProps)
 						and e(ReactPanelLayout.Panel, {
 							id = "controls",
 							LayoutOrder = 2,
-							defaultSize = 30,
+							defaultSize = userSettings.controlsHeight,
 							sizeConstraints = NumberRange.new(
 								constants.CONTROLS_MIN_HEIGHT,
 								constants.CONTROLS_MAX_HEIGHT

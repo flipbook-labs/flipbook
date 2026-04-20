@@ -1,25 +1,38 @@
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
 local PanelGroupContext = require("@root/PanelGroupContext")
 local computeDraggedSizes = require("@root/computeDraggedSizes")
-local types = require("@root/types")
 
 local useEffect = React.useEffect
 local useRef = React.useRef
 local useState = React.useState
 
-local DEFAULT_HITBOX_SIZE = 8 -- px, interactive area
-local DEFAULT_VISUAL_SIZE = 1 -- px, visible line
-local DEFAULT_COLOR = Color3.fromRGB(60, 60, 60)
-local DEFAULT_HOVER_COLOR = Color3.fromRGB(0, 120, 212)
+export type PanelSeparatorProps = {
+	LayoutOrder: number,
+	beforeId: string,
+	afterId: string,
+	hitboxSize: number?,
+	visualSize: number?,
+	color: Color3?,
+	hoverColor: Color3?,
+	hoverIconX: string?,
+	hoverIconY: string?,
+}
 
-export type Props = types.PanelSeparatorProps
+local defaultProps = {
+	hitboxSize = 8,
+	visualSize = 1,
+	color = Color3.fromRGB(60, 60, 60),
+	hoverColor = Color3.fromRGB(0, 120, 212),
+	hoverIconX = "rbxasset://textures/StudioUIEditor/icon_resize2.png",
+	hoverIconY = "rbxasset://textures/StudioUIEditor/icon_resize4.png",
+}
 
-local function PanelSeparator(props: Props)
-	local hitboxSize = props.hitboxSize or DEFAULT_HITBOX_SIZE
-	local visualSize = props.visualSize or DEFAULT_VISUAL_SIZE
-	local color = props.color or DEFAULT_COLOR
-	local hoverColor = props.hoverColor or DEFAULT_HOVER_COLOR
+type Props = typeof(defaultProps) & PanelSeparatorProps
+
+local function PanelSeparator(panelSeparatorProps: PanelSeparatorProps)
+	local props: Props = Sift.Dictionary.join(defaultProps, panelSeparatorProps)
 
 	local context = PanelGroupContext.use()
 	local isHovered, setIsHovered = useState(false)
@@ -30,95 +43,82 @@ local function PanelSeparator(props: Props)
 		contextRef.current = context
 	end)
 
-	local dragDetectorRef = useRef(nil :: UIDragDetector?)
+	local lastPosRef = useRef(nil :: Vector2?)
+
+	local function applyDelta(deltaScalar: number)
+		if deltaScalar == 0 then
+			return
+		end
+
+		local ctx = contextRef.current
+		local isHorizontal = ctx.orientation == "horizontal"
+		local sizes = ctx.sizes
+		local constraints = ctx.panelConstraints
+		local availablePx = if isHorizontal
+			then ctx.groupAbsoluteSize.X - ctx.separatorsTotalSize
+			else ctx.groupAbsoluteSize.Y - ctx.separatorsTotalSize
+
+		local beforeOld = sizes[props.beforeId] or 0
+		local afterOld = sizes[props.afterId] or 0
+
+		local newBeforeRatio, newAfterRatio = computeDraggedSizes(
+			availablePx,
+			deltaScalar,
+			beforeOld,
+			afterOld,
+			constraints[props.beforeId],
+			constraints[props.afterId]
+		)
+
+		local newSizes = table.clone(sizes)
+		newSizes[props.beforeId] = newBeforeRatio
+		newSizes[props.afterId] = newAfterRatio
+		ctx.updateSizes(newSizes)
+	end
 
 	-- Register this separator's pixel footprint with the group
 	useEffect(function()
-		context.registerSeparator(hitboxSize)
+		context.registerSeparator(props.hitboxSize)
 		return function()
-			context.unregisterSeparator(hitboxSize)
+			context.unregisterSeparator(props.hitboxSize)
 		end
 	end, {}) -- intentionally empty: mount/unmount only
 
-	-- Wire up UIDragDetector events once after mount (ref is set by then)
-	useEffect(function(): (() -> ())?
-		local dd = dragDetectorRef.current
-		if not dd then
-			return nil
-		end
-
-		-- Prevent UIDragDetector from repositioning the frame —
-		-- the panel sizes drive layout, not the separator's position.
-		dd:SetDragStyleFunction(function()
-			return nil
-		end)
-
-		local lastPos: Vector2? = nil
-
-		local startConn = dd.DragStart:Connect(function(inputPosition: Vector2)
-			lastPos = inputPosition
-		end)
-
-		local continueConn = dd.DragContinue:Connect(function(inputPosition: Vector2)
-			if not lastPos then
-				return
-			end
-
-			local delta = inputPosition - lastPos
-			lastPos = inputPosition
-
-			local ctx = contextRef.current
-			local isHorizontal = ctx.orientation == "horizontal"
-			local deltaScalar = if isHorizontal then delta.X else delta.Y
-
-			if deltaScalar == 0 then
-				return
-			end
-
-			local sizes = ctx.sizes
-			local constraints = ctx.panelConstraints
-			local availablePx = if isHorizontal
-				then ctx.groupAbsoluteSize.X - ctx.separatorsTotalSize
-				else ctx.groupAbsoluteSize.Y - ctx.separatorsTotalSize
-
-			local newBeforeRatio, newAfterRatio = computeDraggedSizes(
-				availablePx,
-				deltaScalar,
-				sizes[props.beforeId] or 0,
-				sizes[props.afterId] or 0,
-				constraints[props.beforeId],
-				constraints[props.afterId]
-			)
-
-			local newSizes = table.clone(sizes)
-			newSizes[props.beforeId] = newBeforeRatio
-			newSizes[props.afterId] = newAfterRatio
-			ctx.updateSizes(newSizes)
-		end)
-
-		local endConn = dd.DragEnd:Connect(function()
-			lastPos = nil
-		end)
-
-		return function()
-			startConn:Disconnect()
-			continueConn:Disconnect()
-			endConn:Disconnect()
-		end
-	end, {}) -- intentionally empty: mount/unmount only; context accessed via ref
-
 	local isHorizontal = context.orientation == "horizontal"
 
-	local hitboxFrameSize = if isHorizontal then UDim2.new(0, hitboxSize, 1, 0) else UDim2.new(1, 0, 0, hitboxSize)
+	local hitboxFrameSize = if isHorizontal
+		then UDim2.new(0, props.hitboxSize, 1, 0)
+		else UDim2.new(1, 0, 0, props.hitboxSize)
+	local visualFrameSize = if isHorizontal
+		then UDim2.new(0, props.visualSize, 1, 0)
+		else UDim2.new(1, 0, 0, props.visualSize)
 
-	local visualFrameSize = if isHorizontal then UDim2.new(0, visualSize, 1, 0) else UDim2.new(1, 0, 0, visualSize)
+	local activeColor = if isHovered then props.hoverColor else props.color
 
-	local activeColor = if isHovered then hoverColor else color
+	local onDragStart = React.useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
+		lastPosRef.current = inputPosition
+	end, {})
+
+	local onDragContinue = React.useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
+		local lastPos = lastPosRef.current
+		if not lastPos then
+			return
+		end
+		lastPosRef.current = inputPosition
+		local delta = inputPosition - lastPos
+		local ctx = contextRef.current
+		applyDelta(if ctx.orientation == "horizontal" then delta.X else delta.Y)
+	end, {})
+
+	local onDragEnd = React.useCallback(function(_rbx: UIDragDetector, _inputPosition: Vector2)
+		lastPosRef.current = nil
+	end, {})
 
 	return React.createElement("Frame", {
 		LayoutOrder = props.LayoutOrder,
 		Size = hitboxFrameSize,
 		BackgroundTransparency = 1,
+		Active = true,
 		[React.Event.MouseEnter] = function()
 			setIsHovered(true)
 		end :: any,
@@ -135,8 +135,22 @@ local function PanelSeparator(props: Props)
 		}),
 
 		DragDetector = React.createElement("UIDragDetector", {
+			ActivatedCursorIcon = if isHorizontal then props.hoverIconX else props.hoverIconY,
+			CursorIcon = if isHorizontal then props.hoverIconX else props.hoverIconY,
 			DragStyle = Enum.UIDragDetectorDragStyle.Scriptable,
-			ref = dragDetectorRef,
+			[React.Event.DragContinue] = onDragContinue,
+			[React.Event.DragStart] = onDragStart,
+			[React.Event.DragEnd] = onDragEnd,
+			Enabled = true,
+			ref = function(rbx: UIDragDetector?)
+				if rbx then
+					-- Prevent UIDragDetector from repositioning the frame;
+					-- panel sizes drive layout, not separator position.
+					rbx:SetDragStyleFunction(function()
+						return UDim2.fromOffset(0, 0), 0
+					end)
+				end
+			end,
 		}),
 	})
 end

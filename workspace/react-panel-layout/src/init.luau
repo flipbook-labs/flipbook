@@ -1,13 +1,13 @@
 local Group = require("@root/Group")
 local Panel = require("@root/Panel")
-local types = require("@root/types")
+local Window = require("@root/Window")
 
-export type LayoutSizes = types.LayoutSizes
-export type PanelGroupContext = types.PanelGroupContext
-export type GroupProps = types.GroupProps
-export type PanelProps = types.PanelProps
+export type GroupProps = Group.GroupProps
+export type PanelProps = Panel.PanelProps
+export type WindowProps = Window.WindowProps
 
 return {
 	Group = Group,
 	Panel = Panel,
+	Window = Window,
 }

@@ -5,13 +5,19 @@ local PanelGroupContext = require("@root/PanelGroupContext")
 local PanelSeparator = require("@root/PanelSeparator")
 local types = require("@root/types")
 
-export type Props = types.GroupProps
+export type GroupProps = {
+	id: string,
+	orientation: "horizontal" | "vertical",
+	defaultLayout: types.LayoutSizes?,
+	onLayoutChange: ((id: string, sizes: types.LayoutSizes) -> ())?,
+	children: React.Node?,
+}
 
 local function isPanel(child: any): boolean
 	return typeof(child) == "table" and child.type == Panel
 end
 
-local function Group(props: Props)
+local function Group(props: GroupProps)
 	-- Collect Panel children and sort by LayoutOrder.
 	-- Using pairs() directly works for both array-style and dictionary-style children,
 	-- whereas React.Children.forEach only handles array-style (sequential integer key) tables.
