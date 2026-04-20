@@ -4,14 +4,10 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local ReactPanelLayout = require("@workspace/react-panel-layout/src")
-
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local constants = require("@root/constants")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -44,8 +40,6 @@ local function StoryView(props: StoryViewProps)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
@@ -131,39 +125,18 @@ local function StoryView(props: StoryViewProps)
 				LayoutOrder = 3,
 				tag = "shrink size-full",
 			}, {
-				ViewportAndControls = e(ReactPanelLayout.Group, {
-					id = "story-viewport",
-					orientation = "vertical",
-				}, {
-					Viewport = e(ReactPanelLayout.Panel, {
-						id = "viewport",
-						LayoutOrder = 1,
-						defaultSize = 70,
-					}, {
-						StoryPreview = e(StoryPreview, {
-							story = story,
-							controls = controls,
-							extraProps = extraProps,
-						}),
-					}),
-
-					Controls = next(controls) ~= nil
-						and e(ReactPanelLayout.Panel, {
-							id = "controls",
-							LayoutOrder = 2,
-							defaultSize = userSettings.controlsHeight,
-							sizeConstraints = NumberRange.new(
-								constants.CONTROLS_MIN_HEIGHT,
-								constants.CONTROLS_MAX_HEIGHT
-							),
-						}, {
-							StoryControls = e(StoryControls, {
-								controls = controls,
-								modifiedControls = modifiedControls,
-								setControl = setControl,
-							}),
-						}),
+				StoryPreview = React.createElement(StoryPreview, {
+					story = story,
+					controls = controls,
+					extraProps = extraProps,
 				}),
+			}),
+
+			Controls = next(controls) ~= nil and e(StoryControls, {
+				LayoutOrder = 4,
+				controls = controls,
+				modifiedControls = modifiedControls,
+				setControl = setControl,
 			}),
 		}),
 	})

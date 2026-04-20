@@ -3,9 +3,8 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local ReactPanelLayout = require("@workspace/react-panel-layout/src")
-
 local NavigationContext = require("@root/Navigation/NavigationContext")
+local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
@@ -15,22 +14,24 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+
+local useSignalState = ReactCharm.useSignalState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-local useSignalState = ReactCharm.useSignalState
-
 local defaultStorybook = createLoadedStorybook()
 
 local function App()
+	local userSettingsStore = useSignalState(UserSettingsStore.get)
+	local userSettings = useSignalState(userSettingsStore.getStorage)
+
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
 	local navigation = NavigationContext.use()
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
@@ -57,18 +58,18 @@ local function App()
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	return React.createElement(StoryActionsContext.Provider, {
-		story = storyModule,
+	return React.createElement(Foundation.View, {
+		tag = "size-full row align-y-center flex-between",
 	}, {
-		Root = React.createElement(ReactPanelLayout.Group, {
-			id = "root",
-			orientation = "horizontal",
+		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
+			story = storyModule,
 		}, {
-			Sidebar = React.createElement(ReactPanelLayout.Panel, {
-				id = "sidebar",
-				LayoutOrder = 1,
-				defaultSize = userSettings.sidebarWidth,
-				sizeConstraints = NumberRange.new(constants.SIDEBAR_MIN_WIDTH, constants.SIDEBAR_MAX_WIDTH),
+			SidebarWrapper = React.createElement(ResizablePanel, {
+				LayoutOrder = nextLayoutOrder(),
+				initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
+				dragHandles = { "Right" :: "Right" },
+				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
+				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
@@ -76,27 +77,22 @@ local function App()
 				}),
 			}),
 
-			Main = React.createElement(ReactPanelLayout.Panel, {
-				id = "main",
-				LayoutOrder = 2,
-				defaultSize = 80,
+			MainWrapper = React.createElement(Foundation.View, {
+				tag = "size-full col shrink",
+				LayoutOrder = nextLayoutOrder(),
 			}, {
-				MainContent = React.createElement(Foundation.View, {
-					tag = "size-full col",
-				}, {
-					Topbar = React.createElement(Topbar, {
-						LayoutOrder = 1,
-					}),
+				Topbar = React.createElement(Topbar, {
+					LayoutOrder = nextLayoutOrder(),
+				}),
 
-					ScreenWrapper = React.createElement(Foundation.View, {
-						LayoutOrder = 2,
-						tag = "size-full shrink",
-					}, {
-						Screen = React.createElement(Screen, {
-							story = storyModule,
-							storybook = storybook,
-							unavailableStorybook = unavailableStorybook,
-						}),
+				ScreenWrapper = React.createElement(Foundation.View, {
+					LayoutOrder = nextLayoutOrder(),
+					tag = "size-full shrink",
+				}, {
+					Screen = React.createElement(Screen, {
+						story = storyModule,
+						storybook = storybook,
+						unavailableStorybook = unavailableStorybook,
 					}),
 				}),
 			}),
