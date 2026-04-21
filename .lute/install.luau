@@ -34,7 +34,7 @@ do
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@bump-lute-to-1.0.1-nightly")
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
