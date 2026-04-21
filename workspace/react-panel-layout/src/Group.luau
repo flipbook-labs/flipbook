@@ -1,82 +1,70 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local Sift = require("@pkg/Sift")
 
-local Panel = require("@root/Panel")
-local PanelGroupContext = require("@root/PanelGroupContext")
-local PanelSeparator = require("@root/PanelSeparator")
-local types = require("@root/types")
+local Dragger = require("@root/Dragger")
+local GroupContext = require("@root/GroupContext")
 
 export type GroupProps = {
-	id: string,
-	orientation: "horizontal" | "vertical",
-	defaultLayout: types.LayoutSizes?,
-	onLayoutChange: ((id: string, sizes: types.LayoutSizes) -> ())?,
+	fillDirection: Enum.FillDirection?,
+	key: string?,
 	children: React.Node?,
 }
 
-local function isPanel(child: any): boolean
-	return typeof(child) == "table" and child.type == Panel
-end
+local defaultProps = {
+	fillDirection = Enum.FillDirection.Vertical,
+}
 
-local function Group(props: GroupProps)
-	-- Collect Panel children and sort by LayoutOrder.
-	-- Using pairs() directly works for both array-style and dictionary-style children,
-	-- whereas React.Children.forEach only handles array-style (sequential integer key) tables.
-	type PanelEntry = { child: any, layoutOrder: number, id: string }
-	local panels: { PanelEntry } = {}
-	local panelCount = 0
+local function Group(groupProps: GroupProps)
+	local props = Sift.Dictionary.join(defaultProps, groupProps)
 
-	if props.children ~= nil then
-		for _, child in pairs(props.children :: any) do
-			if isPanel(child) then
-				panelCount += 1
-				table.insert(panels, {
-					child = child,
-					layoutOrder = (child :: any).props.LayoutOrder or 0,
-					id = (child :: any).props.id or tostring(panelCount),
-				})
-			end
-		end
-	end
+	-- TODO: Loop over the children, then calculate where a divider should be.
+	-- Use flex layouts for as much as possible.
 
-	table.sort(panels, function(a, b)
-		return a.layoutOrder < b.layoutOrder
-	end)
+	local children: { [string]: React.Node } = {}
 
-	-- Build interleaved panel + separator children with contiguous LayoutOrders
-	local children = {}
-	for i, entry in ipairs(panels) do
-		local panelLayoutOrder = i * 2 - 1 -- 1, 3, 5, ...
-		children["p" .. i] = React.cloneElement(
-			entry.child :: React.ReactElement<any, any>,
-			{ id = entry.id, LayoutOrder = panelLayoutOrder }
-		)
+	-- Add a drag handle to the right of a panel if it has another panel after
+	-- it.
+	local childrenArray = React.Children.toArray(props.children)
+	for index, child in childrenArray do
+		if type(child) == "table" then
+			local nextChild = select(index + 1, childrenArray)
 
-		if panels[i + 1] ~= nil then
-			local sepLayoutOrder = i * 2 -- 2, 4, 6, ...
-			children["s" .. i] = React.createElement(PanelSeparator, {
-				LayoutOrder = sepLayoutOrder,
-				beforeId = entry.id,
-				afterId = panels[i + 1].id,
+			children[tostring(child)] = React.cloneElement(child, {
+				hasDragHandle = nextChild ~= nil,
+				LayoutOrder = index,
 			})
 		end
 	end
 
-	-- Pass non-Panel children through unchanged so they render inside the context.
-	-- This allows things like context-reading components in tests to work correctly.
-	if props.children ~= nil then
-		for key, child in pairs(props.children :: any) do
-			if not isPanel(child) then
-				children[key] = child
-			end
-		end
-	end
+	-- for i, entry in panels do
+	-- 	local panelOrder = i * 2 - 1
+	-- 	children["p" .. i] = React.cloneElement(entry.child, {
+	-- 		id = entry.id,
+	-- 		LayoutOrder = panelOrder,
+	-- 	})
 
-	return React.createElement(PanelGroupContext.Provider, {
-		id = props.id,
-		orientation = props.orientation,
-		defaultLayout = props.defaultLayout,
-		onLayoutChange = props.onLayoutChange,
-	}, children :: any)
+	-- 	if panels[i + 1] ~= nil then
+	-- 		local sepLayoutOrder = i * 2
+	-- 		children["s" .. i] = React.createElement(Dragger, {
+	-- 			LayoutOrder = sepLayoutOrder,
+	-- 			panelA = entry.id,
+	-- 			panelB = panels[i + 1].id,
+	-- 		})
+	-- 	end
+	-- end
+
+	return React.createElement(GroupContext.Provider, {
+		fillDirection = props.fillDirection,
+	}, {
+		Group = React.createElement(Foundation.View, {
+			tag = {
+				["row"] = props.fillDirection == Enum.FillDirection.Horizontal,
+				["col"] = props.fillDirection == Enum.FillDirection.Vertical,
+				["size-full"] = true,
+			},
+		}, children),
+	})
 end
 
 return Group
