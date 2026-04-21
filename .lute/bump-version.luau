@@ -1,4 +1,4 @@
-local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local cli = require("@luaupkg/lute@v1.0.1-nightly.20260420/batteries/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
 

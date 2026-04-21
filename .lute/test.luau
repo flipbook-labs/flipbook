@@ -1,5 +1,5 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@bump-lute-to-1.0.1-nightly")
-local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local cli = require("@luaupkg/lute@v1.0.1-nightly.20260420/batteries/cli")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
