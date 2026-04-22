@@ -1,3 +1,4 @@
+local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local Group = require("@root/Group")
@@ -11,31 +12,57 @@ return {
 			fillDirection = Enum.FillDirection.Horizontal,
 		}, {
 			Sidebar = React.createElement(Panel, {
-				id = "sidebar",
+				LayoutOrder = 1,
 				sizeConstraint = {
 					MinSize = Vector2.new(150, 0),
-					MaxSize = Vector2.new(300, math.huge),
+					MaxSize = Vector2.new(400, math.huge),
 				},
+			}, {
+				Searchbar = React.createElement(Foundation.SearchInput, {
+					size = Foundation.Enums.InputSize.Small,
+					width = UDim.new(0, 300),
+					text = "",
+					shape = Foundation.Enums.SearchInputShape.Rounded,
+					onChanged = function() end,
+				}),
 			}),
 
 			Primary = React.createElement(Group, {
-				id = "primary",
+				fillDirection = Enum.FillDirection.Vertical,
+				LayoutOrder = 2,
 			}, {
 				Topbar = React.createElement(Panel, {
-					id = "topbar",
+					LayoutOrder = 1,
+				}, {
+					Icon = React.createElement(Foundation.Icon, {
+						name = Foundation.Enums.IconName.Tilt,
+					}),
 				}),
 
 				StoryViewport = React.createElement(Panel, {
-					id = "story-viewport",
+					LayoutOrder = 2,
+				}, {
+					Icon = React.createElement(Foundation.Icon, {
+						name = Foundation.Enums.IconName.BookOpen,
+					}),
 				}),
 
 				StoryControls = React.createElement(Panel, {
-					id = "story-controls",
+					LayoutOrder = 3,
+				}, {
+					Icon = React.createElement(Foundation.Icon, {
+						name = Foundation.Enums.IconName.Gear,
+					}),
 				}),
 			}),
 
 			Logs = React.createElement(Panel, {
-				id = "logs",
+				LayoutOrder = 3,
+			}, {
+				Text = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-body-medium content-default",
+					Text = "Logs go here",
+				}),
 			}),
 		})
 	end,

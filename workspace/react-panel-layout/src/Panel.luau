@@ -2,8 +2,8 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local GroupContext = require("./GroupContext")
 local Dragger = require("./Dragger")
+local GroupContext = require("./GroupContext")
 
 local useCallback = React.useCallback
 
@@ -24,7 +24,6 @@ local defaultProps = {
 		MinSize = Vector2.new(200, 100),
 		MaxSize = Vector2.new(800, math.huge),
 	},
-	hasDragHandle = false,
 }
 
 type Props = typeof(defaultProps) & PanelProps
@@ -34,17 +33,48 @@ local function Panel(panelProps: PanelProps)
 
 	local groupContext = GroupContext.use()
 	local isHorizontal = groupContext.fillDirection == Enum.FillDirection.Horizontal
+	local dragDelta, setDragDelta = React.useBinding(Vector2.new(0, 0))
+
+	local onDrag = useCallback(function(delta: Vector2)
+		setDragDelta(delta)
+	end, {})
+
+	local minSize = props.sizeConstraint.MinSize
+	local maxSize = props.sizeConstraint.MaxSize
 
 	return React.createElement(Foundation.View, {
-		tag = "size-full grow",
+		tag = {
+			["row"] = isHorizontal,
+			["col"] = not isHorizontal,
+			["auto-xy"] = true,
+		},
 		LayoutOrder = props.LayoutOrder,
-		sizeConstraint = props.sizeConstraint,
 	}, {
-		Content = React.createElement(Foundation.View, {
-			tag = "auto-xy",
+		Panel = React.createElement(Foundation.View, {
+			tag = {
+				["row"] = isHorizontal,
+				["col"] = not isHorizontal,
+				["size-full padding-medium bg-surface-300"] = true,
+			},
+			sizeConstraint = {
+				MinSize = dragDelta:map(function(delta: Vector2)
+					return if isHorizontal
+						then Vector2.new(math.min(minSize.X, minSize.X + delta.X), 0)
+						else Vector2.new(0, math.min(minSize.Y, minSize.Y + delta.Y))
+				end),
+				MaxSize = dragDelta:map(function(delta: Vector2)
+					return if isHorizontal
+						then Vector2.new(math.max(maxSize.X, maxSize.X + delta.X), math.huge)
+						else Vector2.new(math.huge, math.max(maxSize.Y, maxSize.Y + delta.Y))
+				end),
+			},
+			LayoutOrder = 1,
 		}, props.children),
 
-		DragHandle = if props.hasDragHandle then React.createElement(Dragger, {}) else nil,
+		DragHandle = React.createElement(Dragger, {
+			LayoutOrder = 2,
+			onDrag = onDrag,
+		}),
 	})
 end
 

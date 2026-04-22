@@ -1,4 +1,5 @@
 local Foundation = require("@rbxpkg/Foundation")
+local GroupContext = require("./GroupContext")
 local React = require("@pkg/React")
 
 local useRef = React.useRef
@@ -6,37 +7,24 @@ local useState = React.useState
 local useCallback = React.useCallback
 local useTokens = Foundation.Hooks.useTokens
 
-local HITBOX_SIZE = 8
-local VISUAL_SIZE = 2
-local COLOR = Color3.fromRGB(60, 60, 60)
-local HOVER_COLOR = Color3.fromRGB(124, 0, 212)
+local HITBOX_SIZE = 9
+local VISUAL_SIZE = 3
 local HOVER_ICON_X = "rbxasset://textures/StudioUIEditor/icon_resize2.png"
 local HOVER_ICON_Y = "rbxasset://textures/StudioUIEditor/icon_resize4.png"
 
 export type PanelSeparatorProps = {
-	panelA: string,
-	panelB: string,
-	LayoutOrder: number,
+	onDrag: (delta: Vector2) -> (),
+	LayoutOrder: number?,
 }
 
 local function PanelSeparator(props: PanelSeparatorProps)
+	local groupContext = GroupContext.use()
+	local isHorizontal = if groupContext then groupContext.fillDirection == Enum.FillDirection.Horizontal else false
+
 	local isHovered, setIsHovered = useState(false)
-	local ref = useRef(nil :: UIDragDetector?)
 	local isDragging, setIsDragging = useState(false)
-	local lastDragPosition = useRef(nil :: Vector2?)
+	local initialDragPosition = useRef(nil :: Vector2?)
 	local tokens = useTokens()
-
-	local isHorizontal = false
-
-	local activeColor = if isHovered then HOVER_COLOR else COLOR
-
-	local onHover = React.useCallback(function()
-		setIsHovered(true)
-	end, {})
-
-	local onUnhover = React.useCallback(function()
-		setIsHovered(false)
-	end, {})
 
 	local onStateChanged = useCallback(
 		function(newState)
@@ -45,26 +33,34 @@ local function PanelSeparator(props: PanelSeparatorProps)
 		{}
 	)
 
-	local onDragContinue = useCallback(function(rbx: UIDragDetector, inputPosition: Vector2)
-		-- TODO
+	local onDragStart = useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
+		setIsDragging(true)
+		initialDragPosition.current = inputPosition
 	end, {})
 
-	local onDragStart = useCallback(function(_rbx: UIDragDetector, _inputPosition: Vector2)
-		setIsDragging(true)
-	end, {})
+	local onDragContinue = useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
+		if initialDragPosition.current then
+			local delta = inputPosition - initialDragPosition.current
+			props.onDrag(delta)
+		end
+	end, { props.onDrag })
 
 	local onDragEnd = useCallback(function(_rbx: UIDragDetector, _inputPosition: Vector2)
 		setIsDragging(false)
+		initialDragPosition.current = nil
 	end, {})
 
 	return React.createElement(Foundation.View, {
+		-- tag = "col align-x-center align-y-center",
 		LayoutOrder = props.LayoutOrder,
 		Size = if isHorizontal then UDim2.new(0, HITBOX_SIZE, 1, 0) else UDim2.new(1, 0, 0, HITBOX_SIZE),
 		onStateChanged = onStateChanged,
 	}, {
 		Visual = React.createElement(Foundation.View, {
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.fromScale(0.5, 0.5),
+			tag = {
+				["bg-system-emphasis"] = isHovered or isDragging,
+				["bg-surface-0"] = not (isHovered or isDragging),
+			},
 			Size = if isHorizontal then UDim2.new(0, VISUAL_SIZE, 1, 0) else UDim2.new(1, 0, 0, VISUAL_SIZE),
 			backgroundStyle = if isHovered or isDragging then tokens.Color.Extended.Blue.Blue_400 else nil,
 		}),
@@ -76,8 +72,6 @@ local function PanelSeparator(props: PanelSeparatorProps)
 			[React.Event.DragContinue] = onDragContinue,
 			[React.Event.DragStart] = onDragStart,
 			[React.Event.DragEnd] = onDragEnd,
-			Enabled = true,
-			ref = ref,
 		}),
 	})
 end
