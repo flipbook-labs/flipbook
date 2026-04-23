@@ -1,1 +1,2 @@
 **/*.lock linguist-generated=true
+**/*.lock.luau linguist-generated=true
