@@ -103,6 +103,31 @@ local theme: DropdownSetting = {
 	},
 }
 
+local locale: DropdownSetting = {
+	name = "locale",
+	group = SettingGroup.UI,
+	displayName = "Locale",
+	description = "Select the locale to use for Flipbook's UI. By default, Flipbook will use the same locale as Studio",
+	settingType = SettingType.Dropdown,
+	choices = {
+		{
+			name = "system",
+			displayName = "System",
+			description = "Match the locale selected for Studio",
+		},
+		{
+			name = "en",
+			displayName = "English",
+			description = "Force the locale to English",
+		},
+		{
+			name = "es",
+			displayName = "Spanish",
+			description = "Force the locale to Spanish",
+		},
+	},
+}
+
 local sidebarWidth: NumberSetting = {
 	group = SettingGroup.UI,
 	name = "sidebarWidth",
@@ -138,6 +163,7 @@ local settings = {
 	theme = theme,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,
+	locale = locale,
 	collectAnonymousUsageData = collectAnonymousUsageData,
 }
 
