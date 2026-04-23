@@ -1,0 +1,28 @@
+# Flipbook product wishlist
+
+filters:
+  and:
+    - note["base"] == link("Flipbook product wishlist.base")
+properties:
+  file.name:
+    displayName: Feature
+  Details:
+    displayName: Details
+  Estimate (Days):
+    displayName: Estimate (Days)
+  Ticket:
+    displayName: Ticket
+  STATUS:
+    displayName: STATUS
+  Priority:
+    displayName: Priority
+views:
+  - type: table
+    name: Table View
+    order:
+      - file.name
+      - Details
+      - Estimate (Days)
+      - Ticket
+      - STATUS
+      - Priority

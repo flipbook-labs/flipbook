@@ -1,3 +1,8 @@
+---
+aliases: [Creating Releases]
+linter-yaml-title-alias: Creating Releases
+---
+
 # Creating Releases
 
 Once ready to cut a new release, bump the version in our manifest files and create a PR for it.
@@ -14,13 +19,12 @@ From there, our GitHub Actions will handle building Flipbook to an rbxm, attachi
 
 Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after publishing the release to check the status of the deployment.
 
-## Logging in to Wally registry in CI
+## Logging in to Wally Registry in CI
 
 In the event that publishing our Wally packages starts to fail this section shows how to update the login token.
 
-:::warning
-Your GitHub account must have permission to publish to the flipbook-labs org. To add a new account, update [owners.json](https://github.com/UpliftGames/wally-index/blob/main/flipbook-labs/owners.json) with your GitHub user ID.
-:::
+> [!warning]
+> Your GitHub account must have permission to publish to the flipbook-labs org. To add a new account, update [owners.json](https://github.com/UpliftGames/wally-index/blob/main/flipbook-labs/owners.json) with your GitHub user ID.
 
 First run `wally login` locally and authenticate with your GitHub account.
 
