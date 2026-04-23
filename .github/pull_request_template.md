@@ -1,7 +1,18 @@
-# Problem
+<!-- For non-production changes (documentation, scripts, tests, etc), add the
+	`nonprod` label to your pull request. -->
 
-Describe the problem you are trying to solve
+## Problem
 
-# Solution
+<!-- Describe the problem you are trying to solve. -->
 
-Describe the solution you came up with
+## Solution
+
+<!-- Describe how the solution was derived. -->
+
+## Testing
+
+<!-- Describe how this has been tested. -->
+
+# Release Notes
+
+<!-- User-facing content for the changelog. If empty, the PR title is used. -->
