@@ -3,9 +3,9 @@ return {
 		languagemode = "strict",
 		aliases = {
 			lune = "~/.lune/.typedefs/0.9.4/",
-			lint = "~/.lute/typedefs/1.0.0/lint",
-			lute = "~/.lute/typedefs/1.0.0/lute",
-			std = "~/.lute/typedefs/1.0.0/std",
+			lint = "~/.lute/typedefs/1.0.1/lint",
+			lute = "~/.lute/typedefs/1.0.1/lute",
+			std = "~/.lute/typedefs/1.0.1/std",
 
 			luaupkg = "LuauPackages",
 			pkg = "Packages",
