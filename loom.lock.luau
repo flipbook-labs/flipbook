@@ -9,6 +9,14 @@ return {
       sourceKind = "github",
       dependencies = {},
     },
+    ["dotenv@v0.1.0"] = {
+      installPath = "Packages/dotenv@v0.1.0",
+      name = "dotenv",
+      rev = "v0.1.0",
+      source = "https://github.com/erlcx/lute-dotenv",
+      sourceKind = "github",
+      dependencies = {},
+    },
     ["flipbook-batteries@v0.9.0"] = {
       installPath = "Packages/flipbook-batteries@v0.9.0",
       name = "flipbook-batteries",
@@ -28,5 +36,5 @@ return {
       dependencies = {},
     },
   },
-  packages = {"flipbook-batteries@v0.9.0", "lute@v1.0.0"},
+  packages = {"flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "lute@v1.0.0"},
 }
