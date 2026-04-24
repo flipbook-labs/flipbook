@@ -66,4 +66,4 @@ local function SelectControl(props: Props)
 	})
 end
 
-return SelectControl
+return React.memo(SelectControl)

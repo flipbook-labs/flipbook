@@ -44,4 +44,4 @@ local function CheckControl(props: Props)
 	}, checkboxes)
 end
 
-return CheckControl
+return React.memo(CheckControl)

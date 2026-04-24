@@ -21,4 +21,4 @@ local function NumberControl(props: Props)
 	})
 end
 
-return NumberControl
+return React.memo(NumberControl)

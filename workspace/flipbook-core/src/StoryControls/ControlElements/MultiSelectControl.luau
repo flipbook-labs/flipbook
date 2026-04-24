@@ -82,4 +82,4 @@ local function MultiSelectControl(props: Props)
 	})
 end
 
-return MultiSelectControl
+return React.memo(MultiSelectControl)

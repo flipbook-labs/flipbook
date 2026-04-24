@@ -99,4 +99,4 @@ local function ColorControl(props: Props)
 	})
 end
 
-return ColorControl
+return React.memo(ColorControl)

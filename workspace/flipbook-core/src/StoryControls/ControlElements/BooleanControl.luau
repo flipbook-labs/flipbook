@@ -24,4 +24,4 @@ local function BooleanControl(props: Props)
 	})
 end
 
-return BooleanControl
+return React.memo(BooleanControl)

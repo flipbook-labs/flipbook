@@ -22,4 +22,4 @@ local function DateControl(props: Props)
 	})
 end
 
-return DateControl
+return React.memo(DateControl)

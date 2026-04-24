@@ -38,4 +38,4 @@ local function RadioControl(props: Props)
 	}, children)
 end
 
-return RadioControl
+return React.memo(RadioControl)

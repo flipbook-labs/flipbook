@@ -32,4 +32,4 @@ local function SliderControl(props: Props)
 	})
 end
 
-return SliderControl
+return React.memo(SliderControl)

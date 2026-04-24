@@ -32,4 +32,4 @@ local function StringControl(props: Props)
 	})
 end
 
-return StringControl
+return React.memo(StringControl)
