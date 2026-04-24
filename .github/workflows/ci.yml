@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request_target:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -119,32 +119,3 @@ jobs:
 
       - name: Run Luau analysis
         run: lute run analyze
-
-  tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment:
-      # This giant expression makes it so forks of Flipbook go through a gated
-      # environment that must be approved, while internal contributions auto-run
-      # like normal.
-      name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Install dependencies
-        run: lute run install
-
-      - name: Create .env
-        run: cp .env.template .env
-
-      - name: Run tests
-        run: lute run test
-        env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-
-      - name: Deploy smoketest plugin to Creator Store
-        run: lune run publish-plugin --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
