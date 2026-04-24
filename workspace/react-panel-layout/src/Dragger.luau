@@ -12,12 +12,12 @@ local VISUAL_SIZE = 3
 local HOVER_ICON_X = "rbxasset://textures/StudioUIEditor/icon_resize2.png"
 local HOVER_ICON_Y = "rbxasset://textures/StudioUIEditor/icon_resize4.png"
 
-export type PanelSeparatorProps = {
+export type DraggerProps = {
 	onDrag: (delta: Vector2) -> (),
 	LayoutOrder: number?,
 }
 
-local function PanelSeparator(props: PanelSeparatorProps)
+local function Dragger(props: DraggerProps)
 	local groupContext = GroupContext.use()
 	local isHorizontal = if groupContext then groupContext.fillDirection == Enum.FillDirection.Horizontal else false
 
@@ -76,4 +76,4 @@ local function PanelSeparator(props: PanelSeparatorProps)
 	})
 end
 
-return PanelSeparator
+return React.memo(Dragger)

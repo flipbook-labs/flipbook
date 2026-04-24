@@ -7,23 +7,19 @@ local GroupContext = require("./GroupContext")
 
 local useCallback = React.useCallback
 
-type SizeConstraint = {
-	MinSize: Vector2,
-	MaxSize: Vector2,
-}
-
 export type PanelProps = {
 	LayoutOrder: number?,
-	sizeConstraint: SizeConstraint?,
+	minSize: Vector2?,
+	maxSize: Vector2?,
+	defaultSize: Vector2?,
 	hasDragHandle: boolean?,
 	children: React.Node?,
 }
 
 local defaultProps = {
-	sizeConstraint = {
-		MinSize = Vector2.new(200, 100),
-		MaxSize = Vector2.new(800, math.huge),
-	},
+	minSize = Vector2.new(100, 100),
+	maxSize = Vector2.new(math.huge, math.huge),
+	defaultSize = Vector2.new(200, 200),
 }
 
 type Props = typeof(defaultProps) & PanelProps
@@ -39,43 +35,39 @@ local function Panel(panelProps: PanelProps)
 		setDragDelta(delta)
 	end, {})
 
-	local minSize = props.sizeConstraint.MinSize
-	local maxSize = props.sizeConstraint.MaxSize
+	-- I think a panel's min size should be in order of...
+	-- 1. The min size specified as props
+	-- 3. The size of the panel's contents
 
-	return React.createElement(Foundation.View, {
+	return React.createElement(Foundation.ScrollView, {
 		tag = {
-			["row"] = isHorizontal,
-			["col"] = not isHorizontal,
-			["auto-xy"] = true,
+			["auto-xy fill padding-medium bg-surface-300"] = true,
+		},
+		-- NOTE: Remember that fillDirection needs to be what takes control
+		-- here. Otherwise panels will stack off screen. We have to make
+		-- sure whichever direction we're filling that we stay within
+		-- bounds, which flex should take care of. Maybe I should be using
+		-- GrowRatio
+		sizeConstraint = {
+			MinSize = props.minSize,
+			MaxSize = dragDelta:map(function(delta: Vector2)
+				return Vector2.new(
+					math.min(props.maxSize.X, props.maxSize.X + delta.X),
+					math.min(props.maxSize.Y, props.maxSize.Y + delta.Y)
+				)
+			end),
+		},
+		scroll = {
+			AutomaticSize = Enum.AutomaticSize.XY,
+			AutomaticCanvasSize = Enum.AutomaticSize.XY,
+			CanvasSize = UDim2.fromScale(0, 0),
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+		},
+		layout = {
+			FillDirection = groupContext.fillDirection,
 		},
 		LayoutOrder = props.LayoutOrder,
-	}, {
-		Panel = React.createElement(Foundation.View, {
-			tag = {
-				["row"] = isHorizontal,
-				["col"] = not isHorizontal,
-				["size-full padding-medium bg-surface-300"] = true,
-			},
-			sizeConstraint = {
-				MinSize = dragDelta:map(function(delta: Vector2)
-					return if isHorizontal
-						then Vector2.new(math.min(minSize.X, minSize.X + delta.X), 0)
-						else Vector2.new(0, math.min(minSize.Y, minSize.Y + delta.Y))
-				end),
-				MaxSize = dragDelta:map(function(delta: Vector2)
-					return if isHorizontal
-						then Vector2.new(math.max(maxSize.X, maxSize.X + delta.X), math.huge)
-						else Vector2.new(math.huge, math.max(maxSize.Y, maxSize.Y + delta.Y))
-				end),
-			},
-			LayoutOrder = 1,
-		}, props.children),
-
-		DragHandle = React.createElement(Dragger, {
-			LayoutOrder = 2,
-			onDrag = onDrag,
-		}),
-	})
+	}, props.children)
 end
 
-return Panel
+return React.memo(Panel)

@@ -11,24 +11,23 @@ return {
 		return React.createElement(Root, {
 			fillDirection = Enum.FillDirection.Horizontal,
 		}, {
-			Sidebar = React.createElement(Panel, {
+			Sidebar = React.createElement(Group, {
 				LayoutOrder = 1,
-				sizeConstraint = {
-					MinSize = Vector2.new(150, 0),
-					MaxSize = Vector2.new(400, math.huge),
-				},
 			}, {
-				Searchbar = React.createElement(Foundation.SearchInput, {
-					size = Foundation.Enums.InputSize.Small,
-					width = UDim.new(0, 300),
-					text = "",
-					shape = Foundation.Enums.SearchInputShape.Rounded,
-					onChanged = function() end,
+				Explorer = React.createElement(Panel, {
+					LayoutOrder = 1,
+				}, {
+					Searchbar = React.createElement(Foundation.SearchInput, {
+						size = Foundation.Enums.InputSize.Small,
+						width = UDim.new(0, 200),
+						text = "",
+						shape = Foundation.Enums.SearchInputShape.Rounded,
+						onChanged = function() end,
+					}),
 				}),
 			}),
 
 			Primary = React.createElement(Group, {
-				fillDirection = Enum.FillDirection.Vertical,
 				LayoutOrder = 2,
 			}, {
 				Topbar = React.createElement(Panel, {
@@ -59,9 +58,16 @@ return {
 			Logs = React.createElement(Panel, {
 				LayoutOrder = 3,
 			}, {
+				Title = React.createElement(Foundation.Text, {
+					tag = "auto-xy text-wrap text-align-x-left text-align-y-top text-heading-medium content-emphasis",
+					LayoutOrder = 1,
+					Text = "Logs",
+				}),
+
 				Text = React.createElement(Foundation.Text, {
-					tag = "auto-xy text-body-medium content-default",
-					Text = "Logs go here",
+					tag = "auto-xy text-wrap text-align-x-left text-align-y-top text-body-medium content-default",
+					LayoutOrder = 2,
+					Text = ("Line\n"):rep(40),
 				}),
 			}),
 		})
