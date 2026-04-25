@@ -10,7 +10,7 @@ export type RootProps = {
 
 local function Root(props: RootProps)
 	return React.createElement(Group, {
-		id = "<root>",
+		size = UDim2.fromScale(1, 1),
 		fillDirection = props.fillDirection,
 		LayoutOrder = props.LayoutOrder,
 	}, props.children)

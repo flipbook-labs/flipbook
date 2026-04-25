@@ -24,15 +24,11 @@ local function isPanelElement(element: any)
 	return typeof(element) == "table" and element.type == Panel
 end
 
-local function getPanelId(key: string | number, element: any): string
+local function getPanelId(key: string | number): string
 	if typeof(key) == "string" then
 		return key
 	end
-	local id = element.props and element.props.id
-	if typeof(id) == "string" then
-		return id
-	end
-	error(`Panel at child index {tostring(key)} must have a string React key or a string 'id' prop`)
+	error(`Panel at child index {tostring(key)} must have a string React key`)
 end
 
 local function normalizeChildren(children: any)
@@ -60,14 +56,6 @@ local function Group(groupProps: GroupProps)
 	local childIdsRef = useRef({} :: { string })
 
 	sizesRef.current = sizes
-
-	local registerPanel = useCallback(function(id: string, constraints: GroupContext.PanelConstraints)
-		constraintsRef.current[id] = constraints
-	end, {} :: { unknown })
-
-	local unregisterPanel = useCallback(function(id: string)
-		constraintsRef.current[id] = nil
-	end, {} :: { unknown })
 
 	local onDragStart = useCallback(function(_leftId: string, _rightId: string)
 		local current = sizesRef.current
@@ -154,22 +142,32 @@ local function Group(groupProps: GroupProps)
 	local result: { [string | number]: any } = {}
 	local newLayoutOrder = 0
 	local childIds: { string } = {}
+	local newConstraints: { [string]: GroupContext.PanelConstraints } = {}
 
-	for i, entry in ipairs(allChildren) do
+	for i, entry in allChildren do
 		newLayoutOrder += 1
 
-		local childId: string = if entry.isPanel then getPanelId(entry.key, entry.element) else tostring(entry.key)
+		local childId: string = if entry.isPanel then getPanelId(entry.key) else tostring(entry.key)
 		table.insert(childIds, childId)
 
 		if entry.isPanel then
+			local panelProps = entry.element.props
+			newConstraints[childId] = {
+				minSize = panelProps.minSize or Vector2.new(100, 100),
+				maxSize = panelProps.maxSize or Vector2.new(math.huge, math.huge),
+			}
+			local defaultSize: Vector2 = panelProps.defaultSize or Vector2.new(DEFAULT_SIZE, DEFAULT_SIZE)
+			local defaultPixels = if isHorizontal then defaultSize.X else defaultSize.Y
+			local pixelSize = sizesRef.current[childId] or defaultPixels
+			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
 			result[entry.key] = React.cloneElement(entry.element, {
-				id = childId,
 				LayoutOrder = newLayoutOrder,
+				size = childSize,
 			})
 		else
 			local pixelSize = sizesRef.current[childId] or DEFAULT_SIZE
 			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
-			result[entry.key] = React.cloneElement(entry.element :: any, {
+			result[entry.key] = React.cloneElement(entry.element, {
 				LayoutOrder = newLayoutOrder,
 				size = childSize,
 			})
@@ -178,9 +176,7 @@ local function Group(groupProps: GroupProps)
 		local nextEntry = allChildren[i + 1]
 		if nextEntry then
 			newLayoutOrder += 1
-			local rightId: string = if nextEntry.isPanel
-				then getPanelId(nextEntry.key, nextEntry.element)
-				else tostring(nextEntry.key)
+			local rightId: string = if nextEntry.isPanel then getPanelId(nextEntry.key) else tostring(nextEntry.key)
 			local separatorKey = "Separator_" .. childId .. "_" .. rightId
 
 			result[separatorKey] = React.createElement(Dragger, {
@@ -188,7 +184,7 @@ local function Group(groupProps: GroupProps)
 				onDragStart = function()
 					onDragStart(childId, rightId)
 				end,
-				onDrag = function(delta: Vector2)
+				onDrag = function(delta)
 					onDragContinue(childId, rightId, delta)
 				end,
 				onDragEnd = onDragEnd,
@@ -197,6 +193,7 @@ local function Group(groupProps: GroupProps)
 	end
 
 	childIdsRef.current = childIds
+	constraintsRef.current = newConstraints
 
 	return React.createElement(
 		Foundation.View,
@@ -241,9 +238,6 @@ local function Group(groupProps: GroupProps)
 		},
 		React.createElement(GroupContext.Provider, {
 			fillDirection = fillDirection,
-			sizes = sizes,
-			registerPanel = registerPanel,
-			unregisterPanel = unregisterPanel,
 		}, result)
 	)
 end

@@ -3,8 +3,6 @@ local React = require("@pkg/React")
 local useContext = React.useContext
 local useMemo = React.useMemo
 
-type PanelId = string
-
 export type PanelConstraints = {
 	minSize: Vector2,
 	maxSize: Vector2,
@@ -12,45 +10,25 @@ export type PanelConstraints = {
 
 export type GroupContext = {
 	fillDirection: Enum.FillDirection,
-	sizes: { [string]: number },
-	registerPanel: (id: PanelId, constraints: PanelConstraints) -> (),
-	unregisterPanel: (id: PanelId) -> (),
 }
 
 export type GroupProviderProps = {
 	fillDirection: Enum.FillDirection,
-	sizes: { [string]: number },
-	registerPanel: (id: PanelId, constraints: PanelConstraints) -> (),
-	unregisterPanel: (id: PanelId) -> (),
 	children: React.Node?,
 }
 
 local defaultValue: GroupContext = {
 	fillDirection = Enum.FillDirection.Vertical,
-	sizes = {},
-	registerPanel = function(_id: PanelId, _constraints: PanelConstraints) end,
-	unregisterPanel = function(_id: PanelId) end,
 }
 
 local Context = React.createContext(defaultValue)
 
 local function GroupProvider(props: GroupProviderProps)
-	local context = useMemo(
-		function()
-			return {
-				fillDirection = props.fillDirection,
-				sizes = props.sizes,
-				registerPanel = props.registerPanel,
-				unregisterPanel = props.unregisterPanel,
-			}
-		end,
-		{
-			props.fillDirection,
-			props.sizes,
-			props.registerPanel,
-			props.unregisterPanel,
-		} :: { unknown }
-	)
+	local context = useMemo(function()
+		return {
+			fillDirection = props.fillDirection,
+		}
+	end, { props.fillDirection } :: { unknown })
 
 	return React.createElement(Context.Provider, {
 		value = context,
