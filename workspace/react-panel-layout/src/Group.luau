@@ -52,30 +52,17 @@ local function Group(groupProps: GroupProps)
 	local sizesRef = useRef({} :: { [string]: number })
 	local sizesAtDragStart = useRef(nil :: { [string]: number }?)
 	local constraintsRef = useRef({} :: { [string]: GroupContext.PanelConstraints })
-	local absoluteSizeRef = useRef(Vector2.zero)
-	local childIdsRef = useRef({} :: { string })
+	local defaultSizesRef = useRef({} :: { [string]: number })
+	local flexPanelsRef = useRef({} :: { [string]: boolean })
 
 	sizesRef.current = sizes
 
-	local onDragStart = useCallback(function(_leftId: string, _rightId: string)
-		local current = sizesRef.current
-		local initialized = Sift.Dictionary.join({}, current)
-		local anyNew = false
-		local ids = childIdsRef.current
-		local groupPixels = if isHorizontal then absoluteSizeRef.current.X else absoluteSizeRef.current.Y
-		local defaultPixels = if #ids > 0 then groupPixels / #ids else DEFAULT_SIZE
-		for _, id in ipairs(ids) do
-			if initialized[id] == nil then
-				initialized[id] = defaultPixels
-				anyNew = true
-			end
-		end
-		if anyNew then
-			sizesRef.current = initialized
-			setSizes(initialized)
-		end
-		sizesAtDragStart.current = Sift.Dictionary.join({}, sizesRef.current)
-	end, { isHorizontal } :: { unknown })
+	local onDragStart = useCallback(function(leftId: string, rightId: string)
+		sizesAtDragStart.current = {
+			[leftId] = sizesRef.current[leftId] or defaultSizesRef.current[leftId] or DEFAULT_SIZE,
+			[rightId] = sizesRef.current[rightId] or defaultSizesRef.current[rightId] or DEFAULT_SIZE,
+		}
+	end, {} :: { unknown })
 
 	local onDragContinue = useCallback(function(leftId: string, rightId: string, totalDelta: Vector2)
 		local snapshot = sizesAtDragStart.current
@@ -84,9 +71,6 @@ local function Group(groupProps: GroupProps)
 		end
 
 		local delta = if isHorizontal then totalDelta.X else totalDelta.Y
-
-		local newLeft = (snapshot[leftId] or DEFAULT_SIZE) + delta
-		local newRight = (snapshot[rightId] or DEFAULT_SIZE) - delta
 
 		local function clampToConstraint(pixels: number, panelId: string)
 			local c = constraintsRef.current[panelId]
@@ -98,13 +82,14 @@ local function Group(groupProps: GroupProps)
 			return math.clamp(pixels, mn, mx)
 		end
 
-		newLeft = clampToConstraint(newLeft, leftId)
-		newRight = clampToConstraint(newRight, rightId)
+		local newSizes = Sift.Dictionary.join(sizesRef.current, {})
+		if not flexPanelsRef.current[leftId] then
+			newSizes[leftId] = clampToConstraint((snapshot[leftId] or DEFAULT_SIZE) + delta, leftId)
+		end
+		if not flexPanelsRef.current[rightId] then
+			newSizes[rightId] = clampToConstraint((snapshot[rightId] or DEFAULT_SIZE) - delta, rightId)
+		end
 
-		local newSizes = Sift.Dictionary.join(sizesRef.current, {
-			[leftId] = newLeft,
-			[rightId] = newRight,
-		})
 		sizesRef.current = newSizes
 		setSizes(newSizes)
 	end, { isHorizontal } :: { unknown })
@@ -141,33 +126,33 @@ local function Group(groupProps: GroupProps)
 
 	local result: { [string | number]: any } = {}
 	local newLayoutOrder = 0
-	local childIds: { string } = {}
 	local newConstraints: { [string]: GroupContext.PanelConstraints } = {}
+	local newDefaultSizes: { [string]: number } = {}
+	local newFlexPanels: { [string]: boolean } = {}
 
 	for i, entry in allChildren do
 		newLayoutOrder += 1
 
 		local childId: string = if entry.isPanel then getPanelId(entry.key) else tostring(entry.key)
-		table.insert(childIds, childId)
+		local childProps = entry.element.props
+		local defaultSize: Vector2 = childProps.defaultSize or Vector2.new(DEFAULT_SIZE, DEFAULT_SIZE)
+
+		newDefaultSizes[childId] = if isHorizontal then defaultSize.X else defaultSize.Y
+		newFlexPanels[childId] = childProps.flexMode ~= nil
 
 		if entry.isPanel then
-			local panelProps = entry.element.props
 			newConstraints[childId] = {
-				minSize = panelProps.minSize or Vector2.new(100, 100),
-				maxSize = panelProps.maxSize or Vector2.new(math.huge, math.huge),
+				minSize = childProps.minSize or Vector2.new(100, 100),
+				maxSize = childProps.maxSize or Vector2.new(math.huge, math.huge),
 			}
-			local defaultSize: Vector2 = panelProps.defaultSize or Vector2.new(DEFAULT_SIZE, DEFAULT_SIZE)
-			local defaultPixels = if isHorizontal then defaultSize.X else defaultSize.Y
-			local pixelSize = sizesRef.current[childId] or defaultPixels
-			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
 			result[entry.key] = React.cloneElement(entry.element, {
+				id = childId,
 				LayoutOrder = newLayoutOrder,
-				size = childSize,
 			})
 		else
-			local pixelSize = sizesRef.current[childId] or DEFAULT_SIZE
+			local pixelSize = sizesRef.current[childId] or newDefaultSizes[childId]
 			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
-			result[entry.key] = React.cloneElement(entry.element, {
+			result[entry.key] = React.cloneElement(entry.element :: any, {
 				LayoutOrder = newLayoutOrder,
 				size = childSize,
 			})
@@ -184,7 +169,7 @@ local function Group(groupProps: GroupProps)
 				onDragStart = function()
 					onDragStart(childId, rightId)
 				end,
-				onDrag = function(delta)
+				onDrag = function(delta: Vector2)
 					onDragContinue(childId, rightId, delta)
 				end,
 				onDragEnd = onDragEnd,
@@ -192,29 +177,13 @@ local function Group(groupProps: GroupProps)
 		end
 	end
 
-	childIdsRef.current = childIds
 	constraintsRef.current = newConstraints
+	defaultSizesRef.current = newDefaultSizes
+	flexPanelsRef.current = newFlexPanels
 
 	return React.createElement(
 		Foundation.View,
 		{
-			onAbsoluteSizeChanged = function(rbx: GuiObject)
-				local newAbsoluteSize = rbx.AbsoluteSize
-				absoluteSizeRef.current = newAbsoluteSize
-				if next(sizesRef.current) == nil then
-					local ids = childIdsRef.current
-					if #ids > 0 then
-						local groupPixels = if isHorizontal then newAbsoluteSize.X else newAbsoluteSize.Y
-						local perChild = groupPixels / #ids
-						local initialized = {}
-						for _, id in ipairs(ids) do
-							initialized[id] = perChild
-						end
-						sizesRef.current = initialized
-						setSizes(initialized)
-					end
-				end
-			end,
 			tag = {
 				["row"] = isHorizontal,
 				["col"] = not isHorizontal,
@@ -238,6 +207,7 @@ local function Group(groupProps: GroupProps)
 		},
 		React.createElement(GroupContext.Provider, {
 			fillDirection = fillDirection,
+			sizes = sizes,
 		}, result)
 	)
 end
