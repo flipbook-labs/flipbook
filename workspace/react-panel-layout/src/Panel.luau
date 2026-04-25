@@ -2,42 +2,53 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local GroupContext = require("./GroupContext")
+local GroupContext = require("@root/GroupContext")
 
+local useEffect = React.useEffect
 export type PanelProps = {
+	id: string,
 	flexMode: Enum.UIFlexMode?,
-	minSize: Vector2?,
-	maxSize: Vector2?,
-	defaultSize: Vector2?,
+	defaultSize: number?,
+	minSize: number?,
+	maxSize: number?,
 	children: React.Node?,
 	LayoutOrder: number?,
 }
 
 local defaultProps = {
-	minSize = Vector2.new(200, 200),
-	maxSize = Vector2.new(math.huge, math.huge),
-	defaultSize = Vector2.new(200, 200),
+	defaultSize = 300,
+	minSize = 200,
+	maxSize = math.huge,
+	flexMode = Enum.UIFlexMode.None,
 }
 
-type InternalProps = { id: string } & PanelProps
-type Props = typeof(defaultProps) & InternalProps
+type Props = typeof(defaultProps) & PanelProps
 
-local function Panel(panelProps: InternalProps)
+local function Panel(panelProps: PanelProps)
 	local props: Props = Sift.Dictionary.join(defaultProps, panelProps)
 
 	local groupContext = GroupContext.use()
 	local isHorizontal = groupContext.fillDirection == Enum.FillDirection.Horizontal
+	local size = groupContext.getPanelSize(props.id)
 
-	local lastSize = groupContext.sizes[props.id]
-	local pixelSize = if lastSize then lastSize else (if isHorizontal then props.defaultSize.X else props.defaultSize.Y)
-	local size = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
+	useEffect(function()
+		groupContext.registerPanel(props.id, {
+			defaultSize = props.defaultSize,
+			minSize = props.minSize,
+			maxSize = props.maxSize,
+			flexMode = props.flexMode,
+		})
+
+		return function()
+			groupContext.unregisterPanel(props.id)
+		end
+	end, { props.id, props.defaultSize, props.minSize, props.maxSize, props.flexMode } :: { unknown })
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "padding-medium bg-surface-300",
-		Size = size,
+		tag = "auto-xy padding-medium bg-surface-300",
 		sizeConstraint = {
-			MinSize = props.minSize,
-			MaxSize = props.maxSize,
+			MinSize = Vector2.new(props.minSize, props.minSize),
+			MaxSize = Vector2.new(props.maxSize, props.maxSize),
 		},
 		flexItem = {
 			FlexMode = props.flexMode,
@@ -50,6 +61,11 @@ local function Panel(panelProps: InternalProps)
 		layout = {
 			FillDirection = groupContext.fillDirection,
 		},
+		Size = if props.flexMode ~= Enum.UIFlexMode.Fill
+			then size:map(function(absoluteSize: number)
+				return if isHorizontal then UDim2.new(0, absoluteSize, 1, 0) else UDim2.new(1, 0, 0, absoluteSize)
+			end)
+			else nil,
 		LayoutOrder = props.LayoutOrder,
 	}, props.children)
 end

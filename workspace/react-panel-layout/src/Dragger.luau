@@ -21,7 +21,7 @@ export type DraggerProps = {
 
 local function Dragger(props: DraggerProps)
 	local groupContext = GroupContext.use()
-	local isHorizontal = if groupContext then groupContext.fillDirection == Enum.FillDirection.Horizontal else false
+	local isHorizontal = groupContext.fillDirection == Enum.FillDirection.Horizontal
 
 	local isHovered, setIsHovered = useState(false)
 	local isDragging, setIsDragging = useState(false)
@@ -75,6 +75,9 @@ local function Dragger(props: DraggerProps)
 			Size = if isHorizontal then UDim2.new(0, VISUAL_SIZE, 1, 0) else UDim2.new(1, 0, 0, VISUAL_SIZE),
 			backgroundStyle = if isHovered or isDragging then tokens.Color.Extended.Blue.Blue_400 else nil,
 		}),
+
+		-- TODO: Maybe we could set a drag function to check if the next drag
+		-- will result in hitting a constraint and early exiting
 
 		DragDetector = React.createElement("UIDragDetector", {
 			CursorIcon = cursorIcon,
