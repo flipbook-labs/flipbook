@@ -8,6 +8,7 @@ local Panel = require("@root/Panel")
 
 export type GroupProps = {
 	fillDirection: Enum.FillDirection?,
+	size: UDim2?,
 	LayoutOrder: number?,
 	children: React.Node?,
 }
@@ -47,23 +48,17 @@ local function Group(groupProps: GroupProps)
 	local fillDirection: Enum.FillDirection = props.fillDirection
 	local isHorizontal = fillDirection == Enum.FillDirection.Horizontal
 
-	local weights, setWeights = React.useState({} :: { [string]: number })
+	local sizes, setSizes = React.useState({} :: { [string]: number })
 
-	-- Refs so stable useCallback closures always see the latest values
-	local weightsRef = React.useRef({} :: { [string]: number })
-	local weightsAtDragStart = React.useRef(nil :: { [string]: number }?)
+	local sizesRef = React.useRef({} :: { [string]: number })
+	local sizesAtDragStart = React.useRef(nil :: { [string]: number }?)
 	local constraintsRef = React.useRef({} :: { [string]: GroupContext.PanelConstraints })
 	local absoluteSizeRef = React.useRef(Vector2.zero)
-	-- All direct child IDs in sorted render order; used to initialize weights for
-	-- every child (including non-Panel children like nested Groups) on first drag.
 	local childIdsRef = React.useRef({} :: { string })
 
-	-- Mirror state into ref so drag callbacks never capture stale weights
-	weightsRef.current = weights
+	sizesRef.current = sizes
 
 	local registerPanel = React.useCallback(function(id, constraints)
-		-- Store constraints only — weight is initialized lazily in onDragStart so
-		-- this callback never calls setWeights from within a child's render pass.
 		constraintsRef.current[id] = constraints
 	end, {} :: { unknown })
 
@@ -71,88 +66,62 @@ local function Group(groupProps: GroupProps)
 		constraintsRef.current[id] = nil
 	end, {} :: { unknown })
 
-	local getWeight = React.useCallback(function(id)
-		-- Fall back to 1 before the first drag so all panels start at equal weight.
-		return weightsRef.current[id] or 1
-	end, {} :: { unknown })
-
 	local onDragStart = React.useCallback(function(_leftId, _rightId)
-		-- Ensure every direct child has an explicit weight entry before we snapshot.
-		-- This covers both Panel children (registered via constraintsRef) and
-		-- non-Panel children like nested Groups (tracked only in childIdsRef).
-		local current = weightsRef.current
+		local current = sizesRef.current
 		local initialized = Sift.Dictionary.join({}, current)
 		local anyNew = false
-		for _, id in ipairs(childIdsRef.current) do
+		local ids = childIdsRef.current
+		local groupPixels = if isHorizontal then absoluteSizeRef.current.X else absoluteSizeRef.current.Y
+		local defaultPixels = if #ids > 0 then groupPixels / #ids else 200
+		for _, id in ipairs(ids) do
 			if initialized[id] == nil then
-				initialized[id] = 1
+				initialized[id] = defaultPixels
 				anyNew = true
 			end
 		end
 		if anyNew then
-			weightsRef.current = initialized
-			setWeights(initialized)
+			sizesRef.current = initialized
+			setSizes(initialized)
 		end
-		weightsAtDragStart.current = Sift.Dictionary.join({}, weightsRef.current)
-	end, {} :: { unknown })
+		sizesAtDragStart.current = Sift.Dictionary.join({}, sizesRef.current)
+	end, { isHorizontal } :: { unknown })
 
 	local onDragContinue = React.useCallback(function(leftId, rightId, totalDelta: Vector2)
-		local snapshot = weightsAtDragStart.current
+		local snapshot = sizesAtDragStart.current
 		if not snapshot then
 			return
 		end
 
-		local groupPixels = if isHorizontal then absoluteSizeRef.current.X else absoluteSizeRef.current.Y
-		if groupPixels <= 0 then
-			return
-		end
-
-		local totalWeight = 0
-		for _, w in pairs(snapshot) do
-			totalWeight += w
-		end
-		if totalWeight <= 0 then
-			return
-		end
-
-		local pixelLeft = (snapshot[leftId] or 0) / totalWeight * groupPixels
-		local pixelRight = (snapshot[rightId] or 0) / totalWeight * groupPixels
-
 		local delta = if isHorizontal then totalDelta.X else totalDelta.Y
-		local newPixelLeft = pixelLeft + delta
-		local newPixelRight = pixelRight - delta
+
+		local newLeft = (snapshot[leftId] or 200) + delta
+		local newRight = (snapshot[rightId] or 200) - delta
 
 		local function clampToConstraint(pixels, panelId)
 			local c = constraintsRef.current[panelId]
 			if not c then
-				return pixels
+				return math.max(0, pixels)
 			end
 			local mn = if isHorizontal then c.minSize.X else c.minSize.Y
 			local mx = if isHorizontal then c.maxSize.X else c.maxSize.Y
-			return math.clamp(pixels, mn, math.min(mx, groupPixels))
+			return math.clamp(pixels, mn, mx)
 		end
 
-		newPixelLeft = clampToConstraint(newPixelLeft, leftId)
-		newPixelRight = clampToConstraint(newPixelRight, rightId)
+		newLeft = clampToConstraint(newLeft, leftId)
+		newRight = clampToConstraint(newRight, rightId)
 
-		local newWeightLeft = newPixelLeft / groupPixels * totalWeight
-		local newWeightRight = newPixelRight / groupPixels * totalWeight
-
-		local newWeights = Sift.Dictionary.join(weightsRef.current, {
-			[leftId] = newWeightLeft,
-			[rightId] = newWeightRight,
+		local newSizes = Sift.Dictionary.join(sizesRef.current, {
+			[leftId] = newLeft,
+			[rightId] = newRight,
 		})
-		weightsRef.current = newWeights
-		setWeights(newWeights)
+		sizesRef.current = newSizes
+		setSizes(newSizes)
 	end, { isHorizontal } :: { unknown })
 
 	local onDragEnd = React.useCallback(function()
-		weightsAtDragStart.current = nil
+		sizesAtDragStart.current = nil
 	end, {} :: { unknown })
 
-	-- Build the children table: sort all children by LayoutOrder, inject a Dragger
-	-- between every consecutive Panel pair, and assign fresh sequential LayoutOrders
-	-- so the injected Draggers always slot correctly between their neighbors.
 	local childrenTable = normalizeChildren(props.children)
 
 	local allChildren = {}
@@ -182,28 +151,20 @@ local function Group(groupProps: GroupProps)
 		local childId: string = if entry.isPanel then getPanelId(entry.key, entry.element) else tostring(entry.key)
 		table.insert(childIds, childId)
 
-		local weight = weightsRef.current[childId] or 1
-
 		if entry.isPanel then
-			-- Panel reads its own weight via GroupContext.getWeight and applies flexItem
-			-- itself; Group only needs to inject the stable id and updated LayoutOrder.
 			result[entry.key] = React.cloneElement(entry.element, {
 				id = childId,
 				LayoutOrder = newLayoutOrder,
 			})
 		else
-			-- Non-Panel children (e.g. nested Groups) don't self-register, so Group
-			-- injects flexItem directly so they participate in flex resizing.
+			local pixelSize = sizesRef.current[childId] or 200
+			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
 			result[entry.key] = React.cloneElement(entry.element :: any, {
 				LayoutOrder = newLayoutOrder,
-				flexItem = {
-					FlexMode = Enum.UIFlexMode.Custom,
-					GrowRatio = weight,
-				},
+				size = childSize,
 			})
 		end
 
-		-- Insert a Dragger between every consecutive child pair, regardless of type.
 		local nextEntry = allChildren[i + 1]
 		if nextEntry then
 			newLayoutOrder += 1
@@ -230,29 +191,43 @@ local function Group(groupProps: GroupProps)
 	return React.createElement(
 		Foundation.View,
 		{
-			onAbsoluteSizeChanged = function(rbx)
-				absoluteSizeRef.current = rbx.AbsoluteSize
+			onAbsoluteSizeChanged = function(rbx: GuiObject)
+				local newAbsoluteSize = rbx.AbsoluteSize
+				absoluteSizeRef.current = newAbsoluteSize
+				if next(sizesRef.current) == nil then
+					local ids = childIdsRef.current
+					if #ids > 0 then
+						local groupPixels = if isHorizontal then newAbsoluteSize.X else newAbsoluteSize.Y
+						local perChild = groupPixels / #ids
+						local initialized = {}
+						for _, id in ipairs(ids) do
+							initialized[id] = perChild
+						end
+						sizesRef.current = initialized
+						setSizes(initialized)
+					end
+				end
 			end,
 			tag = {
 				["row"] = isHorizontal,
 				["col"] = not isHorizontal,
-				["auto-xy fill gap-small"] = true,
+				-- Only auto-fill when not explicitly sized by a parent Group.
+				-- When a parent Group injects `size`, we use that instead.
+				["fill auto-xy"] = props.size == nil,
+				["gap-small"] = true,
 			},
 			layout = {
 				FillDirection = fillDirection,
 				ItemLineAlignment = Enum.ItemLineAlignment.Stretch,
 			},
+			Size = props.size,
 			LayoutOrder = props.LayoutOrder,
 		},
 		React.createElement(GroupContext.Provider, {
 			fillDirection = fillDirection,
-			weights = weights,
-			getWeight = getWeight,
+			sizes = sizes,
 			registerPanel = registerPanel,
 			unregisterPanel = unregisterPanel,
-			onDragStart = onDragStart,
-			onDragContinue = onDragContinue,
-			onDragEnd = onDragEnd,
 		}, result)
 	)
 end

@@ -25,10 +25,8 @@ local function Panel(panelProps: PanelProps)
 	local props: Props = Sift.Dictionary.join(defaultProps, panelProps)
 
 	local groupContext = GroupContext.use()
+	local isHorizontal = groupContext.fillDirection == Enum.FillDirection.Horizontal
 
-	-- Register constraints with Group every render so Group has up-to-date
-	-- min/max values for clamping. Weight is only initialized once (on first
-	-- register when the weight slot is nil in Group state).
 	local panelId = props.id
 	if panelId then
 		groupContext.registerPanel(panelId, {
@@ -37,24 +35,21 @@ local function Panel(panelProps: PanelProps)
 		})
 	end
 
-	local weight = if panelId then (groupContext.weights[panelId] or 1) else nil
+	local storedPixels = if panelId then groupContext.sizes[panelId] else nil
+	local pixelSize = storedPixels or (if isHorizontal then props.defaultSize.X else props.defaultSize.Y)
+	local size = if isHorizontal
+		then UDim2.new(0, pixelSize, 1, 0)
+		else UDim2.new(1, 0, 0, pixelSize)
 
 	return React.createElement(Foundation.ScrollView, {
 		tag = {
 			["padding-medium bg-surface-300"] = true,
 		},
-		Size = UDim2.new(0, 0, 0, 0),
-		flexItem = if weight
-			then {
-				FlexMode = Enum.UIFlexMode.Custom,
-				GrowRatio = weight,
-			}
-			else nil,
+		Size = size,
 		sizeConstraint = {
 			MinSize = props.minSize,
 		},
 		scroll = {
-			AutomaticSize = Enum.AutomaticSize.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
 			CanvasSize = UDim2.fromScale(0, 0),
 			ScrollingDirection = Enum.ScrollingDirection.Y,
