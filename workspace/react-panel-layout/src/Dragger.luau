@@ -13,7 +13,9 @@ local HOVER_ICON_X = "rbxasset://textures/StudioUIEditor/icon_resize2.png"
 local HOVER_ICON_Y = "rbxasset://textures/StudioUIEditor/icon_resize4.png"
 
 export type DraggerProps = {
+	onDragStart: (() -> ())?,
 	onDrag: (delta: Vector2) -> (),
+	onDragEnd: (() -> ())?,
 	LayoutOrder: number?,
 }
 
@@ -36,7 +38,11 @@ local function Dragger(props: DraggerProps)
 	local onDragStart = useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
 		setIsDragging(true)
 		initialDragPosition.current = inputPosition
-	end, {})
+
+		if props.onDragStart then
+			props.onDragStart()
+		end
+	end, { props.onDragStart })
 
 	local onDragContinue = useCallback(function(_rbx: UIDragDetector, inputPosition: Vector2)
 		if initialDragPosition.current then
@@ -48,10 +54,13 @@ local function Dragger(props: DraggerProps)
 	local onDragEnd = useCallback(function(_rbx: UIDragDetector, _inputPosition: Vector2)
 		setIsDragging(false)
 		initialDragPosition.current = nil
-	end, {})
+
+		if props.onDragEnd then
+			props.onDragEnd()
+		end
+	end, { props.onDragEnd })
 
 	return React.createElement(Foundation.View, {
-		-- tag = "col align-x-center align-y-center",
 		LayoutOrder = props.LayoutOrder,
 		Size = if isHorizontal then UDim2.new(0, HITBOX_SIZE, 1, 0) else UDim2.new(1, 0, 0, HITBOX_SIZE),
 		onStateChanged = onStateChanged,

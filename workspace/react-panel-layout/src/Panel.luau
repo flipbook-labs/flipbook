@@ -2,17 +2,14 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local Dragger = require("./Dragger")
 local GroupContext = require("./GroupContext")
 
-local useCallback = React.useCallback
-
 export type PanelProps = {
+	id: string?,
 	LayoutOrder: number?,
 	minSize: Vector2?,
 	maxSize: Vector2?,
 	defaultSize: Vector2?,
-	hasDragHandle: boolean?,
 	children: React.Node?,
 }
 
@@ -28,34 +25,33 @@ local function Panel(panelProps: PanelProps)
 	local props: Props = Sift.Dictionary.join(defaultProps, panelProps)
 
 	local groupContext = GroupContext.use()
-	local isHorizontal = groupContext.fillDirection == Enum.FillDirection.Horizontal
-	local dragDelta, setDragDelta = React.useBinding(Vector2.new(0, 0))
 
-	local onDrag = useCallback(function(delta: Vector2)
-		setDragDelta(delta)
-	end, {})
+	-- Register constraints with Group every render so Group has up-to-date
+	-- min/max values for clamping. Weight is only initialized once (on first
+	-- register when the weight slot is nil in Group state).
+	local panelId = props.id
+	if panelId then
+		groupContext.registerPanel(panelId, {
+			minSize = props.minSize,
+			maxSize = props.maxSize,
+		})
+	end
 
-	-- I think a panel's min size should be in order of...
-	-- 1. The min size specified as props
-	-- 3. The size of the panel's contents
+	local weight = if panelId then (groupContext.weights[panelId] or 1) else nil
 
 	return React.createElement(Foundation.ScrollView, {
 		tag = {
-			["auto-xy fill padding-medium bg-surface-300"] = true,
+			["padding-medium bg-surface-300"] = true,
 		},
-		-- NOTE: Remember that fillDirection needs to be what takes control
-		-- here. Otherwise panels will stack off screen. We have to make
-		-- sure whichever direction we're filling that we stay within
-		-- bounds, which flex should take care of. Maybe I should be using
-		-- GrowRatio
+		Size = UDim2.new(0, 0, 0, 0),
+		flexItem = if weight
+			then {
+				FlexMode = Enum.UIFlexMode.Custom,
+				GrowRatio = weight,
+			}
+			else nil,
 		sizeConstraint = {
 			MinSize = props.minSize,
-			MaxSize = dragDelta:map(function(delta: Vector2)
-				return Vector2.new(
-					math.min(props.maxSize.X, props.maxSize.X + delta.X),
-					math.min(props.maxSize.Y, props.maxSize.Y + delta.Y)
-				)
-			end),
 		},
 		scroll = {
 			AutomaticSize = Enum.AutomaticSize.XY,
