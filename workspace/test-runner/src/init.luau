@@ -1,19 +1,26 @@
 local Charm = require("@pkg/Charm")
 local Jest = require("@pkg/Jest")
 
-local function runTests()
-	local flipbookCore = script.Parent["flipbook-core"]
-	local reactPanelLayout = script.Parent["react-panel-layout"]
+local function getRoots()
+	local roots = {}
+	for _, child in ipairs(script.Parent:GetChildren()) do
+		if child:FindFirstChild("jest.config") then
+			table.insert(roots, child)
+		end
+	end
+	return roots
+end
 
+local function runTests()
 	_G.__DEV__ = true
 	_G.__ROACT_17_MOCK_SCHEDULER__ = true
 
 	Charm.flags.strict = true
 	Charm.flags.frozen = true
 
-	local roots = { flipbookCore, reactPanelLayout }
+	local roots = getRoots()
 
-	local status, result = Jest.runCLI(flipbookCore, {
+	local status, result = Jest.runCLI(script.Parent, {
 		verbose = false,
 		ci = false,
 		testPathPattern = _G.JEST_TEST_PATH_PATTERN,
