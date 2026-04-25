@@ -28,8 +28,8 @@ export type GroupProviderProps = {
 local defaultValue: GroupContext = {
 	fillDirection = Enum.FillDirection.Vertical,
 	sizes = {},
-	registerPanel = function(_id, _constraints) end,
-	unregisterPanel = function(_id) end,
+	registerPanel = function(_id: PanelId, _constraints: PanelConstraints) end,
+	unregisterPanel = function(_id: PanelId) end,
 }
 
 local Context = React.createContext(defaultValue)

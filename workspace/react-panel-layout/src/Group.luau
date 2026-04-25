@@ -20,11 +20,11 @@ local defaultProps = {
 
 local DEFAULT_SIZE = 200
 
-local function isPanelElement(element)
+local function isPanelElement(element: any)
 	return typeof(element) == "table" and element.type == Panel
 end
 
-local function getPanelId(key, element): string
+local function getPanelId(key: string | number, element: any): string
 	if typeof(key) == "string" then
 		return key
 	end
@@ -35,7 +35,7 @@ local function getPanelId(key, element): string
 	error(`Panel at child index {tostring(key)} must have a string React key or a string 'id' prop`)
 end
 
-local function normalizeChildren(children)
+local function normalizeChildren(children: any)
 	if children == nil then
 		return {}
 	end
@@ -61,15 +61,15 @@ local function Group(groupProps: GroupProps)
 
 	sizesRef.current = sizes
 
-	local registerPanel = useCallback(function(id, constraints)
+	local registerPanel = useCallback(function(id: string, constraints: GroupContext.PanelConstraints)
 		constraintsRef.current[id] = constraints
 	end, {} :: { unknown })
 
-	local unregisterPanel = useCallback(function(id)
+	local unregisterPanel = useCallback(function(id: string)
 		constraintsRef.current[id] = nil
 	end, {} :: { unknown })
 
-	local onDragStart = useCallback(function(_leftId, _rightId)
+	local onDragStart = useCallback(function(_leftId: string, _rightId: string)
 		local current = sizesRef.current
 		local initialized = Sift.Dictionary.join({}, current)
 		local anyNew = false
@@ -89,7 +89,7 @@ local function Group(groupProps: GroupProps)
 		sizesAtDragStart.current = Sift.Dictionary.join({}, sizesRef.current)
 	end, { isHorizontal } :: { unknown })
 
-	local onDragContinue = useCallback(function(leftId, rightId, totalDelta: Vector2)
+	local onDragContinue = useCallback(function(leftId: string, rightId: string, totalDelta: Vector2)
 		local snapshot = sizesAtDragStart.current
 		if not snapshot then
 			return
@@ -100,7 +100,7 @@ local function Group(groupProps: GroupProps)
 		local newLeft = (snapshot[leftId] or DEFAULT_SIZE) + delta
 		local newRight = (snapshot[rightId] or DEFAULT_SIZE) - delta
 
-		local function clampToConstraint(pixels, panelId)
+		local function clampToConstraint(pixels: number, panelId: string)
 			local c = constraintsRef.current[panelId]
 			if not c then
 				return math.max(0, pixels)
@@ -127,7 +127,14 @@ local function Group(groupProps: GroupProps)
 
 	local childrenTable = normalizeChildren(props.children)
 
-	local allChildren = {}
+	type ChildEntry = {
+		key: string | number,
+		element: any,
+		layoutOrder: number,
+		isPanel: boolean,
+	}
+
+	local allChildren: { ChildEntry } = {}
 	for key, element in pairs(childrenTable) do
 		table.insert(allChildren, {
 			key = key,
@@ -137,14 +144,14 @@ local function Group(groupProps: GroupProps)
 		})
 	end
 
-	table.sort(allChildren, function(a, b)
+	table.sort(allChildren, function(a: ChildEntry, b: ChildEntry)
 		if a.layoutOrder ~= b.layoutOrder then
 			return a.layoutOrder < b.layoutOrder
 		end
 		return tostring(a.key) < tostring(b.key)
 	end)
 
-	local result: { [string]: any } = {}
+	local result: { [string | number]: any } = {}
 	local newLayoutOrder = 0
 	local childIds: { string } = {}
 
@@ -181,7 +188,7 @@ local function Group(groupProps: GroupProps)
 				onDragStart = function()
 					onDragStart(childId, rightId)
 				end,
-				onDrag = function(delta)
+				onDrag = function(delta: Vector2)
 					onDragContinue(childId, rightId, delta)
 				end,
 				onDragEnd = onDragEnd,

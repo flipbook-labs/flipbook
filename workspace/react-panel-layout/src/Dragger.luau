@@ -29,7 +29,7 @@ local function Dragger(props: DraggerProps)
 	local tokens = useTokens()
 
 	local onStateChanged = useCallback(
-		function(newState)
+		function(newState: Foundation.ControlState)
 			setIsHovered(newState == Foundation.Enums.ControlState.Hover)
 		end :: Foundation.StateChangedCallback,
 		{}
