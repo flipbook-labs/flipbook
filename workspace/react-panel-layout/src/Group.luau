@@ -2,20 +2,23 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
+local useCallback = React.useCallback
+local useRef = React.useRef
+local useState = React.useState
+
 local Dragger = require("@root/Dragger")
 local GroupContext = require("@root/GroupContext")
 local Panel = require("@root/Panel")
 
 export type GroupProps = {
 	fillDirection: Enum.FillDirection?,
-	size: UDim2?,
-	LayoutOrder: number?,
-	children: React.Node?,
-}
+} & Panel.PanelProps
 
 local defaultProps = {
 	fillDirection = Enum.FillDirection.Vertical,
 }
+
+local DEFAULT_SIZE = 200
 
 local function isPanelElement(element)
 	return typeof(element) == "table" and element.type == Panel
@@ -48,31 +51,31 @@ local function Group(groupProps: GroupProps)
 	local fillDirection: Enum.FillDirection = props.fillDirection
 	local isHorizontal = fillDirection == Enum.FillDirection.Horizontal
 
-	local sizes, setSizes = React.useState({} :: { [string]: number })
+	local sizes, setSizes = useState({} :: { [string]: number })
 
-	local sizesRef = React.useRef({} :: { [string]: number })
-	local sizesAtDragStart = React.useRef(nil :: { [string]: number }?)
-	local constraintsRef = React.useRef({} :: { [string]: GroupContext.PanelConstraints })
-	local absoluteSizeRef = React.useRef(Vector2.zero)
-	local childIdsRef = React.useRef({} :: { string })
+	local sizesRef = useRef({} :: { [string]: number })
+	local sizesAtDragStart = useRef(nil :: { [string]: number }?)
+	local constraintsRef = useRef({} :: { [string]: GroupContext.PanelConstraints })
+	local absoluteSizeRef = useRef(Vector2.zero)
+	local childIdsRef = useRef({} :: { string })
 
 	sizesRef.current = sizes
 
-	local registerPanel = React.useCallback(function(id, constraints)
+	local registerPanel = useCallback(function(id, constraints)
 		constraintsRef.current[id] = constraints
 	end, {} :: { unknown })
 
-	local unregisterPanel = React.useCallback(function(id)
+	local unregisterPanel = useCallback(function(id)
 		constraintsRef.current[id] = nil
 	end, {} :: { unknown })
 
-	local onDragStart = React.useCallback(function(_leftId, _rightId)
+	local onDragStart = useCallback(function(_leftId, _rightId)
 		local current = sizesRef.current
 		local initialized = Sift.Dictionary.join({}, current)
 		local anyNew = false
 		local ids = childIdsRef.current
 		local groupPixels = if isHorizontal then absoluteSizeRef.current.X else absoluteSizeRef.current.Y
-		local defaultPixels = if #ids > 0 then groupPixels / #ids else 200
+		local defaultPixels = if #ids > 0 then groupPixels / #ids else DEFAULT_SIZE
 		for _, id in ipairs(ids) do
 			if initialized[id] == nil then
 				initialized[id] = defaultPixels
@@ -86,7 +89,7 @@ local function Group(groupProps: GroupProps)
 		sizesAtDragStart.current = Sift.Dictionary.join({}, sizesRef.current)
 	end, { isHorizontal } :: { unknown })
 
-	local onDragContinue = React.useCallback(function(leftId, rightId, totalDelta: Vector2)
+	local onDragContinue = useCallback(function(leftId, rightId, totalDelta: Vector2)
 		local snapshot = sizesAtDragStart.current
 		if not snapshot then
 			return
@@ -94,8 +97,8 @@ local function Group(groupProps: GroupProps)
 
 		local delta = if isHorizontal then totalDelta.X else totalDelta.Y
 
-		local newLeft = (snapshot[leftId] or 200) + delta
-		local newRight = (snapshot[rightId] or 200) - delta
+		local newLeft = (snapshot[leftId] or DEFAULT_SIZE) + delta
+		local newRight = (snapshot[rightId] or DEFAULT_SIZE) - delta
 
 		local function clampToConstraint(pixels, panelId)
 			local c = constraintsRef.current[panelId]
@@ -118,7 +121,7 @@ local function Group(groupProps: GroupProps)
 		setSizes(newSizes)
 	end, { isHorizontal } :: { unknown })
 
-	local onDragEnd = React.useCallback(function()
+	local onDragEnd = useCallback(function()
 		sizesAtDragStart.current = nil
 	end, {} :: { unknown })
 
@@ -157,7 +160,7 @@ local function Group(groupProps: GroupProps)
 				LayoutOrder = newLayoutOrder,
 			})
 		else
-			local pixelSize = sizesRef.current[childId] or 200
+			local pixelSize = sizesRef.current[childId] or DEFAULT_SIZE
 			local childSize = if isHorizontal then UDim2.new(0, pixelSize, 1, 0) else UDim2.new(1, 0, 0, pixelSize)
 			result[entry.key] = React.cloneElement(entry.element :: any, {
 				LayoutOrder = newLayoutOrder,
@@ -216,9 +219,15 @@ local function Group(groupProps: GroupProps)
 				["fill auto-xy"] = props.size == nil,
 				["gap-small"] = true,
 			},
+			flexItem = {
+				FlexMode = props.flexMode,
+			},
+			sizeConstraint = {
+				MinSize = props.minSize,
+				MaxSize = props.maxSize,
+			},
 			layout = {
 				FillDirection = fillDirection,
-				ItemLineAlignment = Enum.ItemLineAlignment.Stretch,
 			},
 			Size = props.size,
 			LayoutOrder = props.LayoutOrder,

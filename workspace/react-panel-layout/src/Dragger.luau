@@ -2,9 +2,9 @@ local Foundation = require("@rbxpkg/Foundation")
 local GroupContext = require("./GroupContext")
 local React = require("@pkg/React")
 
+local useCallback = React.useCallback
 local useRef = React.useRef
 local useState = React.useState
-local useCallback = React.useCallback
 local useTokens = Foundation.Hooks.useTokens
 
 local HITBOX_SIZE = 9
@@ -60,6 +60,8 @@ local function Dragger(props: DraggerProps)
 		end
 	end, { props.onDragEnd })
 
+	local cursorIcon = if isHorizontal then HOVER_ICON_X else HOVER_ICON_Y
+
 	return React.createElement(Foundation.View, {
 		LayoutOrder = props.LayoutOrder,
 		Size = if isHorizontal then UDim2.new(0, HITBOX_SIZE, 1, 0) else UDim2.new(1, 0, 0, HITBOX_SIZE),
@@ -75,8 +77,8 @@ local function Dragger(props: DraggerProps)
 		}),
 
 		DragDetector = React.createElement("UIDragDetector", {
-			CursorIcon = if isHorizontal then HOVER_ICON_X else HOVER_ICON_Y,
-			ActivatedCursorIcon = if isHorizontal then HOVER_ICON_X else HOVER_ICON_Y,
+			CursorIcon = cursorIcon,
+			ActivatedCursorIcon = cursorIcon,
 			DragStyle = Enum.UIDragDetectorDragStyle.Scriptable,
 			[React.Event.DragContinue] = onDragContinue,
 			[React.Event.DragStart] = onDragStart,

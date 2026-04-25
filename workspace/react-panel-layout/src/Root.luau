@@ -10,6 +10,7 @@ export type RootProps = {
 
 local function Root(props: RootProps)
 	return React.createElement(Group, {
+		id = "<root>",
 		fillDirection = props.fillDirection,
 		LayoutOrder = props.LayoutOrder,
 	}, props.children)

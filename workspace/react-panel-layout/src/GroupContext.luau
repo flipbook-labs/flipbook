@@ -1,5 +1,8 @@
 local React = require("@pkg/React")
 
+local useContext = React.useContext
+local useMemo = React.useMemo
+
 type PanelId = string
 
 export type PanelConstraints = {
@@ -32,19 +35,22 @@ local defaultValue: GroupContext = {
 local Context = React.createContext(defaultValue)
 
 local function GroupProvider(props: GroupProviderProps)
-	local context = React.useMemo(function()
-		return {
-			fillDirection = props.fillDirection,
-			sizes = props.sizes,
-			registerPanel = props.registerPanel,
-			unregisterPanel = props.unregisterPanel,
-		}
-	end, {
-		props.fillDirection,
-		props.sizes,
-		props.registerPanel,
-		props.unregisterPanel,
-	} :: { unknown })
+	local context = useMemo(
+		function()
+			return {
+				fillDirection = props.fillDirection,
+				sizes = props.sizes,
+				registerPanel = props.registerPanel,
+				unregisterPanel = props.unregisterPanel,
+			}
+		end,
+		{
+			props.fillDirection,
+			props.sizes,
+			props.registerPanel,
+			props.unregisterPanel,
+		} :: { unknown }
+	)
 
 	return React.createElement(Context.Provider, {
 		value = context,
@@ -52,7 +58,7 @@ local function GroupProvider(props: GroupProviderProps)
 end
 
 local function use(): GroupContext
-	return React.useContext(Context)
+	return useContext(Context)
 end
 
 return {
