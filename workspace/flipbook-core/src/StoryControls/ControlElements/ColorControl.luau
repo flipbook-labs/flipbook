@@ -5,6 +5,7 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local e = React.createElement
 local useCallback = React.useCallback
+local useEffect = React.useEffect
 local useState = React.useState
 local useRef = React.useRef
 
@@ -43,6 +44,10 @@ local function ColorControl(props: Props)
 		onSubmit()
 		setIsColorPickerOpen(false)
 	end, { onSubmit })
+
+	useEffect(function()
+		setColor(props.controlValue or Color3.new(1, 1, 1))
+	end, { props.controlValue } :: { unknown })
 
 	return e(Foundation.View, {
 		tag = "auto-xy row gap-small align-y-center",

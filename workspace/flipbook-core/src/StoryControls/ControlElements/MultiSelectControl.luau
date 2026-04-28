@@ -5,9 +5,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local e = React.createElement
 local useCallback = React.useCallback
-local useEffect = React.useEffect
 local useMemo = React.useMemo
-local useState = React.useState
 
 export type Props = {
 	controlSchema: Storyteller.MultiSelectControl,
@@ -22,24 +20,36 @@ local function getItemId(item: unknown): ItemId
 end
 
 local function MultiSelectControl(props: Props)
-	local activeItemIds, setActiveItemIds = useState({} :: { ItemId })
-
-	local itemIdToValue = useMemo(function(): { [ItemId]: Storyteller.StoryControlValue }
-		local map = {}
+	local getItemFromId = useCallback(function(id: ItemId): Storyteller.StoryControlValue?
 		for _, value in props.controlSchema.items do
-			map[getItemId(value)] = value
+			if getItemId(value) == id then
+				return value
+			end
 		end
-		return map
+		return nil
 	end, { props.controlSchema.items } :: { unknown })
 
-	useEffect(function()
-		setActiveItemIds(Sift.List.map(props.controlValue, getItemId))
-	end, { props.controlValue } :: { unknown })
+	local onItemChanged = useCallback(function(itemId: ItemId)
+		local itemIdStr = tostring(itemId)
+		local new = {}
+		local found = false
+		for _, value in props.controlValue do
+			if getItemId(value) == itemIdStr then
+				found = true -- deselect: skip
+			else
+				table.insert(new, value)
+			end
+		end
+		if not found then
+			table.insert(new, getItemFromId(itemIdStr))
+		end
+		props.onChanged(new)
+	end, { props.controlValue, props.onChanged, getItemFromId } :: { unknown })
 
 	local items: { Foundation.DropdownItem } = useMemo(function()
 		return Sift.List.map(props.controlSchema.items, function(value)
 			local id = getItemId(value)
-			local isChecked = table.find(activeItemIds, id) ~= nil
+			local isChecked = table.find(props.controlValue, value) ~= nil
 
 			local item: Foundation.DropdownItem = {
 				id = id,
@@ -51,38 +61,19 @@ local function MultiSelectControl(props: Props)
 
 			return item
 		end)
-	end, { props.controlSchema, activeItemIds } :: { unknown })
-
-	local onItemChanged = useCallback(function(itemId: ItemId)
-		setActiveItemIds(function(prev)
-			local new = table.clone(prev)
-
-			local index = table.find(new, tostring(itemId))
-			if index then
-				table.remove(new, index)
-			else
-				table.insert(new, tostring(itemId))
-			end
-
-			props.onChanged(Sift.List.map(new, function(id)
-				return itemIdToValue[id]
-			end))
-
-			return new
-		end)
-	end, { props.onChanged, itemIdToValue } :: { unknown })
+	end, { props.controlSchema, props.controlValue } :: { unknown })
 
 	local value = useMemo(function(): ItemId?
 		-- It would have been nice to display a comma-seperated list of the
 		-- checked values, but `Dropdown.Root` only accepts an ItemId for the
 		-- `value` prop. So we're opting instead to show the first selected
 		-- value
-		if #activeItemIds > 0 then
-			return activeItemIds[1]
+		if #props.controlValue > 0 then
+			return getItemId(props.controlValue[1])
 		end
 
 		return nil
-	end, { activeItemIds, items } :: { unknown })
+	end, { props.controlValue } :: { unknown })
 
 	return e(Foundation.Dropdown.Root, {
 		items = items,

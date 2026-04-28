@@ -4,6 +4,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local e = React.createElement
 local useCallback = React.useCallback
+local useEffect = React.useEffect
 local useState = React.useState
 
 export type Props = {
@@ -13,11 +14,14 @@ export type Props = {
 }
 
 local function StringControl(props: Props)
-	local pendingValue, setPendingValue = useState("" :: string)
+	local pendingValue, setPendingValue = useState(props.controlValue or "" :: string)
+
+	useEffect(function()
+		setPendingValue(props.controlValue or "")
+	end, { props.controlValue } :: { unknown })
 
 	local onSubmit = useCallback(function()
 		props.onChanged(pendingValue)
-		setPendingValue("")
 	end, { props.onChanged, pendingValue } :: { unknown })
 
 	return e(Foundation.TextInput, {
