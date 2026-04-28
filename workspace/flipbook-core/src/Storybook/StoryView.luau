@@ -1,11 +1,14 @@
 local Foundation = require("@rbxpkg/Foundation")
 local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControls = require("@root/Storybook/StoryControls")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -19,10 +22,12 @@ local useCallback = React.useCallback
 local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useState = React.useState
-
+local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
+local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type ExtraStoryProps = types.ExtraStoryProps
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
@@ -32,6 +37,9 @@ type StoryViewProps = {
 local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook)
 	local theme = useThemeName()
+	local pluginStore = useSignalState(PluginStore.get)
+	local plugin = useSignalState(pluginStore.getPlugin)
+	local overlayGui = useOverlay()
 
 	local modifiedControls, setModifiedControls = useState({})
 	local controls = useMemo(function()
@@ -42,7 +50,11 @@ local function StoryView(props: StoryViewProps)
 				if modifiedControls[key] ~= nil and typeof(value) ~= "table" then
 					newControls[key] = modifiedControls[key]
 				else
-					newControls[key] = value
+					if typeof(value) == "table" then
+						newControls[key] = value.default
+					else
+						newControls[key] = value
+					end
 				end
 			end
 		end
@@ -50,12 +62,14 @@ local function StoryView(props: StoryViewProps)
 		return newControls
 	end, { story, modifiedControls } :: { any })
 
-	local extraProps: Storyteller.StoryProps = useMemo(function()
+	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
 			theme = theme :: useThemeName.ThemeName,
 			locale = "en-us",
+			plugin = plugin,
+			widget = overlayGui,
 		}
-	end, { theme } :: { unknown })
+	end, { theme, plugin, overlayGui } :: { unknown })
 
 	local setControl = useCallback(function(key: string, value: any)
 		setModifiedControls(function(currentValue)
@@ -109,7 +123,7 @@ local function StoryView(props: StoryViewProps)
 
 			Preview = e(View, {
 				LayoutOrder = 3,
-				tag = "padding-large shrink size-full",
+				tag = "shrink size-full",
 			}, {
 				StoryPreview = React.createElement(StoryPreview, {
 					story = story,

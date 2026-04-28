@@ -1,32 +1,37 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local fs = require("@std/fs")
+local path = require("@std/path")
 
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
-local mkdir = FlipbookBatteries.mkdir
-local rmdir = FlipbookBatteries.rmdir
 local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: string, context: BuildContext): string
-	local memberBuildPath = `{memberPath}/build`
+local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: BuildContext): path.Path
+	local relativeMemberPath = path.relative(project.REPO_PATH, memberPath)
+	local memberBuildPath = path.join(memberPath, "build")
 
 	runBuildGroupAsync({
-		name = `📦 build {memberPath}`,
+		name = `📦 build {relativeMemberPath}`,
 		paths = {
 			memberPath,
 		},
 		context = context,
 		step = function()
-			run("rm", { "-rf", memberBuildPath })
-			run("mkdir", { "-p", memberBuildPath })
+			fs.removeDirectory(memberBuildPath, {
+				recursive = true,
+			})
+			fs.createDirectory(memberBuildPath, {
+				makeParents = true,
+			})
 
 			run("darklua", {
 				"process",
-				`{memberPath}/src`,
+				path.join(relativeMemberPath, "src"),
 				memberBuildPath,
 			}, {
 				env = context.env,
@@ -36,7 +41,7 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 
 	if context.channel == "prod" then
 		runBuildGroupAsync({
-			name = `✂️ prune {memberPath}`,
+			name = `✂️ prune {relativeMemberPath}`,
 			paths = { memberBuildPath },
 			context = context,
 			step = function()
@@ -47,10 +52,11 @@ local function compileWorkspaceMemberAsync(memberPath: string, context: BuildCon
 		})
 	end
 
-	local dest = `{context.dest}/{memberPath}`
+	local dest = path.join(context.dest, relativeMemberPath)
 
-	rmdir(dest)
-	mkdir(dest)
+	fs.removeDirectory(dest, {
+		recursive = true,
+	})
 	copyInto(memberBuildPath, dest)
 
 	return memberBuildPath

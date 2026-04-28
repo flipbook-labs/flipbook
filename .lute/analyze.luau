@@ -1,9 +1,12 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local project = require("@repo/project")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local path = require("@std/path")
+local system = require("@std/system")
 
+local project = require("@repo/project")
 local run = FlipbookBatteries.run
 
-local globalDefsPath = "globalTypes.d.luau"
+local tmpdir = system.tmpdir()
+local globalDefsPath = path.join(tmpdir, "globalTypes.d.luau")
 
 run("curl", {
 	"-s",
@@ -20,7 +23,7 @@ run("rojo", {
 	project.SOURCEMAP_PATH,
 })
 
-local defaultArgs = {
+local defaultArgs: { string | path.Pathlike } = {
 	"analyze",
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",

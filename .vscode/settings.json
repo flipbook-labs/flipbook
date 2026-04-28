@@ -4,6 +4,6 @@
     "**/_Index/**",
     "**/build/**",
     "**/*Packages/**",
-    "**/.lute/typedefs/0.1.0/**"
+    "**/.lute/typedefs/**"
   ]
 }

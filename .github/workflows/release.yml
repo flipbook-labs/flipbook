@@ -1,12 +1,12 @@
 name: Release
 
 on:
-  pull_request:
   release:
     types: [published]
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   publish-github-release:
@@ -27,13 +27,13 @@ jobs:
           echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
 
       - name: Build
-        run: lute scripts/build.luau --channel prod --output ${{ env.MODEL_FILE }}
+        run: lute run build --channel prod --output ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         with:
@@ -50,7 +50,7 @@ jobs:
       url: https://create.roblox.com/store/asset/8517129161
     env:
       LOG_LEVEL: debug
-    if: github.event.release
+    if: ${{ github.event.release }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,7 +59,7 @@ jobs:
           version: v1.1.1
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
@@ -76,7 +76,7 @@ jobs:
       url: https://create.roblox.com/store/asset/88523969718241
     env:
       LOG_LEVEL: debug
-    if: github.ref == 'refs/heads/main'
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -85,34 +85,10 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
 
       - name: Publish nightly build to Creator Store
         run: lune run publish-plugin --channel dev --apiKey ${{ secrets.ROBLOX_API_KEY }}
-
-  publish-smoketest-plugin:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    concurrency: ${{ github.ref }}
-    environment:
-      name: roblox-creator-store-smoketest
-    env:
-      LOG_LEVEL: debug
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.1.1
-
-      - name: Install dependencies
-        run: lute scripts/install.luau
-
-      - name: Create .env
-        run: cp .env.template .env
-
-      - name: Publish release to Creator Store
-        run: lune run publish-plugin --smoketest --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}

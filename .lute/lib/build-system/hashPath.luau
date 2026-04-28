@@ -1,5 +1,6 @@
 local crypto = require("@lute/crypto")
 local fs = require("@std/fs")
+local path = require("@std/path")
 
 local HASH_METHOD = crypto.hash.md5
 
@@ -11,19 +12,16 @@ local function bufferToHex(buf: buffer): string
 	return hex
 end
 
-local function hashFile(filePath: string): string
-	local handle = fs.open(filePath, "r")
-	local content = fs.read(handle)
-	fs.close(handle)
-
+local function hashFile(filePath: path.Pathlike): string
+	local content = fs.readFileToString(filePath)
 	return bufferToHex(crypto.digest(HASH_METHOD, content))
 end
 
-local function hashDir(dirPath: string): string
+local function hashDir(dirPath: path.Pathlike): string
 	local hashes = {}
 
-	for _, file in fs.listdirectory(dirPath) do
-		local filePath = `{dirPath}/{file.name}`
+	for _, file in fs.listDirectory(dirPath) do
+		local filePath = path.join(dirPath, file.name)
 
 		if file.type == "dir" then
 			table.insert(hashes, hashDir(filePath))
@@ -37,13 +35,13 @@ local function hashDir(dirPath: string): string
 	return bufferToHex(crypto.digest(HASH_METHOD, joinedHash))
 end
 
-local function hashPath(path: string): string
-	assert(fs.exists(path), `no file found at {path}`)
+local function hashPath(filePath: path.Pathlike): string
+	assert(fs.exists(filePath), `no file found at {filePath}`)
 
-	if fs.type(path) == "dir" then
-		return hashDir(path)
+	if fs.type(filePath) == "dir" then
+		return hashDir(filePath)
 	else
-		return hashFile(path)
+		return hashFile(filePath)
 	end
 end
 

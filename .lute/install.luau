@@ -2,16 +2,15 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
+local system = require("@std/system")
 
 local getDescendants = require("@scripts/lib/getDescendants")
 
-local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
-local LUAU_PACKAGES_PATH = "LuauPackages"
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
-local function move(src: path.pathlike, dest: path.pathlike)
+local function move(src: path.Pathlike, dest: path.Pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
 		stdio = "inherit",
 	})
@@ -25,20 +24,17 @@ do
 	})
 	assert(res.ok, res.stderr)
 
-	fs.removedirectory(LUAU_PACKAGES_PATH, {
+	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createdirectory(LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
-	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(LUAU_PACKAGES_PATH, dependencyName))
-	end
+	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
@@ -78,7 +74,7 @@ do
 			}
 
 			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
-			fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+			fs.writeStringToFile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 			run("darklua", { "process", "src", "src" }, {
 				cwd = packageRoot,
@@ -105,9 +101,11 @@ do
 	end
 
 	local function installRobloxPackages()
+		local tmpdir = system.tmpdir()
+
 		run("roblox-packages", {
 			"install",
-			"RobloxPackagesTmp",
+			tmpdir,
 			"--version",
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
@@ -124,14 +122,15 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			run("rm", { "-rf", dest })
+			fs.removeDirectory(dest, {
+				recursive = true,
+			})
 		end
-		run("mv", { "RobloxPackagesTmp/Packages", dest })
-		run("rm", { "-rf", "RobloxPackagesTmp" })
+		move(path.join(tmpdir, "Packages"), project.ROBLOX_PACKAGES_PATH)
 
 		-- Patch React and RoactCompat dependencies to use ours
 		for _, name in { "React", "RoactCompat", "Roact" } do
-			local linkers = find(dest, `^{name}%..*`)
+			local linkers = find(project.ROBLOX_PACKAGES_PATH, `^{name}%..*`)
 
 			for _, linker in linkers do
 				-- All Roact linkers in RobloxPackages point to Roblox's
@@ -154,34 +153,18 @@ do
 		end
 	end
 
-	local function installLuteBatteries()
-		local commit = "7f5ccf7"
-		local batteries = {
-			"cli.luau",
-			"pp.luau",
-			"richterm.luau",
-			"toml.luau",
-		}
-
-		local dest = `{LUAU_PACKAGES_PATH}/batteries`
-		run("mkdir", { "-p", dest })
-		for _, battery in batteries do
-			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = dest,
-			})
-		end
-	end
-
 	local function installRbxasset()
-		run("curl", { "-LO", "https://github.com/Roblox/rbxasset/releases/download/v0.2.0/rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+		local fileName = "rbxasset.zip"
+
+		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
 		run("unzip", { "rbxasset.zip" }, {
-			cwd = LUAU_PACKAGES_PATH,
+			cwd = project.LUAU_PACKAGES_PATH,
 		})
 
-		fs.remove(`{LUAU_PACKAGES_PATH}/rbxasset.zip`)
+		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
 	local function pruneDevelopmentFiles()
@@ -203,6 +186,5 @@ do
 	installRobloxPackages()
 	installWallyPackages()
 	installRbxasset()
-	installLuteBatteries()
 	pruneDevelopmentFiles()
 end

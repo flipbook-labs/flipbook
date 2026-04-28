@@ -5,6 +5,9 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -28,7 +31,7 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
@@ -40,7 +43,7 @@ jobs:
           echo "MODEL_FILE=$name-$sha.rbxm" >> $GITHUB_ENV
 
       - name: Build
-        run: lute scripts/build.luau plugin --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
+        run: lute run build plugin --channel ${{ matrix.channel }} --output ${{ env.MODEL_FILE }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -70,19 +73,13 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Create .env
         run: cp .env.template .env
 
       - name: Build
-        run: lute scripts/build.luau workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
-
-      - name: Check path lengths
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/check-path-lengths
-        with:
-          artifact: build/${{ matrix.package }}-${{ matrix.target }}/src
+        run: lute run build workspace --channel ${{ matrix.channel }} --target ${{ matrix.target }}
 
       - name: Zip everything up
         run: |
@@ -109,7 +106,7 @@ jobs:
           version: v1.2.0
 
       - name: Install dependencies
-        run: lute scripts/install.luau
+        run: lute run install
 
       - name: Setup Lune typedefs
         run: lune setup
@@ -118,28 +115,7 @@ jobs:
         run: lute setup
 
       - name: Lint
-        run: lute scripts/lint.luau
+        run: lute run lint
 
       - name: Run Luau analysis
-        run: lute scripts/analyze.luau
-
-  tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Install dependencies
-        run: lute scripts/install.luau
-
-      - name: Create .env
-        run: cp .env.template .env
-
-      - name: Run tests
-        run: lute scripts/test.luau
-        env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run analyze

@@ -18,7 +18,7 @@ local function StoryError(props: Props)
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
-			CanvasSize = UDim2.new(1, 0),
+			CanvasSize = UDim2.fromScale(1, 0),
 		},
 		layout = {
 			FillDirection = Enum.FillDirection.Vertical,

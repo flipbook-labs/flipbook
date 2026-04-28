@@ -1,7 +1,8 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local cli = require("@luaupkg/batteries/cli")
-local fs = require("@std/fs")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local path = require("@std/path")
 local process = require("@std/process")
+local system = require("@std/system")
 
 local project = require("@repo/project")
 
@@ -36,25 +37,22 @@ local filter = args:get("filter")
 -- This gets picked up by the build step which uses Darklua to inject globals
 process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
-run("lute", { "scripts/build.luau", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
-run("rojo", { "build", project.ROJO_TESTS_PROJECT, "-o", "tests.rbxl" })
+run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
 
-local success, err = pcall(function()
-	run("python3", {
-		"scripts/python/upload_and_run_task.py",
-		"tests.rbxl",
-		"scripts/tasks/run-tests.luau",
-	}, {
-		env = {
-			ROBLOX_UNIVERSE_ID = process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
-			ROBLOX_PLACE_ID = process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
-			ROBLOX_API_KEY = tostring(apiKey),
-		},
-	})
-
-	return nil
-end)
-
-fs.remove("tests.rbxl")
-
-assert(success, err)
+run("rocale", {
+	"run",
+	"--script",
+	".lute/tasks/run-tests.luau",
+	"--load.project",
+	project.ROJO_TESTS_PROJECT,
+	"--universeId",
+	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+	"--placeId",
+	process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+	"--output",
+	tostring(path.join(system.tmpdir(), "tests.rbxl")),
+}, {
+	env = {
+		ROBLOX_API_KEY = apiKey,
+	},
+})

@@ -5,10 +5,8 @@ local project = require("@repo/project")
 local types = require("@scripts/lib/build-system/types")
 
 local function writeBuildCacheAsync(buildCache: types.BuildCache)
-	local content = json.serialize(buildCache :: json.object, true)
-	local handle = fs.open(project.BUILD_CACHE_PATH, "w+")
-	fs.write(handle, content)
-	fs.close(handle)
+	local contents = json.serialize(buildCache :: json.Object, true)
+	fs.writeStringToFile(project.BUILD_CACHE_PATH, contents)
 end
 
 return writeBuildCacheAsync
