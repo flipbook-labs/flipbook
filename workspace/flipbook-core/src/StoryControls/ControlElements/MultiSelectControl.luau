@@ -5,6 +5,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local e = React.createElement
 local useCallback = React.useCallback
+local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useState = React.useState
 
@@ -22,6 +23,18 @@ end
 
 local function MultiSelectControl(props: Props)
 	local activeItemIds, setActiveItemIds = useState({} :: { ItemId })
+
+	local itemIdToValue = useMemo(function(): { [ItemId]: Storyteller.StoryControlValue }
+		local map = {}
+		for _, value in props.controlSchema.items do
+			map[getItemId(value)] = value
+		end
+		return map
+	end, { props.controlSchema.items } :: { unknown })
+
+	useEffect(function()
+		setActiveItemIds(Sift.List.map(props.controlValue, getItemId))
+	end, { props.controlValue } :: { unknown })
 
 	local items: { Foundation.DropdownItem } = useMemo(function()
 		return Sift.List.map(props.controlSchema.items, function(value)
@@ -51,11 +64,13 @@ local function MultiSelectControl(props: Props)
 				table.insert(new, tostring(itemId))
 			end
 
-			props.onChanged(new)
+			props.onChanged(Sift.List.map(new, function(id)
+				return itemIdToValue[id]
+			end))
 
 			return new
 		end)
-	end, { props.onChanged } :: { unknown })
+	end, { props.onChanged, itemIdToValue } :: { unknown })
 
 	local value = useMemo(function(): ItemId?
 		-- It would have been nice to display a comma-seperated list of the
