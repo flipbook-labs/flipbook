@@ -4,7 +4,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 
 local Constants = require("@root/constants")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
-local StoryControls = require("@root/Storybook/StoryControls")
+local StoryControls = require("@root/StoryControls/StoryControls")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local e = React.createElement
