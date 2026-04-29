@@ -53,6 +53,8 @@ type StoredBinding = {
 local function GroupProvider(groupProviderProps: GroupProviderProps)
 	local props = Sift.Dictionary.join(defaultProps, groupProviderProps)
 
+	print("group", props.fillDirection)
+
 	local panels = useRef({} :: { [string]: PanelConstraints })
 	local sizeBindings = useRef({} :: { [string]: StoredBinding })
 

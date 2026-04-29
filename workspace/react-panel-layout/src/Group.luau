@@ -7,7 +7,6 @@ local useCallback = React.useCallback
 local Dragger = require("@root/Dragger")
 local GroupContext = require("@root/GroupContext")
 local Panel = require("@root/Panel")
-local constants = require("@root/constants")
 
 export type GroupProps = {
 	fillDirection: Enum.FillDirection?,
@@ -32,23 +31,6 @@ local function Group(groupProps: GroupProps): React.Node
 	local onDragStart = useCallback(function() end, {})
 	local onDragContinue = useCallback(function() end, {})
 	local onDragEnd = useCallback(function() end, {})
-
-	if props.id == constants.ROOT_ID then
-		return React.createElement(
-			Foundation.View,
-			{
-				tag = {
-					["size-full"] = true,
-					["row"] = isHorizontal,
-					["col"] = not isHorizontal,
-				},
-				LayoutOrder = props.LayoutOrder,
-			},
-			React.createElement(GroupContext.Provider, {
-				fillDirection = props.fillDirection,
-			}, props.children)
-		)
-	end
 
 	return React.createElement(Foundation.View, {
 		tag = {
@@ -86,7 +68,10 @@ local function Group(groupProps: GroupProps): React.Node
 		),
 
 		DraggerWrapper = React.createElement(Foundation.View, {
-			tag = "size-full",
+			tag = {
+				["size-full-0 auto-y"] = isHorizontal,
+				["size-0-full auto-x"] = not isHorizontal,
+			},
 			sizeConstraint = {
 				MaxSize = sizeBinding:map(function(size: number)
 					return Vector2.one * size
