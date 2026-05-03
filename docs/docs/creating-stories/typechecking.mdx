@@ -1,3 +1,90 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import StorybookTyped from "!!raw-loader!@site/../workspace/code-samples/src/CreatingStoriesTypechecking/StorybookTyped.luau";
+import StoryVanillaTyped from "!!raw-loader!@site/../workspace/code-samples/src/CreatingStoriesTypechecking/StoryVanillaTyped.luau";
+import StoryFlipbookApiTyped from "!!raw-loader!@site/../workspace/code-samples/src/CreatingStoriesTypechecking/StoryFlipbookApiTyped.luau";
+import ControlsSchemaTyped from "!!raw-loader!@site/../workspace/code-samples/src/CreatingStoriesTypechecking/ControlsSchemaTyped.luau";
+
 # Typechecking
 
-We'll have examples here later. For now, check out [Storyteller](https://github.com/flipbook-labs/storyteller) which includes Story and Storybook types so you can typecheck your modules.
+Flipbook ships with Luau type definitions for stories, storybooks, and controls. Annotating your modules with these types catches mistakes at write-time and gives your editor full autocomplete support for all story properties.
+
+:::note
+Type annotations require the [Flipbook API](https://github.com/flipbook-labs/storyteller) package. Install it via Wally (`flipbook-labs/storyteller`) or download it from the [GitHub releases page](https://github.com/flipbook-labs/storyteller/releases).
+:::
+
+## Storybook
+
+Annotate a storybook module with `Storyteller.Storybook` to get completions for all storybook properties and an error if required fields are missing.
+
+<CodeBlock language="lua" title="Project.storybook.luau">
+	{StorybookTyped}
+</CodeBlock>
+
+| **Property** | **Type**             | **Description**                                          |
+| ------------ | -------------------- | -------------------------------------------------------- |
+| `storyRoots` | `{ Instance }`       | Required. Locations searched for Story modules.          |
+| `name`       | `string?`            | Display name. Defaults to the module name.               |
+| `packages`   | `{ [string]: any }?` | UI library packages for rendering (React, Fusion, etc.). |
+
+## Story
+
+Annotate a story module with `Storyteller.Story<T>`, where `T` is the return type of your render function. Using `any` works for most cases, but a more specific type (like `React.Element`) lets the type-checker verify your `story` function's return value.
+
+<Tabs groupId="main">
+	<TabItem value="default" label="Vanilla" default>
+		<CodeBlock language="lua" title="Button.story.luau">
+			{StoryVanillaTyped}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="Button.story.luau">
+			{StoryFlipbookApiTyped}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+| **Property** | **Type**                        | **Description**                                            |
+| ------------ | ------------------------------- | ---------------------------------------------------------- |
+| `story`      | `T \| (props: StoryProps) -> T` | Required. The render function or element.                  |
+| `controls`   | `StoryControlsSchema?`          | Control definitions for the Controls panel.                |
+| `name`       | `string?`                       | Display name. Defaults to the module name.                 |
+| `summary`    | `string?`                       | Description shown above the story preview.                 |
+| `packages`   | `{ [string]: any }?`            | Override the storybook's renderer packages for this story. |
+
+## Controls
+
+The `Storyteller.StoryControlsSchema` type describes the `controls` table. Annotating it separately from the story is useful when you want to define controls in one place and reference them in multiple stories.
+
+<CodeBlock language="lua" title="Button.story.luau">
+	{ControlsSchemaTyped}
+</CodeBlock>
+
+:::tip
+The `controls` annotation also validates control definitions at type-check time — for example, setting a `default` value that isn't in the `items` list of a Select control will be caught as a type error.
+:::
+
+## Props
+
+The `story` function receives a `props` argument. Its `controls` field holds the current values of all controls defined in the `controls` table. Values are typed according to the control type:
+
+| **Control type**           | **Value type in `props.controls`** |
+| -------------------------- | ---------------------------------- |
+| `createBooleanControl`     | `boolean`                          |
+| `createStringControl`      | `string`                           |
+| `createNumberControl`      | `number`                           |
+| `createColorControl`       | `Color3`                           |
+| `createDateControl`        | `DateTime`                         |
+| `createSliderControl`      | `number`                           |
+| `createSelectControl`      | `StoryControlValue`                |
+| `createRadioControl`       | `StoryControlValue`                |
+| `createMultiSelectControl` | `{ StoryControlValue }`            |
+| `createCheckControl`       | `{ StoryControlValue }`            |
+
+`StoryProps` also exposes `container` (the `Instance` Flipbook mounts your story into) and `theme` (the current Roblox Studio theme string: `"Light"` or `"Dark"`).

@@ -1,0 +1,223 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import StringUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/StringUiLabs.luau";
+import StringVanilla from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/StringVanilla.luau";
+import StringFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/StringFlipbookApi.luau";
+import NumberUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/NumberUiLabs.luau";
+import NumberVanilla from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/NumberVanilla.luau";
+import NumberFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/NumberFlipbookApi.luau";
+import BooleanUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/BooleanUiLabs.luau";
+import BooleanVanilla from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/BooleanVanilla.luau";
+import BooleanFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/BooleanFlipbookApi.luau";
+import ChooseUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/ChooseUiLabs.luau";
+import ChooseFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/ChooseFlipbookApi.luau";
+import EnumListUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/EnumListUiLabs.luau";
+import EnumListFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/EnumListFlipbookApi.luau";
+import SliderUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/SliderUiLabs.luau";
+import SliderFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/SliderFlipbookApi.luau";
+import RgbaUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/RgbaUiLabs.luau";
+import RgbaFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/RgbaFlipbookApi.luau";
+import ControlGroupUiLabs from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/ControlGroupUiLabs.luau";
+import StoryFormatFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationUiLabs/StoryFormatFlipbookApi.luau";
+
+# UI Labs
+
+[UI Labs](https://github.com/ui-labs-rblx/ui-labs) is a storybook plugin for Roblox with its own story format. Flipbook can automatically read most UI Labs stories with no changes required, so you can migrate gradually at your own pace.
+
+## Automatic Migration
+
+When Flipbook loads a story, it detects the UI Labs control format and converts it on the fly. The following control types are migrated automatically:
+
+| **UI Labs**                | **Flipbook Equivalent** | **Notes**                                                                |
+| -------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `UILabs.String()`          | `String`                | Value and default are preserved                                          |
+| `UILabs.Number()`          | `Number`                | `Min`/`Max` become `range`, `Step` becomes `step`                        |
+| `UILabs.Boolean()`         | `Boolean`               | Value and default are preserved                                          |
+| `UILabs.Choose()`          | `Select`                | Items are stringified via `tostring()`; `DefIndex` sets the default      |
+| `UILabs.EnumList()`        | `Select`                | Dictionary values become items (sorted); `DefIndex` key sets the default |
+| `UILabs.Slider()`          | `Slider`                | `Min`/`Max` become `range`, `Step` becomes `step`                        |
+| `UILabs.RGBA()`            | `Color`                 | The `Color` field is extracted; transparency is not preserved            |
+| `UILabs.Object()`          | (skipped)               | Instance references are not supported and will be ignored                |
+| `UILabs.Datatype.Color3()` | `Color`                 | The `Color3` value is used directly                                      |
+| `UILabs.ControlGroup()`    | (flattened)             | Controls inside a group are merged into the top-level table              |
+| `UILabs.Ordered()`         | (unwrapped)             | The display order is discarded; the inner control is migrated normally   |
+
+## Rewriting Controls in Flipbook's Format
+
+If you want to move away from the UI Labs API entirely, here's how each type maps across. The **Vanilla** tab shows the shortest equivalent using raw primitive values. The **Flipbook API** tab shows the fully-typed version with the richest widget support.
+
+### String
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="StringUiLabs.luau">
+			{StringUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="default" label="Vanilla">
+		<CodeBlock language="lua" title="StringVanilla.luau">
+			{StringVanilla}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="StringFlipbookApi.luau">
+			{StringFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+### Number
+
+`UILabs.Number` takes `(default, min?, max?, step?)`.
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="NumberUiLabs.luau">
+			{NumberUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="default" label="Vanilla">
+		<CodeBlock language="lua" title="NumberVanilla.luau">
+			{NumberVanilla}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="NumberFlipbookApi.luau">
+			{NumberFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+### Boolean
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="BooleanUiLabs.luau">
+			{BooleanUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="default" label="Vanilla">
+		<CodeBlock language="lua" title="BooleanVanilla.luau">
+			{BooleanVanilla}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="BooleanFlipbookApi.luau">
+			{BooleanFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+### Choose → Select
+
+`UILabs.Choose` takes `(list, defIndex?)` where `defIndex` is a 1-based array index.
+
+:::warning
+During auto-migration, items in a `Choose` list are converted to strings via `tostring()`. If your list contains non-string values (numbers, Color3, etc.), the migrated control values will be strings. When rewriting manually, keep the original types in `items`.
+:::
+
+:::note
+There is no vanilla equivalent for a dropdown list. Use the Flipbook API to preserve the selection widget.
+:::
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="ChooseUiLabs.luau">
+			{ChooseUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="ChooseFlipbookApi.luau">
+			{ChooseFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+### EnumList → Select
+
+`UILabs.EnumList` takes `(dict, defKey)` where `defKey` is the string key name of the default value.
+
+:::note
+There is no vanilla equivalent for an EnumList. Use the Flipbook API.
+:::
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="EnumListUiLabs.luau">
+			{EnumListUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="EnumListFlipbookApi.luau">
+			{EnumListFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+:::tip
+Use the `tostring` option to restore the original display names from the UI Labs `EnumList` keys.
+:::
+
+### Slider
+
+`UILabs.Slider` takes `(default, min, max, step?)`.
+
+:::note
+There is no vanilla equivalent for a range slider. Use the Flipbook API to preserve the slider widget.
+:::
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="SliderUiLabs.luau">
+			{SliderUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="SliderFlipbookApi.luau">
+			{SliderFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+### RGBA → Color
+
+`UILabs.RGBA` takes `(color, transparency?)`. Flipbook's `Color` control only supports `Color3` — transparency is not carried over.
+
+<Tabs>
+	<TabItem value="ui-labs" label="UI Labs" default>
+		<CodeBlock language="lua" title="RgbaUiLabs.luau">
+			{RgbaUiLabs}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="RgbaFlipbookApi.luau">
+			{RgbaFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+## Control Groups
+
+`UILabs.ControlGroup` nests controls under a group name. Flipbook does not support nested groups — when auto-migrating, controls inside a group are flattened into the top-level `controls` table. Duplicate keys across groups will be overwritten.
+
+<CodeBlock language="lua" title="ControlGroupUiLabs.luau">
+	{ControlGroupUiLabs}
+</CodeBlock>
+
+## Unsupported Controls
+
+The following UI Labs control types are silently ignored during auto-migration:
+
+- **`UILabs.Object()`** — Instance references cannot be serialized across stories.
+
+## Story Format
+
+Beyond controls, UI Labs and Flipbook use different story structures. A full Flipbook story looks like this:
+
+<CodeBlock language="lua" title="StoryFormatFlipbookApi.luau">
+	{StoryFormatFlipbookApi}
+</CodeBlock>
+
+See [Writing Stories](/docs/creating-stories/writing-stories) for the full story format and available props.

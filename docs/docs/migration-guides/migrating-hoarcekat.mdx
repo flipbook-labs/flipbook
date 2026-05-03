@@ -1,0 +1,83 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+import StorybookSetup from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/StorybookSetup.luau";
+import HelloWorldComponent from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/HelloWorldComponent.luau";
+import HoarcekatStoryBefore from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/HoarcekatStoryBefore.luau";
+import FlipbookStoryBasic from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/FlipbookStoryBasic.luau";
+import ControlsVanilla from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/ControlsVanilla.luau";
+import ControlsFlipbookApi from "!!raw-loader!@site/../workspace/code-samples/src/MigrationHoarcekat/ControlsFlipbookApi.luau";
+
+# Hoarcekat
+
+[Hoarcekat](https://github.com/Kampfkarren/hoarcekat/) is a popular storybook plugin like Flipbook. Because of its popularity, its story format is supported by Flipbook so that you have an easier time migrating.
+
+:::note
+This guide assumes you are using [Rojo](https://github.com/rojo-rbx/rojo/) to manage your source code. If you are not then your mileage may vary.
+:::
+
+## Creating the Storybook
+
+The main difference in how Flipbook and Hoarcekat handle stories is that Flipbook requires a "storybook" file to know where your stories are. As such, to migrate over from Hoarcekat the first thing you should do is create a storybook for your project.
+
+To do this, create a new `ProjectName.storybook.luau` file at the root of your project with the following contents:
+
+<CodeBlock language="lua" title="StorybookSetup.luau">
+	{StorybookSetup}
+</CodeBlock>
+
+From there the storybook will appear in Flipbook's sidebar and you should be able to select your stories with no problem.
+
+## Migrating Stories
+
+To fully benefit from the features Flipbook has to offer, this section will guide you in converting an existing Hoarcekat story to Flipbook's format.
+
+We will use the following component and story as an example:
+
+<CodeBlock language="lua" title="HelloWorldComponent.luau">
+	{HelloWorldComponent}
+</CodeBlock>
+
+<CodeBlock language="lua" title="HoarcekatStoryBefore.luau">
+	{HoarcekatStoryBefore}
+</CodeBlock>
+
+Converting a Hoarcekat story like this into one compatible with Flipbook is quite easy. In fact, all that's needed from the above story is the call to `Roact.createElement`:
+
+<CodeBlock language="lua" title="FlipbookStoryBasic.luau">
+    {FlipbookStoryBasic}
+</CodeBlock>
+
+Since Flipbook assumes use of Roact, you don't have to handle mounting and unmounting yourself. And now that the story has been migrated we can start supercharging it. For starters, we can give the story a summary that will be displayed when viewing it:
+
+```diff
+local Roact = require(script.Parent.Parent.Roact)
+local HelloWorld = require(script.Parent.HelloWorld)
+
+return {
++   summary = "This is a Hoarcekat component that has been converted for Flipbook!"
+    story = Roact.createElement(HelloWorld, {
+        name = "Flipbook"
+    })
+}
+```
+
+Next let's add some controls so we can change the `name` prop without having to manually modify the story:
+
+<Tabs groupId="main">
+	<TabItem value="default" label="Vanilla" default>
+		<CodeBlock language="lua" title="ControlsVanilla.luau">
+			{ControlsVanilla}
+		</CodeBlock>
+	</TabItem>
+	<TabItem value="storyteller" label="Flipbook API">
+		<CodeBlock language="lua" title="ControlsFlipbookApi.luau">
+			{ControlsFlipbookApi}
+		</CodeBlock>
+	</TabItem>
+</Tabs>
+
+You will now have a "Controls" section with a text input field. Try changing the value to see your component update live.
+
+You are now equipped to migrate your other Hoarcekat stories over to Flipbook!
