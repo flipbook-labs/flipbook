@@ -28,17 +28,21 @@ export type Props = {
 }
 
 local function StoryControlRow(props: Props)
-	local setControl = useCallback(function(newValue: any)
-		local newValueAsNumber = tonumber(newValue)
+	local controlType = props.control.type
+	local shouldCoerceToNumber = controlType == ControlType.Number or controlType == ControlType.Slider
 
-		if newValueAsNumber ~= nil then
-			newValue = newValueAsNumber
+	local setControl = useCallback(function(newValue: any)
+		if shouldCoerceToNumber then
+			local newValueAsNumber = tonumber(newValue)
+
+			if newValueAsNumber ~= nil then
+				newValue = newValueAsNumber
+			end
 		end
 
 		props.setControl(props.controlName, newValue)
-	end, { props.controlName, props.setControl } :: { unknown })
+	end, { props.controlName, props.setControl, shouldCoerceToNumber } :: { unknown })
 
-	local controlType = props.control.type
 	local controlValue: (Storyteller.StoryControlValue | { Storyteller.StoryControlValue })? =
 		props.controls[props.controlName]
 
@@ -81,7 +85,7 @@ local function StoryControlRow(props: Props)
 		})
 	elseif controlType == ControlType.MultiSelect then
 		controlElement = e(MultiSelectControl, {
-			controlSchema = props.control :: Storyteller.CheckControl,
+			controlSchema = props.control :: Storyteller.MultiSelectControl,
 			controlValue = controlValue :: { Storyteller.StoryControlValue },
 			onChanged = setControl,
 		})
@@ -99,7 +103,7 @@ local function StoryControlRow(props: Props)
 		})
 	elseif controlType == ControlType.Slider then
 		controlElement = e(SliderControl, {
-			controlSchema = props.control :: Storyteller.NumberControl,
+			controlSchema = props.control :: Storyteller.SliderControl,
 			controlValue = controlValue :: number,
 			onChanged = setControl,
 		})
@@ -124,9 +128,9 @@ local function StoryControlRow(props: Props)
 				LayoutOrder = 2,
 				tag = "align-x-left auto-y fill row",
 			}, {
-				-- Keying by the identity of sortedControls fixes a bug where
-				-- the options visually do not update when two stories have the
-				-- exact same controls.
+				-- Keying by control schema identity ensures the option UI
+				-- refreshes when switching between stories with equivalent
+				-- control names.
 				[`Option_{props.control}`] = controlElement,
 			}),
 		}),

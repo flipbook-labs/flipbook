@@ -5,7 +5,6 @@ local ReactButton = require("./ReactButton")
 
 local controls: Storyteller.StoryControlsSchema = {
 	text = "Click Me",
-	isDisabled = false,
 }
 
 local story: Storyteller.Story<any> = {
@@ -13,7 +12,6 @@ local story: Storyteller.Story<any> = {
 	story = function(props)
 		return React.createElement(ReactButton, {
 			text = props.controls.text,
-			isDisabled = props.controls.isDisabled,
 			onActivated = function()
 				print("click")
 			end,
