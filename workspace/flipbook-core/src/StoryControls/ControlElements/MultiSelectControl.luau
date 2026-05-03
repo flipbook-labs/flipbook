@@ -41,7 +41,10 @@ local function MultiSelectControl(props: Props)
 			end
 		end
 		if not found then
-			table.insert(new, getItemFromId(itemIdStr))
+			local item = getItemFromId(itemIdStr)
+			if item ~= nil then
+				table.insert(new, item)
+			end
 		end
 		props.onChanged(new)
 	end, { props.controlValue, props.onChanged, getItemFromId } :: { unknown })
