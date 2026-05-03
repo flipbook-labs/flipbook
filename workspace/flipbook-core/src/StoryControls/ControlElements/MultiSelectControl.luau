@@ -19,6 +19,10 @@ local function getItemId(item: unknown): ItemId
 	return tostring(item)
 end
 
+local function getItemText(schema: Storyteller.MultiSelectControl, value: Storyteller.StoryControlValue): string
+	return if typeof(schema.tostring) == "function" then schema.tostring(value) else tostring(value)
+end
+
 local function MultiSelectControl(props: Props)
 	local getItemFromId = useCallback(function(id: ItemId): Storyteller.StoryControlValue?
 		for _, value in props.controlSchema.items do
@@ -56,9 +60,7 @@ local function MultiSelectControl(props: Props)
 
 			local item: Foundation.DropdownItem = {
 				id = id,
-				text = if typeof(props.controlSchema.tostring) == "function"
-					then props.controlSchema.tostring(value)
-					else tostring(value),
+				text = getItemText(props.controlSchema, value),
 				isChecked = isChecked,
 			}
 
@@ -66,28 +68,24 @@ local function MultiSelectControl(props: Props)
 		end)
 	end, { props.controlSchema, props.controlValue } :: { unknown })
 
-	local value = useMemo(function(): ItemId?
-		-- It would have been nice to display a comma-seperated list of the
-		-- checked values, but `Dropdown.Root` only accepts an ItemId for the
-		-- `value` prop. So we're opting instead to show the first selected
-		-- value
-		if #props.controlValue > 0 then
-			return getItemId(props.controlValue[1])
+	local placeholder = useMemo(function(): string
+		if #props.controlValue == 0 then
+			return "Make a selection..."
 		end
-
-		return nil
-	end, { props.controlValue } :: { unknown })
+		local parts = {}
+		for _, value in props.controlValue do
+			table.insert(parts, getItemText(props.controlSchema, value))
+		end
+		return table.concat(parts, ", ")
+	end, { props.controlValue, props.controlSchema } :: { unknown })
 
 	return e(Foundation.Dropdown.Root, {
 		items = items,
 		label = "",
 		onItemChanged = onItemChanged,
-		value = value,
-		placeholder = "Make a selection...",
+		placeholder = placeholder,
 		size = Foundation.Enums.InputSize.Small,
 		width = UDim.new(1, 0),
-
-		-- TODO: Keep open while selecting options. Close when clicking outside
 	})
 end
 
