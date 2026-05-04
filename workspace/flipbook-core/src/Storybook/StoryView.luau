@@ -132,7 +132,7 @@ local function StoryView(props: StoryViewProps)
 				}),
 			}),
 
-			Controls = story.controls ~= nil and e(StoryControlsPanel, {
+			Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
 				LayoutOrder = 4,
 				controlsSchema = story.controls,
 				controls = controls,
