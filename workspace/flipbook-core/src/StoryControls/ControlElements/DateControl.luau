@@ -12,6 +12,7 @@ export type Props = {
 
 local function DateControl(props: Props)
 	return e(Foundation.DateTimePicker, {
+		key = if props.controlValue then tostring(props.controlValue.UnixTimestamp) else "nil",
 		label = "",
 		defaultDates = props.controlValue,
 		onChanged = function(startDateTime: DateTime?, _endDateTime: DateTime?)
