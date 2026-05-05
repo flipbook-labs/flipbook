@@ -5,7 +5,6 @@ local StoryControls = require("./StoryControls")
 local StoryControlsStore = require("./StoryControlsStore").instance
 
 local useMemo = React.useMemo
-local useLayoutEffect = React.useLayoutEffect
 
 return {
 	summary = "Panel for configuring the controls of a story",
