@@ -2,24 +2,14 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryControls = require("./StoryControls")
+local StoryControlsStore = require("./StoryControlsStore").instance
 
-local useCallback = React.useCallback
 local useMemo = React.useMemo
-local useState = React.useState
+local useLayoutEffect = React.useLayoutEffect
 
 return {
 	summary = "Panel for configuring the controls of a story",
 	story = function()
-		local controls, setControls = useState({} :: Storyteller.StoryControls)
-
-		local setControl = useCallback(function(key: string, value: any)
-			setControls(function(prev)
-				local new = table.clone(prev)
-				new[key] = value
-				return new
-			end)
-		end, {})
-
 		local controlsSchema = useMemo(function(): Storyteller.StoryControlsSchema
 			return {
 				text = Storyteller.createStringControl(),
@@ -81,12 +71,10 @@ return {
 			}
 		end, {})
 
-		print("controls", controls)
+		StoryControlsStore.setSchema(controlsSchema)
 
 		return React.createElement(StoryControls, {
 			controlsSchema = controlsSchema,
-			controls = controls,
-			setControl = setControl,
 		})
 	end,
 }

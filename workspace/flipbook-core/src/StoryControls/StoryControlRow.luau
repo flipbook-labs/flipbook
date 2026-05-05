@@ -1,5 +1,6 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local BooleanControl = require("@root/StoryControls/ControlElements/BooleanControl")
@@ -11,6 +12,7 @@ local NumberControl = require("@root/StoryControls/ControlElements/NumberControl
 local RadioControl = require("@root/StoryControls/ControlElements/RadioControl")
 local SelectControl = require("@root/StoryControls/ControlElements/SelectControl")
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
+local StoryControlsStore = require("@root/StoryControls/StoryControlsStore").instance
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
 
 local ControlType = Storyteller.ControlType
@@ -18,12 +20,11 @@ type ControlType = Storyteller.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback
+local useSignalState = ReactCharm.useSignalState
 
 export type Props = {
 	controlName: string,
 	control: Storyteller.StoryControl,
-	controls: Storyteller.StoryControls,
-	setControl: (key: string, value: any) -> (),
 	LayoutOrder: number?,
 }
 
@@ -40,11 +41,10 @@ local function StoryControlRow(props: Props)
 			end
 		end
 
-		props.setControl(props.controlName, newValue)
-	end, { props.controlName, props.setControl, shouldCoerceToNumber } :: { unknown })
+		StoryControlsStore.setControl(props.controlName, newValue)
+	end, { props.controlName, shouldCoerceToNumber } :: { unknown })
 
-	local controlValue: (Storyteller.StoryControlValue | { Storyteller.StoryControlValue })? =
-		props.controls[props.controlName]
+	local controlValue = useSignalState(StoryControlsStore.getControlValue(props.controlName))
 
 	local controlElement: React.Node
 	if controlType == ControlType.Boolean then
@@ -68,7 +68,7 @@ local function StoryControlRow(props: Props)
 	elseif controlType == ControlType.Check then
 		controlElement = e(CheckControl, {
 			controlSchema = props.control :: Storyteller.CheckControl,
-			controlValue = controlValue :: { Storyteller.StoryControlValue },
+			controlValue = (controlValue :: { Storyteller.StoryControlValue }) or {},
 			onChanged = setControl,
 		})
 	elseif controlType == ControlType.Color then
@@ -86,7 +86,7 @@ local function StoryControlRow(props: Props)
 	elseif controlType == ControlType.MultiSelect then
 		controlElement = e(MultiSelectControl, {
 			controlSchema = props.control :: Storyteller.MultiSelectControl,
-			controlValue = controlValue :: { Storyteller.StoryControlValue },
+			controlValue = (controlValue :: { Storyteller.StoryControlValue }) or {},
 			onChanged = setControl,
 		})
 	elseif controlType == ControlType.Radio then

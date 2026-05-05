@@ -29,8 +29,6 @@ end
 
 export type StoryControlsProps = {
 	controlsSchema: Storyteller.StoryControlsSchema,
-	controls: Storyteller.StoryControls,
-	setControl: (key: string, value: any) -> (),
 } & Foundation.CommonProps
 
 -- NOTE(Paul): In the future, we'll want to store more than just
@@ -51,8 +49,6 @@ local function StoryControls(props: StoryControlsProps)
 		table.sort(names)
 		return names
 	end, { props.controlsSchema })
-
-	local hydratedControls = Storyteller.hydrateControls(props.controlsSchema, props.controls)
 
 	for index, name in sortedControlNames do
 		local control: (Storyteller.StoryControl | Storyteller.StoryControlValue)? = props.controlsSchema[name]
@@ -75,8 +71,6 @@ local function StoryControls(props: StoryControlsProps)
 			Row = e(StoryControlRow, {
 				controlName = name,
 				control = resolvedControl,
-				setControl = props.setControl,
-				controls = hydratedControls,
 				LayoutOrder = 1,
 			}),
 

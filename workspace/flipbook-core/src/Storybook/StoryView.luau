@@ -1,5 +1,4 @@
 local Foundation = require("@rbxpkg/Foundation")
-local LuauPolyfill = require("@pkg/LuauPolyfill")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
@@ -8,6 +7,7 @@ local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local StoryControlsStore = require("@root/StoryControls/StoryControlsStore").instance
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -15,13 +15,9 @@ local Divider = Foundation.Divider
 local Text = Foundation.Text
 local View = Foundation.View
 
-local Object = LuauPolyfill.Object
-
 local e = React.createElement
-local useCallback = React.useCallback
-local useEffect = React.useEffect
 local useMemo = React.useMemo
-local useState = React.useState
+local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
@@ -41,26 +37,7 @@ local function StoryView(props: StoryViewProps)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
 
-	local modifiedControls, setModifiedControls = useState({})
-	local controls = useMemo(function()
-		local newControls = {}
-
-		if story ~= nil and story.controls ~= nil then
-			for key, value in story.controls do
-				if modifiedControls[key] ~= nil then
-					newControls[key] = modifiedControls[key]
-				else
-					if typeof(value) == "table" then
-						newControls[key] = value.default
-					else
-						newControls[key] = value
-					end
-				end
-			end
-		end
-
-		return newControls
-	end, { story, modifiedControls } :: { any })
+	local controls = useSignalState(StoryControlsStore.getControls)
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
@@ -71,17 +48,12 @@ local function StoryView(props: StoryViewProps)
 		}
 	end, { theme, plugin, overlayGui } :: { unknown })
 
-	local setControl = useCallback(function(key: string, value: any)
-		setModifiedControls(function(currentValue)
-			return Object.assign({}, currentValue, {
-				[key] = value,
-			})
-		end)
-	end, {})
-
-	useEffect(function()
-		setModifiedControls({})
-	end, { story })
+	local prevStory = useRef(nil :: any)
+	if prevStory.current ~= story then
+		prevStory.current = story
+		StoryControlsStore.clear()
+		StoryControlsStore.setSchema(story and story.controls or nil)
+	end
 
 	return e(View, {
 		tag = "size-full bg-surface-200",
@@ -135,8 +107,6 @@ local function StoryView(props: StoryViewProps)
 			Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
 				LayoutOrder = 4,
 				controlsSchema = story.controls,
-				controls = controls,
-				setControl = setControl,
 			}),
 		}),
 	})
