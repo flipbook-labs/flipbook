@@ -62,7 +62,7 @@ local function createStoryControlsStore(): StoryControlsStore
 		signals[key].set(value)
 	end
 
-	local getControls = Charm.computed(function()
+	local getRawControls = Charm.computed(function()
 		local result: StoryControls = {}
 		local schema = getSchema()
 		if schema ~= nil then
@@ -74,6 +74,15 @@ local function createStoryControlsStore(): StoryControlsStore
 			end
 		end
 		return result
+	end)
+
+	local getControls = Charm.computed(function()
+		local schema = getSchema()
+		local controls = getRawControls()
+		if schema == nil then
+			return controls
+		end
+		return Storyteller.hydrateControls(schema, controls)
 	end)
 
 	local function clear()
