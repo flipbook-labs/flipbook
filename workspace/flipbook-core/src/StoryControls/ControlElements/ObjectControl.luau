@@ -15,8 +15,6 @@ export type Props = {
 	onChanged: (Instance?) -> (),
 }
 
-local PLACEHOLDER = "Select an Instance"
-
 local function ObjectControl(props: Props)
 	local isSelecting, setIsSelecting = useState(false)
 	local isActive, setIsActive = useState(false)
@@ -89,24 +87,24 @@ local function ObjectControl(props: Props)
 	}, {
 		Placeholder = if not currentValue
 			then e(Foundation.Text, {
-				tag = "auto-x size-0-full content-muted text-body-medium",
+				tag = "auto-x size-0-full content-muted text-body-small",
 				LayoutOrder = 1,
-				Text = if currentValue then currentValue.Name else PLACEHOLDER,
+				Text = "Select an Instance...",
 			})
 			else nil,
 
 		Selection = if currentValue
 			then e(Foundation.View, {
-				tag = "auto-xy col",
+				tag = "auto-x size-0-full col",
 			}, {
 				DisplayName = e(Foundation.Text, {
-					tag = "auto-xy content-default text-body-medium",
+					tag = "auto-xy content-default text-body-small",
 					LayoutOrder = 1,
 					Text = currentValue.Name,
 				}),
 
 				FullName = e(Foundation.Text, {
-					tag = "auto-xy content-muted text-body-small",
+					tag = "auto-xy content-muted text-caption-small",
 					LayoutOrder = 2,
 					Text = currentValue:GetFullName(),
 				}),
