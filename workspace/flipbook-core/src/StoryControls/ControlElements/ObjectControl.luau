@@ -15,7 +15,7 @@ export type Props = {
 	onChanged: (Instance?) -> (),
 }
 
-local PLACEHOLDER = "Click to pick..."
+local PLACEHOLDER = "Select an Instance"
 
 local function ObjectControl(props: Props)
 	local isSelecting, setIsSelecting = useState(false)
@@ -24,6 +24,8 @@ local function ObjectControl(props: Props)
 	local currentValue = props.controlValue or props.controlSchema.default
 
 	local onActivated = useCallback(function()
+		-- When selected, this will deselect the input giving the user an escape
+		-- route.
 		if isSelecting then
 			setIsActive(false)
 			setIsSelecting(false)
@@ -77,7 +79,7 @@ local function ObjectControl(props: Props)
 
 	local root: React.ReactElement<any> = e(Foundation.View, {
 		tag = {
-			["size-full-800 row align-y-center gap-small bg-shift-100 radius-medium padding-x-small stroke-position-inner"] = true,
+			["size-full-800 row align-y-center gap-small bg-shift-100 radius-medium padding-x-small flex-between stroke-position-inner"] = true,
 			["stroke-standard"] = not isActive,
 			["stroke-thick"] = isActive or isSelecting,
 			["stroke-default"] = not isSelecting,
@@ -91,10 +93,11 @@ local function ObjectControl(props: Props)
 	}, {
 		ObjectLabel = e(Foundation.Text, {
 			tag = {
-				["auto-xy fill text-body-medium"] = true,
+				["auto-xy text-body-medium"] = true,
 				["content-muted"] = currentValue == nil,
 				["content-default"] = currentValue ~= nil,
 			},
+			LayoutOrder = 1,
 			Text = if currentValue then currentValue.Name else PLACEHOLDER,
 		}),
 
