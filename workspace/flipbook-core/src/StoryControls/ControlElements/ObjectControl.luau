@@ -39,10 +39,6 @@ local function ObjectControl(props: Props)
 		end
 	end, { currentValue, isSelecting, props.onChanged } :: { unknown })
 
-	local onBackdropActivated = useCallback(function()
-		setIsSelecting(false)
-	end, {})
-
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsActive(
 			newState == Foundation.Enums.ControlState.Hover or newState == Foundation.Enums.ControlState.Pressed
@@ -122,15 +118,6 @@ local function ObjectControl(props: Props)
 			icon = buttonIcon,
 			size = Foundation.Enums.InputSize.XSmall,
 			onActivated = onActivated,
-		}),
-
-		Backdrop = e(Foundation.Popover.Root, {
-			isOpen = isSelecting,
-		}, {
-			Content = e(Foundation.Popover.Content, {
-				hasArrow = false,
-				onPressedOutside = onBackdropActivated,
-			}),
 		}),
 	})
 
