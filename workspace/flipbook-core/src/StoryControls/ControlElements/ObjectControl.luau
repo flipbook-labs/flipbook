@@ -91,20 +91,36 @@ local function ObjectControl(props: Props)
 		},
 		onActivated = onActivated,
 	}, {
-		ObjectLabel = e(Foundation.Text, {
-			tag = {
-				["auto-xy text-body-medium"] = true,
-				["content-muted"] = currentValue == nil,
-				["content-default"] = currentValue ~= nil,
-			},
-			LayoutOrder = 1,
-			Text = if currentValue then currentValue.Name else PLACEHOLDER,
-		}),
+		Placeholder = if not currentValue
+			then e(Foundation.Text, {
+				tag = "auto-x size-0-full content-muted text-body-medium",
+				LayoutOrder = 1,
+				Text = if currentValue then currentValue.Name else PLACEHOLDER,
+			})
+			else nil,
+
+		Selection = if currentValue
+			then e(Foundation.View, {
+				tag = "auto-xy col",
+			}, {
+				DisplayName = e(Foundation.Text, {
+					tag = "auto-xy content-default text-body-medium",
+					LayoutOrder = 1,
+					Text = currentValue.Name,
+				}),
+
+				FullName = e(Foundation.Text, {
+					tag = "auto-xy content-muted text-body-small",
+					LayoutOrder = 2,
+					Text = currentValue:GetFullName(),
+				}),
+			})
+			else nil,
 
 		PrimaryAction = e(Foundation.IconButton, {
 			LayoutOrder = 2,
 			icon = buttonIcon,
-			size = Foundation.Enums.InputSize.Small,
+			size = Foundation.Enums.InputSize.XSmall,
 			onActivated = onActivated,
 		}),
 
@@ -117,14 +133,6 @@ local function ObjectControl(props: Props)
 			}),
 		}),
 	})
-
-	if currentValue then
-		root = e(Foundation.Tooltip, {
-			title = currentValue:GetFullName(),
-			side = Foundation.Enums.PopoverSide.Top,
-			align = Foundation.Enums.PopoverAlign.Center,
-		}, root)
-	end
 
 	return root
 end
