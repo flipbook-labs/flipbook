@@ -21,12 +21,12 @@ return {
 			Blue = Color3.new(0, 0, 1),
 		}, "Red"),
 
-		Group = UILabs.ControlGroup({
-			Volume = UILabs.Slider(50, 0, 100, 1),
-			FrameColor = UILabs.RGBA(Color3.new(1, 1, 1), 0),
-		}),
+		-- Group = UILabs.ControlGroup({
+		Volume = UILabs.Slider(50, 0, 100, 1),
+		FrameColor = UILabs.RGBA(Color3.new(1, 1, 1), 0),
+		-- }),
 
-		SelectedModule = UILabs.Advanced.Object("ModuleScript"),
+		-- SelectedModule = UILabs.Advanced.Object("ModuleScript"),
 
 		Greeting = UILabs.String("Hello, World!"),
 	},
