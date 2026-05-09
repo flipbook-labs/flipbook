@@ -23,18 +23,10 @@ do
 		stdio = "inherit",
 	})
 	assert(res.ok, res.stderr)
-
-	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
-		recursive = true,
-	})
-
-	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
-	-- packages by moving all the Loom dependencies into LuauPackages
-	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.10.0")
+	local FlipbookBatteries = require("@luaupkg/FlipbookBatteries@v0.10.1")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find

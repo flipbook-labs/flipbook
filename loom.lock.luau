@@ -1,32 +1,24 @@
 return {
   version = 3,
   dependencies = {
-    ["flipbook-batteries"] = "flipbook-batteries@v0.10.0",
-    lute = "lute@v1.0.1-nightly.20260423",
+    FlipbookBatteries = "FlipbookBatteries@v0.10.1",
+    Lute = "Lute@v1.0.1-nightly.20260508",
   },
   packages = {
-    ["Lute@v1.0.1-nightly.20260422"] = {
-      installPath = "Packages/Lute@v1.0.1-nightly.20260422",
-      name = "Lute",
-      rev = "v1.0.1-nightly.20260422",
-      source = "https://github.com/luau-lang/lute",
-      sourceKind = "github",
-      dependencies = {},
-    },
-    ["flipbook-batteries@v0.10.0"] = {
-      installPath = "Packages/flipbook-batteries@v0.10.0",
-      name = "flipbook-batteries",
-      rev = "v0.10.0",
+    ["FlipbookBatteries@v0.10.1"] = {
+      installPath = "@pkg/FlipbookBatteries@v0.10.1",
+      name = "FlipbookBatteries",
+      rev = "v0.10.1",
       source = "https://github.com/flipbook-labs/flipbook-batteries",
       sourceKind = "github",
       dependencies = {
-        Lute = "Lute@v1.0.1-nightly.20260422",
+        Lute = "Lute@v1.0.1-nightly.20260508",
       },
     },
-    ["lute@v1.0.1-nightly.20260423"] = {
-      installPath = "Packages/lute@v1.0.1-nightly.20260423",
-      name = "lute",
-      rev = "v1.0.1-nightly.20260423",
+    ["Lute@v1.0.1-nightly.20260508"] = {
+      installPath = "@pkg/Lute@v1.0.1-nightly.20260508",
+      name = "Lute",
+      rev = "v1.0.1-nightly.20260508",
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       dependencies = {},
