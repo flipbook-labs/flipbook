@@ -86,6 +86,4 @@ local function createStoryControlsStore(schema: StoryControlsSchema?): StoryCont
 	}
 end
 
-return {
-	new = createStoryControlsStore,
-}
+return createStoryControlsStore

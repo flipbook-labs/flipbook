@@ -1,9 +1,9 @@
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
-local StoryControlsStore = require("@root/StoryControls/StoryControlsStore")
+local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 
-type StoryControlsStore = StoryControlsStore.StoryControlsStore
+type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 type StoryControlsSchema = Storyteller.StoryControlsSchema
 
 local StoryControlsContext = React.createContext(nil :: StoryControlsStore?)
@@ -26,7 +26,7 @@ local function StoryControlsProvider(props: StoryControlsProviderProps)
 			return props.store
 		end
 
-		return StoryControlsStore.new(props.schema)
+		return createStoryControlsStore(props.schema)
 	end, { props.store, props.schema } :: { unknown })
 
 	return React.createElement(StoryControlsContext.Provider, {
