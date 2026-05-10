@@ -7,15 +7,12 @@ type StoryControls = Storyteller.StoryControls
 type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 
 export type StoryControlsStore = {
-	setSchema: (schema: StoryControlsSchema?) -> (),
 	getControlValue: (key: string) -> () -> StoryControlValue?,
 	setControl: (key: string, value: StoryControlValue?) -> (),
 	getControls: () -> StoryControls,
-	clear: () -> (),
 }
 
-local function createStoryControlsStore(): StoryControlsStore
-	local getSchema, setSchema = Charm.signal(nil :: StoryControlsSchema?)
+local function createStoryControlsStore(schema: StoryControlsSchema?): StoryControlsStore
 	type ControlSignal = {
 		get: () -> StoryControlValue?,
 		set: (StoryControlValue?) -> (),
@@ -24,7 +21,6 @@ local function createStoryControlsStore(): StoryControlsStore
 	local valueGetters: { [string]: () -> StoryControlValue? } = {}
 
 	local function getDefaultForKey(key: string): StoryControlValue?
-		local schema = getSchema()
 		if schema == nil then
 			return nil
 		end
@@ -64,7 +60,6 @@ local function createStoryControlsStore(): StoryControlsStore
 
 	local getRawControls = Charm.computed(function()
 		local result: StoryControls = {}
-		local schema = getSchema()
 		if schema ~= nil then
 			for key in schema do
 				local value = getControlValue(key)()
@@ -77,7 +72,6 @@ local function createStoryControlsStore(): StoryControlsStore
 	end)
 
 	local getControls = Charm.computed(function()
-		local schema = getSchema()
 		local controls = getRawControls()
 		if schema == nil then
 			return controls
@@ -85,22 +79,13 @@ local function createStoryControlsStore(): StoryControlsStore
 		return Storyteller.hydrateControls(schema, controls)
 	end)
 
-	local function clear()
-		for _, signal in signals do
-			signal.set(nil)
-		end
-	end
-
 	return {
-		setSchema = setSchema,
 		getControlValue = getControlValue,
 		setControl = setControl,
 		getControls = getControls,
-		clear = clear,
 	}
 end
 
 return {
-	instance = createStoryControlsStore(),
 	new = createStoryControlsStore,
 }

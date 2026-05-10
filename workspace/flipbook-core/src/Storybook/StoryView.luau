@@ -4,10 +4,10 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local PluginStore = require("@root/Plugin/PluginStore")
+local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local StoryControlsStore = require("@root/StoryControls/StoryControlsStore").instance
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -17,7 +17,6 @@ local View = Foundation.View
 
 local e = React.createElement
 local useMemo = React.useMemo
-local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
@@ -37,8 +36,6 @@ local function StoryView(props: StoryViewProps)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
 
-	local controls = useSignalState(StoryControlsStore.getControls)
-
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
 			theme = theme :: useThemeName.ThemeName,
@@ -48,65 +45,61 @@ local function StoryView(props: StoryViewProps)
 		}
 	end, { theme, plugin, overlayGui } :: { unknown })
 
-	local prevStory = useRef(nil :: any)
-	if prevStory.current ~= story then
-		prevStory.current = story
-		StoryControlsStore.clear()
-		StoryControlsStore.setSchema(story and story.controls or nil)
-	end
-
-	return e(View, {
-		tag = "size-full bg-surface-200",
+	return e(StoryControlsContext.StoryControlsProvider, {
+		schema = story and story.controls or nil,
 	}, {
-		Error = storyError ~= nil and e(StoryError, {
-			errorMessage = storyError,
-		}),
-
-		Story = story ~= nil and e(View, {
-			tag = "col size-full",
+		Content = e(View, {
+			tag = "size-full bg-surface-200",
 		}, {
-			Info = e(View, {
-				LayoutOrder = 1,
-				tag = "auto-y col gap-small padding-large size-full-0",
+			Error = storyError ~= nil and e(StoryError, {
+				errorMessage = storyError,
+			}),
+
+			Story = story ~= nil and e(View, {
+				tag = "col size-full",
 			}, {
-				Title = e(Text, {
+				Info = e(View, {
 					LayoutOrder = 1,
-					Text = story.name,
-					tag = {
-						-- NOTE (Paul): Super nitpick-y, but keeping all this on
-						-- one line made for some really weird formatting that I
-						-- couldn't accept.
-						["auto-y content-emphasis size-full-0"] = true,
-						["text-align-x-left text-align-y-top text-heading-large text-wrap"] = true,
-					},
+					tag = "auto-y col gap-small padding-large size-full-0",
+				}, {
+					Title = e(Text, {
+						LayoutOrder = 1,
+						Text = story.name,
+						tag = {
+							-- NOTE (Paul): Super nitpick-y, but keeping all this on
+							-- one line made for some really weird formatting that I
+							-- couldn't accept.
+							["auto-y content-emphasis size-full-0"] = true,
+							["text-align-x-left text-align-y-top text-heading-large text-wrap"] = true,
+						},
+					}),
+
+					Summary = story.summary ~= nil and e(Text, {
+						LayoutOrder = 2,
+						Text = story.summary,
+						sizeConstraint = { MaxSize = Vector2.new(600, math.huge) },
+						tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-medium text-wrap",
+					}),
 				}),
 
-				Summary = story.summary ~= nil and e(Text, {
+				Divider = e(Divider, {
 					LayoutOrder = 2,
-					Text = story.summary,
-					sizeConstraint = { MaxSize = Vector2.new(600, math.huge) },
-					tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-medium text-wrap",
 				}),
-			}),
 
-			Divider = e(Divider, {
-				LayoutOrder = 2,
-			}),
-
-			Preview = e(View, {
-				LayoutOrder = 3,
-				tag = "shrink size-full",
-			}, {
-				StoryPreview = React.createElement(StoryPreview, {
-					story = story,
-					controls = controls,
-					extraProps = extraProps,
+				Preview = e(View, {
+					LayoutOrder = 3,
+					tag = "shrink size-full",
+				}, {
+					StoryPreview = React.createElement(StoryPreview, {
+						story = story,
+						extraProps = extraProps,
+					}),
 				}),
-			}),
 
-			Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
-				LayoutOrder = 4,
-				controlsSchema = story.controls,
+				Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
+					LayoutOrder = 4,
+					controlsSchema = story.controls,
+				}),
 			}),
 		}),
 	})

@@ -12,7 +12,7 @@ local NumberControl = require("@root/StoryControls/ControlElements/NumberControl
 local RadioControl = require("@root/StoryControls/ControlElements/RadioControl")
 local SelectControl = require("@root/StoryControls/ControlElements/SelectControl")
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
-local StoryControlsStore = require("@root/StoryControls/StoryControlsStore").instance
+local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
 
 local ControlType = Storyteller.ControlType
@@ -22,6 +22,8 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useSignalState = ReactCharm.useSignalState
 
+local useStoryControls = StoryControlsContext.useStoryControls
+
 export type Props = {
 	controlName: string,
 	control: Storyteller.StoryControl,
@@ -29,6 +31,7 @@ export type Props = {
 }
 
 local function StoryControlRow(props: Props)
+	local storyControls = useStoryControls()
 	local controlType = props.control.type
 	local shouldCoerceToNumber = controlType == ControlType.Number or controlType == ControlType.Slider
 
@@ -41,10 +44,10 @@ local function StoryControlRow(props: Props)
 			end
 		end
 
-		StoryControlsStore.setControl(props.controlName, newValue)
-	end, { props.controlName, shouldCoerceToNumber } :: { unknown })
+		storyControls.setControl(props.controlName, newValue)
+	end, { props.controlName, shouldCoerceToNumber, storyControls } :: { unknown })
 
-	local controlValue = useSignalState(StoryControlsStore.getControlValue(props.controlName))
+	local controlValue = useSignalState(storyControls.getControlValue(props.controlName))
 
 	local controlElement: React.Node
 	if controlType == ControlType.Boolean then

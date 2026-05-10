@@ -2,7 +2,7 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryControls = require("./StoryControls")
-local StoryControlsStore = require("./StoryControlsStore").instance
+local StoryControlsContext = require("./StoryControlsContext")
 
 local useMemo = React.useMemo
 
@@ -70,10 +70,14 @@ return {
 			}
 		end, {})
 
-		StoryControlsStore.setSchema(controlsSchema)
-
-		return React.createElement(StoryControls, {
-			controlsSchema = controlsSchema,
-		})
+		return React.createElement(
+			StoryControlsContext.StoryControlsProvider,
+			{
+				schema = controlsSchema,
+			},
+			React.createElement(StoryControls, {
+				controlsSchema = controlsSchema,
+			})
+		)
 	end,
 }
