@@ -45,10 +45,12 @@ local function StoryView(props: StoryViewProps)
 		}
 	end, { theme, plugin, overlayGui } :: { unknown })
 
-	return e(StoryControlsContext.StoryControlsProvider, {
-		schema = story and story.controls or nil,
-	}, {
-		Content = e(View, {
+	return e(
+		StoryControlsContext.StoryControlsProvider,
+		{
+			schema = story and story.controls or nil,
+		},
+		e(View, {
 			tag = "size-full bg-surface-200",
 		}, {
 			Error = storyError ~= nil and e(StoryError, {
@@ -101,8 +103,8 @@ local function StoryView(props: StoryViewProps)
 					controlsSchema = story.controls,
 				}),
 			}),
-		}),
-	})
+		})
+	)
 end
 
 return React.memo(StoryView)

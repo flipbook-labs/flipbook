@@ -20,6 +20,7 @@ type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
 	story: LoadedStory,
+
 	extraProps: types.ExtraStoryProps?,
 	LayoutOrder: number?,
 }
