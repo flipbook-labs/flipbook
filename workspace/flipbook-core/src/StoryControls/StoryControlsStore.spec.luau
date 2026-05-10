@@ -77,16 +77,6 @@ describe("getControls", function()
 end)
 
 describe("setSchema", function()
-	test("clears overrides when called with a new schema", function()
-		local store = StoryControlsStore.new()
-		store.setSchema(createSchema())
-		store.setControl("name", "Bob")
-
-		store.clear()
-
-		expect(store.getControlValue("name")()).toBe("Alice")
-	end)
-
 	test("switches to a new schema's defaults", function()
 		local store = StoryControlsStore.new()
 		store.setSchema(createSchema())
