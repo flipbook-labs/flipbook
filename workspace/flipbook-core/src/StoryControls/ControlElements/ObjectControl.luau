@@ -22,20 +22,19 @@ local function ObjectControl(props: Props)
 	local currentValue = props.controlValue or props.controlSchema.default
 
 	local onActivated = useCallback(function()
-		-- When selected, this will deselect the input giving the user an escape
-		-- route.
 		if isSelecting then
 			setIsActive(false)
 			setIsSelecting(false)
-			return
-		end
-
-		if currentValue ~= nil then
-			props.onChanged(nil)
 		else
 			setIsSelecting(true)
 		end
-	end, { currentValue, isSelecting, props.onChanged } :: { unknown })
+	end, { isSelecting } :: { unknown })
+
+	local onClear = useCallback(function()
+		setIsActive(false)
+		setIsSelecting(false)
+		props.onChanged(nil)
+	end, { props.onChanged } :: { unknown })
 
 	local onStateChanged = useCallback(function(newState: Foundation.ControlState)
 		setIsActive(
@@ -45,9 +44,6 @@ local function ObjectControl(props: Props)
 			setIsSelecting(false)
 		end
 	end, {})
-
-	-- TODO: Don't clear the selection when picking again. Allow the user to
-	-- press Esc to deselect or click the selected instance again to deselect.
 
 	useEffect(function()
 		if not isSelecting then
@@ -115,7 +111,7 @@ local function ObjectControl(props: Props)
 			LayoutOrder = 2,
 			icon = buttonIcon,
 			size = Foundation.Enums.InputSize.XSmall,
-			onActivated = onActivated,
+			onActivated = if currentValue ~= nil then onClear else onActivated,
 		}),
 	})
 end
