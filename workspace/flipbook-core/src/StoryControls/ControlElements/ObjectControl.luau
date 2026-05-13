@@ -71,9 +71,9 @@ local function ObjectControl(props: Props)
 		then Foundation.Enums.IconName.X
 		else Foundation.Enums.IconName.MouseButtonLeft
 
-	local root: React.ReactElement<any> = e(Foundation.View, {
+	return e(Foundation.View, {
 		tag = {
-			["size-full-800 row align-y-center gap-small bg-shift-100 radius-medium padding-x-small flex-between stroke-position-inner"] = true,
+			["size-full-1200 row align-y-center gap-small bg-shift-100 radius-medium padding-x-small flex-between stroke-position-inner"] = true,
 			["stroke-standard"] = not isActive,
 			["stroke-thick"] = isActive or isSelecting,
 			["stroke-default"] = not isSelecting,
@@ -95,7 +95,7 @@ local function ObjectControl(props: Props)
 
 		Selection = if currentValue
 			then e(Foundation.View, {
-				tag = "auto-x size-0-full col",
+				tag = "auto-x size-0-full align-y-center col gap-xsmall",
 			}, {
 				DisplayName = e(Foundation.Text, {
 					tag = "auto-xy content-default text-body-small",
@@ -118,8 +118,6 @@ local function ObjectControl(props: Props)
 			onActivated = onActivated,
 		}),
 	})
-
-	return root
 end
 
 return React.memo(ObjectControl)
