@@ -1,15 +1,15 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
 
 local project = require("@repo/project")
 
-local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 
-dotenv()
+dotenv.config()
 
 local args = cli.parser()
 

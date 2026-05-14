@@ -1,5 +1,6 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
 local fs = require("@std/fs")
 local path = require("@std/path")
 local pp = require("@luaupkg/lute@v1.0.0/batteries/pp")
@@ -13,7 +14,6 @@ local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
 
 local copyInto = FlipbookBatteries.copyInto
-local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 local watch = FlipbookBatteries.watch
 
@@ -21,7 +21,7 @@ local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
-dotenv()
+dotenv.config()
 
 local args = cli.parser()
 
