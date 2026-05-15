@@ -156,7 +156,7 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
-Use these project skills for conditional workflows instead of keeping all details in always-loaded context:
+Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows instead of keeping all details in always-loaded context:
 
 - `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
 - `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
