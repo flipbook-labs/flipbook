@@ -8,28 +8,28 @@ Flipbook is a Roblox Studio plugin for browsing and testing UI stories. The depe
 Flipbook  ←  Storyteller  ←  ModuleLoader
 ```
 
-All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolchain and conventions, and are expected to be checked out as siblings on disk under `/Users/dminnerly/git/`.
+All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolchain and conventions, and are expected to be checked out as siblings on disk (e.g. `~/git/flipbook`, `~/git/storyteller`, `~/git/module-loader`).
 
 ---
 
 ## Tech Stack
 
-| Tool | Role |
-| --- | --- |
-| **Lute** | Task runner for all scripts (`lute run <script>`) |
-| **Rokit** | Toolchain version manager (`rokit install` pins tools from `rokit.toml`) |
-| **Wally** | Roblox package manager (Roblox runtime deps) |
-| **Loom** | Luau package manager for tooling/scripts (installs to `LuauPackages/`) |
-| **Rojo** | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds |
-| **Darklua** | Transforms Luau-style `require` paths to Roblox `require()` calls during build |
-| **Rocale** | Roblox Open Cloud CLI; uploads and runs test places in the cloud |
-| **Jest** (jsdotlua) | Unit test framework; tests run inside a Roblox place via Rocale |
-| **Selene** | Luau linter |
-| **StyLua** | Luau formatter |
-| **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller |
-| **Charm** | Reactive signals library; used for stores in both Flipbook and Storyteller |
-| **ModuleLoader** | Bypasses Roblox's require cache; core to how Flipbook reloads stories |
-| **Storyteller** | Story discovery, loading, and rendering; wraps ModuleLoader |
+| Tool                     | Role                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| **Lute**                 | Task runner for all scripts (`lute run <script>`)                              |
+| **Rokit**                | Toolchain version manager (`rokit install` pins tools from `rokit.toml`)       |
+| **Wally**                | Roblox package manager (Roblox runtime deps)                                   |
+| **Loom**                 | Luau package manager for tooling/scripts (installs to `LuauPackages/`)         |
+| **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds |
+| **Darklua**              | Transforms Luau-style `require` paths to Roblox `require()` calls during build |
+| **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud               |
+| **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                |
+| **Selene**               | Luau linter                                                                    |
+| **StyLua**               | Luau formatter                                                                 |
+| **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                          |
+| **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller     |
+| **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories          |
+| **Storyteller**          | Story discovery, loading, and rendering; wraps ModuleLoader                    |
 
 ---
 
@@ -87,30 +87,7 @@ Build output (`dist/`) is a Darklua-processed mirror of `src/` with Luau-style r
 
 Lute is the task runner for all three repos — the Luau equivalent of `npm run`. **Before reaching for any external tool or shell command, check whether a `lute run` script already covers it.** All scripts live in `.lute/<name>.luau` and are invoked as `lute run <name>`.
 
-### Full script inventory
-
-| Script | Repos | What it does |
-| --- | --- | --- |
-| `lute run install` | all | Installs Wally deps, Loom tooling, generates sourcemaps, patches packages |
-| `lute run build` | all | Compiles source → build output; see flags below |
-| `lute run test` | all | Builds (dev channel) then runs Jest tests inside a Roblox place via Rocale |
-| `lute run lint` | all | Runs Selene + StyLua `--check`; fails on any `.lua` files (must be `.luau`) |
-| `lute run analyze` | all | Runs `luau-lsp` type analysis; run `lute setup` first if running locally |
-| `lute run clean` | flipbook | Removes `build/`, Studio plugin `.rbxm`, and root `Flipbook.rbxm` |
-| `lute run bump-version` | flipbook | Bumps version in `wally.toml`, `loom.config.luau`, and `workspace/flipbook-core/rotriever.toml` |
-| `lute run serve-docs` | all | `npm install` + `npm start` in `docs/` (local Docusaurus server) |
-| `lute run try-in-flipbook` | storyteller, module-loader | Builds and overlays `dist/` into the sibling `flipbook` repo's Wally install |
-| `lute run try-in-storyteller` | module-loader | Builds and overlays `dist/` into the sibling `storyteller` repo's Wally install |
-
-### Setup (first time or after toolchain changes)
-
-```bash
-rokit install        # Install pinned tool versions from rokit.toml
-lute run install     # Install Wally deps, Loom deps, generate sourcemaps, patch packages
-cp .env.template .env  # Flipbook only; set BASE_URL at minimum for builds
-```
-
-### Building
+### Common Commands
 
 ```bash
 # Flipbook — build dev plugin to Studio plugins folder
@@ -122,62 +99,31 @@ lute run build plugin --channel dev --clean
 # Flipbook — watch mode (incremental on workspace member changes)
 lute run build plugin --channel dev --watch
 
-# Flipbook — build FlipbookCore as a rotriever bundle (for Studio-internal Flipbook)
+# Flipbook — build FlipbookCore as a rotriever bundle for local integration flows
 lute run build --target rotriever --clean
 
 # Storyteller / ModuleLoader — build dist/ bundle
 lute run build --channel dev
 lute run build --channel prod
+
+# Validation
+lute run lint
+lute run analyze
+lute run test
 ```
 
-**`--channel dev` vs `--channel prod`:** Dev builds retain `*.spec.luau`, `*.story.luau`, `*.storybook.luau`, and `jest.config.luau`. Prod builds prune them. For Flipbook, `PROD_CONFIG.prunedDirs` also strips `code-samples`, `example`, `template`, and `test-runner` from the plugin.
-
-**`--clean`:** Forces a full rebuild, bypassing the incremental build cache at `build/build-cache.json`.
-
-### Testing
-
-Tests run inside a Roblox place via Rocale (Open Cloud). A `ROBLOX_API_KEY` is required.
-
-```bash
-lute run test                            # Run all tests
-lute run test --filter "SomePattern"     # Filter by test path pattern
-lute run test --apiKey "YOUR_KEY"        # Pass API key directly instead of env var
-```
-
-### Quality checks
-
-```bash
-lute run lint       # selene + stylua --check; also fails on any .lua files (use .luau)
-lute run analyze    # luau-lsp analysis; run lute setup first if running locally
-```
+Use `--clean` after dependency changes or when build output appears stale. `--channel dev` retains tests and stories; `--channel prod` prunes development files.
 
 ---
 
 ## Code Style and Conventions
 
 - **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
-- **Formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
-- **Linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
+- **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
+- **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
+- **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
 - **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); Darklua converts these to Roblox `require()` during build.
-- **No `.lua` files:** Strictly `.luau`. The lint script explicitly errors on any `.lua` extension found.
-
----
-
-## Environment Setup (Flipbook)
-
-Copy `.env.template` to `.env` before running any build. Required variables:
-
-| Variable | Required for | Notes |
-| --- | --- | --- |
-| `BASE_URL` | All builds | Hard error if unset. Default: `https://apis.flipbooklabs.com` |
-| `LOG_LEVEL` | Runtime | Default: `info` |
-| `ENABLE_OUTPUT_LOGGING` | Runtime | Default: `false` |
-| `ROBLOX_API_KEY` | Tests | Rocale Open Cloud key |
-| `ROBLOX_UNIT_TESTING_PLACE_ID` | Tests | Pre-filled in template |
-| `ROBLOX_UNIT_TESTING_UNIVERSE_ID` | Tests | Pre-filled in template |
-
-`BASE_URL` and `LOG_LEVEL` are injected into the plugin at build time via Darklua's `_G` global injection.
 
 ---
 
@@ -208,101 +154,11 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ---
 
-## Workflow 1: Testing Changes from Dependencies in Flipbook
+## Project Skills
 
-Use this when making changes to `storyteller` or `module-loader` and wanting to verify them inside Flipbook.
+Use these project skills for conditional workflows instead of keeping all details in always-loaded context:
 
-Each dependency repo has a `lute run try-in-flipbook` script that builds the dependency and overlays it onto Flipbook's Wally package install. ModuleLoader additionally has `lute run try-in-storyteller` for overlaying into Storyteller's install.
-
-### Changed Storyteller → Try in Flipbook
-
-From the `storyteller` repo:
-
-```bash
-lute run try-in-flipbook
-```
-
-This builds Storyteller and replaces the `dist/` bundle inside `flipbook/Packages/_Index/<storyteller-pkg>/dist/`.
-
-Then from the `flipbook` repo:
-
-```bash
-lute run build plugin --channel dev --clean
-```
-
-### Changed ModuleLoader → Try in Flipbook
-
-**Option A — Push ModuleLoader directly into Flipbook:**
-
-From the `module-loader` repo:
-
-```bash
-lute run try-in-flipbook
-```
-
-**Option B — Push ModuleLoader into Storyteller first, then Storyteller into Flipbook:**
-
-```bash
-# from module-loader repo
-lute run try-in-storyteller
-
-# from storyteller repo
-lute run try-in-flipbook
-```
-
-After either option, rebuild Flipbook:
-
-```bash
-# from flipbook repo
-lute run build plugin --channel dev --clean
-```
-
-### Requirements
-
-- Repos must be checked out as siblings: `../storyteller` and `../module-loader` must exist relative to `../flipbook`.
-- The target repo (`flipbook` or `storyteller`) must have had `lute run install` run so `Packages/_Index` contains the installed package.
-- The `try-in-*` scripts default to a **prod** build (specs stripped). If you need specs in the overlay, run `lute run build --channel dev` manually in the dependency repo first, then run the try-in script (it will rebuild with the default channel again — to avoid this, edit the overlay destination manually or temporarily patch the script).
-
----
-
-## Workflow 2: Developing Flipbook Internal (ships with Roblox Studio)
-
-Flipbook Internal is the Studio-bundled version, in `studio-plugins` under `Standalone/Flipbook/`. It consumes `FlipbookCore` from the base `flipbook` repo as a Rotriever path dependency.
-
-### Setup Steps
-
-**1. Build FlipbookCore from the flipbook repo:**
-
-```bash
-# from ~/git/flipbook
-lute run build --target rotriever --clean
-```
-
-Outputs to `build/flipbook-core-rotriever/`.
-
-**2. Point studio-plugins at your local build:**
-
-In `Standalone/Flipbook/rotriever.toml` (studio-plugins repo), set:
-
-```toml
-[dependencies]
-FlipbookCore = { path = "/path/to/flipbook/build/flipbook-core-rotriever" }
-```
-
-Use the absolute path matching your local `flipbook` checkout.
-
-**3. Build and watch Flipbook Internal:**
-
-```bash
-# from the studio-plugins repo
-gobot plugin build Flipbook --prod --watch
-```
-
-**4. Enable the feature flag in Studio:** flip `FFlagEnableFlipbook2`.
-
-**5. Open a place in Studio that has stories.**
-
-### Making Iterative Changes
-
-- **Changes to flipbook source:** re-run `lute run build --target rotriever --clean` in the flipbook repo, then let the `gobot` watcher pick up the updated rotriever output.
-- **Changes directly to `Standalone/Flipbook/src`:** picked up automatically by `--watch`.
+- `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
+- `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
+- `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
+- `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
