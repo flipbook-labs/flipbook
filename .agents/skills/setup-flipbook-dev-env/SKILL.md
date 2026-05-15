@@ -17,6 +17,12 @@ Use this for first-time setup or when package/tooling state looks stale.
 ~/git/module-loader
 ```
 
+## Toolchain Manager: Rokit
+
+Rokit is the primary toolchain version manager. It reads `rokit.toml` and installs the pinned tool versions (rojo, darklua, selene, stylua, etc.) into the local toolchain.
+
+Rokit also has backwards compatibility with Foreman and Aftman (its predecessors). Any repo with a `foreman.toml` instead of `rokit.toml` can still use `rokit install` to install those tools.
+
 ## Standard Setup
 
 Run these from the repo you are working in:
@@ -46,3 +52,4 @@ cp .env.template .env
 - If a `lute run` task cannot resolve packages, run `lute run install` again.
 - If build output seems stale after dependency changes, use a clean build.
 - Do not edit generated package output directly; regenerate it from source.
+- **"ERROR No such file or directory (os error 2)"** — this opaque error means Rokit is trying to invoke a tool at a version it has not installed yet. Run `rokit install` to recover.

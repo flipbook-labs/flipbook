@@ -24,20 +24,22 @@ The output path is `build/flipbook-core-rotriever/`.
 FlipbookCore = { path = "/path/to/flipbook/build/flipbook-core-rotriever" }
 ```
 
-3. Build and watch the StudioPlugins Flipbook plugin using the StudioPlugins repo's local development docs or agent instructions. Keep Studio open while iterating.
+3. Build the StudioPlugins Flipbook plugin.
 
 ## Agent-Run Loop
 
-Use this loop when the engineer already has Studio open and StudioPlugins is already watching the Flipbook plugin.
+For each iteration:
 
-By default, only rebuild FlipbookCore:
+1. The agent rebuilds FlipbookCore:
 
 ```bash
 cd ~/git/flipbook
 lute run build --target rotriever --clean
 ```
 
-`lute run build --target rotriever --clean --watch` may also work for a long-running local loop, but agents should prefer the one-shot rebuild and re-run it after changes unless the engineer specifically asks for watch mode.
+2. The agent rebuilds the StudioPlugins Flipbook plugin using the engineer's documented build command for that repo. Ask the engineer for the exact command if it cannot be determined.
+
+Studio will reload the plugin automatically once the build completes.
 
 ## Dependency Changes
 
