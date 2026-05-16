@@ -23,7 +23,11 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
-local function App()
+export type Props = {
+	viewportGui: ScreenGui?,
+}
+
+local function App(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -63,6 +67,7 @@ local function App()
 	}, {
 		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
 			story = storyModule,
+			viewportGui = props.viewportGui,
 		}, {
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				LayoutOrder = nextLayoutOrder(),

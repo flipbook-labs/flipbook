@@ -18,6 +18,7 @@ export type StoryActionsContext = {
 	isMountedInViewport: boolean,
 
 	storyContainerRef: { current: GuiObject? }?,
+	viewportGui: ScreenGui?,
 
 	viewportPreview: () -> (),
 	viewCode: () -> (),
@@ -35,6 +36,7 @@ local StoryActionsContext = React.createContext({} :: StoryActionsContext)
 export type StoryActionsProviderProps = {
 	children: React.ReactNode,
 	story: ModuleScript?,
+	viewportGui: ScreenGui?,
 }
 
 local function StoryActionsProvider(props: StoryActionsProviderProps)
@@ -77,6 +79,7 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 			isMountedInViewport = isMountedInViewport,
 
 			storyContainerRef = storyContainerRef,
+			viewportGui = props.viewportGui,
 
 			viewportPreview = viewportPreview,
 			viewCode = viewCode,
