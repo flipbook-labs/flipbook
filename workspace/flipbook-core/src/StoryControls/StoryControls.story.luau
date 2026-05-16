@@ -78,6 +78,7 @@ return {
 
 				color = Storyteller.createColorControl(),
 				date = Storyteller.createDateControl(),
+				object = Storyteller.createObjectControl(),
 			}
 		end, {})
 
