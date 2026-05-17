@@ -1,6 +1,10 @@
 local createFlipbookApp = require("@root/createFlipbookApp")
 
-local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
+local CommonTypes = require("@root/Common/Types")
+
+type Pluginlike = CommonTypes.Pluginlike
+
+local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,

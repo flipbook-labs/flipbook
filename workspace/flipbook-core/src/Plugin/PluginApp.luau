@@ -24,6 +24,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
+	initialStoryPath: string?,
 	viewportGui: ScreenGui?,
 }
 
@@ -35,6 +36,8 @@ local function App(props: Props)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
+	local didOpenInitialStory, setDidOpenInitialStory = React.useState(false)
+	local storybooks = Storyteller.useStorybooks()
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
@@ -61,6 +64,25 @@ local function App(props: Props)
 		setStorybook(nil)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
+
+	React.useEffect(function()
+		if props.initialStoryPath == nil or didOpenInitialStory then
+			return
+		end
+
+		for _, loadedStorybook in storybooks.available do
+			for _, candidateStoryModule in Storyteller.findStoryModulesForStorybook(loadedStorybook) do
+				if
+					candidateStoryModule.Name == props.initialStoryPath
+					or candidateStoryModule:GetFullName() == props.initialStoryPath
+				then
+					setDidOpenInitialStory(true)
+					onStoryChanged(candidateStoryModule, loadedStorybook)
+					return
+				end
+			end
+		end
+	end, { didOpenInitialStory, onStoryChanged, props.initialStoryPath, storybooks.available } :: { unknown })
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",

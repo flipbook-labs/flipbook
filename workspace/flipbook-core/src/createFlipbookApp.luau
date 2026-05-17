@@ -10,6 +10,7 @@ local logger = require("@root/logger")
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
+	initialStoryPath: string?,
 	plugin: Pluginlike,
 	overlayGui: GuiBase2d?,
 	viewportGui: ScreenGui?,
@@ -36,9 +37,13 @@ end
 
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
-	local appOptions = options or {
-		plugin = defaultPlugin,
-	}
+	local appOptions: Options = options
+		or {
+			initialStoryPath = nil,
+			plugin = defaultPlugin,
+			overlayGui = nil,
+			viewportGui = nil,
+		}
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
@@ -47,6 +52,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		PluginApp = React.createElement(PluginApp, {
+			initialStoryPath = appOptions.initialStoryPath,
 			viewportGui = appOptions.viewportGui,
 		}),
 	})
