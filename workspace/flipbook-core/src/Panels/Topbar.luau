@@ -4,6 +4,8 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
+local BuildChannel = require("@root/Enums/BuildChannel")
+local BuildTarget = require("@root/Enums/BuildTarget")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
@@ -11,6 +13,7 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local Object = LuauPolyfill.Object
 
+local Badge = Foundation.Badge
 local Dialog = Foundation.Dialog
 local Divider = Foundation.Divider
 local Dropdown = Foundation.Dropdown
@@ -189,45 +192,75 @@ local function Topbar(props: TopbarProps)
 
 			Support = e(View, {
 				LayoutOrder = 2,
-				tag = "auto-x row size-0-full",
+				tag = "auto-x row size-0-full gap-small align-y-center",
 			}, {
-				Help = e(Tooltip, {
+				BadgeCluster = e(View, {
 					LayoutOrder = 1,
-					align = PopoverAlign.Center,
-					side = PopoverSide.Bottom,
-					title = "Help",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = IconName.CircleQuestion,
-						onActivated = function()
-							setIsHelpMenuOpen(true)
-						end,
-						ref = helpButtonRef,
-						size = InputSize.Small,
-					}),
+					DevBadge = if _G.BUILD_CHANNEL == BuildChannel.Development
+						then e(Badge, {
+							LayoutOrder = 1,
+							text = "Development",
+							icon = IconName.Code,
+							variant = Foundation.Enums.BadgeVariant.Neutral,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					InternalBadge = if _G.BUILD_TARGET == BuildTarget.Rotriever
+						then e(Badge, {
+							LayoutOrder = 2,
+							text = "Elevated",
+							icon = IconName.Tilt,
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
 				}),
 
-				Settings = e(Tooltip, {
+				SupportCluster = e(View, {
 					LayoutOrder = 2,
-					align = PopoverAlign.End,
-					side = PopoverSide.Bottom,
-					title = "Settings",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = {
-							name = IconName.Gear,
-							variant = if navigation.currentScreen == "Settings"
-								then IconVariant.Filled
-								else IconVariant.Regular,
-						},
-						onActivated = function()
-							if navigation.currentScreen ~= "Settings" then
-								navigation.navigateTo("Settings")
-							else
-								navigation.navigateTo("Home")
-							end
-						end,
-						size = InputSize.Small,
+					Help = e(Tooltip, {
+						LayoutOrder = 3,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Help",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.CircleQuestion,
+							onActivated = function()
+								setIsHelpMenuOpen(true)
+							end,
+							ref = helpButtonRef,
+							size = InputSize.Small,
+						}),
+					}),
+
+					Settings = e(Tooltip, {
+						LayoutOrder = 4,
+						align = PopoverAlign.End,
+						side = PopoverSide.Bottom,
+						title = "Settings",
+					}, {
+						Trigger = e(IconButton, {
+							icon = {
+								name = IconName.Gear,
+								variant = if navigation.currentScreen == "Settings"
+									then IconVariant.Filled
+									else IconVariant.Regular,
+							},
+							onActivated = function()
+								if navigation.currentScreen ~= "Settings" then
+									navigation.navigateTo("Settings")
+								else
+									navigation.navigateTo("Home")
+								end
+							end,
+							size = InputSize.Small,
+						}),
 					}),
 				}),
 			}),

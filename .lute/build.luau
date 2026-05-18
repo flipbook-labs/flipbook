@@ -110,6 +110,7 @@ local context: BuildContext = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
 		BUILD_HASH = getCommitHash(),
+		BUILD_TARGET = target,
 		BASE_URL = process.env.BASE_URL,
 		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
