@@ -25,6 +25,7 @@ local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
 	initialStoryPath: string?,
+	storyRoot: Instance?,
 	viewportGui: ScreenGui?,
 }
 
@@ -37,7 +38,7 @@ local function App(props: Props)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
 	local didOpenInitialStory, setDidOpenInitialStory = React.useState(false)
-	local storybooks = Storyteller.useStorybooks()
+	local storybooks = Storyteller.useStorybooks(props.storyRoot)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
@@ -101,6 +102,7 @@ local function App(props: Props)
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
+					storyRoot = props.storyRoot,
 				}),
 			}),
 

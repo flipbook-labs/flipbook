@@ -5,6 +5,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
 	initialStoryPath: string?,
+	storyRoot: Instance?,
 }
 
 local dummyPlugin: Pluginlike = {
@@ -23,6 +24,7 @@ local dummyPlugin: Pluginlike = {
 local function createFlipbookExperience(screenGui: ScreenGui, options: Options?)
 	local app = createFlipbookApp(screenGui, {
 		initialStoryPath = if options then options.initialStoryPath else nil,
+		storyRoot = if options then options.storyRoot else nil,
 		plugin = dummyPlugin,
 		overlayGui = screenGui :: any,
 		viewportGui = screenGui,

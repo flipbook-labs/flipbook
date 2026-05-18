@@ -2,8 +2,8 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local embedIntoExperience = require("@root/Embedding/embedIntoExperience")
-local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local enforceSingleRuntime = require("@root/Embedding/runtime/enforceSingleRuntime")
+local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local e = React.createElement
 local useCallback = React.useCallback

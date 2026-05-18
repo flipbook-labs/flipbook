@@ -28,14 +28,15 @@ export type Props = {
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
+	storyRoot: Instance?,
 }
 
 local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
-	local storybooks = useStorybooks()
-	local orphanedStoryModules = useOrphanedStoryModules()
+	local storybooks = useStorybooks(props.storyRoot)
+	local orphanedStoryModules = useOrphanedStoryModules(props.storyRoot)
 	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)

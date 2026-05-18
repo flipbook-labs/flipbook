@@ -11,6 +11,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
 	initialStoryPath: string?,
+	storyRoot: Instance?,
 	plugin: Pluginlike,
 	overlayGui: GuiBase2d?,
 	viewportGui: ScreenGui?,
@@ -53,6 +54,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	}, {
 		PluginApp = React.createElement(PluginApp, {
 			initialStoryPath = appOptions.initialStoryPath,
+			storyRoot = appOptions.storyRoot,
 			viewportGui = appOptions.viewportGui,
 		}),
 	})
