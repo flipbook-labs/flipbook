@@ -43,16 +43,22 @@ Studio will reload the plugin automatically once the build completes.
 
 ## Dependency Changes
 
-Only run these overlay steps when the current task actually changed that dependency repo:
+Only run these overlay steps when the current task actually changed that dependency repo.
+
+**ModuleLoader** touches both Storyteller (vendored copy) and Flipbook (direct dependency). Use the full sequence:
 
 ```bash
-# if this task changed module-loader
-cd ~/git/module-loader
-lute run try-in-flipbook
-
-# if this task changed storyteller
-cd ~/git/storyteller
-lute run try-in-flipbook
+cd ~/git/module-loader && lute run try-in-storyteller
+cd ~/git/storyteller && lute run try-in-flipbook
+cd ~/git/module-loader && lute run try-in-flipbook
+cd ~/git/flipbook && lute run build --target rotriever --clean
 ```
 
-When StudioPlugins points `FlipbookCore` at the local rotriever output, its watcher should pick up the rebuilt bundle automatically. Do not ask the engineer to run the FlipbookCore rebuild manually; run it from the agent unless the command fails and needs human intervention.
+**Storyteller only** (no ModuleLoader repo changes):
+
+```bash
+cd ~/git/storyteller && lute run try-in-flipbook
+cd ~/git/flipbook && lute run build --target rotriever --clean
+```
+
+When StudioPlugins points `FlipbookCore` at the local rotriever output, its watcher should pick up the rebuilt bundle automatically. Do not ask the engineer to run the FlipbookCore rebuild manually; run `lute run build --target rotriever --clean` from the agent unless the command fails and needs human intervention.

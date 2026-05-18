@@ -29,29 +29,23 @@ lute run build plugin --channel dev --clean
 
 ## Changed ModuleLoader
 
-Prefer the direct overlay into Flipbook unless the task specifically needs to verify Storyteller's vendored ModuleLoader copy.
+Storyteller vendors its own `module-loader` tree, and Flipbook also depends on `module-loader` directly. For a complete verification chain, run all of the following (sibling checkouts), in order:
 
 ```bash
-# from module-loader repo
-lute run try-in-flipbook
+# 1. Overlay module-loader into Storyteller's vendored copy
+cd ~/git/module-loader && lute run try-in-storyteller
+
+# 2. Build Storyteller and overlay its dist/ into Flipbook (includes that vendored ModuleLoader)
+cd ~/git/storyteller && lute run try-in-flipbook
+
+# 3. Overlay module-loader into Flipbook's direct Wally install
+cd ~/git/module-loader && lute run try-in-flipbook
+
+# 4. Produce the FlipbookCore bundle consumed by StudioPlugins Rotriever
+cd ~/git/flipbook && lute run build --target rotriever --clean
 ```
 
-If Storyteller also needs the local ModuleLoader bundle:
-
-```bash
-# from module-loader repo
-lute run try-in-storyteller
-
-# from storyteller repo
-lute run try-in-flipbook
-```
-
-After either route, rebuild Flipbook:
-
-```bash
-# from flipbook repo
-lute run build plugin --channel dev --clean
-```
+`lute run build plugin --channel dev --clean` rebuilds the dev Studio plugin and is the usual loop for dogfooding in Flipbook itself. The **rotriever** build step is separate: it is what you need after dependency overlays when verifying through **StudioPlugins** (point `FlipbookCore` at `build/flipbook-core-rotriever/` in the plugin manifest).
 
 ## Requirements
 
