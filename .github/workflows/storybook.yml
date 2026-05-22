@@ -29,41 +29,7 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      - name: Restore place registry
-        uses: actions/cache@v4
-        with:
-          path: /tmp/flipbook-cli
-          key: storybook-places-${{ github.repository }}
-
       - name: Deploy storybook place
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-          ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ secrets.ROBLOX_STORYBOOK_UNIVERSE_ID }}
-          ROBLOX_STORYBOOK_PLACE_ID: ${{ secrets.ROBLOX_STORYBOOK_PLACE_ID }}
-        run: flipbook-cli deploy --name "pr-${{ github.event.pull_request.number }}"
-
-      - name: Post preview comment
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: flipbook-cli comment --pr ${{ github.event.pull_request.number }}
-
-  prune:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: github.event.action == 'closed'
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Restore place registry
-        uses: actions/cache@v4
-        with:
-          path: /tmp/flipbook-cli
-          key: storybook-places-${{ github.repository }}
-
-      - name: Prune storybook registry
-        run: flipbook-cli prune --name "pr-${{ github.event.pull_request.number }}"
+        run: lute run deploy-storybook
