@@ -3,6 +3,7 @@ local path = require("@std/path")
 local system = require("@std/system")
 
 local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
+local json = require("@std/json")
 
 local run = FlipbookBatteries.run
 
@@ -11,12 +12,12 @@ type RojoBuildOptions = {
 		name: string,
 		tree: { [string]: any },
 	},
-	output: string,
+	output: path.Pathlike,
 }
 local function rojoBuild(options: RojoBuildOptions)
 	local tempProjectPath = path.join(system.tmpdir(), "temp.project.json")
 
-	createRojoProjectAsync(tempProjectPath, options.project)
+	createRojoProjectAsync(tempProjectPath, options.project :: json.Value)
 	run("rojo", { "build", tempProjectPath, "--output", options.output })
 end
 
