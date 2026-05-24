@@ -21,7 +21,7 @@ args:add("place-name", "option", {
 
 args:parse({ ... })
 
-run("lute", { "run", "build", "workspace", "--channel", "dev" })
+run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
 
 local workspaceRbxmPath = path.join(system.tmpdir(), "workspace.rbxm")
 
@@ -29,20 +29,25 @@ rojoBuild({
 	output = workspaceRbxmPath,
 	project = {
 		name = "FlipbookWorkspace",
+		emitLegacyScripts = false,
 		tree = {
 			["$path"] = tostring(path.resolve("./build/dev/roblox/workspace")),
 		},
 	},
 })
 
+run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
+
 local flipbookCliArgs: { string | number | path.Pathlike } = {
 	"deploy",
 	"--place-name",
-	args:get("place-name"),
+	`"{args:get("place-name")}"`,
 	"--universe-id",
 	project.ROBLOX_STORYBOOK_UNIVERSE_ID,
 	"--stories",
 	workspaceRbxmPath,
+	"--flipbook-rbxm",
+	path.resolve("./build/dev/Flipbook.rbxm"),
 }
 
 -- run("flipbook-cli", flipbookCliArgs, {
@@ -53,14 +58,13 @@ local flipbookCliArgs: { string | number | path.Pathlike } = {
 -- })
 do -- Debugging. We'll be uncommenting the above once ready to ship
 	local luteArgs = {
-		"lute",
 		"run",
 		"/Users/marin/Code/flipbook-cli/cli.luau",
 	}
 	for _, arg in flipbookCliArgs do
 		table.insert(luteArgs, tostring(arg))
 	end
-	process.run(luteArgs, {
+	run("lute", luteArgs, {
 		stdio = "inherit",
 		env = {
 			FLIPBOOK_ROCALE_CMD = "rocale",

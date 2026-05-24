@@ -9,9 +9,9 @@ local richterm = require("@luaupkg/lute@v1.0.0/batteries/richterm")
 local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
-local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
+local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local copyInto = FlipbookBatteries.copyInto
 local run = FlipbookBatteries.run
@@ -126,25 +126,18 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = path.resolve(path.join(context.dest, "../default.project.json"))
-
-			createRojoProjectAsync(projectPath, {
-				name = "Flipbook",
-				tree = {
-					["$path"] = tostring(path.resolve(context.dest)),
-				},
-			})
-
 			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
 
-			run("rojo", {
-				"build",
-				projectPath,
-				"-o",
-				dest,
+			rojoBuild({
+				output = dest,
+				project = {
+					name = "Flipbook",
+					emitLegacyScripts = false,
+					tree = {
+						["$path"] = tostring(path.resolve(context.dest)),
+					},
+				},
 			})
-
-			fs.remove(projectPath)
 
 			if args:has("skip-reload") then
 				if output:match(tostring(getStudioPluginsPath())) then

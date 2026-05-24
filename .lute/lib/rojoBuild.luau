@@ -10,6 +10,7 @@ local run = FlipbookBatteries.run
 type RojoBuildOptions = {
 	project: {
 		name: string,
+		emitLegacyScripts: boolean?,
 		tree: { [string]: any },
 	},
 	output: path.Pathlike,
