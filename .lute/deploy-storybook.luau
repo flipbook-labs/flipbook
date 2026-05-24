@@ -10,13 +10,15 @@ local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local run = FlipbookBatteries.run
 
+local DEFAULT_PLACE_NAME = "Storybook Preview"
+
 dotenv.config()
 
 local args = cli.parser()
 
 args:add("place-name", "option", {
 	help = "The name of the place to create or update when deploying",
-	default = "Storybook Preview",
+	default = DEFAULT_PLACE_NAME,
 })
 
 args:parse({ ... })
@@ -38,10 +40,12 @@ rojoBuild({
 
 run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
 
+local placeName = args:get("place-name")
+
 local flipbookCliArgs: { string | number | path.Pathlike } = {
 	"deploy",
 	"--place-name",
-	`"{args:get("place-name")}"`,
+	`"{placeName}"`,
 	"--universe-id",
 	project.ROBLOX_STORYBOOK_UNIVERSE_ID,
 	"--stories",
@@ -49,6 +53,11 @@ local flipbookCliArgs: { string | number | path.Pathlike } = {
 	"--flipbook-rbxm",
 	path.resolve("./build/dev/Flipbook.rbxm"),
 }
+
+if placeName == DEFAULT_PLACE_NAME then
+	table.insert(flipbookCliArgs, "--place-id")
+	table.insert(flipbookCliArgs, project.ROBLOX_STORYBOOK_PLACE_ID)
+end
 
 -- run("flipbook-cli", flipbookCliArgs, {
 -- 	env = {
@@ -65,7 +74,6 @@ do -- Debugging. We'll be uncommenting the above once ready to ship
 		table.insert(luteArgs, tostring(arg))
 	end
 	run("lute", luteArgs, {
-		stdio = "inherit",
 		env = {
 			FLIPBOOK_ROCALE_CMD = "rocale",
 			ROBLOX_API_KEY = process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,

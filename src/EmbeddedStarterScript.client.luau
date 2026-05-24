@@ -3,8 +3,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
 
-print("Hello world!")
-
 if not RunService:IsRunning() then
 	return
 end
@@ -87,8 +85,6 @@ local function getStoryRoot(): Instance?
 	end
 	return current
 end
-
-Players.CharacterAutoLoads = false
 
 local playerGui = localPlayer:WaitForChild("PlayerGui")
 
