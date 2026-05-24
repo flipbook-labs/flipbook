@@ -1,6 +1,9 @@
 name: Deploy Storybook Experience
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
 
 permissions:
@@ -12,10 +15,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: github.event.action != 'closed'
-    concurrency:
-      group: storybook-pr-${{ github.event.pull_request.number }}
-      cancel-in-progress: true
+    environment: storybook-preview
+
     steps:
       - uses: actions/checkout@v6
 
@@ -29,7 +30,14 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      - name: Deploy storybook place
+      - name: Deploy main storybook
+        if: github.event_name == 'push'
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
         run: lute run deploy-storybook
+
+      - name: Deploy storybook
+        if: github.event_name == 'pull_request'
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run deploy-storybook --place-name "Flipbook Preview #${{ github.event.pull_request.number }}"
