@@ -7,6 +7,7 @@ local defaultSettings = require("@root/UserSettings/defaultSettings")
 export type UserSettings = {
 	rememberLastOpenedStory: boolean,
 	theme: string,
+	locale: string,
 	sidebarWidth: number,
 	controlsHeight: number,
 	collectAnonymousUsageData: boolean,
@@ -15,6 +16,7 @@ export type UserSettings = {
 local defaultValue: UserSettings = {
 	rememberLastOpenedStory = defaultSettings.rememberLastOpenedStory.value,
 	theme = defaultSettings.theme.choices[1].name,
+	locale = defaultSettings.locale.choices[1].name,
 	sidebarWidth = defaultSettings.sidebarWidth.value,
 	controlsHeight = defaultSettings.controlsHeight.value,
 	collectAnonymousUsageData = defaultSettings.collectAnonymousUsageData.value,
@@ -23,6 +25,7 @@ local defaultValue: UserSettings = {
 local validate = t.interface({
 	rememberLastOpenedStory = t.boolean,
 	theme = t.string,
+	locale = t.string,
 	sidebarWidth = t.number,
 	controlsHeight = t.number,
 	collectAnonymousUsageData = t.boolean,
