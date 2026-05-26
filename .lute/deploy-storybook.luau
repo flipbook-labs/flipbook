@@ -59,24 +59,9 @@ if placeName == DEFAULT_PLACE_NAME then
 	table.insert(flipbookCliArgs, project.ROBLOX_STORYBOOK_PLACE_ID)
 end
 
--- run("flipbook-cli", flipbookCliArgs, {
--- 	env = {
--- 		FLIPBOOK_ROCALE_CMD = "rocale",
--- 		ROBLOX_API_KEY = process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
--- 	},
--- })
-do -- Debugging. We'll be uncommenting the above once ready to ship
-	local luteArgs = {
-		"run",
-		"/Users/marin/Code/flipbook-cli/cli.luau",
-	}
-	for _, arg in flipbookCliArgs do
-		table.insert(luteArgs, tostring(arg))
-	end
-	run("lute", luteArgs, {
-		env = {
-			FLIPBOOK_ROCALE_CMD = "rocale",
-			ROBLOX_API_KEY = process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
-		},
-	})
-end
+run("flipbook-cli", flipbookCliArgs, {
+	env = {
+		FLIPBOOK_ROCALE_CMD = "rocale",
+		ROBLOX_API_KEY = process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
+	},
+})
