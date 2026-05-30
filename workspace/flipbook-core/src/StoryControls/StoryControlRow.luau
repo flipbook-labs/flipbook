@@ -9,6 +9,7 @@ local ColorControl = require("@root/StoryControls/ControlElements/ColorControl")
 local DateControl = require("@root/StoryControls/ControlElements/DateControl")
 local MultiSelectControl = require("@root/StoryControls/ControlElements/MultiSelectControl")
 local NumberControl = require("@root/StoryControls/ControlElements/NumberControl")
+local ObjectControl = require("@root/StoryControls/ControlElements/ObjectControl")
 local RadioControl = require("@root/StoryControls/ControlElements/RadioControl")
 local SelectControl = require("@root/StoryControls/ControlElements/SelectControl")
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
@@ -60,6 +61,12 @@ local function StoryControlRow(props: Props)
 		controlElement = e(NumberControl, {
 			controlSchema = props.control :: Storyteller.NumberControl,
 			controlValue = controlValue :: number,
+			onChanged = setControl,
+		})
+	elseif controlType == ControlType.Object then
+		controlElement = e(ObjectControl, {
+			controlSchema = props.control :: Storyteller.ObjectControl,
+			controlValue = controlValue :: Instance?,
 			onChanged = setControl,
 		})
 	elseif controlType == ControlType.String then
