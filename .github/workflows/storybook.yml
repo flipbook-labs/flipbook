@@ -40,4 +40,4 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-        run: lute run deploy-storybook --place-name "Flipbook Preview #${{ github.event.pull_request.number }}"
+        run: lute run deploy-storybook --place-name "Flipbook Preview \#${{ github.event.pull_request.number }}"
