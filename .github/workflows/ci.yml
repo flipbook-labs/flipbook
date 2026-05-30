@@ -119,27 +119,3 @@ jobs:
 
       - name: Run Luau analysis
         run: lute run analyze
-
-  storybook-experience:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Install dependencies
-        run: lute run install
-
-      - name: Create .env
-        run: cp .env.template .env
-
-      - name: Compile storybook experience (.rbxl)
-        run: flipbook-cli deploy --name main --dry-run storybook-experience.rbxl
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: storybook-experience-rbxl
-          path: storybook-experience.rbxl
