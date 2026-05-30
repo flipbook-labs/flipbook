@@ -1,6 +1,6 @@
 [package]
 name = "FlipbookCore"
-content_root = "src"
+content_root = "build"
 version = "2.5.0"
 files = ["*"]
 publish = true

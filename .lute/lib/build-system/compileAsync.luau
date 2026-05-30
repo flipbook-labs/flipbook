@@ -91,7 +91,11 @@ local function compileAsync(context: BuildContext)
 
 		fs.remove(path.join(dest, "src/init.server.luau"))
 
-		fs.copy(path.join(project.WORKSPACE_PATH, "flipbook-core/rotriever.toml"), path.join(dest, "rotriever.toml"))
+		local manifestPaths = find(dest, "rotriever.toml")
+		if #manifestPaths > 0 then
+			local manifestPath = manifestPaths[1]
+			fs.copy(manifestPath, path.join(dest, "rotriever.toml"))
+		end
 
 		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
 		-- path length limit issues that crop up when consuming internally
