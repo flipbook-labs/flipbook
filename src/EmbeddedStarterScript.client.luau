@@ -107,9 +107,7 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-local app = FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
+FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	initialStoryPath = getInitialStoryPath(),
 	storyRoot = getStoryRoot(),
 })
-
-script.Destroying:Connect(app.destroy)
