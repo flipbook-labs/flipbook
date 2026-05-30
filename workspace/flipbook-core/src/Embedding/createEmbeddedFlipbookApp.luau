@@ -21,7 +21,7 @@ local dummyPlugin: Pluginlike = {
 	SetSetting = function() end,
 }
 
-local function createFlipbookExperience(screenGui: ScreenGui, options: Options?)
+local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?)
 	local app = createFlipbookApp(screenGui, {
 		initialStoryPath = if options then options.initialStoryPath else nil,
 		storyRoot = if options then options.storyRoot else nil,
@@ -35,4 +35,4 @@ local function createFlipbookExperience(screenGui: ScreenGui, options: Options?)
 	return app
 end
 
-return createFlipbookExperience
+return createEmbeddedFlipbookApp

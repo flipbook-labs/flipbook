@@ -1,9 +1,20 @@
+--[[
+	There are two ways to embed Flipbook into an experience:
+
+	1. By using the "Embed into Experience" dialog, which allows you to select a
+	   destination in the Explorer where Flipbook will clone itself to.
+
+	2. By using flipbook-cli to deploy the latest release of Flipbook to an
+	   experience
+]]
+
 local Players = game:GetService("Players")
+local PluginGuiService = game:GetService("PluginGuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
 
-if not RunService:IsRunning() then
+if script:IsDescendantOf(PluginGuiService) or not RunService:IsRunning() then
 	return
 end
 
@@ -96,7 +107,7 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-local app = FlipbookCore.createFlipbookExperience(screenGui, {
+local app = FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	initialStoryPath = getInitialStoryPath(),
 	storyRoot = getStoryRoot(),
 })
