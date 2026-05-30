@@ -6,7 +6,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local CommonTypes = require("@root/Common/Types")
 local ContextProviders = require("@root/Common/ContextProviders")
-local PluginApp = require("./PluginApp")
+local FlipbookApp = require("./FlipbookApp")
 
 type Pluginlike = CommonTypes.Pluginlike
 
@@ -47,7 +47,7 @@ test("app smoketest", function()
 	local app = React.createElement(ContextProviders, {
 		plugin = mockPlugin,
 	}, {
-		PluginApp = React.createElement(PluginApp),
+		FlipbookApp = React.createElement(FlipbookApp),
 	})
 
 	expect(function()

@@ -29,7 +29,7 @@ export type Props = {
 	viewportGui: ScreenGui?,
 }
 
-local function App(props: Props)
+local function FlipbookApp(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -131,4 +131,4 @@ local function App(props: Props)
 	})
 end
 
-return App
+return FlipbookApp

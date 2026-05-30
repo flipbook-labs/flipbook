@@ -3,7 +3,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local CommonTypes = require("@root/Common/Types")
 local ContextProviders = require("@root/Common/ContextProviders")
-local PluginApp = require("@root/Plugin/PluginApp")
+local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
@@ -52,7 +52,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		plugin = appOptions.plugin,
 		overlayGui = appOptions.overlayGui or container,
 	}, {
-		PluginApp = React.createElement(PluginApp, {
+		FlipbookApp = React.createElement(FlipbookApp, {
 			initialStoryPath = appOptions.initialStoryPath,
 			storyRoot = appOptions.storyRoot,
 			viewportGui = appOptions.viewportGui,
