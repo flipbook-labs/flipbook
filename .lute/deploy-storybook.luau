@@ -51,7 +51,7 @@ local flipbookCliArgs: { string | boolean | number | path.Pathlike } = {
 	"--stories",
 	workspaceRbxmPath,
 	"--flipbook-rbxm",
-	path.resolve("./build/dev/Flipbook.rbxm"),
+	path.resolve("./build/prod/Flipbook.rbxm"),
 }
 
 if placeName == DEFAULT_PLACE_NAME then
