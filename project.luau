@@ -19,7 +19,6 @@ return {
 	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
 
 	ROJO_BUILD_PROJECT = path.resolve("./build.project.json"),
-	ROJO_TESTS_PROJECT = path.resolve("./tests.project.json"),
 
 	FOLDERS_TO_LINT = {
 		"src",

@@ -5,6 +5,7 @@ local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
 
+local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
@@ -39,12 +40,29 @@ process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
 run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
 
+local projectPath = createRojoProjectAsync(path.join(system.tmpdir(), "tests.project.json"), {
+	name = "Flipbook",
+	tree = {
+		["$className"] = "DataModel",
+		ServerScriptService = {
+			["$properties"] = {
+				LoadStringEnabled = true,
+			},
+		},
+		ReplicatedStorage = {
+			Flipbook = {
+				["$path"] = tostring(path.join(project.BUILD_PATH, "dev", "roblox")),
+			},
+		},
+	},
+})
+
 run("rocale", {
 	"run",
 	"--script",
 	".lute/tasks/run-tests.luau",
 	"--load.project",
-	project.ROJO_TESTS_PROJECT,
+	projectPath,
 	"--universeId",
 	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
 	"--placeId",
