@@ -50,7 +50,7 @@ jobs:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
-          flipbook-cli comment --pr ${{ github.event.pull_request.number }}
-            --universe-id "$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)"
-            --place-name "$PREVIEW_PLACE_NAME"
+          flipbook-cli comment --pr ${{ github.event.pull_request.number }} \
+            --universe-id "$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" \
+            --place-name "$PREVIEW_PLACE_NAME" \
             --github-repository flipbook-labs/flipbook
