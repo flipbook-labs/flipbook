@@ -1,4 +1,4 @@
-name: Deploy Storybook Experience
+name: Storybook Preview
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: storybook-preview
+    env:
+      PREVIEW_PLACE_NAME: "Flipbook Preview #${{ github.event.pull_request.number }}"
 
     steps:
       - uses: actions/checkout@v6
@@ -40,4 +42,15 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-        run: lute run deploy-storybook --place-name "Flipbook Preview \#${{ github.event.pull_request.number }}"
+        run: lute run deploy-storybook --place-name "$PREVIEW_PLACE_NAME"
+
+      - name: Comment preview link on PR
+        if: github.event_name == 'pull_request'
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          flipbook-cli comment
+          --pr "${{ github.event.pull_request.number }}"
+          --universe-id "$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)"
+          --place-name "$PREVIEW_PLACE_NAME"
