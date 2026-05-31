@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 15
     environment: storybook-preview
     env:
-      PREVIEW_PLACE_NAME: "Flipbook Preview #${{ github.event.pull_request.number }}"
+      PREVIEW_PLACE_NAME: "Flipbook Preview ${{ github.event.pull_request.number }}"
 
     steps:
       - uses: actions/checkout@v6
