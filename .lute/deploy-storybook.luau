@@ -42,7 +42,7 @@ run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "-
 
 local placeName = args:get("place-name")
 
-local flipbookCliArgs: { string | number | path.Pathlike } = {
+local flipbookCliArgs: { string | boolean | number | path.Pathlike } = {
 	"deploy",
 	"--place-name",
 	`"{placeName}"`,
