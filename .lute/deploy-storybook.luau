@@ -50,6 +50,10 @@ local flipbookCliArgs: { string | boolean | number | path.Pathlike } = {
 	project.ROBLOX_STORYBOOK_UNIVERSE_ID,
 	"--stories",
 	workspaceRbxmPath,
+
+	-- Without this flag the CLI grabs the latest release rbxm for Flipbook.
+	-- Only reason we pass in our own is cause we we want to test the latest
+	-- build to catch issues with the embedding flow.
 	"--flipbook-rbxm",
 	path.resolve("./build/prod/Flipbook.rbxm"),
 }
