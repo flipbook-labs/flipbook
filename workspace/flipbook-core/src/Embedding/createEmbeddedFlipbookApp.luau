@@ -28,6 +28,7 @@ local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?
 		plugin = dummyPlugin,
 		overlayGui = screenGui :: any,
 		viewportGui = screenGui,
+		source = "embedded-client",
 	})
 
 	app.mount()

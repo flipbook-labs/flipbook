@@ -6,6 +6,7 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
+local source = require("@root/Telemetry/source")
 
 type Pluginlike = CommonTypes.Pluginlike
 
@@ -15,6 +16,7 @@ export type Options = {
 	plugin: Pluginlike,
 	overlayGui: GuiBase2d?,
 	viewportGui: ScreenGui?,
+	source: source.Source?,
 }
 
 local defaultPlugin: Pluginlike = {
@@ -45,6 +47,10 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 			overlayGui = nil,
 			viewportGui = nil,
 		}
+
+	if appOptions.source then
+		source.set(appOptions.source)
+	end
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file

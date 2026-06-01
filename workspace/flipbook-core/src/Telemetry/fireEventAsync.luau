@@ -1,7 +1,10 @@
+local RunService = game:GetService("RunService")
+
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local getAnonymizedUserId = require("@root/Telemetry/getAnonymizedUserId")
 local logger = require("@root/logger")
 local requestAsync = require("@root/Http/requestAsync")
+local source = require("@root/Telemetry/source")
 local types = require("@root/Telemetry/types")
 
 type TelemetryEvent = types.TelemetryEvent
@@ -21,6 +24,8 @@ local function fireEventAsync(event: TelemetryEvent)
 		buildVersion = _G.BUILD_VERSION,
 		buildChannel = _G.BUILD_CHANNEL,
 		buildHash = _G.BUILD_HASH,
+		source = source.get(),
+		isStudio = RunService:IsStudio(),
 	}
 
 	logger:Info(`firing event {event.eventName}`)

@@ -9,6 +9,7 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
+		source = "plugin-widget",
 	})
 
 	if button ~= nil then
