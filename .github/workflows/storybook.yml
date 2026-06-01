@@ -6,6 +6,13 @@ on:
       - main
   pull_request:
 
+# One lane per PR (and a separate lane for main), so concurrent pushes don't
+# race two deploys against the same place. Cancel superseded PR previews, but
+# never interrupt the main start-place deploy mid-flight.
+concurrency:
+  group: storybook-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
   pull-requests: write
