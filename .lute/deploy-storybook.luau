@@ -1,9 +1,11 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
 local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local fs = require("@std/fs")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
+local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 local project = require("@repo/project")
 local rojoBuild = require("@scripts/lib/rojoBuild")
@@ -23,39 +25,65 @@ args:add("place-name", "option", {
 
 args:parse({ ... })
 
+local apiKey = assert(
+	process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
+	"ROBLOX_STORYBOOK_PREVIEW_API_KEY must be set"
+)
+
+-- Build processed workspace (darklua-transformed scripts with correct require paths)
 run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
 
-local workspaceRbxmPath = path.join(system.tmpdir(), "workspace.rbxm")
+-- Build prod Flipbook.rbxm so we deploy the local build rather than the
+-- latest release — this lets us catch embedding issues before cutting a release.
+run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
+
+-- Upload Flipbook.rbxm as the storybook-runtime asset and update rbxasset.lock
+run("lune", { "run", "publish-plugin", "--assetName", "storybook-runtime", "--apiKey", apiKey })
+
+-- Read the asset ID that rbxasset just wrote to the lock file
+local lockContent = fs.readStringFromFile("rbxasset.lock")
+local lock = toml.deserialize(lockContent) :: any
+local assetId = assert(
+	lock.assets["storybook-runtime"] and lock.assets["storybook-runtime"].assetId,
+	"storybook-runtime assetId not found in rbxasset.lock after publish"
+)
+
+-- Build a base place that includes the workspace scripts alongside the Packages
+-- and RobloxPackages they depend on, all under ReplicatedStorage.Stories so
+-- require walks from workspace scripts resolve correctly.
+local basePlacePath = path.join(system.tmpdir(), "storybook-base.rbxl")
+local builtWorkspacePath = tostring(path.join(project.BUILD_PATH, "dev", "roblox", "workspace"))
 
 rojoBuild({
-	output = workspaceRbxmPath,
+	output = basePlacePath,
 	project = {
-		name = "FlipbookWorkspace",
+		name = "StorybookBase",
 		emitLegacyScripts = false,
 		tree = {
-			["$path"] = tostring(path.resolve("./build/dev/roblox/workspace")),
+			["$className"] = "DataModel",
+			ReplicatedStorage = {
+				Stories = {
+					Packages = { ["$path"] = tostring(project.PACKAGES_PATH) },
+					RobloxPackages = { ["$path"] = tostring(project.ROBLOX_PACKAGES_PATH) },
+					workspace = { ["$path"] = builtWorkspacePath },
+				},
+			},
 		},
 	},
 })
 
-run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
-
 local placeName = args:get("place-name")
 
-local flipbookCliArgs: { string | boolean | number | path.Pathlike } = {
+local flipbookCliArgs: { string | number | path.Pathlike } = {
 	"deploy",
 	"--place-name",
 	`"{placeName}"`,
 	"--universe-id",
 	project.ROBLOX_STORYBOOK_UNIVERSE_ID,
-	"--stories",
-	workspaceRbxmPath,
-
-	-- Without this flag the CLI grabs the latest release rbxm for Flipbook.
-	-- Only reason we pass in our own is cause we we want to test the latest
-	-- build to catch issues with the embedding flow.
-	"--flipbook-rbxm",
-	path.resolve("./build/prod/Flipbook.rbxm"),
+	"--place-file",
+	basePlacePath,
+	"--flipbook-asset",
+	assetId,
 }
 
 if placeName == DEFAULT_PLACE_NAME then
@@ -65,7 +93,6 @@ end
 
 run("flipbook-cli", flipbookCliArgs, {
 	env = {
-		FLIPBOOK_ROCALE_CMD = "rocale",
-		ROBLOX_API_KEY = process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
+		ROBLOX_API_KEY = apiKey,
 	},
 })
