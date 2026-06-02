@@ -15,17 +15,9 @@ assert(channel == "dev" or channel == "prod", `bad value for channel (must be on
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
 
--- --assetName lets callers target a specific rbxasset.toml entry directly
--- (e.g. "storybook-runtime"). When omitted the asset name is derived from
--- --channel / --smoketest as before.
-local assetName: string
-if args.assetName then
-	assetName = args.assetName
-	-- For non-plugin assets the model file must already be built by the caller
-else
-	run("lute", { "run", "build", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
-	assetName = if args.smoketest then "smoketest" else channel
-end
+run("lute", { "run", "build", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
+
+local assetName = if args.smoketest then "smoketest" else channel
 
 -- Each of the assets defined in rbxasset.toml map to one of the options of
 -- `--channel` for simplicity
