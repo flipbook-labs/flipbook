@@ -35,6 +35,30 @@ jobs:
       - name: Build
         run: lute run build --channel prod --output ${{ env.MODEL_FILE }}
 
+      - name: Seed storybook-runtime asset ID from previous release
+        # Populates rbxasset.lock so rbxasset updates the existing asset instead
+        # of creating a new one. Allowed to fail on the very first release.
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download --pattern flipbook-model-asset-id.txt --output prev-asset-id.txt
+          assetId=$(cat prev-asset-id.txt)
+          printf '\n[assets.storybook-runtime]\nassetId = "%s"\n' "$assetId" >> rbxasset.lock
+
+      - name: Upload Flipbook as Roblox storybook-runtime asset
+        run: lune run publish-plugin --assetName storybook-runtime --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        env:
+          LOG_LEVEL: debug
+
+      - name: Attach Roblox asset ID to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          assetId=$(grep -A1 '\[assets\.storybook-runtime\]' rbxasset.lock | grep -oP '(?<=assetId = ")[^"]+')
+          echo "$assetId" > flipbook-model-asset-id.txt
+          gh release upload ${{ github.ref_name }} flipbook-model-asset-id.txt
+
       - uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.MODEL_FILE }}
