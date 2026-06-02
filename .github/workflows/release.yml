@@ -37,19 +37,15 @@ jobs:
 
       - name: Upload Flipbook as Roblox storybook-runtime asset
         run: |
-          output=$(lune run upload-storybook-runtime --apiKey ${{ secrets.ROBLOX_API_KEY }})
+          output=$(lute run upload-storybook-runtime --api-key ${{ secrets.ROBLOX_API_KEY }})
           echo "$output"
           assetId=$(echo "$output" | grep -oP '(?<=ASSET_ID=)\S+' | tail -1)
-          echo "STORYBOOK_ASSET_ID=$assetId" >> $GITHUB_ENV
-
-      - name: Rename runtime artifact to embed asset ID
-        run: cp ${{ env.MODEL_FILE }} Flipbook-${{ github.ref_name }}-${{ env.STORYBOOK_ASSET_ID }}.rbxm
+          mv ${{ env.MODEL_FILE }} Flipbook-${{ github.ref_name }}-${assetId}.rbxm
+          echo "RUNTIME_FILE=Flipbook-${{ github.ref_name }}-${assetId}.rbxm" >> $GITHUB_ENV
 
       - uses: softprops/action-gh-release@v1
         with:
-          files: |
-            ${{ env.MODEL_FILE }}
-            Flipbook-${{ github.ref_name }}-${{ env.STORYBOOK_ASSET_ID }}.rbxm
+          files: ${{ env.RUNTIME_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
