@@ -30,20 +30,6 @@ local apiKey = assert(
 	"--api-key or ROBLOX_API_KEY must be supplied"
 )
 
-local function request(url: string, options: { method: string?, headers: { [string]: string }?, body: string? })
-	local res = net.request(url, {
-		method = options.method or "GET",
-		headers = options.headers,
-		body = options.body,
-	})
-	if not res.ok then
-		local ok, body = pcall(json.deserialize, res.body)
-		local message = if ok and (body :: any).message then (body :: any).message else res.body
-		error(`HTTP {res.status} from {url}: {message}`, 2)
-	end
-	return res
-end
-
 local formData = createFormData({
 	request = {
 		contentType = "application/json",
@@ -63,7 +49,7 @@ local formData = createFormData({
 	},
 })
 
-local createRes = request("https://apis.roblox.com/assets/v1/assets", {
+local createRes = net.request("https://apis.roblox.com/assets/v1/assets", {
 	method = "POST",
 	headers = {
 		["x-api-key"] = apiKey,
@@ -71,6 +57,7 @@ local createRes = request("https://apis.roblox.com/assets/v1/assets", {
 	},
 	body = formData.body,
 })
+assert(createRes.ok, `failed to upload asset ({createRes.status}): {createRes.body}`)
 
 local createBody = json.deserialize(createRes.body) :: any
 local operationId = assert(createBody.operationId, "no operationId in upload response")
@@ -79,9 +66,11 @@ local assetId: string?
 for attempt = 1, MAX_POLL_ATTEMPTS do
 	task.wait(POLL_DELAY)
 
-	local pollRes = request(`https://apis.roblox.com/assets/v1/operations/{operationId}`, {
+	local pollRes = net.request(`https://apis.roblox.com/assets/v1/operations/{operationId}`, {
 		headers = { ["x-api-key"] = apiKey },
 	})
+	assert(pollRes.ok, `failed to poll operation ({pollRes.status}): {pollRes.body}`)
+
 	local pollBody = json.deserialize(pollRes.body) :: any
 
 	if pollBody.done then
