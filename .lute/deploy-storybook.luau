@@ -38,7 +38,7 @@ run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "-
 -- Upload Flipbook.rbxm directly as the storybook-runtime asset and capture
 -- the asset ID from the script's output (no rbxasset manifest involved).
 local uploadOutput = assert(
-	run("lune", { "run", "upload-storybook-runtime", "--apiKey", apiKey }, { captureOutput = true }),
+	run("lute", { "run", "upload-storybook-runtime", "--api-key", apiKey }, { captureOutput = true }),
 	"upload-storybook-runtime produced no output"
 )
 local assetId: string?
