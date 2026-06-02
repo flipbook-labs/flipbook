@@ -1,11 +1,9 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
 local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
-local fs = require("@std/fs")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
-local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 local project = require("@repo/project")
 local rojoBuild = require("@scripts/lib/rojoBuild")
@@ -37,16 +35,20 @@ run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
 -- latest release — this lets us catch embedding issues before cutting a release.
 run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
 
--- Upload Flipbook.rbxm as the storybook-runtime asset and update rbxasset.lock
-run("lune", { "run", "publish-plugin", "--assetName", "storybook-runtime", "--apiKey", apiKey })
-
--- Read the asset ID that rbxasset just wrote to the lock file
-local lockContent = fs.readStringFromFile("rbxasset.lock")
-local lock = toml.deserialize(lockContent) :: any
-local assetId = assert(
-	lock.assets["storybook-runtime"] and lock.assets["storybook-runtime"].assetId,
-	"storybook-runtime assetId not found in rbxasset.lock after publish"
+-- Upload Flipbook.rbxm directly as the storybook-runtime asset and capture
+-- the asset ID from the script's output (no rbxasset manifest involved).
+local uploadOutput = assert(
+	run("lune", { "run", "upload-storybook-runtime", "--apiKey", apiKey }, { captureOutput = true }),
+	"upload-storybook-runtime produced no output"
 )
+local assetId: string?
+for line in uploadOutput:gmatch("[^\n]+") do
+	local id = line:match("^ASSET_ID=(%S+)$")
+	if id then
+		assetId = id
+	end
+end
+assert(assetId, "upload-storybook-runtime did not print an ASSET_ID")
 
 -- Build a base place that includes the workspace scripts alongside the Packages
 -- and RobloxPackages they depend on, all under ReplicatedStorage.Stories so
