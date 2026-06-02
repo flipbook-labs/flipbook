@@ -3,7 +3,10 @@ local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
 local fs = require("@std/fs")
 local json = require("@std/json")
 local net = require("@std/net")
+local process = require("@std/process")
 local task = require("@std/task")
+
+local createFormData = require("@scripts/lib/createFormData")
 
 local CREATOR_ID = 1343930
 local MODEL_PATH = "Flipbook.rbxm"
@@ -23,24 +26,9 @@ args:add("api-key", "option", {
 args:parse({ ... })
 
 local apiKey = assert(
-	args:get("api-key") or _G.env and _G.env.ROBLOX_API_KEY,
+	args:get("api-key") or process.env.ROBLOX_API_KEY,
 	"--api-key or ROBLOX_API_KEY must be supplied"
 )
-
--- Multipart form data helpers
-local BOUNDARY = "FlipbookUploadBoundary" .. tostring(math.random(100000, 999999))
-
-local function buildMultipart(fields: { { name: string, value: string, contentType: string, filename: string? } }): string
-	local parts = {}
-	for _, field in fields do
-		local disposition = `Content-Disposition: form-data; name="{field.name}"`
-		if field.filename then
-			disposition ..= `; filename="{field.filename}"`
-		end
-		table.insert(parts, "--" .. BOUNDARY .. "\r\n" .. disposition .. "\r\nContent-Type: " .. field.contentType .. "\r\n\r\n" .. field.value)
-	end
-	return table.concat(parts, "\r\n") .. "\r\n--" .. BOUNDARY .. "--\r\n"
-end
 
 local function request(url: string, options: { method: string?, headers: { [string]: string }?, body: string? })
 	local res = net.request(url, {
@@ -56,27 +44,22 @@ local function request(url: string, options: { method: string?, headers: { [stri
 	return res
 end
 
--- Upload Flipbook.rbxm to the Open Cloud Assets API
-local fileContent = fs.readStringFromFile(MODEL_PATH)
-
-local body = buildMultipart({
-	{
-		name = "request",
+local formData = createFormData({
+	request = {
 		contentType = "application/json",
-		value = json.serialize({
+		value = {
 			assetType = "Model",
 			displayName = ASSET_NAME,
 			description = ASSET_DESCRIPTION,
 			creationContext = {
 				creator = { userId = tostring(CREATOR_ID) },
 			},
-		}),
+		},
 	},
-	{
-		name = "fileContent",
+	fileContent = {
 		contentType = "application/octet-stream",
 		filename = MODEL_PATH,
-		value = fileContent,
+		value = fs.readStringFromFile(MODEL_PATH),
 	},
 })
 
@@ -84,15 +67,14 @@ local createRes = request("https://apis.roblox.com/assets/v1/assets", {
 	method = "POST",
 	headers = {
 		["x-api-key"] = apiKey,
-		["Content-Type"] = `multipart/form-data; boundary={BOUNDARY}`,
+		["Content-Type"] = `multipart/form-data; boundary={formData.boundary}`,
 	},
-	body = body,
+	body = formData.body,
 })
 
 local createBody = json.deserialize(createRes.body) :: any
 local operationId = assert(createBody.operationId, "no operationId in upload response")
 
--- Poll until the operation completes
 local assetId: string?
 for attempt = 1, MAX_POLL_ATTEMPTS do
 	task.wait(POLL_DELAY)
