@@ -42,19 +42,19 @@ jobs:
       - name: Deploy main storybook
         if: github.event_name == 'push'
         env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
         run: lute run deploy-storybook
 
       - name: Deploy storybook
         if: github.event_name == 'pull_request'
         env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
         run: lute run deploy-storybook --place-name "$PREVIEW_PLACE_NAME"
 
       - name: Comment preview link on PR
         if: github.event_name == 'pull_request'
         env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
           flipbook-cli comment --pr ${{ github.event.pull_request.number }} \
