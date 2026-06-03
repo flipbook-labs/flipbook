@@ -41,4 +41,7 @@ return {
 			"jest.config.lua*",
 		},
 	},
+
+	SERVICE_ACCOUNT_USER_ID = 10231326893,
+	ASSET_UPLOADER_UNIVERSE_ID = 10263605228,
 }

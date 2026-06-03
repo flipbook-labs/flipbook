@@ -95,7 +95,7 @@ Lute is the task runner for all three repos — the Luau equivalent of `npm run`
 source .env && lute run <command>
 ```
 
-Commands that require this: `lute run test`, `lute run deploy-storybook`, `lute run upload-storybook-runtime`.
+Commands that require this: `lute run test`, `lute run deploy-storybook`, `lute run upload-flipbook`.
 
 ### Common Commands
 

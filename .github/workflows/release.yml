@@ -21,11 +21,6 @@ jobs:
         with:
           version: v1.2.0
 
-      - name: Get model file name
-        run: |
-          name=$(jq -r .name default.project.json)
-          echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: lute run install
 
@@ -33,19 +28,19 @@ jobs:
         run: cp .env.template .env
 
       - name: Build
-        run: lute run build --channel prod --output ${{ env.MODEL_FILE }}
+        run: lute run build --channel prod --output Flipbook.rbxm
 
-      - name: Upload Flipbook as Roblox storybook-runtime asset
+      - name: Upload Flipbook to Roblox
         run: |
-          output=$(lute run upload-storybook-runtime --api-key ${{ secrets.ROBLOX_API_KEY }})
+          output=$(lute run upload-flipbook --api-key ${{ secrets.ROBLOX_API_KEY }})
           echo "$output"
           assetId=$(echo "$output" | grep -oP '(?<=ASSET_ID=)\S+' | tail -1)
-          mv ${{ env.MODEL_FILE }} Flipbook-${{ github.ref_name }}-${assetId}.rbxm
-          echo "RUNTIME_FILE=Flipbook-${{ github.ref_name }}-${assetId}.rbxm" >> $GITHUB_ENV
+          echo "MODEL_FILE=Flipbook-${{ github.ref_name }}-${assetId}.rbxm" >> $GITHUB_ENV
+          mv Flipbook.rbxm ${{ env.MODEL_FILE }}
 
       - uses: softprops/action-gh-release@v1
         with:
-          files: ${{ env.RUNTIME_FILE }}
+          files: ${{ env.MODEL_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
