@@ -8,25 +8,15 @@
 	   experience
 ]]
 
+-- Exit immediately if this script isn't running in an embedded context.
+local PluginDebugService: PluginDebugService? = game:FindService("PluginDebugService")
+if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
+	return
+end
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TeleportService = game:GetService("TeleportService")
-
--- Fun fact: GetService doesn't throw when the client attempts to access
--- PluginDebugService. Just returns nil. But the type doesn't match that. So to
--- explicitly show the intent we're using FindService and an annotation.
---
--- P.S. The above sounds salty because it is. I was unknowingly evaluating
--- `script:IsDescendantOf(nil)` below which also didn't crash but instead
--- resulted in weird bugs that I was having trouble tracking down because I
--- foolishly believed the types I was given.
-local PluginDebugService: PluginDebugService? = game:FindService("PluginDebugService")
-
--- This script—even when included with the plugin—will run when playing the
--- experience in Studio, so we need to make sure to early exit in that case
-if PluginDebugService and script:IsDescendantOf(PluginDebugService) then
-	return
-end
 
 local localPlayer = Players.LocalPlayer
 if localPlayer == nil then
