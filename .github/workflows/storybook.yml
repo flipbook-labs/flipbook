@@ -43,7 +43,13 @@ jobs:
         if: github.event_name == 'push'
         env:
           ROBLOX_STORYBOOK_PREVIEW_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-        run: lute run deploy-storybook
+        # The `--with-build` flag will build a Flipbook rbxm off `main` and use
+        # that as the runtime for our primary storybook preview experience. And
+        # we intentionally _exclude_ this flag from the below PR-triggered
+        # deploy so that when a PR makes a change to Flipbook's UI that we don't
+        # _also_ use that as the underlying app. PRs would effectively pollute
+        # their own app otherwise.
+        run: lute run deploy-storybook --with-build
 
       - name: Deploy storybook
         if: github.event_name == 'pull_request'

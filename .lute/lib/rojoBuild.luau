@@ -15,11 +15,14 @@ type RojoBuildOptions = {
 	},
 	output: path.Pathlike,
 }
-local function rojoBuild(options: RojoBuildOptions)
+local function rojoBuild(options: RojoBuildOptions): path.Path
 	local tempProjectPath = path.join(system.tmpdir(), "temp.project.json")
+	local output = path.resolve(options.output)
 
 	createRojoProjectAsync(tempProjectPath, options.project :: json.Value)
-	run("rojo", { "build", tempProjectPath, "--output", options.output })
+	run("rojo", { "build", tempProjectPath, "--output", output })
+
+	return output
 end
 
 return rojoBuild

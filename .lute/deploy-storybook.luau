@@ -10,7 +10,7 @@ local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local run = FlipbookBatteries.run
 
-local DEFAULT_PLACE_NAME = "Storybook Preview"
+local DEFAULT_PLACE_NAME = "Flipbook Stories"
 
 dotenv.config()
 
@@ -20,61 +20,58 @@ args:add("place-name", "option", {
 	help = "The name of the place to create or update when deploying",
 	default = DEFAULT_PLACE_NAME,
 })
+args:add("with-build", "flag", {
+	help = "Whether to build the workspace before deploying.",
+})
 
 args:parse({ ... })
 
-local apiKey = assert(
-	process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY,
-	"ROBLOX_STORYBOOK_PREVIEW_API_KEY must be set"
-)
+local apiKey = assert(process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY, "ROBLOX_STORYBOOK_PREVIEW_API_KEY must be set")
+
+local placeName = args:get("place-name")
+local withBuild = args:has("with-build")
 
 -- Build processed workspace (darklua-transformed scripts with correct require paths)
 run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
 
--- Build prod Flipbook.rbxm so we deploy the local build rather than the
--- latest release — this lets us catch embedding issues before cutting a release.
-run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
-
--- Upload Flipbook.rbxm directly as the storybook-runtime asset and capture
--- the asset ID from the script's output (no rbxasset manifest involved).
-local uploadOutput = assert(
-	run("lute", { "run", "upload-storybook-runtime", "--api-key", apiKey }, { captureOutput = true }),
-	"upload-storybook-runtime produced no output"
-)
-local assetId: string?
-for line in uploadOutput:gmatch("[^\n]+") do
-	local id = line:match("^ASSET_ID=(%S+)$")
-	if id then
-		assetId = id
-	end
+if withBuild then
+	-- Build prod Flipbook.rbxm so we deploy the local build rather than the
+	-- latest release — this lets us catch embedding issues before cutting a release.
+	-- With --skip-reload the plugin is written to build/<channel>/Flipbook.rbxm and
+	-- not copied into the local Studio plugins folder.
+	run("lute", { "run", "build", "plugin", "--channel", "prod", "--skip-reload", "--clean" })
 end
-assert(assetId, "upload-storybook-runtime did not print an ASSET_ID")
 
--- Build a base place that includes the workspace scripts alongside the Packages
--- and RobloxPackages they depend on, all under ReplicatedStorage.Stories so
--- require walks from workspace scripts resolve correctly.
-local basePlacePath = path.join(system.tmpdir(), "storybook-base.rbxl")
-local builtWorkspacePath = tostring(path.join(project.BUILD_PATH, "dev", "roblox", "workspace"))
-
-rojoBuild({
-	output = basePlacePath,
+local basePlacePath = rojoBuild({
+	output = path.join(system.tmpdir(), "flipbook-storybook.rbxl"),
 	project = {
-		name = "StorybookBase",
+		name = DEFAULT_PLACE_NAME,
 		emitLegacyScripts = false,
 		tree = {
 			["$className"] = "DataModel",
 			ReplicatedStorage = {
-				Stories = {
-					Packages = { ["$path"] = tostring(project.PACKAGES_PATH) },
-					RobloxPackages = { ["$path"] = tostring(project.ROBLOX_PACKAGES_PATH) },
-					workspace = { ["$path"] = builtWorkspacePath },
+				-- Note that we don't include Flipbook here because it gets
+				-- injected separately by flipbook-cli with `--flipbook-model`.
+				-- We're an edge case since we want to include our custom build
+				-- of Flipbook, normally flipbook-cli fetches the latest release
+				-- and injects that, so we're shortcircuiting that process.
+
+				FlipbookWorkspace = {
+					["$className"] = "Folder",
+					Packages = {
+						["$path"] = tostring(project.PACKAGES_PATH),
+					},
+					RobloxPackages = {
+						["$path"] = tostring(project.ROBLOX_PACKAGES_PATH),
+					},
+					workspace = {
+						["$path"] = tostring(path.join(project.BUILD_PATH, "dev/roblox/workspace")),
+					},
 				},
 			},
 		},
 	},
 })
-
-local placeName = args:get("place-name")
 
 local flipbookCliArgs: { string | number | path.Pathlike } = {
 	"deploy",
@@ -84,8 +81,6 @@ local flipbookCliArgs: { string | number | path.Pathlike } = {
 	project.ROBLOX_STORYBOOK_UNIVERSE_ID,
 	"--place-file",
 	basePlacePath,
-	"--flipbook-asset",
-	assetId,
 }
 
 if placeName == DEFAULT_PLACE_NAME then
@@ -93,8 +88,19 @@ if placeName == DEFAULT_PLACE_NAME then
 	table.insert(flipbookCliArgs, project.ROBLOX_STORYBOOK_PLACE_ID)
 end
 
-run("flipbook-cli", flipbookCliArgs, {
+if withBuild then
+	table.insert(flipbookCliArgs, "--flipbook-rbxm")
+	table.insert(flipbookCliArgs, path.join(project.BUILD_PATH, "prod", project.PLUGIN_FILENAME))
+end
+
+run("/Users/marin/Code/flipbook-cli/build/flipbook-cli", flipbookCliArgs, {
 	env = {
 		ROBLOX_API_KEY = apiKey,
 	},
 })
+
+-- run("flipbook-cli", flipbookCliArgs, {
+-- 	env = {
+-- 		ROBLOX_API_KEY = apiKey,
+-- 	},
+-- })
