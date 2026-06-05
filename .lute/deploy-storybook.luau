@@ -73,7 +73,7 @@ local basePlacePath = rojoBuild({
 	},
 })
 
-local flipbookCliArgs: { string | number | path.Pathlike } = {
+local flipbookCliArgs: { string | number | boolean | path.Pathlike } = {
 	"deploy",
 	"--place-name",
 	`"{placeName}"`,
