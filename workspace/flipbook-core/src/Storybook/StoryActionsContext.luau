@@ -1,5 +1,6 @@
 local Selection = game:GetService("Selection")
 
+local AppModeEnum = require("@root/Enums/AppMode")
 local PluginStore = require("@root/Plugin/PluginStore")
 local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
@@ -13,12 +14,14 @@ local useState = React.useState
 
 local useSignalState = ReactSignals.useSignalState
 
+type AppMode = AppModeEnum.AppMode
+
 export type StoryActionsContext = {
 	isDisabled: boolean,
 	isMountedInViewport: boolean,
+	mode: AppMode,
 
 	storyContainerRef: { current: GuiObject? }?,
-	viewportGui: ScreenGui?,
 
 	viewportPreview: () -> (),
 	viewCode: () -> (),
@@ -36,7 +39,7 @@ local StoryActionsContext = React.createContext({} :: StoryActionsContext)
 export type StoryActionsProviderProps = {
 	children: React.ReactNode,
 	story: ModuleScript?,
-	viewportGui: ScreenGui?,
+	mode: AppMode?,
 }
 
 local function StoryActionsProvider(props: StoryActionsProviderProps)
@@ -77,9 +80,9 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 		value = {
 			isDisabled = props.story == nil,
 			isMountedInViewport = isMountedInViewport,
+			mode = props.mode or AppModeEnum.PluginWidget,
 
 			storyContainerRef = storyContainerRef,
-			viewportGui = props.viewportGui,
 
 			viewportPreview = viewportPreview,
 			viewCode = viewCode,

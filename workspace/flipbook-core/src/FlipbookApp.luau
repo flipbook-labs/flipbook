@@ -3,6 +3,7 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AppModeEnum = require("@root/Enums/AppMode")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -18,13 +19,14 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 
+type AppMode = AppModeEnum.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
-	viewportGui: ScreenGui?,
+	mode: AppMode?,
 }
 
 local function FlipbookApp(props: Props)
@@ -67,7 +69,7 @@ local function FlipbookApp(props: Props)
 	}, {
 		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
 			story = storyModule,
-			viewportGui = props.viewportGui,
+			mode = props.mode,
 		}, {
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				LayoutOrder = nextLayoutOrder(),

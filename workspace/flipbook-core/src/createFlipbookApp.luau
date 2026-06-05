@@ -1,18 +1,20 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
+local AppModeEnum = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/Types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
+type AppMode = AppModeEnum.AppMode
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
 	plugin: Pluginlike,
 	overlayGui: GuiBase2d?,
-	viewportGui: ScreenGui?,
+	mode: AppMode?,
 }
 
 local defaultPlugin: Pluginlike = {
@@ -40,7 +42,6 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		or {
 			plugin = defaultPlugin,
 			overlayGui = nil,
-			viewportGui = nil,
 		}
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
@@ -50,7 +51,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
-			viewportGui = appOptions.viewportGui,
+			mode = appOptions.mode,
 		}),
 	})
 

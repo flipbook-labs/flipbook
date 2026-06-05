@@ -1,3 +1,4 @@
+local AppModeEnum = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/Types")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
@@ -20,7 +21,7 @@ local function createEmbeddedFlipbookApp(screenGui: ScreenGui)
 	local app = createFlipbookApp(screenGui, {
 		plugin = dummyPlugin,
 		overlayGui = screenGui :: any,
-		viewportGui = screenGui,
+		mode = AppModeEnum.EmbeddedClient,
 	})
 
 	app.mount()

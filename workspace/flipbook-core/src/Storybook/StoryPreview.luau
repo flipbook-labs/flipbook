@@ -43,8 +43,6 @@ local function StoryPreview(props: Props): React.Node
 	end
 
 	if storyActions.isMountedInViewport then
-		local viewportGui = storyActions.viewportGui or CoreGui
-
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -57,7 +55,7 @@ local function StoryPreview(props: Props): React.Node
 					onError = setErr,
 				}),
 			}),
-		}, viewportGui)
+		}, CoreGui)
 	end
 
 	return e(Foundation.ScrollView, {
