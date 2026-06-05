@@ -38,11 +38,10 @@ end
 
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
-	local appOptions: Options = options
-		or {
-			plugin = defaultPlugin,
-			overlayGui = nil,
-		}
+	local appOptions: Options = options or {
+		plugin = defaultPlugin,
+		overlayGui = nil,
+	}
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
