@@ -10,8 +10,6 @@ local logger = require("@root/logger")
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
-	initialStoryPath: string?,
-	storyRoot: Instance?,
 	plugin: Pluginlike,
 	overlayGui: GuiBase2d?,
 	viewportGui: ScreenGui?,
@@ -40,7 +38,6 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
 	local appOptions: Options = options
 		or {
-			initialStoryPath = nil,
 			plugin = defaultPlugin,
 			overlayGui = nil,
 			viewportGui = nil,
@@ -53,8 +50,6 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
-			initialStoryPath = appOptions.initialStoryPath,
-			storyRoot = appOptions.storyRoot,
 			viewportGui = appOptions.viewportGui,
 		}),
 	})

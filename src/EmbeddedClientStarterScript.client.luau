@@ -14,9 +14,7 @@ if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
 	return
 end
 
-local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local prefix = `[{script.Name}]`
 
@@ -27,45 +25,6 @@ end
 
 local startClock = os.clock()
 print(`{prefix} starting...`)
-
-type LaunchData = {
-	initialStoryPath: string?,
-	storyRootPath: string?,
-}
-
-local function parseLaunchData(launchDataStr: string): LaunchData
-	local success, launchData = pcall(function()
-		return HttpService:JSONDecode(launchDataStr)
-	end)
-	if not success then
-		warn(`{prefix} Failed to parse launch data: {launchDataStr}`)
-		return {}
-	end
-	return launchData
-end
-
--- Resolves the story root path (e.g. "Folder/SubFolder") to a live Instance
--- under ReplicatedStorage. Returns nil when no story root was requested or it
--- couldn't be found in time.
-local function resolveStoryRoot(storyRootPath: string): Instance?
-	local current: Instance = ReplicatedStorage
-	for segment in storyRootPath:gmatch("[^/]+") do
-		print(`{prefix} resolving story root segment "{segment}" under {current:GetFullName()}...`)
-		local child = current:WaitForChild(segment, 10)
-		if child == nil then
-			warn(`{prefix} Timed out waiting for story root segment "{segment}"`)
-			return nil
-		end
-		current = child
-	end
-	print(`{prefix} resolved story root to {current:GetFullName()}`)
-	return current
-end
-
-local joinData = localPlayer:GetJoinData()
-
-print("LaunchData", joinData.LaunchData)
-local launchData = parseLaunchData(joinData.LaunchData)
 
 print(`{prefix} setting up Flipbook UI...`)
 local playerGui = localPlayer:WaitForChild("PlayerGui")
@@ -78,11 +37,6 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-local storyRoot = if launchData.storyRootPath then resolveStoryRoot(launchData.storyRootPath) else nil
-
-FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
-	initialStoryPath = launchData.initialStoryPath,
-	storyRoot = storyRoot,
-})
+FlipbookCore.createEmbeddedFlipbookApp(screenGui)
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

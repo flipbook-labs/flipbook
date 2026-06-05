@@ -20,7 +20,6 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 type SidebarProps = {
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
-	storyRoot: Instance?,
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
@@ -66,7 +65,6 @@ local function Sidebar(props: SidebarProps)
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
-					storyRoot = props.storyRoot,
 				}),
 			}),
 		}

@@ -3,11 +3,6 @@ local createFlipbookApp = require("@root/createFlipbookApp")
 
 type Pluginlike = CommonTypes.Pluginlike
 
-export type Options = {
-	initialStoryPath: string?,
-	storyRoot: Instance?,
-}
-
 local dummyPlugin: Pluginlike = {
 	GetMouse = function()
 		return {
@@ -21,10 +16,8 @@ local dummyPlugin: Pluginlike = {
 	SetSetting = function() end,
 }
 
-local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?)
+local function createEmbeddedFlipbookApp(screenGui: ScreenGui)
 	local app = createFlipbookApp(screenGui, {
-		initialStoryPath = if options then options.initialStoryPath else nil,
-		storyRoot = if options then options.storyRoot else nil,
 		plugin = dummyPlugin,
 		overlayGui = screenGui :: any,
 		viewportGui = screenGui,

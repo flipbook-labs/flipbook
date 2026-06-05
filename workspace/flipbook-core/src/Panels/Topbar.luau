@@ -265,6 +265,7 @@ local function Topbar(props: TopbarProps)
 				}),
 			}),
 
+			-- TODO: Make sure this doesn't show up _in_ the embedded app
 			EmbedIntoExperienceDialog = if isEmbedDialogOpen
 				then e(EmbedIntoExperienceDialog, {
 					onClose = function()
