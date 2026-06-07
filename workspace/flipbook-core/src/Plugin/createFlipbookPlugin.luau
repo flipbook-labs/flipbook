@@ -1,6 +1,7 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
+local Actions = require("@root/Actions")
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
@@ -16,11 +17,24 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 
+	-- The central Actions registry. Behavior is defined once and exposed through
+	-- two routers: the PluginAction mirror (human shortcuts) and the CoreGui
+	-- Bindable registry (agent door). The controller is the seam the actions use
+	-- to reach app capabilities; the React app registers its half on mount.
+	local controller = Actions.createAppController(widget)
+	local registry = Actions.createActionRegistry({
+		plugin = plugin,
+		controller = controller,
+	})
+	local unbindPluginActions = Actions.bindPluginActions(plugin, registry)
+	local unpublishBindables = Actions.publishBindables(registry)
+
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
+		controller = controller,
 	}, {
 		PluginApp = React.createElement(PluginApp),
 	})
@@ -88,6 +102,9 @@ local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui,
 		logger:Info("destroying app...")
 		local elapsedMs = stopwatch(function()
 			unmount()
+
+			unbindPluginActions()
+			unpublishBindables()
 
 			for _, connection in connections do
 				connection:Disconnect()
