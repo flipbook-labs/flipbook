@@ -63,11 +63,12 @@ commit_parsers = [
   # PR title (e.g. "[AUTO-GENERATED] Publish v2.6.0 (#27)"), so match "Publish v"
   # anywhere rather than anchoring to the start of the message.
   { message = "Publish v[0-9]", skip = true },
-  # Skip the historical manual version-bump commits (e.g. "Bump version to 2.5.0"),
-  # the pre-automation equivalent of the publish commits above.
-  { message = "^Bump version to", skip = true },
-  # Automated dependency upgrades are unlabeled, so route them by message.
+  # Version/dependency housekeeping shares the "Dependencies" section: the
+  # automated RobloxPackages upgrades and the historical manual version bumps
+  # (e.g. "Bump version to 2.5.0", the pre-automation release mechanism). These
+  # are unlabeled, so route them by message.
   { message = "Upgrade RobloxPackages", group = "<!-- 4 -->Dependencies" },
+  { message = "^Bump version to", group = "<!-- 4 -->Dependencies" },
   # Label-based grouping. Add a label to a PR to file it under one of these.
   { field = "github.pr_labels", pattern = "enhancement", group = "<!-- 0 -->Features" },
   { field = "github.pr_labels", pattern = "bug", group = "<!-- 1 -->Bug Fixes" },
