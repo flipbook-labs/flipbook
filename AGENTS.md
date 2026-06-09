@@ -125,6 +125,26 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
 - **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); Darklua converts these to Roblox `require()` during build.
 
+### Comments explain the present, not the history
+
+A comment's job is to explain why the code is the way it is **right now** — for a reader who has never seen any previous version. Write every comment so it stands on its own against the current code.
+
+Do **not** write comments that only make sense as a diff against a past shape. These narrate a refactor instead of the code:
+
+- "This used to be inline; the logic now lives in X."
+- "This workflow is just a thin wrapper now."
+- "Where did all the release logic go? It moved to Y."
+- "Previously we did A, but now we do B."
+
+Such comments have a tiny window of relevance. After the next refactor the code has deviated again, the "previous shape" is two shapes back, and no one can verify the claim or use it — it's just litter carrying dead context forward. The old implementation is not coming back; `git log` already remembers it.
+
+Two tests before keeping a comment:
+
+1. **Would it make sense to someone who never saw the old code?** If it only parses as a contrast with a prior version, cut it or rewrite it to describe the present on its own terms.
+2. **Is the "why" a property of the code as it stands**, or a story about how it got here? Keep the former (e.g. "Charm.flags.frozen = false works around Storyteller issue #100"). Drop the latter.
+
+When editing or reviewing, treat surviving history-relative comments as litter to clean up, the same as dead code.
+
 ---
 
 ## Architecture Notes
