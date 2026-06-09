@@ -96,6 +96,10 @@ jobs:
         run: flipbook-cli release draft --version "${{ needs.gate.outputs.version }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # `release draft` shells out to git-cliff for the release notes; the
+          # token enables git-cliff's GitHub integration so commits are grouped by
+          # their PR labels (see cliff.toml).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   attach:
     needs: [build, gate, publish-release]
@@ -166,6 +170,11 @@ jobs:
           result="$(flipbook-cli release prepare-pr)"
           echo "$result"
           jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$result" >> "$GITHUB_OUTPUT"
+        env:
+          # `release prepare-pr` regenerates the changelog via git-cliff; the token
+          # enables git-cliff's GitHub integration so commits are grouped by their
+          # PR labels (see cliff.toml).
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Sync version across Flipbook's other manifests
         run: |

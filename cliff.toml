@@ -10,10 +10,6 @@ All notable changes to this project will be documented in this file.
 """
 
 body = """
-{% macro remote_url() -%}
-https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
-{%- endmacro %}
-
 {% if version -%}
 ## {{ version }}
 {% else -%}
@@ -23,10 +19,15 @@ https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim | upper_first }}
 {% for commit in commits %}
-- {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}))
+- {{ commit.message | upper_first }}
 {% endfor %}
 {% endfor %}
 """
+
+# Turn `(#123)` PR references in the rendered changelog into links to the PR.
+postprocessors = [
+  { pattern = '\(#(\d+)\)', replace = "([#${1}](https://github.com/flipbook-labs/flipbook/pull/${1}))" },
+]
 
 trim = true
 
@@ -47,10 +48,32 @@ commit_preprocessors = [
   { pattern = '(?s)\s+$', replace = "" },
 ]
 
+# Commits are grouped by the labels on their squash-merged PR, surfaced by
+# git-cliff's GitHub integration (see [remote.github] above). The integration is
+# active whenever a GITHUB_TOKEN is in the environment; the workflow passes one
+# into the git-cliff steps. Without a token, `github.pr_labels` is empty and every
+# commit falls through to the catch-all "Changes" group (PR links still work,
+# since those come from the postprocessor, not the integration).
+#
+# The first matching parser wins, so message-based skips/routes come before the
+# label rules, and the catch-all comes last. Group order in the changelog is set
+# by the `<!-- N -->` prefix, which the body strips via `striptags`.
 commit_parsers = [
   # Skip the auto-generated publish commits. Their squash-merge subject is the
   # PR title (e.g. "[AUTO-GENERATED] Publish v2.6.0 (#27)"), so match "Publish v"
   # anywhere rather than anchoring to the start of the message.
   { message = "Publish v[0-9]", skip = true },
-  { message = ".*", group = "Changes" },
+  # Skip the historical manual version-bump commits (e.g. "Bump version to 2.5.0"),
+  # the pre-automation equivalent of the publish commits above.
+  { message = "^Bump version to", skip = true },
+  # Automated dependency upgrades are unlabeled, so route them by message.
+  { message = "Upgrade RobloxPackages", group = "<!-- 4 -->Dependencies" },
+  # Label-based grouping. Add a label to a PR to file it under one of these.
+  { field = "github.pr_labels", pattern = "enhancement", group = "<!-- 0 -->Features" },
+  { field = "github.pr_labels", pattern = "bug", group = "<!-- 1 -->Bug Fixes" },
+  { field = "github.pr_labels", pattern = "documentation", group = "<!-- 2 -->Documentation" },
+  { field = "github.pr_labels", pattern = "accessibility", group = "<!-- 3 -->Accessibility" },
+  { field = "github.pr_labels", pattern = "nonprod", group = "<!-- 5 -->Internal" },
+  # Anything without a recognized label lands here.
+  { message = ".*", group = "<!-- 6 -->Changes" },
 ]
