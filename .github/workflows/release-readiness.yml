@@ -1,0 +1,216 @@
+name: Release Readiness
+
+# Owns the release lifecycle up to the point a maintainer presses "publish" on the
+# drafted GitHub release: build the plugin, decide whether to publish, tag + draft
+# the release, attach the artifact, and open the auto-generated publish PR.
+#
+# The lifecycle itself lives in the `flipbook-cli release` subcommands (gate,
+# draft, attach, prepare-pr). Unlike flipbook-cli's own workflow, which builds its
+# binary from source and runs the subcommands against it, we consume flipbook-cli
+# as a Rokit tool (see rokit.toml) and call it directly.
+#
+# Deployment (publishing the plugin to the Roblox Creator Store) lives separately
+# in release.yml, which fires when the drafted release is published.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: Tag and create draft release from version on `main`
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Get model file name
+        run: |
+          name=$(jq -r .name default.project.json)
+          echo "MODEL_FILE=$name.rbxm" >> $GITHUB_ENV
+
+      - name: Build
+        run: lute run build plugin --channel prod --output ${{ env.MODEL_FILE }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: asset-rbxm
+          path: ${{ env.MODEL_FILE }}
+
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      has_changes: ${{ steps.eval.outputs.has_changes }}
+      should_publish: ${{ steps.eval.outputs.should_publish }}
+      version: ${{ steps.eval.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Evaluate release action
+        id: eval
+        run: |
+          set -euo pipefail
+          result="$(flipbook-cli release gate ${{ inputs.force_publish && '--force-publish' || '' }})"
+          echo "$result"
+          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$result" >> "$GITHUB_OUTPUT"
+
+  publish-release:
+    needs: gate
+    if: needs.gate.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Tag and draft release
+        run: flipbook-cli release draft --version "${{ needs.gate.outputs.version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  attach:
+    needs: [build, gate, publish-release]
+    if: needs.gate.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      # Checkout so `gh` can infer the repository from the origin remote.
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Download release asset
+        uses: actions/download-artifact@v4
+        with:
+          name: asset-rbxm
+          path: assets
+
+      - name: Attach asset to draft release
+        run: flipbook-cli release attach --tag "v${{ needs.gate.outputs.version }}" --files assets/*.rbxm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare-release-pr:
+    needs: [gate, publish-release]
+    if: |
+      always() &&
+      needs.gate.result == 'success' &&
+      (
+        (needs.gate.outputs.has_changes == 'true' && needs.gate.outputs.should_publish != 'true') ||
+        (needs.gate.outputs.should_publish == 'true' && needs.publish-release.result == 'success')
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-pr-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.FLIPBOOK_BACKEND_APP_ID }}
+          private-key: ${{ secrets.FLIPBOOK_BACKEND_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      # `release prepare-pr` shells out to git-cliff to regenerate the changelog,
+      # which Rokit provides.
+      - uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Prepare release changes
+        id: prepare
+        run: |
+          set -euo pipefail
+          result="$(flipbook-cli release prepare-pr)"
+          echo "$result"
+          jq -r 'to_entries[] | "\(.key)=\(.value)"' <<< "$result" >> "$GITHUB_OUTPUT"
+
+      - name: Sync version across Flipbook's other manifests
+        run: |
+          # flipbook-cli's `release prepare-pr` only bumps loom.config.luau, but
+          # Flipbook publishes a Wally package (FlipbookCore) and a rotriever
+          # package whose versions must stay in lockstep (see .lute/bump-version,
+          # which bumps all three). Both manifests carry the package version as
+          # their sole top-level `version = "..."` line, so propagate the bumped
+          # version here.
+          # TODO(flipbook-cli): teach `release prepare-pr` about extra manifests so
+          # this sync step can go away once Flipbook's use case is supported natively.
+          version="${{ steps.prepare.outputs.version }}"
+          sed -i "s/^version = \".*\"/version = \"$version\"/" \
+            wally.toml workspace/flipbook-core/rotriever.toml
+
+      - name: Create or update publish PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # Push as the GitHub App rather than the default GITHUB_TOKEN so the
+          # branch push triggers CI on the publish PR. Pushes made with
+          # GITHUB_TOKEN do not trigger further workflow runs.
+          # Read more: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+          token: ${{ steps.app-token.outputs.token }}
+          base: ${{ github.ref_name }}
+          branch: publish-next-version
+          commit-message: Publish v${{ steps.prepare.outputs.version }}
+          title: "[AUTO-GENERATED] Publish v${{ steps.prepare.outputs.version }}"
+          add-paths: |
+            CHANGELOG.md
+            loom.config.luau
+            wally.toml
+            workspace/flipbook-core/rotriever.toml
+          body: |
+            >[!IMPORTANT]
+            > This PR prepares the next release by bumping the version and updating the changelog.
+            >
+            > **Merging this PR will:**
+            >
+            > 1. Create and push tag `v${{ steps.prepare.outputs.version }}`
+            > 2. Create a draft GitHub release for that tag
+            > 3. Build and attach the `Flipbook.rbxm` plugin to the draft release
+            >
+            > Publishing the draft release then deploys the plugin to the Roblox Creator Store.
+
+            Next release will be available here:
+            ${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ steps.prepare.outputs.version }}
+
+            🤖 This PR was generated by [this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
