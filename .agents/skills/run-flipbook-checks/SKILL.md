@@ -36,7 +36,7 @@ Checks:
 lute run analyze
 ```
 
-Runs `luau-lsp` analysis. If local setup is missing, run or recommend `lute setup` / `lute run install` based on the failure.
+Runs `luau-lsp` analysis. If local setup is missing, run `lute run install`.
 
 ## Tests
 
