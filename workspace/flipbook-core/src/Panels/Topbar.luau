@@ -4,6 +4,7 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
+local AppModeEnum = require("@root/Enums/AppMode")
 local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -139,7 +140,7 @@ local function Topbar(props: TopbarProps)
 						}),
 					}),
 
-					Viewport = e(Tooltip, {
+					Viewport = storyActions.mode == AppModeEnum.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -193,7 +194,7 @@ local function Topbar(props: TopbarProps)
 				LayoutOrder = 2,
 				tag = "auto-x row size-0-full",
 			}, {
-				EmbedIntoExperience = e(Tooltip, {
+				EmbedIntoExperience = storyActions.mode ~= AppModeEnum.EmbeddedClient and e(Tooltip, {
 					LayoutOrder = 1,
 					align = PopoverAlign.Center,
 					side = PopoverSide.Bottom,
@@ -265,7 +266,7 @@ local function Topbar(props: TopbarProps)
 				}),
 			}),
 
-			EmbedIntoExperienceDialog = if isEmbedDialogOpen
+			EmbedIntoExperienceDialog = storyActions.mode == AppModeEnum.PluginWidget and if isEmbedDialogOpen
 				then e(EmbedIntoExperienceDialog, {
 					onClose = function()
 						setIsEmbedDialogOpen(false)

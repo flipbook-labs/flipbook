@@ -73,7 +73,7 @@ local basePlacePath = rojoBuild({
 	},
 })
 
-local flipbookCliArgs: { string | number | path.Pathlike } = {
+local flipbookCliArgs: { string | number | boolean | path.Pathlike } = {
 	"deploy",
 	"--place-name",
 	`"{placeName}"`,
@@ -93,14 +93,8 @@ if withBuild then
 	table.insert(flipbookCliArgs, path.join(project.BUILD_PATH, "prod", project.PLUGIN_FILENAME))
 end
 
-run("/Users/marin/Code/flipbook-cli/build/flipbook-cli", flipbookCliArgs, {
+run("flipbook-cli", flipbookCliArgs, {
 	env = {
 		ROBLOX_API_KEY = apiKey,
 	},
 })
-
--- run("flipbook-cli", flipbookCliArgs, {
--- 	env = {
--- 		ROBLOX_API_KEY = apiKey,
--- 	},
--- })

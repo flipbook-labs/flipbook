@@ -3,6 +3,7 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AppModeEnum = require("@root/Enums/AppMode")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -18,15 +19,14 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 
+type AppMode = AppModeEnum.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
-	initialStoryPath: string?,
-	storyRoot: Instance?,
-	viewportGui: ScreenGui?,
+	mode: AppMode?,
 }
 
 local function FlipbookApp(props: Props)
@@ -37,8 +37,6 @@ local function FlipbookApp(props: Props)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
-	local didOpenInitialStory, setDidOpenInitialStory = React.useState(false)
-	local storybooks = Storyteller.useStorybooks(props.storyRoot)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
@@ -66,31 +64,12 @@ local function FlipbookApp(props: Props)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	React.useEffect(function()
-		if props.initialStoryPath == nil or didOpenInitialStory then
-			return
-		end
-
-		for _, loadedStorybook in storybooks.available do
-			for _, candidateStoryModule in Storyteller.findStoryModulesForStorybook(loadedStorybook) do
-				if
-					candidateStoryModule.Name == props.initialStoryPath
-					or candidateStoryModule:GetFullName() == props.initialStoryPath
-				then
-					setDidOpenInitialStory(true)
-					onStoryChanged(candidateStoryModule, loadedStorybook)
-					return
-				end
-			end
-		end
-	end, { didOpenInitialStory, onStoryChanged, props.initialStoryPath, storybooks.available } :: { unknown })
-
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
 	}, {
 		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
 			story = storyModule,
-			viewportGui = props.viewportGui,
+			mode = props.mode,
 		}, {
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				LayoutOrder = nextLayoutOrder(),
@@ -102,7 +81,6 @@ local function FlipbookApp(props: Props)
 				Sidebar = React.createElement(Sidebar, {
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
-					storyRoot = props.storyRoot,
 				}),
 			}),
 

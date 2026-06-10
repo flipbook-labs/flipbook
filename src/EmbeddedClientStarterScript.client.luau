@@ -15,8 +15,6 @@ if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
 end
 
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TeleportService = game:GetService("TeleportService")
 
 local prefix = `[{script.Name}]`
 
@@ -27,87 +25,6 @@ end
 
 local startClock = os.clock()
 print(`{prefix} starting...`)
-
-type LaunchData = {
-	placeId: number?,
-	initialStoryPath: string?,
-	storyRootPath: string?,
-}
-
-local function parseLaunchData(launchDataStr: string): LaunchData
-	local data: { [string]: string } = {}
-	for key, value in launchDataStr:gmatch("[?&]([^=&]+)=([^&]+)") do
-		if key and value then
-			data[key] = value
-		end
-	end
-
-	return {
-		placeId = tonumber(data.placeId),
-		initialStoryPath = data.story or data.storyPath,
-		storyRootPath = data.storyRoot,
-	}
-end
-
-local function tryTeleportToLaunchPlace(launchData: LaunchData): boolean
-	if launchData.placeId == nil then
-		print(`{prefix} no teleport place requested, staying in this place`)
-		return false
-	end
-
-	if launchData.placeId == game.PlaceId then
-		print(`{prefix} already in requested place {launchData.placeId}, skipping teleport`)
-		return false
-	end
-
-	print(`{prefix} teleporting to isolated preview at place {launchData.placeId}...`)
-
-	local ok, err = pcall(function()
-		TeleportService:TeleportAsync(launchData.placeId, { localPlayer })
-	end)
-
-	if not ok then
-		warn(`{prefix} failed to teleport to place {launchData.placeId}: {err}`)
-	end
-
-	return true
-end
-
--- Resolves the story root path (e.g. "Folder/SubFolder") to a live Instance
--- under ReplicatedStorage. Returns nil when no story root was requested or it
--- couldn't be found in time.
-local function resolveStoryRoot(launchData: LaunchData): Instance?
-	local path = launchData.storyRootPath
-	if path == nil then
-		return nil
-	end
-
-	local current: Instance = ReplicatedStorage
-	for segment in path:gmatch("[^/]+") do
-		print(`{prefix} resolving story root segment "{segment}" under {current:GetFullName()}...`)
-		local child = current:WaitForChild(segment, 10)
-		if child == nil then
-			warn(`{prefix} Timed out waiting for story root segment "{segment}"`)
-			return nil
-		end
-		current = child
-	end
-	print(`{prefix} resolved story root to {current:GetFullName()}`)
-	return current
-end
-
-local joinData = localPlayer:GetJoinData()
-local launchData = parseLaunchData(joinData.LaunchData or "")
-
-print(
-	`{prefix} parsed launch data: placeId={launchData.placeId or "<none>"}, `
-		.. `initialStoryPath={launchData.initialStoryPath or "<none>"}, `
-		.. `storyRoot={launchData.storyRootPath or "<none>"}`
-)
-
-if tryTeleportToLaunchPlace(launchData) then
-	return
-end
 
 print(`{prefix} setting up Flipbook UI...`)
 local playerGui = localPlayer:WaitForChild("PlayerGui")
@@ -120,9 +37,6 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
-	initialStoryPath = launchData.initialStoryPath,
-	storyRoot = resolveStoryRoot(launchData),
-})
+FlipbookCore.createEmbeddedFlipbookApp(screenGui)
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)
