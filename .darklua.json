@@ -52,5 +52,12 @@
     "filter_after_early_return",
     "remove_nil_declaration",
     "remove_empty_do"
-  ]
+  ],
+  "loaders": {
+    "**/*.model.json": "copy",
+    "**/*.project.json": "copy",
+    "**/*.json": "copy",
+    "**/*.toml": "copy",
+    "**/*.md": "copy"
+  }
 }
