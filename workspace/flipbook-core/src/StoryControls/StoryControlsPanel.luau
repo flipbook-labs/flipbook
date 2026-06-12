@@ -29,8 +29,6 @@ local function StoryControlsPanel(props: StoryControlsPanelProps)
 		{
 			StoryControls = e(StoryControls, {
 				controlsSchema = props.controlsSchema,
-				controls = props.controls,
-				setControl = props.setControl,
 			}),
 		}
 	)
