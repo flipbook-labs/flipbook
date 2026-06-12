@@ -3,6 +3,8 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local BuildChannel = require("@root/Enums/BuildChannel")
+local BuildTarget = require("@root/Enums/BuildTarget")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -82,6 +84,8 @@ local function App()
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Topbar = React.createElement(Topbar, {
+					showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
+					showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 

@@ -4,8 +4,6 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
-local BuildChannel = require("@root/Enums/BuildChannel")
-local BuildTarget = require("@root/Enums/BuildTarget")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
@@ -41,7 +39,10 @@ local useSignalState = ReactSignals.useSignalState
 
 type ItemId = number | string
 
-type TopbarProps = {} & Foundation.CommonProps
+type TopbarProps = {
+	showDevBadge: boolean?,
+	showInternalBadge: boolean?,
+} & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
 	local helpButtonRef = useRef(nil :: GuiObject?)
@@ -198,7 +199,7 @@ local function Topbar(props: TopbarProps)
 					LayoutOrder = 1,
 					tag = "auto-xy row gap-xsmall",
 				}, {
-					DevBadge = if _G.BUILD_CHANNEL == BuildChannel.Development
+					DevBadge = if props.showDevBadge
 						then e(Badge, {
 							LayoutOrder = 1,
 							text = "Development",
@@ -208,7 +209,7 @@ local function Topbar(props: TopbarProps)
 						})
 						else nil,
 
-					InternalBadge = if _G.BUILD_TARGET == BuildTarget.Rotriever
+					InternalBadge = if props.showInternalBadge
 						then e(Badge, {
 							LayoutOrder = 2,
 							text = "Elevated",
