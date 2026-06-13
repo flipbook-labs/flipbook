@@ -35,7 +35,7 @@ local function StoryViewNavbar(props: Props)
 	end, { userSettingsStore.setStorage })
 
 	return e(Foundation.View, {
-		tag = "size-full-0 auto-y row gap-small align-y-center",
+		tag = "size-full-0 auto-y row gap-xsmall align-y-center",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Zoom = e(Foundation.View, {

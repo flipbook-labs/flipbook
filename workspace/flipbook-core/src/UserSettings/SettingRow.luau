@@ -87,7 +87,7 @@ local function SettingRow(props: Props)
 			else nil,
 
 		OptionWrapper = React.createElement(Foundation.View, {
-			tag = "auto-xy padding-x-medium",
+			tag = "auto-xy padding-x-small",
 		}, {
 			Option = optionElement,
 		}),

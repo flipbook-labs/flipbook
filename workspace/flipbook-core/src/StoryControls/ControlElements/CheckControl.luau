@@ -40,7 +40,7 @@ local function CheckControl(props: Props)
 
 	-- TODO: Make this a grid
 	return e(Foundation.View, {
-		tag = "size-full-y auto-x col gap-small",
+		tag = "size-full-y auto-x col gap-xsmall",
 	}, checkboxes)
 end
 

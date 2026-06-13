@@ -65,7 +65,7 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-small padding-y-small row gap-medium size-full-1400",
 		}),
 		{
 			Actions = e(ScrollView, {
@@ -78,7 +78,7 @@ local function Topbar(props: TopbarProps)
 				},
 				layout = {
 					FillDirection = Enum.FillDirection.Horizontal,
-					Padding = UDim.new(0, tokens.Padding.Medium),
+					Padding = UDim.new(0, tokens.Padding.Small),
 				},
 			}, {
 				Zoom = e(View, {

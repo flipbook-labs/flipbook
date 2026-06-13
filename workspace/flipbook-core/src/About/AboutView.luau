@@ -31,7 +31,7 @@ local function AboutView()
 	end
 
 	return React.createElement(Foundation.View, {
-		tag = "size-full-0 auto-y col align-x-center gap-xlarge padding-large",
+		tag = "size-full-0 auto-y col align-x-center gap-large padding-medium",
 	}, {
 		Logo = React.createElement(Foundation.Image, {
 			Image = constants.FLIPBOOK_LOGO,
@@ -40,13 +40,13 @@ local function AboutView()
 		}),
 
 		Title = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-heading-large",
+			tag = "auto-xy text-heading-medium",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `Flipbook {if _G.BUILD_VERSION then _G.BUILD_VERSION else "unreleased"}`,
 		}),
 
 		GitHub = React.createElement(Foundation.View, {
-			tag = "auto-xy row gap-small align-y-center",
+			tag = "auto-xy row gap-xsmall align-y-center",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Icon = React.createElement(Foundation.Image, {
@@ -57,24 +57,24 @@ local function AboutView()
 			}),
 
 			Label = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-body-medium",
+				tag = "auto-xy text-body-small",
 				Text = "flipbook-labs/flipbook",
 				LayoutOrder = nextLayoutOrder(),
 			}),
 		}),
 
 		Authors = React.createElement(Foundation.View, {
-			tag = "auto-xy col align-x-center gap-medium",
+			tag = "auto-xy col align-x-center gap-small",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Title = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-title-medium",
+				tag = "auto-xy text-title-small",
 				Text = `Created by:`,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			AuthorList = React.createElement(Foundation.View, {
-				tag = "auto-xy row align-x-center gap-medium",
+				tag = "auto-xy row align-x-center gap-small",
 				LayoutOrder = nextLayoutOrder(),
 			}, authors),
 		}),
@@ -84,7 +84,7 @@ local function AboutView()
 		}),
 
 		Copy = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-body-medium",
+			tag = "auto-xy text-body-small",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `Copyright © 2021—{currentYear} flipbook-labs`,
 		}),

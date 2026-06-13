@@ -65,16 +65,16 @@ local function TelemetryOptOutDialog(): React.Node?
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Wrapper = React.createElement(Foundation.View, {
-				tag = "auto-xy col gap-large",
+				tag = "auto-xy col gap-medium",
 			}, {
 				MainParagraph = React.createElement(Foundation.Dialog.Text, {
-					tag = "auto-xy text-wrap text-body-medium",
+					tag = "auto-xy text-wrap text-body-small",
 					Text = "Flipbook would like to send anonymized usage data to help us improve the quality of the plugin.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
 				WhereToOptOut = React.createElement(Foundation.Dialog.Text, {
-					tag = "auto-xy text-wrap text-body-medium",
+					tag = "auto-xy text-wrap text-body-small",
 					Text = "You can opt out at any time in the settings.",
 					LayoutOrder = nextLayoutOrder(),
 				}),

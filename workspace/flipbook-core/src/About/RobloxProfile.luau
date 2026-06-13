@@ -33,7 +33,7 @@ local function RobloxProfile(props: Props)
 	end, { props.userId })
 
 	return React.createElement(Foundation.View, {
-		tag = "auto-xy row align-y-center gap-small",
+		tag = "auto-xy row align-y-center gap-xsmall",
 		LayoutOrder = props.LayoutOrder,
 	}, {
 		Avatar = React.createElement(Foundation.Avatar, {
@@ -43,7 +43,7 @@ local function RobloxProfile(props: Props)
 		}),
 
 		Username = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-label-medium",
+			tag = "auto-xy text-label-small",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `@{username}`,
 			TextTransparency = styles.alpha,

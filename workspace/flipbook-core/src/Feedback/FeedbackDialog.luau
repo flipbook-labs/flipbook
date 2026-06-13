@@ -116,7 +116,7 @@ local function FeedbackDialog(props: Props)
 
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					Layout = React.createElement(Foundation.View, {
-						tag = "size-full-0 auto-y col gap-large padding-top-medium",
+						tag = "size-full-0 auto-y col gap-medium padding-top-small",
 					}, {
 						Title = React.createElement(Foundation.TextInput, {
 							label = "Title",
@@ -150,7 +150,7 @@ local function FeedbackDialog(props: Props)
 
 						ErrorMessage = if err
 							then React.createElement(Foundation.Text, {
-								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-medium content-alert",
+								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-small content-alert",
 								Text = err,
 								LayoutOrder = nextLayoutOrder(),
 							})

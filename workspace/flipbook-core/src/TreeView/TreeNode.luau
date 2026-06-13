@@ -161,9 +161,9 @@ local function TreeNode(props: TreeNodeProps)
 				onActivated = onActivated,
 				onSecondaryActivated = onSecondaryActivated,
 				padding = {
-					left = UDim.new(0, tokens.Padding.Medium * #ancestors),
+					left = UDim.new(0, tokens.Padding.Small * #ancestors),
 				},
-				tag = "align-y-center auto-y gap-medium padding-right-medium padding-y-small row size-full-0",
+				tag = "align-y-center auto-y gap-small padding-right-small padding-y-xsmall row size-full-0",
 				ref = ref,
 			}, {
 				Icon = e(Icon, {
@@ -178,7 +178,7 @@ local function TreeNode(props: TreeNodeProps)
 					LayoutOrder = 2,
 					Text = name,
 					tag = {
-						["auto-y shrink size-full-0 text-align-x-left text-label-medium text-truncate-end"] = true,
+						["auto-y shrink size-full-0 text-align-x-left text-label-small text-truncate-end"] = true,
 						["content-emphasis"] = isSelected,
 					},
 				}),
@@ -193,7 +193,7 @@ local function TreeNode(props: TreeNodeProps)
 			ContextMenu = if isContextMenuOpen and #contextMenuItems > 0
 				then React.createElement(Foundation.Menu, {
 					isOpen = true,
-					size = Foundation.Enums.InputSize.Medium,
+					size = Foundation.Enums.InputSize.Small,
 					items = contextMenuItems,
 					onPressedOutside = function()
 						setIsContextMenuOpen(false)

@@ -16,7 +16,7 @@ local function Branding(props: Props)
 	local tokens = useTokens()
 
 	return e(Foundation.View, {
-		tag = "auto-xy row gap-small align-y-center",
+		tag = "auto-xy row gap-xsmall align-y-center",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Icon = e(Foundation.Image, {
@@ -26,7 +26,7 @@ local function Branding(props: Props)
 		}),
 
 		Typography = e(Foundation.Text, {
-			tag = "auto-xy text-heading-medium",
+			tag = "auto-xy text-heading-small",
 			LayoutOrder = nextLayoutOrder(),
 			Text = "Flipbook",
 		}),

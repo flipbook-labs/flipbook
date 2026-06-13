@@ -51,7 +51,7 @@ local function SettingsView()
 	local children: { [string]: React.Node } = {}
 	for _, group in settingsByGroup do
 		children[group.name] = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-heading-medium padding-medium",
+			tag = "auto-xy text-heading-small padding-small",
 			Text = group.name,
 			LayoutOrder = nextLayoutOrder(),
 		})
@@ -65,7 +65,7 @@ local function SettingsView()
 	end
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full bg-surface-200 gap-large padding-y-large",
+		tag = "size-full bg-surface-200 gap-medium padding-y-medium",
 		scroll = {
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.fromScale(1, 0),
@@ -77,12 +77,12 @@ local function SettingsView()
 	}, {
 		Title = React.createElement(Foundation.View, {
 			LayoutOrder = nextLayoutOrder(),
-			tag = "align-y-center auto-y padding-right-medium row size-full-0",
+			tag = "align-y-center auto-y padding-right-small row size-full-0",
 		}, {
 			Title = React.createElement(Foundation.Text, {
 				LayoutOrder = nextLayoutOrder(),
 				Text = "Settings",
-				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-large padding-medium",
+				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-medium padding-small",
 			}),
 
 			Close = React.createElement(Foundation.IconButton, {
@@ -97,7 +97,7 @@ local function SettingsView()
 		}),
 
 		Settings = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-xlarge",
+			tag = "size-full-0 auto-y col gap-large",
 			LayoutOrder = nextLayoutOrder(),
 		}, children),
 	})
