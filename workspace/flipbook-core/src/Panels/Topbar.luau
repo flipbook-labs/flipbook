@@ -17,6 +17,7 @@ local Divider = Foundation.Divider
 local Dropdown = Foundation.Dropdown
 local IconButton = Foundation.IconButton
 local IconName = Foundation.Enums.IconName
+local IconPosition = Foundation.Enums.IconPosition
 local IconVariant = Foundation.Enums.IconVariant
 local InputSize = Foundation.Enums.InputSize
 local Menu = Foundation.Menu
@@ -216,7 +217,11 @@ local function Topbar(props: TopbarProps)
 						then e(Badge, {
 							LayoutOrder = 2,
 							text = "Beta",
-							icon = IconName.LabBeaker,
+							icon = {
+								name = IconName.LabBeaker,
+								variant = IconVariant.Filled,
+								position = IconPosition.Left,
+							},
 							variant = Foundation.Enums.BadgeVariant.Contrast,
 							size = Foundation.Enums.InputSize.Small,
 						})
