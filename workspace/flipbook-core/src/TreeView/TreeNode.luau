@@ -178,7 +178,7 @@ local function TreeNode(props: TreeNodeProps)
 					LayoutOrder = 2,
 					Text = name,
 					tag = {
-						["auto-y shrink size-full-0 text-align-x-left text-label-small text-truncate-end"] = true,
+						["auto-y shrink size-full-0 text-align-x-left text-label-medium text-truncate-end"] = true,
 						["content-emphasis"] = isSelected,
 					},
 				}),
