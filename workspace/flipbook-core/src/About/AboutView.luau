@@ -49,11 +49,11 @@ local function AboutView()
 			tag = "auto-xy row gap-small align-y-center",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
-			Icon = React.createElement(Foundation.Image, {
+
+			Icon = React.createElement(Foundation.Icon, {
+				name = Foundation.Enums.IconName.Github,
+				size = Foundation.Enums.IconSize.Medium,
 				LayoutOrder = nextLayoutOrder(),
-				Image = constants.GITHUB_LOGO,
-				imageStyle = colors.github,
-				Size = UDim2.fromOffset(tokens.Size.Size_400, tokens.Size.Size_400),
 			}),
 
 			Label = React.createElement(Foundation.Text, {
