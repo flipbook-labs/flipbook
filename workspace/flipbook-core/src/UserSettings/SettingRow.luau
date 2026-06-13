@@ -41,6 +41,7 @@ local function SettingRow(props: Props)
 				hint = props.setting.description,
 				isChecked = value,
 				onActivated = setSetting,
+				size = Foundation.Enums.InputSize.Small,
 			})
 		elseif props.setting.settingType == "dropdown" then
 			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.DropdownItem
@@ -56,6 +57,7 @@ local function SettingRow(props: Props)
 				value = value,
 				items = items,
 				onItemChanged = setSetting,
+				size = Foundation.Enums.InputSize.Small,
 			})
 		elseif props.setting.settingType == "number" then
 			local range = props.setting.range
@@ -68,6 +70,7 @@ local function SettingRow(props: Props)
 				maximum = if range then range.Max else nil,
 				minimum = if range then range.Min else nil,
 				onChanged = setSetting,
+				size = Foundation.Enums.InputSize.Small,
 			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)

@@ -89,6 +89,7 @@ local function SettingsView()
 				LayoutOrder = nextLayoutOrder(),
 				icon = "x",
 				isCircular = true,
+				size = Foundation.Enums.InputSize.Small,
 				onActivated = function()
 					navigation.navigateTo("Home")
 				end,

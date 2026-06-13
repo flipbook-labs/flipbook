@@ -259,6 +259,7 @@ local function Topbar(props: TopbarProps)
 			HelpMenu = e(Menu, {
 				anchorRef = helpButtonRef,
 				isOpen = isHelpMenuOpen,
+				size = InputSize.Small,
 				items = {
 					{
 						id = "About",
