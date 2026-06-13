@@ -216,7 +216,7 @@ local function Topbar(props: TopbarProps)
 						then e(Badge, {
 							LayoutOrder = 2,
 							text = "Beta",
-							icon = IconName.Flag,
+							icon = IconName.LabBeaker,
 							variant = Foundation.Enums.BadgeVariant.Contrast,
 							size = Foundation.Enums.InputSize.Small,
 						})
