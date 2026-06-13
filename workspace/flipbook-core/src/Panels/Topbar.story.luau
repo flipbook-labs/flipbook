@@ -8,6 +8,7 @@ local e = React.createElement
 
 local controls = {
 	showDevBadge = false,
+	showBetaBadge = false,
 	showInternalBadge = false,
 }
 
@@ -25,6 +26,7 @@ return {
 			StoryActions = e(StoryActionsContext.Provider, {}, {
 				Topbar = e(Topbar, {
 					showDevBadge = props.controls.showDevBadge,
+					showBetaBadge = props.controls.showBetaBadge,
 					showInternalBadge = props.controls.showInternalBadge,
 				}),
 			}),

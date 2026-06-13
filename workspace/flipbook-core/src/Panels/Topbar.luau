@@ -41,6 +41,7 @@ type ItemId = number | string
 
 type TopbarProps = {
 	showDevBadge: boolean?,
+	showBetaBadge: boolean?,
 	showInternalBadge: boolean?,
 } & Foundation.CommonProps
 
@@ -57,6 +58,8 @@ local function Topbar(props: TopbarProps)
 	local storyActions = StoryActionsContext.useStoryActions()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+
+	local hasBadges = props.showDevBadge or props.showBetaBadge or props.showInternalBadge
 
 	local onThemeChanged = useCallback(function(itemId: ItemId)
 		userSettingsStore.setStorage(function(currentValue)
@@ -195,7 +198,7 @@ local function Topbar(props: TopbarProps)
 				LayoutOrder = 2,
 				tag = "auto-x row size-0-full gap-small align-y-center",
 			}, {
-				BadgeCluster = e(View, {
+				BadgeCluster = hasBadges and e(View, {
 					LayoutOrder = 1,
 					tag = "auto-xy row gap-xsmall",
 				}, {
@@ -209,10 +212,20 @@ local function Topbar(props: TopbarProps)
 						})
 						else nil,
 
-					InternalBadge = if props.showInternalBadge
+					BetaBadge = if props.showBetaBadge
 						then e(Badge, {
 							LayoutOrder = 2,
-							text = "Elevated",
+							text = "Beta",
+							icon = IconName.Flag,
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					InternalBadge = if props.showInternalBadge
+						then e(Badge, {
+							LayoutOrder = 3,
+							text = "Internal",
 							icon = IconName.Tilt,
 							variant = Foundation.Enums.BadgeVariant.Contrast,
 							size = Foundation.Enums.InputSize.Small,
@@ -225,7 +238,7 @@ local function Topbar(props: TopbarProps)
 					tag = "auto-xy row gap-xsmall",
 				}, {
 					Help = e(Tooltip, {
-						LayoutOrder = 3,
+						LayoutOrder = 1,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
 						title = "Help",
@@ -241,7 +254,7 @@ local function Topbar(props: TopbarProps)
 					}),
 
 					Settings = e(Tooltip, {
-						LayoutOrder = 4,
+						LayoutOrder = 2,
 						align = PopoverAlign.End,
 						side = PopoverSide.Bottom,
 						title = "Settings",

@@ -85,6 +85,7 @@ local function App()
 			}, {
 				Topbar = React.createElement(Topbar, {
 					showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
+					showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
 					showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
 					LayoutOrder = nextLayoutOrder(),
 				}),
