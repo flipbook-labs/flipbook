@@ -85,7 +85,7 @@ local function FlipbookApp(props: Props)
 			}),
 
 			MainWrapper = React.createElement(Foundation.View, {
-				tag = "size-full col shrink",
+				tag = "size-full col shrink bg-surface-100",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Topbar = React.createElement(Topbar, {
