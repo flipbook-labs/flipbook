@@ -109,7 +109,9 @@ local function EmbedIntoExperienceDialog(props: Props)
 			Description = e(Foundation.Dialog.Text, {
 				tag = "auto-xy text-wrap text-body-medium",
 				LayoutOrder = nextLayoutOrder(),
-				Text = `The Flipbook runtime already exists at <b>{if existingRuntime then existingRuntime:GetFullName() else "(unknown)"}</b>. There can only be one at a time. Do you want to overwrite it?`,
+				Text = `The Flipbook runtime already exists at <b>{if existingRuntime
+					then existingRuntime:GetFullName()
+					else "(unknown)"}</b>. There can only be one at a time. Do you want to overwrite it?`,
 			}),
 		})
 

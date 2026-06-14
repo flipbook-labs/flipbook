@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy main storybook
         if: github.event_name == 'push'
-        uses: flipbook-labs/deploy-storybook@v0.2.0
+        uses: flipbook-labs/deploy-storybook@v0.2.1
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
@@ -71,7 +71,7 @@ jobs:
 
       - name: Deploy PR storybook
         if: github.event_name == 'pull_request'
-        uses: flipbook-labs/deploy-storybook@v0.2.0
+        uses: flipbook-labs/deploy-storybook@v0.2.1
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
