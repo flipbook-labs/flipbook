@@ -1,5 +1,6 @@
 plugins/
 app.json
 appearance.json
+backlink.json
 graph.json
 workspace.json
