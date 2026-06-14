@@ -6,12 +6,11 @@ local system = require("@std/system")
 
 local getDescendants = require("@scripts/lib/getDescendants")
 
-local loomConfig = require("@repo/loom.config")
 local project = require("@repo/project")
 
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
-local function move(src: path.pathlike, dest: path.pathlike)
+local function move(src: path.Pathlike, dest: path.Pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
 		stdio = "inherit",
 	})
@@ -25,20 +24,17 @@ do
 	})
 	assert(res.ok, res.stderr)
 
-	fs.removedirectory(project.LUAU_PACKAGES_PATH, {
+	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
 		recursive = true,
 	})
-	fs.createdirectory(project.LUAU_PACKAGES_PATH)
 
 	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
 	-- packages by moving all the Loom dependencies into LuauPackages
-	for dependencyName in loomConfig.package.dependencies :: { [string]: unknown } do
-		move(path.join(project.PACKAGES_PATH, dependencyName), path.join(project.LUAU_PACKAGES_PATH, dependencyName))
-	end
+	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
@@ -78,7 +74,7 @@ do
 			}
 
 			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
-			fs.writestringtofile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+			fs.writeStringToFile(darkluaConfigPath, json.serialize(darkluaConfig, true))
 
 			run("darklua", { "process", "src", "src" }, {
 				cwd = packageRoot,
@@ -126,7 +122,7 @@ do
 
 		local dest = project.ROBLOX_PACKAGES_PATH
 		if fs.exists(dest) and fs.type(dest) == "dir" then
-			fs.removedirectory(dest, {
+			fs.removeDirectory(dest, {
 				recursive = true,
 			})
 		end
@@ -154,29 +150,6 @@ do
 					`local Package = require(Root.Parent.Packages.{name})`
 				)
 			end
-		end
-	end
-
-	local function installLuteBatteries()
-		local commit = "7f5ccf7"
-		local batteries = {
-			"cli.luau",
-			"pp.luau",
-			"richterm.luau",
-			"toml.luau",
-		}
-
-		local dest = path.join(project.LUAU_PACKAGES_PATH, "batteries")
-
-		fs.createdirectory(dest, {
-			makeparents = true,
-		})
-
-		for _, battery in batteries do
-			run("curl", { "-LO", `https://raw.githubusercontent.com/luau-lang/lute/{commit}/batteries/{battery}` }, {
-				cwd = dest,
-				stdio = "default",
-			})
 		end
 	end
 
@@ -213,6 +186,5 @@ do
 	installRobloxPackages()
 	installWallyPackages()
 	installRbxasset()
-	installLuteBatteries()
 	pruneDevelopmentFiles()
 end

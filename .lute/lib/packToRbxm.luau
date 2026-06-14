@@ -1,4 +1,4 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 
 local fs = require("@std/fs")
 local path = require("@std/path")
@@ -8,7 +8,7 @@ local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 
 local run = FlipbookBatteries.run
 
-local function packToRbxm(filePath: path.pathlike): path.path
+local function packToRbxm(filePath: path.Pathlike): path.Path
 	local projectPath = path.join(system.tmpdir(), "default.project.json")
 	local resolvedFilePath = path.resolve(filePath)
 
