@@ -30,10 +30,9 @@ FlipbookCore = { path = "/path/to/flipbook/build/flipbook-core-rotriever" }
 
 For each iteration:
 
-1. The agent rebuilds FlipbookCore:
+1. The agent rebuilds FlipbookCore. From the `flipbook` repo:
 
 ```bash
-cd ~/git/flipbook
 lute run build --target rotriever --clean
 ```
 
@@ -46,12 +45,10 @@ Studio will reload the plugin automatically once the build completes.
 Only run these overlay steps when the current task actually changed that dependency repo:
 
 ```bash
-# if this task changed module-loader
-cd ~/git/module-loader
+# from the module-loader repo, if this task changed it
 lute run try-in-flipbook
 
-# if this task changed storyteller
-cd ~/git/storyteller
+# from the storyteller repo, if this task changed it
 lute run try-in-flipbook
 ```
 
