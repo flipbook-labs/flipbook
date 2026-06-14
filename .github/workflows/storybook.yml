@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy main storybook
         if: github.event_name == 'push'
-        uses: flipbook-labs/deploy-storybook@main
+        uses: flipbook-labs/deploy-storybook@v0.2.0
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
@@ -71,20 +71,10 @@ jobs:
 
       - name: Deploy PR storybook
         if: github.event_name == 'pull_request'
-        uses: flipbook-labs/deploy-storybook@main
+        uses: flipbook-labs/deploy-storybook@v0.2.0
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
           place-name: ${{ env.PREVIEW_PLACE_NAME }}
           place-file: build/flipbook-storybook.rbxl
           cli-version: "0.6.0"
-
-      - name: Comment preview link on PR
-        if: github.event_name == 'pull_request'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: >-
-          flipbook-cli comment --pr ${{ github.event.pull_request.number }} \
-            --universe-id "${{ steps.ids.outputs.universe-id }}" \
-            --place-name "$PREVIEW_PLACE_NAME" \
-            --github-repository flipbook-labs/flipbook
