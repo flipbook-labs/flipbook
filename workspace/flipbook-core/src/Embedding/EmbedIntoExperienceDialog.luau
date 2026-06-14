@@ -102,13 +102,14 @@ local function EmbedIntoExperienceDialog(props: Props)
 			},
 		}
 	elseif step == EmbedStep.ConfirmOverwrite then
+		local existingRuntime = getExistingRuntime()
 		content = e(Foundation.View, {
 			tag = "auto-xy col gap-large",
 		}, {
 			Description = e(Foundation.Dialog.Text, {
 				tag = "auto-xy text-wrap text-body-medium",
 				LayoutOrder = nextLayoutOrder(),
-				Text = `The Flipbook runtime already exists at <b>{getExistingRuntime():GetFullName()}</b>. There can only be one at a time. Do you want to overwrite it?`,
+				Text = `The Flipbook runtime already exists at <b>{if existingRuntime then existingRuntime:GetFullName() else "(unknown)"}</b>. There can only be one at a time. Do you want to overwrite it?`,
 			}),
 		})
 

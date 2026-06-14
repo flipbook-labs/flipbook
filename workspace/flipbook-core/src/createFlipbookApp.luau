@@ -12,7 +12,7 @@ type AppMode = AppModeEnum.AppMode
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
-	plugin: Pluginlike,
+	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
 }
@@ -38,15 +38,12 @@ end
 
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
-	local appOptions: Options = options or {
-		plugin = defaultPlugin,
-		overlayGui = nil,
-	}
+	local appOptions: Options = options or {}
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
-		plugin = appOptions.plugin,
+		plugin = appOptions.plugin or defaultPlugin,
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {

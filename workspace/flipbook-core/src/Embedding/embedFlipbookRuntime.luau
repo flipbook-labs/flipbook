@@ -8,7 +8,7 @@ local function embedFlipbookRuntime(target: Instance)
 	local existing = CollectionService:GetTagged(constants.FLIPBOOK_RUNTIME_TAG)
 	if #existing > 0 then
 		for _, instance in existing do
-			instance.Parent = nil
+			instance:Destroy()
 		end
 	end
 

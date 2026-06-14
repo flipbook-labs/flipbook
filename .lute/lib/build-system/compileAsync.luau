@@ -90,7 +90,8 @@ local function compileAsync(context: BuildContext)
 		copyInto(context.dest, path.join(dest, "src"))
 
 		-- Remove all the runtime code since we're just shipping FlipbookCore
-		fs.remove(path.join(dest, "src/EmbeddedStarterScript.client.luau"))
+		fs.remove(path.join(dest, "src/EmbeddedClientStarterScript.client.luau"))
+		fs.remove(path.join(dest, "src/EmbeddedServerStarterScript.server.luau"))
 		fs.remove(path.join(dest, "src/PluginStarterScript.plugin.luau"))
 
 		fs.copy(path.join(project.WORKSPACE_PATH, "flipbook-core/rotriever.toml"), path.join(dest, "rotriever.toml"))
