@@ -57,7 +57,7 @@ local function AboutView()
 			}),
 
 			Label = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-body-small",
+				tag = "auto-xy text-body-medium",
 				Text = "flipbook-labs/flipbook",
 				LayoutOrder = nextLayoutOrder(),
 			}),
@@ -68,7 +68,7 @@ local function AboutView()
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Title = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-title-small",
+				tag = "auto-xy text-title-medium",
 				Text = `Created by:`,
 				LayoutOrder = nextLayoutOrder(),
 			}),
@@ -84,7 +84,7 @@ local function AboutView()
 		}),
 
 		Copy = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-body-small",
+			tag = "auto-xy text-body-medium",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `Copyright © 2021—{currentYear} flipbook-labs`,
 		}),

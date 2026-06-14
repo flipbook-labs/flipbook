@@ -43,7 +43,7 @@ local function RobloxProfile(props: Props)
 		}),
 
 		Username = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-label-small",
+			tag = "auto-xy text-label-medium",
 			LayoutOrder = nextLayoutOrder(),
 			Text = `@{username}`,
 			TextTransparency = styles.alpha,
