@@ -5,11 +5,11 @@ local run = FlipbookBatteries.run
 run("npm", {
 	"install",
 }, {
-	cwd = "docs",
+	cwd = "docs/site",
 })
 
 run("npm", {
 	"start",
 }, {
-	cwd = "docs",
+	cwd = "docs/site",
 })

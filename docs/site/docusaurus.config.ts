@@ -33,7 +33,7 @@ const config: Config = {
 			{
 				docs: {
 					sidebarPath: './sidebars.ts',
-					editUrl: `${REPO_URL}/tree/main/docs/docs/`,
+					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
 				},
 				theme: {
 					customCss: './src/css/custom.css',
