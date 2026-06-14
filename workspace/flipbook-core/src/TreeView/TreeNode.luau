@@ -163,7 +163,7 @@ local function TreeNode(props: TreeNodeProps)
 				padding = {
 					left = UDim.new(0, tokens.Padding.Small * #ancestors),
 				},
-				tag = "align-y-center auto-y gap-small padding-right-small padding-y-xsmall row size-full-0",
+				tag = "align-y-center auto-y gap-small padding-right-small padding-y-small row size-full-0",
 				ref = ref,
 			}, {
 				Icon = e(Icon, {
