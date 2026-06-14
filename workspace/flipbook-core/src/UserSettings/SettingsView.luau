@@ -51,7 +51,7 @@ local function SettingsView()
 	local children: { [string]: React.Node } = {}
 	for _, group in settingsByGroup do
 		children[group.name] = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-heading-small padding-small",
+			tag = "auto-xy text-heading-small padding-x-small padding-top-large padding-bottom-small",
 			Text = group.name,
 			LayoutOrder = nextLayoutOrder(),
 		})
@@ -82,7 +82,7 @@ local function SettingsView()
 			Title = React.createElement(Foundation.Text, {
 				LayoutOrder = nextLayoutOrder(),
 				Text = "Settings",
-				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-medium padding-small",
+				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-large padding-small",
 			}),
 
 			Close = React.createElement(Foundation.IconButton, {
@@ -98,7 +98,7 @@ local function SettingsView()
 		}),
 
 		Settings = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-large",
+			tag = "size-full-0 auto-y col gap-xlarge",
 			LayoutOrder = nextLayoutOrder(),
 		}, children),
 	})
