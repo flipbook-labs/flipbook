@@ -3,7 +3,6 @@ local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
 local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
 local path = require("@std/path")
 local process = require("@std/process")
-local system = require("@std/system")
 
 local project = require("@repo/project")
 local rojoBuild = require("@scripts/lib/rojoBuild")
@@ -23,13 +22,16 @@ args:add("place-name", "option", {
 args:add("with-build", "flag", {
 	help = "Whether to build the workspace before deploying.",
 })
+args:add("build-only", "flag", {
+	help = "Build the storybook place (and runtime) but skip deploying. Used by "
+		.. "CI, which hands the built place off to the deploy-storybook action.",
+})
 
 args:parse({ ... })
 
-local apiKey = assert(process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY, "ROBLOX_STORYBOOK_PREVIEW_API_KEY must be set")
-
 local placeName = args:get("place-name")
 local withBuild = args:has("with-build")
+local buildOnly = args:has("build-only")
 
 -- Build processed workspace (darklua-transformed scripts with correct require paths)
 run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
@@ -43,7 +45,9 @@ if withBuild then
 end
 
 local basePlacePath = rojoBuild({
-	output = path.join(system.tmpdir(), "flipbook-storybook.rbxl"),
+	-- Emit to a deterministic path under build/ (which exists after the workspace
+	-- build above) so CI can hand this file to the deploy-storybook action.
+	output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),
 	project = {
 		name = DEFAULT_PLACE_NAME,
 		emitLegacyScripts = false,
@@ -72,6 +76,13 @@ local basePlacePath = rojoBuild({
 		},
 	},
 })
+
+if buildOnly then
+	print(`Built storybook place: {basePlacePath}`)
+	return
+end
+
+local apiKey = assert(process.env.ROBLOX_STORYBOOK_PREVIEW_API_KEY, "ROBLOX_STORYBOOK_PREVIEW_API_KEY must be set")
 
 local flipbookCliArgs: { string | number | boolean | path.Pathlike } = {
 	"deploy",

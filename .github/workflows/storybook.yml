@@ -39,31 +39,52 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
+      # Keep the deploy targets single-sourced from project.luau rather than
+      # duplicating them as workflow literals.
+      - name: Resolve storybook IDs
+        id: ids
+        run: |
+          echo "universe-id=$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
+          echo "place-id=$(grep -oP 'ROBLOX_STORYBOOK_PLACE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
+
+      # Build the storybook place locally. On `main` we also build a fresh
+      # Flipbook.rbxm off the branch (`--with-build`) and use it as the runtime,
+      # so we catch embedding issues before cutting a release. We intentionally
+      # exclude that flag from PR builds so a PR's own UI changes don't pollute
+      # the app underneath its preview.
+      - name: Build storybook place
+        run: >-
+          lute run deploy-storybook --build-only
+          ${{ github.event_name == 'push' && '--with-build' || '' }}
+
       - name: Deploy main storybook
         if: github.event_name == 'push'
-        env:
-          ROBLOX_STORYBOOK_PREVIEW_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-        # The `--with-build` flag will build a Flipbook rbxm off `main` and use
-        # that as the runtime for our primary storybook preview experience. And
-        # we intentionally _exclude_ this flag from the below PR-triggered
-        # deploy so that when a PR makes a change to Flipbook's UI that we don't
-        # _also_ use that as the underlying app. PRs would effectively pollute
-        # their own app otherwise.
-        run: lute run deploy-storybook --with-build
+        uses: flipbook-labs/deploy-storybook@main
+        with:
+          api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
+          universe-id: ${{ steps.ids.outputs.universe-id }}
+          place-name: "Flipbook Stories"
+          place-id: ${{ steps.ids.outputs.place-id }}
+          place-file: build/flipbook-storybook.rbxl
+          flipbook-rbxm: build/prod/Flipbook.rbxm
+          cli-version: "0.6.0"
 
-      - name: Deploy storybook
+      - name: Deploy PR storybook
         if: github.event_name == 'pull_request'
-        env:
-          ROBLOX_STORYBOOK_PREVIEW_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-        run: lute run deploy-storybook --place-name "$PREVIEW_PLACE_NAME"
+        uses: flipbook-labs/deploy-storybook@main
+        with:
+          api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
+          universe-id: ${{ steps.ids.outputs.universe-id }}
+          place-name: ${{ env.PREVIEW_PLACE_NAME }}
+          place-file: build/flipbook-storybook.rbxl
+          cli-version: "0.6.0"
 
       - name: Comment preview link on PR
         if: github.event_name == 'pull_request'
         env:
-          ROBLOX_STORYBOOK_PREVIEW_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
           flipbook-cli comment --pr ${{ github.event.pull_request.number }} \
-            --universe-id "$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" \
+            --universe-id "${{ steps.ids.outputs.universe-id }}" \
             --place-name "$PREVIEW_PLACE_NAME" \
             --github-repository flipbook-labs/flipbook
