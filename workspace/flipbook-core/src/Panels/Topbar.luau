@@ -65,7 +65,7 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-small padding-y-small row gap-medium size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-small padding-y-small row gap-medium size-full-1200",
 		}),
 		{
 			Actions = e(ScrollView, {
