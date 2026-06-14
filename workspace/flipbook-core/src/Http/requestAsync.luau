@@ -1,7 +1,19 @@
 local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
 
 local Sift = require("@pkg/Sift")
 local logger = require("@root/logger")
+
+local httpProxy
+if RunService:IsClient() then
+	local CollectionService = game:GetService("CollectionService")
+	httpProxy = CollectionService:GetTagged("FlipbookHttpProxy")[1]
+	if httpProxy then
+		logger:Info("connected with HTTP proxy RemoteFunction")
+	else
+		logger:Warn("could not find HTTP proxy RemoteFunction. HTTP requests will be unavailable")
+	end
+end
 
 local function requestAsync(
 	url: string,
@@ -29,12 +41,16 @@ local function requestAsync(
 	logger:Debug(`{requestOptions.method} {url}`)
 	local res
 	local success, err = pcall(function()
-		res = HttpService:RequestAsync({
-			Url = url,
-			Method = requestOptions.method,
-			Headers = requestOptions.headers,
-			Body = body,
-		})
+		if httpProxy then
+			res = httpProxy:InvokeServer(url, requestOptions.method, requestOptions.headers, body)
+		else
+			res = HttpService:RequestAsync({
+				Url = url,
+				Method = requestOptions.method,
+				Headers = requestOptions.headers,
+				Body = body,
+			})
+		end
 	end)
 
 	if not success then
