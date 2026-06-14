@@ -3,7 +3,7 @@ return {
 	STORY_NAME_PATTERN = "%.story$",
 	STORYBOOK_NAME_PATTERN = "%.storybook$",
 
-	SIDEBAR_INITIAL_WIDTH = 200, -- px
+	SIDEBAR_INITIAL_WIDTH = 220, -- px
 	SIDEBAR_MIN_WIDTH = 140, -- px
 	SIDEBAR_MAX_WIDTH = 500, -- px
 
