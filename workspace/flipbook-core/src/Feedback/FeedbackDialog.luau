@@ -126,6 +126,7 @@ local function FeedbackDialog(props: Props)
 							hint = "Enter a breif summary of the feedback you're giving",
 							placeholder = "Enter title...",
 							onChanged = onTitleChanged,
+							size = Foundation.Enums.InputSize.Small,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
@@ -137,6 +138,7 @@ local function FeedbackDialog(props: Props)
 							hint = "Let us know what's on your mind. This can be a feature request, bug report, or any other feedback you'd like to give",
 							placeholder = "Enter feedback...",
 							onChanged = onBodyChanged,
+							size = Foundation.Enums.InputSize.Small,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 

@@ -68,13 +68,13 @@ local function TelemetryOptOutDialog(): React.Node?
 				tag = "auto-xy col gap-medium",
 			}, {
 				MainParagraph = React.createElement(Foundation.Dialog.Text, {
-					tag = "auto-xy text-wrap text-body-small",
+					tag = "auto-xy text-wrap text-body-medium",
 					Text = "Flipbook would like to send anonymized usage data to help us improve the quality of the plugin.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
 				WhereToOptOut = React.createElement(Foundation.Dialog.Text, {
-					tag = "auto-xy text-wrap text-body-small",
+					tag = "auto-xy text-wrap text-body-medium",
 					Text = "You can opt out at any time in the settings.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
@@ -83,6 +83,7 @@ local function TelemetryOptOutDialog(): React.Node?
 					label = "Help improve Flipbook by sending anonymous usage data",
 					isChecked = isOptedIn,
 					onActivated = setIsOptedIn,
+					size = Foundation.Enums.InputSize.Small,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),

@@ -35,6 +35,7 @@ local function CheckControl(props: Props)
 			onActivated = function()
 				onCheckboxActivated(item)
 			end,
+			size = Foundation.Enums.InputSize.XSmall,
 		})
 	end
 

@@ -45,12 +45,14 @@ local function StoryViewNavbar(props: Props)
 			Magnify = e(Foundation.IconButton, {
 				icon = Foundation.Enums.IconName.MagnifyingGlassPlus,
 				onActivated = props.onZoomIn or noop,
+				size = Foundation.Enums.InputSize.Small,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			Minify = e(Foundation.IconButton, {
 				icon = Foundation.Enums.IconName.MagnifyingGlassMinus,
 				onActivated = props.onZoomOut or noop,
+				size = Foundation.Enums.InputSize.Small,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 		}),
