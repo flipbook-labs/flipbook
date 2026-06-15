@@ -13,16 +13,33 @@ return {
 			Foundation.Enums.InputSize.Medium,
 			Foundation.Enums.InputSize.Large,
 		} :: { Foundation.InputSize },
+		iconVariant = {
+			Foundation.Enums.IconVariant.Regular,
+			Foundation.Enums.IconVariant.Filled,
+		} :: { Foundation.IconVariant },
 		showLabels = true,
 	},
 	story = function(props)
 		return React.createElement(Foundation.FoundationProvider, {
 			theme = props.theme,
 		}, {
-			BuilderIcons = React.createElement(BuilderIcons, {
-				filter = props.controls.filter,
-				iconSize = props.controls.iconSize,
-				showLabels = props.controls.showLabels,
+			ScrollView = React.createElement(Foundation.ScrollView, {
+				tag = "size-full",
+				scroll = {
+					AutomaticCanvasSize = Enum.AutomaticSize.Y,
+					CanvasSize = UDim2.fromScale(1, 0),
+					ScrollingDirection = Enum.ScrollingDirection.Y,
+				},
+				layout = {
+					FillDirection = Enum.FillDirection.Vertical,
+				},
+			}, {
+				BuilderIcons = React.createElement(BuilderIcons, {
+					filter = props.controls.filter,
+					iconSize = props.controls.iconSize,
+					iconVariant = props.controls.iconVariant,
+					showLabels = props.controls.showLabels,
+				}),
 			}),
 		})
 	end,

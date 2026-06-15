@@ -11,11 +11,13 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local Object = LuauPolyfill.Object
 
+local Badge = Foundation.Badge
 local Dialog = Foundation.Dialog
 local Divider = Foundation.Divider
 local Dropdown = Foundation.Dropdown
 local IconButton = Foundation.IconButton
 local IconName = Foundation.Enums.IconName
+local IconPosition = Foundation.Enums.IconPosition
 local IconVariant = Foundation.Enums.IconVariant
 local InputSize = Foundation.Enums.InputSize
 local Menu = Foundation.Menu
@@ -38,7 +40,11 @@ local useSignalState = ReactSignals.useSignalState
 
 type ItemId = number | string
 
-type TopbarProps = {} & Foundation.CommonProps
+type TopbarProps = {
+	showDevBadge: boolean?,
+	showBetaBadge: boolean?,
+	showInternalBadge: boolean?,
+} & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
 	local helpButtonRef = useRef(nil :: GuiObject?)
@@ -53,6 +59,8 @@ local function Topbar(props: TopbarProps)
 	local storyActions = StoryActionsContext.useStoryActions()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+
+	local hasBadges = props.showDevBadge or props.showBetaBadge or props.showInternalBadge
 
 	local onThemeChanged = useCallback(function(itemId: ItemId)
 		userSettingsStore.setStorage(function(currentValue)
@@ -189,45 +197,89 @@ local function Topbar(props: TopbarProps)
 
 			Support = e(View, {
 				LayoutOrder = 2,
-				tag = "auto-x row size-0-full",
+				tag = "auto-x row size-0-full gap-small align-y-center",
 			}, {
-				Help = e(Tooltip, {
+				BadgeCluster = hasBadges and e(View, {
 					LayoutOrder = 1,
-					align = PopoverAlign.Center,
-					side = PopoverSide.Bottom,
-					title = "Help",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = IconName.CircleQuestion,
-						onActivated = function()
-							setIsHelpMenuOpen(true)
-						end,
-						ref = helpButtonRef,
-						size = InputSize.Small,
-					}),
+					DevBadge = if props.showDevBadge
+						then e(Badge, {
+							LayoutOrder = 1,
+							text = "Development",
+							icon = IconName.Code,
+							variant = Foundation.Enums.BadgeVariant.Neutral,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					BetaBadge = if props.showBetaBadge
+						then e(Badge, {
+							LayoutOrder = 2,
+							text = "Beta",
+							icon = {
+								name = IconName.LabBeaker,
+								variant = IconVariant.Filled,
+								position = IconPosition.Left,
+							},
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					InternalBadge = if props.showInternalBadge
+						then e(Badge, {
+							LayoutOrder = 3,
+							text = "Internal",
+							icon = IconName.Tilt,
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
 				}),
 
-				Settings = e(Tooltip, {
+				SupportCluster = e(View, {
 					LayoutOrder = 2,
-					align = PopoverAlign.End,
-					side = PopoverSide.Bottom,
-					title = "Settings",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = {
-							name = IconName.Gear,
-							variant = if navigation.currentScreen == "Settings"
-								then IconVariant.Filled
-								else IconVariant.Regular,
-						},
-						onActivated = function()
-							if navigation.currentScreen ~= "Settings" then
-								navigation.navigateTo("Settings")
-							else
-								navigation.navigateTo("Home")
-							end
-						end,
-						size = InputSize.Small,
+					Help = e(Tooltip, {
+						LayoutOrder = 1,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Help",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.CircleQuestion,
+							onActivated = function()
+								setIsHelpMenuOpen(true)
+							end,
+							ref = helpButtonRef,
+							size = InputSize.Small,
+						}),
+					}),
+
+					Settings = e(Tooltip, {
+						LayoutOrder = 2,
+						align = PopoverAlign.End,
+						side = PopoverSide.Bottom,
+						title = "Settings",
+					}, {
+						Trigger = e(IconButton, {
+							icon = {
+								name = IconName.Gear,
+								variant = if navigation.currentScreen == "Settings"
+									then IconVariant.Filled
+									else IconVariant.Regular,
+							},
+							onActivated = function()
+								if navigation.currentScreen ~= "Settings" then
+									navigation.navigateTo("Settings")
+								else
+									navigation.navigateTo("Home")
+								end
+							end,
+							size = InputSize.Small,
+						}),
 					}),
 				}),
 			}),

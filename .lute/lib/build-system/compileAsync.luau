@@ -68,7 +68,7 @@ local function compileAsync(context: BuildContext)
 		end
 	end
 
-	if context.channel == "prod" then
+	if context.channel == "prod" or context.channel == "beta" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 

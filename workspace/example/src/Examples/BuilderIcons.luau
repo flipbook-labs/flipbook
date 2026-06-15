@@ -5,11 +5,13 @@ local Sift = require("@pkg/Sift")
 export type Props = {
 	filter: string?,
 	iconSize: Foundation.InputSize?,
+	iconVariant: Foundation.IconVariant?,
 	showLabels: boolean?,
 }
 
 local defaultProps = {
 	iconSize = Foundation.Enums.InputSize.Large,
+	iconVariant = Foundation.Enums.IconVariant.Regular,
 	showLabels = true,
 }
 
@@ -34,6 +36,7 @@ local function BuilderIcons(providedProps: Props)
 			Icon = React.createElement(Foundation.Icon, {
 				name = iconName,
 				size = Foundation.Enums.InputSize[props.iconSize],
+				variant = Foundation.Enums.IconVariant[props.iconVariant],
 				LayoutOrder = 1,
 			}),
 
