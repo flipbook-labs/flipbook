@@ -3,7 +3,10 @@ local CollectionService = game:GetService("CollectionService")
 local constants = require("@root/constants")
 
 local function embedFlipbookRuntime(target: Instance)
-	local pluginRoot = script:FindFirstAncestor("Flipbook")
+	local pluginRoot = assert(
+		script:FindFirstAncestor("Flipbook"),
+		"embedFlipbookRuntime: could not find a 'Flipbook' ancestor — was the plugin root renamed?"
+	)
 
 	local existing = CollectionService:GetTagged(constants.FLIPBOOK_RUNTIME_TAG)
 	if #existing > 0 then
