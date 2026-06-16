@@ -1,6 +1,9 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import path from 'path';
+import remarkDirective from 'remark-directive';
+import remarkObsidian from './src/remark/obsidian.mjs';
 
 const ORGANIZATION_NAME = 'flipbook-labs'
 const PROJECT_NAME = 'Flipbook'
@@ -19,7 +22,9 @@ const config: Config = {
 	organizationName: ORGANIZATION_NAME,
 	projectName: PROJECT_NAME,
 
-	onBrokenLinks: 'throw',
+	// Relaxed while the vault is mid-migration; tighten back to 'throw' once
+	// unresolved wikilinks are cleaned up.
+	onBrokenLinks: 'warn',
 	onBrokenMarkdownLinks: 'warn',
 
 	i18n: {
@@ -27,13 +32,25 @@ const config: Config = {
 		locales: ['en'],
 	},
 
+	// 'detect' parses .md as CommonMark so Obsidian-isms like bare <br> and
+	// `{ ... }` in tables don't trip the stricter MDX compiler.
+	markdown: {
+		format: 'detect',
+	},
+
 	presets: [
 		[
 			'classic',
 			{
 				docs: {
+					path: '../obsidian-vault',
+					exclude: ['**/.obsidian/**', '**/*.base'],
 					sidebarPath: './sidebars.ts',
 					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
+					beforeDefaultRemarkPlugins: [
+						remarkDirective,
+						[remarkObsidian, { vault: path.resolve(__dirname, '../obsidian-vault') }],
+					],
 				},
 				theme: {
 					customCss: './src/css/custom.css',
