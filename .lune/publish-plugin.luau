@@ -20,7 +20,16 @@ assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {
 
 run("lute", { "run", "build", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
 
-local assetName = if args.smoketest then "smoketest" else channel
+type ChannelName = "dev" | "beta" | "prod"
+type AssetName = "dev" | "prod" | "smoketest"
+
+local ASSET_NAMES_BY_CHANNEL: { [ChannelName]: AssetName } = {
+	dev = "dev",
+	beta = "dev",
+	prod = "prod",
+}
+
+local assetName: AssetName = if args.smoketest then "smoketest" else ASSET_NAMES_BY_CHANNEL[channel]
 
 -- Each of the assets defined in rbxasset.toml map to one of the options of
 -- `--channel` for simplicity
