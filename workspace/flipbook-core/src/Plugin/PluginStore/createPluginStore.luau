@@ -1,10 +1,13 @@
 local Charm = require("@pkg/Charm")
 
 local CharmTypes = require("@root/Common/CharmTypes")
+local CommonTypes = require("@root/Common/Types")
+
+type Pluginlike = CommonTypes.Pluginlike
 
 export type PluginStore = {
-	getPlugin: CharmTypes.Getter<Plugin?>,
-	setPlugin: CharmTypes.Setter<Plugin?>,
+	getPlugin: CharmTypes.Getter<Pluginlike?>,
+	setPlugin: CharmTypes.Setter<Pluginlike?>,
 }
 
 --[[
@@ -17,7 +20,7 @@ export type PluginStore = {
 	store to share it around other parts of the app
 ]]
 local function createPluginStore(): PluginStore
-	local getPlugin, setPlugin = Charm.signal(nil :: Plugin?)
+	local getPlugin, setPlugin = Charm.signal(nil :: Pluginlike?)
 
 	return {
 		getPlugin = getPlugin,
