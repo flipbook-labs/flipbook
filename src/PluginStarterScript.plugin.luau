@@ -32,7 +32,7 @@ Charm.flags.frozen = false
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
-local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
+local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 800, 600)
 
 -- selene: allow(deprecated)
 local widget = plugin:CreateDockWidgetPluginGuiAsync(PLUGIN_NAME, info)

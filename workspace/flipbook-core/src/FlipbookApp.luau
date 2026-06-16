@@ -4,6 +4,8 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local AppModeEnum = require("@root/Enums/AppMode")
+local BuildChannel = require("@root/Enums/BuildChannel")
+local BuildTarget = require("@root/Enums/BuildTarget")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -89,6 +91,9 @@ local function FlipbookApp(props: Props)
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Topbar = React.createElement(Topbar, {
+					showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
+					showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
+					showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 

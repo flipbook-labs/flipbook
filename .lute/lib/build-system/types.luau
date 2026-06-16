@@ -1,6 +1,6 @@
 local path = require("@std/path")
 
-export type Channel = "prod" | "dev"
+export type Channel = "prod" | "beta" | "dev"
 export type Target = "roblox" | "rotriever"
 
 export type BuildCache = {

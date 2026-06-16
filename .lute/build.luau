@@ -68,7 +68,10 @@ assert(
 )
 
 local channel = args:get("channel")
-assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
+assert(
+	channel == "dev" or channel == "beta" or channel == "prod",
+	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
+)
 
 local target = args:get("target")
 assert(
@@ -108,8 +111,9 @@ local context: BuildContext = {
 	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
-		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
 		BUILD_HASH = getCommitHash(),
+		BUILD_TARGET = target,
 		BASE_URL = process.env.BASE_URL,
 		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
