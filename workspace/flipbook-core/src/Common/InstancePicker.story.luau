@@ -19,10 +19,13 @@ return {
 			InstancePicker = React.createElement(InstancePicker, {
 				value = value,
 				onChanged = setValue,
+				LayoutOrder = 1,
 			}),
 
 			WithSelectedInstance = React.createElement(InstancePicker, {
 				value = workspace,
+				onChanged = function() end,
+				LayoutOrder = 2,
 			}),
 		})
 	end,

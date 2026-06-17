@@ -11,6 +11,7 @@ local useState = React.useState
 export type Props = {
 	value: Instance?,
 	onChanged: (Instance?) -> (),
+	LayoutOrder: number?,
 }
 
 local function InstancePicker(props: Props)
@@ -76,6 +77,7 @@ local function InstancePicker(props: Props)
 			affordance = Foundation.Enums.StateLayerAffordance.None,
 		},
 		onActivated = onActivated,
+		LayoutOrder = props.LayoutOrder,
 	}, {
 		Placeholder = if not props.value
 			then e(Foundation.Text, {
