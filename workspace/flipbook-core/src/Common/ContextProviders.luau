@@ -11,6 +11,7 @@ local useEffect = React.useEffect
 
 export type Props = {
 	plugin: Plugin,
+	theme: ("Dark" | "Light")?,
 	overlayGui: GuiBase2d?,
 	children: React.Node?,
 }
@@ -25,7 +26,7 @@ local function ContextProviders(props: Props)
 	return React.createElement(ContextStack, {
 		providers = {
 			React.createElement(Foundation.FoundationProvider, {
-				theme = themeName,
+				theme = props.theme or themeName,
 				overlayGui = props.overlayGui,
 			}),
 			React.createElement(NavigationContext.Provider, {
