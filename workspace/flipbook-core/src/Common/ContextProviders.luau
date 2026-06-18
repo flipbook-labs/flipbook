@@ -11,13 +11,13 @@ local useEffect = React.useEffect
 
 export type Props = {
 	plugin: Plugin,
-	theme: ("Dark" | "Light")?,
+	theme: Foundation.Theme?,
 	overlayGui: GuiBase2d?,
 	children: React.Node?,
 }
 
 local function ContextProviders(props: Props)
-	local themeName: "Dark" | "Light" = useThemeName()
+	local themeName: Foundation.Theme = useThemeName()
 
 	useEffect(function()
 		PluginStore.get().setPlugin(props.plugin)
