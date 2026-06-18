@@ -10,7 +10,10 @@ local run = require("./lib/run")
 local args = parseArgs(process.args)
 
 local channel = if args.channel then args.channel else "dev"
-assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
+assert(
+	channel == "dev" or channel == "beta" or channel == "prod",
+	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
+)
 
 local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
