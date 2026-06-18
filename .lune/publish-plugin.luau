@@ -31,6 +31,6 @@ local ASSET_NAMES_BY_CHANNEL: { [ChannelName]: AssetName } = {
 
 local assetName: AssetName = if args.smoketest then "smoketest" else ASSET_NAMES_BY_CHANNEL[channel]
 
--- Each of the assets defined in rbxasset.toml map to one of the options of
--- `--channel` for simplicity
+-- Each of the assets defined in rbxasset.toml corresponds to a deploy target.
+-- Multiple channels can share the same asset (e.g. beta reuses dev).
 rbxasset.publishPackageAsync(process.cwd, assetName, apiKey)
