@@ -3,7 +3,7 @@ name: Strict
 on:
   # We use pull_request_target to allow jobs in this workflow to run with
   # secrets, and each job is gated by an environment. The environment is chosen
-  # based on whether the PR is from a fork or not, so that internal exnternal
+  # based on whether the PR is from a fork or not, so that external
   # contributions require approval, while internal ones run like normal.
   pull_request_target:
     branches:

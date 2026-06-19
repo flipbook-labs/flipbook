@@ -6,9 +6,6 @@ on:
       - main
   pull_request:
 
-# One lane per PR (and a separate lane for main), so concurrent pushes don't
-# race two deploys against the same place. Cancel superseded PR previews, but
-# never interrupt the main start-place deploy mid-flight.
 concurrency:
   group: storybook-preview-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -29,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@v0.2.1
         with:
           version: v1.2.0
 
@@ -39,23 +36,22 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      # Keep the deploy targets single-sourced from project.luau rather than
-      # duplicating them as workflow literals.
       - name: Resolve storybook IDs
         id: ids
         run: |
           echo "universe-id=$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
           echo "place-id=$(grep -oP 'ROBLOX_STORYBOOK_PLACE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
 
-      # Build the storybook place locally. On `main` we also build a fresh
-      # Flipbook.rbxm off the branch (`--with-build`) and use it as the runtime,
-      # so we catch embedding issues before cutting a release. We intentionally
-      # exclude that flag from PR builds so a PR's own UI changes don't pollute
-      # the app underneath its preview.
       - name: Build storybook place
-        run: >-
-          lute run deploy-storybook --build-only
-          ${{ github.event_name == 'push' && '--with-build' || '' }}
+        run: lute run build storybook
+
+      # On `main` we build a fresh Flipbook.rbxm off the branch and use it as the
+      # runtime, so we catch embedding issues before cutting a release. PR builds
+      # skip this so a PR's own UI changes don't pollute the app underneath its
+      # preview (the deploy-storybook action fetches the latest release instead).
+      - name: Build Flipbook runtime
+        if: github.event_name == 'push'
+        run: lute run build plugin --channel prod --skip-reload --clean
 
       - name: Deploy main storybook
         if: github.event_name == 'push'
