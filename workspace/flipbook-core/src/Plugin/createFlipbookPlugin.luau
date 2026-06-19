@@ -1,7 +1,7 @@
 local AppModeEnum = require("@root/Enums/AppMode")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
-local CommonTypes = require("@root/Common/Types")
+local CommonTypes = require("@root/Common/types")
 
 type Pluginlike = CommonTypes.Pluginlike
 

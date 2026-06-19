@@ -1,7 +1,7 @@
 local Charm = require("@pkg/Charm")
 
 local CharmTypes = require("@root/Common/CharmTypes")
-local CommonTypes = require("@root/Common/Types")
+local CommonTypes = require("@root/Common/types")
 
 type Pluginlike = CommonTypes.Pluginlike
 

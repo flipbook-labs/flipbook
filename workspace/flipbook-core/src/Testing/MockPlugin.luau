@@ -1,7 +1,7 @@
 local MockPlugin = {}
 MockPlugin.__index = MockPlugin
 
-local CommonTypes = require("@root/Common/Types")
+local CommonTypes = require("@root/Common/types")
 
 type Pluginlike = CommonTypes.Pluginlike
 
