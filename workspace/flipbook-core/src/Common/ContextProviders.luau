@@ -14,12 +14,13 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type Props = {
 	plugin: Pluginlike,
+	theme: Foundation.Theme?,
 	overlayGui: GuiBase2d?,
 	children: React.Node?,
 }
 
 local function ContextProviders(props: Props)
-	local themeName: "Dark" | "Light" = useThemeName()
+	local themeName: Foundation.Theme = useThemeName()
 
 	useEffect(function()
 		PluginStore.get().setPlugin(props.plugin)
@@ -28,7 +29,7 @@ local function ContextProviders(props: Props)
 	return React.createElement(ContextStack, {
 		providers = {
 			React.createElement(Foundation.FoundationProvider, {
-				theme = themeName,
+				theme = props.theme or themeName,
 				overlayGui = props.overlayGui,
 			}),
 			React.createElement(NavigationContext.Provider, {
