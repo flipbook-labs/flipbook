@@ -51,7 +51,7 @@ local function SettingsView()
 	local children: { [string]: React.Node } = {}
 	for _, group in settingsByGroup do
 		children[group.name] = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-heading-small padding-x-small padding-top-large padding-bottom-small",
+			tag = "auto-xy text-title-large padding-x-small padding-top-large padding-bottom-small",
 			Text = group.name,
 			LayoutOrder = nextLayoutOrder(),
 		})
@@ -65,7 +65,7 @@ local function SettingsView()
 	end
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full bg-surface-200 gap-medium padding-y-medium",
+		tag = "size-full bg-surface-200",
 		scroll = {
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.fromScale(1, 0),
@@ -75,32 +75,35 @@ local function SettingsView()
 			FillDirection = Enum.FillDirection.Vertical,
 		},
 	}, {
-		Title = React.createElement(Foundation.View, {
-			LayoutOrder = nextLayoutOrder(),
-			tag = "align-y-center auto-y padding-right-small row size-full-0",
+		Wrapper = React.createElement(Foundation.View, {
+			tag = "size-full-0 auto-y col gap-medium padding-medium",
 		}, {
-			Title = React.createElement(Foundation.Text, {
+			Title = React.createElement(Foundation.View, {
 				LayoutOrder = nextLayoutOrder(),
-				Text = "Settings",
-				tag = "auto-y size-full-0 shrink text-align-x-left text-heading-large padding-small",
+				tag = "align-y-center auto-y padding-right-small row size-full-0",
+			}, {
+				Title = React.createElement(Foundation.Text, {
+					LayoutOrder = nextLayoutOrder(),
+					Text = "Settings",
+					tag = "auto-y size-full-0 shrink text-align-x-left text-heading-large padding-small",
+				}),
+
+				Close = React.createElement(Foundation.IconButton, {
+					LayoutOrder = nextLayoutOrder(),
+					icon = Foundation.Enums.IconName.X,
+					size = Foundation.Enums.InputSize.Small,
+					onActivated = function()
+						navigation.navigateTo("Home")
+					end,
+					variant = Foundation.Enums.ButtonVariant.Standard,
+				}),
 			}),
 
-			Close = React.createElement(Foundation.IconButton, {
+			Settings = React.createElement(Foundation.View, {
+				tag = "size-full-0 auto-y col gap-xlarge",
 				LayoutOrder = nextLayoutOrder(),
-				icon = "x",
-				isCircular = true,
-				size = Foundation.Enums.InputSize.Small,
-				onActivated = function()
-					navigation.navigateTo("Home")
-				end,
-				variant = Foundation.Enums.ButtonVariant.OverMedia,
-			}),
+			}, children),
 		}),
-
-		Settings = React.createElement(Foundation.View, {
-			tag = "size-full-0 auto-y col gap-xlarge",
-			LayoutOrder = nextLayoutOrder(),
-		}, children),
 	})
 end
 
