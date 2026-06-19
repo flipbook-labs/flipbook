@@ -16,7 +16,7 @@ type RojoBuildOptions = {
 	},
 	output: path.Pathlike,
 }
-local function rojoBuild(options: RojoBuildOptions)
+local function rojoBuild(options: RojoBuildOptions): path.Path
 	-- Random suffix so two builds sharing a tmpdir don't clobber each other's
 	-- project file. `rojo build` doesn't care where the project file lives, so
 	-- we keep it out of the repo entirely.
@@ -32,6 +32,8 @@ local function rojoBuild(options: RojoBuildOptions)
 	if not ok then
 		error(err)
 	end
+
+	return path.resolve(options.output)
 end
 
 return rojoBuild

@@ -40,10 +40,8 @@ process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
 run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
 
-local placePath = path.join(system.tmpdir(), "tests-place.rbxl")
-
-rojoBuild({
-	output = placePath,
+local placePath = rojoBuild({
+	output = path.join(system.tmpdir(), "tests-place.rbxl"),
 	project = {
 		name = "Flipbook",
 		tree = {
