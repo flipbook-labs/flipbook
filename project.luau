@@ -16,9 +16,8 @@ return {
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
 	SOURCEMAP_PATH = path.resolve("./sourcemap.json"),
+	SOURCEMAP_PROJECT_PATH = path.resolve("./sourcemap.project.json"),
 	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
-
-	ROJO_BUILD_PROJECT = path.resolve("./build.project.json"),
 
 	FOLDERS_TO_LINT = {
 		"src",
