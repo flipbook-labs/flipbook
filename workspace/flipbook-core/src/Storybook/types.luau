@@ -1,4 +1,4 @@
-local CommonTypes = require("@root/Common/Types")
+local CommonTypes = require("@root/Common/types")
 local useThemeName = require("@root/Common/useThemeName")
 
 type Pluginlike = CommonTypes.Pluginlike
