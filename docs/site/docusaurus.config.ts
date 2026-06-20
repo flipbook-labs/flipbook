@@ -4,6 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 import path from 'path';
 import remarkDirective from 'remark-directive';
 import remarkObsidian from './src/remark/obsidian.mjs';
+import obsidianSidebarItems from './src/sidebar/obsidian.mjs';
 
 const ORGANIZATION_NAME = 'flipbook-labs'
 const PROJECT_NAME = 'Flipbook'
@@ -44,8 +45,9 @@ const config: Config = {
 			{
 				docs: {
 					path: '../obsidian-vault',
-					exclude: ['**/.obsidian/**', '**/*.base'],
+					exclude: ['**/.obsidian/**', '**/*.base', 'drafts/**'],
 					sidebarPath: './sidebars.ts',
+					sidebarItemsGenerator: obsidianSidebarItems,
 					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
 					beforeDefaultRemarkPlugins: [
 						remarkDirective,

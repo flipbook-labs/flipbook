@@ -97,9 +97,9 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Product:**
 
-* [[product/product|Northstars]] — Product vision and goals
+* [[product/index|Northstars]] — Product vision and goals
 * [[product/2026 Roadmap|2026 Roadmap]] — Current quarterly roadmap
-* [[product/2025-flipbook-product-spec/2025-flipbook-product-spec|2025 Product Spec]] — Audiences and feature goals
+* [[product/2025-flipbook-product-spec/index|2025 Product Spec]] — Audiences and feature goals
 
 **Proposals:**
 
@@ -112,4 +112,4 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Ideas:**
 
-* [[ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu
+* [[product/ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu

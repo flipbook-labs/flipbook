@@ -14,6 +14,6 @@ notion-id: 2e895b79-12f8-8030-bad2-c918e394e970
 
 [[tech/flipbook-roblox-internal-deployments|Flipbook → Roblox Internal Deployments]]
 
-[[tech/storybook-embedding/storybook-embedding|Storybook Embedding]]
+[[tech/storybook-embedding/index|Storybook Embedding]]
 
-[[tech/changewright-cli/changewright-cli|Changewright CLI]]
+[[tech/changewright-cli/index|Changewright CLI]]
