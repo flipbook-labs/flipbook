@@ -47,7 +47,9 @@ const config: Config = {
 					path: '../obsidian-vault',
 					exclude: ['**/.obsidian/**', '**/*.base', 'drafts/**'],
 					sidebarPath: './sidebars.ts',
-					sidebarItemsGenerator: obsidianSidebarItems,
+					sidebarItemsGenerator: obsidianSidebarItems({
+						vault: path.resolve(__dirname, '../obsidian-vault'),
+					}),
 					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
 					beforeDefaultRemarkPlugins: [
 						remarkDirective,
