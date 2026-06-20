@@ -8,7 +8,7 @@ linter-yaml-title-alias: Contributing
 Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
 
 > [!INFO]
-> All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/intro).
+> All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/usage/getting-started).
 
 ## First-time Setup
 

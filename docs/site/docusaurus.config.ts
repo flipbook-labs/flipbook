@@ -49,6 +49,7 @@ const config: Config = {
 					sidebarPath: './sidebars.ts',
 					sidebarItemsGenerator: obsidianSidebarItems({
 						vault: path.resolve(__dirname, '../obsidian-vault'),
+						homeLabel: 'Overview',
 					}),
 					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
 					beforeDefaultRemarkPlugins: [
@@ -73,8 +74,9 @@ const config: Config = {
 			},
 			items: [
 				{
-					type: 'docSidebar',
-					sidebarId: 'docs',
+					// Link to the docs home (README) rather than `type: docSidebar`,
+					// which would jump to whichever note sorts first in the sidebar.
+					to: '/docs/',
 					position: 'left',
 					label: 'Docs',
 				},

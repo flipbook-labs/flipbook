@@ -12,6 +12,8 @@
 //     Content the vault already maintains. The root order comes from README.md.
 //     Anything a Map of Content doesn't list keeps the default order, so the
 //     fallback is sidebar_position then alphabetical.
+//   - Lead the root level with the docs home (README), relabelled to `homeLabel`
+//     so it doesn't read as a second "Flipbook" next to the site title.
 
 import { readFileSync } from "node:fs";
 import { join, posix } from "node:path";
@@ -63,11 +65,14 @@ function mocOrder(absPath) {
 	return targets;
 }
 
-export default function obsidianSidebarItems({ vault }) {
+export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } = {}) {
 	return async function generate({ defaultSidebarItemsGenerator, ...args }) {
 		const items = await defaultSidebarItemsGenerator(args);
 		const docById = new Map(args.docs.map((doc) => [doc.id, doc]));
 		const relKeyById = new Map(args.docs.map((doc) => [doc.id, relKeyOf(doc)]));
+
+		// The vault root's index note is README.md; it's the docs home at /docs/.
+		const homeId = args.docs.find((doc) => relKeyOf(doc) === "readme")?.id;
 
 		// Resolve a wikilink target to a canonical doc key the way Obsidian does:
 		// an exact vault path, else the first note with that basename (so a Map of
@@ -109,12 +114,17 @@ export default function obsidianSidebarItems({ vault }) {
 			const positioned = list.map((item, index) => {
 				let rank = order.findIndex((target) => owns(item, target));
 				if (rank === -1) rank = Infinity;
+				// The home note leads the root level, ahead of the sections it maps.
+				if (dir === "" && item.type === "doc" && item.id === homeId) rank = -1;
 				return { item, rank, index };
 			});
 			// Stable: unlisted items keep the default sidebar_position/alpha order.
 			positioned.sort((a, b) => a.rank - b.rank || a.index - b.index);
 
 			return positioned.map(({ item }) => {
+				if (item.type === "doc") {
+					return item.id === homeId ? { ...item, label: homeLabel } : item;
+				}
 				if (item.type !== "category") return item;
 				const indexId = item.link?.type === "doc" ? item.link.id : undefined;
 				const label = (indexId && docById.get(indexId)?.title) || humanize(item.label);
