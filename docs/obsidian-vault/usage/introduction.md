@@ -2,7 +2,6 @@
 id: intro
 aliases: [Introduction]
 tags: []
-sidebar_position: 1
 linter-yaml-title-alias: Introduction
 ---
 

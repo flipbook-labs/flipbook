@@ -1,5 +1,4 @@
 ---
-sidebar_position: 1
 aliases: [Writing Stories]
 linter-yaml-title-alias: Writing Stories
 ---
