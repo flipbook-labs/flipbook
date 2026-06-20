@@ -100,7 +100,7 @@ Loads the source of a Storybook module.
 
 A [ModuleLoader](https://github.com/flipbook-labs/module-loader) instance is required for handling the requiring of the module.
 
-This function will throw if the return value of `storybookModule` does not conform to [[proposals/storyteller-api|Storyteller API]], or if the source has a syntax error that `require` would normally fail for.
+This function will throw if the return value of `storybookModule` does not conform to [[storyteller-api|Storyteller API]], or if the source has a syntax error that `require` would normally fail for.
 
 #### loadStoryModule
 
@@ -111,7 +111,7 @@ This function will throw if the return value of `storybookModule` does not confo
 
 Loads the source of a Story module.
 
-This function will throw if the return value of `storyModule` does not conform to [[proposals/storyteller-api|Storyteller API]], or if the source has a syntax error that `require` would normally fail for.
+This function will throw if the return value of `storyModule` does not conform to [[storyteller-api|Storyteller API]], or if the source has a syntax error that `require` would normally fail for.
 
 For legacy compatibility this function also loads Hoarcekat stories. Instead of a usual table-based Story definition, it takes the returned function and wraps it in a Story, making the `story` field the function body.
 
@@ -124,7 +124,7 @@ For legacy compatibility this function also loads Hoarcekat stories. Instead of 
 
 This function will do its best to determine which of the renderers to use based off the Story’s properties.
 
-Each renderer is given its own file so that it’s easy to add on new UI libraries in the future. See [[proposals/story-renderer-spec|Story Renderer Spec]]  for more details.
+Each renderer is given its own file so that it’s easy to add on new UI libraries in the future. See [[story-renderer-spec|Story Renderer Spec]]  for more details.
 
 > [!tip] 💡
 > This likely won’t make it into the public API.  Aside from supplying packages, the consumer shouldn’t need to care about which renderer is being used. And we also make no effort to expose the individual renderers (as of right now) so for v1 we can omit this function and instead have `render` take `(story, container)` as args
@@ -286,4 +286,4 @@ return StoryView
 
 ## References
 
-* [[proposals/create-flipbook-package|Create a flipbook package]]
+* [[create-flipbook-package|Create a flipbook package]]

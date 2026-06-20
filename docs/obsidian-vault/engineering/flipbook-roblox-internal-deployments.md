@@ -126,7 +126,7 @@ We will always need _some_ layer in between to consume, vet, and deploy the publ
     3. [Best practices for securing your build system - GitHub Docs](https://docs.github.com/en/code-security/supply-chain-security/end-to-end-supply-chain/securing-builds)
     4. [https://www.ianlewis.org/en/understanding-github-artifact-attestations](https://www.ianlewis.org/en/understanding-github-artifact-attestations)
 11. [https://roblox.atlassian.net/wiki/spaces/foundation/pages/3878912708/Flipbook+for+Builders#Consuming-Flipbook-through-Rotriever](https://roblox.atlassian.net/wiki/spaces/foundation/pages/3878912708/Flipbook+for+Builders#Consuming-Flipbook-through-Rotriever)
-12. [[tech/publishing-to-rotriever|Publishing to Rotriever]]
+12. [[publishing-to-rotriever|Publishing to Rotriever]]
 13. [https://github.com/actions/attest-build-provenance](https://github.com/actions/attest-build-provenance)
 
 ---

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 1
 aliases: [Contributing]
 linter-yaml-title-alias: Contributing
 ---
@@ -93,7 +92,7 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Technical:**
 
-* [[tech/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
+* [[engineering/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
 
 **Product:**
 

@@ -194,7 +194,7 @@ By default, the name is implicitly parsed from the filename. For example, a docs
 
 Takes in a string, GuiObject, or ReactNode. Or a function that returns one of those. Or or a table composed of any of those, plus functions.
 
-Check out [[proposals/documentation-stories|Documentation stories]] for examples.
+Check out [[documentation-stories|Documentation stories]] for examples.
 
 ### Components
 
