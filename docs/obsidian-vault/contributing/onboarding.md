@@ -86,6 +86,24 @@ Once you have Flipbook built, navigate to the Studio settings and turn on "Plugi
 
 Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
 
+## Documentation Code Samples
+
+Docs pull real Luau straight from `workspace/code-samples/` using a `code-sample`
+fenced block, so examples stay correct:
+
+````md
+```code-sample
+workspace/code-samples/src/React/ReactButton.luau#L4-L13
+```
+````
+
+The Docusaurus site expands these at build time. For them to render in the
+Obsidian vault, `lute run install` builds a small reading-view plugin into the
+vault. After your first install, open the vault in Obsidian and enable the
+**Code Sample** plugin under Settings -> Community plugins. See
+[[contributing/architecture|Architecture]] or the `docs/code-samples/README.md`
+for how the marker, the shared extractor, and the two adapters fit together.
+
 ## Internal Documentation
 
 For deeper context on architecture, product direction, and in-flight proposals:

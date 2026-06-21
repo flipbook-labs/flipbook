@@ -14,22 +14,32 @@ Flipbook supports Roblox's legacy [Roact](https://github.com/roblox/roact) libra
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/Roact/Roact.storybook.luau -->
+```code-sample
+workspace/code-samples/src/Roact/Roact.storybook.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/RoactStoryteller/Roact.storybook.luau -->
+```code-sample
+workspace/code-samples/src/RoactStoryteller/Roact.storybook.luau
+```
 
 ## Component
 
-<!-- code-sample: workspace/code-samples/src/Roact/RoactButton.luau -->
+```code-sample
+workspace/code-samples/src/Roact/RoactButton.luau
+```
 
 ## Story
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/Roact/RoactButton.story.luau -->
+```code-sample
+workspace/code-samples/src/Roact/RoactButton.story.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/RoactStoryteller/RoactButton.story.luau -->
+```code-sample
+workspace/code-samples/src/RoactStoryteller/RoactButton.story.luau
+```

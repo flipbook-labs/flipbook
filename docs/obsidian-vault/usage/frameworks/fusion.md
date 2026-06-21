@@ -11,22 +11,32 @@ linter-yaml-title-alias: Fusion
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/Fusion/Fusion.storybook.luau -->
+```code-sample
+workspace/code-samples/src/Fusion/Fusion.storybook.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/FusionStoryteller/Fusion.storybook.luau -->
+```code-sample
+workspace/code-samples/src/FusionStoryteller/Fusion.storybook.luau
+```
 
 ## Component
 
-<!-- code-sample: workspace/code-samples/src/Fusion/FusionButton.luau -->
+```code-sample
+workspace/code-samples/src/Fusion/FusionButton.luau
+```
 
 ## Story
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/Fusion/FusionButton.story.luau -->
+```code-sample
+workspace/code-samples/src/Fusion/FusionButton.story.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/FusionStoryteller/FusionButton.story.luau -->
+```code-sample
+workspace/code-samples/src/FusionStoryteller/FusionButton.story.luau
+```

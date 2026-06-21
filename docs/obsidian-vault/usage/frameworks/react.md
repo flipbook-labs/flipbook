@@ -11,22 +11,32 @@ Flipbook supports Roblox's transpilation of React 17 through the use of [jsdotlu
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/React/React.storybook.luau -->
+```code-sample
+workspace/code-samples/src/React/React.storybook.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/ReactStoryteller/React.storybook.luau -->
+```code-sample
+workspace/code-samples/src/ReactStoryteller/React.storybook.luau
+```
 
 ## Component
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButton.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButton.luau
+```
 
 ## Story
 
 ### Default
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButton.story.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButton.story.luau
+```
 
 ### Storyteller
 
-<!-- code-sample: workspace/code-samples/src/ReactStoryteller/ReactButton.story.luau -->
+```code-sample
+workspace/code-samples/src/ReactStoryteller/ReactButton.story.luau
+```

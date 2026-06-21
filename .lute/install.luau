@@ -167,6 +167,45 @@ do
 		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
+	-- Bundle the code-sample Obsidian plugin into the (gitignored) vault plugins
+	-- directory so the docs vault renders `code-sample` blocks in reading view.
+	-- Docs-only and best-effort: a missing Node/npx toolchain warns rather than
+	-- failing the rest of the install.
+	local function installObsidianPlugin()
+		local pluginSrc = path.join(project.REPO_PATH, "docs", "code-samples", "obsidian")
+		local outDir = path.join(project.REPO_PATH, "docs", "obsidian-vault", ".obsidian", "plugins", "code-sample")
+
+		local steps = {
+			{ "mkdir", "-p", outDir },
+			{
+				"npx",
+				"--yes",
+				"esbuild@0.21.5",
+				path.join(pluginSrc, "main.ts"),
+				"--bundle",
+				"--format=cjs",
+				"--platform=node",
+				"--target=es2020",
+				"--external:obsidian",
+				`--outfile={path.join(outDir, "main.js")}`,
+			},
+			{
+				"cp",
+				path.join(pluginSrc, "manifest.json"),
+				path.join(pluginSrc, "styles.css"),
+				outDir,
+			},
+		}
+
+		for _, cmd in steps do
+			local res = process.run(cmd, { stdio = "inherit" })
+			if not res.ok then
+				print(`warning: failed to build code-sample Obsidian plugin: {res.stderr}`)
+				return
+			end
+		end
+	end
+
 	local function pruneDevelopmentFiles()
 		-- Prune any third-party tests or stories that may have slipped through
 		local prunedFiles = {
@@ -187,4 +226,5 @@ do
 	installWallyPackages()
 	installRbxasset()
 	pruneDevelopmentFiles()
+	installObsidianPlugin()
 end

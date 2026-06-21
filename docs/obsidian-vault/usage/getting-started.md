@@ -29,11 +29,15 @@ A Storybook can be parented anywhere in the experience. The only requirement is 
 
 The simplest Storybook looks like this:
 
-<!-- code-sample: workspace/code-samples/src/Default/ProjectName.storybook.luau -->
+```code-sample
+workspace/code-samples/src/Default/ProjectName.storybook.luau
+```
 
 And here's an example of a Story that renders a TextButton:
 
-<!-- code-sample: workspace/code-samples/src/Default/Button.story.luau -->
+```code-sample
+workspace/code-samples/src/Default/Button.story.luau
+```
 
 In the Flipbook plugin, opening the Button story will render out the component.
 

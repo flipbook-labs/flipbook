@@ -23,17 +23,25 @@ Flipbook also has built-in support for UI libraries like [[usage/frameworks/reac
 
 You can tell Flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButtonExplicitPackages.story.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButtonExplicitPackages.story.luau
+```
 
 It can be tedious to supply the `packages` object in each Story module, which is why it is more common to add them globally in the Storybook so that all Stories can render with the UI library you use across your project.
 
 The following example splits out the body of the story to a ReactButton component and offloads the definition of `packages` to the Storybook:
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButton.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButton.luau
+```
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButton.story.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButton.story.luau
+```
 
-<!-- code-sample: workspace/code-samples/src/React/React.storybook.luau -->
+```code-sample
+workspace/code-samples/src/React/React.storybook.luau
+```
 
 > [!tip]
 > Stories can individually override the global `packages` so if you need to use another UI library for a particular Story, you can do that.

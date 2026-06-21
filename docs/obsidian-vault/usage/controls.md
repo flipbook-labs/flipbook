@@ -9,11 +9,15 @@ Stories can define controls that make it possible to quickly test out the behavi
 
 Here's an example React component that we will build a Story around. The props it takes in will be configurable by the Story's controls.
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButtonControls.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButtonControls.luau
+```
 
 The Story creates the element and passes in controls through the `props` argument.
 
-<!-- code-sample: workspace/code-samples/src/React/ReactButtonControls.story.luau -->
+```code-sample
+workspace/code-samples/src/React/ReactButtonControls.story.luau
+```
 
 Opening the `ReactButtonControls` Story in Flipbook will include an accompanying panel for configuring the controls.
 

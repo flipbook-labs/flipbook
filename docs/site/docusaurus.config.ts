@@ -4,6 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 import path from "path";
 import remarkDirective from "remark-directive";
 import remarkObsidian from "./src/remark/obsidian.mjs";
+import remarkCodeSample from "./src/remark/code-sample.mjs";
 import obsidianSidebarItems from "./src/sidebar/obsidian.mjs";
 
 const ORGANIZATION_NAME = "flipbook-labs";
@@ -56,6 +57,10 @@ const config: Config = {
 						remarkDirective,
 						[
 							remarkObsidian,
+							{ vault: path.resolve(__dirname, "../obsidian-vault") },
+						],
+						[
+							remarkCodeSample,
 							{ vault: path.resolve(__dirname, "../obsidian-vault") },
 						],
 					],

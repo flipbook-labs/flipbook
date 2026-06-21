@@ -1,0 +1,11 @@
+/* Shown in reading view when a `code-sample` block can't be resolved (bad path,
+   out-of-range lines, etc.) so authors notice the broken reference. */
+.code-sample-error {
+	border: 1px solid var(--background-modifier-error);
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-error-hover);
+	color: var(--text-error);
+	padding: var(--size-4-2) var(--size-4-3);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-small);
+}
