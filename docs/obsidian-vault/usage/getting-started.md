@@ -21,10 +21,28 @@ Install the latest version of Flipbook from the [Creator Store](https://create.r
 
 Manually install versions of Flipbook from the [GitHub Releases](https://github.com/flipbook-labs/flipbook/releases) page. All releases include an `rbxm` of Flipbook under the "Assets" tab which can be downloaded and copied to Roblox Studio's plugins folder.
 
-### Building from Source
+## Create Your First Story
 
-For the adventurous, Flipbook can also be built from source. Check out the [[contributing/onboarding|onboarding guide for contributors]] to get your environment setup for building.
+A [[concepts/storybook|Storybook]] tells Flipbook where to discover your Stories, and a [[concepts/story|Story]] renders a single component in isolation. You need one of each to see Flipbook working.
 
-## Write Your First Story
+A Storybook can be parented anywhere in the experience. The only requirement is that it defines a `storyRoots` array so Flipbook knows where to search for Stories.
 
-Once installed, head to [[usage/writing-stories|Writing Stories]] to create your first Storybook and Story.
+The simplest Storybook looks like this:
+
+<!-- code-sample: workspace/code-samples/src/Default/ProjectName.storybook.luau -->
+
+And here's an example of a Story that renders a TextButton:
+
+<!-- code-sample: workspace/code-samples/src/Default/Button.story.luau -->
+
+In the Flipbook plugin, opening the Button story will render out the component.
+
+![[first-story.png]]
+
+From there, making changes to the Story will live-reload the rendered button.
+
+To connect it back to Studio, these files could simply be stored in ReplicatedStorage as ModuleScripts like so:
+
+![[storybook-setup.png]]
+
+You've now rendered your first Story. From here, [[usage/writing-stories|Writing Stories]] goes deeper on Storybooks and Stories and how to write them for your UI framework.

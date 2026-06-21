@@ -5,29 +5,15 @@ linter-yaml-title-alias: Writing Stories
 
 # Writing Stories
 
-A [[concepts/storybook|Storybook]] tells Flipbook where to discover your Stories, and a [[concepts/story|Story]] renders a single component in isolation. This guide walks through writing both.
+Once you've [[usage/getting-started|rendered your first Story]], this guide covers the two file types in more detail and how to write Stories for your UI framework.
 
-## Getting Started
+## Storybooks and Stories
 
-A Storybook can be parented anywhere in the experience. The only requirement is that it defines a `storyRoots` array so Flipbook knows where to search for Stories.
+A [[concepts/storybook|Storybook]] is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project and defines a `storyRoots` array that tells Flipbook where to search for Stories.
 
-The simplest Storybook looks like this:
+A [[concepts/story|Story]] is any ModuleScript with a `.story` extension, typically parented as a sibling to the UI component it renders. Stories are what you will be working with the most. The Storybook is what tells Flipbook how to find and render them.
 
-<!-- code-sample: workspace/code-samples/src/Default/ProjectName.storybook.luau -->
-
-And here's an example of a Story that renders a TextButton:
-
-<!-- code-sample: workspace/code-samples/src/Default/Button.story.luau -->
-
-In the Flipbook plugin, opening the Button story will render out the component.
-
-![[first-story.png]]
-
-From there, making changes to the Story will live-reload the rendered button.
-
-To connect it back to Studio, these files could simply be stored in ReplicatedStorage as ModuleScripts like so:
-
-![[storybook-setup.png]]
+See [[api/storybook-format|Storybook Format]] and [[api/story-format|Story Format]] for the full module APIs.
 
 ## Using Frameworks
 
