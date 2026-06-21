@@ -10,6 +10,8 @@ local FlipbookApp = require("./FlipbookApp")
 
 type Pluginlike = CommonTypes.Pluginlike
 
+type Pluginlike = CommonTypes.Pluginlike
+
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 local jest = JestGlobals.jest

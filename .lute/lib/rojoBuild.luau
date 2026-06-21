@@ -1,4 +1,5 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local fs = require("@std/fs")
 local path = require("@std/path")
 local system = require("@std/system")
 
@@ -16,13 +17,23 @@ type RojoBuildOptions = {
 	output: path.Pathlike,
 }
 local function rojoBuild(options: RojoBuildOptions): path.Path
-	local tempProjectPath = path.join(system.tmpdir(), "temp.project.json")
-	local output = path.resolve(options.output)
+	-- Random suffix so two builds sharing a tmpdir don't clobber each other's
+	-- project file. `rojo build` doesn't care where the project file lives, so
+	-- we keep it out of the repo entirely.
+	local tempProjectName = `temp-{math.random(0, 0xffff)}.project.json`
+	local tempProjectPath =
+		createRojoProjectAsync(path.join(system.tmpdir(), tempProjectName), options.project :: json.Value)
 
-	createRojoProjectAsync(tempProjectPath, options.project :: json.Value)
-	run("rojo", { "build", tempProjectPath, "--output", output })
+	local ok, err = (pcall :: any)(function()
+		run("rojo", { "build", tempProjectPath, "--output", options.output })
+	end)
+	fs.remove(tempProjectPath)
 
-	return output
+	if not ok then
+		error(err)
+	end
+
+	return path.resolve(options.output)
 end
 
 return rojoBuild
