@@ -1,6 +1,11 @@
 {
   "name": "Flipbook",
   "tree": {
-    "$path": "build/dev/roblox"
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Flipbook": {
+        "$path": "build/dev/roblox"
+      }
+    }
   }
 }
