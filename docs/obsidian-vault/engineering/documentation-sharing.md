@@ -12,10 +12,12 @@ writing for our open source project
 
 Types of writing we have:
 
-- Public documentation \* This goes through the most rigour and is what ultimately appears on our GH
-  Pages site
-- Living documents \* Things like our Notion workspace. Freeform content that makes no gaurantee
-  that it's still relevant
+- Public documentation
+  - This goes through the most rigour and is what ultimately appears on our GH
+    Pages site
+- Living documents
+  - Things like our Notion workspace. Freeform content that makes no gaurantee
+    that it's still relevant
 - RFCs
   - Things we want to share with the community to get feedback. Slightly more formal than our living documents, but less formal that the public docs
 
