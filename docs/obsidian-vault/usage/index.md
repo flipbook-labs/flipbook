@@ -7,7 +7,6 @@ aliases: [Usage]
 Install Flipbook and write stories for your UI.
 
 - [[usage/getting-started|Getting Started]] — Install Flipbook and write your first story
-- [[usage/installation|Installation]] — Add Flipbook to your place or plugin
 - [[usage/writing-stories|Writing Stories]] — Storybooks, stories, and file organization
 - [[usage/controls|Controls]] — On-the-fly UI configuration via story controls
 - [[usage/typechecking|Typechecking]] — Type-safe stories with Storyteller
