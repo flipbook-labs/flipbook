@@ -1,10 +1,13 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
+local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local PluginApp = require("@root/Plugin/PluginApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
+
+type Pluginlike = CommonTypes.Pluginlike
 
 local function stopwatch(callback: () -> ()): string
 	local start = os.clock()
@@ -12,7 +15,7 @@ local function stopwatch(callback: () -> ()): string
 	return ("%.2fms"):format((os.clock() - start) * 1000)
 end
 
-local function createFlipbookPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
+local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 
