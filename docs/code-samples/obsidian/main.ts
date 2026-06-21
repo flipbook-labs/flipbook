@@ -50,11 +50,22 @@ export default class CodeSamplePlugin extends Plugin {
 			throw error;
 		}
 
+		// A filename header above the block, mirroring the `title=` header
+		// Docusaurus renders on the site.
+		const container = el.createDiv({ cls: "code-sample" });
+		container.createDiv({ cls: "code-sample-title", text: result.title });
+
 		// Hand the resolved code back to Obsidian's own renderer as a normal
 		// fenced block so it inherits native syntax highlighting and the copy
 		// button. The render is async; the registered processor doesn't await it.
 		const markdown = "```" + result.lang + "\n" + result.code + "\n```";
-		void MarkdownRenderer.render(this.app, markdown, el, ctx.sourcePath, this);
+		void MarkdownRenderer.render(
+			this.app,
+			markdown,
+			container,
+			ctx.sourcePath,
+			this,
+		);
 	}
 
 	/** Repo root that path specs are relative to: two levels above the vault. */
