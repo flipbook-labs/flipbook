@@ -32,7 +32,7 @@ Charm.flags.frozen = false
 
 local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
-local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Top, true)
+local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 800, 600)
 
 -- selene: allow(deprecated)
 local widget = plugin:CreateDockWidgetPluginGuiAsync(PLUGIN_NAME, info)
@@ -42,6 +42,6 @@ widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore.FLIPBOOK_LOGO)
 
-local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin, widget, button)
+local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin :: any, widget, button)
 
 plugin.Unloading:Connect(flipbookPlugin.destroy)

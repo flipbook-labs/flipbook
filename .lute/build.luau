@@ -9,9 +9,9 @@ local richterm = require("@luaupkg/lute@v1.0.0/batteries/richterm")
 local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
-local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
+local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local copyInto = FlipbookBatteries.copyInto
 local run = FlipbookBatteries.run
@@ -68,7 +68,10 @@ assert(
 )
 
 local channel = args:get("channel")
-assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
+assert(
+	channel == "dev" or channel == "beta" or channel == "prod",
+	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
+)
 
 local target = args:get("target")
 assert(
@@ -108,8 +111,9 @@ local context: BuildContext = {
 	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
-		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
 		BUILD_HASH = getCommitHash(),
+		BUILD_TARGET = target,
 		BASE_URL = process.env.BASE_URL,
 		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
@@ -126,25 +130,17 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = path.resolve(path.join(context.dest, "../default.project.json"))
-
-			createRojoProjectAsync(projectPath, {
-				name = "Flipbook",
-				tree = {
-					["$path"] = tostring(path.resolve(context.dest)),
-				},
-			})
-
 			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
 
-			run("rojo", {
-				"build",
-				projectPath,
-				"-o",
-				dest,
+			rojoBuild({
+				output = dest,
+				project = {
+					name = "Flipbook",
+					tree = {
+						["$path"] = tostring(path.resolve(context.dest)),
+					},
+				},
 			})
-
-			fs.remove(projectPath)
 
 			if args:has("skip-reload") then
 				if output:match(tostring(getStudioPluginsPath())) then

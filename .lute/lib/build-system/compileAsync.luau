@@ -26,7 +26,7 @@ local function compileAsync(context: BuildContext)
 
 	run("rojo", {
 		"sourcemap",
-		project.ROJO_BUILD_PROJECT,
+		project.SOURCEMAP_PROJECT_PATH,
 		"-o",
 		project.DARKLUA_SOURCEMAP_PATH,
 	})
@@ -68,7 +68,7 @@ local function compileAsync(context: BuildContext)
 		end
 	end
 
-	if context.channel == "prod" then
+	if context.channel == "prod" or context.channel == "beta" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 
