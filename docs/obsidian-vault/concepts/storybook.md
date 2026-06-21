@@ -9,4 +9,4 @@ A storybook tells Flipbook where to discover stories for a project, along with c
 
 Stories that don't have a storybook that includes them will show up under the "Unavailable Stories" folder.
 
-![[api/storybook-format#Storybook Format]]
+See [[api/storybook-format|Storybook Format]] for the full module API.

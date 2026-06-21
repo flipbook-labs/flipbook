@@ -1,21 +1,15 @@
 // Docusaurus remark plugin that resolves Obsidian-flavored Markdown from the
 // vault (docs/obsidian-vault) as Docusaurus reads it: wikilinks, image embeds,
-// note transclusions, and callouts. Wired into docusaurus.config.ts via
-// `beforeDefaultRemarkPlugins` so the output (links, admonition directives) is
-// then processed by Docusaurus's own defaults.
+// and callouts. Wired into docusaurus.config.ts via `beforeDefaultRemarkPlugins`
+// so the output (links, admonition directives) is then processed by Docusaurus's
+// own defaults.
 //
-// It runs per file. Transclusions are the one cross-file step: they read the
-// target out of the vault, slice the requested section, and splice it in before
-// the wikilink/callout passes run over the merged tree.
+// It runs per file with no cross-file passes: every transform operates on the
+// single file's tree.
 
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkFrontmatter from "remark-frontmatter";
-import remarkGfm from "remark-gfm";
 import { visit, SKIP } from "unist-util-visit";
-import { toString as mdToString } from "mdast-util-to-string";
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { posix } from "node:path";
 
@@ -54,12 +48,6 @@ const CALLOUT_TYPES = {
 	fail: "danger",
 	missing: "danger",
 };
-
-// A standalone processor for parsing transclusion targets out of the vault.
-const targetParser = unified()
-	.use(remarkParse)
-	.use(remarkFrontmatter)
-	.use(remarkGfm);
 
 const LINK_PATTERN = /!\[\[([^\]]+?)\]\]|\[\[([^\]]+?)\]\]/g;
 
@@ -140,43 +128,6 @@ function buildIndex(vault) {
 	return { mdByPath, mdByName, assetByPath, assetByName };
 }
 
-/** Extract a heading's section (inclusive) from a parsed tree, or all of it. */
-function extractSection(tree, section) {
-	const children = tree.children.filter(
-		(n) => n.type !== "yaml" && n.type !== "toml",
-	);
-	if (!section) return children;
-
-	const wanted = slugAnchor(section);
-	const startIndex = children.findIndex(
-		(n) => n.type === "heading" && slugAnchor(mdToString(n)) === wanted,
-	);
-	if (startIndex === -1) return null;
-
-	const depth = children[startIndex].depth;
-	const result = [children[startIndex]];
-	for (let i = startIndex + 1; i < children.length; i++) {
-		const n = children[i];
-		if (n.type === "heading" && n.depth <= depth) break;
-		result.push(n);
-	}
-	return result;
-}
-
-/** If a node is a standalone `![[...]]` paragraph, return its parsed spec. */
-function matchTransclusion(node) {
-	if (node.type !== "paragraph" || node.children.length !== 1) return null;
-	const child = node.children[0];
-	if (child.type !== "text") return null;
-	const m = child.value.trim().match(/^!\[\[([^\]]+)\]\]$/);
-	if (!m) return null;
-	let inner = m[1];
-	const pipe = inner.indexOf("|");
-	if (pipe !== -1) inner = inner.slice(0, pipe);
-	const [target, ...rest] = inner.split("#");
-	return { target: target.trim(), section: rest.join("#").trim() || null };
-}
-
 /** Convert Obsidian `> [!type] title` callouts to Docusaurus admonitions. */
 function convertCallouts(tree) {
 	visit(tree, "blockquote", (node, index, parent) => {
@@ -245,45 +196,6 @@ export default function remarkObsidian(options = {}) {
 		let r = posix.relative(posix.dirname(fromRel), toRel);
 		if (!r.startsWith(".")) r = "./" + r;
 		return r;
-	}
-
-	/** Recursively inline note transclusions throughout a node's children. */
-	function expandTransclusions(node, stack) {
-		if (!node.children) return;
-		const next = [];
-		for (const child of node.children) {
-			const tx = matchTransclusion(child);
-			const targetRel = tx ? resolveNote(tx.target) : null;
-			if (tx && targetRel) {
-				const key =
-					normalizeKey(targetRel) +
-					(tx.section ? "#" + slugAnchor(tx.section) : "");
-				if (stack.has(key)) {
-					warn(
-						`circular transclusion skipped: ![[${tx.target}${tx.section ? "#" + tx.section : ""}]]`,
-					);
-					continue;
-				}
-				const targetTree = targetParser.parse(
-					readFileSync(join(vault, targetRel), "utf8"),
-				);
-				const section = extractSection(targetTree, tx.section);
-				if (section === null) {
-					warn(
-						`transclusion section not found: ![[${tx.target}#${tx.section}]]`,
-					);
-					next.push(child);
-					continue;
-				}
-				const wrapper = { type: "root", children: section };
-				expandTransclusions(wrapper, new Set([...stack, key]));
-				next.push(...wrapper.children);
-			} else {
-				expandTransclusions(child, stack);
-				next.push(child);
-			}
-		}
-		node.children = next;
 	}
 
 	function makeLink(inner, fromRel) {
@@ -371,7 +283,6 @@ export default function remarkObsidian(options = {}) {
 	return function transformer(tree, file) {
 		const fromRel = relative(vault, file.path).split(/[\\/]/g).join("/");
 
-		expandTransclusions(tree, new Set([normalizeKey(fromRel)]));
 		fixImageUrls(tree, fromRel);
 		convertWikilinks(tree, fromRel);
 		convertCallouts(tree);

@@ -5,9 +5,7 @@ linter-yaml-title-alias: Writing Stories
 
 # Writing Stories
 
-![[concepts/storybook#Storybook]]
-
-![[concepts/story#Story]]
+A [[concepts/storybook|Storybook]] tells Flipbook where to discover your Stories, and a [[concepts/story|Story]] renders a single component in isolation. This guide walks through writing both.
 
 ## Getting Started
 

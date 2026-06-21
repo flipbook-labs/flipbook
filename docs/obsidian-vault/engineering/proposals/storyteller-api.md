@@ -15,11 +15,11 @@ Approval: Drafting
 
 ## Storybook Format
 
-![[storybook-format]]
+See [[api/storybook-format|Storybook Format]].
 
 ## Story Format
 
-![[api/story-format]]
+See [[api/story-format|Story Format]].
 
 ## API
 
