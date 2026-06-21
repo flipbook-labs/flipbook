@@ -1,4 +1,6 @@
 plugins/
+!plugins/folder-notes/data.json
+!plugins/obsidian-linter/data.json
 app.json
 appearance.json
 backlink.json
