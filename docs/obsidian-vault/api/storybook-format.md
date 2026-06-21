@@ -5,8 +5,6 @@ linter-yaml-title-alias: Storybook Format
 
 # Storybook Format
 
-> [!seealso] See also: [[concepts/storybook|Storybook concept]] · [[api/story-format|Story Format]]
-
 Any ModuleScript with a `.storybook` extension will be picked up as a Storybook.
 
 > [!tip] 💡
@@ -46,3 +44,5 @@ Flipbook v1 used a different approach for defining packages. For convenience, v2
 | reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`. Maps to `packages.ReactRoblox`. |
 
 Under the hood these simply map to `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.
+
+> [!seealso] See also: [[concepts/storybook|Storybook concept]] · [[api/story-format|Story Format]]

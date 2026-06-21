@@ -43,7 +43,8 @@ function relKeyOf(doc) {
 	const src = doc.source.replace(/\\/g, "/");
 	const marker = "/obsidian-vault/";
 	const i = src.indexOf(marker);
-	const rel = i >= 0 ? src.slice(i + marker.length) : src.replace(/^@site\//, "");
+	const rel =
+		i >= 0 ? src.slice(i + marker.length) : src.replace(/^@site\//, "");
 	return normKey(rel);
 }
 
@@ -65,7 +66,10 @@ function mocOrder(absPath) {
 	return targets;
 }
 
-export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } = {}) {
+export default function obsidianSidebarItems({
+	vault,
+	homeLabel = "Overview",
+} = {}) {
 	return async function generate({ defaultSidebarItemsGenerator, ...args }) {
 		const items = await defaultSidebarItemsGenerator(args);
 		const docById = new Map(args.docs.map((doc) => [doc.id, doc]));
@@ -90,7 +94,8 @@ export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } =
 
 		/** The vault-relative dir a category covers, from its index note. */
 		function dirOf(category) {
-			const indexId = category.link?.type === "doc" ? category.link.id : undefined;
+			const indexId =
+				category.link?.type === "doc" ? category.link.id : undefined;
 			const relKey = indexId ? relKeyById.get(indexId) : undefined;
 			return relKey ? posix.dirname(relKey) : undefined;
 		}
@@ -100,7 +105,9 @@ export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } =
 			if (item.type === "doc") return relKeyById.get(item.id) === target;
 			if (item.type === "category") {
 				const dir = dirOf(item);
-				return dir !== undefined && (target === dir || target.startsWith(dir + "/"));
+				return (
+					dir !== undefined && (target === dir || target.startsWith(dir + "/"))
+				);
 			}
 			return false;
 		}
@@ -108,7 +115,8 @@ export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } =
 		// `dir` is the vault-relative folder whose index note orders `list`
 		// (`""` is the root, ordered by README.md).
 		function process(list, dir) {
-			const indexPath = dir === "" ? join(vault, "README.md") : join(vault, dir, "index.md");
+			const indexPath =
+				dir === "" ? join(vault, "README.md") : join(vault, dir, "index.md");
 			const order = mocOrder(indexPath).map(resolveTarget);
 
 			const positioned = list.map((item, index) => {
@@ -127,8 +135,13 @@ export default function obsidianSidebarItems({ vault, homeLabel = "Overview" } =
 				}
 				if (item.type !== "category") return item;
 				const indexId = item.link?.type === "doc" ? item.link.id : undefined;
-				const label = (indexId && docById.get(indexId)?.title) || humanize(item.label);
-				return { ...item, label, items: process(item.items, dirOf(item) ?? "") };
+				const label =
+					(indexId && docById.get(indexId)?.title) || humanize(item.label);
+				return {
+					...item,
+					label,
+					items: process(item.items, dirOf(item) ?? ""),
+				};
 			});
 		}
 

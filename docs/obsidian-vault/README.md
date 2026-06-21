@@ -17,22 +17,30 @@ With native support for popular UI libraries like [[usage/frameworks/react|React
 
 ## Usage
 
-* [[usage/getting-started|Getting Started]] — Install Flipbook and write your first story
-* [[usage/writing-stories|Writing Stories]] — Storybooks, Stories, and file organization
-* [[usage/controls|Controls]] — On-the-fly UI configuration via story controls
-* [[usage/typechecking|Typechecking]] — Type-safe stories with Storyteller
+- [[usage/getting-started|Getting Started]] — Install Flipbook and write your first story
+- [[usage/writing-stories|Writing Stories]] — Storybooks, Stories, and file organization
+- [[usage/controls|Controls]] — On-the-fly UI configuration via story controls
+- [[usage/typechecking|Typechecking]] — Type-safe stories with Storyteller
 
 ## API Reference
 
-* [[api/storybook-format|Storybook Format]] — Storybook module properties
-* [[api/story-format|Story Format]] — Story module properties
-* [[api/story-props|StoryProps]] — Props passed to story functions
-* [[concepts/index|Concepts]] — Story, Storybook, ModuleLoader, Storyteller
+- [[api/storybook-format|Storybook Format]] — Storybook module properties
+- [[api/story-format|Story Format]] — Story module properties
+- [[api/story-props|StoryProps]] — Props passed to story functions
+- [[concepts/index|Concepts]] — Story, Storybook, ModuleLoader, Storyteller
 
 ## Contributing
 
-* [[contributing/onboarding|Onboarding]] — Dev environment setup, building, and testing
-* [[contributing/creating-releases|Creating Releases]] — Version bumping and publishing
+- [[contributing/onboarding|Onboarding]] — Dev environment setup, building, and testing
+- [[contributing/creating-releases|Creating Releases]] — Version bumping and publishing
+
+## Engineering
+
+- [[engineering/index|Engineering]] — Technical specs, proposals, and internal working notes
+
+## Product
+
+- [[product/index|Product]] — Northstars, roadmap, and feature wishlist
 
 ---
 

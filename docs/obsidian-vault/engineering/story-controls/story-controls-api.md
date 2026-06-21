@@ -1,5 +1,4 @@
 ---
-notion-id: 2db95b79-12f8-8040-ac59-e926896108f4
 aliases: [Story Controls API]
 linter-yaml-title-alias: Story Controls API
 ---

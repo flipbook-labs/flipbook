@@ -1,7 +1,6 @@
 ---
 aliases: [Module Loader]
 linter-yaml-title-alias: Module Loader
-notion-id: 2e095b79-12f8-8073-9c5f-e70a6b8ba2a5
 ---
 
 # Module Loader
@@ -20,14 +19,13 @@ Collaborating with the folks that maintain Jest Roblox
 ## Requirements
 
 1. Support for require-by-string
-    1. Supported aliases will be `@self` and `@game`
-    2. Relative paths with `./`, `../`, `../../`, etc.
-    3. No support for absolute paths like `/foo/bar`
-    4. No support for complex paths like `foo/../bar`
+   1. Supported aliases will be `@self` and `@game`
+   2. Relative paths with `./`, `../`, `../../`, etc.
+   3. No support for absolute paths like `/foo/bar`
+   4. No support for complex paths like `foo/../bar`
 2. Great error messages
 3. Great recovery from failures
-4. RobloxTS support
-    5. No walking back _G. If a module is changed, re-require the whole thing
+4. RobloxTS support 5. No walking back \_G. If a module is changed, re-require the whole thing
 5. Improved story sandboxing
 6. Detect when a module changes so the user can re-require
 7. Preload modules in the cache
@@ -39,7 +37,7 @@ Collaborating with the folks that maintain Jest Roblox
 
 ## Implementation
 
-10.  https://github.com/dphblox/loadsamodule
+10. https://github.com/dphblox/loadsamodule
 
 TODO:
 
@@ -47,7 +45,7 @@ TODO:
     1. Take from test files to build out requirements
 12. Use `loadsamodule` as the base
 13. Build out test cases based on v0.7.0 tests
-15. Release v1.0.0
+14. Release v1.0.0
 
 Things to fix:
 
@@ -69,9 +67,7 @@ Things to try:
 
 17. Budgeting work per frame
     1. React Luau example: [react-luau/modules/scheduler/src/forks/SchedulerHostConfig.default.lua at 731241ae06ab751725dc4a777e8880e0b7b3e741 · Roblox/react-luau](https://github.com/Roblox/react-luau/blob/731241ae06ab751725dc4a777e8880e0b7b3e741/modules/scheduler/src/forks/SchedulerHostConfig.default.lua#L75-L111)
-18. Defer before processing as a means of batching
-    2. One example: Instance parented to DM, then a bunch of properties get changed. This would trigger an update for each occurrence.
-    3. With deferral we could wait some number of frames before processing, allowing instances to “settle” and be processed in one go. Sacrifices some time-to-complete so as not to harm FPS. And this time will likely be imperceptible to the user
+18. Defer before processing as a means of batching 2. One example: Instance parented to DM, then a bunch of properties get changed. This would trigger an update for each occurrence. 3. With deferral we could wait some number of frames before processing, allowing instances to “settle” and be processed in one go. Sacrifices some time-to-complete so as not to harm FPS. And this time will likely be imperceptible to the user
 19. Add stress tests to make sure `query` can handle some crazy edge cases (like cloning)
 20. [Stretch] Keep track of “hot” instances, where if an instance is receiving a bunch of changes to it we could start backing off for that instance, deferring it for processing later
 

@@ -1,7 +1,6 @@
 ---
 aliases: [Storybook Embedding]
 linter-yaml-title-alias: Storybook Embedding
-notion-id: 2e995b79-12f8-80ff-bb76-c60150abd765
 ---
 
 # Storybook Embedding
@@ -32,4 +31,4 @@ Issues:
 4. [https://github.com/flipbook-labs/flipbook/issues/369](https://github.com/flipbook-labs/flipbook/issues/369)
 5. [https://github.com/flipbook-labs/flipbook/issues/49](https://github.com/flipbook-labs/flipbook/issues/49)
 
-[[flipbook/Tech/Storybook Embedding/Flipbook mounts anywhere]]
+[[engineering/flipbook-mounts-anywhere|Flipbook Mounts Anywhere]]

@@ -1,8 +1,6 @@
 ---
 aliases: [Story Renderer Spec]
 linter-yaml-title-alias: Story Renderer Spec
-notion-id: 4260feea-b457-4ad6-8f87-006dee57cf75
-base: "[[proposals.base]]"
 Author:
   - Marin Minnerly
 Tags: []
@@ -19,20 +17,20 @@ For each renderer, flipbook provides a mounting point, context, and lifecycle ho
 
 ## Supported Renderers
 
-| **Name** | **Format** |
-| --- | --- |
-| React | Result of React.createElement or a function that takes `props` as the first argument and creates an element |
-| Roact | Result of Roact.createElement or a function that takes `props` as the first argument and creates an element |
-| Fusion | Result of [`Fusion.New`](http://fusion.new/) or a function that takes `props` as the first argument and creates an Instance |
-| Functional | A function that takes `props` as the first argument and returns an Instance |
-| Manual (Legacy) | A function that takes `target` as the first argument, `props` as the second, and optionally returns a function for manually cleaning up  |
-| Hoarcekat (Legacy) | Same as `Manual (Legacy)` but the story file itself is represented by a function |
+| **Name**           | **Format**                                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| React              | Result of React.createElement or a function that takes `props` as the first argument and creates an element                             |
+| Roact              | Result of Roact.createElement or a function that takes `props` as the first argument and creates an element                             |
+| Fusion             | Result of [`Fusion.New`](http://fusion.new/) or a function that takes `props` as the first argument and creates an Instance             |
+| Functional         | A function that takes `props` as the first argument and returns an Instance                                                             |
+| Manual (Legacy)    | A function that takes `target` as the first argument, `props` as the second, and optionally returns a function for manually cleaning up |
+| Hoarcekat (Legacy) | Same as `Manual (Legacy)` but the story file itself is represented by a function                                                        |
 
 Future:
 
-* [Vide - A reactive UI library for Luau](https://centau.github.io/vide/)
-* [Blend | Nevermore](https://quenty.github.io/NevermoreEngine/api/Blend/)
-* Developer Storybook
+- [Vide - A reactive UI library for Luau](https://centau.github.io/vide/)
+- [Blend | Nevermore](https://quenty.github.io/NevermoreEngine/api/Blend/)
+- Developer Storybook
 
 ## Implementing a Renderer
 
@@ -82,7 +80,7 @@ All the values provided by the story controls. The contents of this vary based o
 export type Renderer = {
 	mount: (container: Instance, element: unknown, context: Context) -> GuiObject | Folder,
 	update: ((controls: StoryControls<T>) -> ())?,
-	
+
 	transformArgs: ((args: Args, context: Context) -> Args)?,
 	shouldUpdate: ((context: Context, prevContext: Context?) -> boolean)?,
 	unmount: ((context: Context) -> ())?,

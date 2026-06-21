@@ -1,8 +1,6 @@
 ---
 aliases: [Storyteller API]
 linter-yaml-title-alias: Storyteller API
-notion-id: 12e95b79-12f8-80d6-920e-f3b38d960d37
-base: "[[proposals.base]]"
 Author:
   - Marin Minnerly
 Tags: []
@@ -52,7 +50,7 @@ Represents a Story loaded from a ModuleScript
 `isStorybookModule(instance: Instance): boolean`
 
 | Tags | Validation, Storybook |
-| --- | --- |
+| ---- | --------------------- |
 
 Validates a given Instance is a Storybook module.
 
@@ -61,7 +59,7 @@ Validates a given Instance is a Storybook module.
 `isStoryModule(instance: Instance): boolean`
 
 | Tags | Validation, Story |
-| --- | --- |
+| ---- | ----------------- |
 
 Validates a given Instance is a Story.
 
@@ -74,7 +72,7 @@ See `loadStory` for validation of the module source.
 `findStorybookModules(parent: Instance): { ModuleScript }`
 
 | Tags | Discovery, Storybook |
-| --- | --- |
+| ---- | -------------------- |
 
 Discovers all Storybook modules that are descendants of `parent`.
 
@@ -85,7 +83,7 @@ This is the first step in the discovery of Stories. Once you load a Storybook, y
 `findStoryModulesForStorybook(storybook: Storybook): { ModuleScript }`
 
 | Tags | Discovery, Storybook, Story |
-| --- | --- |
+| ---- | --------------------------- |
 
 Discovers all Story modules that are managed by the given Storybook.
 
@@ -94,7 +92,7 @@ Discovers all Story modules that are managed by the given Storybook.
 `loadStorybookModule(loader: ModuleLoader, storybookModule: ModuleScript): Storybook`
 
 | Tags | ModuleLoading, Storybook |
-| --- | --- |
+| ---- | ------------------------ |
 
 Loads the source of a Storybook module.
 
@@ -107,7 +105,7 @@ This function will throw if the return value of `storybookModule` does not confo
 `loadStoryModule(loader: ModuleLoader, storyModule: ModuleScript, storybook: Storybook): Story`
 
 | Tags | ModuleLoading, Story |
-| --- | --- |
+| ---- | -------------------- |
 
 Loads the source of a Story module.
 
@@ -120,21 +118,21 @@ For legacy compatibility this function also loads Hoarcekat stories. Instead of 
 `createRendererForStory(story: Story): StoryRenderer`
 
 | Tags | Rendering |
-| --- | --- |
+| ---- | --------- |
 
 This function will do its best to determine which of the renderers to use based off the Story’s properties.
 
-Each renderer is given its own file so that it’s easy to add on new UI libraries in the future. See [[story-renderer-spec|Story Renderer Spec]]  for more details.
+Each renderer is given its own file so that it’s easy to add on new UI libraries in the future. See [[story-renderer-spec|Story Renderer Spec]] for more details.
 
 > [!tip] 💡
-> This likely won’t make it into the public API.  Aside from supplying packages, the consumer shouldn’t need to care about which renderer is being used. And we also make no effort to expose the individual renderers (as of right now) so for v1 we can omit this function and instead have `render` take `(story, container)` as args
+> This likely won’t make it into the public API. Aside from supplying packages, the consumer shouldn’t need to care about which renderer is being used. And we also make no effort to expose the individual renderers (as of right now) so for v1 we can omit this function and instead have `render` take `(story, container)` as args
 
 #### Render
 
 `render(renderer: StoryRenderer, container: Instance, story: Story<T>): RenderLifecycle`
 
 | Tags | ModuleLoading, Story |
-| --- | --- |
+| ---- | -------------------- |
 
 The final step. Once you have your Storybook, a Story to render, and the renderer to use for the Story, this function will handle the lifecycle of mounting, updating, and unmounting the Story for viewing.
 
@@ -162,15 +160,15 @@ if storybook then
   pcall(function()
 	  story = Storyteller.loadStoryModule(loader, storyModules[1], storybook)
   end)
-  
+
   if story then
 	  local renderer = Storyteller.createRendererForStory(story)
 	  local lifecycle = Storyteller.render(renderer, container, story)
-	  
+
 	  print(container:GetChildren())
-	  
+
 		lifecycle.unmount()
-		
+
 	  print(container:GetChildren())
   end
 end
@@ -188,7 +186,7 @@ Storyteller is intended for use by flipbook, so we also expose some React hooks 
 `uesStorybooks(parent: Instance, loader: ModuleLoader): { Storybook }`
 
 | Tags | React, Storybook |
-| --- | --- |
+| ---- | ---------------- |
 
 Performs all the discovery and loading of Storybook modules that would normally be done via individual API members.
 
@@ -202,12 +200,12 @@ local Storyteller = require("@pkg/Storyteller")
 
 local e = React.createElement
 
-local function StorybookList(props: { 
-	parent: Instance, 
+local function StorybookList(props: {
+	parent: Instance,
 	loader: ModuleLoader,
 })
 	local storybooks = Storyteller.useStorybooks(props.parent, props.loader)
-	
+
 	local children = {}
 	for index, storybook in storybooks do
 		children[storybook.name] = e("TextLabel", {
@@ -215,7 +213,7 @@ local function StorybookList(props: {
 			LayoutOrder = index,
 		}),
 	end
-	
+
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
@@ -239,7 +237,7 @@ This hook triggers a rerender when a Storybook module changes. For example, upda
 `uesStory(storyModule: ModuleScript, storybook: Storybook, loader: ModuleLoader): Story `
 
 | Tags | React, Story |
-| --- | --- |
+| ---- | ------------ |
 
 This hook triggers a rerender when the Story module or any of its required modules change. For example, updating the `story` property or updating a React component’s source will trigger useStory to rerender with the new content.
 
@@ -286,4 +284,4 @@ return StoryView
 
 ## References
 
-* [[create-flipbook-package|Create a flipbook package]]
+- [[create-flipbook-package|Create a flipbook package]]

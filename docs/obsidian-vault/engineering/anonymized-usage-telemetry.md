@@ -1,16 +1,15 @@
 ---
 aliases: [Anonymized Usage Telemetry]
 linter-yaml-title-alias: Anonymized Usage Telemetry
-notion-id: 27695b79-12f8-817a-9dc1-ec2edcaeaca9
 ---
 
 # Anonymized Usage Telemetry
 
 Opt-in flow:
 
-* Popup when user opens Flipbook, prompt them to opt-in to anonymized usage statistics
-* Can be turned off at any point in Settings
-* Only if true do we collect metrics
+- Popup when user opens Flipbook, prompt them to opt-in to anonymized usage statistics
+- Can be turned off at any point in Settings
+- Only if true do we collect metrics
 
 A session is established when Flipbook is first opened, if and only if the user has given their consent. A session is given a unique ID to keep track of it. This ID is in no way tied to the user of the plugin, all session data is left anonymous.
 
@@ -18,12 +17,12 @@ A session is established when Flipbook is first opened, if and only if the user 
 
 Core metrics:
 
-* Session started (Plugin opened)
-* Session ended (Plugin unloaded)
-* Story opened
-* Story closed
-* Time spent with stories open
-* Pages navigated to
+- Session started (Plugin opened)
+- Session ended (Plugin unloaded)
+- Story opened
+- Story closed
+- Time spent with stories open
+- Pages navigated to
 
 Daily active users calculated by:
 
@@ -33,7 +32,7 @@ Daily active users calculated by:
 
 Concurrent users:
 
-* Plugin opened
+- Plugin opened
 
 ## Implementation
 
@@ -41,9 +40,9 @@ Concurrent users:
 
 I really don’t want to handle all the session management myself. Is there a crate I can offload that to? I really just want to setup a thin REST API that routes in events and directs them to a data lake
 
-* tower_sessions can be used with axum [tower_sessions - Rust](https://docs.rs/tower-sessions/latest/tower_sessions/)
-* PostHog also seems promising: [Rust - Docs - PostHog](https://posthog.com/docs/libraries/rust)
-    * Would still need a Rust backend to handle the API key and requests but this could make life a lot easier
+- tower_sessions can be used with axum [tower_sessions - Rust](https://docs.rs/tower-sessions/latest/tower_sessions/)
+- PostHog also seems promising: [Rust - Docs - PostHog](https://posthog.com/docs/libraries/rust)
+  - Would still need a Rust backend to handle the API key and requests but this could make life a lot easier
 
 Base URL: `https://apis.flipbooklabs.com`
 

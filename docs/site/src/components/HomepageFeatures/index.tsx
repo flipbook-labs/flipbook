@@ -1,6 +1,6 @@
-import clsx from 'clsx';
-import Heading from '@theme/Heading';
-import styles from './styles.module.css';
+import clsx from "clsx";
+import Heading from "@theme/Heading";
+import styles from "./styles.module.css";
 
 type FeatureItem = {
 	title: string;
@@ -9,7 +9,7 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
 	{
-		title: 'Isolate your UI',
+		title: "Isolate your UI",
 		description: (
 			<>
 				With Flipbook you can isolate distinct parts of your game's UI to hammer
@@ -19,7 +19,7 @@ const FeatureList: FeatureItem[] = [
 		),
 	},
 	{
-		title: 'Controls',
+		title: "Controls",
 		description: (
 			<>
 				Set custom controls that your stories can respond to while iterating to
@@ -29,7 +29,7 @@ const FeatureList: FeatureItem[] = [
 		),
 	},
 	{
-		title: 'Support for Hoarcekat',
+		title: "Support for Hoarcekat",
 		description: (
 			<>
 				Bring your existing stories from Hoarcekat over to Flipbook by adding a
@@ -41,7 +41,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({ title, description }: FeatureItem) {
 	return (
-		<div className={clsx('col col--4')}>
+		<div className={clsx("col col--4")}>
 			<div className="text--center padding-horiz--md">
 				<Heading as="h3">{title}</Heading>
 				<p>{description}</p>

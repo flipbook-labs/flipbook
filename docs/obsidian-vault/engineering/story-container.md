@@ -1,7 +1,6 @@
 ---
 aliases: [Story Container]
 linter-yaml-title-alias: Story Container
-notion-id: 2d395b79-12f8-8057-b042-cd85ada81dad
 tags: [tech-spec]
 ---
 
@@ -20,13 +19,12 @@ Inputs:
 
 3. `story: LoadedStory<T>`
 4. `controls: StoryControls`
-    1. Reminder that `story.controls` defines the controls schema, and this defines which controls have been modified
-5. `extraProps: { [string]: any }`
-    2. Arbitrary props that get passed along to the story function. Flipbook sets some values on here like `theme` and `locale`,
+   1. Reminder that `story.controls` defines the controls schema, and this defines which controls have been modified
+5. `extraProps: { [string]: any }` 2. Arbitrary props that get passed along to the story function. Flipbook sets some values on here like `theme` and `locale`,
 
 Outputs:
 
-* Rendered story within the StoryContainer bounds
+- Rendered story within the StoryContainer bounds
 
 ## Props Sources
 

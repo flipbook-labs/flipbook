@@ -1,8 +1,6 @@
 ---
 aliases: [Create a Flipbook Package]
 linter-yaml-title-alias: Create a Flipbook Package
-notion-id: de72c908-05f4-4503-90c4-3a6bd7fb82bb
-base: "[[proposals.base]]"
 Author:
   - Marin Minnerly
 Tags: []

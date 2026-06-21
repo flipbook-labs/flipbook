@@ -1,8 +1,6 @@
 ---
 aliases: [Migrate from Moonwave to Docusaurus]
 linter-yaml-title-alias: Migrate from Moonwave to Docusaurus
-notion-id: 0225021b-27e7-4598-8514-2b19370139ee
-base: "[[proposals.base]]"
 Author:
   - Marin Minnerly
 Tags: []
@@ -27,4 +25,4 @@ Docusaurus can do docs versioning, which will be important between flipbook v1 a
 
 ## Open Questions
 
-* Could we support viewing flipbook’s docs within flipbook? Parse all the markdown we can and throw out any MDX?
+- Could we support viewing flipbook’s docs within flipbook? Parse all the markdown we can and throw out any MDX?

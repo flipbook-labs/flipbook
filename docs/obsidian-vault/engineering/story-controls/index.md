@@ -1,5 +1,4 @@
 ---
-notion-id: 28295b79-12f8-80c0-89d8-e4cf63c787ff
 aliases: [Story Controls]
 linter-yaml-title-alias: Story Controls
 ---
@@ -23,56 +22,25 @@ Flipbook's controls are super limited, only supporting primitive data types with
 ## Requirements
 
 1. New control schema
-    1. Introduce a more expressive control schema akin to [Storybook’s ArgTypes](https://storybook.js.org/docs/api/arg-types)
-2. Full UI Labs compatibility
-   3. Scoped to just controls for now but the goal is 1:1 interop with UI Labs so stories Just Work
-   4. Migration logic will detect if the control schema is using UI Labs' schema and migrate it to one Flipbook supports.
-3. Introduce more supported data types for controls
-   6. Roblox datatypes like Color3 and DateTime
-4. Allow users to define more complex controls
-   8. Filters for String controls
-   9. Improvements to Number controls, like specifying constraints
-   10. Mix together simple and complex controls, like using `foo = "Hello, World!` to represent a String control
-5. 1:1 interop with prior controls schema
-   12. Users can decide to use the new schema with the provided constructors, or continue with simple controls
+   1. Introduce a more expressive control schema akin to [Storybook’s ArgTypes](https://storybook.js.org/docs/api/arg-types)
+2. Full UI Labs compatibility 3. Scoped to just controls for now but the goal is 1:1 interop with UI Labs so stories Just Work 4. Migration logic will detect if the control schema is using UI Labs' schema and migrate it to one Flipbook supports.
+3. Introduce more supported data types for controls 6. Roblox datatypes like Color3 and DateTime
+4. Allow users to define more complex controls 8. Filters for String controls 9. Improvements to Number controls, like specifying constraints 10. Mix together simple and complex controls, like using `foo = "Hello, World!` to represent a String control
+5. 1:1 interop with prior controls schema 12. Users can decide to use the new schema with the provided constructors, or continue with simple controls
 
 Stretch goals:
 
 1. Create a proper Table component for rendering out controls. This way the Name column can be auto-sized to fill based on the widest cell
 2. Support more Roblox data types like UDim2, Vector3 and Instances
-3. Create a new Flipbook utility package that's essentially just a rebrand of Storyteller
-   4. This way users will write `local Flipbook = …` in their stories, which cements the link between the story and the plugin
-   5. Export most of the same things as Storyteller, like the control constructors and types
-
-## Implementation
-
-The source for controls lives in two distinct places:
-
-1. Storyteller,
-2. Flipbook, by using Storyteller's Controls API to build out the frontend UI
-
-Flow:
-
-* **Current**: Screen → StoryCanvas → StoryView → StoryPreview
-* **Proposed**: Screen → StoryView → StoryPreview → Storyteller.StoryContainer
-
-Where StoryView handles the full story page, keeps track of control changes, and contains StoryPreview, which handles story render errors and whether to mount the story in the plugin widget or in the 3D viewport.
-
-## Supported Data Types
+3. Create a new Flipbook utility package that's essentially just a rebrand of Storyteller 4. This way users will write `local Flipbook = …` in their stories, which cements the link between the story and the plugin 5. Export most of the same things as Storyteller, like the control constructors and types
 
 ## Solution
 
-1. New control schema
-   2. Introduce a more expressive control schema akin to [Storybook’s ArgTypes](https://storybook.js.org/docs/api/arg-types)
+1. New control schema 2. Introduce a more expressive control schema akin to [Storybook’s ArgTypes](https://storybook.js.org/docs/api/arg-types)
 2. New data types
 3. UI Labs compatibility 2. Migration logic will detect if the control schema is using UI Labs' schema and migrate it to one Flipbook supports.
 
-# Stretch Goals
-
-1. Create a proper Table component for rendering out controls. This way the Name column can be auto-sized to fill based on the widest cell
-2. Support more Roblox data types like UDim2 and Vector3
-
-# Implementation
+## Implementation
 
 The source for controls lives in two distinct places:
 
@@ -91,7 +59,29 @@ The following table keeps track of all the data types we support now and intend 
 
 Also includes a UI Labs comparison. We should ultimately be comparing against ourselves, but it's good to keep tabs on the competition.
 
-![[control-data-types.base|Control Data Types.base]]
+| **Control Type** | **Description** | **Flipbook (v2.4.0)** | **UI Labs (v1.5.0)** | **Flipbook (Q1 2026)** | **UI Labs (Q1 2026)** | **Notes** |
+| --- | --- | --- | --- | --- | --- | --- |
+| Boolean | Provides a toggle for switching between possible states | Supported | Supported | Supported | Supported | |
+| Callback | Provides a button to trigger an arbitrary action | Unsupported | Unsupported | Unsupported | Unsupported | Out of scope |
+| Check | Provides a set of checkbox components for selecting multiple options | Unsupported | Unsupported | Supported | Unsupported | |
+| Color | Provides a color picker component to handle color values. Can be additionally configured to include a set of color presets | Unsupported | Supported | Supported | Supported | |
+| Date | Provides a datepicker component to handle date selection | Unsupported | Unsupported | Supported | Unsupported | |
+| File | Provides a file input component that returns an array of URLs | Unsupported | Unsupported | Unsupported | Unsupported | Impossible unless there's some new engine APIs that allow file selection |
+| Inline Check | Provides a set of inlined checkbox components for selecting multiple options | Unsupported | Unsupported | Unsupported | Unsupported | Might still be in scope, but confirm the visual differences in Storybook |
+| Inline Radio | Provides a set of inlined radio buttons based on the available options | Unsupported | Unsupported | Supported | Unsupported | Might still be in scope, but confirm the visual differences in Storybook |
+| Instance | Provides an Instance picker component to choose an Instance from the DataModel | Unsupported | Supported | Unsupported | Supported | Out of scope |
+| Multi-select | Provides a drop-down list that allows multiple selected values | Unsupported | Unsupported | Unsupported | Unsupported | This will only be included if Foundation.Dropdown can support multiple selections |
+| Number | Provides a numeric input to include the range of all possible values | Supported | Supported | Supported | Supported | |
+| Object | Provides a JSON-based editor component to handle the object's values. Also allows edition in raw mode | Unsupported | Unsupported | Unsupported | Unsupported | Out of scope |
+| Radio | Provides a set of radio buttons based on the available options | Unsupported | Unsupported | Supported | Unsupported | |
+| Select | Provides a drop-down list component to handle single value selection | Unsupported | Supported | Supported | Supported | |
+| Sequence | Provides a sequence editor akin to Roblox's one for NumberSequence | Unsupported | Unsupported | Unsupported | Unsupported | Out of scope |
+| Slider | Provides a range slider component to include all possible values | Unsupported | Supported | Supported | Supported | |
+| Text | Provides a freeform text input | Supported | Supported | Supported | Supported | |
+| UDim | | Unsupported | Unsupported | Supported | Supported | |
+| UDim2 | | Unsupported | Unsupported | Supported | Unsupported | |
+| Vector2 | | Unsupported | Unsupported | Supported | Unsupported | |
+| Vector3 | | Unsupported | Unsupported | Supported | Unsupported | |
 
 ## Schema
 
@@ -126,10 +116,10 @@ export type StoryControls = {
 UI elements needed to support data types:
 
 1. Select one
-    1. `Foundation.RadioGroup`
+   1. `Foundation.RadioGroup`
 2. Multi-select
-    1. I'd like to make something akin to the following. I don't think Foundation has something like that built in, but could be made by composing Checkbox with a label
-        <img width="349" height="166" alt="image" src="https://github.com/user-attachments/assets/3ea608aa-924b-419c-9c3e-a9bc6c39704e" />
+   1. I'd like to make something akin to the following. I don't think Foundation has something like that built in, but could be made by composing Checkbox with a label
+      <img width="349" height="166" alt="image" src="https://github.com/user-attachments/assets/3ea608aa-924b-419c-9c3e-a9bc6c39704e" />
 3. Date picker: `Foundation.DateTimePicker`
 4. Color picker: `Foundation.ColorPicker`
 5. CSV input to Roblox data type: `Foundation.TextInput`
@@ -300,20 +290,20 @@ Write out all that's changed. You spent a lot of time on the Controls revamp, so
 
 Goals:
 
-* Full UI Labs compatibility
-  * Scoped to just controls for now but the goal is 1:1 interop with UI Labs so stories Just Work
-* Introduce more supported data types for controls
-  * Roblox datatypes like Color3 and DateTime
-    * Vector3, UDim2, and others coming later
-* Allow users to define more complex controls
-  * Filters for String controls
-  * Improvements to Number controls, like specifying constraints
-  * Mix together simple and complex controls, like using `foo = "Hello, World!` to represent a String control
-* 1:1 interop with prior controls schema - Users can decide to use the new schema with the provided constructors, or continue with simple controls
+- Full UI Labs compatibility
+  - Scoped to just controls for now but the goal is 1:1 interop with UI Labs so stories Just Work
+- Introduce more supported data types for controls
+  - Roblox datatypes like Color3 and DateTime
+    - Vector3, UDim2, and others coming later
+- Allow users to define more complex controls
+  - Filters for String controls
+  - Improvements to Number controls, like specifying constraints
+  - Mix together simple and complex controls, like using `foo = "Hello, World!` to represent a String control
+- 1:1 interop with prior controls schema - Users can decide to use the new schema with the provided constructors, or continue with simple controls
   Next:
-* Create a new Flipbook utility package that's essentially just a rebrand of Storyteller
-  * This way users will write `local Flipbook = …` in their stories, which cements the link between the story and the plugin
-  * Export most of the same things as Storyteller, like the control constructors and types
+- Create a new Flipbook utility package that's essentially just a rebrand of Storyteller
+  - This way users will write `local Flipbook = …` in their stories, which cements the link between the story and the plugin
+  - Export most of the same things as Storyteller, like the control constructors and types
 
 I'm already starting to forget how this all works so start writing!!!!
 
@@ -374,14 +364,11 @@ graph TD
 
 ```
 
-# References
+## References
 
-1. Storybook controls
-   2. https://storybook.js.org/docs/essentials/controls#annotation
-   3. https://storybook.js.org/docs/api/arg-types
+1. Storybook controls 2. https://storybook.js.org/docs/essentials/controls#annotation 3. https://storybook.js.org/docs/api/arg-types
 2. UI Labs controls:
-    1. https://ui-labs.luau.page/docs/controls/primitive
-    2. https://ui-labs.luau.page/docs/controls/advanced
+   1. https://ui-labs.luau.page/docs/controls/primitive
+   2. https://ui-labs.luau.page/docs/controls/advanced
 3. Full list of Roblox data types: https://create.roblox.com/docs/reference/engine/datatypes
-4. User sentiments:
-   7. https://x.com/maximumadhd/status/1979375586964574404
+4. User sentiments: 7. https://x.com/maximumadhd/status/1979375586964574404

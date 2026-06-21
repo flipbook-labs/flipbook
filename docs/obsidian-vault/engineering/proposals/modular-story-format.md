@@ -1,8 +1,6 @@
 ---
 aliases: [Implement New Modular Story Format]
 linter-yaml-title-alias: Implement New Modular Story Format
-notion-id: 0d0ccaf0-36e6-497a-9131-31f5e50dd008
-base: "[[proposals.base]]"
 Author:
   - Marin Minnerly
   - pashley
@@ -22,11 +20,11 @@ The example below would render in our File Tree as:
 
 ```markdown
 Storybook
-  Button
-    Primary
-    Secondary
-    Loading
-    Disabled
+Button
+Primary
+Secondary
+Loading
+Disabled
 ```
 
 Due to us allowing developers to pass `exports.name` & `exports.component` as defaults,
@@ -35,12 +33,12 @@ we can use this to render documentation automatically as seen [here](https://mas
 
 # Open Questions
 
-* How do controls in Storybook work with multiple stories? Are they global controls, or does each story have its own set of controls? How does this impact the proposal?
-* Can single stories with controls continue being used like before? Are we able to support both workflows?
-* What does migration look like, and can we automate it? Ideally flipbook and/or some command line tool should convert old stories to the new format
-* Do we want to rename the naming convention from `.story.lua` to `.stories.lua` with this change? [Like how Storybook does it](https://storybook.js.org/docs/writing-stories#where-to-put-stories)
-* How much of [Storybook’s CSF](https://storybook.js.org/docs/api/csf) do we want to mimic? Should we copy the spec 1:1 and make deviations as-needed? More docs [here](https://github.com/ComponentDriven/csf)
-* What are some existing standards for translating JS to Luau? In particular we should see if we can adopt a way of handling the “default” export
+- How do controls in Storybook work with multiple stories? Are they global controls, or does each story have its own set of controls? How does this impact the proposal?
+- Can single stories with controls continue being used like before? Are we able to support both workflows?
+- What does migration look like, and can we automate it? Ideally flipbook and/or some command line tool should convert old stories to the new format
+- Do we want to rename the naming convention from `.story.lua` to `.stories.lua` with this change? [Like how Storybook does it](https://storybook.js.org/docs/writing-stories#where-to-put-stories)
+- How much of [Storybook’s CSF](https://storybook.js.org/docs/api/csf) do we want to mimic? Should we copy the spec 1:1 and make deviations as-needed? More docs [here](https://github.com/ComponentDriven/csf)
+- What are some existing standards for translating JS to Luau? In particular we should see if we can adopt a way of handling the “default” export
 
 # Proposed API
 
@@ -93,9 +91,9 @@ With this change we also need to update the relevant documentation for stories
 
 These pages will need to be upated to account for the new format:
 
-* [https://flipbook-labs.github.io/flipbook/docs/writing-stories](https://flipbook-labs.github.io/flipbook/docs/writing-stories)
-* [https://flipbook-labs.github.io/flipbook/docs/story-format](https://flipbook-labs.github.io/flipbook/docs/story-format)
-* [https://flipbook-labs.github.io/flipbook/docs/migrating](https://flipbook-labs.github.io/flipbook/docs/migrating)
+- [https://flipbook-labs.github.io/flipbook/docs/writing-stories](https://flipbook-labs.github.io/flipbook/docs/writing-stories)
+- [https://flipbook-labs.github.io/flipbook/docs/story-format](https://flipbook-labs.github.io/flipbook/docs/story-format)
+- [https://flipbook-labs.github.io/flipbook/docs/migrating](https://flipbook-labs.github.io/flipbook/docs/migrating)
 
 # Translations
 
@@ -166,10 +164,10 @@ return stories
 
 # Deviations
 
-* No global args for storybooks
+- No global args for storybooks
 
 # Action Items
 
-- [x]  [Marin Minnerly](mailto:me@vocksel.com)  Read up on CSF and see how much we can port to lua
-- [x]  [Marin Minnerly](mailto:me@vocksel.com)  Take a pass over flipbook docs to check which ones would need to be revised
-- [ ]  [Marin Minnerly](mailto:me@vocksel.com)  Figure out if we can do versioned documentation for v1 and v2
+- [x] [Marin Minnerly](mailto:me@vocksel.com) Read up on CSF and see how much we can port to lua
+- [x] [Marin Minnerly](mailto:me@vocksel.com) Take a pass over flipbook docs to check which ones would need to be revised
+- [ ] [Marin Minnerly](mailto:me@vocksel.com) Figure out if we can do versioned documentation for v1 and v2

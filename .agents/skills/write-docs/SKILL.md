@@ -9,10 +9,10 @@ Flipbook's documentation is authored in the **Obsidian vault at `docs/obsidian-v
 
 The hard rule: **never describe behavior you have not confirmed in the source.** Generic, plausible-sounding docs that don't match the code are worse than no docs.
 
-**Not every page is public docs.** `usage/`, `api/`, and `contributing/` are the published, high-rigor pages — apply the full house style and accuracy bar to them. `tech/`, `product/`, `proposals/`, and `ideas/` are living documents, tech specs, and RFCs: freeform, lower bar, often half-finished thoughts. Keep the voice there, but don't polish or "correct" someone's working notes — match the surrounding informality and only change what you were asked to.
+**Not every page is public docs.** `usage/`, `api/`, `concepts/`, and `contributing/` are the high-rigor reference pages — apply the full house style and accuracy bar to them. `engineering/` (including `engineering/proposals/`), `product/`, and `product/ideas/` are living documents, tech specs, and RFCs: freeform, lower bar, often half-finished thoughts. Keep the voice there, but don't polish or "correct" someone's working notes — match the surrounding informality and only change what you were asked to. (Everything publishes except a short sensitivity list excluded in `docs/site/docusaurus.config.ts`.)
 
 > [!note]
-> This branch is mid-migration from a Moonwave-style site to the Obsidian vault. Docusaurus may not yet render every Obsidian-ism (wikilinks, embeds, `> [!callouts]`). Don't convert Obsidian syntax to Docusaurus syntax to silence a build warning unless the user asks — that's a migration decision, not a docs-writing one. Flag it instead.
+> Author in Obsidian syntax. The build's remark plugin ([docs/site/src/remark/obsidian.mjs](../../../docs/site/src/remark/obsidian.mjs)) resolves wikilinks, embeds, transclusions, and `> [!callouts]`, so don't convert them to Docusaurus `:::` syntax to silence a warning — flag a genuinely unrenderable case instead. Don't author Obsidian Bases (`.base`): they don't render on the site (see Conventions).
 
 ## Workflow
 
@@ -26,7 +26,24 @@ The hard rule: **never describe behavior you have not confirmed in the source.**
 
 5. **Run a critic pass over your own output.** Before declaring a page done, re-read the prose _you wrote or edited_ with one job: find (a) any sentence making a claim not backed by a cited source, and (b) any phrase matching the banned patterns. Fix those. Doing this as a separate pass catches far more than self-checking while drafting. This pass applies only to text you generated — see the banlist scope below.
 
-6. **Verify it builds** after structural changes: `cd docs/site && npm run build` (or have the user run it). Watch for broken wikilink/embed targets and unresolved references. Mid-migration, some Obsidian-isms may surface as build warnings — per the note above, flag those rather than rewriting them into Docusaurus syntax unprompted.
+6. **Use the `obsidian` CLI for vault operations** — reading files, checking backlinks before deleting, moving notes, verifying unresolved links. The CLI connects to the currently active Obsidian window. Two vaults share the name `obsidian-vault` (the personal vault and this one), so first confirm the CLI is pointed at the right one:
+
+   ```sh
+   open "obsidian://open?vault=obsidian-vault&path=README.md"
+   obsidian vault info=path   # must print .../flipbook/docs/obsidian-vault
+   ```
+
+   Key commands (all paths are vault-relative):
+   - `obsidian read path=<path>` — read a note
+   - `obsidian append path=<path> content=<text>` — append to a note (use `\n` for newlines)
+   - `obsidian create path=<path> content=<text>` — create a note
+   - `obsidian delete path=<path>` — move to trash (recoverable)
+   - `obsidian move path=<path> to=<dest-folder>` — move or rename
+   - `obsidian unresolved` — list broken wikilinks vault-wide
+   - `obsidian backlinks path=<path>` — check before deleting a note
+   - `obsidian orphans` — notes with no incoming links
+
+7. **Verify it builds** after structural changes: `cd docs/site && npm run build` (or have the user run it). Watch for broken wikilink/embed targets and unresolved references. If an Obsidian-ism surfaces as a build warning, flag it rather than rewriting it into Docusaurus syntax unprompted. Docs are also Prettier-formatted (`proseWrap: preserve`, so your line breaks are kept — important, because joining a callout's lines would fold its body into the title) — run `npm run format` in `docs/site`, or let format-on-save handle it; CI runs `prettier --check`.
 
 ## House style
 
@@ -41,11 +58,13 @@ The hard rule: **never describe behavior you have not confirmed in the source.**
 
 - Capitalize Flipbook product nouns: Story, Storybook, Controls, Storyteller. Lowercase generic uses.
 - **Title Case for headings** ("Writing Stories", "Using Frameworks"). The page `# H1` is the feature or page name.
-- Reference data goes in tables: `| **Property** | **Type** | **Description** |`. Use `string?` / `{ Instance }` style Luau types in the Type column.
-- **Callouts use Obsidian syntax, not Docusaurus `:::` admonitions:** `> [!note]`, `> [!tip]`, `> [!warning]`, `> [!seealso]`. Use `> [!warning]` for deprecations and breaking-change notices, and `> [!seealso]` (with wikilinks) for cross-reference blocks.
+- Reference data goes in **static Markdown tables**: `| **Property** | **Type** | **Description** |`. Use `string?` / `{ Instance }` style Luau types in the Type column. **Never use Obsidian Bases (`.base`)** — they're excluded from the build and render as nothing on the site; hand-write the table instead.
+- **Callouts use Obsidian syntax, not Docusaurus `:::` admonitions:** `> [!note]`, `> [!tip]`, `> [!warning]`, `> [!seealso]`. Use `> [!warning]` for deprecations and breaking-change notices, and `> [!seealso]` (with wikilinks) for cross-reference blocks. **Put `> [!seealso]` blocks at the bottom of the page**, after the last content section.
 - **Internal links are Obsidian wikilinks, not absolute paths:** `[[usage/frameworks/react|React]]` — a vault-relative path with an optional `|Label`. Link to a heading with `#`: `[[usage/inspirations#Inspirations]]`. Verify the target page and heading exist.
 - **Reuse content with embeds instead of duplicating it.** `![[api/story-format]]` transcludes a whole page; `![[usage/inspirations#Inspirations]]` transcludes a section. Keep a single source of truth and embed it where needed (e.g. `concepts/story` embeds `api/story-format`) rather than copy-pasting.
-- **Frontmatter is Obsidian-managed YAML.** Pages carry `aliases` and `linter-yaml-title-alias`, which the Obsidian Linter keeps in sync with the `# H1` — don't hand-edit `linter-yaml-title-alias`. Public pages also set `sidebar_position` for Docusaurus ordering; match the scheme of sibling pages. Preserve existing keys you didn't add (`tags`, `notion-id`, `id`); don't strip them.
+- **Sidebar order comes from `index.md` link lists, not frontmatter.** The sidebar generator ([docs/site/src/sidebar/obsidian.mjs](../../../docs/site/src/sidebar/obsidian.mjs)) labels each item from its `# H1` and orders each folder by the wikilink order in that folder's `index.md` (the root order comes from `README.md`). To place or reorder a page, edit the relevant index note's link list — **don't add `sidebar_position`**.
+- **Every folder owns an `index.md`** that is its Map of Content: a one-line intro plus a bulleted list of `[[wikilinks]]` to the folder's pages, each with an em-dash blurb (see `usage/index.md`, `concepts/index.md`). New page in a folder → add it to that index.
+- **Frontmatter is Obsidian-managed YAML.** Pages carry `aliases` and `linter-yaml-title-alias`, which the Obsidian Linter keeps in sync with the `# H1` — don't hand-edit `linter-yaml-title-alias` (and commit the linter config so this stays shared). **Strip `notion-id`** when you touch a page — it's dead Notion-migration residue. Don't add a `base:` key (that's Obsidian Bases membership). Preserve other existing keys you didn't add (`tags`, `id`).
 - Images embed Obsidian-style with an optional size: `![[assets/flipbook-icon.png|32]]`. When you use standard `![alt](path)` syntax instead, write real, descriptive alt text.
 
 **Code samples**

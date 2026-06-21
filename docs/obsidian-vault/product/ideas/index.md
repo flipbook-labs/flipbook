@@ -1,13 +1,12 @@
 ---
-notion-id: 2db95b79-12f8-80c3-8423-ceb896271874
 aliases: [Ideas]
 linter-yaml-title-alias: Ideas
 ---
 
 # Ideas
 
-Ideas relating to Flipbook:
+Exploratory UX ideas for Flipbook, not yet committed to the roadmap.
 
-1. [[toolbar]]
-2. [[storybook-selection-ux]]
-3. [[right-click-context-menu]]
+- [[product/ideas/toolbar|Toolbar]] — Draggable toolbar with configurable actions
+- [[product/ideas/storybook-selection-ux|Storybook Selection UX]] — Improved UX for switching between storybooks
+- [[product/ideas/right-click-context-menu|Right Click Context Menu]] — Context menu for stories and storybooks

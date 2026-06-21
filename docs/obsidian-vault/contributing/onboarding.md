@@ -3,12 +3,12 @@ aliases: [Contributing]
 linter-yaml-title-alias: Contributing
 ---
 
-# Contributing
+# Onboarding
 
-Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
+This guide will help you get your environment setup so you can have the best development experience while working on Flipbook.
 
 > [!INFO]
-> All contents under the Contributing section are for the development of the Flipbook plugin. For user documentation, see [Getting Started](/docs/usage/getting-started).
+> All contents under the Contributing section relates to the development of the Flipbook plugin. For user documentation, see [[usage/getting-started|Getting Started]].
 
 ## First-time Setup
 
@@ -92,23 +92,24 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Technical:**
 
-* [[engineering/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
+- [[contributing/architecture|Architecture]] — Codebase layout and build pipeline details
+- [[engineering/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
 
 **Product:**
 
-* [[product/index|Northstars]] — Product vision and goals
-* [[product/2026 Roadmap|2026 Roadmap]] — Current quarterly roadmap
-* [[product/2025-flipbook-product-spec/index|2025 Product Spec]] — Audiences and feature goals
+- [[product/index|Northstars]] — Product vision and goals
+- [[product/2026-roadmap|2026 Roadmap]] — Current quarterly roadmap
+- [[product/2025-flipbook-product-spec/index|2025 Product Spec]] — Audiences and feature goals
 
 **Proposals:**
 
-* [[proposals/Story Renderer Spec|Story Renderer Spec]] _(In Progress)_
-* [[proposals/Storyteller API|Storyteller API]] _(In Progress)_
-* [[proposals/Story and Storybook typechecking|Story and Storybook Typechecking]] _(In Progress)_
-* [[proposals/Documentation stories|Documentation Stories]] _(Approved)_
-* [[proposals/Implement new modular story format|Modular Story Format]]
-* [[proposals/Create a flipbook package|Flipbook Package]]
+- [[engineering/proposals/story-renderer-spec|Story Renderer Spec]] _(In Progress)_
+- [[engineering/proposals/storyteller-api|Storyteller API]] _(In Progress)_
+- [[engineering/proposals/story-storybook-typechecking|Story and Storybook Typechecking]] _(In Progress)_
+- [[engineering/proposals/documentation-stories|Documentation Stories]] _(Approved)_
+- [[engineering/proposals/modular-story-format|Modular Story Format]]
+- [[engineering/proposals/create-flipbook-package|Flipbook Package]]
 
 **Ideas:**
 
-* [[product/ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu
+- [[product/ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu

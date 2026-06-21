@@ -1,18 +1,27 @@
 ---
-notion-id: 27695b79-12f8-8006-b4a6-e8414fa0f6a2
 aliases: [Engineering]
 linter-yaml-title-alias: Engineering
 ---
 
 # Engineering
 
-* [[engineering/roblox-internal-support/index|Roblox Internal Support]]
-* [[anonymized-usage-telemetry|Anonymized usage telemetry]]
-* [[publishing-to-rotriever|Publishing to Rotriever]]
-* [[backend-stack|Backend stack]]
-* [[instance-collector|Instance Collector]]
-* [[story-container|Story Container]]
-* [[engineering/story-controls/index|Story Controls]]
-* [[engineering/flipbook-mounts-anywhere|Flipbook Mounts Anywhere]]
-* [[flipbook-companion-package]]
-* [[engineering/module-loader|Module Loader]]
+Technical specs, proposals, and working notes for Flipbook maintainers.
+
+- [[engineering/proposals/index|Proposals]] — In-flight RFCs and design docs
+- [[engineering/story-controls/index|Story Controls]] — Controls revamp design and implementation notes
+- [[engineering/storybook-embedding/index|Storybook Embedding]] — Embedding Flipbook in Storybook experiences
+- [[engineering/module-loader|Module Loader]] — Module loading and story sandboxing
+- [[engineering/story-container|Story Container]] — Story container architecture
+- [[engineering/instance-collector|Instance Collector]] — Instance collection for story discovery
+- [[engineering/flipbook-mounts-anywhere|Flipbook Mounts Anywhere]] — Mounting in plugin widget, 3D viewport, and standalone experiences
+- [[engineering/flipbook-companion-package|Flipbook Companion Package]] — Tech spec for exposing Storyteller types to story authors
+- [[engineering/ecosystem|Ecosystem]] — Map of all active flipbook-labs repos and their relationships
+- [[engineering/changewrite|Changewrite]] — GitHub Action and CLI for managing release cycles
+- [[engineering/backend-stack|Backend Stack]] — Backend infrastructure notes
+- [[engineering/anonymized-usage-telemetry|Anonymized Usage Telemetry]] — Opt-in telemetry design
+- [[engineering/publishing-to-rotriever|Publishing to Rotriever]] — Notes on packaging Flipbook for Rotriever
+- [[engineering/documentation-sharing|Documentation Sharing]] — Research on documentation hosting
+- [[engineering/luau-api-diffing|Luau API Diffing]] — API diffing tool design
+- [[engineering/flipbook-for-foundation|Flipbook for Foundation]] — Integration milestones for Roblox Foundation
+- [[engineering/flipbook-roblox-internal-deployments|Flipbook → Roblox Internal Deployments]] — Archived internal deployment strategy
+- [[engineering/roblox-internal-support/index|Roblox Internal Support]] — Internal deployment notes and partner support

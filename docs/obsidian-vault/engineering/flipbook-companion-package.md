@@ -1,5 +1,4 @@
 ---
-notion-id: 2dd95b79-12f8-80f3-ae6a-e26a8e78f52a
 aliases: [Flipbook Companion Package]
 linter-yaml-title-alias: Flipbook Companion Package
 tags: [tech-spec]
@@ -63,12 +62,12 @@ return story
 
 Flipbook
 
-   ```lua
-   local React = require("@pkg/React")
+```lua
+local React = require("@pkg/React")
 	local Flipbook = require("@pkg/Flipbook")
-	
+
 	local Button = require("./Button")
-	
+
 	local story: Flipbook.Story = {
 	    controls = {
 	        isDisabled = Flipbook.boolean()
@@ -83,9 +82,9 @@ Flipbook
 	        })
 	    end,
 	}
-	
+
 	return story
-   ```
+```
 
 # API
 
@@ -376,8 +375,8 @@ Provides a numeric input to include the range of all possible values.
 
 Parameter defaults:
 
-* `default = 0`
-* `step = 1`
+- `default = 0`
+- `step = 1`
 
 Providing `range` will constrain the possible values of the number, and `step` controls how much the number will be changed up/down by the UI.
 
@@ -452,8 +451,8 @@ Provides a range slider to include all possible values.
 
 Parameter defaults:
 
-* `default = 0`
-* `range = NumberRange.new(0, 100)`
+- `default = 0`
+- `range = NumberRange.new(0, 100)`
 
 Example:
 

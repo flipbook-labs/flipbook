@@ -56,7 +56,10 @@ const CALLOUT_TYPES = {
 };
 
 // A standalone processor for parsing transclusion targets out of the vault.
-const targetParser = unified().use(remarkParse).use(remarkFrontmatter).use(remarkGfm);
+const targetParser = unified()
+	.use(remarkParse)
+	.use(remarkFrontmatter)
+	.use(remarkGfm);
 
 const LINK_PATTERN = /!\[\[([^\]]+?)\]\]|\[\[([^\]]+?)\]\]/g;
 
@@ -139,7 +142,9 @@ function buildIndex(vault) {
 
 /** Extract a heading's section (inclusive) from a parsed tree, or all of it. */
 function extractSection(tree, section) {
-	const children = tree.children.filter((n) => n.type !== "yaml" && n.type !== "toml");
+	const children = tree.children.filter(
+		(n) => n.type !== "yaml" && n.type !== "toml",
+	);
 	if (!section) return children;
 
 	const wanted = slugAnchor(section);
@@ -181,7 +186,9 @@ function convertCallouts(tree) {
 		const text = first.children[0];
 		if (!text || text.type !== "text") return;
 
-		const m = text.value.match(/^\[!([a-zA-Z]+)\][+-]?[ \t]*([^\n]*)(\n[\s\S]*)?$/);
+		const m = text.value.match(
+			/^\[!([a-zA-Z]+)\][+-]?[ \t]*([^\n]*)(\n[\s\S]*)?$/,
+		);
 		if (!m) return;
 
 		const name = CALLOUT_TYPES[m[1].toLowerCase()] ?? "note";
@@ -198,7 +205,12 @@ function convertCallouts(tree) {
 		}
 		children.push(...node.children);
 
-		const directive = { type: "containerDirective", name, attributes: {}, children };
+		const directive = {
+			type: "containerDirective",
+			name,
+			attributes: {},
+			children,
+		};
 		parent.children.splice(index, 1, directive);
 		return [SKIP];
 	});
@@ -243,15 +255,23 @@ export default function remarkObsidian(options = {}) {
 			const tx = matchTransclusion(child);
 			const targetRel = tx ? resolveNote(tx.target) : null;
 			if (tx && targetRel) {
-				const key = normalizeKey(targetRel) + (tx.section ? "#" + slugAnchor(tx.section) : "");
+				const key =
+					normalizeKey(targetRel) +
+					(tx.section ? "#" + slugAnchor(tx.section) : "");
 				if (stack.has(key)) {
-					warn(`circular transclusion skipped: ![[${tx.target}${tx.section ? "#" + tx.section : ""}]]`);
+					warn(
+						`circular transclusion skipped: ![[${tx.target}${tx.section ? "#" + tx.section : ""}]]`,
+					);
 					continue;
 				}
-				const targetTree = targetParser.parse(readFileSync(join(vault, targetRel), "utf8"));
+				const targetTree = targetParser.parse(
+					readFileSync(join(vault, targetRel), "utf8"),
+				);
 				const section = extractSection(targetTree, tx.section);
 				if (section === null) {
-					warn(`transclusion section not found: ![[${tx.target}#${tx.section}]]`);
+					warn(
+						`transclusion section not found: ![[${tx.target}#${tx.section}]]`,
+					);
 					next.push(child);
 					continue;
 				}
@@ -285,7 +305,8 @@ export default function remarkObsidian(options = {}) {
 			warn(`unresolved wikilink in ${fromRel}: [[${inner}]]`);
 			return { type: "text", value: alias ?? pathPart };
 		}
-		const url = relLink(fromRel, targetRel) + (section ? "#" + slugAnchor(section) : "");
+		const url =
+			relLink(fromRel, targetRel) + (section ? "#" + slugAnchor(section) : "");
 		const text = alias ?? section ?? posix.basename(targetRel, ".md");
 		return { type: "link", url, children: [{ type: "text", value: text }] };
 	}
@@ -294,7 +315,11 @@ export default function remarkObsidian(options = {}) {
 		const [targetPart] = splitAlias(inner); // a trailing |size is ignored for now
 		const assetRel = resolveAsset(targetPart);
 		if (assetRel) {
-			return { type: "image", url: relLink(fromRel, assetRel), alt: posix.basename(assetRel) };
+			return {
+				type: "image",
+				url: relLink(fromRel, assetRel),
+				alt: posix.basename(assetRel),
+			};
 		}
 		if (resolveNote(targetPart.split("#")[0])) return makeLink(inner, fromRel);
 		warn(`unresolved embed in ${fromRel}: ![[${inner}]]`);
@@ -312,15 +337,21 @@ export default function remarkObsidian(options = {}) {
 			let match;
 			while ((match = LINK_PATTERN.exec(node.value)) !== null) {
 				if (match.index > last) {
-					replacement.push({ type: "text", value: node.value.slice(last, match.index) });
+					replacement.push({
+						type: "text",
+						value: node.value.slice(last, match.index),
+					});
 				}
 				replacement.push(
-					match[1] !== undefined ? makeEmbed(match[1], fromRel) : makeLink(match[2], fromRel),
+					match[1] !== undefined
+						? makeEmbed(match[1], fromRel)
+						: makeLink(match[2], fromRel),
 				);
 				last = LINK_PATTERN.lastIndex;
 			}
 			if (replacement.length === 0) return;
-			if (last < node.value.length) replacement.push({ type: "text", value: node.value.slice(last) });
+			if (last < node.value.length)
+				replacement.push({ type: "text", value: node.value.slice(last) });
 
 			parent.children.splice(index, 1, ...replacement);
 			return [SKIP, index + replacement.length];

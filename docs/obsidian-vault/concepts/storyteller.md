@@ -7,4 +7,4 @@ linter-yaml-title-alias: Storyteller
 
 Storyteller is the backbone library behind Flipbook's story discovery and rendering pipeline.
 
-![[proposals/Storyteller API#Storyteller API]]
+![[engineering/proposals/storyteller-api#Storyteller API]]

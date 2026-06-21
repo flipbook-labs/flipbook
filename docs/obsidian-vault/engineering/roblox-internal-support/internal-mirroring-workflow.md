@@ -1,7 +1,6 @@
 ---
 aliases: [Internal Mirroring Workflow]
 linter-yaml-title-alias: Internal Mirroring Workflow
-notion-id: 28595b79-12f8-801f-959f-ca160c75c327
 ---
 
 # Internal Mirroring Workflow
@@ -12,16 +11,16 @@ notion-id: 28595b79-12f8-801f-959f-ca160c75c327
 
 ## Requirements
 
-* Sync latest changes from `flipbook-labs/flipbook`
-    * Do this on a schedule and from workflow_dispatch
-* Include rotriever.toml file
-* Change workflows to only worry about deployment
-* A PR in Roblox/flipbook gets automatically created for the upstream changes
+- Sync latest changes from `flipbook-labs/flipbook`
+  - Do this on a schedule and from workflow_dispatch
+- Include rotriever.toml file
+- Change workflows to only worry about deployment
+- A PR in Roblox/flipbook gets automatically created for the upstream changes
 
 `Roblox/flipbook` has two primary branches:
 
-* `roblox`: Equivalent of the `main` branch. This is where our deviations live
-* `upstream`: 1:1 mirror of the upstream `main` branch
+- `roblox`: Equivalent of the `main` branch. This is where our deviations live
+- `upstream`: 1:1 mirror of the upstream `main` branch
 
 Merge conflicts should really be contained to `.github/workflows`, everything else we can merge the incoming changes.
 
@@ -58,19 +57,18 @@ Two jobs:
 
 ## References
 
-* [Allowing github-actions[bot] to push to protected branch · community · Discussion #25305](https://github.com/orgs/community/discussions/25305#discussioncomment-8256560)
-*  https://github.com/actions/create-github-app-token
+- [Allowing github-actions[bot] to push to protected branch · community · Discussion #25305](https://github.com/orgs/community/discussions/25305#discussioncomment-8256560)
+- https://github.com/actions/create-github-app-token
 
 ## Notes
 
 Coming back to the syncing workflow:
 
-* Can't figure out a nice way to automate `upstream` getting the latest changes
-* With a fresh mind, I'm curious if there's any room to not conform to EE's
-standards. Let upstream sit there, and have PRs auto-generated to merge to
-`roblox`?
-    * This is also tricky because of merge conflicts. Instead, what about keeping
-`upstream` mirrored 1:1, then `roblox` is just a job runner, and it will
-checkout upstream, add rotriever.toml, bump the version, and then publish
-* This is all getting too complicated and I should start diagramming so I can
-keep track. And so I can simplify, because I think I'm overengineering
+- Can't figure out a nice way to automate `upstream` getting the latest changes
+- With a fresh mind, I'm curious if there's any room to not conform to EE's
+  standards. Let upstream sit there, and have PRs auto-generated to merge to
+  `roblox`? \* This is also tricky because of merge conflicts. Instead, what about keeping
+  `upstream` mirrored 1:1, then `roblox` is just a job runner, and it will
+  checkout upstream, add rotriever.toml, bump the version, and then publish
+- This is all getting too complicated and I should start diagramming so I can
+  keep track. And so I can simplify, because I think I'm overengineering
