@@ -92,14 +92,14 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Technical:**
 
-- [[contributing/architecture|Architecture]] — Codebase layout and build pipeline details
-- [[engineering/index|Technical Index]] — Module Loader, Story Container, Controls, Embedding, and more
+- [[contributing/architecture|Architecture]]: Codebase layout and build pipeline details
+- [[engineering/index|Technical Index]]: Module Loader, Story Container, Controls, Embedding, and more
 
 **Product:**
 
-- [[product/index|Northstars]] — Product vision and goals
-- [[product/2026-roadmap|2026 Roadmap]] — Current quarterly roadmap
-- [[product/2025-flipbook-product-spec/index|2025 Product Spec]] — Audiences and feature goals
+- [[product/index|Northstars]]: Product vision and goals
+- [[product/2026-roadmap|2026 Roadmap]]: Current quarterly roadmap
+- [[product/2025-flipbook-product-spec/index|2025 Product Spec]]: Audiences and feature goals
 
 **Proposals:**
 
@@ -112,4 +112,4 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Ideas:**
 
-- [[product/ideas/index|Ideas Index]] — Toolbar, Storybook Selection UX, Right-click Context Menu
+- [[product/ideas/index|Ideas Index]]: Toolbar, Storybook Selection UX, Right-click Context Menu

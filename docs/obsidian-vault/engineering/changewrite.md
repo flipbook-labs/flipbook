@@ -21,7 +21,7 @@ Brief description of the changes being made.
 More details if necessary.
 ```
 
-When it's time to release, the Action collects all pending entries, determines the next version (the highest bump type wins — any `major` → `x.0.0`, any `minor` → `x.y.0`, otherwise `x.y.z`), bundles them into `CHANGELOG.md`, and opens a draft publish PR. Merging that PR creates the git tag via the GitHub API and publishes the release.
+When it's time to release, the Action collects all pending entries, determines the next version (the highest bump type wins: any `major` → `x.0.0`, any `minor` → `x.y.0`, otherwise `x.y.z`), bundles them into `CHANGELOG.md`, and opens a draft publish PR. Merging that PR creates the git tag via the GitHub API and publishes the release.
 
 ## CLI Commands
 
@@ -33,7 +33,7 @@ The CLI is built from the changewrite repo itself via `lute run build` and invok
 | `draft`      | Creates a draft GitHub release for the current version                                     |
 | `publish`    | Publishes a draft release                                                                  |
 | `prepare-pr` | Collects `.changes/` entries, bumps version, updates `CHANGELOG.md`, returns changed files |
-| `bump`       | Bumps to a specific version — escape hatch for burned or skipped tags                      |
+| `bump`       | Bumps to a specific version, an escape hatch for burned or skipped tags                    |
 | `notes`      | Renders release notes for a given version                                                  |
 | `attach`     | Attaches build artifacts to a draft release                                                |
 
@@ -47,7 +47,7 @@ The CLI is built from the changewrite repo itself via `lute run build` and invok
     bump: minor # Which semver component to bump (major, minor, patch); default: minor
 ```
 
-Key inputs: `bump`, `publish-immediately`, `force-version` (pin an exact version, useful to recover from a burned tag), `post-draft-hook` and `post-publish-hook` (bash run after draft/publish — use to attach artifacts or trigger downstream work).
+Key inputs: `bump`, `publish-immediately`, `force-version` (pin an exact version, useful to recover from a burned tag), `post-draft-hook` and `post-publish-hook` (bash run after draft/publish, used to attach artifacts or trigger downstream work).
 
 Key outputs: `should_publish`, `has_changes`, `version`, `tag`, `draft_created`, `release_created`.
 
@@ -70,4 +70,4 @@ The `mirror` list tells changewrite which files to patch with the new version st
 Live at [flipbook-labs/changewrite](https://github.com/flipbook-labs/changewrite), currently v0.3.0. Used by the flipbook-labs org repos. The flipbook plugin repo itself still uses a manual GitHub release workflow and has not yet adopted changewrite.
 
 > [!seealso]
-> [[contributing/creating-releases|Creating Releases]] — the current manual release process for the flipbook plugin
+> [[contributing/creating-releases|Creating Releases]]: the current manual release process for the flipbook plugin

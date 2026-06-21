@@ -26,7 +26,7 @@ flipbook/
   rokit.toml               # Toolchain: darklua, rojo, lute, luau-lsp, …
 ```
 
-Source code lives in `src/` and is written in Luau with **string requires** (`require("@scripts/lib/foo")`, `require("@repo/project")`, `require("@luaupkg/...")`) — the same syntax as Lute scripts. These require strings are not valid inside Roblox and must be rewritten before packaging.
+Source code lives in `src/` and is written in Luau with **string requires** (`require("@scripts/lib/foo")`, `require("@repo/project")`, `require("@luaupkg/...")`), the same syntax as Lute scripts. These require strings are not valid inside Roblox and must be rewritten before packaging.
 
 ## Build pipeline
 
@@ -71,7 +71,7 @@ To run them locally:
 lute run test
 ```
 
-Tests run **inside Roblox** via Lune's Roblox environment — the test entry point (`tests.project.json`) bootstraps the Jest runner from a place file. This means tests can touch real Roblox APIs.
+Tests run **inside Roblox** via Lune's Roblox environment. The test entry point (`tests.project.json`) bootstraps the Jest runner from a place file. This means tests can touch real Roblox APIs.
 
 > [!TIP]
 > The CI `analyze` job runs luau-lsp type checking (`lute run analyze`) and selene linting (`lute run lint`) on every PR. Run them locally before opening a PR to catch type errors early.
@@ -89,6 +89,6 @@ Tests do not run in CI (they require a secret API key and run against Roblox inf
 The release workflow (`release.yml`) triggers on GitHub release events to build and publish the plugin to the Creator Store.
 
 > [!seealso]
-> [[contributing/onboarding|Onboarding]] — First-time setup and build commands
-> [[contributing/creating-releases|Creating Releases]] — Version bumping and publishing
-> [[engineering/module-loader|Module Loader]] — How require bypassing works at runtime
+> [[contributing/onboarding|Onboarding]]: First-time setup and build commands
+> [[contributing/creating-releases|Creating Releases]]: Version bumping and publishing
+> [[engineering/module-loader|Module Loader]]: How require bypassing works at runtime
