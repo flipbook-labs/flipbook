@@ -27,9 +27,7 @@ Loading
 Disabled
 ```
 
-Due to us allowing developers to pass `exports.name` & `exports.component` as defaults,
-
-we can use this to render documentation automatically as seen [here](https://master--5ccbc373887ca40020446347.chromatic.com/?path=%2Fdocs%2Fbutton--docs)
+Due to us allowing developers to pass `exports.name` & `exports.component` as defaults, we can use this to render documentation automatically as seen [here](https://master--5ccbc373887ca40020446347.chromatic.com/?path=%2Fdocs%2Fbutton--docs)
 
 # Open Questions
 
