@@ -3,7 +3,7 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local AppModeEnum = require("@root/Enums/AppMode")
+local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -21,7 +21,7 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 
-type AppMode = AppModeEnum.AppMode
+type AppMode = AppMode.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
