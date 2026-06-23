@@ -1,4 +1,4 @@
-local AppModeEnum = require("@root/Enums/AppMode")
+local AppMode = require("@root/Enums/AppMode")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
 local CommonTypes = require("@root/Common/types")
@@ -10,7 +10,7 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
-		mode = AppModeEnum.PluginWidget,
+		mode = AppMode.PluginWidget,
 	})
 
 	if button ~= nil then
