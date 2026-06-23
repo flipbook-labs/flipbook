@@ -261,7 +261,7 @@ local function Topbar(props: TopbarProps)
 					}),
 
 					Help = e(Tooltip, {
-						LayoutOrder = 1,
+						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
 						title = "Help",
@@ -277,7 +277,7 @@ local function Topbar(props: TopbarProps)
 					}),
 
 					Settings = e(Tooltip, {
-						LayoutOrder = 2,
+						LayoutOrder = 3,
 						align = PopoverAlign.End,
 						side = PopoverSide.Bottom,
 						title = "Settings",
@@ -318,7 +318,7 @@ local function Topbar(props: TopbarProps)
 				}),
 			}),
 
-			EmbedIntoExperienceDialog = storyActions.mode == AppModeEnum.PluginWidget and if isEmbedDialogOpen
+			EmbedIntoExperienceDialog = if isEmbedDialogOpen
 				then e(EmbedIntoExperienceDialog, {
 					onClose = function()
 						setIsEmbedDialogOpen(false)
