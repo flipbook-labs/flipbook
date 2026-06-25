@@ -18,6 +18,7 @@ export type Props = {
 	story: ModuleScript?,
 	storybook: LoadedStorybook?,
 	unavailableStorybook: UnavailableStorybook?,
+	availableStorybooks: { LoadedStorybook },
 }
 
 local function Screen(props: Props)
@@ -36,7 +37,9 @@ local function Screen(props: Props)
 					unavailableStorybook = props.unavailableStorybook,
 				})
 			else
-				return React.createElement(NoStorySelected)
+				return React.createElement(NoStorySelected, {
+					availableStorybooks = props.availableStorybooks,
+				})
 			end
 		elseif currentScreen == "Settings" then
 			return React.createElement(SettingsView)
