@@ -20,13 +20,10 @@ All changed during this effort:
 - `usage/frameworks/index.md` (+ the pointer paragraphs added to `react.md`, `fusion.md`, `roact.md`)
 - `usage/migration-guides/migrating-hoarcekat.md`, `usage/migration-guides/migrating-ui-labs.md`, `usage/migration-guides/index.md`
 
-## Known issues to fix (the author already suspects these)
+## Known issues to fix
 
-1. **Em dashes are pervasive.** The author used `—` throughout (e.g. "lifted out of your game — ...", "the render container, the current controls, ..."). The style guide bans them as a hard rule. Recast each with a period, comma, parentheses, or colon. This includes maintainer-edited lines, since the em-dash rule is not generation-scoped.
-2. **Sentence-case headings.** Many new headings are sentence case and must be Title Case: e.g. "The canvas" → "The Canvas", "Stories without a Storybook" → "Stories Without a Storybook", "Create your first story" → "Create Your First Story", "Using a UI framework", "Simple controls", "Richer controls", "Control types", "Migrating existing controls", "What a Storybook configures". Check every `##` on every page in scope.
-3. **Banned word "unlock"** appears in `migrating-hoarcekat.md` ("to unlock Flipbook's controls and other story features"). This line was agent-touched, so rewrite it (e.g. "to use Flipbook's controls and other story features").
-4. **Antithesis framing** in `concepts/story.md`: "think of the canvas less as 'one component, alone' and more as a workspace" matches the banned "think of it less as X and more as Y" pattern. Recast. (Note: the maintainer edited this line; confirm with them if unsure, but the pattern is explicitly banned.)
-5. **Rule-of-three padding** — scan for tricolons in agent prose and flatten them.
+> [!note]
+> The items that were here (em dashes, sentence-case headings, "unlock" word, antithesis framing, rule-of-three padding) were resolved in the committed Track A work. A follow-up session confirmed the sweep landed cleanly — no em dashes, Title Case on all headings, banned words and patterns gone. Skip this section and go straight to the accuracy pass below.
 
 ## Accuracy pass (the higher bar)
 
@@ -37,10 +34,17 @@ Per the skill's hard rule, every behavior/signature/default must trace to source
 - **`usage/typechecking.md`** against Storyteller's exported types (`Storyteller.Story<T>`, `Storyteller.Storybook`, `StoryProps`, the control types).
 - **`api/story-format.md`** — the `story` row type and the legacy-mapping table.
 
-Two open confirmations the author could not resolve from source (check with the maintainer, then reflect the answers):
+**Status (verified in a follow-up session against Storyteller source and the flipbook plugin):**
 
-- **Rendered-UI coverage:** Storyteller _exports_ constructors for all 11 control types, but does the **v2.5.0 plugin actually render a widget** for each (Slider, Select/Radio/MultiSelect/Check, Color, Date, Object)? If any are schema-only, mark them in the controls table and the UI Labs mapping so the docs don't promise UI that isn't there.
-- **UI Labs `before` syntax:** `migrating-ui-labs.md` shows `UILabs.Choose({ ... })`, sourced from a maintainer note rather than UI Labs' own source. Verify the call syntax is current.
+- All 11 constructor signatures match exactly.
+- Renderer return shapes (Instance / cleanup fn / legacy Hoarcekat function wrap) are accurate.
+- All types mentioned in `typechecking.md` are exported from Storyteller's `init.luau`.
+- Story format fields match `types.luau`; legacy property mapping is accurate.
+- UI Labs migration table is accurate per `migrateUILabsControl.luau`.
+- **All 11 control types render a UI widget** — confirmed in `workspace/flipbook-core/src/StoryControls/StoryControls.luau` via `resolveControlFromValue` and `StoryControlRow.luau`. The "rendered-UI coverage" concern is resolved; no caveats needed in the table.
+- **`UILabs.Choose({ ... })` syntax is correct** — confirmed in `Packages/_Index/pepeeltoro41_ui-labs@2.4.2/ui-labs/src/Controls/AdvancedControls.luau` and the UI Labs docs. Signature is `Choose(list, defIndex?)`.
+
+Nothing to fix. The accuracy pass came back clean.
 
 ## Style-guide specifics to spot-check
 
