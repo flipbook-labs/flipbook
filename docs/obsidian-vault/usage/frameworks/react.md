@@ -7,6 +7,8 @@ linter-yaml-title-alias: React
 
 Flipbook supports Roblox's transpilation of React 17 through the use of [jsdotlua's React fork](https://github.com/jsdotlua/react-lua). Pass in your installation of React and ReactRoblox to your Storybook and all stories will be rendered with it.
 
+The Storybook and Story below are each shown in two forms, **Default** and **Storyteller**. See [[usage/frameworks/index|Frameworks]] for what sets them apart.
+
 ## Storybook
 
 ### Default
