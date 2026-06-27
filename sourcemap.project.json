@@ -1,6 +1,8 @@
 {
   "name": "Flipbook",
+  "emitLegacyScripts": false,
   "tree": {
+    "$className": "Folder",
     "Packages": {
       "$path": "Packages"
     },

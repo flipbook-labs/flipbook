@@ -4,6 +4,8 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
+local AppModeEnum = require("@root/Enums/AppMode")
+local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
@@ -52,6 +54,7 @@ local function Topbar(props: TopbarProps)
 	local tokens = useTokens()
 
 	local isAboutMenuOpen, setIsAboutMenuOpen = useState(false)
+	local isEmbedDialogOpen, setIsEmbedDialogOpen = useState(false)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local isFeedbackDialogOpen, setIsFeedbackDialogOpen = useState(false)
 
@@ -145,7 +148,7 @@ local function Topbar(props: TopbarProps)
 						}),
 					}),
 
-					Viewport = e(Tooltip, {
+					Viewport = storyActions.mode == AppModeEnum.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -242,8 +245,23 @@ local function Topbar(props: TopbarProps)
 					LayoutOrder = 2,
 					tag = "auto-xy row gap-xsmall",
 				}, {
-					Help = e(Tooltip, {
+					EmbedIntoExperience = storyActions.mode ~= AppModeEnum.EmbeddedClient and e(Tooltip, {
 						LayoutOrder = 1,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Embed into Experience",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.SquareBooks,
+							onActivated = function()
+								setIsEmbedDialogOpen(true)
+							end,
+							size = InputSize.Small,
+						}),
+					}),
+
+					Help = e(Tooltip, {
+						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
 						title = "Help",
@@ -259,7 +277,7 @@ local function Topbar(props: TopbarProps)
 					}),
 
 					Settings = e(Tooltip, {
-						LayoutOrder = 2,
+						LayoutOrder = 3,
 						align = PopoverAlign.End,
 						side = PopoverSide.Bottom,
 						title = "Settings",
@@ -299,6 +317,14 @@ local function Topbar(props: TopbarProps)
 					View = e(AboutView),
 				}),
 			}),
+
+			EmbedIntoExperienceDialog = if isEmbedDialogOpen
+				then e(EmbedIntoExperienceDialog, {
+					onClose = function()
+						setIsEmbedDialogOpen(false)
+					end,
+				})
+				else nil,
 
 			FeedbackDialog = if isFeedbackDialogOpen
 				then React.createElement(FeedbackDialog, {
