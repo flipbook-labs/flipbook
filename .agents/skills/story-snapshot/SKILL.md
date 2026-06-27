@@ -23,6 +23,8 @@ Run these steps once at the start of every invocation, regardless of how many st
 
 **Verify Flipbook is embedded.** Call `search_game_tree` looking for an instance named literally `"Flipbook"` (e.g. `ReplicatedStorage.Flipbook` or `StarterPlayerScripts.Flipbook` — the exact parent depends on where the user embedded it). When the Flipbook plugin's embed feature runs, it clones the plugin root (named `"Flipbook"`) into the place and tags it `"FlipbookRuntime"`. `FlipbookWorkspace` is the workspace stories folder and is NOT sufficient evidence that Flipbook is running. If no `"Flipbook"` instance is found, stop and tell the user: *"Flipbook is not embedded in this place. Open the Flipbook plugin in Studio and use its embed feature, then re-run the skill."*
 
+**Set viewport to 16:9.** Before entering Play mode, call `screen_capture` and inspect the returned image dimensions. If the width and height do not form a clean 16:9 ratio (e.g. 1280×720, 1920×1080, 1366×768), resize the Studio game view. Use computer-use tools to drag the Studio window or game-view panel edges until a re-capture confirms a 16:9 size. 1280×720 is the preferred target — it is large enough to show Flipbook's sidebar and preview together without being oversized for docs. Once the dimensions are correct, proceed.
+
 **Start Play mode.** Call `start_stop_play`.
 
 **Create the output directory.** Run `mkdir -p docs/screenshots`.
