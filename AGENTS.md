@@ -182,3 +182,4 @@ Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditiona
 - `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
 - `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
 - `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
+- `story-snapshot` — capture screenshots of Flipbook stories in Roblox Studio for documentation, saving to `docs/screenshots/`.

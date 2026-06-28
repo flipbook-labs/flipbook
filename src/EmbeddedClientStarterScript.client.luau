@@ -33,6 +33,7 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Flipbook"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.IgnoreGuiInset = true
 screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
