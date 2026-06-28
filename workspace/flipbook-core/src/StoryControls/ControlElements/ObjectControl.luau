@@ -6,7 +6,7 @@ local InstancePicker = require("@root/Common/InstancePicker")
 local e = React.createElement
 
 export type Props = {
-	controlSchema: Storyteller.ObjectControl,
+	controlSchema: Storyteller.ObjectControl?,
 	controlValue: Instance?,
 	onChanged: (Instance?) -> (),
 }

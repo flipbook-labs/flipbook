@@ -29,7 +29,7 @@ args:add("script", "positional", {
 	help = "Path to the script being run. Provided automatically by Lute",
 })
 args:add("subcommand", "positional", {
-	help = `Can be "plugin" or "workspace"`,
+	help = `Can be "plugin", "workspace", or "storybook"`,
 	default = "plugin",
 })
 
@@ -63,8 +63,8 @@ args:parse({ ... })
 
 local subcommand = args:get("subcommand")
 assert(
-	subcommand == "plugin" or subcommand == "workspace",
-	`bad value for subcommand (must be one of "plugin" or "workspace", got "{subcommand}")`
+	subcommand == "plugin" or subcommand == "workspace" or subcommand == "storybook",
+	`bad value for subcommand (must be one of "plugin", "workspace", or "storybook", got "{subcommand}")`
 )
 
 local channel = args:get("channel")
@@ -136,6 +136,7 @@ local function buildPluginBinary()
 				output = dest,
 				project = {
 					name = "Flipbook",
+					emitLegacyScripts = false,
 					tree = {
 						["$path"] = tostring(path.resolve(context.dest)),
 					},
@@ -166,6 +167,48 @@ local function build()
 	buildPluginBinary()
 
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
+end
+
+-- Builds the storybook placefile that hosts our stories. The bundle gets sent
+-- along by the deploy-storybook action and published with the latest version of
+-- Flipbook to the experience.
+--
+-- Check out Flipbook's own storybook here:
+-- https://www.roblox.com/games/139676401890813/Flipbook-Stories
+local function buildStorybookPlace()
+	run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
+
+	local placePath = rojoBuild({
+		output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),
+		project = {
+			name = "Flipbook Stories",
+			emitLegacyScripts = false,
+			tree = {
+				["$className"] = "DataModel",
+				ReplicatedStorage = {
+					FlipbookWorkspace = {
+						["$className"] = "Folder",
+						Packages = {
+							["$path"] = tostring(project.PACKAGES_PATH),
+						},
+						RobloxPackages = {
+							["$path"] = tostring(project.ROBLOX_PACKAGES_PATH),
+						},
+						workspace = {
+							["$path"] = tostring(path.join(project.BUILD_PATH, "dev/roblox/workspace")),
+						},
+					},
+				},
+			},
+		},
+	})
+
+	print(`Built storybook place: {placePath}`)
+end
+
+if subcommand == "storybook" then
+	buildStorybookPlace()
+	return
 end
 
 build()
