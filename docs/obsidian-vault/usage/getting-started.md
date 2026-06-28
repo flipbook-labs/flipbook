@@ -7,7 +7,7 @@ linter-yaml-title-alias: Getting Started
 
 Flipbook is a storybook plugin that renders your UI components in a sandboxed canvas, isolated from the rest of your game. Instead of navigating a complex interface just to reach the one surface you want to work on, and then wrangling it into each state by hand, you preview that surface on its own and switch between its variations with controls.
 
-It works with however you build UI. Out of the box Flipbook renders plain Roblox Instances with no setup, and it has native support for [[usage/frameworks/react|React]], [[usage/frameworks/fusion|Fusion]], and [[usage/frameworks/roact|Roact]]. You can also share a live preview with your whole team, designers included, straight from the browser via [[usage/deploying-storybooks|deployed storybooks]].
+It works with however you build UI. Out of the box Flipbook renders plain Roblox Instances with no setup, and it has native support for [[usage/frameworks/react|React]], [[usage/frameworks/fusion|Fusion]], and [[usage/frameworks/roact|Roact]]. You can also share a live preview with your whole team, designers included, straight from a place via [[usage/deploying-storybooks|deployed storybooks]].
 
 ![[main-screenshot.png]]
 
