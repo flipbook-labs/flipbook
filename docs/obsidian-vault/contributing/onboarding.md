@@ -1,0 +1,133 @@
+---
+aliases: [Contributing]
+linter-yaml-title-alias: Contributing
+---
+
+# Onboarding
+
+This guide will help you get your environment setup so you can have the best development experience while working on Flipbook.
+
+> [!INFO]
+> All contents under the Contributing section relates to the development of the Flipbook plugin. For user documentation, see [[usage/getting-started|Getting Started]].
+
+## First-time Setup
+
+We use [Visual Studio Code](https://code.visualstudio.com/) to work on this project, so you'll get the best mileage from using it too. We also have several [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json) that should be installed.
+
+You will also need [Rokit](https://github.com/rojo-rbx/rokit/) for installing the various command-line tools we use.
+
+With the above requirements satisfied, run the following commands from your clone of the repo to start developing:
+
+```sh
+# Install command-line tools (like Lute)
+rokit install
+
+# Install packages
+lute run install
+```
+
+> [!TIP]
+> When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the Flipbook plugin for your OS.
+
+## Building
+
+Part of our build process uses [darklua](https://github.com/seaofvoices/darklua) to compile our Luau source code for Roblox. This is largely to support string requires so our source code can use the same syntax as our Lute scripts.
+
+### Build for Studio
+
+The following command will build production Flipbook to your Roblox Studio plugins directory:
+
+```sh
+lute run build
+```
+
+Once built, open up a Baseplate to start interacting with the plugin.
+
+Production builds prune development files like unit tests, Storybooks, and Stories. The latter two can be handy to have during development so you can use Flipbook to develop it. To keep development files, pass the `--channel` flag to set the environment to build for:
+
+```sh
+lute run build --channel dev
+```
+
+There's also a `--watch` flag to automatically rebuild on file changes.
+
+### Build to Rbxm
+
+When building, pass the `--output` flag to determine where Flipbook will build to. By default, Flipbook builds to the Roblox Studio plugins directory.
+
+Run the following to build Flipbook to the root of the repo:
+
+```sh
+lute run build --output Flipbook.rbxm
+```
+
+## Testing
+
+Running tests requires an Open Cloud API key. Reach out to the maintainers for access, then copy the `.env.template` file to `.env` and set `ROBLOX_API_KEY` to the value of the API key.
+
+Then run the following to run all unit tests for the project:
+
+```sh
+lute run test
+```
+
+We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
+
+> [!TIP]
+> If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
+
+## Using Flipbook to Develop Flipbook
+
+Flipbook is made up of React components, each of which has a story file. This means you can use Flipbook itself for developing it.
+
+Once you have Flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
+
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](![[assets/plugin-debugging-enabled.png]])
+
+Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
+
+## Documentation Code Samples
+
+Docs pull real Luau straight from `workspace/code-samples/` using a `code-sample`
+fenced block, so examples stay correct:
+
+````md
+```code-sample
+workspace/code-samples/src/React/ReactButton.luau#L4-L13
+```
+````
+
+The Docusaurus site expands these at build time. For them to render in the
+Obsidian vault, `lute run install` builds a small reading-view plugin into the
+vault. After your first install, open the vault in Obsidian and enable the
+**Code Sample** plugin under Settings -> Community plugins. See
+[[contributing/architecture|Architecture]] or the `docs/code-samples/README.md`
+for how the marker, the shared extractor, and the two adapters fit together.
+
+## Internal Documentation
+
+For deeper context on architecture, product direction, and in-flight proposals:
+
+**Technical:**
+
+- [[contributing/architecture|Architecture]]: Codebase layout and build pipeline details
+- [[engineering/index|Technical Index]]: Module Loader, Story Container, Controls, Embedding, and more
+
+**Product:**
+
+- [[product/index|Northstars]]: Product vision and goals
+- [[product/2026-roadmap|2026 Roadmap]]: Current quarterly roadmap
+- [[product/2025-flipbook-product-spec/index|2025 Product Spec]]: Audiences and feature goals
+
+**Proposals:**
+
+- [[engineering/proposals/story-renderer-spec|Story Renderer Spec]] _(In Progress)_
+- [[engineering/proposals/storyteller-api|Storyteller API]] _(In Progress)_
+- [[engineering/proposals/story-storybook-typechecking|Story and Storybook Typechecking]] _(In Progress)_
+- [[engineering/proposals/documentation-stories|Documentation Stories]] _(Approved)_
+- [[engineering/proposals/modular-story-format|Modular Story Format]]
+- [[engineering/proposals/create-flipbook-package|Flipbook Package]]
+
+**Ideas:**
+
+- [[product/ideas/index|Ideas Index]]: Toolbar, Storybook Selection UX, Right-click Context Menu

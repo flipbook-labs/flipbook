@@ -1,0 +1,8 @@
+# Build output and dependencies
+build
+.docusaurus
+.cache-loader
+node_modules
+
+# npm-managed; never reformat
+package-lock.json
