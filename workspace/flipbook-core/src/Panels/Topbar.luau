@@ -4,7 +4,7 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
-local AppModeEnum = require("@root/Enums/AppMode")
+local AppMode = require("@root/Enums/AppMode")
 local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -148,7 +148,7 @@ local function Topbar(props: TopbarProps)
 						}),
 					}),
 
-					Viewport = storyActions.mode == AppModeEnum.PluginWidget and e(Tooltip, {
+					Viewport = storyActions.mode == AppMode.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -245,7 +245,7 @@ local function Topbar(props: TopbarProps)
 					LayoutOrder = 2,
 					tag = "auto-xy row gap-xsmall",
 				}, {
-					EmbedIntoExperience = storyActions.mode ~= AppModeEnum.EmbeddedClient and e(Tooltip, {
+					EmbedIntoExperience = storyActions.mode ~= AppMode.EmbeddedClient and e(Tooltip, {
 						LayoutOrder = 1,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,

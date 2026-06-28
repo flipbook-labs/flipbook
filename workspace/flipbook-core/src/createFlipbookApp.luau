@@ -1,14 +1,14 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local AppModeEnum = require("@root/Enums/AppMode")
+local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
-type AppMode = AppModeEnum.AppMode
+type AppMode = AppMode.AppMode
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
