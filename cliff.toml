@@ -1,0 +1,56 @@
+[remote.github]
+owner = "flipbook-labs"
+repo = "flipbook"
+
+[changelog]
+header = """
+# Changelog
+
+All notable changes to this project will be documented in this file.
+"""
+
+body = """
+{% macro remote_url() -%}
+https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
+{%- endmacro %}
+
+{% if version -%}
+## {{ version }}
+{% else -%}
+## Unreleased
+{% endif -%}
+
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}))
+{% endfor %}
+{% endfor %}
+"""
+
+trim = true
+
+[bump]
+initial_tag = "v0.1.0"
+
+[git]
+conventional_commits = false
+filter_unconventional = false
+split_commits = false
+tag_pattern = "v[0-9].*"
+sort_commits = "newest"
+
+commit_preprocessors = [
+  { pattern = '(?s)\nCo-authored-by:.*$', replace = "" },
+  { pattern = '(?s)\nMade-with:.*$', replace = "" },
+  { pattern = '(?s)\n\n.*$', replace = "" },
+  { pattern = '(?s)\s+$', replace = "" },
+]
+
+commit_parsers = [
+  # Skip the auto-generated publish commits. Their squash-merge subject is the
+  # PR title (e.g. "[AUTO-GENERATED] Publish v2.5.0 (#NNN)"), so match "Publish v"
+  # anywhere rather than anchoring to the start of the message.
+  { message = "Publish v[0-9]", skip = true },
+  { message = ".*", group = "Changes" },
+]

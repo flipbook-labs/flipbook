@@ -1,0 +1,7 @@
+[version]
+current = "2.5.0"
+mirror = [
+  { file = "wally.toml" },
+  { file = "loom.config.luau" },
+  { file = "workspace/flipbook-core/rotriever.toml" },
+]
