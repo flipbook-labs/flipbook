@@ -6,7 +6,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
-local PluginApp = require("./PluginApp")
+local FlipbookApp = require("./FlipbookApp")
 
 type Pluginlike = CommonTypes.Pluginlike
 
@@ -26,18 +26,16 @@ beforeEach(function()
 
 	mockSettings = {}
 
-	mockPlugin = (
-		{
-			GetSetting = jest.fn(function(_self, key: string)
-				task.wait() -- Simulate reading from disk
-				return mockSettings[key]
-			end),
-			SetSetting = jest.fn(function(_self, key: string, value: any)
-				task.wait() -- Simulate writing to disk
-				mockSettings[key] = value
-			end),
-		} :: any
-	) :: Pluginlike
+	mockPlugin = {
+		GetSetting = jest.fn(function(_self, key: string)
+			task.wait() -- Simulate reading from disk
+			return mockSettings[key]
+		end),
+		SetSetting = jest.fn(function(_self, key: string, value: any)
+			task.wait() -- Simulate writing to disk
+			mockSettings[key] = value
+		end),
+	} :: Pluginlike
 end)
 
 afterEach(function()
@@ -49,7 +47,7 @@ test("app smoketest", function()
 	local app = React.createElement(ContextProviders, {
 		plugin = mockPlugin,
 	}, {
-		PluginApp = React.createElement(PluginApp),
+		FlipbookApp = React.createElement(FlipbookApp),
 	})
 
 	expect(function()

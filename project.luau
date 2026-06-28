@@ -39,4 +39,7 @@ return {
 			"jest.config.lua*",
 		},
 	},
+
+	ROBLOX_STORYBOOK_UNIVERSE_ID = 10262009842,
+	ROBLOX_STORYBOOK_PLACE_ID = 139676401890813,
 }
