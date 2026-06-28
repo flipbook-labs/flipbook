@@ -13,6 +13,18 @@ Captures screenshots of one or more Flipbook stories by driving Roblox Studio vi
 
 Screenshots are saved to `docs/screenshots/<story-name>.png` relative to the repo root.
 
+## Saving captures to disk
+
+The `screen_capture` MCP tool returns image data into the agent's context but gives the agent **no way to write those bytes to a file** — and OS-level screenshot paths (the `screencapture` CLI, computer-use, `osascript`) are routinely blocked by missing Screen Recording permission or a locked screen. Do not rely on them.
+
+Instead, capture to disk with the bundled Lute script:
+
+```
+lute run .lute/tasks/capture-story.luau docs/screenshots/<story-name>.png <capture-id>
+```
+
+It connects to the StudioMCP proxy endpoint at `ws://127.0.0.1:13469/proxy`, sends a `proxy_hello` control message, waits for `tools_updated`, then calls `screen_capture` via MCP JSON-RPC (wrapped in `{"type":"json_rpc",...}`), base64-decodes the result, and writes the file — re-encoding to whatever format the output extension names. This needs no extra permissions, produces the exact viewport `screen_capture` would return, and completes in a few seconds with no arbitrary delays. The capture reflects whatever the running Studio is currently showing, so navigate to the target story **before** running the script.
+
 ## Phase 0: Setup
 
 Run these steps once at the start of every invocation, regardless of how many stories are in the batch.
@@ -39,7 +51,7 @@ Repeat the following for each story name, without stopping or restarting Play mo
 
 **Select the story.** Click the `storyListFirstResult` coordinate to select the top result from the sidebar. If that coordinate misses, regenerate it using the instructions in the Cached Coordinates section.
 
-**Capture.** Call `screen_capture` and save the result to `docs/screenshots/<story-name>.png`. If something looks wrong with the saved file, take a diagnostic screenshot, compare against the cached coordinates, and update them if the UI has moved.
+**Capture.** Run `lute run .lute/tasks/capture-story.luau docs/screenshots/<story-name>.png <story-name>` (see "Saving captures to disk" above). Then verify the result by reading the saved file: confirm it shows the correct story with the full Flipbook UI. If something looks wrong, take a diagnostic `screen_capture`, compare against the cached coordinates, update them if the UI has moved, re-navigate, and re-run the capture script.
 
 ## Phase 2: Teardown
 
