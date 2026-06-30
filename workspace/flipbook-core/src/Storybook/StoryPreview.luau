@@ -6,6 +6,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
+local HoverHighlighter = require("@root/Inspector/HoverHighlighter")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryError = require("@root/Storybook/StoryError")
@@ -73,6 +74,10 @@ local function StoryPreview(props: Props): React.Node
 	}, {
 		Scale = e("UIScale", {
 			Scale = 1 + storyActions.zoom.value,
+		}),
+
+		HoverHighlighter = e(HoverHighlighter, {
+			hoverRef = storyActions.storyContainerRef,
 		}),
 
 		StoryContainer = e(Storyteller.StoryContainer, {
