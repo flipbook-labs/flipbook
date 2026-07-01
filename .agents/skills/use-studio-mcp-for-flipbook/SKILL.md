@@ -1,161 +1,181 @@
 ---
 name: use-studio-mcp-for-flipbook
-description: Verify Flipbook inside an open Roblox Studio session using the built-in StudioMCP JSON-RPC binary. Use when testing the Flipbook plugin, AgentGateway actions, execute_luau, CoreGui.FlipbookAgentGateway, or any Studio-side behavior where Cursor's MCP tool descriptors are unavailable or stale.
+description: Verify Flipbook inside an open Roblox Studio session using Studio MCP and FlipbookAgentGateway. Use when testing the Flipbook plugin, embedded Flipbook, gateway actions, execute_luau, CoreGui.FlipbookAgentGateway, screenshots, visual QA, story interaction, or Studio-side behavior.
 ---
 
 # Use StudioMCP For Flipbook
 
 ## When To Use
 
-Use this skill when validating Flipbook in Roblox Studio, especially AgentGateway flows. Do not assume Cursor's MCP descriptor files are authoritative; they can show an errored server even when StudioMCP works directly.
+Use this skill when validating Flipbook in Roblox Studio. Flipbook's agent-facing API is `FlipbookAgentGateway`; prefer gateway actions over navigating the UI by hand.
 
-## Connect Directly
+## Studio MCP Access
 
-On macOS, StudioMCP is:
+The repo registers Studio MCP in `.mcp.json` as `Roblox_Studio`. If your agent host exposes that server, call those MCP tools directly.
 
-```bash
-/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP
-```
+If direct MCP calls are not available, use Lute for any fallback script or REPL probe. Read the command from `.mcp.json` instead of hardcoding it. Keep transport details inside the helper and invoke tools at the level of `execute_luau`, `screen_capture`, `start_stop_play`, etc. Do not add Python JSON-RPC clients to this skill.
 
-It speaks newline-delimited JSON-RPC over stdio, not `Content-Length` framing. Send one JSON object per line.
+Official Studio MCP docs: https://create.roblox.com/docs/studio/mcp
 
-Required startup:
+Useful Studio MCP tools for Flipbook:
 
-1. Send `initialize` with protocol version `2024-11-05`.
-2. Send `notifications/initialized`.
-3. Call tools with `tools/call`.
+- `list_roblox_studios` - list connected Studio instances.
+- `set_active_studio` - select the target Studio instance.
+- `get_studio_state` - confirm Edit/Client/Server data models and play state.
+- `execute_luau` - run Luau in Studio. Use `datamodel_type = "Edit"` for plugin and gateway checks.
+- `start_stop_play` - start or stop play mode for embedded visual checks.
+- `screen_capture` - capture the viewport. It does not capture plugin dock widgets.
 
-Keep one StudioMCP process alive for the whole validation script. The proxy can lose its selected Studio instance between separate processes, so prefer one script that initializes, warms up Studio selection, executes Luau, and reads console output before exiting.
+If Studio MCP reports no active instance, first call `list_roblox_studios` and `set_active_studio`. If that still fails, `search_game_tree` against `Workspace` or `PluginDebugService` can be used as a fallback probe before retrying.
 
-Useful tools:
+If a tool returns `Not connected to the WS host`, stop and ask the user to make sure Studio MCP is enabled in the open Studio session. That is a connection failure, not an active-instance selection failure, so `search_game_tree` retries will not fix it.
 
-- `tools/list` - inspect available tools.
-- `get_studio_state` - confirm Edit/Client/Server data models.
-- `search_game_tree` - warm up/select a Studio instance and inspect plugin instances.
-- `execute_luau` - run Luau in Studio. Use `datamodel_type = "Edit"` for plugin checks.
-- `get_console_output` - inspect runtime errors when playtesting.
+## Two Validation Modes
 
-If `get_studio_state` says no active Studio instance, call `search_game_tree` against `Workspace`, then `PluginDebugService`, then retry `get_studio_state` or continue with the intended tool call in the same process. The proxy may lazily choose an active Studio instance after a tree search, and a single "no active Studio instance" response is not always terminal.
+### Programmatic Checks
 
-## Minimal Python Client
+Use Edit-mode `execute_luau` and `FlipbookAgentGateway` for fast checks. This is the default path for opening the widget, listing stories, opening a story, setting controls, changing screens, changing theme, and invoking story actions.
 
-Use this shape for direct calls from the repo root:
+### Visual And Interactive Checks
 
-```python
-import json, subprocess
+`screen_capture` captures the viewport, not plugin GUIs, so it cannot see Flipbook's dock widget. For visual verification, embed Flipbook into the experience with `embedFlipbook`, then start play mode. The embedded runtime mounts as a normal `ScreenGui` in the viewport, so screenshots and real input events work.
 
-proc = subprocess.Popen(
-    ["/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP"],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    text=True,
-    bufsize=1,
-)
+Prefer gateway actions for anything they cover. Use `user_mouse_input` / `user_keyboard_input` only for a story's own interactions, such as clicking a story button, or as an escape hatch for Flipbook's own UI. If you need the escape hatch for Flipbook UI, tell the user and consider whether a new gateway action would be a better fit.
 
-def send(message):
-    proc.stdin.write(json.dumps(message, separators=(",", ":")) + "\n")
-    proc.stdin.flush()
-    if "id" in message:
-        return json.loads(proc.stdout.readline())
-
-def call_tool(name, arguments=None):
-    request_id = call_tool.next_id
-    call_tool.next_id += 1
-    return send({
-        "jsonrpc": "2.0",
-        "id": request_id,
-        "method": "tools/call",
-        "params": {"name": name, "arguments": arguments or {}},
-    })
-
-call_tool.next_id = 2
-
-print(send({
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "initialize",
-    "params": {
-        "protocolVersion": "2024-11-05",
-        "capabilities": {},
-        "clientInfo": {"name": "flipbook-probe", "version": "0.1.0"},
-    },
-}))
-send({"jsonrpc": "2.0", "method": "notifications/initialized"})
-
-# Warm up active Studio selection before execute_luau/get_console_output.
-call_tool("search_game_tree", {"path": "Workspace", "head_limit": 5, "max_depth": 1})
-call_tool("search_game_tree", {"path": "PluginDebugService", "head_limit": 5, "max_depth": 2})
-```
-
-For longer scripts, increment the JSON-RPC id for each request. Always read one response line for each request with an `id`; notifications do not produce responses.
+`embedFlipbook` mutates the place by cloning the Flipbook runtime into `ReplicatedStorage` by default. Only embed when the user wants visual or interactive verification. A second call without `overwrite = true` should fail with the existing runtime path.
 
 ## Flipbook Gateway Validation Order
 
-Before testing visual actions, build and open the plugin:
+Build the plugin first when local code changed.
 
 ```bash
 lute run build plugin --channel dev --clean
 ```
 
-Then use `execute_luau` in the Edit data model to probe the gateway:
-
-```lua
-local CoreGui = game:GetService("CoreGui")
-local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
-assert(gateway ~= nil, "missing FlipbookAgentGateway")
-```
-
-Always open the widget before validating visual behavior:
-
-```lua
-gateway:Invoke({ method = "call", action = "openWidget" })
-```
-
-Recommended action sequence:
-
-1. `openWidget`
-2. `list` manifest request
-3. `listStorybooks`
-4. `listStories`
-5. `openStory`
-6. Wait briefly (`task.wait()`) for the story view to mount.
-7. `setControls` if the story has controls.
-8. `navigate` / `getScreen`
-
-`setControls` requires the story view to be mounted. If it returns `setControls requires the story view to be mounted`, open the widget, open a story, wait a frame, and retry.
-
-`embedFlipbook` mutates the place by cloning the runtime into `ReplicatedStorage` by default. Only call it when the user wants embed behavior tested. A second call without `overwrite = true` should fail with the existing runtime path.
-
-## Example Gateway Probe
+Then use `execute_luau` in the Edit data model. This inline `gateway:Invoke` shape should be the first thing an agent reaches for:
 
 ```lua
 local HttpService = game:GetService("HttpService")
 local CoreGui = game:GetService("CoreGui")
 local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
-
-local function call(action, params)
-    return gateway:Invoke({ method = "call", action = action, params = params })
-end
+assert(gateway ~= nil, "missing FlipbookAgentGateway")
 
 local result = {}
-result.widget = call("openWidget")
+result.widget = gateway:Invoke({ method = "call", action = "openWidget" })
 result.manifest = gateway:Invoke({ method = "list" })
-result.storybooks = call("listStorybooks")
+result.storybooks = gateway:Invoke({ method = "call", action = "listStorybooks" })
 return HttpService:JSONEncode(result)
 ```
 
-Gateway `method = "call"` responses are wrapped. Successful calls usually return a table shaped like `{ ok = true, result = ... }`; failed calls return `{ ok = false, error = ... }`. When chaining calls, read from `response.result` rather than assuming the action payload is the top-level table.
+Gateway `method = "call"` responses are wrapped. Successful calls usually return `{ ok = true, result = ... }`; failed calls return `{ ok = false, error = ... }`. When chaining calls, read from `response.result` instead of assuming the action payload is the top-level table.
 
-## Console Output Checks
+Recommended programmatic sequence:
 
-`get_console_output` returns cumulative Studio output and may be truncated. Print a unique marker before and after the action under test, then inspect only the output between those markers:
+1. `openWidget`
+2. `list` manifest request
+3. `refreshStorybooks` or `listStorybooks`
+4. `listStories`
+5. `openStory`
+6. Poll readiness before `setControls` or mounted-story actions
+7. `setControls` if the story has controls
+8. `navigate`, `getScreen`, `setTheme`, `viewportPreview`, `viewExplorer`, `zoomIn`, or `zoomOut` as needed
+
+`setControls` requires the story view to be mounted. Do not use a fixed sleep. For stories with controls, poll for the newly-opened story and an expected control key before calling it. For viewport-preview checks, call `viewportPreview` and then poll `getStoryActions.isMountedInViewport`.
 
 ```lua
-local marker = "FLIPBOOK_PROBE_" .. tostring(os.clock())
-print(marker .. "_START")
--- perform gateway actions here
-print(marker .. "_END")
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
+local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
+assert(gateway ~= nil, "missing FlipbookAgentGateway")
+
+local storyPath = "ReplicatedStorage.Example.Stories.Button.story"
+local expectedControlKey = "label"
+
+gateway:Invoke({
+	method = "call",
+	action = "openStory",
+	params = {
+		story = storyPath,
+	},
+})
+
+local ready = false
+for _ = 1, 60 do
+	local currentStory = gateway:Invoke({ method = "call", action = "getCurrentStory" })
+	local controls = gateway:Invoke({ method = "call", action = "getControls" })
+
+	if
+		currentStory.ok
+		and currentStory.result ~= nil
+		and currentStory.result.path == storyPath
+		and controls.ok
+		and controls.result ~= nil
+		and controls.result.controls ~= nil
+		and controls.result.controls[expectedControlKey] ~= nil
+	then
+		ready = true
+		break
+	end
+
+	task.wait()
+end
+
+assert(ready, "story did not become ready for controls")
+
+local result = gateway:Invoke({
+	method = "call",
+	action = "setControls",
+	params = {
+		controls = {
+			label = "Clicked",
+		},
+	},
+})
+
+return HttpService:JSONEncode(result)
 ```
 
-Use stable, unique marker text for each probe run so stale output from previous runs does not get mistaken for fresh output.
+## Visual Flow
 
+```lua
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
+local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
+assert(gateway ~= nil, "missing FlipbookAgentGateway")
+
+local result = gateway:Invoke({
+	method = "call",
+	action = "embedFlipbook",
+	params = {
+		parent = "ReplicatedStorage",
+		overwrite = false,
+	},
+})
+
+return HttpService:JSONEncode(result)
+```
+
+After embedding, use `start_stop_play { is_start = true }`, wait for the client data model to be available, and take `screen_capture`. If the screenshot is blank or not the Studio viewport, ask the user to bring Studio to the foreground before retrying.
+
+Stop play mode with `start_stop_play { is_start = false }` when done unless the user asks to leave the experience running.
+
+## Gateway Action Discovery
+
+Do not maintain a static action catalog in this skill. Query the gateway manifest with `method = "list"` and treat that response as the source of truth for action names, descriptions, and input schemas.
+
+```lua
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
+local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
+assert(gateway ~= nil, "missing FlipbookAgentGateway")
+
+return HttpService:JSONEncode(gateway:Invoke({ method = "list" }))
+```
+
+If an agent cannot tell how to call an action from the manifest, update the action's AgentGateway metadata in Flipbook instead of adding a parallel explanation here. The skill should explain the workflow; the gateway should describe the callable surface.
+
+## Notes
+
+- Programmatic checks should stay on gateway actions. Manual UI input is slower and more brittle.
+- `screen_capture` is for embedded visual checks, not plugin widgets.
+- `search_game_tree` is a fallback for Studio MCP selection issues, not the normal Flipbook navigation path.
