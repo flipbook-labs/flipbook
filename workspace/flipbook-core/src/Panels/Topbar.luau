@@ -7,8 +7,8 @@ local AboutView = require("@root/About/AboutView")
 local AppMode = require("@root/Enums/AppMode")
 local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
-local NavigationContext = require("@root/Navigation/NavigationContext")
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local NavigationStore = require("@root/Navigation/NavigationStore")
+local StoryStore = require("@root/Storybook/StoryStore")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local Object = LuauPolyfill.Object
@@ -58,8 +58,11 @@ local function Topbar(props: TopbarProps)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local isFeedbackDialogOpen, setIsFeedbackDialogOpen = useState(false)
 
-	local navigation = NavigationContext.use()
-	local storyActions = StoryActionsContext.useStoryActions()
+	local navigationStore = useSignalState(NavigationStore.get)
+	local currentScreen = useSignalState(navigationStore.getCurrentScreen)
+	local storyStore = useSignalState(StoryStore.get)
+	local isStoryActionsDisabled = useSignalState(storyStore.getIsStoryActionsDisabled)
+	local storyMode = useSignalState(storyStore.getMode)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -104,8 +107,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassPlus,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.zoom.zoomIn,
+							isDisabled = isStoryActionsDisabled,
+							onActivated = storyStore.zoomIn,
 							size = InputSize.Small,
 						}),
 					}),
@@ -118,8 +121,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassMinus,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.zoom.zoomOut,
+							isDisabled = isStoryActionsDisabled,
+							onActivated = storyStore.zoomOut,
 							size = InputSize.Small,
 						}),
 					}),
@@ -142,13 +145,13 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Code,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewCode,
+							isDisabled = isStoryActionsDisabled,
+							onActivated = storyStore.viewCode,
 							size = InputSize.Small,
 						}),
 					}),
 
-					Viewport = storyActions.mode == AppMode.PluginWidget and e(Tooltip, {
+					Viewport = storyMode == AppMode.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -156,8 +159,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Eye,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewportPreview,
+							isDisabled = isStoryActionsDisabled,
+							onActivated = storyStore.viewportPreview,
 							size = InputSize.Small,
 						}),
 					}),
@@ -170,8 +173,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlass,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewExplorer,
+							isDisabled = isStoryActionsDisabled,
+							onActivated = storyStore.viewExplorer,
 							size = InputSize.Small,
 						}),
 					}),
@@ -245,7 +248,7 @@ local function Topbar(props: TopbarProps)
 					LayoutOrder = 2,
 					tag = "auto-xy row gap-xsmall",
 				}, {
-					EmbedIntoExperience = storyActions.mode ~= AppMode.EmbeddedClient and e(Tooltip, {
+					EmbedIntoExperience = storyMode ~= AppMode.EmbeddedClient and e(Tooltip, {
 						LayoutOrder = 1,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -285,15 +288,15 @@ local function Topbar(props: TopbarProps)
 						Trigger = e(IconButton, {
 							icon = {
 								name = IconName.Gear,
-								variant = if navigation.currentScreen == "Settings"
+								variant = if currentScreen == "Settings"
 									then IconVariant.Filled
 									else IconVariant.Regular,
 							},
 							onActivated = function()
-								if navigation.currentScreen ~= "Settings" then
-									navigation.navigateTo("Settings")
+								if currentScreen ~= "Settings" then
+									navigationStore.navigateTo("Settings")
 								else
-									navigation.navigateTo("Home")
+									navigationStore.navigateTo("Home")
 								end
 							end,
 							size = InputSize.Small,
@@ -358,10 +361,10 @@ local function Topbar(props: TopbarProps)
 						id = "Logs",
 						text = "Logs",
 						onActivated = function()
-							if navigation.currentScreen ~= "Settings" then
-								navigation.navigateTo("Logs")
+							if currentScreen ~= "Settings" then
+								navigationStore.navigateTo("Logs")
 							else
-								navigation.navigateTo("Home")
+								navigationStore.navigateTo("Home")
 							end
 							setIsHelpMenuOpen(false)
 						end,

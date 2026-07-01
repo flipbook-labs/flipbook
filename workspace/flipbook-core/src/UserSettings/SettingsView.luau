@@ -1,13 +1,15 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
 
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local NavigationStore = require("@root/Navigation/NavigationStore")
 local SettingRow = require("@root/UserSettings/SettingRow")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useMemo = React.useMemo
+local useSignalState = ReactCharm.useSignalState
 
 type Setting = defaultSettings.Setting
 type SettingChoice = defaultSettings.SettingChoice
@@ -18,7 +20,7 @@ type SettingsGroup = {
 }
 
 local function SettingsView()
-	local navigation = NavigationContext.use()
+	local navigationStore = useSignalState(NavigationStore.get)
 	local settingsByGroup: { SettingsGroup } = useMemo(function()
 		local settings = Sift.Dictionary.values(defaultSettings)
 
@@ -90,7 +92,7 @@ local function SettingsView()
 				icon = "x",
 				isCircular = true,
 				onActivated = function()
-					navigation.navigateTo("Home")
+					navigationStore.navigateTo("Home")
 				end,
 				variant = Foundation.Enums.ButtonVariant.OverMedia,
 			}),

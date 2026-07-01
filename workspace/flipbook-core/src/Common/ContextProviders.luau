@@ -4,7 +4,6 @@ local Storyteller = require("@pkg/Storyteller")
 
 local CommonTypes = require("@root/Common/types")
 local ContextStack = require("@root/Common/ContextStack")
-local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -31,9 +30,6 @@ local function ContextProviders(props: Props)
 			React.createElement(Foundation.FoundationProvider, {
 				theme = props.theme or themeName,
 				overlayGui = props.overlayGui,
-			}),
-			React.createElement(NavigationContext.Provider, {
-				defaultScreen = "Home",
 			}),
 			React.createElement(Storyteller.StorytellerProvider),
 		},

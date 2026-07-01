@@ -6,9 +6,9 @@ local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryError = require("@root/Storybook/StoryError")
+local StoryStore = require("@root/Storybook/StoryStore")
 local types = require("@root/Storybook/types")
 
 local e = React.createElement
@@ -26,7 +26,9 @@ export type Props = {
 }
 
 local function StoryPreview(props: Props): React.Node
-	local storyActions = StoryActionsContext.useStoryActions()
+	local storyStore = useSignalState(StoryStore.get)
+	local isMountedInViewport = useSignalState(storyStore.getIsMountedInViewport)
+	local zoom = useSignalState(storyStore.getZoom)
 	local storyControls = StoryControlsContext.useStoryControls()
 	local controls = useSignalState(storyControls.getControls)
 	local err: string?, setErr = useState(nil :: string?)
@@ -42,11 +44,11 @@ local function StoryPreview(props: Props): React.Node
 		})
 	end
 
-	if storyActions.isMountedInViewport then
+	if isMountedInViewport then
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-				ref = storyActions.storyContainerRef,
+				ref = storyStore.setStoryContainer,
 			}, {
 				StoryContainer = e(Storyteller.StoryContainer, {
 					story = props.story,
@@ -69,10 +71,10 @@ local function StoryPreview(props: Props): React.Node
 			FillDirection = Enum.FillDirection.Vertical,
 		},
 		LayoutOrder = props.LayoutOrder,
-		ref = storyActions.storyContainerRef,
+		ref = storyStore.setStoryContainer,
 	}, {
 		Scale = e("UIScale", {
-			Scale = 1 + storyActions.zoom.value,
+			Scale = 1 + zoom,
 		}),
 
 		StoryContainer = e(Storyteller.StoryContainer, {

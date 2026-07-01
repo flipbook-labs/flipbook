@@ -1,4 +1,5 @@
 local AppMode = require("@root/Enums/AppMode")
+local createAgentGateway = require("@root/Agent/createAgentGateway")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
 local CommonTypes = require("@root/Common/types")
@@ -7,6 +8,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
+	local cleanupAgentGateway = createAgentGateway(plugin, widget)
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
@@ -45,6 +47,7 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	end
 
 	local function destroy()
+		cleanupAgentGateway()
 		app.destroy()
 
 		for _, connection in connections do
