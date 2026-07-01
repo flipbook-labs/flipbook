@@ -4,6 +4,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local AppMode = require("@root/Enums/AppMode")
+local AppStore = require("@root/AppStore")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
 local NavigationContext = require("@root/Navigation/NavigationContext")
@@ -15,7 +16,6 @@ local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
-local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -25,30 +25,29 @@ type AppMode = AppMode.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
-local defaultStorybook = createLoadedStorybook()
-
 export type Props = {
 	mode: AppMode?,
 }
 
 local function FlipbookApp(props: Props)
+	local appStore = useSignalState(AppStore.get)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
-	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
-	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
-		React.useState(nil :: UnavailableStorybook?)
+	local storyModule = useSignalState(appStore.getStoryModule)
+	local storybook = useSignalState(appStore.getStorybook)
+	local unavailableStorybook = useSignalState(appStore.getUnavailableStorybook)
+	local hasRefreshedStorybooks = useSignalState(appStore.getHasRefreshedStorybooks)
 	local navigation = NavigationContext.use()
+
+	React.useEffect(function()
+		if not hasRefreshedStorybooks then
+			task.spawn(appStore.refreshStorybooks)
+		end
+	end, { appStore, hasRefreshedStorybooks } :: { unknown })
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
-
-		setUnavailableStorybook(nil)
-
-		if newStoryModule and not newStorybook then
-			newStorybook = defaultStorybook
-		end
 
 		task.spawn(function()
 			fireEventAsync({
@@ -56,15 +55,12 @@ local function FlipbookApp(props: Props)
 			})
 		end)
 
-		setStoryModule(newStoryModule)
-		setStorybook(newStorybook)
-	end, { navigation.navigateTo } :: { unknown })
+		appStore.openStory(newStoryModule, newStorybook)
+	end, { appStore, navigation.navigateTo } :: { unknown })
 
 	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
-		setStoryModule(nil)
-		setStorybook(nil)
-		setUnavailableStorybook(newUnavailableStorybook)
-	end, {})
+		appStore.showUnavailableStorybook(newUnavailableStorybook)
+	end, { appStore })
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",

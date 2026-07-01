@@ -1,21 +1,22 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 
+local AppStore = require("@root/AppStore")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local navigationEnums = require("@root/Navigation/enums")
 local usePrevious = require("@root/Common/usePrevious")
 
-local useCallback = React.useCallback
 local useContext = React.useContext
 local useMemo = React.useMemo
-local useState = React.useState
 local useEffect = React.useEffect
+local useSignalState = ReactCharm.useSignalState
 
 type Screen = navigationEnums.Screen
 
 export type NavigationContext = {
 	navigateTo: (newScreen: Screen) -> (),
 	goBack: () -> (),
-	getBreadcrumbs: () -> { string },
+	getBreadcrumbs: () -> { Screen },
 	canGoBack: () -> boolean,
 	currentScreen: Screen,
 }
@@ -28,55 +29,35 @@ export type Props = {
 }
 
 local function Provider(props: Props)
-	local stack: { Screen }, setStack = useState({ props.defaultScreen })
-	local prevStack = usePrevious(stack)
-
-	local navigateTo = useCallback(function(newScreen: Screen)
-		setStack(function(prev)
-			local new = table.clone(prev)
-			table.insert(new, newScreen)
-			return new
-		end)
-	end, {})
-
-	local currentScreen = useMemo(function()
-		return stack[#stack]
-	end, { stack })
-
-	local canGoBack = useMemo(function()
-		return #stack > 1
-	end, { stack })
-
-	local goBack = useCallback(function()
-		if canGoBack then
-			setStack(function(prev)
-				local new = table.clone(prev)
-				table.remove(new)
-				return new
-			end)
-		end
-	end, { canGoBack })
+	local appStore = useSignalState(AppStore.get)
+	local currentScreen = useSignalState(appStore.getCurrentScreen)
+	local prevCurrentScreen = usePrevious(currentScreen)
 
 	useEffect(function()
-		if stack ~= prevStack then
+		if currentScreen ~= prevCurrentScreen then
 			task.spawn(function()
 				fireEventAsync({
 					eventName = "PageChanged",
 					properties = {
-						page = stack[#stack],
+						page = currentScreen,
 					},
 				})
 			end)
 		end
-	end, { stack })
+	end, { currentScreen })
+
+	local value = useMemo(function(): NavigationContext
+		return {
+			navigateTo = appStore.navigateTo,
+			goBack = appStore.goBack,
+			getBreadcrumbs = appStore.getBreadcrumbs,
+			canGoBack = appStore.canGoBack,
+			currentScreen = currentScreen :: Screen,
+		}
+	end, { appStore, currentScreen } :: { unknown })
 
 	return React.createElement(Context.Provider, {
-		value = {
-			navigateTo = navigateTo,
-			goBack = goBack,
-			breadcrumbs = stack,
-			currentScreen = currentScreen,
-		},
+		value = value,
 	}, props.children)
 end
 
