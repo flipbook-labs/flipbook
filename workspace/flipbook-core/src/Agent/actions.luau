@@ -324,7 +324,7 @@ local function create(_context: Context): { Action }
 			run = function()
 				local storyStore = StoryStore.get()
 				ensureOpenStory("viewExplorer")
-				if storyStore.storyContainerRef.current == nil then
+				if storyStore.getStoryContainer() == nil then
 					error("viewExplorer requires the story view to be mounted")
 				end
 				storyStore.viewExplorer()

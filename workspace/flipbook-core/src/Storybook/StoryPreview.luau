@@ -48,7 +48,7 @@ local function StoryPreview(props: Props): React.Node
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-				ref = storyStore.storyContainerRef,
+				ref = storyStore.setStoryContainer,
 			}, {
 				StoryContainer = e(Storyteller.StoryContainer, {
 					story = props.story,
@@ -71,7 +71,7 @@ local function StoryPreview(props: Props): React.Node
 			FillDirection = Enum.FillDirection.Vertical,
 		},
 		LayoutOrder = props.LayoutOrder,
-		ref = storyStore.storyContainerRef,
+		ref = storyStore.setStoryContainer,
 	}, {
 		Scale = e("UIScale", {
 			Scale = 1 + zoom,

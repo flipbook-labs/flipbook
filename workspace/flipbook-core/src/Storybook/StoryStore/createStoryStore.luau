@@ -21,8 +21,6 @@ export type Storybooks = {
 }
 
 export type StoryStore = {
-	storyContainerRef: { current: GuiObject? },
-
 	getStorybooks: () -> Storybooks,
 	getOrphanedStoryModules: () -> { ModuleScript },
 	getHasRefreshedStorybooks: () -> boolean,
@@ -40,8 +38,10 @@ export type StoryStore = {
 	getIsStoryActionsDisabled: () -> boolean,
 	getIsMountedInViewport: () -> boolean,
 	getMode: () -> AppMode,
+	getStoryContainer: () -> GuiObject?,
 	getZoom: () -> number,
 	setMode: (mode: AppMode) -> (),
+	setStoryContainer: (storyContainer: GuiObject?) -> (),
 	viewportPreview: () -> (),
 	viewCode: () -> (),
 	viewExplorer: () -> (),
@@ -63,7 +63,6 @@ local function createUnavailableStorybook(storybookModule: ModuleScript, problem
 end
 
 local function createStoryStore(): StoryStore
-	local storyContainerRef = { current = nil :: GuiObject? }
 	local getStorybooks, setStorybooks = Charm.signal({
 		available = {},
 		unavailable = {},
@@ -79,6 +78,7 @@ local function createStoryStore(): StoryStore
 
 	local getIsMountedInViewport, setIsMountedInViewport = Charm.signal(false)
 	local getModeSignal, setMode = Charm.signal(AppMode.PluginWidget :: AppMode)
+	local getStoryContainer, setStoryContainer = Charm.signal(nil :: GuiObject?)
 	local getZoom, setZoom = Charm.signal(0)
 
 	local getIsStoryActionsDisabled = Charm.computed(function()
@@ -156,11 +156,12 @@ local function createStoryStore(): StoryStore
 	end
 
 	local function viewExplorer()
-		if storyContainerRef.current == nil then
+		local storyContainer = getStoryContainer()
+		if storyContainer == nil then
 			return
 		end
 
-		Selection:Set({ storyContainerRef.current:FindFirstAncestorWhichIsA("GuiObject") or storyContainerRef.current })
+		Selection:Set({ storyContainer:FindFirstAncestorWhichIsA("GuiObject") or storyContainer })
 	end
 
 	local function zoomIn()
@@ -176,8 +177,6 @@ local function createStoryStore(): StoryStore
 	end
 
 	return {
-		storyContainerRef = storyContainerRef,
-
 		getStorybooks = getStorybooks,
 		getOrphanedStoryModules = getOrphanedStoryModules,
 		getHasRefreshedStorybooks = getHasRefreshedStorybooks,
@@ -195,8 +194,10 @@ local function createStoryStore(): StoryStore
 		getIsStoryActionsDisabled = getIsStoryActionsDisabled,
 		getIsMountedInViewport = getIsMountedInViewport,
 		getMode = getMode,
+		getStoryContainer = getStoryContainer,
 		getZoom = getZoom,
 		setMode = setMode,
+		setStoryContainer = setStoryContainer,
 		viewportPreview = viewportPreview,
 		viewCode = viewCode,
 		viewExplorer = viewExplorer,
