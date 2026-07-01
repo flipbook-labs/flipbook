@@ -107,8 +107,72 @@ local function ensureOpenStory(actionName: string)
 	end
 end
 
+local INSTRUCTIONS = {
+	overview = "Use FlipbookAgentGateway to drive Flipbook directly. Prefer gateway actions over navigating Flipbook's UI with mouse or keyboard input.",
+	programmaticChecks = {
+		"Run gateway actions in the Edit data model through CoreGui.FlipbookAgentGateway.",
+		'Start with method = "list" to discover available actions, descriptions, and input schemas.',
+		"Open the widget with openWidget, discover storybooks with refreshStorybooks or listStorybooks, list stories with listStories, and open stories with openStory.",
+		"Read wrapped call responses from response.result when response.ok is true.",
+	},
+	readiness = {
+		"Do not use fixed sleeps after openStory.",
+		"For stories with controls, poll getCurrentStory until it matches the opened story and poll getControls until the expected control key exists before calling setControls.",
+		"For viewport preview checks, call viewportPreview and poll getStoryActions.isMountedInViewport.",
+	},
+	visualChecks = {
+		"Studio MCP screen_capture captures the viewport, not plugin dock widgets.",
+		"To visually inspect Flipbook, call embedFlipbook, start play mode, then capture the viewport after the embedded ScreenGui mounts.",
+		"embedFlipbook mutates the place by cloning the Flipbook runtime into ReplicatedStorage by default. Pass overwrite = true only when replacing an existing embedded runtime is intended.",
+	},
+	manualInput = {
+		"Use user_mouse_input or user_keyboard_input only for a story's own interactions, such as clicking a button rendered by the story.",
+		"Use manual input against Flipbook UI only as an escape hatch. If that is necessary, tell the user and consider adding a new gateway action.",
+	},
+	troubleshooting = {
+		"If Studio MCP reports no active instance, select one with list_roblox_studios and set_active_studio, or use search_game_tree as a fallback probe.",
+		'If Studio MCP returns "Not connected to the WS host", ask the user to enable Studio MCP in the open Studio session. Retrying gateway calls will not fix that connection failure.',
+	},
+}
+
+local function getInstructionsTopic(topic: string?): any
+	if topic == nil then
+		return INSTRUCTIONS
+	end
+
+	local section = (INSTRUCTIONS :: any)[topic]
+	if section == nil then
+		error(
+			"getInstructions topic must be one of overview, programmaticChecks, readiness, visualChecks, manualInput, troubleshooting"
+		)
+	end
+
+	return {
+		[topic] = section,
+	}
+end
+
 local function create(_context: Context): { Action }
 	return {
+		{
+			name = "getInstructions",
+			title = "Get Instructions",
+			description = "Return guidance for agents using FlipbookAgentGateway.",
+			inputSchema = {
+				type = "object",
+				properties = {
+					topic = {
+						type = "string",
+						description = "Optional topic: overview, programmaticChecks, readiness, visualChecks, manualInput, or troubleshooting.",
+					},
+				} :: { [string]: unknown },
+			},
+			run = function(_ctx, params)
+				local options = asTable(params)
+				return getInstructionsTopic(getStringField(options, "topic"))
+			end,
+		},
+
 		{
 			name = "openWidget",
 			title = "Open Widget",
