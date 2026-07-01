@@ -1,7 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
 local Actions = require("@root/Agent/actions")
-local AppStore = require("@root/AppStore")
 local CommonTypes = require("@root/Common/types")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 
@@ -35,10 +34,8 @@ local function withTelemetry(registry)
 	}
 end
 
-local function createAgentGateway(plugin: Pluginlike, widget: DockWidgetPluginGui): () -> ()
+local function createAgentGateway(_plugin: Pluginlike, widget: DockWidgetPluginGui): () -> ()
 	local context: Context = {
-		plugin = plugin :: any,
-		store = AppStore.get(),
 		widget = widget,
 	}
 

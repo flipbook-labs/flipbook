@@ -3,12 +3,12 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local AppStore = require("@root/AppStore")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local StoryStore = require("@root/Storybook/StoryStore")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
@@ -36,7 +36,7 @@ type StoryViewProps = {
 local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook)
 	local theme = useThemeName()
-	local appStore = useSignalState(AppStore.get)
+	local storyStore = useSignalState(StoryStore.get)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
@@ -49,14 +49,14 @@ local function StoryView(props: StoryViewProps)
 	end, { story } :: { unknown })
 
 	useEffect(function()
-		appStore.setActiveControlsStore(storyControlsStore)
+		storyStore.setActiveControlsStore(storyControlsStore)
 
 		return function()
-			if appStore.getActiveControlsStore() == storyControlsStore then
-				appStore.setActiveControlsStore(nil)
+			if storyStore.getActiveControlsStore() == storyControlsStore then
+				storyStore.setActiveControlsStore(nil)
 			end
 		end
-	end, { appStore, storyControlsStore } :: { unknown })
+	end, { storyStore, storyControlsStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {

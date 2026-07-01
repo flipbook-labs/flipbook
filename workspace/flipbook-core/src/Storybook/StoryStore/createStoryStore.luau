@@ -1,21 +1,28 @@
+local Selection = game:GetService("Selection")
+
 local Charm = require("@pkg/Charm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AppMode = require("@root/Enums/AppMode")
+local PluginStore = require("@root/Plugin/PluginStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-local navigationEnums = require("@root/Navigation/enums")
 
+type AppMode = AppMode.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
-type Screen = navigationEnums.Screen
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
+
+local ZOOM_INCREMENT = 0.25
 
 export type Storybooks = {
 	available: { LoadedStorybook },
 	unavailable: { UnavailableStorybook },
 }
 
-export type AppStore = {
+export type StoryStore = {
+	storyContainerRef: { current: GuiObject? },
+
 	getStorybooks: () -> Storybooks,
 	getOrphanedStoryModules: () -> { ModuleScript },
 	getHasRefreshedStorybooks: () -> boolean,
@@ -27,15 +34,19 @@ export type AppStore = {
 	openStory: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	showUnavailableStorybook: (unavailableStorybook: UnavailableStorybook) -> (),
 
-	getNavigationStack: () -> { Screen },
-	getCurrentScreen: () -> Screen,
-	navigateTo: (newScreen: Screen) -> (),
-	goBack: () -> (),
-	canGoBack: () -> boolean,
-	getBreadcrumbs: () -> { Screen },
-
 	getActiveControlsStore: () -> StoryControlsStore?,
 	setActiveControlsStore: (store: StoryControlsStore?) -> (),
+
+	getIsStoryActionsDisabled: () -> boolean,
+	getIsMountedInViewport: () -> boolean,
+	getMode: () -> AppMode,
+	getZoom: () -> number,
+	setMode: (mode: AppMode) -> (),
+	viewportPreview: () -> (),
+	viewCode: () -> (),
+	viewExplorer: () -> (),
+	zoomIn: () -> (),
+	zoomOut: () -> (),
 }
 
 local defaultStorybook = createLoadedStorybook()
@@ -51,7 +62,8 @@ local function createUnavailableStorybook(storybookModule: ModuleScript, problem
 	}
 end
 
-local function createAppStore(): AppStore
+local function createStoryStore(): StoryStore
+	local storyContainerRef = { current = nil :: GuiObject? }
 	local getStorybooks, setStorybooks = Charm.signal({
 		available = {},
 		unavailable = {},
@@ -63,16 +75,18 @@ local function createAppStore(): AppStore
 	local getStorybook, setStorybook = Charm.signal(nil :: LoadedStorybook?)
 	local getUnavailableStorybook, setUnavailableStorybook = Charm.signal(nil :: UnavailableStorybook?)
 
-	local getNavigationStack, setNavigationStack = Charm.signal({ navigationEnums.Screen.Home } :: { Screen })
 	local getActiveControlsStore, setActiveControlsStore = Charm.signal(nil :: StoryControlsStore?)
 
-	local getCurrentScreenSignal = Charm.computed(function()
-		local stack = getNavigationStack()
-		return stack[#stack]
+	local getIsMountedInViewport, setIsMountedInViewport = Charm.signal(false)
+	local getModeSignal, setMode = Charm.signal(AppMode.PluginWidget :: AppMode)
+	local getZoom, setZoom = Charm.signal(0)
+
+	local getIsStoryActionsDisabled = Charm.computed(function()
+		return getStoryModule() == nil
 	end)
 
-	local function getCurrentScreen(): Screen
-		return getCurrentScreenSignal() :: Screen
+	local function getMode(): AppMode
+		return getModeSignal() :: AppMode
 	end
 
 	local function refreshStorybooks(parent: Instance?): Storybooks
@@ -109,6 +123,7 @@ local function createAppStore(): AppStore
 			setUnavailableStorybook(nil)
 			setStoryModule(storyModule)
 			setStorybook(if storyModule and not storybook then defaultStorybook else storybook)
+			setZoom(0)
 		end)
 	end
 
@@ -120,33 +135,49 @@ local function createAppStore(): AppStore
 		end)
 	end
 
-	local function navigateTo(newScreen: Screen)
-		setNavigationStack(function(prev)
-			local new = table.clone(prev)
-			table.insert(new, newScreen)
-			return new
+	local function viewportPreview()
+		setIsMountedInViewport(function(currentValue)
+			return not currentValue
 		end)
 	end
 
-	local function canGoBack(): boolean
-		return #getNavigationStack() > 1
-	end
+	local function viewCode()
+		local storyModule = getStoryModule()
+		if storyModule == nil then
+			return
+		end
 
-	local function goBack()
-		if canGoBack() then
-			setNavigationStack(function(prev)
-				local new = table.clone(prev)
-				table.remove(new)
-				return new
-			end)
+		Selection:Set({ storyModule })
+
+		local plugin = PluginStore.get().getPlugin()
+		if plugin ~= nil then
+			plugin:OpenScript(storyModule)
 		end
 	end
 
-	local function getBreadcrumbs(): { Screen }
-		return getNavigationStack()
+	local function viewExplorer()
+		if storyContainerRef.current == nil then
+			return
+		end
+
+		Selection:Set({ storyContainerRef.current:FindFirstAncestorWhichIsA("GuiObject") or storyContainerRef.current })
+	end
+
+	local function zoomIn()
+		setZoom(function(currentValue)
+			return currentValue + ZOOM_INCREMENT
+		end)
+	end
+
+	local function zoomOut()
+		setZoom(function(currentValue)
+			return currentValue - ZOOM_INCREMENT
+		end)
 	end
 
 	return {
+		storyContainerRef = storyContainerRef,
+
 		getStorybooks = getStorybooks,
 		getOrphanedStoryModules = getOrphanedStoryModules,
 		getHasRefreshedStorybooks = getHasRefreshedStorybooks,
@@ -158,16 +189,20 @@ local function createAppStore(): AppStore
 		openStory = openStory,
 		showUnavailableStorybook = showUnavailableStorybook,
 
-		getNavigationStack = getNavigationStack,
-		getCurrentScreen = getCurrentScreen,
-		navigateTo = navigateTo,
-		goBack = goBack,
-		canGoBack = canGoBack,
-		getBreadcrumbs = getBreadcrumbs,
-
 		getActiveControlsStore = getActiveControlsStore,
 		setActiveControlsStore = setActiveControlsStore,
+
+		getIsStoryActionsDisabled = getIsStoryActionsDisabled,
+		getIsMountedInViewport = getIsMountedInViewport,
+		getMode = getMode,
+		getZoom = getZoom,
+		setMode = setMode,
+		viewportPreview = viewportPreview,
+		viewCode = viewCode,
+		viewExplorer = viewExplorer,
+		zoomIn = zoomIn,
+		zoomOut = zoomOut,
 	}
 end
 
-return createAppStore
+return createStoryStore
