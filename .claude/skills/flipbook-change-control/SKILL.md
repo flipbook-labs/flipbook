@@ -365,7 +365,7 @@ All of these stemmed from manual coordination between tags, release workflow, an
 
 **Rule:** All work merges via feature branch + PR. Never `git push` directly to main.
 
-**Incident:** Not a specific named PR, but user convention (see user's global `.claude/CLAUDE.md`: "Never push directly to main; always branch + PR").
+**Incident:** Not a specific named PR, but standing maintainer doctrine for every flipbook-labs repo: never push directly to main; always branch + PR. Pushing to main bypasses review and can trigger the release and deploy workflows in this repo unexpectedly. This skill is the in-repo home for that rule.
 
 **Rationale:** Ensures code is reviewed and CI gates pass before landing. Maintains history and audit trail.
 

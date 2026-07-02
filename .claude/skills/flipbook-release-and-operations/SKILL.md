@@ -41,7 +41,7 @@ gh pr create --draft --title "Bump to 2.6.0" --template .github/pull_request_tem
 
 3. Fill in the PR body with release notes. Ensure CI passes, then merge to main.
 
-**Key constraint (from CLAUDE.md doctrine):** Never push git tags directly. Releases go through `bump-version` PR → merge → manual GitHub Release creation.
+**Key constraint (maintainer doctrine; the `flipbook-change-control` skill is the in-repo home for it):** Never push git tags directly. Releases go through `bump-version` PR → merge → manual GitHub Release creation. The rationale is the deployment-orchestration history in `flipbook-failure-archaeology` (incidents #535, #596): direct tag pushes bypass the changelog/version gating and can fire deploy workflows unexpectedly.
 
 ### 2. Merge Bump PR to Main
 
@@ -188,7 +188,7 @@ lune run publish-plugin --smoketest --channel prod --apiKey <key>
 
 **Trigger:** `storybook.yml` (push to main + pull_request).
 
-**Implementation:** Uses `flipbook-labs/deploy-storybook@v0.4.0` GitHub Action (checkout at `/Users/marin/Code/deploy-storybook`).
+**Implementation:** Uses `flipbook-labs/deploy-storybook@v0.4.0` GitHub Action (checkout at `../deploy-storybook`).
 
 ### Main Branch Storybook Deploy
 
@@ -458,13 +458,13 @@ The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the 
 
 To keep this skill current and aligned with code changes:
 
-- Verify release.yml event triggers: `grep -A 5 "on:" /Users/marin/Code/flipbook/.github/workflows/release.yml`
-- Verify asset IDs in rbxasset.toml: `cat /Users/marin/Code/flipbook/rbxasset.toml | grep -E "name|model|universe"`
-- Verify project.luau storybook IDs: `grep ROBLOX_STORYBOOK /Users/marin/Code/flipbook/project.luau`
-- Verify bump-version manifest paths: `grep MANIFEST_PATHS /Users/marin/Code/flipbook/.lute/bump-version.luau`
-- Verify channel-to-asset mapping: `grep -A 5 "ASSET_NAMES_BY_CHANNEL" /Users/marin/Code/flipbook/.lune/publish-plugin.luau`
-- Verify deploy-storybook version pinned in storybook.yml: `grep "deploy-storybook@" /Users/marin/Code/flipbook/.github/workflows/storybook.yml`
-- Verify Wally token docs in creating-releases.md: `cat /Users/marin/Code/flipbook/docs/docs/contributing/creating-releases.md`
+- Verify release.yml event triggers: `grep -A 5 "on:" .github/workflows/release.yml`
+- Verify asset IDs in rbxasset.toml: `cat rbxasset.toml | grep -E "name|model|universe"`
+- Verify project.luau storybook IDs: `grep ROBLOX_STORYBOOK project.luau`
+- Verify bump-version manifest paths: `grep MANIFEST_PATHS .lute/bump-version.luau`
+- Verify channel-to-asset mapping: `grep -A 5 "ASSET_NAMES_BY_CHANNEL" .lune/publish-plugin.luau`
+- Verify deploy-storybook version pinned in storybook.yml: `grep "deploy-storybook@" .github/workflows/storybook.yml`
+- Verify Wally token docs in creating-releases.md: `cat docs/docs/contributing/creating-releases.md`
 
 ---
 

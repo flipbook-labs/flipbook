@@ -96,7 +96,7 @@ local story: Storyteller.Story = {
 
 return story
 EOF
-cp /tmp/test_all_controls.story.luau /Users/marin/Code/flipbook/workspace/example/src/Examples/AllControlTypes.story.luau
+cp /tmp/test_all_controls.story.luau workspace/example/src/Examples/AllControlTypes.story.luau
 echo "✓ Test story written to workspace/example/src/Examples/AllControlTypes.story.luau"
 ```
 
@@ -122,15 +122,15 @@ lute run analyze 2>&1 | grep -i "allcontroltypes" || echo "No errors for new sto
 # Inspect the migration code in the Storyteller package.
 # Locate the migrateUILabsControl function and verify Object type handling.
 
-find /Users/marin/Code/flipbook/Packages/_Index -name "*migrateUILabs*" -type f
+find Packages/_Index -name "*migrateUILabs*" -type f
 ```
 
-**Expected observation:** Path like `/Users/marin/Code/flipbook/Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau` exists.
+**Expected observation:** Path like `Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau` exists.
 
 **Verify the gap:**
 
 ```bash
-grep -A 2 'control.Type == "Object"' /Users/marin/Code/flipbook/Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau
+grep -A 2 'control.Type == "Object"' Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau
 ```
 
 **Expected:** Lines show `return nil` (Object control is dropped).
@@ -147,7 +147,7 @@ grep -A 2 'control.Type == "Object"' /Users/marin/Code/flipbook/Packages/_Index/
 
 ```bash
 # Read createStoryControlsStore to confirm per-control signal design.
-cat /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/createStoryControlsStore.luau | head -50
+cat workspace/flipbook-core/src/StoryControls/createStoryControlsStore.luau | head -50
 ```
 
 **Expected observation:** Store exports `getControlValue(key)` which returns a per-control Charm signal (computed), not a whole-schema signal. Each control subscribes independently via `useSignalState()`.
@@ -155,7 +155,7 @@ cat /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/createS
 **Spot-check the spec:**
 
 ```bash
-grep -n "getControlValue" /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/createStoryControlsStore.spec.luau | head -3
+grep -n "getControlValue" workspace/flipbook-core/src/StoryControls/createStoryControlsStore.spec.luau | head -3
 ```
 
 **Expected:** Test file has tests for `getControlValue()` returning signals (lines ~20–40 range).
@@ -171,7 +171,7 @@ grep -n "getControlValue" /Users/marin/Code/flipbook/workspace/flipbook-core/src
 **Command:**
 
 ```bash
-grep -n "TODO.*grid" /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
+grep -n "TODO.*grid" workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
 ```
 
 **Expected observation:** Line ~41 has `-- TODO: Make this a grid` comment.
@@ -211,7 +211,7 @@ Solutions are ranked by evidence, scope, and risk. Each has success criteria and
 
 1. **Locate Storyteller's migrateUILabsControl.luau:**
    ```bash
-   MIGRATION_FILE="/Users/marin/Code/flipbook/Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau"
+   MIGRATION_FILE="Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/migrations/ui-labs-v2.4.2/migrateUILabsControl.luau"
    grep -n "Object" "$MIGRATION_FILE" | head -5
    ```
    **Expected:** Shows lines with `control.Type == "Object"` returning `nil`.
@@ -577,7 +577,7 @@ lute run test
 
 **Run:**
 ```bash
-grep -n "createUDim2Control\|createVector3Control" /Users/marin/Code/flipbook/Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/ControlTypes.luau
+grep -n "createUDim2Control\|createVector3Control" Packages/_Index/flipbook-labs_storyteller@1.12.0/storyteller/dist/controls/ControlTypes.luau
 ```
 
 **Expected:** Lines showing function definitions, or "no matches" if not yet in Storyteller.
@@ -588,7 +588,7 @@ grep -n "createUDim2Control\|createVector3Control" /Users/marin/Code/flipbook/Pa
 
 **GATE C.2: Implement UDim2Control in Flipbook**
 
-Create `/Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/UDim2Control.luau`:
+Create `workspace/flipbook-core/src/StoryControls/ControlElements/UDim2Control.luau`:
 
 ```luau
 local Foundation = require("@rbxpkg/Foundation")
@@ -671,7 +671,7 @@ Same pattern as UDim2Control, but with three inputs (X, Y, Z).
 
 **GATE C.4: Write specs for UDim2 and Vector3**
 
-Create `/Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/UDim2Control.spec.luau`:
+Create `workspace/flipbook-core/src/StoryControls/ControlElements/UDim2Control.spec.luau`:
 
 ```luau
 local jest = require("@pkg/JestGlobals")
@@ -726,14 +726,14 @@ lute run test --filter "UDim2Control|Vector3Control"
 
 **Run:**
 ```bash
-grep -n "grid" /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
+grep -n "grid" workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
 ```
 
 **Expected:** Current tag is `"size-full-y auto-x col gap-small"` (vertical column).
 
 **Read Foundation docs** (in Flipbook or Wally):
 ```bash
-grep -A 5 "grid" /Users/marin/Code/flipbook/Packages/_Index/*/Foundation/src/Component.luau | head -20
+grep -A 5 "grid" Packages/_Index/*/Foundation/src/Component.luau | head -20
 ```
 
 **Decision:** If Foundation supports grid tag (e.g., `"auto-y grid gap-small"` or `"grid cols-4"`), proceed to D.2.
@@ -756,7 +756,7 @@ return e(Foundation.View, {
 
 **Verify no spec exists for CheckControl layout:**
 ```bash
-find /Users/marin/Code/flipbook -name "*CheckControl*.spec*" -type f
+find . -name "*CheckControl*.spec*" -type f
 ```
 
 **Expected:** No spec for CheckControl. (Only logic to test is toggle logic, which is tested in createStoryControlsStore.spec.luau.)
@@ -952,7 +952,7 @@ end)
 4. ✅ **Type check passes:** `lute run analyze` (Luau strict mode)
 5. ✅ **Measurable validation** (per Phase 4.1 protocol — test assertions, not eyeballing)
 6. ✅ **Changelog entry** added (if repo uses changewrite; see `flipbook-release-and-operations` skill)
-7. ✅ **PR body discloses AI authorship** (required by repo conventions in CLAUDE.md)
+7. ✅ **PR body discloses AI authorship** (maintainer convention; see the `flipbook-change-control` skill and fill the `.github/pull_request_template.md`)
 
 **Merge to main:**
 ```bash
@@ -977,15 +977,15 @@ gh pr merge <PR_URL> --squash --delete-branch
 **Diagnostic:**
 1. Verify Storyteller was bumped and Flipbook's wally.toml is updated:
    ```bash
-   grep Storyteller /Users/marin/Code/flipbook/wally.toml
+   grep Storyteller wally.toml
    ```
 2. Verify `lute run install` ran:
    ```bash
-   ls /Users/marin/Code/flipbook/Packages/_Index/flipbook-labs_storyteller@*/storyteller/dist/controls/migrations/
+   ls Packages/_Index/flipbook-labs_storyteller@*/storyteller/dist/controls/migrations/
    ```
 3. Verify ObjectControl component exists in Flipbook:
    ```bash
-   grep -n "ObjectControl" /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/ObjectControl.luau | head -3
+   grep -n "ObjectControl" workspace/flipbook-core/src/StoryControls/ControlElements/ObjectControl.luau | head -3
    ```
 4. Run Flipbook dev build:
    ```bash
@@ -1005,7 +1005,7 @@ gh pr merge <PR_URL> --squash --delete-branch
 **Diagnostic:**
 1. Verify Foundation's grid tag syntax:
    ```bash
-   grep -C 3 "grid" /Users/marin/Code/flipbook/Packages/_Index/*/Foundation/src/Component.luau | head -20
+   grep -C 3 "grid" Packages/_Index/*/Foundation/src/Component.luau | head -20
    ```
 2. If grid tag is wrong, adjust. E.g., change `"grid cols-4"` to `"grid cols-3"` or Foundation's actual grid class.
 3. Verify story has enough items to fill grid:
@@ -1029,12 +1029,12 @@ gh pr merge <PR_URL> --squash --delete-branch
 
 1. **Storyteller version pinned in wally.toml:**
    ```bash
-   grep "Storyteller = " /Users/marin/Code/flipbook/wally.toml
+   grep "Storyteller = " wally.toml
    ```
 
 2. **ObjectControl component exists:**
    ```bash
-   test -f /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/ObjectControl.luau && echo "✓"
+   test -f workspace/flipbook-core/src/StoryControls/ControlElements/ObjectControl.luau && echo "✓"
    ```
 
 3. **InstancePicker was extracted (PR #597):**
@@ -1044,7 +1044,7 @@ gh pr merge <PR_URL> --squash --delete-branch
 
 4. **CheckControl grid TODO exists:**
    ```bash
-   grep "TODO.*grid" /Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
+   grep "TODO.*grid" workspace/flipbook-core/src/StoryControls/ControlElements/CheckControl.luau
    ```
 
 5. **uilabs-controls-support branch is stale:**

@@ -325,7 +325,7 @@ See the `flipbook-story-controls-campaign` skill for the detailed fix roadmap fo
 
 #### Note on Storybook Types (FIXME)
 
-In `/Users/marin/Code/flipbook/workspace/flipbook-core/src/Storybook/types.luau`, the `ExtraStoryProps` type defines `plugin` and `widget` as optional (`?`). The comment notes: "Make these required in the future. Only reason they're not is because we'll need to massage the types in StoryPreview to clear the nil value." This will be required in a future version once StoryPreview is updated.
+In `workspace/flipbook-core/src/Storybook/types.luau`, the `ExtraStoryProps` type defines `plugin` and `widget` as optional (`?`). The comment notes: "Make these required in the future. Only reason they're not is because we'll need to massage the types in StoryPreview to clear the nil value." This will be required in a future version once StoryPreview is updated.
 
 ## ModuleLoader: Bypassing Roblox's Require Cache
 
@@ -366,7 +366,7 @@ return {
 
 On the first run, clicking increments the count. If you edit the file and Flipbook reloads, the old `value` Fusion value still exists, and the new story function will use it. The count will pick up where it left off, which breaks your mental model that editing should reset state.
 
-**The frozen-table workaround:** In `/Users/marin/Code/flipbook/src/PluginStarterScript.plugin.luau`, there is a line `Charm.flags.frozen = false`. This disables Charm's frozen-table detection, which was causing crashes when stale module-scope tables were accessed after a reload (storyteller issue #100). This is not a clean fix but a necessary workaround for a lurking state bug. Do not remove it.
+**The frozen-table workaround:** In `src/PluginStarterScript.plugin.luau`, there is a line `Charm.flags.frozen = false`. This disables Charm's frozen-table detection, which was causing crashes when stale module-scope tables were accessed after a reload (storyteller issue #100). This is not a clean fix but a necessary workaround for a lurking state bug. Do not remove it.
 
 **Best practice:** Keep module-scope variables immutable (requires, constants). Move stateful values inside the `story` function or use a state library that supports reset-on-reload patterns.
 
@@ -391,9 +391,9 @@ When Flipbook is embedded in a running experience (via the "Embed into Experienc
 - Stories run in the LocalPlayer's thread, subject to the same sandboxing as any game script
 - HTTP requests respect the experience's HTTP allow-lists, not the plugin's
 - Some Flipbook features (telemetry, backend features) may not work or may work differently
-- See `/Users/marin/Code/flipbook/src/EmbeddedClientStarterScript.client.luau` for the entry point
+- See `src/EmbeddedClientStarterScript.client.luau` for the entry point
 
-The type `Pluginlike` (from `/Users/marin/Code/flipbook/workspace/flipbook-core/src/Common/types.luau`) is an interface that bridges these: it exports only the subset of Plugin methods Flipbook uses, so the same story code can run in both contexts. When embedded, a mock Pluginlike is passed instead of the real Plugin.
+The type `Pluginlike` (from `workspace/flipbook-core/src/Common/types.luau`) is an interface that bridges these: it exports only the subset of Plugin methods Flipbook uses, so the same story code can run in both contexts. When embedded, a mock Pluginlike is passed instead of the real Plugin.
 
 ## React in Roblox: ReactRoblox Essentials
 
@@ -428,7 +428,7 @@ return {
 
 ## Control Store and UI Integration
 
-When Flipbook opens a story with controls, it uses an internal control store (in `/Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/createStoryControlsStore.luau`) to manage state. The store is built on Charm signals:
+When Flipbook opens a story with controls, it uses an internal control store (in `workspace/flipbook-core/src/StoryControls/createStoryControlsStore.luau`) to manage state. The store is built on Charm signals:
 
 - `getControlValue(key: string) -> () -> any` — returns a Charm computed signal for a control's value (resolves override or schema default)
 - `setControl(key: string, value: any) -> ()` — updates a control value
@@ -436,7 +436,7 @@ When Flipbook opens a story with controls, it uses an internal control store (in
 
 The store is wrapped in a React context (`StoryControlsContext`) and consumed by individual control UI components. Each control subscribes only to its own value via `useSignalState()`, so changing one control does not re-render siblings. This isolation prevents visual flicker and performance issues.
 
-The 11 control UI components live in `/Users/marin/Code/flipbook/workspace/flipbook-core/src/StoryControls/ControlElements/`. Each one reads its value from the store, renders the appropriate Foundation or custom UI, and calls `setControl()` on user interaction.
+The 11 control UI components live in `workspace/flipbook-core/src/StoryControls/ControlElements/`. Each one reads its value from the store, renders the appropriate Foundation or custom UI, and calls `setControl()` on user interaction.
 
 ## Provenance and Maintenance
 
@@ -444,28 +444,28 @@ Re-verify these commands before trusting them:
 
 ```bash
 # Verify story/storybook patterns from Storyteller
-find /Users/marin/Code/flipbook/Packages/_Index -path "*storyteller*" -name "constants.luau" -exec cat {} \;
+find Packages/_Index -path "*storyteller*" -name "constants.luau" -exec cat {} \;
 
 # Verify story and storybook type contracts
-find /Users/marin/Code/flipbook/Packages/_Index -path "*storyteller*" -name "types.luau" | head -1 | xargs cat
+find Packages/_Index -path "*storyteller*" -name "types.luau" | head -1 | xargs cat
 
 # Verify control type enum
-find /Users/marin/Code/flipbook/Packages/_Index -path "*storyteller*" -name "ControlType.luau" -exec cat {} \;
+find Packages/_Index -path "*storyteller*" -name "ControlType.luau" -exec cat {} \;
 
 # Verify ModuleLoader README (wally.toml pins 0.11.0)
-ls /Users/marin/Code/flipbook/Packages/_Index | grep module-loader
+ls Packages/_Index | grep module-loader
 
 # Verify plugin/widget types (ExtraStoryProps FIXME)
-cat /Users/marin/Code/flipbook/workspace/flipbook-core/src/Storybook/types.luau
+cat workspace/flipbook-core/src/Storybook/types.luau
 
 # Verify embedded context entry point
-cat /Users/marin/Code/flipbook/src/EmbeddedClientStarterScript.client.luau
+cat src/EmbeddedClientStarterScript.client.luau
 
 # Verify story examples by framework
-cat /Users/marin/Code/flipbook/workspace/code-samples/src/React/ReactButton.story.luau
-cat /Users/marin/Code/flipbook/workspace/code-samples/src/Roact/RoactButton.story.luau
-cat /Users/marin/Code/flipbook/workspace/code-samples/src/Fusion/FusionButton.story.luau
-cat /Users/marin/Code/flipbook/workspace/code-samples/src/Default/Button.story.luau
+cat workspace/code-samples/src/React/ReactButton.story.luau
+cat workspace/code-samples/src/Roact/RoactButton.story.luau
+cat workspace/code-samples/src/Fusion/FusionButton.story.luau
+cat workspace/code-samples/src/Default/Button.story.luau
 ```
 
 **Last verified:** 2026-07-01. Story patterns, control types, and core Storyteller APIs from wally-pinned Storyteller 1.12.0, ModuleLoader 0.11.0 (per `wally.toml` ground truth; `Packages/_Index/` contains built cache which may be stale until `lute run install` re-runs). Examples from /workspace/code-samples/. Types from source.

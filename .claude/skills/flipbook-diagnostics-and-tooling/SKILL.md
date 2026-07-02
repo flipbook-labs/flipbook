@@ -127,24 +127,24 @@ If all tests pass locally but CI fails, the issue may be environment-specific (A
 
 ## Build Introspection: build-cache.json
 
-The build cache at `build/build-cache.json` is a JSON map tracking which workspace members have been built and their content hashes. Each key is a tuple `{channel}-{target}-{workspace-path}`, and the value is an MD5 hash of the workspace member's source files.
+The build cache at `build/build-cache.json` is a JSON map tracking which workspace members have been built and their content hashes. Each key is the string `{channel}-{target}-{absolute-path}` (assembled at `.lute/lib/build-system/runBuildGroupAsync.luau:22`), and the value is an MD5 hash of that path's source files (`.lute/lib/build-system/hashPath.luau`).
 
 ### Anatomy of build-cache.json
 
-Example entries (from current build):
+Example entries. The path segment of each key is the absolute path to the workspace member on the machine that built it — it differs per clone, so it is shown here as `<REPO_ROOT>`:
 
 ```json
 {
-  "dev-roblox-/Users/marin/Code/flipbook/workspace/flipbook-core": "509bd83fc9af3035d1e6e77d7babdc00",
-  "prod-roblox-/Users/marin/Code/flipbook/workspace/flipbook-core": "1512d11c525767b2b5d6aa360790995d",
-  "prod-rotriever-/Users/marin/Code/flipbook/workspace/flipbook-core": "966fa679d182a4b3f1119d9881f3471a"
+  "dev-roblox-<REPO_ROOT>/workspace/flipbook-core": "509bd83fc9af3035d1e6e77d7babdc00",
+  "prod-roblox-<REPO_ROOT>/workspace/flipbook-core": "1512d11c525767b2b5d6aa360790995d",
+  "prod-rotriever-<REPO_ROOT>/workspace/flipbook-core": "966fa679d182a4b3f1119d9881f3471a"
 }
 ```
 
 The keys show:
 - `dev` or `prod` channel (dev keeps stories/specs, prod prunes them)
 - Target: `roblox` (in-Studio) or `rotriever` (package format)
-- Full absolute path to workspace member
+- The absolute path to the workspace member (machine-specific; do not treat the literal hash values or the path prefix above as canonical — read your own `build/build-cache.json` after a build)
 
 The hash reflects the workspace member's input (source + dependencies), not the output. If the hash hasn't changed since the last build, incremental rebuild skips that member.
 
@@ -307,18 +307,18 @@ This validates that the store subscription model (per-control signals via `useSi
 
 ## Diagnostic Scripts
 
-The `scripts/` directory in this skill contains three read-only analysis scripts. All scripts run without modifying the repo.
+The `scripts/` directory in this skill contains three read-only Lute analysis scripts. They only read the repo — none of them modify it. They are Lute scripts (`.luau`) because Lute is guaranteed present after `rokit install`; there is no shell fallback to keep in sync. Each script resolves the repo root from its own location by walking up to `rokit.toml`, so you can run it from any working directory. Invoke with `lute run <path>` (the argument is a path to the script file, not a `.lute/` task name):
 
-### inventory-stories.sh
+### inventory-stories.luau
 
 Lists the count of stories and specs per workspace member.
 
 **Usage:**
 ```bash
-bash .claude/skills/flipbook-diagnostics-and-tooling/scripts/inventory-stories.sh
+lute run .claude/skills/flipbook-diagnostics-and-tooling/scripts/inventory-stories.luau
 ```
 
-**Output:**
+**Output (verified 2026-07-02):**
 ```
 === Flipbook Story & Spec Inventory ===
 
@@ -327,49 +327,54 @@ Workspace Member                  Stories      Specs
 code-samples                           10          0
 example                                16          0
 flipbook-core                          23         16
+flipbook-next                           0          0
+template                                0          0
+test-runner                             0          0
 ----------------------------------------------------
 TOTAL                                  49         16
 ```
 
 **Purpose:** Verify test coverage growth. Run before and after adding new specs; compare the TOTAL line. Useful for PR reviews to ensure new features have corresponding tests.
 
-### detect-env-drift.sh
+### detect-env-drift.luau
 
-Scans source code for `process.env.VAR_NAME` reads and compares them against variables declared in `.env.template`.
+Scans source code (`workspace/` and `.lute/`) for `process.env.VAR_NAME` reads and compares them against variables declared in `.env.template`.
 
 **Usage:**
 ```bash
-bash .claude/skills/flipbook-diagnostics-and-tooling/scripts/detect-env-drift.sh
+lute run .claude/skills/flipbook-diagnostics-and-tooling/scripts/detect-env-drift.luau
 ```
 
-**Output:**
+**Output (verified 2026-07-02):**
 ```
 === Environment Variable Drift Detection ===
 
 ⚠️  UNDECLARED (used in code but not in .env.template):
+
   JEST_TEST_PATH_PATTERN (used 1 times)
 
 ℹ️  UNUSED (in .env.template but never read in code):
-  (none)
+
+  ENABLE_OUTPUT_LOGGING
 
 Summary: 6 env vars declared, 6 vars read from code
 ❌ Drift detected
 ```
 
-**Purpose:** Catch missing or stale environment variable declarations. If you add a new feature that reads a new env var (e.g., `process.env.MY_NEW_VAR`), this script will flag it as UNDECLARED. Add it to `.env.template` to fix the drift.
+Note the two known findings above are expected as of 2026-07-02: `JEST_TEST_PATH_PATTERN` is injected by `.lute/test.luau` at build time (never set through `.env`, so its absence from the template is benign), and `ENABLE_OUTPUT_LOGGING` is declared in the template and injected by Darklua but is read from `_G` (not `process.env`), so this scan does not see the read. Treat these two as the baseline; a NEW entry is what signals real drift.
 
 **Interpreting Results:**
 
-- **UNDECLARED**: Code references an env var not in `.env.template`. Add the var to `.env.template` with a comment explaining its purpose.
-- **UNUSED**: `.env.template` has a var that no code reads. Either it's legacy (safe to remove) or the code path is dead. Check git history for context before deleting.
+- **UNDECLARED**: Code references an env var not in `.env.template`. If it is meant to be set by a developer, add it to `.env.template` with a comment; if it is build-injected like `JEST_TEST_PATH_PATTERN`, leave the template alone.
+- **UNUSED**: `.env.template` has a var no code reads via `process.env`. It may be legacy, or (like `ENABLE_OUTPUT_LOGGING`) read from an injected `_G` global instead. Check before deleting.
 
-### check-sourcemap-freshness.sh
+### check-sourcemap-freshness.luau
 
-Verifies that sourcemap files were generated after the latest source file they map.
+Compares each sourcemap's modification time against the newest `.luau` source file it covers.
 
 **Usage:**
 ```bash
-bash .claude/skills/flipbook-diagnostics-and-tooling/scripts/check-sourcemap-freshness.sh
+lute run .claude/skills/flipbook-diagnostics-and-tooling/scripts/check-sourcemap-freshness.luau
 ```
 
 **Output:**
@@ -382,21 +387,21 @@ bash .claude/skills/flipbook-diagnostics-and-tooling/scripts/check-sourcemap-fre
 ✅ All sourcemaps are fresh
 ```
 
-Or if rebuild is needed:
+Or if a rebuild is needed:
 
 ```
-❌ workspace/flipbook-core: sourcemap older than source
+❌ workspace/flipbook-core: sourcemap older than source (diff: 42.0 sec)
 ✅ root project: sourcemap is fresh
 
 ⚠️  Some sourcemaps may be stale — rebuild with: lute run build --clean
 ```
 
-**Purpose:** Detect out-of-sync sourcemaps, which cause require-path mismatches. If you edit source files and then run a build without rebuilding sourcemaps (e.g., partial rebuild), the sourcemap becomes stale. This script catches that. Run it after pulling new commits or making manual source changes.
+**Purpose:** Detect out-of-sync sourcemaps, which cause require-path mismatches. If you edit source files and then run a build without regenerating sourcemaps, the sourcemap becomes stale. This script catches that. Run it after pulling new commits or making manual source changes.
 
 **Typical Workflow:**
 
 1. Pull new changes or edit source files
-2. Run: `bash scripts/check-sourcemap-freshness.sh`
+2. Run: `lute run .claude/skills/flipbook-diagnostics-and-tooling/scripts/check-sourcemap-freshness.luau`
 3. If stale, rebuild: `lute run build plugin --channel dev --clean`
 4. Re-run the script to confirm freshness
 
@@ -406,12 +411,12 @@ When diagnosing a runtime issue in Flipbook:
 
 1. **Enable debug logging**: Set `LOG_LEVEL=debug` and `ENABLE_OUTPUT_LOGGING=true` in `.env`, rebuild, reproduce the issue.
 2. **Check Logs view**: Help > Logs (in Flipbook). Search for ERROR or WARN lines; trace backwards.
-3. **Check build freshness**: Run `check-sourcemap-freshness.sh` to rule out stale compilation artifacts.
+3. **Check build freshness**: Run `check-sourcemap-freshness.luau` to rule out stale compilation artifacts.
 4. **Run story-specific tests**: Use `lute run test --filter "YourStory"` to isolate test failures.
 5. **Inspect build output**: Use `grep` to verify a module exists in `build/dev/roblox/` and has correct require paths.
 6. **Measure performance**: Use a render counter in the story to verify controls aren't re-rendering excessively.
-7. **Check env drift**: Run `detect-env-drift.sh` to rule out missing configuration.
-8. **Inventory coverage**: Run `inventory-stories.sh` before and after adding a feature to track test growth.
+7. **Check env drift**: Run `detect-env-drift.luau` to rule out missing configuration.
+8. **Inventory coverage**: Run `inventory-stories.luau` before and after adding a feature to track test growth.
 
 ## Provenance and Maintenance
 
@@ -420,4 +425,4 @@ When diagnosing a runtime issue in Flipbook:
 - Build cache: Check `build/build-cache.json` structure in `.lute/lib/build-system/compileAsync.luau` (hashing logic).
 - Sourcemaps: Rojo generates these; verify path with `.darklua.json` field `"rojo_sourcemap"`.
 - Rerender behavior: Verify PR #576's per-control store isolation still exists in `workspace/flipbook-core/src/StoryControls/createStoryControlsStore.luau` and `StoryControlsContext.luau`.
-- Scripts: Test with `bash scripts/inventory-stories.sh`, `bash scripts/detect-env-drift.sh`, `bash scripts/check-sourcemap-freshness.sh` monthly to catch regressions.
+- Scripts: Re-run the three `scripts/*.luau` via `lute run <path>` after any Lute version bump (the `@std/fs` API has changed across Lute versions) to confirm they still run; they are read-only and safe to run anytime.

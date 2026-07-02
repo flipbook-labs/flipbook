@@ -19,7 +19,13 @@ This skill documents the foundational design decisions, architectural invariants
 
 **Why this split?** The plugin and embedding modes have different execution contexts (Studio vs. game client), different capabilities (plugin object vs. Players service), and different security contexts (plugin permissions vs. game-client-script permissions). By keeping starter scripts thin, both modes reuse the same `flipbook-core` application logic.
 
-**Invariant assertion:** No business logic may exist in `/src/`. Only imports, setup, and delegation to `flipbook-core`. Verify by checking: `wc -l src/*.luau` should be under 100 lines per script; no Storybook, Sidebar, or TreeView logic should exist there.
+**Invariant assertion:** No business logic may live in `/src/`. Each starter script does nothing but guard its execution context, set build globals, and delegate to a single `flipbook-core` entry function. The reliable signal is *what a script imports*, not how long it is (a line-count threshold is arbitrary and drifts): a starter script should require only the `flipbook-core` package entry (`@workspace/flipbook-core/src`, which resolves to its `init.luau`) plus bootstrap primitives such as `@pkg/Charm` (for the frozen-flag workaround). A deep import into a `flipbook-core` submodule, or a component/store defined inline, is the violation.
+
+**Verification command:**
+```bash
+# Starter scripts may require the flipbook-core package root but never a submodule beneath it.
+grep -nE 'require\("@workspace/flipbook-core/src/' src/*.luau && echo "VIOLATION: deep import into flipbook-core" || echo "OK: bootstrap-only"
+```
 
 ---
 
@@ -263,8 +269,8 @@ The build cache (`build/build-cache.json`) tracks workspace-member hashes. If yo
 
 **Verification command:** Confirm no stale build artifacts exist:
 ```bash
-ls -la /Users/marin/Code/flipbook/build/build-cache.json && echo "Cache found (expected)"
-grep '"hash":' /Users/marin/Code/flipbook/build/build-cache.json | wc -l
+ls -la build/build-cache.json && echo "Cache found (expected)"
+grep '"hash":' build/build-cache.json | wc -l
 # Should match number of workspace members (~7)
 ```
 
@@ -317,7 +323,7 @@ Calls: `embedFlipbookRuntime(target)` which clones the Flipbook runtime folder, 
 
 **Route 2 — flipbook-cli:** Deploys pre-built Flipbook.rbxm to experience via Open Cloud.
 
-Location: `/Users/marin/Code/deploy-storybook` (sibling repo)
+Location: `../deploy-storybook` (sibling repo)
 
 Unpacks .rbxm, injects as LocalScript pair, and publishes place.
 
@@ -334,7 +340,7 @@ if #existing > 0 then
 end
 ```
 
-Verify: `grep "FLIPBOOK_RUNTIME_TAG" /Users/marin/Code/flipbook/workspace/flipbook-core/src/constants.luau` shows value.
+Verify: `grep "FLIPBOOK_RUNTIME_TAG" workspace/flipbook-core/src/constants.luau` shows value.
 
 ### Known Weak Point: HTTP Proxy for Embedded HTTP Requests
 
@@ -482,7 +488,7 @@ Each invariant below can be verified via a command or test.
 ```bash
 # Assertion: no business logic in src/
 # Re-verify: grep for Storybook, TreeView, StoryControls imports
-grep -r "Storybook\|TreeView\|StoryControls" /Users/marin/Code/flipbook/src --include="*.luau" | wc -l
+grep -r "Storybook\|TreeView\|StoryControls" src --include="*.luau" | wc -l
 # Expected: 0
 ```
 
@@ -518,7 +524,7 @@ grep -r "React.useState" workspace/flipbook-core/src --include="*.luau" \
 
 ```bash
 # Assertion: build-cache.json tracks all workspace members
-wc -l /Users/marin/Code/flipbook/build/build-cache.json
+wc -l build/build-cache.json
 # Expected: >200 (cache entry per file + metadata)
 ```
 

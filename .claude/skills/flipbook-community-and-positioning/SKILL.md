@@ -284,18 +284,18 @@ To verify the facts in this skill remain current:
 
 **Telemetry Event Types:**
 ```bash
-cat /Users/marin/Code/flipbook/workspace/flipbook-core/src/Telemetry/types.luau | grep "eventName"
+cat workspace/flipbook-core/src/Telemetry/types.luau | grep "eventName"
 ```
 
 **Telemetry Base URL:**
 ```bash
-grep "BASE_URL" /Users/marin/Code/flipbook/.env.template
+grep "BASE_URL" .env.template
 ```
 
 **Embedding Feature Status:**
 ```bash
 git log --oneline main | grep -i "embed" | head -5
-ls -la /Users/marin/Code/flipbook/src/EmbeddedClientStarterScript.client.luau
+ls -la src/EmbeddedClientStarterScript.client.luau
 ```
 
 **Rotriever Build Target:**

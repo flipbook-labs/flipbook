@@ -26,7 +26,7 @@ All environment variables are read from `.env` (loaded by `lute run build`); `.e
 | `ROBLOX_UNIT_TESTING_PLACE_ID` | Test place for cloud Jest execution | `123506190725771` | Roblox place ID | Production | `.env.template:21` and build system |
 | `ROBLOX_UNIT_TESTING_UNIVERSE_ID` | Test universe for cloud Jest execution | `6599100156` | Roblox universe ID | Production | `.env.template:22` and build system |
 
-**Verification:** `grep -r "process.env\|dotenv" /Users/marin/Code/flipbook/.lute /Users/marin/Code/flipbook/.env.template`.
+**Verification:** `grep -r "process.env\|dotenv" .lute .env.template`.
 
 ---
 
@@ -45,7 +45,7 @@ Darklua (`.darklua.json`) injects these 8 globals from environment at build time
 | `ENABLE_OUTPUT_LOGGING` | Output logging flag (from .env) | `.lute/build.luau:119` reads `process.env.ENABLE_OUTPUT_LOGGING`; injected by Darklua into `_G.ENABLE_OUTPUT_LOGGING` | `workspace/flipbook-core/src/logger.luau:33` checks `_G.ENABLE_OUTPUT_LOGGING == "true"` | Production |
 | `JEST_TEST_PATH_PATTERN` | Test file filter (Jest `testMatch` pattern) | `.lute/build.luau` via `--filter` arg; injected by darklua for test builds only | Inlined in test Jest config (not directly grepped in src/) | Experimental — test builds only |
 
-**Verification:** `grep -r "inject_global_value" /Users/marin/Code/flipbook/.darklua.json` lists the 8 rules.
+**Verification:** `grep -r "inject_global_value" .darklua.json` lists the 8 rules.
 
 ---
 
@@ -164,7 +164,7 @@ Central repository for paths and semantic constants.
 
 ## 8. .luaurc Configuration
 
-File: `/Users/marin/Code/flipbook/.luaurc`
+File: `.luaurc`
 
 | Setting | Value | Purpose |
 |---------|-------|---------|
@@ -389,47 +389,47 @@ Run these periodically to catch drift (as of 2026-07-01):
 
 ```bash
 # Section 1: Env vars in .env.template
-grep "^[A-Z_]*=" /Users/marin/Code/flipbook/.env.template | sort
+grep "^[A-Z_]*=" .env.template | sort
 
 # Section 2: Darklua injected globals
-jq '.process[] | select(.rule == "inject_global_value") | .identifier' /Users/marin/Code/flipbook/.darklua.json | sort
+jq '.process[] | select(.rule == "inject_global_value") | .identifier' .darklua.json | sort
 
 # Section 2 (detail): All places where _G. is used in source
-grep -r "_G\." /Users/marin/Code/flipbook/workspace/flipbook-core/src --include="*.luau" | grep -v "build/\|.spec\|.story" | wc -l
+grep -r "_G\." workspace/flipbook-core/src --include="*.luau" | grep -v "build/\|.spec\|.story" | wc -l
 # Should be ~20+ (build globals read in logger, about, telemetry, feedback)
 
 # Section 3: Build channels and targets (verify options in build.luau)
-grep -A5 'channel == "dev" or channel == "beta"' /Users/marin/Code/flipbook/.lute/build.luau
+grep -A5 'channel == "dev" or channel == "beta"' .lute/build.luau
 
 # Section 5: User settings defined
-grep -E '^\s*(rememberLastOpenedStory|theme|sidebarWidth|controlsHeight|collectAnonymousUsageData)' /Users/marin/Code/flipbook/workspace/flipbook-core/src/UserSettings/defaultSettings.luau
+grep -E '^\s*(rememberLastOpenedStory|theme|sidebarWidth|controlsHeight|collectAnonymousUsageData)' workspace/flipbook-core/src/UserSettings/defaultSettings.luau
 
 # Section 5: Settings reads in code
-grep -r "userSettings\." /Users/marin/Code/flipbook/workspace/flipbook-core/src --include="*.luau" | cut -d: -f2 | sort -u | head -20
+grep -r "userSettings\." workspace/flipbook-core/src --include="*.luau" | cut -d: -f2 | sort -u | head -20
 
 # Section 6: Constants defined
-grep "^[[:space:]]*[A-Z_]* =" /Users/marin/Code/flipbook/workspace/flipbook-core/src/constants.luau
+grep "^[[:space:]]*[A-Z_]* =" workspace/flipbook-core/src/constants.luau
 
 # Section 7: project.luau structure
-grep -E '(PROD_CONFIG|STORYBOOK|ROBLOX)' /Users/marin/Code/flipbook/project.luau
+grep -E '(PROD_CONFIG|STORYBOOK|ROBLOX)' project.luau
 
 # Section 8: Luau aliases
-jq '.aliases | keys[] as $k | "\($k): \(.[$k])"' /Users/marin/Code/flipbook/.luaurc
+jq '.aliases | keys[] as $k | "\($k): \(.[$k])"' .luaurc
 
 # Section 9: rbxasset environments
-grep "^\[assets\.\|^\[environments\." /Users/marin/Code/flipbook/rbxasset.toml
+grep "^\[assets\.\|^\[environments\." rbxasset.toml
 
 # Section 10: Tool versions (rokit.toml)
-grep -E "^[a-z-]+ =" /Users/marin/Code/flipbook/rokit.toml
+grep -E "^[a-z-]+ =" rokit.toml
 
 # Section 10: Wally deps
-grep -E "^[A-Z][a-zA-Z]+ =" /Users/marin/Code/flipbook/wally.toml | head -20
+grep -E "^[A-Z][a-zA-Z]+ =" wally.toml | head -20
 
 # Section 10: Loom deps
-jq '.package.dependencies | keys[]' /Users/marin/Code/flipbook/loom.config.luau
+jq '.package.dependencies | keys[]' loom.config.luau
 
 # Candidate issue: Check if ENABLE_OUTPUT_LOGGING is actually injected or if code is stale
-grep "ENABLE_OUTPUT_LOGGING" /Users/marin/Code/flipbook/.darklua.json
+grep "ENABLE_OUTPUT_LOGGING" .darklua.json
 # (Should return the inject rule; if not, check logger.luau logic)
 ```
 
