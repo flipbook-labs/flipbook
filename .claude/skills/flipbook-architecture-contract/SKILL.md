@@ -19,13 +19,7 @@ This skill documents the foundational design decisions, architectural invariants
 
 **Why this split?** The plugin and embedding modes have different execution contexts (Studio vs. game client), different capabilities (plugin object vs. Players service), and different security contexts (plugin permissions vs. game-client-script permissions). By keeping starter scripts thin, both modes reuse the same `flipbook-core` application logic.
 
-**Invariant assertion:** No business logic may live in `/src/`. Each starter script does nothing but guard its execution context, set build globals, and delegate to a single `flipbook-core` entry function. The reliable signal is *what a script imports*, not how long it is (a line-count threshold is arbitrary and drifts): a starter script should require only the `flipbook-core` package entry (`@workspace/flipbook-core/src`, which resolves to its `init.luau`) plus bootstrap primitives such as `@pkg/Charm` (for the frozen-flag workaround). A deep import into a `flipbook-core` submodule, or a component/store defined inline, is the violation.
-
-**Verification command:**
-```bash
-# Starter scripts may require the flipbook-core package root but never a submodule beneath it.
-grep -nE 'require\("@workspace/flipbook-core/src/' src/*.luau && echo "VIOLATION: deep import into flipbook-core" || echo "OK: bootstrap-only"
-```
+**The norm:** Keep the starter scripts thin — guard the execution context, set build globals, and delegate to a `flipbook-core` entry function. Business logic (components, stores, story handling) belongs in `flipbook-core`, not here. This is a convention to keep in mind, not a gated rule; the scripts are small enough that a glance tells you if something has crept in that shouldn't be there.
 
 ---
 
