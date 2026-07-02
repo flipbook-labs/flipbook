@@ -176,9 +176,30 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
-Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows instead of keeping all details in always-loaded context:
+Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
+
+**Process skills** (runbooks — what to do next):
 
 - `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
 - `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
 - `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
 - `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
+- `flipbook-debugging-playbook` — symptom→solution runbook for runtime issues (stale plugin, hot-reload, re-renders, crashes, test failures).
+- `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
+- `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
+- `flipbook-validation-and-qa` — the evidence bar for proving a fix, test anatomy, spec writing.
+- `flipbook-diagnostics-and-tooling` — measurement: logging, test output parsing, build-cache inspection, rerender accounting.
+- `flipbook-proof-and-analysis-toolkit` — prove claims via mechanism: require-graph, reload isolation, build determinism, type-level proof.
+- `flipbook-research-methodology` — hypothesis/evidence protocol for experiments, PR readiness, documenting dead ends.
+- `flipbook-story-controls-campaign` — story-controls work: reproducing gaps, ranked solutions, validation gates.
+- `flipbook-docs-and-writing` — docs estate (Docusaurus, code samples, vault) and house style.
+
+**Knowledge skills** (reference — how the system is and why):
+
+- `flipbook-architecture-contract` — load-bearing design decisions, invariants, known weak points.
+- `flipbook-domain-reference` — story/storybook contracts, Storyteller, module reload, control types, React-in-Roblox.
+- `flipbook-build-and-toolchain` — source→rbxm pipeline, Darklua transforms, env-global injection, dead-code elimination.
+- `flipbook-config-and-flags` — env vars, injected globals, build channels/targets, user settings.
+- `flipbook-failure-archaeology` — past investigations, dead ends, reverted features, unresolved bugs; check before attempting a "new" fix.
+- `flipbook-community-and-positioning` — community-first doctrine, telemetry/privacy posture, ecosystem claims.
+- `flipbook-research-frontier` — open research problems, blockers, milestones.
