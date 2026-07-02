@@ -69,8 +69,8 @@ lute run build plugin --channel dev --clean
 
 **Date stamped:** as of 2026-07-02.
 
-**Re-verify these claims when this skill next loads:**
-- `try-in-flipbook` scripts exist: run `ls /Users/marin/git/flipbook-labs/storyteller/.lute/try-in-flipbook.luau /Users/marin/git/flipbook-labs/module-loader/.lute/try-in-flipbook.luau`
-- `try-in-storyteller` script exists: run `ls /Users/marin/git/flipbook-labs/module-loader/.lute/try-in-storyteller.luau`
-- Package directories exist: run `ls /Users/marin/git/flipbook-labs/flipbook/Packages/_Index/ | grep -E "flipbook-labs_(storyteller|module-loader)"`
-- Build command targets: run `grep -A 1 'target.*roblox.*rotriever' /Users/marin/git/flipbook-labs/flipbook/.lute/build.luau`
+**Re-verify these claims when this skill next loads** (run from the `flipbook/` repo root; sibling repos are `../`, per the layout above):
+- `try-in-flipbook` scripts exist: run `ls ../storyteller/.lute/try-in-flipbook.luau ../module-loader/.lute/try-in-flipbook.luau`
+- `try-in-storyteller` script exists: run `ls ../module-loader/.lute/try-in-storyteller.luau`
+- Package directories exist: run `ls Packages/_Index/ | grep -E "flipbook-labs_(storyteller|module-loader)"`
+- Build command targets: run `grep -A 1 'target.*roblox.*rotriever' .lute/build.luau`

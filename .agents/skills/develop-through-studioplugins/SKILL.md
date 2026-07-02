@@ -65,7 +65,7 @@ When StudioPlugins is configured to use the local rotriever output, its watcher 
 
 **Date stamped:** as of 2026-07-02.
 
-**Re-verify these claims when this skill next loads:**
-- Build targets and flags: run `grep -A 1 'target.*roblox.*rotriever' /Users/marin/git/flipbook-labs/flipbook/.lute/build.luau`
-- Output path for rotriever: run `grep -n "flipbook-core-rotriever\|build/.*rotriever" /Users/marin/git/flipbook-labs/flipbook/.lute/build.luau`
+**Re-verify these claims when this skill next loads** (run from the `flipbook/` repo root):
+- Build targets and flags: run `grep -A 1 'target.*roblox.*rotriever' .lute/build.luau`
+- Output path for rotriever: run `grep -n "flipbook-core-rotriever\|build/.*rotriever" .lute/build.luau`
 - Plugin build command exists: ask engineer to confirm StudioPlugins build command and watcher are documented

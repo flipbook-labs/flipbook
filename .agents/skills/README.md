@@ -33,6 +33,8 @@ When the two disagree, the repo wins over the skill, and the durable layer wins 
 
 Before you write an anchor, open the file and confirm the token exists and is distinctive enough to locate. Never invent one. If nothing stable marks the spot, name the file and the symbol/section and say what to look for — still no line number. The one exception: line references *into a code or output block printed inside the skill itself* are self-contained and fine.
 
+**Paths are always repo-relative, never absolute.** A command, path, or embedded snapshot that hardcodes `/Users/you/...` (or any machine-specific prefix) fails or silently misleads on every other clone. Write paths relative to the repo root (`.lute/build.luau`, `Packages/_Index/`); reference sibling checkouts as `../storyteller/...`; in scripts, derive the root at runtime (the diagnostics scripts use `path.dirname(debug.info(1, "s"))`, not a literal). If you paste real command output that contains an absolute path (e.g. a build-cache key), redact the prefix to `<REPO_ROOT>`. This is the same failure mode as line numbers — a convenience that rots the moment it leaves your machine.
+
 ## The maintenance norm — this is the forcing function
 
 Skills do not heal themselves. An agent only updates a skill if it is told to, so this is the standing rule:
@@ -56,6 +58,7 @@ Where drift can be checked mechanically, prefer a script over prose — see the 
 
 - [ ] Durable claims stated plainly; volatile claims fenced into tables/footers and dated.
 - [ ] Zero line-number pointers into source — anchors only, each verified present in the repo.
+- [ ] Zero absolute/machine-specific paths — repo-relative, `../sibling` for sibling repos, runtime-derived in scripts.
 - [ ] Frontmatter `description` says exactly *when to load* (trigger-rich "Use when:") and `type:` declares the genre.
 - [ ] Project Skills index in AGENTS.md updated if the skill is new, renamed, or retired.
 - [ ] "When not to use" links sibling skills so the right one wins.
