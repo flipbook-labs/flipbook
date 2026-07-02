@@ -1,0 +1,95 @@
+#!/usr/bin/env lute
+-- Check if sourcemaps are fresh relative to source files
+-- Usage: lute run scripts/check-sourcemap-freshness.lute
+-- Verifies sourcemaps are newer than their corresponding source files
+
+local fs = require("@std/fs")
+local path = require("@std/path")
+
+local PROJECT_ROOT = "/Users/marin/Code/flipbook"
+
+local function getFileTime(filePath)
+	local f = io.open(filePath, "r")
+	if not f then
+		return nil
+	end
+	local stat = fs.metadata(filePath)
+	f:close()
+	return stat.modified
+end
+
+local function checkSourcemap(sourcemapPath, sourceDir)
+	if not fs.exists(sourcemapPath) then
+		return nil, "sourcemap not found"
+	end
+
+	if not fs.exists(sourceDir) then
+		return nil, "source directory not found"
+	end
+
+	local sourcemapTime = getFileTime(sourcemapPath)
+	if not sourcemapTime then
+		return nil, "cannot read sourcemap time"
+	end
+
+	local maxSourceTime = 0
+
+	local function scanDir(dir)
+		for item in fs.dir(dir) do
+			local itemPath = path.join(dir, item)
+			local meta = fs.metadata(itemPath)
+			if meta.kind == "file" and string.match(item, "%.luau$") then
+				local fileTime = getFileTime(itemPath)
+				if fileTime and fileTime > maxSourceTime then
+					maxSourceTime = fileTime
+				end
+			elseif meta.kind == "dir" and not string.match(item, "^%.") and not string.match(item, "^build$") then
+				scanDir(itemPath)
+			end
+		end
+	end
+
+	scanDir(sourceDir)
+
+	if maxSourceTime > sourcemapTime then
+		return false, string.format("sourcemap older than source (diff: %.1f sec)", maxSourceTime - sourcemapTime)
+	end
+
+	return true, "sourcemap is fresh"
+end
+
+print("\n=== Sourcemap Freshness Check ===\n")
+
+local checks = {
+	{
+		name = "workspace/flipbook-core",
+		sourcemap = path.join(PROJECT_ROOT, "workspace/flipbook-core/sourcemap.json"),
+		source = path.join(PROJECT_ROOT, "workspace/flipbook-core/src"),
+	},
+	{
+		name = "root project",
+		sourcemap = path.join(PROJECT_ROOT, "sourcemap.json"),
+		source = path.join(PROJECT_ROOT, "workspace"),
+	},
+}
+
+local allFresh = true
+
+for _, check in ipairs(checks) do
+	local fresh, msg = checkSourcemap(check.sourcemap, check.source)
+
+	if fresh == nil then
+		print(string.format("⚠️  %s: %s", check.name, msg))
+	elseif fresh then
+		print(string.format("✅ %s: %s", check.name, msg))
+	else
+		print(string.format("❌ %s: %s", check.name, msg))
+		allFresh = false
+	end
+end
+
+if allFresh then
+	print("\n✅ All sourcemaps are fresh\n")
+else
+	print("\n⚠️  Some sourcemaps may be stale — rebuild with: lute run build --clean\n")
+end

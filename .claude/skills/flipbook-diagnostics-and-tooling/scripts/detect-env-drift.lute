@@ -1,0 +1,127 @@
+#!/usr/bin/env lute
+-- Detect environment variable drift by scanning source files
+-- Usage: lute run scripts/detect-env-drift.lute
+-- Compares process.env reads in code against .env.template declarations
+
+local fs = require("@std/fs")
+local path = require("@std/path")
+local process = require("@std/process")
+
+local PROJECT_ROOT = "/Users/marin/Code/flipbook"
+local ENV_TEMPLATE = path.join(PROJECT_ROOT, ".env.template")
+local WORKSPACE_ROOT = path.join(PROJECT_ROOT, "workspace")
+
+-- Parse .env.template
+local templateVars = {}
+if fs.exists(ENV_TEMPLATE) then
+	for line in io.lines(ENV_TEMPLATE) do
+		local var = string.match(line, "^([A-Z_][A-Z0-9_]*)=")
+		if var then
+			templateVars[var] = true
+		end
+	end
+end
+
+-- Scan workspace for process.env reads
+local envReads = {}
+
+local function scanFile(filePath)
+	local f = io.open(filePath, "r")
+	if not f then
+		return
+	end
+
+	for line in f:lines() do
+		-- Match: process.env.VAR_NAME
+		local var = string.match(line, "process%.env%.([A-Z_][A-Z0-9_]*)")
+		if var then
+			envReads[var] = (envReads[var] or 0) + 1
+		end
+	end
+
+	f:close()
+end
+
+local function scanDirectory(dir)
+	for item in fs.dir(dir) do
+		local itemPath = path.join(dir, item)
+		local meta = fs.metadata(itemPath)
+		if meta.kind == "file" and string.match(item, "%.luau$") then
+			scanFile(itemPath)
+		elseif meta.kind == "dir" and not string.match(item, "^%.") then
+			scanDirectory(itemPath)
+		end
+	end
+end
+
+-- Scan workspace
+scanDirectory(WORKSPACE_ROOT)
+
+-- Also scan root .lute directory
+local luteDir = path.join(PROJECT_ROOT, ".lute")
+if fs.exists(luteDir) then
+	scanDirectory(luteDir)
+end
+
+-- Report
+print("\n=== Environment Variable Drift Detection ===\n")
+
+-- Variables used but not in template
+local undeclared = {}
+for var, count in pairs(envReads) do
+	if not templateVars[var] then
+		table.insert(undeclared, {
+			var = var,
+			count = count,
+		})
+	end
+end
+
+if #undeclared > 0 then
+	table.sort(undeclared, function(a, b)
+		return a.count > b.count
+	end)
+	print("⚠️  UNDECLARED (used in code but not in .env.template):\n")
+	for _, item in ipairs(undeclared) do
+		print(string.format("  %s (used %d times)", item.var, item.count))
+	end
+	print("")
+end
+
+-- Variables declared but never used
+local unused = {}
+for var in pairs(templateVars) do
+	if not envReads[var] then
+		table.insert(unused, var)
+	end
+end
+
+if #unused > 0 then
+	table.sort(unused)
+	print("ℹ️  UNUSED (in .env.template but never read in code):\n")
+	for _, var in ipairs(unused) do
+		print(string.format("  %s", var))
+	end
+	print("")
+end
+
+-- Summary
+print(string.format("Summary: %d env vars declared, %d vars read from code", #(function()
+	local t = {}
+	for k in pairs(templateVars) do
+		table.insert(t, k)
+	end
+	return t
+end)(), #(function()
+	local t = {}
+	for k in pairs(envReads) do
+		table.insert(t, k)
+	end
+	return t
+end)()))
+
+if #undeclared > 0 or #unused > 0 then
+	print("❌ Drift detected\n")
+else
+	print("✅ No drift\n")
+end
