@@ -33,9 +33,9 @@ When Flipbook runs embedded in a place (not as a plugin), it loses Studio's impl
 Branch: `embedded-http-proxy` (75 commits, last activity 2026-06-19). Main commit: `7f076c51` ("Route embedded HTTP requests through a server-side proxy").
 
 Approach:
-- When embedded, `src/EmbeddedServerStarterScript.server.luau` creates a `RemoteFunction` tagged `FlipbookHttpProxy` (verified in code: grep `FlipbookHttpProxy`).
-- Client's `workspace/flipbook-core/src/Http/requestAsync.luau` detects the proxy via `CollectionService` and invokes it server-to-server instead of calling `HttpService` directly (verified in branch diff).
-- Server-side proxy filters all requests through an allowlist (grep `ALLOWED_HOST`) + host-parsing logic to defeat spoofing (URL parsing stripping userinfo and port; grep `userinfo` in same file).
+- When embedded, `src/EmbeddedServerStarterScript.server.luau` creates a `RemoteFunction` tagged `FlipbookHttpProxy` (verified in branch diff on `embedded-http-proxy`; the file ships on main via #582, but the `FlipbookHttpProxy` tag is branch-only — do not expect to grep it on main).
+- Client's `workspace/flipbook-core/src/Http/requestAsync.luau` detects the proxy via `CollectionService` and invokes it server-to-server instead of calling `HttpService` directly (verified in branch diff on `embedded-http-proxy`).
+- Server-side proxy filters all requests through an allowlist (grep `ALLOWED_HOST` on the branch) + host-parsing logic to defeat spoofing (URL parsing stripping userinfo and port; grep `userinfo` in the same file on the branch).
 
 What it solves: Flipbook can reach its backend even when the place does not have HTTP enabled, because the server script (trusted Roblox engine code) makes the request.
 
@@ -226,7 +226,7 @@ Command:
 git show agent-actions-registry:workspace/flipbook-core/src/Actions/types.luau | grep -A 20 "type ManifestEntry"
 ```
 
-Expected output (verified in types.luau, grep `ManifestEntry`):
+Expected output (verified in the `agent-actions-registry` branch diff; grep `ManifestEntry` there — the type is not on main):
 ```luau
 export type ManifestEntry = {
     id: string,
