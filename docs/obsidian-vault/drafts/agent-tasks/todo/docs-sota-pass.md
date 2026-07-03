@@ -121,19 +121,19 @@ Create `usage/troubleshooting.md`. Only document failure modes you can trace to 
 
 Insert `capture` manifests at these spots (adjust asset names to taste; keep them stable once chosen). Judgment call throughout: a placeholder is cheap, but each future image must earn its scroll. Aim for at most two per short page; the interface page is the exception.
 
-| Page | Location | Asset | Kind |
-| --- | --- | --- | --- |
-| `usage/getting-started.md` | existing three embeds | retrofit manifests above each | `plugin` / `studio` / `story` |
-| `usage/the-flipbook-interface.md` | per W1 | `interface-overview`, `interface-sidebar-search`, `interface-topbar`, `interface-settings` | `plugin` |
-| `usage/controls.md` | existing two embeds, plus the control-types table | retrofits, plus `controls-panel-all-types` | `story` |
-| `usage/writing-stories.md` | after the first rendered example | `writing-stories-first-render` | `story` |
-| `usage/frameworks/react.md` | after the story sample | `frameworks-react-button` | `story` |
-| `usage/frameworks/fusion.md` | after the story sample | `frameworks-fusion-button` | `story` |
-| `usage/frameworks/roact.md` | after the story sample | `frameworks-roact-button` | `story` |
-| `usage/embedding-flipbook.md` | per W2 | `embed-dialog`, `embedded-in-experience` | `plugin` / `external` |
-| `usage/deploying-storybooks.md` | experience creation and env setup steps | `deploy-creator-hub`, `deploy-github-env` | `external` |
-| `usage/typechecking.md` | after the annotation sample | `typechecking-editor-error` | `external` |
-| `concepts/story.md` | the canvas section | `concepts-story-canvas` | `story` |
+| Page                              | Location                                          | Asset                                                                                      | Kind                          |
+| --------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------- |
+| `usage/getting-started.md`        | existing three embeds                             | retrofit manifests above each                                                              | `plugin` / `studio` / `story` |
+| `usage/the-flipbook-interface.md` | per W1                                            | `interface-overview`, `interface-sidebar-search`, `interface-topbar`, `interface-settings` | `plugin`                      |
+| `usage/controls.md`               | existing two embeds, plus the control-types table | retrofits, plus `controls-panel-all-types`                                                 | `story`                       |
+| `usage/writing-stories.md`        | after the first rendered example                  | `writing-stories-first-render`                                                             | `story`                       |
+| `usage/frameworks/react.md`       | after the story sample                            | `frameworks-react-button`                                                                  | `story`                       |
+| `usage/frameworks/fusion.md`      | after the story sample                            | `frameworks-fusion-button`                                                                 | `story`                       |
+| `usage/frameworks/roact.md`       | after the story sample                            | `frameworks-roact-button`                                                                  | `story`                       |
+| `usage/embedding-flipbook.md`     | per W2                                            | `embed-dialog`, `embedded-in-experience`                                                   | `plugin` / `external`         |
+| `usage/deploying-storybooks.md`   | experience creation and env setup steps           | `deploy-creator-hub`, `deploy-github-env`                                                  | `external`                    |
+| `usage/typechecking.md`           | after the annotation sample                       | `typechecking-editor-error`                                                                | `external`                    |
+| `concepts/story.md`               | the canvas section                                | `concepts-story-canvas`                                                                    | `story`                       |
 
 Backing story for `controls-panel-all-types`: add `workspace/code-samples/src/Controls/AllControls.story.luau` exercising every control type the pinned Storyteller supports (the story-controls campaign skill on the library branch has a template; verify each constructor against the pinned version). It must pass `lute run analyze`.
 

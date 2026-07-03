@@ -18,6 +18,7 @@ It works with however you build UI. Out of the box Flipbook renders plain Roblox
   "theme": "dark",
   "alt": "The Flipbook plugin rendering a story"
 } -->
+
 ![[main-screenshot.png]]
 
 ## Installation
@@ -58,6 +59,7 @@ To connect these back to Studio, store them as ModuleScripts, for example under 
   "theme": "dark",
   "alt": "The Studio Explorer showing the Storybook and Story ModuleScripts under ReplicatedStorage"
 } -->
+
 ![[storybook-setup.png]]
 
 Open Flipbook, select the Button story, and it renders into the canvas. It's already interactive, so click it and watch the output:
@@ -71,6 +73,7 @@ Open Flipbook, select the Button story, and it renders into the canvas. It's alr
   "theme": "dark",
   "alt": "The Button story rendered in the canvas"
 } -->
+
 ![[first-story.png]]
 
 Editing the Story live-reloads the preview, so you can shape the button and see the result immediately.

@@ -51,27 +51,27 @@ Exclude `drafts/`: the only hits there are the convention examples in these brie
 
 As of 2026-07-02 that finds 19 manifests across 11 pages:
 
-| Page | Asset | Kind |
-| --- | --- | --- |
-| `usage/getting-started.md` | `main-screenshot.png` | plugin |
-| `usage/getting-started.md` | `storybook-setup.png` | studio |
-| `usage/getting-started.md` | `first-story.png` | story |
-| `usage/the-flipbook-interface.md` | `interface-overview.png` | plugin |
-| `usage/the-flipbook-interface.md` | `interface-sidebar-search.png` | plugin |
-| `usage/the-flipbook-interface.md` | `interface-settings.png` | plugin |
-| `usage/controls.md` | `button-with-controls.png` | story |
-| `usage/controls.md` | `button-with-controls-changed.png` | story |
-| `usage/controls.md` | `controls-panel-all-types.png` | story |
-| `usage/writing-stories.md` | `writing-stories-first-render.png` | story |
-| `usage/frameworks/react.md` | `frameworks-react-button.png` | story |
-| `usage/frameworks/fusion.md` | `frameworks-fusion-button.png` | story |
-| `usage/frameworks/roact.md` | `frameworks-roact-button.png` | story |
-| `usage/embedding-flipbook.md` | `embed-dialog.png` | plugin |
-| `usage/embedding-flipbook.md` | `embedded-in-experience.png` | external |
-| `usage/deploying-storybooks.md` | `deploy-creator-hub.png` | external |
-| `usage/deploying-storybooks.md` | `deploy-github-env.png` | external |
-| `usage/typechecking.md` | `typechecking-editor-error.png` | external |
-| `concepts/story.md` | `concepts-story-canvas.png` | story |
+| Page                              | Asset                              | Kind     |
+| --------------------------------- | ---------------------------------- | -------- |
+| `usage/getting-started.md`        | `main-screenshot.png`              | plugin   |
+| `usage/getting-started.md`        | `storybook-setup.png`              | studio   |
+| `usage/getting-started.md`        | `first-story.png`                  | story    |
+| `usage/the-flipbook-interface.md` | `interface-overview.png`           | plugin   |
+| `usage/the-flipbook-interface.md` | `interface-sidebar-search.png`     | plugin   |
+| `usage/the-flipbook-interface.md` | `interface-settings.png`           | plugin   |
+| `usage/controls.md`               | `button-with-controls.png`         | story    |
+| `usage/controls.md`               | `button-with-controls-changed.png` | story    |
+| `usage/controls.md`               | `controls-panel-all-types.png`     | story    |
+| `usage/writing-stories.md`        | `writing-stories-first-render.png` | story    |
+| `usage/frameworks/react.md`       | `frameworks-react-button.png`      | story    |
+| `usage/frameworks/fusion.md`      | `frameworks-fusion-button.png`     | story    |
+| `usage/frameworks/roact.md`       | `frameworks-roact-button.png`      | story    |
+| `usage/embedding-flipbook.md`     | `embed-dialog.png`                 | plugin   |
+| `usage/embedding-flipbook.md`     | `embedded-in-experience.png`       | external |
+| `usage/deploying-storybooks.md`   | `deploy-creator-hub.png`           | external |
+| `usage/deploying-storybooks.md`   | `deploy-github-env.png`            | external |
+| `usage/typechecking.md`           | `typechecking-editor-error.png`    | external |
+| `concepts/story.md`               | `concepts-story-canvas.png`        | story    |
 
 ## Environment Notes
 

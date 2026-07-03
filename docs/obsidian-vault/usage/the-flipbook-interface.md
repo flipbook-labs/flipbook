@@ -63,13 +63,13 @@ The support actions are:
 
 The Settings screen groups the options Flipbook remembers between sessions.
 
-| Setting | Group | Description |
-| --- | --- | --- |
-| **UI theme** | UI | The theme Flipbook uses. Defaults to matching Studio. |
-| **Sidebar panel width** | UI | Default sidebar width in pixels, between 140 and 500. |
-| **Controls panel height** | UI | Default height of the Controls panel in pixels, between 100 and 400. |
-| **Remember last opened story** | Stories | Reopen the last viewed Story when Flipbook starts. |
-| **Anonymous usage data** | Telemetry | Send anonymous usage data to help improve Flipbook. |
+| Setting                        | Group     | Description                                                          |
+| ------------------------------ | --------- | -------------------------------------------------------------------- |
+| **UI theme**                   | UI        | The theme Flipbook uses. Defaults to matching Studio.                |
+| **Sidebar panel width**        | UI        | Default sidebar width in pixels, between 140 and 500.                |
+| **Controls panel height**      | UI        | Default height of the Controls panel in pixels, between 100 and 400. |
+| **Remember last opened story** | Stories   | Reopen the last viewed Story when Flipbook starts.                   |
+| **Anonymous usage data**       | Telemetry | Send anonymous usage data to help improve Flipbook.                  |
 
 <!-- capture {
   "asset": "assets/interface-settings.png",

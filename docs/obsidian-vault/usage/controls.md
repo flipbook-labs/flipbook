@@ -30,6 +30,7 @@ Opening the `ReactButtonControls` Story in Flipbook will include an accompanying
   "theme": "dark",
   "alt": "The ReactButtonControls story with its controls panel"
 } -->
+
 ![[button-with-controls.png]]
 
 As controls are modified the Story will live-reload with the new props.
@@ -43,6 +44,7 @@ As controls are modified the Story will live-reload with the new props.
   "theme": "dark",
   "alt": "The same story re-rendered after changing its controls"
 } -->
+
 ![[button-with-controls-changed.png]]
 
 Controls aren't specific to React. The same `controls` and `props.controls` pattern works with the function-based renderer and plain Roblox Instances:
