@@ -82,7 +82,7 @@ Flipbook is made up of React components, each of which has a story file. This me
 
 Once you have Flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
 
-![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](![[assets/plugin-debugging-enabled.png]])
+![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](../assets/plugin-debugging-enabled.png)
 
 Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
 
