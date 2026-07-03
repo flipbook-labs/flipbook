@@ -10,7 +10,7 @@ This skill describes the three validation tiers, what they prove and cannot prov
 
 ## When NOT to use this skill
 
-Use `flipbook-change-control` (sibling 1) for PR gating rules and non-negotiables. Use `run-flipbook-checks` (under `.agents/skills/`) for quick command reference (lint, analyze, test). Use `flipbook-debugging-playbook` for symptom→triage when a test fails. Use `flipbook-diagnostics-and-tooling` to measure/instrument and find bugs.
+Use `flipbook-change-control` (sibling 1) for PR gating rules and non-negotiables. Use `run-flipbook-checks` (under `.agents/skills/`) for quick command reference (lint, analyze, test). Use `flipbook-debugging-playbook` for symptom→triage when a test fails. Use `flipbook-diagnostics-and-tooling` to measure/instrument and find bugs. Use `write-flipbook-tests` for test-quality discipline — the red-first gate, forbidden moves, and what makes a test worth keeping; this skill covers the mechanics of specs, that one covers whether they're any good.
 
 ## The Three Validation Tiers
 
@@ -192,6 +192,8 @@ The fix is simple (typo, const rename, obvious logic), all tests pass, and type-
 ---
 
 ## How to Write a Spec
+
+This section covers the mechanics. For the quality bar — the red-first gate, forbidden moves, and exemplar specs to imitate — load `write-flipbook-tests` before writing.
 
 ### File Placement & Naming
 

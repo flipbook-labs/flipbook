@@ -188,6 +188,7 @@ Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditiona
 - `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
 - `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
 - `flipbook-validation-and-qa` — the evidence bar for proving a fix, test anatomy, spec writing.
+- `write-flipbook-tests` — test-quality discipline: red-first gate, anti-gaming rules, what makes a spec worth keeping.
 - `flipbook-diagnostics-and-tooling` — measurement: logging, test output parsing, build-cache inspection, rerender accounting.
 - `flipbook-proof-and-analysis-toolkit` — prove claims via mechanism: require-graph, reload isolation, build determinism, type-level proof.
 - `flipbook-research-methodology` — hypothesis/evidence protocol for experiments, PR readiness, documenting dead ends.
