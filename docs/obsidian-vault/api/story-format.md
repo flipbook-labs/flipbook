@@ -21,20 +21,31 @@ The type of the `story` property depends on what kind of Story is being rendered
 
 Stories can be written for React, Fusion, legacy Roact, plain Roblox Instances, and anything you can think of. See [[usage/writing-stories|Writing Stories]] for how the function-based renderer and UI libraries are wired up.
 
-Example Story module:
+Here is a complete Story that renders a `TextButton` with the default renderer:
 
-```lua
-return {
-	story = function(props)
-
-	end
-}
+```code-sample
+workspace/code-samples/src/Default/Button.story.luau
 ```
+
+## What the Story Function Can Return
+
+When no UI library is configured, Flipbook renders the Story with its default renderer, and a function-based `story` can return either of two things:
+
+- **An Instance.** Flipbook parents it to the Story's container automatically if you haven't parented it yourself.
+- **A cleanup function.** Build your UI inside the story function, parent it to `props.container`, and return a function that tears it down. Flipbook calls it when the Story unmounts or re-renders:
+
+```code-sample
+workspace/code-samples/src/Default/ButtonWithCleanup.story.luau
+```
+
+A story function that declares two or more parameters is called with `(container, props)` instead of `(props)`, which keeps Hoarcekat-style stories working unchanged. See [[usage/migration-guides/migrating-hoarcekat|Migrating from Hoarcekat]].
+
+When the Storybook or Story configures a UI library via `packages`, the story function returns that library's element type instead. See [[usage/frameworks/index|Frameworks]].
 
 ## Legacy Support
 
-> [!tip] 💡
-> A future version of Flipbook may remove this compatibility layer. It is recommended to migrate to `packages`.
+> [!warning]
+> These properties are a compatibility layer for Flipbook v1, and a future version of Flipbook may remove them. Migrate to `packages`.
 
 Flipbook v1 used a different approach for defining packages. For convenience, v2 provides backwards compatibility for the following properties, which map onto `packages`:
 
@@ -44,4 +55,6 @@ Flipbook v1 used a different approach for defining packages. For convenience, v2
 | `react: any`       | The version of React to use when mounting React components. Maps to `packages.React`.                                              |
 | `reactRoblox: any` | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`. Maps to `packages.ReactRoblox`. |
 
-> [!seealso] See also: [[concepts/story|Story concept]] · [[api/story-props|StoryProps]] · [[api/storybook-format|Storybook Format]]
+> [!seealso]
+> [[concepts/story|Story]]: what a Story is and how it renders
+> [[api/story-props|StoryProps]] · [[api/storybook-format|Storybook Format]]
