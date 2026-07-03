@@ -1,7 +1,7 @@
 # Plan — state-of-the-art docs pass (coverage, quality, screenshot affordances)
 
 > [!note]
-> Self-contained brief for a fresh agent (written for an Opus-class model). Build-excluded (`drafts/`). Status: **not started**.
+> Self-contained brief for a fresh agent (written for an Opus-class model). Build-excluded (`drafts/`). Status: **completed 2026-07-02**; see the hand-back at the bottom.
 > Three outcomes: (1) user-facing docs cover every core feature, (2) existing pages meet a professional technical-writing bar, (3) machine-readable screenshot placeholders thread through the docs so a separate auto-screenshotting skill can fill them in later. The screenshot skill does not exist yet; your job is only the affordances.
 
 ## Read First, in This Order
@@ -153,3 +153,21 @@ New pages go into `usage/index.md`'s link list in reading order (that list is th
 ## Suggested Order
 
 W1 and W2 (new coverage, highest value) → W3 and W4 (reference depth) → W5 and W6 (page upgrades) → W7 (placeholders, which depend on final page structure) → W8 and W9. Commit per work item or per page, not one megacommit.
+
+## Hand-Back (2026-07-02)
+
+All nine work items landed, one commit per item.
+
+**Pages added:** `usage/the-flipbook-interface.md` (plugin UI tour with the settings table from `defaultSettings.luau`), `usage/embedding-flipbook.md` (Embed into Experience flow, play-mode behavior including character auto-loading being disabled, removal), `usage/troubleshooting.md` (the story/storybook load errors with their exact message text from Storyteller's loaders).
+
+**Pages deepened:** the three `api/` pages (per-prop StoryProps guidance including the undocumented `widget` prop, story return shapes with the cleanup contract and Hoarcekat arity rule, `mapStory`/`mapDefinition` with a new MapStory sample), six `concepts/` stubs, and targeted edits across `usage/` (prerequisites, next steps, non-Rojo path, `createObjectControl` pointer for UI Labs Object controls, one em-dash fix).
+
+**Samples added:** `workspace/code-samples/src/MapStory/` and `workspace/code-samples/src/Controls/` (the AllControls capture target). Both pass luau-lsp analysis, StyLua, and Selene.
+
+**Capture affordances:** 19 manifests across 11 pages, including retrofits on all five existing screenshots. Work list and convention: [[drafts/agent-tasks/todo/capture-screenshots|capture-screenshots]].
+
+**Claims verified against Storyteller 1.12.0** after discovering the vendored `_Index` copy had been 1.11.0 (stale install, since refreshed): mapStory/mapDefinition types and renderer coverage (React and Roact only), manual-renderer cleanup and arity behavior, theme values, control constructor exports. All held.
+
+**Review suggestions rejected on inspection:** a framework-comparison decision table (readers arrive with a framework; the variant guidance in `usage/frameworks/index.md` already covers the real choice), a deploy-failure troubleshooting subsection (the failure modes live in flipbook-cli's repo, not this one, so nothing was traceable to source), documenting the `props` field on the Story type (present in `types.luau` but no consumer found in the renderers), and a "which environment" guide for the GitHub Action examples (generic GitHub knowledge).
+
+**Known leftovers:** `wally.lock` carries an uncommitted UILabs re-resolution from a parallel session (not committed here; decide its fate separately). `lute run analyze` fails on pre-existing type errors in vendored `LuauPackages` on a clean tree; the new samples were checked directly with luau-lsp instead. The full site build passed with no broken-link warnings and zero capture-comment leakage into the built HTML.
