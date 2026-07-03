@@ -9,6 +9,7 @@ Install Flipbook and write stories for your UI.
 ## Getting Started
 
 - [[usage/getting-started|Getting Started]]: Install Flipbook and render your first Storybook and Story
+- [[usage/the-flipbook-interface|The Flipbook Interface]]: The sidebar, canvas, topbar, and settings
 
 ## Core Workflow
 
