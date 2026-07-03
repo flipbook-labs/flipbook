@@ -23,5 +23,6 @@ Install Flipbook and write stories for your UI.
 
 ## Going Further
 
+- [[usage/embedding-flipbook|Embedding Flipbook]]: Run Flipbook inside a playing experience
 - [[usage/deploying-storybooks|Deploying Storybooks]]: Share a live preview with your team via Roblox
 - [[usage/migration-guides/index|Migration Guides]]: Moving to Flipbook from another plugin
