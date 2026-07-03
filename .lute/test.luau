@@ -1,6 +1,7 @@
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
 local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local fs = require("@std/fs")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
@@ -10,7 +11,13 @@ local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local run = FlipbookBatteries.run
 
-dotenv.config()
+-- Anchor .env to the repo root so this task works regardless of the working
+-- directory, and skip it when absent (e.g. fresh clones and worktrees) so the
+-- ROBLOX_API_KEY environment variable can supply the key on its own
+local envPath = path.join(path.dirname(debug.info(1, "s")), "..", ".env")
+if fs.exists(envPath) then
+	dotenv.config({ path = envPath } :: dotenv.ConfigOptions)
+end
 
 local args = cli.parser()
 
@@ -26,8 +33,10 @@ args:add("filter", "option", {
 
 args:parse({ ... })
 
-local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
-if not apiKey then
+-- An empty string (e.g. a blank ROBLOX_API_KEY= line copied from
+-- .env.template) is truthy in Luau, so treat it the same as unset
+local apiKey = args:get("apiKey") or process.env.ROBLOX_API_KEY
+if not apiKey or apiKey == "" then
 	error(
 		"A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
 	)

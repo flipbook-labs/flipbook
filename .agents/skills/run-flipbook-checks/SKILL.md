@@ -57,7 +57,7 @@ lute run test --apiKey "YOUR_KEY"
 
 Builds plugin with `--channel dev --clean`, generates Rocale test place, and runs Jest via Rocale.
 
-**Requires:** `ROBLOX_API_KEY` environment variable (from `.env`) or `--apiKey` flag. Place and universe IDs are read from `.env.template` (grep for `ROBLOX_UNIT_TESTING_`). If key is unavailable, tests cannot run; use `lute run lint` and `lute run analyze` instead.
+**Requires:** `ROBLOX_API_KEY` environment variable (from the repo root `.env` or the shell environment — dotenv never overrides an already-set variable, and blank values are treated as unset) or `--apiKey` flag, which takes precedence. Place and universe IDs are read from `.env.template` (grep for `ROBLOX_UNIT_TESTING_`). If key is unavailable, tests cannot run; use `lute run lint` and `lute run analyze` instead.
 
 **`--filter`** accepts a filename pattern to run only matching test files (e.g., `"Story"` to run `Story.test.luau`). Useful for focused test runs when changed area has a clear test pattern.
 
@@ -65,11 +65,11 @@ Builds plugin with `--channel dev --clean`, generates Rocale test place, and run
 
 ## Provenance and Maintenance
 
-**Date stamped:** as of 2026-07-02.
+**Date stamped:** as of 2026-07-03.
 
 **Re-verify these claims when this skill next loads:**
 - Lint checks order and tools: run `head -40 .lute/lint.luau` to confirm selene, stylua, lua-vs-luau checks exist
 - Analyze command details: run `grep "platform=standard\|LuauSolverV2" .lute/analyze.luau` to confirm passes
 - Test requirements and options: run `grep -A 3 "args:add(\"apiKey\"\|args:add(\"filter\"" .lute/test.luau` to verify options
-- ROBLOX_API_KEY requirement: run `grep "ROBLOX_API_KEY or" .lute/test.luau` to confirm required check
+- ROBLOX_API_KEY requirement: run `grep 'not apiKey or apiKey == ""' .lute/test.luau` to confirm the blank-tolerant required check
 - Test place IDs: run `grep "ROBLOX_UNIT_TESTING" .env.template` to verify IDs are defined

@@ -21,7 +21,13 @@ local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
-dotenv.config()
+-- Anchor .env to the repo root so it is found regardless of the working
+-- directory, and skip it when absent (e.g. fresh clones and worktrees) so
+-- environment variables can supply the config on their own
+local envPath = path.join(path.dirname(debug.info(1, "s")), "..", ".env")
+if fs.exists(envPath) then
+	dotenv.config({ path = envPath } :: dotenv.ConfigOptions)
+end
 
 local args = cli.parser()
 
