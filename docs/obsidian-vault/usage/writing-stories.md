@@ -13,7 +13,7 @@ A [[concepts/storybook|Storybook]] is any ModuleScript with a `.storybook` exten
 
 A [[concepts/story|Story]] is any ModuleScript with a `.story` extension, typically parented as a sibling to the UI component it renders. Stories are what you will be working with the most. The Storybook is what tells Flipbook how to find and render them.
 
-See [[api/storybook-format|Storybook Format]] and [[api/story-format|Story Format]] for the full module APIs.
+See [[api/storybook-format|Storybook Format]] and [[api/story-format|Story Format]] for the full module APIs, including [[api/story-format#What the Story Function Can Return|what a story function can return]] with the default renderer: an Instance, or a cleanup function for when you manage the UI's lifecycle yourself.
 
 ## Using Frameworks
 

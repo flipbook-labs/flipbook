@@ -5,7 +5,7 @@ linter-yaml-title-alias: Pre-v1.5 Controls
 
 # Pre-v1.5 Controls
 
-Before v1.5, Flipbook used a simpler controls format where arrays were treated as implicit selection lists. This format is still supported at runtime — Flipbook automatically migrates it when loading your stories — but upgrading to the current syntax is recommended for clarity and type-safety.
+Before v1.5, Flipbook used a simpler controls format where arrays were treated as implicit selection lists. This format is still supported at runtime (Flipbook automatically migrates it when loading your stories), but upgrading to the current syntax is recommended for clarity and type-safety.
 
 ## What Changed
 

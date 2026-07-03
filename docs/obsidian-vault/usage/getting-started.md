@@ -13,6 +13,8 @@ It works with however you build UI. Out of the box Flipbook renders plain Roblox
 
 ## Installation
 
+All you need is Roblox Studio and a place to work in. The walkthrough below creates two ModuleScripts; if you manage your project with [Rojo](https://github.com/rojo-rbx/rojo/), create them as `.luau` files in your source tree instead and they sync in the same way.
+
 Install Flipbook from the [Creator Store](https://create.roblox.com/store/asset/8517129161/flipbook) to get automatic updates as new versions ship.
 
 [![Get it on Creator Store](../assets/link-creator-store.svg)](https://create.roblox.com/store/asset/8517129161/flipbook)
@@ -48,5 +50,7 @@ Editing the Story live-reloads the preview, so you can shape the button and see 
 
 ## Next Steps
 
+- [[usage/the-flipbook-interface|The Flipbook Interface]]: a tour of the sidebar, canvas, topbar, and settings you just used.
 - [[usage/controls|Controls]]: change a story's behavior on the fly, swapping variations and toggling states without touching code.
 - [[usage/writing-stories|Writing Stories]]: the different ways to define a Story, and how to render one with your UI framework.
+- [[usage/frameworks/index|Frameworks]]: complete Storybook and Story examples for React, Fusion, and Roact.

@@ -20,7 +20,7 @@ A UI Labs controls schema is a table where each entry is an object with a `Contr
 | `Choose`        | Select           | the choices become the `items`; the default comes from `DefIndex`           |
 | `EnumList`      | Select           | the `items` are the list's keys (sorted); the default comes from `DefIndex` |
 | `RGBA`          | Color            | only the color carries over, so **transparency is dropped**                 |
-| `Object`        | (none)           | **not migrated**; rewrite it as a different control or remove it            |
+| `Object`        | (none)           | **not migrated**; recreate it natively with `createObjectControl`           |
 
 Because this happens automatically, a Story brought over from UI Labs will often render with working controls as soon as Flipbook discovers it.
 
