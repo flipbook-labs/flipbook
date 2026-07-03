@@ -43,5 +43,15 @@ workspace/code-samples/src/React/ReactButton.story.luau
 workspace/code-samples/src/React/React.storybook.luau
 ```
 
+<!-- capture {
+  "asset": "assets/writing-stories-first-render.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/React/ReactButton.story.luau",
+  "setup": ["open the ReactButton story"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "The ReactButton story rendered in the canvas"
+} -->
+
 > [!tip]
 > Stories can individually override the global `packages` so if you need to use another UI library for a particular Story, you can do that.

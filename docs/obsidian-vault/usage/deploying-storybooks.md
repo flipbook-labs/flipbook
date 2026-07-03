@@ -16,6 +16,15 @@ Two tools handle this:
 
 ### Create the Preview Experience
 
+<!-- capture {
+  "asset": "assets/deploy-creator-hub.png",
+  "kind": "external",
+  "setup": ["screenshot the Creator Hub creations dashboard with the Create button visible"],
+  "frame": "plugin-window",
+  "theme": "dark",
+  "alt": "The Creator Hub dashboard where the preview experience is created"
+} -->
+
 1. Go to [Creator Hub](https://create.roblox.com/dashboard/creations) and create a new experience.
 2. Note the **UniverseId** and **PlaceId**. You'll need these later.
 3. Close the experience in Studio after publishing to avoid conflicts during deploys.
@@ -36,6 +45,15 @@ In **Settings > Environments** (or **Secrets and variables > Actions**):
 | ------------------------------ | -------- | -------------------------- |
 | `ROBLOX_API_KEY`               | Secret   | The Open Cloud API key     |
 | `ROBLOX_STORYBOOK_UNIVERSE_ID` | Variable | The UniverseId from step 1 |
+
+<!-- capture {
+  "asset": "assets/deploy-github-env.png",
+  "kind": "external",
+  "setup": ["screenshot the GitHub repository Settings > Environments page showing the secret and variable configured"],
+  "frame": "plugin-window",
+  "theme": "dark",
+  "alt": "GitHub environment settings with the API key secret and universe id variable"
+} -->
 
 ## Using the GitHub Action
 

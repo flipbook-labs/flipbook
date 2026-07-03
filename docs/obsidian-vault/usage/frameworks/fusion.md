@@ -42,3 +42,13 @@ workspace/code-samples/src/Fusion/FusionButton.story.luau
 ```code-sample
 workspace/code-samples/src/FusionStoryteller/FusionButton.story.luau
 ```
+
+<!-- capture {
+  "asset": "assets/frameworks-fusion-button.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/Fusion/FusionButton.story.luau",
+  "setup": ["open the FusionButton story"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "The Fusion button story rendered in the canvas"
+} -->

@@ -25,6 +25,16 @@ The legacy [[usage/migration-guides/migrating-hoarcekat|Hoarcekat]] shape, where
 
 ## The Canvas
 
+<!-- capture {
+  "asset": "assets/concepts-story-canvas.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/Default/Button.story.luau",
+  "setup": ["open the Button story so the canvas shows it isolated with its name and summary above"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "A story rendered alone in the sandboxed canvas"
+} -->
+
 Each Story renders into its own sandboxed canvas, isolated from the rest of your game. In a running experience a given piece of UI might only surface after a particular sequence of states (a panel that appears once its data has loaded, say), and reproducing that by hand on every edit is slow. The canvas lets you render that state directly and interact with it in place.
 
 The canvas is closer to a Figma and Storybook hybrid than to a single fixed component. Today it renders a single Story, but it's built to grow toward multi-story views and documentation living alongside the live preview.

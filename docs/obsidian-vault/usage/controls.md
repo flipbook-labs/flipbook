@@ -21,10 +21,28 @@ workspace/code-samples/src/React/ReactButtonControls.story.luau
 
 Opening the `ReactButtonControls` Story in Flipbook will include an accompanying panel for configuring the controls.
 
+<!-- capture {
+  "asset": "assets/button-with-controls.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/React/ReactButtonControls.story.luau",
+  "setup": ["open the story with the controls panel expanded"],
+  "frame": "canvas+controls",
+  "theme": "dark",
+  "alt": "The ReactButtonControls story with its controls panel"
+} -->
 ![[button-with-controls.png]]
 
 As controls are modified the Story will live-reload with the new props.
 
+<!-- capture {
+  "asset": "assets/button-with-controls-changed.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/React/ReactButtonControls.story.luau",
+  "setup": ["change the text control to a new value", "toggle isDisabled on", "capture the re-rendered story"],
+  "frame": "canvas+controls",
+  "theme": "dark",
+  "alt": "The same story re-rendered after changing its controls"
+} -->
 ![[button-with-controls-changed.png]]
 
 Controls aren't specific to React. The same `controls` and `props.controls` pattern works with the function-based renderer and plain Roblox Instances:
@@ -63,6 +81,16 @@ controls = {
 > The constructors come from Storyteller, which also provides the types for [[usage/typechecking|typechecking]] your Stories. See [[usage/frameworks/index|Frameworks]] for more on the relationship between Storyteller and Flipbook.
 
 ## Control Types
+
+<!-- capture {
+  "asset": "assets/controls-panel-all-types.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/Controls/AllControls.story.luau",
+  "setup": ["open the AllControls story", "expand the controls panel so every control row is visible"],
+  "frame": "canvas+controls",
+  "theme": "dark",
+  "alt": "The controls panel showing one control of every type"
+} -->
 
 Every control accepts an optional `default`. The number-based controls add `range` and `step`; the list-based controls take an `items` array and an options table (`default`, a `tostring` label formatter, and `sort`).
 

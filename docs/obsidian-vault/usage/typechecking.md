@@ -23,6 +23,15 @@ workspace/code-samples/src/ReactStoryteller/ReactButton.story.luau
 
 With these annotations in place, Luau analysis (for example luau-lsp in your editor) flags a malformed Storybook or Story before you ever open it in Flipbook: a missing `story`, a mistyped `storyRoots`, or a control whose shape doesn't match.
 
+<!-- capture {
+  "asset": "assets/typechecking-editor-error.png",
+  "kind": "external",
+  "setup": ["in an editor with luau-lsp, annotate a story with Storyteller.Story<Instance> and misspell the story property", "screenshot the reported type error"],
+  "frame": "plugin-window",
+  "theme": "dark",
+  "alt": "An editor showing a type error on a malformed Story"
+} -->
+
 Storyteller also exports `Storyteller.StoryProps` for the object passed to your story function, and the control types (`Storyteller.StoryControlsSchema` and the individual `*Control` types) for annotating [[usage/controls|controls]].
 
 > [!seealso]

@@ -9,6 +9,15 @@ Flipbook is a storybook plugin that renders your UI components in a sandboxed ca
 
 It works with however you build UI. Out of the box Flipbook renders plain Roblox Instances with no setup, and it has native support for [[usage/frameworks/react|React]], [[usage/frameworks/fusion|Fusion]], and [[usage/frameworks/roact|Roact]]. You can also share a live preview with your whole team, designers included, straight from a place via [[usage/deploying-storybooks|deployed storybooks]].
 
+<!-- capture {
+  "asset": "assets/main-screenshot.png",
+  "kind": "plugin",
+  "story": "workspace/code-samples/src/React/ReactButtonControls.story.luau",
+  "setup": ["open the story so the sidebar, canvas, and controls panel are all populated"],
+  "frame": "plugin-window",
+  "theme": "dark",
+  "alt": "The Flipbook plugin rendering a story"
+} -->
 ![[main-screenshot.png]]
 
 ## Installation
@@ -40,10 +49,28 @@ workspace/code-samples/src/Default/Button.story.luau
 
 To connect these back to Studio, store them as ModuleScripts, for example under ReplicatedStorage:
 
+<!-- capture {
+  "asset": "assets/storybook-setup.png",
+  "kind": "studio",
+  "story": "workspace/code-samples/src/Default/Button.story.luau",
+  "setup": ["place ProjectName.storybook and Button.story ModuleScripts under ReplicatedStorage", "screenshot the Explorer tree showing them"],
+  "frame": "plugin-window",
+  "theme": "dark",
+  "alt": "The Studio Explorer showing the Storybook and Story ModuleScripts under ReplicatedStorage"
+} -->
 ![[storybook-setup.png]]
 
 Open Flipbook, select the Button story, and it renders into the canvas. It's already interactive, so click it and watch the output:
 
+<!-- capture {
+  "asset": "assets/first-story.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/Default/Button.story.luau",
+  "setup": ["select the Button story in the sidebar", "click the rendered button so its output prints"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "The Button story rendered in the canvas"
+} -->
 ![[first-story.png]]
 
 Editing the Story live-reloads the preview, so you can shape the button and see the result immediately.

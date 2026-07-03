@@ -45,3 +45,13 @@ workspace/code-samples/src/Roact/RoactButton.story.luau
 ```code-sample
 workspace/code-samples/src/RoactStoryteller/RoactButton.story.luau
 ```
+
+<!-- capture {
+  "asset": "assets/frameworks-roact-button.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/Roact/RoactButton.story.luau",
+  "setup": ["open the RoactButton story"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "The Roact button story rendered in the canvas"
+} -->

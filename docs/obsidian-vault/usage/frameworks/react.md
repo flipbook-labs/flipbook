@@ -42,3 +42,13 @@ workspace/code-samples/src/React/ReactButton.story.luau
 ```code-sample
 workspace/code-samples/src/ReactStoryteller/ReactButton.story.luau
 ```
+
+<!-- capture {
+  "asset": "assets/frameworks-react-button.png",
+  "kind": "story",
+  "story": "workspace/code-samples/src/React/ReactButton.story.luau",
+  "setup": ["open the ReactButton story"],
+  "frame": "canvas",
+  "theme": "dark",
+  "alt": "The React button story rendered in the canvas"
+} -->
