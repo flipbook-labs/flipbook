@@ -20,7 +20,12 @@ const config: Config = {
 	projectName: PROJECT_NAME,
 
 	onBrokenLinks: 'throw',
-	onBrokenMarkdownLinks: 'warn',
+
+	markdown: {
+		hooks: {
+			onBrokenMarkdownLinks: 'warn',
+		},
+	},
 
 	i18n: {
 		defaultLocale: 'en',
