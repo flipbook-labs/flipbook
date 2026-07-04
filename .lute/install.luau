@@ -17,35 +17,14 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
--- Install Loom dependencies first since the rest of the script depends on them
+-- Install Loom dependencies first since the rest of the script depends on them.
+-- Lute installs them into the global store (~/.loom/store), which the @luaupkg
+-- alias resolves requires from directly, so nothing needs copying locally.
 do
-	local storeDir = path.join(process.homedir(), ".loom/store")
-
 	local res = process.run({ "lute", "pkg", "install" }, {
 		stdio = "inherit",
 	})
 	assert(res.ok, res.stderr)
-
-	local lock = require("@repo/loom.lock")
-
-	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
-		recursive = true,
-	})
-	fs.createDirectory(project.LUAU_PACKAGES_PATH)
-
-	-- Lute installs Loom dependencies into the global store (~/.loom/store), but
-	-- our build bundles from the project directory, so copy them into
-	-- LuauPackages. A dedicated dir also disambiguates them from the Wally
-	-- packages that land in Packages/.
-	for packageId in lock.packages :: { [string]: unknown } do
-		local src = path.join(storeDir, packageId)
-		local dst = path.join(project.LUAU_PACKAGES_PATH, packageId)
-		if not fs.exists(dst) then
-			process.run({ "cp", "-r", tostring(src), tostring(dst) }, {
-				stdio = "inherit",
-			})
-		end
-	end
 end
 
 do
@@ -170,6 +149,14 @@ do
 
 	local function installRbxasset()
 		local fileName = "rbxasset.zip"
+
+		-- rbxasset (a Lune dependency, aliased as @lunepkg) is the only thing that
+		-- still lives under LuauPackages, so make sure the directory exists.
+		if not fs.exists(project.LUAU_PACKAGES_PATH) then
+			fs.createDirectory(project.LUAU_PACKAGES_PATH, {
+				makeParents = true,
+			})
+		end
 
 		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
 			cwd = project.LUAU_PACKAGES_PATH,

@@ -2,7 +2,7 @@
 -- to Lute. Follow this PR for updates: https://github.com/Roblox/rbxasset/pull/5
 
 local process = require("@lune/process")
-local rbxasset = require("@luaupkg/rbxasset")
+local rbxasset = require("@lunepkg/rbxasset")
 
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
