@@ -1,6 +1,6 @@
 ---
 name: flipbook-docs-and-writing
-description: "Flipbook documentation estate: Docusaurus site, code-sample extraction, Obsidian vault (flipbook-docs branch), and house style. Use when maintaining or extending the docs of record, writing new user or contributor docs, enforcing prose/markdown conventions, or creating templates for documentation pages and skills."
+description: "Flipbook documentation estate: Docusaurus site, code-sample extraction, Obsidian vault (flipbook-docs branch), house style, and PR descriptions. Use when maintaining or extending the docs of record, writing new user or contributor docs, writing or revising a pull request description, enforcing prose/markdown conventions, or creating templates for documentation pages and skills."
 type: process
 ---
 
@@ -105,6 +105,20 @@ Standard keys: `sidebar_position` (sort order in category), `id` (for stable URL
 **See also blocks:** Use `> [!seealso]` callout blocks (Obsidian standard) at the bottom of pages to link related docs.
 
 **Wikilinks:** Obsidian vault uses `[[path/to/page]]`; public site uses standard Markdown `[link text](/docs/path/to/page)`.
+
+## Pull Request Descriptions
+
+A PR body exists to orient the human who has to review an ever-growing diff. Its job is to inform and orient — explain what the change does and why it exists — not to catalog every line. The file-change view already owns the granular detail; the body should let a reviewer feel informed before they open a single file. This covers how to write the body; for the surrounding workflow (version gating, CI gates, review discipline) see `flipbook-change-control`.
+
+**Follow the repo template.** `.github/pull_request_template.md` defines the sections: Problem (why the change is needed), Solution (what it does and any non-obvious decisions), Testing (how it was verified), and Notes for reviewers (tradeoffs, risks, follow-ups). Fill each in; don't invent a custom structure.
+
+**Lead with prose, keep code sparse.** Name things in sentences rather than wrapping every identifier in backticks — a body where half the nouns are inline code is unscannable, and the reader's eye snags on each one. Reserve inline code for things that genuinely read as code: a file path, an alias, a command, a version string. If a paragraph carries more backticks than commas, rewrite it as prose plus a table.
+
+**Push granular detail into tables and lists.** A "what changed" table grouped by area (not one row per file) and a verification table mapping each check to its result carry dense facts far better than a paragraph studded with identifiers. Group and summarize; the reviewer drops into the diff when they want the per-file specifics.
+
+**Keep the altitude high.** Explain intent and the decisions a reviewer couldn't infer from the diff; let the mechanical parts speak for themselves. A reader should finish the body knowing why the PR exists, what it changes at a high level, and what to watch for — then reach for the files for anything finer.
+
+For a worked example of this style on a dependency-bump PR, see [#608](https://github.com/flipbook-labs/flipbook/pull/608).
 
 ## Local Workflow
 
