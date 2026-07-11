@@ -18,6 +18,11 @@ return {
 				sourceKind = "github",
 				source = "https://github.com/erlcx/lute-dotenv",
 			},
+			["AgentSkills"] = {
+				rev = "v0.4.0",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/agent-skills",
+			},
 		},
 	},
 }

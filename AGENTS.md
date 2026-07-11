@@ -57,7 +57,7 @@ flipbook/
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv)
+├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv, AgentSkills)
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
@@ -165,7 +165,7 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** (`LuauPackages/`) installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv)
+- **Loom** (`LuauPackages/`) installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) and the `AgentSkills` shared skill library (read by agents, not required at runtime)
 - The install script moves Loom packages out of `Packages/` into `LuauPackages/` to prevent Wally from seeing them as game deps
 
 ### Darklua and require paths
@@ -174,32 +174,28 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ---
 
-## Project Skills
+## Shared skills: flipbook-labs/agent-skills
 
-Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
+Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned in [`loom.config.luau`](loom.config.luau) and installed by `lute run install` into `LuauPackages/` alongside the other Loom packages. Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
 
-**Process skills** (runbooks — what to do next):
+Before you write any code, tests, or PR prose:
 
-- `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
-- `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
-- `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
-- `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
-- `flipbook-debugging-playbook` — symptom→solution runbook for runtime issues (stale plugin, hot-reload, re-renders, crashes, test failures).
-- `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
-- `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
-- `flipbook-validation-and-qa` — the evidence bar for proving a fix, test anatomy, spec writing.
-- `flipbook-diagnostics-and-tooling` — measurement: logging, test output parsing, build-cache inspection, rerender accounting.
-- `flipbook-proof-and-analysis-toolkit` — prove claims via mechanism: require-graph, reload isolation, build determinism, type-level proof.
-- `flipbook-research-methodology` — hypothesis/evidence protocol for experiments, PR readiness, documenting dead ends.
-- `flipbook-story-controls-campaign` — story-controls work: reproducing gaps, ranked solutions, validation gates.
-- `flipbook-docs-and-writing` — docs estate (Docusaurus, code samples, vault) and house style.
+1. Install dependencies (this also fetches the skills):
 
-**Knowledge skills** (reference — how the system is and why):
+   ```sh
+   lute run install
+   ```
 
-- `flipbook-architecture-contract` — load-bearing design decisions, invariants, known weak points.
-- `flipbook-domain-reference` — story/storybook contracts, Storyteller, module reload, control types, React-in-Roblox.
-- `flipbook-build-and-toolchain` — source→rbxm pipeline, Darklua transforms, env-global injection, dead-code elimination.
-- `flipbook-config-and-flags` — env vars, injected globals, build channels/targets, user settings.
-- `flipbook-failure-archaeology` — past investigations, dead ends, reverted features, unresolved bugs; check before attempting a "new" fix.
-- `flipbook-community-and-positioning` — community-first doctrine, telemetry/privacy posture, ecosystem claims.
-- `flipbook-research-frontier` — open research problems, blockers, milestones.
+2. Resolve the concrete skills path (do not guess the version):
+
+   ```sh
+   ls -d LuauPackages/AgentSkills@*
+   ```
+
+   That prints the one installed copy, `LuauPackages/AgentSkills@v<version>`, where `<version>` is the `rev` pinned for `AgentSkills` in [`loom.config.luau`](loom.config.luau). Use the printed path wherever `<skills>` appears below.
+
+3. Read the routing index at `<skills>/AGENTS.md` in full. Its **Project Skills** section lists every skill with a trigger-rich one-liner, so you know what exists before you start.
+
+Deep reads of individual `<skills>/src/<scope>/<name>/SKILL.md` files stay on demand: when a task matches a trigger from the index, read that skill before doing the work it covers.
+
+Skills are living documents. If your work here contradicts a skill (a renamed symbol, a changed value, a fixed bug it still calls known), fix it in the agent-skills repo and add a `.changes/` entry there in the same PR. The fix reaches this repo on its next `rev` bump.

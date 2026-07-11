@@ -2,4 +2,6 @@
 
 # Claude-specific routing
 
-The skill library lives in `.agents/skills/` (vendor-neutral home), not `.claude/skills/`, so it is **not** auto-surfaced by the Skill tool. Route yourself: when a task matches a trigger in the Project Skills index above (imported from AGENTS.md), read `.agents/skills/<name>/SKILL.md` before working. Library conventions and the maintenance norm are in `.agents/skills/README.md` — skills are living documents; if your work contradicts one you loaded, fix the skill in the same PR.
+Follow [`AGENTS.md`](AGENTS.md) first — its "Shared skills" section is the gate: run `lute run install`, resolve the `LuauPackages/AgentSkills@*` path, and read that library's routing index before any code, tests, or PR prose.
+
+The shared skills live under `<skills>/src/<scope>/<name>/SKILL.md` (the path you resolve in that section), not in `.claude/skills/`, so the Skill tool does not surface them. Route to them yourself by following the gate in AGENTS.md.

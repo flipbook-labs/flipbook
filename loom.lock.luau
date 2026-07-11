@@ -1,6 +1,14 @@
 return {
   version = 2,
   dependencies = {
+    ["AgentSkills@v0.4.0"] = {
+      installPath = "Packages/AgentSkills@v0.4.0",
+      name = "AgentSkills",
+      rev = "v0.4.0",
+      source = "https://github.com/flipbook-labs/agent-skills",
+      sourceKind = "github",
+      dependencies = {},
+    },
     ["Lute@v1.0.0"] = {
       installPath = "Packages/Lute@v1.0.0",
       name = "Lute",
@@ -36,5 +44,5 @@ return {
       dependencies = {},
     },
   },
-  packages = {"flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "lute@v1.0.0"},
+  packages = {"AgentSkills@v0.4.0", "flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "lute@v1.0.0"},
 }
