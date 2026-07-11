@@ -17,24 +17,18 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
--- Install Loom dependencies first since the rest of the script depends on them
+-- Install Loom dependencies first since the rest of the script depends on them.
+-- Lute installs them into the global store (~/.loom/store), which the @luaupkg
+-- alias resolves requires from directly, so nothing needs copying locally.
 do
 	local res = process.run({ "lute", "pkg", "install" }, {
 		stdio = "inherit",
 	})
 	assert(res.ok, res.stderr)
-
-	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
-		recursive = true,
-	})
-
-	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
-	-- packages by moving all the Loom dependencies into LuauPackages
-	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
@@ -155,6 +149,14 @@ do
 
 	local function installRbxasset()
 		local fileName = "rbxasset.zip"
+
+		-- rbxasset (a Lune dependency, aliased as @lunepkg) is the only thing that
+		-- still lives under LuauPackages, so make sure the directory exists.
+		if not fs.exists(project.LUAU_PACKAGES_PATH) then
+			fs.createDirectory(project.LUAU_PACKAGES_PATH, {
+				makeParents = true,
+			})
+		end
 
 		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
 			cwd = project.LUAU_PACKAGES_PATH,

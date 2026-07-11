@@ -53,11 +53,11 @@ flipbook/
 │   └── flipbook-core-rotriever/  # Rotriever bundle for Studio-internal Flipbook
 ├── .lute/                  # Lute task scripts
 ├── Packages/               # Wally installs (gitignored)
-├── LuauPackages/           # Loom/Lute tooling packages (moved from Packages/ on install)
+├── LuauPackages/           # rbxasset only; Loom packages resolve from the store (~/.loom/store)
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv, AgentSkills)
+├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv; AgentSkills dev dep)
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
@@ -165,8 +165,8 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** (`LuauPackages/`) installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) and the `AgentSkills` shared skill library (read by agents, not required at runtime)
-- The install script moves Loom packages out of `Packages/` into `LuauPackages/` to prevent Wally from seeing them as game deps
+- **Loom** installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) into the global store (`~/.loom/store`), which the `@luaupkg` alias resolves requires from directly — nothing is copied into the repo. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime)
+- `LuauPackages/` now holds only rbxasset (a Lune dependency); Wally and Loom no longer share the `Packages/` dir, so no post-install move is needed
 
 ### Darklua and require paths
 
@@ -176,11 +176,11 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Shared skills: flipbook-labs/agent-skills
 
-Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned in [`loom.config.luau`](loom.config.luau) and installed by `lute run install` into `LuauPackages/` alongside the other Loom packages. Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
+Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned as a dev dependency in [`loom.config.luau`](loom.config.luau) and installed by `lute run install` into the Loom store (`~/.loom/store`). Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
 
 Before you write any code, tests, or PR prose:
 
-1. Install dependencies (this also fetches the skills):
+1. Install dependencies (this also fetches the skills into the Loom store):
 
    ```sh
    lute run install
@@ -189,10 +189,10 @@ Before you write any code, tests, or PR prose:
 2. Resolve the concrete skills path (do not guess the version):
 
    ```sh
-   ls -d LuauPackages/AgentSkills@*
+   ls -d ~/.loom/store/AgentSkills@*
    ```
 
-   That prints the one installed copy, `LuauPackages/AgentSkills@v<version>`, where `<version>` is the `rev` pinned for `AgentSkills` in [`loom.config.luau`](loom.config.luau). Use the printed path wherever `<skills>` appears below.
+   That prints the one installed copy, `~/.loom/store/AgentSkills@v<version>`, where `<version>` is the `rev` pinned for `AgentSkills` in [`loom.config.luau`](loom.config.luau). Use the printed path wherever `<skills>` appears below.
 
 3. Read the routing index at `<skills>/AGENTS.md` in full. Its **Project Skills** section lists every skill with a trigger-rich one-liner, so you know what exists before you start.
 
