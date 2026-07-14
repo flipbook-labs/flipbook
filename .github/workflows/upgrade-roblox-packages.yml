@@ -126,9 +126,11 @@ jobs:
           git commit -m "Upgrade RobloxPackages to $LATEST_VERSION"
 
           # The new commit is stacked on top of the branch's existing history,
-          # so this force push only fast-forwards the remote and never discards
-          # in-progress work.
-          git push --force origin "$BRANCH_NAME"
+          # so a plain push fast-forwards the remote. We deliberately avoid a
+          # force push: if someone pushed to the branch after we fetched it,
+          # this push fails rather than clobbering their work, and the job can
+          # simply be re-run.
+          git push origin "$BRANCH_NAME"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Open pull request
