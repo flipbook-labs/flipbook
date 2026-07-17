@@ -18,11 +18,10 @@ local View = Foundation.View
 local e = React.createElement
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
-local useStoriesForModule = Storyteller.useStoriesForModule
+local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
-type LoadedStory = Storyteller.LoadedStory<unknown>
 type ExtraStoryProps = types.ExtraStoryProps
 
 type StoryViewProps = {
@@ -32,22 +31,7 @@ type StoryViewProps = {
 }
 
 local function StoryView(props: StoryViewProps)
-	local stories, storyError = useStoriesForModule(props.storyModule, props.storybook)
-	local story = useMemo(function(): LoadedStory?
-		if not stories then
-			return nil
-		end
-
-		if props.storyId then
-			for _, candidate in stories do
-				if candidate.id == props.storyId then
-					return candidate
-				end
-			end
-		end
-
-		return stories[1]
-	end, { stories, props.storyId } :: { unknown })
+	local story, storyError = useStory(props.storyModule, props.storybook, props.storyId)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
