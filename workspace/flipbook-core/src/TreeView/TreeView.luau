@@ -25,7 +25,12 @@ local function TreeView(props: Props)
 
 	useEffect(function()
 		props.root.setSortOrder(function(a: TreeNodeStore, b: TreeNodeStore)
-			if a.getIcon() ~= b.getIcon() then
+			local aOrder = a.getOrder()
+			local bOrder = b.getOrder()
+
+			if aOrder ~= nil and bOrder ~= nil then
+				return aOrder < bOrder
+			elseif a.getIcon() ~= b.getIcon() then
 				-- Sort by type
 				return a.getIcon() < b.getIcon()
 			else
