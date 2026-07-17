@@ -11,22 +11,28 @@ local useCallback = React.useCallback
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
 
-local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
+export type LastOpenedStory = {
+	storyId: string?,
+	storyModule: ModuleScript,
+}
+
+local function useLastOpenedStory(): (LastOpenedStory?, (storyModule: ModuleScript?, storyId: string?) -> ())
 	local localStorageStore = useSignalState(LocalStorageStore.get)
 	local localStorage = useSignalState(localStorageStore.getStorage)
 
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?)
+	local setLastOpenedStory = useCallback(function(storyModule: ModuleScript?, storyId: string?)
 		localStorageStore.setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
+				lastOpenedStoryId = if storyModule then storyId else nil,
 				lastOpenedStoryPath = if storyModule then getInstancePath(storyModule) else nil,
 			})
 		end)
 	end, { localStorageStore })
 
-	local lastOpenedStory = useMemo(function(): ModuleScript?
+	local lastOpenedStory = useMemo(function(): LastOpenedStory?
 		local rememberLastOpenedStory = userSettings.rememberLastOpenedStory
 
 		if not rememberLastOpenedStory then
@@ -39,7 +45,10 @@ local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?
 			local instance = getInstanceFromPath(lastOpenedStoryPath)
 
 			if instance and instance:IsA("ModuleScript") then
-				return instance
+				return {
+					storyId = localStorage.lastOpenedStoryId,
+					storyModule = instance,
+				}
 			end
 		end
 
