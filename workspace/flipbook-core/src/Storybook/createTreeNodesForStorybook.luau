@@ -7,19 +7,18 @@ local types = require("@root/Storybook/types")
 
 type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
-type StoryModuleSnapshot = types.StoryModuleSnapshot
+type StoryModuleSnapshots = types.StoryModuleSnapshots
 
-local function createTreeNodesForStorybook(
-	storybook: LoadedStorybook,
-	snapshots: { [ModuleScript]: StoryModuleSnapshot }?
-): TreeNodeStore
+local function createTreeNodesForStorybook(storybook: LoadedStorybook, snapshots: StoryModuleSnapshots?): TreeNodeStore
 	local root = TreeView.createTreeNodeStore()
 	root.setName(if storybook.name then storybook.name else "Unnamed Storybook")
 	root.setIcon(TreeView.TreeNodeIcon.Storybook)
 	root.setInstance(storybook.source)
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-		local currentNode = createTreeNodeForStoryModule(storyModule, if snapshots then snapshots[storyModule] else nil)
+		local snapshotsForModule = if snapshots then snapshots[storyModule] else nil
+		local snapshot = if snapshotsForModule then snapshotsForModule[storybook.source] else nil
+		local currentNode = createTreeNodeForStoryModule(storyModule, snapshot)
 
 		for _, ancestor in getAncestors(storyModule) do
 			-- This is probably expensive to be doing so frequently but it seems

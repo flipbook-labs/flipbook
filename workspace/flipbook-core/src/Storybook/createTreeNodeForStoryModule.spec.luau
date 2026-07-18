@@ -6,6 +6,17 @@ local createTreeNodeForStoryModule = require("./createTreeNodeForStoryModule")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
+test("creates a leaf while story metadata is loading", function()
+	local storyModule = Instance.new("ModuleScript")
+	storyModule.Name = "Button.story"
+
+	local node = createTreeNodeForStoryModule(storyModule)
+
+	expect(node.getName()).toBe("Button")
+	expect(node.getIcon()).toBe(TreeView.TreeNodeIcon.Story)
+	expect(node.getStoryId()).toBeUndefined()
+end)
+
 test("keeps single-story modules as one leaf", function()
 	local storyModule = Instance.new("ModuleScript")
 	storyModule.Name = "Button.story"

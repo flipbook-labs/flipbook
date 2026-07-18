@@ -35,4 +35,10 @@ export type StoryModuleTarget = {
 	storybook: LoadedStorybook,
 }
 
+export type StoryModuleSnapshots = {
+	[ModuleScript]: {
+		[ModuleScript]: StoryModuleSnapshot,
+	},
+}
+
 return nil

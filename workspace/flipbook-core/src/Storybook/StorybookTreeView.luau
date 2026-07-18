@@ -1,3 +1,4 @@
+local Charm = require("@pkg/Charm")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
@@ -34,46 +35,113 @@ export type Props = {
 	layoutOrder: number?,
 }
 
-local function getSnapshotSignature(
-	storyModules: { ModuleScript },
-	snapshots: { [ModuleScript]: StoryModuleSnapshot }
-): string?
-	local parts = {}
-	for _, storyModule in storyModules do
-		local snapshot = snapshots[storyModule]
-		if not snapshot then
-			return nil
-		end
-
-		table.insert(parts, storyModule:GetFullName())
-		table.insert(parts, snapshot.name)
-		table.insert(parts, snapshot.problem or "")
-		for _, story in snapshot.stories do
-			table.insert(parts, story.id)
-			table.insert(parts, story.name)
-		end
+local function getSnapshotSignature(snapshot: StoryModuleSnapshot): string
+	local parts = { snapshot.name }
+	for _, story in snapshot.stories do
+		table.insert(parts, story.id)
+		table.insert(parts, story.name)
 	end
 	return table.concat(parts, "\0")
 end
 
-local function areSameModules(a: { ModuleScript }?, b: { ModuleScript }): boolean
-	if not a or #a ~= #b then
-		return false
+local function getSelectedStoryNode(node: TreeNodeStore): TreeNodeStore?
+	if node.getIsSelected() then
+		return node
+	end
+	return node.findFirstDescendant(function(descendant)
+		return descendant.getIsSelected()
+	end)
+end
+
+local function findStoryNode(node: TreeNodeStore, storyId: string?): TreeNodeStore?
+	if node.getIcon() == TreeView.TreeNodeIcon.Story then
+		return node
 	end
 
-	for index, storyModule in a do
-		if storyModule ~= b[index] then
+	local firstStoryNode
+	for _, child in node.getChildren() do
+		if child.getIcon() == TreeView.TreeNodeIcon.Story then
+			firstStoryNode = firstStoryNode or child
+			if storyId ~= nil and child.getStoryId() == storyId then
+				return child
+			end
+		end
+	end
+	return firstStoryNode
+end
+
+local function indexStoryModuleNodes(
+	root: TreeNodeStore,
+	storyModules: { ModuleScript }
+): { [ModuleScript]: TreeNodeStore }
+	local expectedModules = {} :: { [ModuleScript]: boolean }
+	for _, storyModule in storyModules do
+		expectedModules[storyModule] = true
+	end
+
+	local nodes = {}
+	for _, node in root.getDescendants() do
+		local instance = node.getInstance()
+		if instance and instance:IsA("ModuleScript") and expectedModules[instance] then
+			local parent = node.getParent()
+			if not parent or parent.getInstance() ~= instance then
+				nodes[instance] = node
+			end
+		end
+	end
+	return nodes
+end
+
+local function getStorybookTreeSignature(storybook: LoadedStorybook, storyModules: { ModuleScript }): { unknown }
+	local parts = { storybook.name } :: { unknown }
+	for _, storyRoot in storybook.storyRoots do
+		table.insert(parts, storyRoot)
+		table.insert(parts, storyRoot.Name)
+	end
+	for _, storyModule in storyModules do
+		table.insert(parts, storyModule)
+		table.insert(parts, storyModule.Name)
+		local ancestor = storyModule.Parent
+		while ancestor do
+			table.insert(parts, ancestor)
+			table.insert(parts, ancestor.Name)
+			if table.find(storybook.storyRoots, ancestor) then
+				break
+			end
+			ancestor = ancestor.Parent
+		end
+	end
+	return parts
+end
+
+local function areSameStorybookTreeSignatures(previous: { unknown }?, current: { unknown }): boolean
+	if not previous or #previous ~= #current then
+		return false
+	end
+	for index, value in previous do
+		if value ~= current[index] then
 			return false
 		end
 	end
 	return true
 end
 
+local function findStoryModuleNode(root: TreeNodeStore, storyModule: ModuleScript): TreeNodeStore?
+	return root.findFirstDescendant(function(descendant)
+		if descendant.getInstance() ~= storyModule then
+			return false
+		end
+		local parent = descendant.getParent()
+		return not parent or parent.getInstance() ~= storyModule
+	end)
+end
+
 local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
-	local snapshotSignaturesByInstance = useRef({} :: { [Instance]: string })
-	local storyModulesByStorybookSource = useRef({} :: { [Instance]: { ModuleScript } })
+	local snapshotSignaturesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: string } })
+	local storyModuleNodesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: TreeNodeStore } })
+	local storybookTreeSignaturesBySource = useRef({} :: { [Instance]: { unknown } })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
@@ -85,13 +153,11 @@ local function StorybookTreeView(props: Props)
 
 		for _, storybook in storybooks.available do
 			for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-				if not seen[storyModule] then
-					seen[storyModule] = true
-					table.insert(targets, {
-						storyModule = storyModule,
-						storybook = storybook,
-					})
-				end
+				seen[storyModule] = true
+				table.insert(targets, {
+					storyModule = storyModule,
+					storybook = storybook,
+				})
 			end
 		end
 
@@ -193,37 +259,43 @@ local function StorybookTreeView(props: Props)
 		function()
 			for _, storybook in storybooks.available do
 				local storyModules = Storyteller.findStoryModulesForStorybook(storybook)
-				local signature = getSnapshotSignature(storyModules, storyModuleSnapshots)
-				if not signature then
-					continue
-				end
-
+				local treeSignature = getStorybookTreeSignature(storybook, storyModules)
 				local previousNode = nodesByInstance.current[storybook.source]
 				if
 					previousNode
-					and snapshotSignaturesByInstance.current[storybook.source] == signature
-					and areSameModules(storyModulesByStorybookSource.current[storybook.source], storyModules)
+					and areSameStorybookTreeSignatures(
+						storybookTreeSignaturesBySource.current[storybook.source],
+						treeSignature
+					)
 				then
+					storybookByNodeId.current[previousNode.id] = storybook :: any
 					continue
 				end
 
 				local wasExpanded = if previousNode then previousNode.getIsExpanded() else false
-				local previousSelection = if previousNode
-					then previousNode.findFirstDescendant(function(descendant)
-						return descendant.getIsSelected()
-					end)
-					else nil
+				local previousSelection = if previousNode then getSelectedStoryNode(previousNode) else nil
 				if previousNode then
 					storybookByNodeId.current[previousNode.id] = nil
+					unavailableStorybookByNodeId.current[previousNode.id] = nil
 					previousNode.parentTo(nil)
 				end
 
 				local node = createTreeNodesForStorybook(storybook :: any, storyModuleSnapshots)
 				node.setIsExpanded(wasExpanded)
 				nodesByInstance.current[storybook.source] = node
-				snapshotSignaturesByInstance.current[storybook.source] = signature
-				storyModulesByStorybookSource.current[storybook.source] = storyModules
+				storybookTreeSignaturesBySource.current[storybook.source] = treeSignature
 				storybookByNodeId.current[node.id] = storybook :: any
+				local storyModuleNodes = indexStoryModuleNodes(node, storyModules)
+				local snapshotSignatures = {}
+				for storyModule in storyModuleNodes do
+					local snapshotsForModule = storyModuleSnapshots[storyModule]
+					local snapshot = if snapshotsForModule then snapshotsForModule[storybook.source] else nil
+					if snapshot then
+						snapshotSignatures[storyModule] = getSnapshotSignature(snapshot)
+					end
+				end
+				storyModuleNodesByStorybookSource.current[storybook.source] = storyModuleNodes
+				snapshotSignaturesByStorybookSource.current[storybook.source] = snapshotSignatures
 
 				if pinnedInstanceStore.isPinned(storybook.source) then
 					node.setIsPinned(true)
@@ -235,21 +307,22 @@ local function StorybookTreeView(props: Props)
 				if previousSelection then
 					local storyModule = previousSelection.getInstance()
 					local storyId = previousSelection.getStoryId()
-					local nextSelection = node.findFirstDescendant(function(descendant)
-						return descendant.getIcon() == TreeView.TreeNodeIcon.Story
-							and descendant.getInstance() == storyModule
-							and descendant.getStoryId() == storyId
-					end)
-					if nextSelection then
-						nextSelection.setIsSelected(true)
-						nextSelection.expandUp()
+					if storyModule and storyModule:IsA("ModuleScript") then
+						local nextStoryModuleNode = storyModuleNodes[storyModule]
+						local nextSelection = if nextStoryModuleNode
+							then findStoryNode(nextStoryModuleNode, storyId)
+							else nil
+						if nextSelection then
+							nextSelection.setIsSelected(true)
+							nextSelection.expandUp()
+						end
 					end
 				end
 			end
 		end,
 		{
 			storybooks.available,
-			storyModuleSnapshots,
+			snapshotTargets,
 			pinnedInstanceStore.isPinned,
 			pinned,
 			rootNode,
@@ -262,9 +335,19 @@ local function StorybookTreeView(props: Props)
 
 		for _, unavailableStorybook in storybooks.unavailable do
 			local source = unavailableStorybook.storybook.source
+			local previousNode = nodesByInstance.current[source]
+			if previousNode then
+				if unavailableStorybookByNodeId.current[previousNode.id] then
+					previousNode.setName(unavailableStorybook.storybook.name)
+					unavailableStorybookByNodeId.current[previousNode.id] = unavailableStorybook
+					continue
+				end
 
-			if nodesByInstance.current[source] then
-				continue
+				storybookByNodeId.current[previousNode.id] = nil
+				previousNode.parentTo(nil)
+				storyModuleNodesByStorybookSource.current[source] = nil
+				snapshotSignaturesByStorybookSource.current[source] = nil
+				storybookTreeSignaturesBySource.current[source] = nil
 			end
 
 			local node = TreeView.createTreeNodeStore()
@@ -280,28 +363,84 @@ local function StorybookTreeView(props: Props)
 	-- Convert orphaned stories into nodes
 	useEffect(function()
 		unknownStories.setIsVisible(#orphanedStoryModules > 0)
+		local source = orphanedStorybook.source
+		local storyModuleNodes = storyModuleNodesByStorybookSource.current[source] or {}
+		local snapshotSignatures = snapshotSignaturesByStorybookSource.current[source] or {}
 
 		for _, orphan in orphanedStoryModules do
-			local signature = getSnapshotSignature({ orphan }, storyModuleSnapshots)
-			if not signature then
+			if nodesByInstance.current[orphan] then
 				continue
 			end
 
-			local previousNode = nodesByInstance.current[orphan]
-			if previousNode and snapshotSignaturesByInstance.current[orphan] == signature then
-				continue
-			end
-
-			if previousNode then
-				previousNode.parentTo(nil)
-			end
-
-			local node = createTreeNodeForStoryModule(orphan, storyModuleSnapshots[orphan])
+			local snapshotsForModule = storyModuleSnapshots[orphan]
+			local snapshot = if snapshotsForModule then snapshotsForModule[source] else nil
+			local node = createTreeNodeForStoryModule(orphan, snapshot)
 			node.parentTo(unknownStories)
 			nodesByInstance.current[orphan] = node
-			snapshotSignaturesByInstance.current[orphan] = signature
+			storyModuleNodes[orphan] = node
+			if snapshot then
+				snapshotSignatures[orphan] = getSnapshotSignature(snapshot)
+			end
 		end
-	end, { orphanedStoryModules, storyModuleSnapshots, unknownStories } :: { unknown })
+		storyModuleNodesByStorybookSource.current[source] = storyModuleNodes
+		snapshotSignaturesByStorybookSource.current[source] = snapshotSignatures
+	end, { orphanedStoryModules, orphanedStorybook, snapshotTargets, unknownStories } :: { unknown })
+
+	-- Replace only the affected module node as snapshots arrive. Rebuilding an
+	-- entire storybook for every background publication makes large storybooks
+	-- progressively more expensive to discover.
+	useEffect(function()
+		for _, target in snapshotTargets do
+			local source = target.storybook.source
+			local snapshotsForModule = storyModuleSnapshots[target.storyModule]
+			local snapshot = if snapshotsForModule then snapshotsForModule[source] else nil
+			if not snapshot then
+				continue
+			end
+
+			local storyModuleNodes = storyModuleNodesByStorybookSource.current[source]
+			local previousNode = if storyModuleNodes then storyModuleNodes[target.storyModule] else nil
+			if not previousNode then
+				continue
+			end
+
+			local signature = getSnapshotSignature(snapshot)
+			local snapshotSignatures = snapshotSignaturesByStorybookSource.current[source]
+			if snapshotSignatures and snapshotSignatures[target.storyModule] == signature then
+				continue
+			end
+
+			local parent = previousNode.getParent()
+			if not parent then
+				continue
+			end
+
+			local previousSelection = getSelectedStoryNode(previousNode)
+			local storyId = if previousSelection then previousSelection.getStoryId() else nil
+			local nextNode = createTreeNodeForStoryModule(target.storyModule, snapshot)
+			nextNode.setIsExpanded(previousNode.getIsExpanded())
+			local nextSelection = if previousSelection then findStoryNode(nextNode, storyId) else nil
+
+			Charm.batch(function()
+				nextNode.parentTo(parent)
+				previousNode.parentTo(nil)
+				if nextSelection then
+					nextSelection.setIsSelected(true)
+					nextSelection.expandUp()
+				end
+			end)
+
+			storyModuleNodes[target.storyModule] = nextNode
+			local nextSnapshotSignatures = snapshotSignatures or {}
+			if nextSnapshotSignatures ~= snapshotSignatures then
+				snapshotSignaturesByStorybookSource.current[source] = nextSnapshotSignatures
+			end
+			nextSnapshotSignatures[target.storyModule] = signature
+			if target.storybook == orphanedStorybook then
+				nodesByInstance.current[target.storyModule] = nextNode
+			end
+		end
+	end, { orphanedStorybook, snapshotTargets, storyModuleSnapshots } :: { unknown })
 
 	-- Handle the removal of any nodes when instances get removed
 	useEffect(function()
@@ -318,12 +457,25 @@ local function StorybookTreeView(props: Props)
 		for instance, node in nodesByInstance.current do
 			if not table.find(instances, instance) then
 				node.parentTo(nil)
+				storybookByNodeId.current[node.id] = nil
+				unavailableStorybookByNodeId.current[node.id] = nil
 				nodesByInstance.current[instance] = nil
-				snapshotSignaturesByInstance.current[instance] = nil
-				storyModulesByStorybookSource.current[instance] = nil
+				storyModuleNodesByStorybookSource.current[instance] = nil
+				snapshotSignaturesByStorybookSource.current[instance] = nil
+				storybookTreeSignaturesBySource.current[instance] = nil
+				if instance:IsA("ModuleScript") then
+					local orphanedNodes = storyModuleNodesByStorybookSource.current[orphanedStorybook.source]
+					local orphanedSignatures = snapshotSignaturesByStorybookSource.current[orphanedStorybook.source]
+					if orphanedNodes then
+						orphanedNodes[instance] = nil
+					end
+					if orphanedSignatures then
+						orphanedSignatures[instance] = nil
+					end
+				end
 			end
 		end
-	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules } :: { unknown })
+	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules, orphanedStorybook } :: { unknown })
 
 	-- Reopening the story from the previous session
 	local wasLastStoryOpened = useRef(false)
@@ -335,11 +487,15 @@ local function StorybookTreeView(props: Props)
 			end
 
 			if lastOpenedStory then
-				local node = rootNode.findFirstDescendant(function(descendant)
-					return descendant.getIcon() == TreeView.TreeNodeIcon.Story
-						and descendant.getInstance() == lastOpenedStory.storyModule
-						and (lastOpenedStory.storyId == nil or descendant.getStoryId() == lastOpenedStory.storyId)
-				end)
+				local storyModuleNode
+				if lastOpenedStory.storybookSource then
+					local nodesForStorybook = storyModuleNodesByStorybookSource.current[lastOpenedStory.storybookSource]
+					storyModuleNode = if nodesForStorybook then nodesForStorybook[lastOpenedStory.storyModule] else nil
+				else
+					storyModuleNode = nodesByInstance.current[lastOpenedStory.storyModule]
+						or findStoryModuleNode(rootNode, lastOpenedStory.storyModule)
+				end
+				local node = if storyModuleNode then findStoryNode(storyModuleNode, lastOpenedStory.storyId) else nil
 
 				if node then
 					wasLastStoryOpened.current = true
@@ -375,7 +531,7 @@ local function StorybookTreeView(props: Props)
 							local storyId = selectedNode.getStoryId()
 
 							props.onStoryChanged(instance, storybook, storyId)
-							setLastOpenedStory(instance, storyId)
+							setLastOpenedStory(instance, if storybook then storybook.source else nil, storyId)
 						end
 					else
 						props.onStoryChanged(nil, nil, nil)
