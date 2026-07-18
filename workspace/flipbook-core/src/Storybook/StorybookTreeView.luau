@@ -67,6 +67,8 @@ local function findStoryNode(node: TreeNodeStore, storyId: string?): TreeNodeSto
 			end
 		end
 	end
+	-- A persisted ID can become stale after a Story is renamed or removed.
+	-- Keep the module selectable by falling back to its first current Story.
 	return firstStoryNode
 end
 
@@ -268,7 +270,7 @@ local function StorybookTreeView(props: Props)
 						treeSignature
 					)
 				then
-					storybookByNodeId.current[previousNode.id] = storybook :: any
+					storybookByNodeId.current[previousNode.id] = storybook
 					continue
 				end
 
@@ -280,11 +282,11 @@ local function StorybookTreeView(props: Props)
 					previousNode.parentTo(nil)
 				end
 
-				local node = createTreeNodesForStorybook(storybook :: any, storyModuleSnapshots)
+				local node = createTreeNodesForStorybook(storybook, storyModuleSnapshots)
 				node.setIsExpanded(wasExpanded)
 				nodesByInstance.current[storybook.source] = node
 				storybookTreeSignaturesBySource.current[storybook.source] = treeSignature
-				storybookByNodeId.current[node.id] = storybook :: any
+				storybookByNodeId.current[node.id] = storybook
 				local storyModuleNodes = indexStoryModuleNodes(node, storyModules)
 				local snapshotSignatures = {}
 				for storyModule in storyModuleNodes do
