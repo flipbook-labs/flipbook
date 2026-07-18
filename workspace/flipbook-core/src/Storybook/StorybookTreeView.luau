@@ -338,6 +338,7 @@ local function StorybookTreeView(props: Props)
 		for _, unavailableStorybook in storybooks.unavailable do
 			local source = unavailableStorybook.storybook.source
 			local previousNode = nodesByInstance.current[source]
+			local previousSelection = if previousNode then getSelectedStoryNode(previousNode) else nil
 			if previousNode then
 				if unavailableStorybookByNodeId.current[previousNode.id] then
 					previousNode.setName(unavailableStorybook.storybook.name)
@@ -359,6 +360,10 @@ local function StorybookTreeView(props: Props)
 
 			nodesByInstance.current[source] = node
 			unavailableStorybookByNodeId.current[node.id] = unavailableStorybook
+			if previousSelection then
+				node.setIsSelected(true)
+				node.expandUp()
+			end
 		end
 	end, { storybooks.unavailable, unavailableStorybooks })
 
