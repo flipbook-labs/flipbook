@@ -517,6 +517,7 @@ local function StorybookTreeView(props: Props)
 		{
 			lastOpenedStory,
 			rootNode,
+			storyModuleSnapshots,
 			-- This value isn't used in the effect body but is necessary so that
 			-- the effect will run again if the last opened story has not but
 			-- found yet
