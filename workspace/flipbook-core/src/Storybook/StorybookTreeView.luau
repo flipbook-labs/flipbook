@@ -149,35 +149,9 @@ local function StorybookTreeView(props: Props)
 	local orphanedStoryModules = useOrphanedStoryModules()
 	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 	local orphanedStorybook = useMemo(createLoadedStorybook, {})
-	local snapshotTargets = useMemo(function(): { StoryModuleTarget }
-		local targets = {}
-		local seen = {}
-
-		for _, storybook in storybooks.available do
-			for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-				seen[storyModule] = true
-				table.insert(targets, {
-					storyModule = storyModule,
-					storybook = storybook,
-				})
-			end
-		end
-
-		for _, storyModule in orphanedStoryModules do
-			if not seen[storyModule] then
-				seen[storyModule] = true
-				table.insert(targets, {
-					storyModule = storyModule,
-					storybook = orphanedStorybook,
-				})
-			end
-		end
-
-		return targets
-	end, { storybooks.available, orphanedStoryModules, orphanedStorybook } :: { unknown })
-	local storyModuleSnapshots = useStoryModuleSnapshots(snapshotTargets)
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
+	local pinnedInstances = useSignalState(pinnedInstanceStore.getPinnedInstances)
 
 	local rootNode = useMemo(function()
 		local node = TreeView.createTreeNodeStore()
@@ -215,6 +189,104 @@ local function StorybookTreeView(props: Props)
 
 		return node
 	end, { rootNode })
+
+	local getExpandedStorybookSources = useMemo(function()
+		return Charm.computed(function(): { [Instance]: boolean }
+			local sources = {}
+			for _, node in rootNode.getDescendants() do
+				if node.getIcon() == TreeView.TreeNodeIcon.Storybook and node.getIsExpanded() then
+					local source = node.getInstance()
+					if source then
+						sources[source] = true
+					end
+				end
+			end
+			return sources
+		end)
+	end, { rootNode })
+	local expandedStorybookSources = useSignalState(getExpandedStorybookSources)
+	local isUnknownStoriesExpanded = useSignalState(unknownStories.getIsExpanded)
+	-- Keep requests after collapse so Source changes refresh cached tree
+	-- metadata without evaluating the Stories again on every expansion.
+	local requestedStorybookSources = useRef({} :: { [Instance]: boolean })
+	for source in expandedStorybookSources do
+		requestedStorybookSources.current[source] = true
+	end
+	local hasRequestedUnknownStories = useRef(false)
+	if isUnknownStoriesExpanded then
+		hasRequestedUnknownStories.current = true
+	end
+	local isSearching = props.searchTerm ~= nil and props.searchTerm ~= ""
+	if isSearching then
+		for _, storybook in storybooks.available do
+			requestedStorybookSources.current[storybook.source] = true
+		end
+		hasRequestedUnknownStories.current = true
+	end
+
+	local snapshotTargets = useMemo(
+		function(): { StoryModuleTarget }
+			local targets = {}
+			local seen = {}
+			local pinnedStoryModules = {}
+			for _, pinnedInstance in pinnedInstances do
+				if pinnedInstance.instance and pinnedInstance.instance:IsA("ModuleScript") then
+					pinnedStoryModules[pinnedInstance.instance] = true
+				end
+			end
+
+			for _, storybook in storybooks.available do
+				for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
+					local shouldRequest = requestedStorybookSources.current[storybook.source]
+						or pinnedStoryModules[storyModule]
+						or (
+							lastOpenedStory ~= nil
+							and lastOpenedStory.storybookSource == storybook.source
+							and lastOpenedStory.storyModule == storyModule
+						)
+					if not shouldRequest then
+						continue
+					end
+
+					seen[storyModule] = true
+					table.insert(targets, {
+						storyModule = storyModule,
+						storybook = storybook,
+					})
+				end
+			end
+
+			for _, storyModule in orphanedStoryModules do
+				local shouldRequest = hasRequestedUnknownStories.current
+					or pinnedStoryModules[storyModule]
+					or (
+						lastOpenedStory ~= nil
+						and lastOpenedStory.storybookSource == nil
+						and lastOpenedStory.storyModule == storyModule
+					)
+				if shouldRequest and not seen[storyModule] then
+					seen[storyModule] = true
+					table.insert(targets, {
+						storyModule = storyModule,
+						storybook = orphanedStorybook,
+					})
+				end
+			end
+
+			return targets
+		end,
+		{
+			expandedStorybookSources,
+			isUnknownStoriesExpanded,
+			lastOpenedStory,
+			orphanedStoryModules,
+			orphanedStorybook,
+			pinnedInstances,
+			props.searchTerm,
+			storybooks.available,
+		} :: { unknown }
+	)
+	local storyModuleSnapshots = useStoryModuleSnapshots(snapshotTargets)
 
 	local pinnedChildren = useSignalState(pinned.getChildren)
 	local pinnedNodes = useSignalState(rootNode.getPinnedDescendants)
