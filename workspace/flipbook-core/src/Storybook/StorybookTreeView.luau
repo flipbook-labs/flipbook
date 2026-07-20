@@ -24,6 +24,7 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
+local useStory = Storyteller.useStory
 local useStorybooks = Storyteller.useStorybooks
 local useStoryModuleSnapshots = Storyteller.useStoryModuleSnapshots
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
@@ -34,6 +35,16 @@ export type Props = {
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
+
+type PrioritizedStoryRequestProps = {
+	target: StoryModuleTarget,
+	storyId: string?,
+}
+
+local function PrioritizedStoryRequest(props: PrioritizedStoryRequestProps)
+	useStory(props.target.storyModule, props.target.storybook, props.storyId)
+	return nil
+end
 
 local function getSnapshotSignature(snapshot: StoryModuleSnapshot): string
 	local parts = { snapshot.name }
@@ -179,6 +190,25 @@ local function StorybookTreeView(props: Props)
 		return targets
 	end, { storybooks.available, orphanedStoryModules, orphanedStorybook } :: { unknown })
 	local storyModuleSnapshots = useStoryModuleSnapshots(snapshotTargets)
+	local prioritizedStoryTarget = useMemo(function(): StoryModuleTarget?
+		if not lastOpenedStory then
+			return nil
+		end
+
+		for _, target in snapshotTargets do
+			if
+				target.storyModule == lastOpenedStory.storyModule
+				and (
+					lastOpenedStory.storybookSource == nil
+					or target.storybook.source == lastOpenedStory.storybookSource
+				)
+			then
+				return target
+			end
+		end
+
+		return nil
+	end, { lastOpenedStory, snapshotTargets } :: { unknown })
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -568,10 +598,18 @@ local function StorybookTreeView(props: Props)
 		} :: { unknown }
 	)
 
-	return React.createElement(TreeView.TreeView, {
-		root = rootNode,
-		filter = filter,
-		layoutOrder = props.layoutOrder,
+	return React.createElement(React.Fragment, nil, {
+		PrioritizedStoryRequest = if prioritizedStoryTarget
+			then React.createElement(PrioritizedStoryRequest, {
+				target = prioritizedStoryTarget,
+				storyId = if lastOpenedStory then lastOpenedStory.storyId else nil,
+			})
+			else nil,
+		TreeView = React.createElement(TreeView.TreeView, {
+			root = rootNode,
+			filter = filter,
+			layoutOrder = props.layoutOrder,
+		}),
 	})
 end
 
