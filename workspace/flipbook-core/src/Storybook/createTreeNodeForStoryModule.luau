@@ -1,8 +1,9 @@
+local Storyteller = require("@pkg/Storyteller")
+
 local TreeView = require("@root/TreeView")
-local types = require("@root/Storybook/types")
 
 type TreeNodeStore = TreeView.TreeNodeStore
-type StoryModuleSnapshot = types.StoryModuleSnapshot
+type StoryModuleRecord = Storyteller.StoryModuleRecord
 
 local function createStoryNode(storyModule: ModuleScript, name: string, storyId: string?, order: number?): TreeNodeStore
 	local node = TreeView.createTreeNodeStore()
@@ -15,16 +16,17 @@ local function createStoryNode(storyModule: ModuleScript, name: string, storyId:
 	return node
 end
 
-local function createTreeNodeForStoryModule(storyModule: ModuleScript, snapshot: StoryModuleSnapshot?): TreeNodeStore
+local function createTreeNodeForStoryModule(storyModule: ModuleScript, record: StoryModuleRecord?): TreeNodeStore
 	local moduleName = storyModule.Name:gsub("%.story", "")
+	local stories = if record then record.stories else nil
 
-	if snapshot and #snapshot.stories > 1 then
+	if stories and #stories > 1 then
 		local groupNode = TreeView.createTreeNodeStore()
-		groupNode.setName(snapshot.name)
+		groupNode.setName(if record and record.name then record.name else moduleName)
 		groupNode.setIcon(TreeView.TreeNodeIcon.Folder)
 		groupNode.setInstance(storyModule)
 
-		for order, story in snapshot.stories do
+		for order, story in stories do
 			local storyNode = createStoryNode(storyModule, story.name, story.id, order)
 			storyNode.parentTo(groupNode)
 		end
@@ -32,7 +34,7 @@ local function createTreeNodeForStoryModule(storyModule: ModuleScript, snapshot:
 		return groupNode
 	end
 
-	local story = if snapshot then snapshot.stories[1] else nil
+	local story = if stories then stories[1] else nil
 	return createStoryNode(storyModule, moduleName, if story then story.id else nil, nil)
 end
 

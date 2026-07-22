@@ -1,10 +1,29 @@
 local JestGlobals = require("@pkg/JestGlobals")
+local Storyteller = require("@pkg/Storyteller")
 
 local TreeView = require("@root/TreeView")
 local createTreeNodeForStoryModule = require("./createTreeNodeForStoryModule")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
+
+type LoadedStory = Storyteller.LoadedStory<unknown>
+
+local function makeStory(id: string, name: string): LoadedStory
+	return {
+		id = id,
+		name = name,
+		story = function()
+			return nil
+		end,
+		source = Instance.new("ModuleScript"),
+		storybook = {
+			name = "Storybook",
+			source = Instance.new("ModuleScript"),
+			storyRoots = {},
+		},
+	}
+end
 
 test("creates a leaf while story metadata is loading", function()
 	local storyModule = Instance.new("ModuleScript")
@@ -23,12 +42,8 @@ test("keeps single-story modules as one leaf", function()
 
 	local node = createTreeNodeForStoryModule(storyModule, {
 		name = "Buttons",
-		source = storyModule,
 		stories = {
-			{
-				id = "default",
-				name = "Primary",
-			},
+			makeStory("default", "Primary"),
 		},
 	})
 
@@ -44,16 +59,9 @@ test("creates an ordered group for multi-story modules", function()
 
 	local node = createTreeNodeForStoryModule(storyModule, {
 		name = "Buttons",
-		source = storyModule,
 		stories = {
-			{
-				id = "secondary",
-				name = "Secondary",
-			},
-			{
-				id = "primary",
-				name = "Primary",
-			},
+			makeStory("secondary", "Secondary"),
+			makeStory("primary", "Primary"),
 		},
 	})
 	local children = node.getChildren()

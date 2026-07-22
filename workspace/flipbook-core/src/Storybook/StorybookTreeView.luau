@@ -9,15 +9,14 @@ local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
-local types = require("@root/Storybook/types")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
-type StoryModuleSnapshot = types.StoryModuleSnapshot
-type StoryModuleTarget = types.StoryModuleTarget
+type StoryModuleRecord = Storyteller.StoryModuleRecord
+type StoryRequest = Storyteller.StoryRequest
 
 local useCallback = React.useCallback
 local useEffect = React.useEffect
@@ -26,7 +25,7 @@ local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useStorybooks = Storyteller.useStorybooks
-local useStoryModuleSnapshots = Storyteller.useStoryModuleSnapshots
+local useStoryModuleRecords = Storyteller.useStoryModuleRecords
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
@@ -37,20 +36,25 @@ export type Props = {
 }
 
 type PrioritizedStoryRequestProps = {
-	target: StoryModuleTarget,
+	request: StoryRequest,
 	storyId: string?,
 }
 
 local function PrioritizedStoryRequest(props: PrioritizedStoryRequestProps)
-	useStory(props.target.storyModule, props.target.storybook, props.storyId)
+	useStory(props.request.storyModule, props.request.storybook, props.storyId)
 	return nil
 end
 
-local function getSnapshotSignature(snapshot: StoryModuleSnapshot): string
-	local parts = { snapshot.name }
-	for _, story in snapshot.stories do
-		table.insert(parts, story.id)
-		table.insert(parts, story.name)
+local function getRecordSignature(record: StoryModuleRecord): string
+	local parts: { string } = {}
+	if record.name then
+		table.insert(parts, record.name)
+	end
+	if record.stories then
+		for _, story in record.stories do
+			table.insert(parts, story.id)
+			table.insert(parts, story.name)
+		end
 	end
 	return table.concat(parts, "\0")
 end
@@ -155,7 +159,7 @@ end
 local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
-	local snapshotSignaturesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: string } })
+	local recordSignaturesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: string } })
 	local storyModuleNodesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: TreeNodeStore } })
 	local storybookTreeSignaturesBySource = useRef({} :: { [Instance]: { unknown } })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
@@ -163,14 +167,14 @@ local function StorybookTreeView(props: Props)
 	local orphanedStoryModules = useOrphanedStoryModules()
 	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 	local orphanedStorybook = useMemo(createLoadedStorybook, {})
-	local snapshotTargets = useMemo(function(): { StoryModuleTarget }
-		local targets = {}
+	local storyRequests = useMemo(function(): { StoryRequest }
+		local requests = {}
 		local seen = {}
 
 		for _, storybook in storybooks.available do
 			for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
 				seen[storyModule] = true
-				table.insert(targets, {
+				table.insert(requests, {
 					storyModule = storyModule,
 					storybook = storybook,
 				})
@@ -180,16 +184,16 @@ local function StorybookTreeView(props: Props)
 		for _, storyModule in orphanedStoryModules do
 			if not seen[storyModule] then
 				seen[storyModule] = true
-				table.insert(targets, {
+				table.insert(requests, {
 					storyModule = storyModule,
 					storybook = orphanedStorybook,
 				})
 			end
 		end
 
-		return targets
+		return requests
 	end, { storybooks.available, orphanedStoryModules, orphanedStorybook } :: { unknown })
-	local storyModuleSnapshots = useStoryModuleSnapshots(snapshotTargets)
+	local storyModuleRecords = useStoryModuleRecords(storyRequests)
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -250,18 +254,18 @@ local function StorybookTreeView(props: Props)
 		function(): { PrioritizedStoryRequestProps }
 			local requests = {}
 
-			for _, target in snapshotTargets do
+			for _, request in storyRequests do
 				local isLastOpenedStory = lastOpenedStory ~= nil
-					and target.storyModule == lastOpenedStory.storyModule
+					and request.storyModule == lastOpenedStory.storyModule
 					and (
 						lastOpenedStory.storybookSource == nil
-						or target.storybook.source == lastOpenedStory.storybookSource
+						or request.storybook.source == lastOpenedStory.storybookSource
 					)
-				local isExpanded = expandedStorybookSources[target.storybook.source]
-					or (target.storybook == orphanedStorybook and isUnknownStoriesExpanded)
+				local isExpanded = expandedStorybookSources[request.storybook.source]
+					or (request.storybook == orphanedStorybook and isUnknownStoriesExpanded)
 				if isExpanded or isLastOpenedStory then
 					table.insert(requests, {
-						target = target,
+						request = request,
 						storyId = if isLastOpenedStory and lastOpenedStory then lastOpenedStory.storyId else nil,
 					})
 				end
@@ -274,7 +278,7 @@ local function StorybookTreeView(props: Props)
 			isUnknownStoriesExpanded,
 			lastOpenedStory,
 			orphanedStorybook,
-			snapshotTargets,
+			storyRequests,
 		} :: { unknown }
 	)
 
@@ -344,22 +348,22 @@ local function StorybookTreeView(props: Props)
 					previousNode.parentTo(nil)
 				end
 
-				local node = createTreeNodesForStorybook(storybook, storyModuleSnapshots)
+				local node = createTreeNodesForStorybook(storybook, storyModuleRecords)
 				node.setIsExpanded(wasExpanded)
 				nodesByInstance.current[storybook.source] = node
 				storybookTreeSignaturesBySource.current[storybook.source] = treeSignature
 				storybookByNodeId.current[node.id] = storybook
 				local storyModuleNodes = indexStoryModuleNodes(node, storyModules)
-				local snapshotSignatures = {}
+				local recordSignatures = {}
 				for storyModule in storyModuleNodes do
-					local snapshotsForModule = storyModuleSnapshots[storyModule]
-					local snapshot = if snapshotsForModule then snapshotsForModule[storybook.source] else nil
-					if snapshot then
-						snapshotSignatures[storyModule] = getSnapshotSignature(snapshot)
+					local recordsForModule = storyModuleRecords[storyModule]
+					local record = if recordsForModule then recordsForModule[storybook.source] else nil
+					if record then
+						recordSignatures[storyModule] = getRecordSignature(record)
 					end
 				end
 				storyModuleNodesByStorybookSource.current[storybook.source] = storyModuleNodes
-				snapshotSignaturesByStorybookSource.current[storybook.source] = snapshotSignatures
+				recordSignaturesByStorybookSource.current[storybook.source] = recordSignatures
 
 				if pinnedInstanceStore.isPinned(storybook.source) then
 					node.setIsPinned(true)
@@ -386,7 +390,7 @@ local function StorybookTreeView(props: Props)
 		end,
 		{
 			storybooks.available,
-			snapshotTargets,
+			storyRequests,
 			pinnedInstanceStore.isPinned,
 			pinned,
 			rootNode,
@@ -411,7 +415,7 @@ local function StorybookTreeView(props: Props)
 				storybookByNodeId.current[previousNode.id] = nil
 				previousNode.parentTo(nil)
 				storyModuleNodesByStorybookSource.current[source] = nil
-				snapshotSignaturesByStorybookSource.current[source] = nil
+				recordSignaturesByStorybookSource.current[source] = nil
 				storybookTreeSignaturesBySource.current[source] = nil
 			end
 
@@ -434,48 +438,48 @@ local function StorybookTreeView(props: Props)
 		unknownStories.setIsVisible(#orphanedStoryModules > 0)
 		local source = orphanedStorybook.source
 		local storyModuleNodes = storyModuleNodesByStorybookSource.current[source] or {}
-		local snapshotSignatures = snapshotSignaturesByStorybookSource.current[source] or {}
+		local recordSignatures = recordSignaturesByStorybookSource.current[source] or {}
 
 		for _, orphan in orphanedStoryModules do
 			if nodesByInstance.current[orphan] then
 				continue
 			end
 
-			local snapshotsForModule = storyModuleSnapshots[orphan]
-			local snapshot = if snapshotsForModule then snapshotsForModule[source] else nil
-			local node = createTreeNodeForStoryModule(orphan, snapshot)
+			local recordsForModule = storyModuleRecords[orphan]
+			local record = if recordsForModule then recordsForModule[source] else nil
+			local node = createTreeNodeForStoryModule(orphan, record)
 			node.parentTo(unknownStories)
 			nodesByInstance.current[orphan] = node
 			storyModuleNodes[orphan] = node
-			if snapshot then
-				snapshotSignatures[orphan] = getSnapshotSignature(snapshot)
+			if record then
+				recordSignatures[orphan] = getRecordSignature(record)
 			end
 		end
 		storyModuleNodesByStorybookSource.current[source] = storyModuleNodes
-		snapshotSignaturesByStorybookSource.current[source] = snapshotSignatures
-	end, { orphanedStoryModules, orphanedStorybook, snapshotTargets, unknownStories } :: { unknown })
+		recordSignaturesByStorybookSource.current[source] = recordSignatures
+	end, { orphanedStoryModules, orphanedStorybook, storyRequests, unknownStories } :: { unknown })
 
-	-- Replace only the affected module node as snapshots arrive. Rebuilding an
+	-- Replace only the affected module node as records arrive. Rebuilding an
 	-- entire storybook for every background publication makes large storybooks
 	-- progressively more expensive to discover.
 	useEffect(function()
-		for _, target in snapshotTargets do
-			local source = target.storybook.source
-			local snapshotsForModule = storyModuleSnapshots[target.storyModule]
-			local snapshot = if snapshotsForModule then snapshotsForModule[source] else nil
-			if not snapshot then
+		for _, request in storyRequests do
+			local source = request.storybook.source
+			local recordsForModule = storyModuleRecords[request.storyModule]
+			local record = if recordsForModule then recordsForModule[source] else nil
+			if not record then
 				continue
 			end
 
 			local storyModuleNodes = storyModuleNodesByStorybookSource.current[source]
-			local previousNode = if storyModuleNodes then storyModuleNodes[target.storyModule] else nil
+			local previousNode = if storyModuleNodes then storyModuleNodes[request.storyModule] else nil
 			if not previousNode then
 				continue
 			end
 
-			local signature = getSnapshotSignature(snapshot)
-			local snapshotSignatures = snapshotSignaturesByStorybookSource.current[source]
-			if snapshotSignatures and snapshotSignatures[target.storyModule] == signature then
+			local signature = getRecordSignature(record)
+			local recordSignatures = recordSignaturesByStorybookSource.current[source]
+			if recordSignatures and recordSignatures[request.storyModule] == signature then
 				continue
 			end
 
@@ -486,7 +490,7 @@ local function StorybookTreeView(props: Props)
 
 			local previousSelection = getSelectedStoryNode(previousNode)
 			local storyId = if previousSelection then previousSelection.getStoryId() else nil
-			local nextNode = createTreeNodeForStoryModule(target.storyModule, snapshot)
+			local nextNode = createTreeNodeForStoryModule(request.storyModule, record)
 			nextNode.setIsExpanded(previousNode.getIsExpanded())
 			local nextSelection = if previousSelection then findStoryNode(nextNode, storyId) else nil
 
@@ -499,17 +503,17 @@ local function StorybookTreeView(props: Props)
 				end
 			end)
 
-			storyModuleNodes[target.storyModule] = nextNode
-			local nextSnapshotSignatures = snapshotSignatures or {}
-			if nextSnapshotSignatures ~= snapshotSignatures then
-				snapshotSignaturesByStorybookSource.current[source] = nextSnapshotSignatures
+			storyModuleNodes[request.storyModule] = nextNode
+			local nextRecordSignatures = recordSignatures or {}
+			if nextRecordSignatures ~= recordSignatures then
+				recordSignaturesByStorybookSource.current[source] = nextRecordSignatures
 			end
-			nextSnapshotSignatures[target.storyModule] = signature
-			if target.storybook == orphanedStorybook then
-				nodesByInstance.current[target.storyModule] = nextNode
+			nextRecordSignatures[request.storyModule] = signature
+			if request.storybook == orphanedStorybook then
+				nodesByInstance.current[request.storyModule] = nextNode
 			end
 		end
-	end, { orphanedStorybook, snapshotTargets, storyModuleSnapshots } :: { unknown })
+	end, { orphanedStorybook, storyRequests, storyModuleRecords } :: { unknown })
 
 	-- Handle the removal of any nodes when instances get removed
 	useEffect(function()
@@ -530,11 +534,11 @@ local function StorybookTreeView(props: Props)
 				unavailableStorybookByNodeId.current[node.id] = nil
 				nodesByInstance.current[instance] = nil
 				storyModuleNodesByStorybookSource.current[instance] = nil
-				snapshotSignaturesByStorybookSource.current[instance] = nil
+				recordSignaturesByStorybookSource.current[instance] = nil
 				storybookTreeSignaturesBySource.current[instance] = nil
 				if instance:IsA("ModuleScript") then
 					local orphanedNodes = storyModuleNodesByStorybookSource.current[orphanedStorybook.source]
-					local orphanedSignatures = snapshotSignaturesByStorybookSource.current[orphanedStorybook.source]
+					local orphanedSignatures = recordSignaturesByStorybookSource.current[orphanedStorybook.source]
 					if orphanedNodes then
 						orphanedNodes[instance] = nil
 					end
@@ -576,7 +580,7 @@ local function StorybookTreeView(props: Props)
 		{
 			lastOpenedStory,
 			rootNode,
-			storyModuleSnapshots,
+			storyModuleRecords,
 			-- This value isn't used in the effect body but is necessary so that
 			-- the effect will run again if the last opened story has not but
 			-- found yet
@@ -634,10 +638,10 @@ local function StorybookTreeView(props: Props)
 			layoutOrder = props.layoutOrder,
 		}),
 	}
-	for index, request in prioritizedStoryRequests do
+	for index, prioritizedRequest in prioritizedStoryRequests do
 		children[`PrioritizedStoryRequest{index}`] = React.createElement(PrioritizedStoryRequest, {
-			target = request.target,
-			storyId = request.storyId,
+			request = prioritizedRequest.request,
+			storyId = prioritizedRequest.storyId,
 		})
 	end
 
