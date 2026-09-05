@@ -53,6 +53,10 @@ Build the plugin first when local code changed.
 lute run build plugin --channel dev --clean
 ```
 
+Run renderer checks in a clean Studio session with only the test Flipbook plugin loaded. Multiple Flipbook plugin copies or an embedded Flipbook runtime can give ModuleLoader another React package tree to resolve, producing invalid-hook errors that do not represent the build under test. Do not overwrite, unload, or remove the user's normal plugin without explicit permission; install the test build under a distinct name and ask for a clean restart when isolation requires it.
+
+Complete plugin-widget checks before `embedFlipbook`. Embedding adds another package tree to the DataModel and is intended only for the separate play-mode visual pass.
+
 Then use `execute_luau` in the Edit data model. This probe verifies that the gateway exists, exposes shared instructions, exposes an action manifest, and can open the widget:
 
 ```lua
