@@ -1,8 +1,0 @@
-# Application and engine review assignment is enforced by the default-branch
-# ruleset. CODEOWNERS is intentionally limited to repository stewardship.
-/.agents/skills/flipbook-change-control/ @flipbook-labs/flipbook-maintainers
-/.github/ @flipbook-labs/flipbook-maintainers
-/.greptile/ @flipbook-labs/flipbook-maintainers
-/AGENTS.md @flipbook-labs/flipbook-maintainers
-/CODEOWNERS @flipbook-labs/flipbook-maintainers
-/CONTRIBUTING.md @flipbook-labs/flipbook-maintainers

@@ -39,7 +39,7 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
-**Review routing:** `.github/MERGE_POLICY.md` is the source of truth. The GitHub required-reviewer rules define the Flipbook App and Flipbook Engine paths, assign their teams, and apply their approval counts. `CODEOWNERS` is limited to repository stewardship. Application changes require one human application-team approval. Engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI. Mixed changes follow both paths.
+**Review routing:** `.github/MERGE_POLICY.md` is the source of truth. The GitHub required-reviewer rules define the Flipbook App and Flipbook Engine paths, assign their teams, and apply their approval counts. Application changes require one human application-team approval. Engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI. Mixed changes follow both paths.
 
 **Greptile findings:** Evaluate each finding. Fix valid findings; respond with repository evidence and request another review when a finding is invalid. If Greptile retains a finding, the code must change unless an organization administrator chooses to bypass the required status. Agents never bypass merge requirements.
 
@@ -423,16 +423,15 @@ Quick reference for determining what CI gates a change needs.
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-09-06 (against `.github/MERGE_POLICY.md`, `CODEOWNERS`, the pull request template, repository workflows, and repo files).
+**Last verified:** 2026-09-06 (against `.github/MERGE_POLICY.md`, the pull request template, repository workflows, and repo files).
 
 **Re-verification commands:**
 ```bash
 # Confirm PR template exists and is current
 cat .github/pull_request_template.md
 
-# Confirm merge policy and stewardship ownership agree
+# Confirm merge policy is current
 cat .github/MERGE_POLICY.md
-cat CODEOWNERS
 
 # Confirm CI/strict/storybook workflows exist
 ls -la .github/workflows/{ci,strict,storybook}.yml

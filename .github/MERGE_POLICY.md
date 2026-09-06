@@ -12,15 +12,12 @@ A Greptile finding does not become correct merely because it is blocking. Author
 
 ## Ownership domains
 
-| Domain                 | Responsibility                                                                                                                                                                 |                      Human approvals |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -----------------------------------: |
-| `flipbook-app`         | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |                                    1 |
-| `flipbook-engine`      | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |                                    0 |
-| `flipbook-maintainers` | Repository policy and ownership configuration                                                                                                                                  | Determined by the repository ruleset |
+| Domain            | Responsibility                                                                                                                                                                 | Human approvals |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
+| `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
+| `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |               0 |
 
 GitHub's required-reviewer rules define application and engine ownership, assign the corresponding teams, and enforce their approval counts. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking. Ruleset file patterns support ordered negation for granular engine carve-outs.
-
-`CODEOWNERS` is intentionally limited to repository-stewardship files. Keeping application and engine paths out of it avoids duplicate review requests and prevents a second path map from drifting away from the ruleset.
 
 ## Application review
 
@@ -62,4 +59,4 @@ Start the application reviewer's patterns with `workspace/flipbook-core/**` and 
 
 ## Changing this policy
 
-Changes to this policy, `CODEOWNERS`, the pull request template, Greptile context, or the change-control skill belong to repository maintainers. Update all affected representations in one pull request so human guidance, agent guidance, and enforcement do not drift.
+Changes to this policy, the pull request template, Greptile context, or the change-control skill belong to repository administrators. Update all affected representations in one pull request so human guidance, agent guidance, and enforcement do not drift.
