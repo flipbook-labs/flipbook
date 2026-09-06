@@ -1,41 +1,5 @@
-# This is the human-readable ownership and review-routing map. GitHub ruleset
-# patterns enforce approval requirements and may use negation where CODEOWNERS
-# cannot. Later CODEOWNERS matches replace earlier ownership.
-* @flipbook-labs/flipbook-maintainers
-
-/workspace/flipbook-core/ @flipbook-labs/flipbook-app
-/workspace/flipbook-next/ @flipbook-labs/flipbook-app
-
-# Repository-level engine and build boundaries.
-/.darklua.json @flipbook-labs/flipbook-engine
-/.luaurc @flipbook-labs/flipbook-engine
-/.lute/ @flipbook-labs/flipbook-engine
-/*.lock @flipbook-labs/flipbook-engine
-/*.luau @flipbook-labs/flipbook-engine
-/*.project.json @flipbook-labs/flipbook-engine
-/*.toml @flipbook-labs/flipbook-engine
-/src/ @flipbook-labs/flipbook-engine
-
-# Stable engine boundaries inside flipbook-core. Keep file-level carve-outs rare;
-# prefer a directory rule when a boundary grows beyond a few integration points.
-/workspace/flipbook-core/*.project.json @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/*.toml @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Common/ContextProviders.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Embedding/createEmbeddedFlipbookApp.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Embedding/embedFlipbookRuntime.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Plugin/ @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/StoryControls/ @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Storybook/StoryPreview.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Storybook/createLoadedStorybook.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Storybook/createTreeNode*.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/Testing/ @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/createFlipbookApp.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/init.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/init.storybook.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/jest.config.luau @flipbook-labs/flipbook-engine
-/workspace/flipbook-core/src/stories.spec.luau @flipbook-labs/flipbook-engine
-
-# Repository policy remains under maintainer stewardship.
+# Application and engine review assignment is enforced by the default-branch
+# ruleset. CODEOWNERS is intentionally limited to repository stewardship.
 /.agents/skills/flipbook-change-control/ @flipbook-labs/flipbook-maintainers
 /.github/ @flipbook-labs/flipbook-maintainers
 /.greptile/ @flipbook-labs/flipbook-maintainers
