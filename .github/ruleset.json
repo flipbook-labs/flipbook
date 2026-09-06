@@ -1,0 +1,102 @@
+{
+  "repository": {
+    "owner": "flipbook-labs",
+    "name": "flipbook",
+    "ruleset": "main",
+    "target": "branch",
+    "enforcement": "active",
+    "includeRefs": ["~DEFAULT_BRANCH"]
+  },
+  "pullRequest": {
+    "requiredApprovals": 0,
+    "dismissStaleApprovals": true,
+    "requireCodeOwnerReview": false,
+    "requireLastPushApproval": false,
+    "requireResolvedThreads": false,
+    "requireExtraApprovalForUnattributedChanges": false,
+    "allowedMergeMethods": ["squash"]
+  },
+  "reviewers": [
+    {
+      "team": "flipbook-app",
+      "minimumApprovals": 1,
+      "filePatterns": [
+        "workspace/flipbook-core/**/*",
+        "workspace/flipbook-next/**/*",
+        "!workspace/flipbook-core/*.project.json",
+        "!workspace/flipbook-core/*.toml",
+        "!workspace/flipbook-core/src/Common/ContextProviders.luau",
+        "!workspace/flipbook-core/src/Embedding/createEmbeddedFlipbookApp.luau",
+        "!workspace/flipbook-core/src/Embedding/embedFlipbookRuntime.luau",
+        "!workspace/flipbook-core/src/Plugin/**/*",
+        "!workspace/flipbook-core/src/StoryControls/**/*",
+        "!workspace/flipbook-core/src/Storybook/StoryPreview.luau",
+        "!workspace/flipbook-core/src/Storybook/createLoadedStorybook.luau",
+        "!workspace/flipbook-core/src/Storybook/createTreeNode*.luau",
+        "!workspace/flipbook-core/src/Testing/**/*",
+        "!workspace/flipbook-core/src/createFlipbookApp.luau",
+        "!workspace/flipbook-core/src/init.luau",
+        "!workspace/flipbook-core/src/init.storybook.luau",
+        "!workspace/flipbook-core/src/jest.config.luau",
+        "!workspace/flipbook-core/src/stories.spec.luau"
+      ]
+    },
+    {
+      "team": "flipbook-engine",
+      "minimumApprovals": 0,
+      "filePatterns": [
+        ".darklua.json",
+        ".luaurc",
+        ".lute/**/*",
+        "default.project.json",
+        "loom.config.luau",
+        "loom.lock.luau",
+        "project.luau",
+        "rbxasset.lock",
+        "rbxasset.toml",
+        "rokit.toml",
+        "selene.toml",
+        "sourcemap.project.json",
+        "src/**/*",
+        "stylua.toml",
+        "wally.lock",
+        "wally.toml",
+        "workspace/flipbook-core/*.project.json",
+        "workspace/flipbook-core/*.toml",
+        "workspace/flipbook-core/src/Common/ContextProviders.luau",
+        "workspace/flipbook-core/src/Embedding/createEmbeddedFlipbookApp.luau",
+        "workspace/flipbook-core/src/Embedding/embedFlipbookRuntime.luau",
+        "workspace/flipbook-core/src/Plugin/**/*",
+        "workspace/flipbook-core/src/StoryControls/**/*",
+        "workspace/flipbook-core/src/Storybook/StoryPreview.luau",
+        "workspace/flipbook-core/src/Storybook/createLoadedStorybook.luau",
+        "workspace/flipbook-core/src/Storybook/createTreeNode*.luau",
+        "workspace/flipbook-core/src/Testing/**/*",
+        "workspace/flipbook-core/src/createFlipbookApp.luau",
+        "workspace/flipbook-core/src/init.luau",
+        "workspace/flipbook-core/src/init.storybook.luau",
+        "workspace/flipbook-core/src/jest.config.luau",
+        "workspace/flipbook-core/src/stories.spec.luau"
+      ]
+    }
+  ],
+  "requiredChecks": [
+    { "context": "build-docs", "integrationId": 15368 },
+    { "context": "analyze", "integrationId": 15368 },
+    { "context": "tests", "integrationId": 15368 },
+    {
+      "context": "build-package (flipbook-core, rotriever, dev)",
+      "integrationId": 15368
+    },
+    {
+      "context": "build-package (flipbook-core, rotriever, prod)",
+      "integrationId": 15368
+    },
+    { "context": "build-plugin (dev)", "integrationId": 15368 },
+    { "context": "build-plugin (prod)", "integrationId": 15368 },
+    { "context": "Greptile Review", "integrationId": 867647 }
+  ],
+  "bypassActors": [
+    { "actorType": "OrganizationAdmin", "bypassMode": "pull_request" }
+  ]
+}
