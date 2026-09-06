@@ -112,16 +112,18 @@ local function StoryView(props: StoryViewProps)
 					LayoutOrder = 2,
 				}),
 
-				Preview = e(View, {
-					LayoutOrder = 3,
-					tag = "shrink size-full",
-				}, {
-					StoryPreview = React.createElement(StoryPreview, {
+				Preview = e(
+					View,
+					{
+						LayoutOrder = 3,
+						tag = "shrink size-full",
+					},
+					React.createElement(StoryPreview, {
 						key = story.id,
 						story = story,
 						extraProps = extraProps,
-					}),
-				}),
+					})
+				),
 
 				Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
 					LayoutOrder = 4,
