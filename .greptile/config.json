@@ -5,6 +5,5 @@
       "flipbook-labs/storyteller",
       "flipbook-labs/module-loader"
     ]
-  },
-  "instructions": "Treat AGENTS.md, .github/MERGE_POLICY.md, and the relevant vendored skills under .agents/skills as authoritative repository guidance. Use flipbook-labs/agent-skills for shared organization conventions and Storyteller and ModuleLoader for cross-repository implementation context. When sources conflict, prefer this repository and then its vendored skills. Do not lower review confidence merely because a change requires human application approval; assess implementation safety independently from merge authorization."
+  }
 }

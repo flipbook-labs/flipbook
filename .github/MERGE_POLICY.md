@@ -18,9 +18,9 @@ A Greptile finding does not become correct merely because it is blocking. Author
 | `flipbook-engine`      | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |                                    0 |
 | `flipbook-maintainers` | Repository policy and ownership configuration                                                                                                                                  | Determined by the repository ruleset |
 
-`CODEOWNERS` records the primary domain for each path and requests the corresponding team. Later entries override earlier ones, allowing engine boundaries to be carved out of the application-owned workspace.
+`CODEOWNERS` is the human-readable ownership and review-routing map. It favors stable directory boundaries, with file-level exceptions only for a small number of engine integration points. Later entries override earlier ones, allowing those boundaries to be carved out of the application-owned workspace.
 
-GitHub's required-reviewer rules enforce the approval counts. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking.
+GitHub's required-reviewer rules are the enforcement layer. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking. Ruleset file patterns may use ordered negation even though `CODEOWNERS` cannot.
 
 ## Application review
 
@@ -58,7 +58,7 @@ The default-branch ruleset should enforce the following configuration:
 - Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
 - Organization administrators retain pull-request bypass permission.
 
-The ruleset's application patterns must mirror the broad application paths in `CODEOWNERS` and exclude every later engine override. The engine patterns must mirror those overrides. Review the two configurations together whenever ownership changes.
+Start the application reviewer's patterns with `workspace/flipbook-core/**` and `workspace/flipbook-next/**`, then negate the engine-owned paths listed later in `CODEOWNERS`. Give the engine reviewer the corresponding positive patterns. Review the two configurations together whenever ownership changes.
 
 ## Changing this policy
 

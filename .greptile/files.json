@@ -15,18 +15,6 @@
     {
       "path": ".agents/skills/flipbook-change-control/SKILL.md",
       "description": "Pull request, review, and release workflow"
-    },
-    {
-      "path": ".agents/skills/flipbook-architecture-contract/SKILL.md",
-      "description": "Load-bearing Flipbook architecture decisions"
-    },
-    {
-      "path": ".agents/skills/flipbook-domain-reference/SKILL.md",
-      "description": "Story, Storybook, Storyteller, and ModuleLoader contracts"
-    },
-    {
-      "path": ".agents/skills/flipbook-validation-and-qa/SKILL.md",
-      "description": "Evidence requirements for implementation changes"
     }
   ]
 }
