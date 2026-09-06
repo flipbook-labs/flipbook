@@ -117,6 +117,7 @@ local function StoryView(props: StoryViewProps)
 					tag = "shrink size-full",
 				}, {
 					StoryPreview = React.createElement(StoryPreview, {
+						key = story.id,
 						story = story,
 						extraProps = extraProps,
 					}),
