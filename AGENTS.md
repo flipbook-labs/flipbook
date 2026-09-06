@@ -61,7 +61,7 @@ flipbook/
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
-Most application code lives under `workspace/flipbook-core/src/`, not `src/`. The root `src/init.server.luau` is only a thin bootstrap that calls `FlipbookCore.createFlipbookPlugin(...)`.
+Most application code lives under `workspace/flipbook-core/src/`, not `src/`. The root `src/` directory contains only thin plugin and embedded bootstraps; `src/PluginStarterScript.plugin.luau` delegates plugin startup to `FlipbookCore.createFlipbookPlugin(...)`.
 
 ### Storyteller / ModuleLoader
 
@@ -151,12 +151,12 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 ### FlipbookCore vs the plugin shell
 
-- `src/init.server.luau` is minimal: it guards against non-edit mode, sets `_G.__DEV__` in dev builds, and delegates to `FlipbookCore.createFlipbookPlugin(plugin, widget, button)`.
+- `src/PluginStarterScript.plugin.luau` is minimal: it guards against non-edit mode, sets `_G.__DEV__` in dev builds, and delegates to `FlipbookCore.createFlipbookPlugin(plugin, widget, button)`.
 - All real functionality is in `workspace/flipbook-core/src/`. When working on Flipbook features, start there, not in `src/`.
 
 ### Charm flags workaround
 
-`src/init.server.luau` sets `Charm.flags.frozen = false`. This is a documented workaround for a Storyteller issue (issue #100). Do not remove it.
+`src/PluginStarterScript.plugin.luau` sets `Charm.flags.frozen = false`. This is a documented workaround for a Storyteller issue (issue #100). Do not remove it.
 
 ### Workspace members and production pruning
 

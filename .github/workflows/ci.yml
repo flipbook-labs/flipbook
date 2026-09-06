@@ -120,5 +120,8 @@ jobs:
       - name: Validate repository ruleset
         run: lute run ruleset validate
 
+      - name: Validate repository policy
+        run: lute run policy validate
+
       - name: Run Luau analysis
         run: lute run analyze
