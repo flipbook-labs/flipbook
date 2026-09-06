@@ -1,9 +1,16 @@
 ---
 name: use-studio-mcp-for-flipbook
 description: Work on Flipbook's Studio MCP and FlipbookAgentGateway integration from inside the Flipbook repo. Use when editing gateway actions, gateway instructions, .mcp.json, or validating a local Flipbook plugin build in Roblox Studio.
+type: process
 ---
 
 # Use StudioMCP For Flipbook
+
+This skill covers Flipbook-specific development and validation through Studio MCP. It keeps gateway interaction scenario-neutral so each behavior can supply its own fixture and assertions.
+
+## When not to use
+
+For the generic AgentGateway protocol, read the shared `agent-gateway/use-agent-gateway` skill. For local Storyteller or ModuleLoader overlays, read `test-dependencies-in-flipbook`. For the multi-story fixture and its acceptance criteria, read [`references/multi-story.md`](references/multi-story.md).
 
 ## When To Use
 
@@ -86,70 +93,15 @@ Recommended validation sequence after changing gateway code or instructions:
 7. Poll readiness before `setControls` or mounted-story actions
 8. `setControls`, `getScreen`, `getStoryActions`, and any changed action
 
-For the bundled multi-story renderer check, use the `Agent Multi-Story E2E`
-storybook and its `MultipleStories.story` module. That storybook intentionally
-omits FlipbookCore's `mapStory` provider wrapper so the check isolates concrete
-story selection and rendering from FlipbookCore's own nested storybook context.
+`setControls` requires the story view to be mounted. Do not use a fixed sleep. For stories with controls, poll for the newly opened story and an expected control key before calling it. For viewport-preview checks, call `viewportPreview` and then poll `getStoryActions.isMountedInViewport`.
 
-`setControls` requires the story view to be mounted. Do not use a fixed sleep. For stories with controls, poll for the newly-opened story and an expected control key before calling it. For viewport-preview checks, call `viewportPreview` and then poll `getStoryActions.isMountedInViewport`.
+Behavior-specific validation belongs in a scenario reference beside this skill. A scenario names its fixture selectors, actions, semantic assertions, and any visual evidence without changing the gateway workflow above.
 
-```lua
-local HttpService = game:GetService("HttpService")
-local CoreGui = game:GetService("CoreGui")
-local gateway = CoreGui:FindFirstChild("FlipbookAgentGateway")
-assert(gateway ~= nil, "missing FlipbookAgentGateway")
+## Visual Checks
 
-local storyPath = "ReplicatedStorage.Example.Stories.Button.story"
-local storyId = "primary"
-local expectedControlKey = "label"
+Studio MCP viewport captures do not include plugin dock widgets. When the agent host can inspect the native Studio window, leave the requested Story open in Flipbook and capture or inspect the dock widget directly.
 
-gateway:Invoke({
-	method = "call",
-	action = "openStory",
-	params = {
-		story = storyPath,
-		storyId = storyId,
-	},
-})
-
-local ready = false
-for _ = 1, 60 do
-	local currentStory = gateway:Invoke({ method = "call", action = "getCurrentStory" })
-	local controls = gateway:Invoke({ method = "call", action = "getControls" })
-
-	if
-		currentStory.ok
-		and currentStory.result ~= nil
-		and currentStory.result.id == storyId
-		and currentStory.result.isMounted
-		and controls.ok
-		and controls.result ~= nil
-		and controls.result.controls ~= nil
-		and controls.result.controls[expectedControlKey] ~= nil
-	then
-		ready = true
-		break
-	end
-
-	task.wait()
-end
-
-assert(ready, "story did not become ready for controls")
-
-local result = gateway:Invoke({
-	method = "call",
-	action = "setControls",
-	params = {
-		controls = {
-			label = "Clicked",
-		},
-	},
-})
-
-return HttpService:JSONEncode(result)
-```
-
-## Embedded Visual Checks
+When only Studio MCP viewport capture is available, embed Flipbook into the place before entering play mode:
 
 ```lua
 local HttpService = game:GetService("HttpService")
@@ -169,7 +121,7 @@ local result = gateway:Invoke({
 return HttpService:JSONEncode(result)
 ```
 
-After embedding, use `start_stop_play { is_start = true }`, wait for the client data model to be available, and take `screen_capture`. If the screenshot is blank or not the Studio viewport, ask the user to bring Studio to the foreground before retrying.
+After embedding, use `start_stop_play { is_start = true }`, wait for the client data model to be available, and take `screen_capture`. Inspect client errors and stop the visual check if the embedded UI does not mount; do not substitute a blank capture for evidence. If the screenshot is not the Studio viewport, ask the user to bring Studio to the foreground before retrying.
 
 Stop play mode with `start_stop_play { is_start = false }` when done unless the user asks to leave the experience running.
 
@@ -183,3 +135,16 @@ When changing how agents should interact with Flipbook, update `getInstructions`
 - Explain Studio MCP blockers that external agents can recognize.
 
 When changing a specific action, update that action's manifest metadata (`title`, `description`, and `inputSchema`) so `method = "list"` stays self-service. If the AgentGateway package cannot express the needed level of information, update AgentGateway rather than compensating in this skill.
+
+---
+
+## Provenance and Maintenance
+
+**Date stamped:** 2026-09-06. Verified against the `FlipbookAgentGateway` action manifest, the Studio MCP configuration in `.mcp.json`, and the local plugin and Storybook build tasks.
+
+**Re-verify these claims when this skill next loads:**
+
+- Gateway instructions and action metadata: inspect `INSTRUCTIONS` and `create` in `workspace/flipbook-core/src/Agent/actions.luau`.
+- Studio MCP registration: inspect `.mcp.json`.
+- Build commands: run `lute run build plugin --channel dev --clean` and `lute run build storybook --channel dev --clean`.
+- Scenario references: list `.agents/skills/use-studio-mcp-for-flipbook/references/`.
