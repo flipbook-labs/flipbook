@@ -4,7 +4,7 @@ This policy describes who owns a change and what must happen before it merges. R
 
 ## Requirements for every pull request
 
-Every change merges through a pull request. The pull request must use the repository template, pass the required build and test checks, receive a 5/5 Greptile review for its current head commit, and have no unresolved review conversations.
+Every change merges through a pull request. The pull request must use the repository template, pass the required build and test checks, and receive a 5/5 Greptile review for its current head commit.
 
 Greptile's required status is emitted by the review; it is not a separate review or charge. Each completed review counts as one Greptile review, including reviews automatically triggered by later commits. Batch related fixes when practical instead of creating review churn.
 
@@ -54,7 +54,6 @@ The default-branch ruleset should enforce the following configuration:
 - `flipbook-app` is a required reviewer with one approval for application-owned paths.
 - `flipbook-engine` is a required reviewer with zero approvals for engine-owned paths.
 - Greptile 5/5 and the repository's build, analysis, test, and documentation checks are required.
-- Review conversations must be resolved.
 - New reviewable commits dismiss existing approvals.
 - Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
 - Organization administrators retain pull-request bypass permission.

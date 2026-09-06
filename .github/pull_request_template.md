@@ -12,11 +12,12 @@
 
 - [ ] Flipbook App
 - [ ] Flipbook Engine
-- [ ] Repository stewardship
 
-## User-visible impact
+## Screenshots
 
-<!-- Describe visible appearance or interaction changes. Include screenshots, video, or the Storybook preview when applicable. -->
+### Before
+
+### After
 
 ## Testing
 

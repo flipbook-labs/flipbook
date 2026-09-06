@@ -176,7 +176,7 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Classify every change as Flipbook App, Flipbook Engine, repository stewardship, or a combination in the pull request template. Mixed application and engine changes require application review.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Mark every application or engine domain the change touches in the pull request template. Mixed application and engine changes require application review; repository-stewardship changes follow maintainer ownership without another checklist option.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 

@@ -26,7 +26,9 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 ## Problem
 ## Solution
 ## Ownership
-## User-visible impact
+## Screenshots
+### Before
+### After
 ## Testing
 ## Notes for reviewers
 ```
