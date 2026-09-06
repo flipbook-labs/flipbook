@@ -7,6 +7,7 @@ local TreeView = require("@root/TreeView")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
+local doesTreeNodeMatchSearch = require("@root/Storybook/doesTreeNodeMatchSearch")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -89,7 +90,7 @@ local function StorybookTreeView(props: Props)
 			return false
 		end
 
-		return node.getName():lower():match(props.searchTerm:lower()) == nil
+		return not doesTreeNodeMatchSearch(node.getName(), props.searchTerm)
 	end, { props.searchTerm })
 
 	-- There can be pinned paths that were never apart of the current DataModel,

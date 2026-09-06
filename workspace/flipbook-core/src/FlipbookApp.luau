@@ -28,6 +28,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
+	initialSearchTerm: string?,
 	mode: AppMode?,
 }
 
@@ -81,6 +82,7 @@ local function FlipbookApp(props: Props)
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
 				Sidebar = React.createElement(Sidebar, {
+					initialSearchTerm = props.initialSearchTerm,
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
 				}),

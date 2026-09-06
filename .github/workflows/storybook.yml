@@ -22,6 +22,7 @@ jobs:
     environment: storybook-preview
     env:
       PREVIEW_PLACE_NAME: "Flipbook Preview ${{ github.event.pull_request.number }}"
+      PREVIEW_SEARCH_TERM: "RobloxProfile|SuccessDialog"
 
     steps:
       - uses: actions/checkout@v6
@@ -45,12 +46,9 @@ jobs:
       - name: Build storybook place
         run: lute run build storybook
 
-      # On `main` we build a fresh Flipbook.rbxm off the branch and use it as the
-      # runtime, so we catch embedding issues before cutting a release. PR builds
-      # skip this so a PR's own UI changes don't pollute the app underneath its
-      # preview (the deploy-storybook action fetches the latest release instead).
+      # Build the runtime from the checked-out revision so preview links exercise
+      # the same Flipbook code as the branch that produced the storybook.
       - name: Build Flipbook runtime
-        if: github.event_name == 'push'
         run: lute run build plugin --channel prod --skip-reload --clean
 
       - name: Deploy main storybook
@@ -73,4 +71,25 @@ jobs:
           universe-id: ${{ steps.ids.outputs.universe-id }}
           place-name: ${{ env.PREVIEW_PLACE_NAME }}
           place-file: build/flipbook-storybook.rbxl
+          flipbook-rbxm: build/prod/Flipbook.rbxm
           cli-version: "0.6.0"
+
+      # Preview filtering is carried in Roblox launch data, so the PR comment's
+      # launch link includes the same example used for acceptance testing.
+      - name: Add search to PR preview link
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          comment_id="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments?per_page=100" \
+            --jq '.[] | select(.body | contains("<!-- flipbook-pr-preview -->")) | .id' | tail -1)"
+          test -n "$comment_id"
+
+          launch_data="$(jq -nr --arg search "$PREVIEW_SEARCH_TERM" '{ search: $search } | tojson | @uri')"
+          body="$(gh api "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" --jq .body)"
+          updated_body="$(printf '%s' "$body" | sed -E \
+            "s#(\\* Launch: https://www\\.roblox\\.com/games/start\\?placeId=[0-9]+)#\\1\&launchData=$launch_data#")"
+
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" \
+            --raw-field body="$updated_body"

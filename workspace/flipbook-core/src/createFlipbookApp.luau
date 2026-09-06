@@ -12,6 +12,7 @@ type AppMode = AppMode.AppMode
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
+	initialSearchTerm: string?,
 	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
@@ -47,6 +48,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
+			initialSearchTerm = appOptions.initialSearchTerm,
 			mode = appOptions.mode,
 		}),
 	})

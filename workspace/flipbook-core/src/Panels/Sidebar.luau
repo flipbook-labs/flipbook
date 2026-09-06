@@ -18,12 +18,13 @@ type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
+	initialSearchTerm: string?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+	local searchTerm: string?, setSearchTerm = useState(props.initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
@@ -44,7 +45,7 @@ local function Sidebar(props: SidebarProps)
 					onChanged = onSearchTermChanged,
 					placeholder = "Search...",
 					size = InputSize.Small,
-					text = "",
+					text = searchTerm or "",
 					width = UDim.new(1, 0),
 				}),
 			}),
