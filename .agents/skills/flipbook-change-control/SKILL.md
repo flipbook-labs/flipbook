@@ -25,6 +25,8 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 ```markdown
 ## Problem
 ## Solution
+## Ownership
+## User-visible impact
 ## Testing
 ## Notes for reviewers
 ```
@@ -35,7 +37,9 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
-**Review routing:** `CODEOWNERS` at the repo root assigns all paths (`*`) to `@flipbook-labs/flipbook-maintainers` and `@flipbook-labs/flipbook-contributors` (verified 2026-07-01), so every PR automatically requests review from those teams — there is no per-directory ownership split.
+**Review routing:** `.github/MERGE_POLICY.md` is the source of truth. `CODEOWNERS` records the Flipbook App and Flipbook Engine domains, while the GitHub ruleset applies their approval counts. Application changes require one human application-team approval. Engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI. Mixed changes follow both paths.
+
+**Greptile findings:** Evaluate each finding. Fix valid findings; respond with repository evidence and request another review when a finding is invalid. If Greptile retains a finding, the code must change unless an organization administrator chooses to bypass the required status. Agents never bypass merge requirements.
 
 ### Commit Hygiene
 
@@ -91,6 +95,10 @@ Default channel is `prod`. Pass `--channel dev` or `--channel beta` to `lute run
 ## CI Gates
 
 Every PR must pass the following gate jobs before merge is recommended:
+
+### Greptile review
+
+Greptile must report 5/5 for the pull request's current head commit. The required status is an output of that review rather than a second review. Each completed review counts as one Greptile review, including a review triggered after another commit, so batch related fixes when practical.
 
 ### `ci.yml` — Standard Build & Attestation
 
@@ -413,12 +421,16 @@ Quick reference for determining what CI gates a change needs.
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-07-01 (against shared-brief.md, archaeology, flipbook-docs branch, repo files).
+**Last verified:** 2026-09-06 (against `.github/MERGE_POLICY.md`, `CODEOWNERS`, the pull request template, repository workflows, and repo files).
 
 **Re-verification commands:**
 ```bash
 # Confirm PR template exists and is current
 cat .github/pull_request_template.md
+
+# Confirm merge policy and ownership map agree
+cat .github/MERGE_POLICY.md
+cat CODEOWNERS
 
 # Confirm CI/strict/storybook workflows exist
 ls -la .github/workflows/{ci,strict,storybook}.yml

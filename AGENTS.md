@@ -176,6 +176,12 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Classify every change as Flipbook App, Flipbook Engine, repository stewardship, or a combination in the pull request template. Mixed application and engine changes require application review.
+
+Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
+
+Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only an organization administrator may bypass it; agents must not bypass merge requirements.
+
 Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
 
 **Process skills** (runbooks — what to do next):
