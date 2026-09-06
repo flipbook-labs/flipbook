@@ -86,6 +86,11 @@ Recommended validation sequence after changing gateway code or instructions:
 7. Poll readiness before `setControls` or mounted-story actions
 8. `setControls`, `getScreen`, `getStoryActions`, and any changed action
 
+For the bundled multi-story renderer check, use the `Agent Multi-Story E2E`
+storybook and its `MultipleStories.story` module. That storybook intentionally
+omits FlipbookCore's `mapStory` provider wrapper so the check isolates concrete
+story selection and rendering from FlipbookCore's own nested storybook context.
+
 `setControls` requires the story view to be mounted. Do not use a fixed sleep. For stories with controls, poll for the newly-opened story and an expected control key before calling it. For viewport-preview checks, call `viewportPreview` and then poll `getStoryActions.isMountedInViewport`.
 
 ```lua
