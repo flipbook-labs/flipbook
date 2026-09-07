@@ -19,7 +19,7 @@ A Greptile finding does not become correct merely because it is blocking. Author
 
 The version-controlled `.github/ruleset.json` defines application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces it. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking.
 
-Run `lute run policy validate` to check the relationships among repository policy files, and `lute run ruleset plan` to compare the desired configuration with GitHub. Applying changes is an explicit administrator operation: inspect the plan, then run `lute run ruleset apply --confirm`. CI may validate the configuration but must never apply it.
+Run `lute run policy validate` to check the ruleset manifest, and `lute run policy plan` to compare the desired configuration with GitHub. Applying changes is an explicit administrator operation: inspect the plan, then run `lute run policy apply --confirm`. CI may validate the configuration but must never apply it.
 
 ## Application review
 

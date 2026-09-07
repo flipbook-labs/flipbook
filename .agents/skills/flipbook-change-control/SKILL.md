@@ -28,7 +28,7 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
-**Review routing:** `.github/MERGE_POLICY.md` is the policy source of truth, and `.github/ruleset.json` is the declarative ownership and enforcement configuration. Ownership is inferred from changed files. Application changes require one human application-team approval. Engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI. Mixed changes follow both paths. Use `lute run ruleset plan` to inspect drift; only an administrator may run `lute run ruleset apply --confirm` after reviewing that plan.
+**Review routing:** `.github/MERGE_POLICY.md` is the policy source of truth, and `.github/ruleset.json` is the declarative ownership and enforcement configuration. Ownership is inferred from changed files. Application changes require one human application-team approval. Engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI. Mixed changes follow both paths. Use `lute run policy plan` to inspect drift; only an administrator may run `lute run policy apply --confirm` after reviewing that plan.
 
 **Greptile findings:** Evaluate each finding. Fix valid findings; respond with repository evidence and request another review when a finding is invalid. If Greptile retains a finding, the code must change unless an organization administrator chooses to bypass the required status. Agents never bypass merge requirements.
 
