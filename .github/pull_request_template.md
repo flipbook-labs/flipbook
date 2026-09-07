@@ -6,12 +6,6 @@
 
 <!-- What does this change do? Describe your approach and any non-obvious decisions -->
 
-## Screenshots
-
-### Before
-
-### After
-
 ## Testing
 
 <!-- How did you verify this works? Unit testing preferred, manual verification also common -->
