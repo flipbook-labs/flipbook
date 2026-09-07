@@ -1,3 +1,4 @@
+local EmbeddingTypes = require("@root/Embedding/types")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
@@ -15,17 +16,18 @@ local useCallback = React.useCallback
 local useState = React.useState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type LaunchData = EmbeddingTypes.LaunchData
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
-	initialSearchTerm: string?,
-	initialStoryPath: string?,
+	launchData: LaunchData?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local searchTerm: string?, setSearchTerm = useState(props.initialSearchTerm)
+	local initialSearchTerm = if props.launchData then props.launchData.search else nil
+	local searchTerm: string?, setSearchTerm = useState(initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
@@ -64,7 +66,7 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
-					initialStoryPath = props.initialStoryPath,
+					launchData = props.launchData,
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,

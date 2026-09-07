@@ -6,6 +6,7 @@ local Storyteller = require("@pkg/Storyteller")
 local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
+local EmbeddingTypes = require("@root/Embedding/types")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -22,14 +23,14 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useSignalState = ReactCharm.useSignalState
 
 type AppMode = AppMode.AppMode
+type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
-	initialSearchTerm: string?,
-	initialStoryPath: string?,
+	launchData: LaunchData?,
 	mode: AppMode?,
 }
 
@@ -83,8 +84,7 @@ local function FlipbookApp(props: Props)
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
 				Sidebar = React.createElement(Sidebar, {
-					initialSearchTerm = props.initialSearchTerm,
-					initialStoryPath = props.initialStoryPath,
+					launchData = props.launchData,
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
 				}),

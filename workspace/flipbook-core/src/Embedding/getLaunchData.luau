@@ -1,11 +1,7 @@
 local HttpService = game:GetService("HttpService")
+local types = require("./types")
 
-export type LaunchData = {
-	-- Prepopulates the sidebar search so preview viewers can find stories relevant to the pull request.
-	search: string?,
-	-- Opens a single story immediately by its sidebar-relative path when the pull request is focused on it.
-	story: string?,
-}
+export type LaunchData = types.LaunchData
 
 local function getLaunchData(launchData: unknown): LaunchData
 	local result: LaunchData = {}

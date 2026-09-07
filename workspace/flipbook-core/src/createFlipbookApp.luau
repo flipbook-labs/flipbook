@@ -4,16 +4,17 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
+local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
+type LaunchData = EmbeddingTypes.LaunchData
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
-	initialSearchTerm: string?,
-	initialStoryPath: string?,
+	launchData: LaunchData?,
 	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
@@ -49,8 +50,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		overlayGui = appOptions.overlayGui or container,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
-			initialSearchTerm = appOptions.initialSearchTerm,
-			initialStoryPath = appOptions.initialStoryPath,
+			launchData = appOptions.launchData,
 			mode = appOptions.mode,
 		}),
 	})

@@ -1,15 +1,16 @@
 local AppMode = require("@root/Enums/AppMode")
 local createFlipbookApp = require("@root/createFlipbookApp")
+local types = require("@root/Embedding/types")
+
+type LaunchData = types.LaunchData
 
 export type Options = {
-	initialSearchTerm: string?,
-	initialStoryPath: string?,
+	launchData: LaunchData?,
 }
 
 local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?)
 	local app = createFlipbookApp(screenGui, {
-		initialSearchTerm = if options then options.initialSearchTerm else nil,
-		initialStoryPath = if options then options.initialStoryPath else nil,
+		launchData = if options then options.launchData else nil,
 		overlayGui = screenGui :: GuiBase2d,
 		mode = AppMode.EmbeddedClient,
 	})

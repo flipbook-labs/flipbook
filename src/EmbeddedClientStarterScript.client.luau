@@ -41,8 +41,7 @@ local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchD
 local launchData = getLaunchData(localPlayer:GetJoinData().LaunchData)
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
-	initialSearchTerm = launchData.search,
-	initialStoryPath = launchData.story,
+	launchData = launchData,
 })
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)
