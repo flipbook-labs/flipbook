@@ -39,19 +39,8 @@ screenGui.Parent = playerGui
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
 local launchDataRemote = script.Parent:WaitForChild(LAUNCH_DATA_REMOTE_NAME)
-assert(launchDataRemote:IsA("RemoteEvent"), `{LAUNCH_DATA_REMOTE_NAME} must be a RemoteEvent`)
+assert(launchDataRemote:IsA("RemoteFunction"), `{LAUNCH_DATA_REMOTE_NAME} must be a RemoteFunction`)
 
-local launchData = nil
-local launchDataConnection = launchDataRemote.OnClientEvent:Connect(function(receivedLaunchData)
-	launchData = receivedLaunchData
-end)
-
-launchDataRemote:FireServer()
-while launchData == nil do
-	task.wait()
-end
-launchDataConnection:Disconnect()
-
-FlipbookCore.createEmbeddedFlipbookApp(screenGui, launchData)
+FlipbookCore.createEmbeddedFlipbookApp(screenGui, launchDataRemote:InvokeServer())
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

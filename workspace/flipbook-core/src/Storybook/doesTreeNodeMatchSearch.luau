@@ -1,6 +1,4 @@
-local function trim(value: string): string
-	return value:match("^%s*(.-)%s*$") or value
-end
+local trim = require("@root/Common/trim")
 
 local function doesTreeNodeMatchSearch(nodeName: string, searchTerm: string): boolean
 	local normalizedNodeName = nodeName:lower()
