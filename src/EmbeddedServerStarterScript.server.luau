@@ -8,27 +8,31 @@ local startTime = os.clock()
 local prefix = `[{script.Name}]`
 
 local Players = game:GetService("Players")
-local getSearchTermFromLaunchData = require("@workspace/flipbook-core/src/Embedding/getSearchTermFromLaunchData")
+local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchData")
 
 local SEARCH_TERM_ATTRIBUTE = "FlipbookSearchTerm"
-local SEARCH_TERM_READY_ATTRIBUTE = "FlipbookSearchTermReady"
+local STORY_PATH_ATTRIBUTE = "FlipbookStoryPath"
+local LAUNCH_DATA_READY_ATTRIBUTE = "FlipbookLaunchDataReady"
 
 print(`{prefix} starting...`)
 
 print(`{prefix} disabling character auto-loading...`)
 Players.CharacterAutoLoads = false
 
-local function initializeSearchTerm(player: Player)
-	local searchTerm = getSearchTermFromLaunchData(player:GetJoinData().LaunchData)
-	if searchTerm then
-		player:SetAttribute(SEARCH_TERM_ATTRIBUTE, searchTerm)
+local function initializeLaunchData(player: Player)
+	local launchData = getLaunchData(player:GetJoinData().LaunchData)
+	if launchData.search then
+		player:SetAttribute(SEARCH_TERM_ATTRIBUTE, launchData.search)
 	end
-	player:SetAttribute(SEARCH_TERM_READY_ATTRIBUTE, true)
+	if launchData.story then
+		player:SetAttribute(STORY_PATH_ATTRIBUTE, launchData.story)
+	end
+	player:SetAttribute(LAUNCH_DATA_READY_ATTRIBUTE, true)
 end
 
-Players.PlayerAdded:Connect(initializeSearchTerm)
+Players.PlayerAdded:Connect(initializeLaunchData)
 for _, player in Players:GetPlayers() do
-	initializeSearchTerm(player)
+	initializeLaunchData(player)
 end
 
 print(`{prefix} successfully initialized in {os.clock() - startTime}s`)

@@ -29,6 +29,7 @@ local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
 	initialSearchTerm: string?,
+	initialStoryPath: string?,
 	mode: AppMode?,
 }
 
@@ -83,6 +84,7 @@ local function FlipbookApp(props: Props)
 			}, {
 				Sidebar = React.createElement(Sidebar, {
 					initialSearchTerm = props.initialSearchTerm,
+					initialStoryPath = props.initialStoryPath,
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
 				}),

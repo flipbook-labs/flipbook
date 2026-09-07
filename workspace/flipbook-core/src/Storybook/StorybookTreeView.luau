@@ -8,6 +8,7 @@ local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local doesTreeNodeMatchSearch = require("@root/Storybook/doesTreeNodeMatchSearch")
+local findTreeNodeFromPath = require("@root/TreeView/findTreeNodeFromPath")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
@@ -25,6 +26,7 @@ local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
+	initialStoryPath: string?,
 	searchTerm: string?,
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
@@ -196,33 +198,34 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules } :: { unknown })
 
-	-- Reopening the story from the previous session
-	local wasLastStoryOpened = useRef(false)
+	-- Open the requested story, or reopen the story from the previous session.
+	local wasInitialStoryOpened = useRef(false)
 	local descendants = useSignalState(rootNode.getDescendants)
 	useEffect(
 		function()
-			if wasLastStoryOpened.current then
+			if wasInitialStoryOpened.current then
 				return
 			end
 
-			if lastOpenedStory then
-				local node = rootNode.findFirstDescendant(function(descendant)
+			local node = if props.initialStoryPath
+				then findTreeNodeFromPath(rootNode, props.initialStoryPath)
+				elseif lastOpenedStory then rootNode.findFirstDescendant(function(descendant)
 					return descendant.getInstance() == lastOpenedStory
 				end)
+				else nil
 
-				if node then
-					wasLastStoryOpened.current = true
-					node.activate()
-					node.expandUp()
-				end
+			if node and node.getIcon() == TreeView.TreeNodeIcon.Story then
+				wasInitialStoryOpened.current = true
+				node.activate()
+				node.expandUp()
 			end
 		end,
 		{
+			props.initialStoryPath,
 			lastOpenedStory,
 			rootNode,
 			-- This value isn't used in the effect body but is necessary so that
-			-- the effect will run again if the last opened story has not but
-			-- found yet
+			-- the effect runs again while the target story is still being added.
 			descendants,
 		} :: { unknown }
 	)

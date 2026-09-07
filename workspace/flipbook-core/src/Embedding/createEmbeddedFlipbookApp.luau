@@ -3,11 +3,13 @@ local createFlipbookApp = require("@root/createFlipbookApp")
 
 export type Options = {
 	initialSearchTerm: string?,
+	initialStoryPath: string?,
 }
 
 local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?)
 	local app = createFlipbookApp(screenGui, {
 		initialSearchTerm = if options then options.initialSearchTerm else nil,
+		initialStoryPath = if options then options.initialStoryPath else nil,
 		overlayGui = screenGui :: GuiBase2d,
 		mode = AppMode.EmbeddedClient,
 	})

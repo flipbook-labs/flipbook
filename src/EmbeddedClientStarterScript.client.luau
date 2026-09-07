@@ -37,12 +37,13 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-if not localPlayer:GetAttribute("FlipbookSearchTermReady") then
-	localPlayer:GetAttributeChangedSignal("FlipbookSearchTermReady"):Wait()
+if not localPlayer:GetAttribute("FlipbookLaunchDataReady") then
+	localPlayer:GetAttributeChangedSignal("FlipbookLaunchDataReady"):Wait()
 end
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	initialSearchTerm = localPlayer:GetAttribute("FlipbookSearchTerm") :: string?,
+	initialStoryPath = localPlayer:GetAttribute("FlipbookStoryPath") :: string?,
 })
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

@@ -13,6 +13,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
 	initialSearchTerm: string?,
+	initialStoryPath: string?,
 	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
@@ -49,6 +50,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
 			initialSearchTerm = appOptions.initialSearchTerm,
+			initialStoryPath = appOptions.initialStoryPath,
 			mode = appOptions.mode,
 		}),
 	})

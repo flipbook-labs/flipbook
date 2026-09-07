@@ -23,6 +23,7 @@ jobs:
     env:
       PREVIEW_PLACE_NAME: "Flipbook Preview ${{ github.event.pull_request.number }}"
       PREVIEW_SEARCH_TERM: "RobloxProfile|SuccessDialog"
+      PREVIEW_STORY_PATH: "FlipbookCore/About/RobloxProfile"
 
     steps:
       - uses: actions/checkout@v6
@@ -74,7 +75,7 @@ jobs:
           flipbook-rbxm: build/prod/Flipbook.rbxm
           cli-version: "0.6.0"
 
-      # Preview filtering is carried in Roblox launch data, so the PR comment's
+      # Preview state is carried in Roblox launch data, so the PR comment's
       # launch link includes the same example used for acceptance testing.
       - name: Add search to PR preview link
         if: github.event_name == 'pull_request'
@@ -86,10 +87,11 @@ jobs:
             --jq '.[] | select(.body | contains("<!-- flipbook-pr-preview -->")) | .id' | tail -1)"
           test -n "$comment_id"
 
-          launch_data="$(jq -nr --arg search "$PREVIEW_SEARCH_TERM" '{ search: $search } | tojson | @uri')"
+          launch_data="$(jq -nr --arg search "$PREVIEW_SEARCH_TERM" --arg story "$PREVIEW_STORY_PATH" \
+            '{ search: $search, story: $story } | tojson | @uri')"
           body="$(gh api "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" --jq .body)"
           updated_body="$(printf '%s' "$body" | sed -E \
-            "s#(\\* Launch: https://www\\.roblox\\.com/games/start\\?placeId=[0-9]+)#\\1\&launchData=$launch_data#")"
+            "s#(\\* Launch: https://www\\.roblox\\.com/games/start\\?placeId=[0-9]+)(\&launchData=[^[:space:]]+)?#\\1\&launchData=$launch_data#")"
 
           gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" \
             --raw-field body="$updated_body"

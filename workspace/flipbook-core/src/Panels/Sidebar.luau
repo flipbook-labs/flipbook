@@ -19,6 +19,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
 	initialSearchTerm: string?,
+	initialStoryPath: string?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
@@ -63,6 +64,7 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
+					initialStoryPath = props.initialStoryPath,
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
