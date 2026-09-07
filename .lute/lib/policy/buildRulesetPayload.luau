@@ -1,4 +1,4 @@
-local resolveTeamId = require("@scripts/lib/policy/ruleset/resolveTeamId")
+local resolveTeamId = require("@scripts/lib/policy/resolveTeamId")
 
 local function buildReviewers(config: any): { any }
 	local result = {}

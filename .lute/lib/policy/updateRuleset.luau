@@ -1,5 +1,5 @@
-local repositoryPath = require("@scripts/lib/policy/ruleset/repositoryPath")
-local requestGitHub = require("@scripts/lib/policy/ruleset/requestGitHub")
+local repositoryPath = require("@scripts/lib/policy/repositoryPath")
+local requestGitHub = require("@scripts/lib/policy/requestGitHub")
 
 local function updateRuleset(config: any, rulesetId: number, payloadPath: string)
 	requestGitHub({

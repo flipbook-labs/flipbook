@@ -1,6 +1,6 @@
 local json = require("@std/json")
 
-local requestGitHub = require("@scripts/lib/policy/ruleset/requestGitHub")
+local requestGitHub = require("@scripts/lib/policy/requestGitHub")
 
 local function resolveTeamId(config: any, teamSlug: string): number
 	local ok, response = pcall(requestGitHub, { `orgs/{config.repository.owner}/teams/{teamSlug}` })

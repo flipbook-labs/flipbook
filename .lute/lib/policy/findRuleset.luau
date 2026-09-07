@@ -1,7 +1,7 @@
 local json = require("@std/json")
 
-local repositoryPath = require("@scripts/lib/policy/ruleset/repositoryPath")
-local requestGitHub = require("@scripts/lib/policy/ruleset/requestGitHub")
+local repositoryPath = require("@scripts/lib/policy/repositoryPath")
+local requestGitHub = require("@scripts/lib/policy/requestGitHub")
 
 local function findRuleset(config: any): any
 	local rulesets = json.deserialize(requestGitHub({ repositoryPath(config) .. "/rulesets" })) :: any

@@ -2,7 +2,7 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local process = require("@std/process")
 
-local writeTemporaryJson = require("@scripts/lib/policy/ruleset/writeTemporaryJson")
+local writeTemporaryJson = require("@scripts/lib/policy/writeTemporaryJson")
 
 local function showRulesetPlan(desired: any, live: any): boolean
 	if json.serialize(desired) == json.serialize(live) then
