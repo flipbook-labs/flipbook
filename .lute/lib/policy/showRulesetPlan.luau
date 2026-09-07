@@ -5,10 +5,10 @@ local process = require("@std/process")
 local writeTemporaryJson = require("@scripts/lib/policy/writeTemporaryJson")
 
 local function showRulesetPlan(desired: any, live: any, dependencies: any?): boolean
-	local deps = dependencies or {}
-	local writeJson = deps.writeTemporaryJson or writeTemporaryJson
-	local runProcess = deps.runProcess or process.run
-	local remove = deps.remove or fs.remove
+	local deps: any = dependencies or {}
+	local writeJson = (deps.writeTemporaryJson or writeTemporaryJson) :: (string, any) -> any
+	local runProcess = (deps.runProcess or process.run) :: (any, any?) -> any
+	local remove = (deps.remove or fs.remove) :: (any) -> ()
 
 	if json.serialize(desired) == json.serialize(live) then
 		print("Ruleset is in sync.")

@@ -66,7 +66,7 @@ test.suite("runPolicy", function(suite)
 	end)
 
 	suite:case("applies drift only after explicit confirmation", function(assert)
-		local updateArguments
+		local updateArguments: any
 		local removedPath
 		local result = runPolicy({ "apply", "--confirm" }, {
 			readRulesetConfig = createRulesetConfig,

@@ -4,7 +4,7 @@ local createRulesetConfig = require("./createRulesetConfig")
 local updateRuleset = require("@scripts/lib/policy/updateRuleset")
 
 test.case("updates the selected ruleset from a JSON payload", function(assert)
-	local requestArguments
+	local requestArguments: any
 	updateRuleset(createRulesetConfig(), 17, "/tmp/payload.json", function(arguments)
 		requestArguments = arguments
 		return ""

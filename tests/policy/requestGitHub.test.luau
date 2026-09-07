@@ -4,7 +4,7 @@ local requestGitHub = require("@scripts/lib/policy/requestGitHub")
 
 test.suite("requestGitHub", function(suite)
 	suite:case("runs gh api with the pinned API version", function(assert)
-		local command
+		local command: any
 		local response = requestGitHub({ "repos/flipbook-labs/flipbook/rulesets" }, function(arguments)
 			command = arguments
 			return { ok = true, stdout = "  response\n", stderr = "" }

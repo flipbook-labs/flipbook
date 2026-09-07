@@ -16,10 +16,10 @@ test.suite("showRulesetPlan", function(suite)
 	end)
 
 	suite:case("renders drift through a temporary no-index diff", function(assert)
-		local written = {}
+		local written: any = {}
 		local removed = {}
-		local command
-		local options
+		local command: any
+		local options: any
 		local hasDrift = showRulesetPlan({ value = 2 }, { value = 1 }, {
 			writeTemporaryJson = function(name, value)
 				written[name] = value

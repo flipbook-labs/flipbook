@@ -11,7 +11,7 @@ local updateRuleset = require("@scripts/lib/policy/updateRuleset")
 local writeTemporaryJson = require("@scripts/lib/policy/writeTemporaryJson")
 
 local function runPolicy(arguments: { string }, dependencies: any?): any
-	local deps = dependencies or {}
+	local deps: any = dependencies or {}
 	local parser = cli.parser()
 	parser:add("action", "positional", { help = 'Can be "validate", "plan", or "apply"', default = "validate" })
 	parser:add("confirm", "flag", { help = "Required to apply changes to GitHub" })
@@ -23,18 +23,18 @@ local function runPolicy(arguments: { string }, dependencies: any?): any
 		assert(parser:has("confirm"), "refusing to apply without --confirm")
 	end
 
-	local readConfig = deps.readRulesetConfig or readRulesetConfig
+	local readConfig = (deps.readRulesetConfig or readRulesetConfig) :: () -> any
 	local config = readConfig()
 	if action == "validate" then
 		print(`Repository policy is valid ({#config.reviewers} reviewers, {#config.requiredChecks} required checks).`)
 		return { action = action, hasDrift = false, applied = false }
 	end
 
-	local find = deps.findRuleset or findRuleset
-	local build = deps.buildRulesetPayload or buildRulesetPayload
-	local fetch = deps.fetchRuleset or fetchRuleset
-	local normalize = deps.normalizeRuleset or normalizeRuleset
-	local showPlan = deps.showRulesetPlan or showRulesetPlan
+	local find = (deps.findRuleset or findRuleset) :: (any) -> any
+	local build = (deps.buildRulesetPayload or buildRulesetPayload) :: (any) -> any
+	local fetch = (deps.fetchRuleset or fetchRuleset) :: (any, number) -> any
+	local normalize = (deps.normalizeRuleset or normalizeRuleset) :: (any) -> any
+	local showPlan = (deps.showRulesetPlan or showRulesetPlan) :: (any, any) -> boolean
 	local ruleset = find(config)
 	local desired = build(config)
 	local live = normalize(fetch(config, ruleset.id))
@@ -42,9 +42,9 @@ local function runPolicy(arguments: { string }, dependencies: any?): any
 	local applied = false
 
 	if action == "apply" and hasDrift then
-		local writeJson = deps.writeTemporaryJson or writeTemporaryJson
-		local update = deps.updateRuleset or updateRuleset
-		local remove = deps.remove or fs.remove
+		local writeJson = (deps.writeTemporaryJson or writeTemporaryJson) :: (string, any) -> any
+		local update = (deps.updateRuleset or updateRuleset) :: (any, number, string) -> ()
+		local remove = (deps.remove or fs.remove) :: (any) -> ()
 		local payloadPath = writeJson("apply", desired)
 		update(config, ruleset.id, tostring(payloadPath))
 		remove(payloadPath)
