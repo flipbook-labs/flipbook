@@ -88,7 +88,7 @@ jobs:
           test -n "$comment_id"
 
           launch_data="$(jq -nr --arg search "$PREVIEW_SEARCH_TERM" --arg story_path "$PREVIEW_STORY_PATH" \
-            '{ search: $search, storyPathToOpen: $story_path } | tojson | @uri')"
+            '{ search: $search, story: $story_path } | tojson | @uri')"
           body="$(gh api "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" --jq .body)"
           updated_body="$(printf '%s' "$body" | sed -E \
             "s#(\\* Launch: https://www\\.roblox\\.com/games/start\\?placeId=[0-9]+)(\&launchData=[^[:space:]]+)?#\\1\&launchData=$launch_data#")"

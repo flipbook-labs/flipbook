@@ -42,7 +42,7 @@ local launchData = getLaunchData(localPlayer:GetJoinData().LaunchData)
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	initialSearchTerm = launchData.search,
-	initialStoryPath = launchData.storyPathToOpen,
+	initialStoryPath = launchData.story,
 })
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)
