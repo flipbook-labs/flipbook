@@ -11,16 +11,16 @@ local REQUIRED_GREPTILE_FILES = {
 }
 
 local function validateGreptileContext()
-	local filesConfig = json.deserialize(fs.readFileToString(".greptile/files.json"))
+	local filesConfig = json.deserialize(fs.readFileToString(".greptile/files.json")) :: any
 	assert(typeof(filesConfig.files) == "table", ".greptile/files.json files must be a table")
-	local files = filesConfig.files
+	local files: any = filesConfig.files
 	assert(
 		#files == #REQUIRED_GREPTILE_FILES,
 		`.greptile/files.json must contain exactly {#REQUIRED_GREPTILE_FILES} initial-load files`
 	)
 
 	for index, expectedPath in REQUIRED_GREPTILE_FILES do
-		local entry = files[index]
+		local entry: any = files[index]
 		assert(typeof(entry) == "table", `.greptile/files.json files[{index}] must be a table`)
 		assert(entry.path == expectedPath, `.greptile/files.json files[{index}] must be "{expectedPath}"`)
 		assert(
@@ -30,8 +30,8 @@ local function validateGreptileContext()
 		assert(fs.exists(entry.path), `Greptile initial-load file does not exist: {entry.path}`)
 	end
 
-	local greptileConfig = json.deserialize(fs.readFileToString(".greptile/config.json"))
-	local rulesetConfig = json.deserialize(fs.readFileToString(".github/ruleset.json"))
+	local greptileConfig = json.deserialize(fs.readFileToString(".greptile/config.json")) :: any
+	local rulesetConfig = json.deserialize(fs.readFileToString(".github/ruleset.json")) :: any
 	assert(typeof(rulesetConfig.requiredChecks) == "table", ".github/ruleset.json requiredChecks must be a table")
 	local greptileRequired = false
 	for _, check in rulesetConfig.requiredChecks do
