@@ -2,7 +2,7 @@ local HttpService = game:GetService("HttpService")
 
 export type LaunchData = {
 	search: string?,
-	story: string?,
+	storyPathToOpen: string?,
 }
 
 local function getLaunchData(launchData: unknown): LaunchData
@@ -20,8 +20,8 @@ local function getLaunchData(launchData: unknown): LaunchData
 	if type(decoded.search) == "string" and decoded.search ~= "" then
 		result.search = decoded.search
 	end
-	if type(decoded.story) == "string" and decoded.story ~= "" then
-		result.story = decoded.story
+	if type(decoded.storyPathToOpen) == "string" and decoded.storyPathToOpen ~= "" then
+		result.storyPathToOpen = decoded.storyPathToOpen
 	end
 
 	return result

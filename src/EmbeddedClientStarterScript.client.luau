@@ -36,14 +36,13 @@ screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
+local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchData")
 
-if not localPlayer:GetAttribute("FlipbookLaunchDataReady") then
-	localPlayer:GetAttributeChangedSignal("FlipbookLaunchDataReady"):Wait()
-end
+local launchData = getLaunchData(localPlayer:GetJoinData().LaunchData)
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
-	initialSearchTerm = localPlayer:GetAttribute("FlipbookSearchTerm") :: string?,
-	initialStoryPath = localPlayer:GetAttribute("FlipbookStoryPath") :: string?,
+	initialSearchTerm = launchData.search,
+	initialStoryPath = launchData.storyPathToOpen,
 })
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)
