@@ -17,7 +17,7 @@ end
 local Players = game:GetService("Players")
 
 local prefix = `[{script.Name}]`
-local LAUNCH_DATA_REMOTE_NAME = "LaunchData"
+local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
 
 local localPlayer = Players.LocalPlayer
 if localPlayer == nil then
@@ -38,9 +38,9 @@ screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-local launchDataRemote = script.Parent:WaitForChild(LAUNCH_DATA_REMOTE_NAME)
-assert(launchDataRemote:IsA("RemoteFunction"), `{LAUNCH_DATA_REMOTE_NAME} must be a RemoteFunction`)
+local getLaunchDataRemote = script.Parent:WaitForChild(GET_LAUNCH_DATA_REMOTE_NAME)
+assert(getLaunchDataRemote:IsA("RemoteFunction"), `{GET_LAUNCH_DATA_REMOTE_NAME} must be a RemoteFunction`)
 
-FlipbookCore.createEmbeddedFlipbookApp(screenGui, launchDataRemote:InvokeServer())
+FlipbookCore.createEmbeddedFlipbookApp(screenGui, getLaunchDataRemote:InvokeServer())
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

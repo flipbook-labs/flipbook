@@ -1,5 +1,6 @@
 local function trim(value: string): string
-	return value:match("^%s*(.-)%s*$") or value
+	local trimmed = value:match("^%s*(.-)%s*$")
+	return if trimmed then trimmed else value
 end
 
 return trim
