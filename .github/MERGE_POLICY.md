@@ -17,7 +17,7 @@ A Greptile finding does not become correct merely because it is blocking. Author
 | `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
 | `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |     0 (current) |
 
-The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces the policy. During this trial, administrators update the live ruleset through GitHub and keep the JSON record aligned with intentional changes. The general approval count is zero, and required code-owner review is disabled so the engine domain remains non-blocking while its team has one member. Increase the engine team's minimum approval count to one when a second member joins.
+The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset is the enforcement point. During this trial, administrators apply approved policy changes there and keep the JSON record aligned with intentional changes. In the proposed configuration, the general approval count is zero and required code-owner review is disabled so the engine domain remains non-blocking while its team has one member. Increase the engine team's minimum approval count to one when a second member joins.
 
 ## Application review
 
