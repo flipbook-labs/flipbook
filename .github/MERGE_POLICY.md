@@ -15,9 +15,9 @@ A Greptile finding does not become correct merely because it is blocking. Author
 | Domain            | Responsibility                                                                                                                                                                 | Human approvals |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
 | `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
-| `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |               0 |
+| `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |     0 (current) |
 
-The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces the policy. During this trial, administrators update the live ruleset through GitHub and keep the JSON record aligned with intentional changes. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking.
+The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces the policy. During this trial, administrators update the live ruleset through GitHub and keep the JSON record aligned with intentional changes. The general approval count is zero, and required code-owner review is disabled so the engine domain remains non-blocking while its team has one member. Increase the engine team's minimum approval count to one when a second member joins.
 
 ## Application review
 
@@ -27,7 +27,7 @@ New reviewable commits dismiss an existing application approval. The application
 
 ## Engine review
 
-Engine ownership identifies responsibility and requests visibility without requiring a human approval. Engine changes become mergeable when the required checks, including Greptile 5/5, pass for the current head commit.
+Engine ownership currently identifies responsibility and requests visibility without requiring a human approval. While the engine team has one member, engine changes become mergeable when the required checks, including Greptile 5/5, pass for the current head commit. Once the team has more than one member, engine changes also require one engine-team approval.
 
 The maintainer performing the merge remains responsible for the decision. Greptile does not merge pull requests and does not replace maintainer judgment.
 
@@ -49,7 +49,7 @@ The default-branch ruleset should enforce the following configuration:
 - The general approving-review count is zero.
 - Required code-owner review is disabled.
 - `flipbook-app` is a required reviewer with one approval for application-owned paths.
-- `flipbook-engine` is a required reviewer with zero approvals for engine-owned paths.
+- `flipbook-engine` is a required reviewer with zero approvals while the team has one member, increasing to one approval when a second member joins.
 - Greptile 5/5 and the repository's build, analysis, test, and documentation checks are required.
 - New reviewable commits dismiss existing approvals.
 - Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
