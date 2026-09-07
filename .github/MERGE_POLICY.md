@@ -17,9 +17,7 @@ A Greptile finding does not become correct merely because it is blocking. Author
 | `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
 | `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |               0 |
 
-The version-controlled `.github/ruleset.json` defines application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces it. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking.
-
-Run `lute test tests/policy` to exercise the policy tooling without GitHub access or repository changes. Run `lute run policy validate` to check the ruleset manifest, and `lute run policy plan` for a read-only comparison of the desired configuration with GitHub. Applying changes is an explicit administrator operation: inspect the plan, then run `lute run policy apply --confirm`. CI may test, validate, and plan the configuration but must never apply it.
+The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset enforces the policy. During this trial, administrators update the live ruleset through GitHub and keep the JSON record aligned with intentional changes. The general approval count is zero, and required code-owner review is disabled so the zero-approval engine domain remains non-blocking.
 
 ## Application review
 
@@ -57,7 +55,7 @@ The default-branch ruleset should enforce the following configuration:
 - Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
 - Organization administrators retain pull-request bypass permission.
 
-The required-reviewer patterns in `.github/ruleset.json` are the authoritative ownership map. Application review initially covers all of `workspace/flipbook-core/**/*` and `workspace/flipbook-next/**/*`. When maintainers encounter application paths that should instead be engine-owned, add the positive engine pattern and matching application exclusion together.
+The required-reviewer patterns in `.github/ruleset.json` are the reviewed ownership map. Application review initially covers all of `workspace/flipbook-core/**/*` and `workspace/flipbook-next/**/*`. When maintainers encounter application paths that should instead be engine-owned, add the positive engine pattern and matching application exclusion together.
 
 ## Changing this policy
 

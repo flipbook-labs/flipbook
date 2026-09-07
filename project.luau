@@ -9,7 +9,6 @@ return {
 	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
 	ROBLOX_PACKAGES_VERSION = "0.737.0.7371584",
 	SCRIPTS_PATH = path.resolve("./.lute"),
-	POLICY_TESTS_PATH = path.resolve("./tests/policy"),
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
 	LUAU_PACKAGES_PATH = path.resolve("./LuauPackages"),
@@ -24,7 +23,6 @@ return {
 		"src",
 		"workspace",
 		".lute",
-		"tests",
 	},
 
 	PROD_CONFIG = {

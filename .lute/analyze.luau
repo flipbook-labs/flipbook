@@ -34,7 +34,6 @@ do
 	table.insert(args, "--platform=standard")
 	table.insert(args, "--flag:LuauSolverV2=true")
 	table.insert(args, project.SCRIPTS_PATH)
-	table.insert(args, project.POLICY_TESTS_PATH)
 
 	run("luau-lsp", { table.unpack(args) })
 end

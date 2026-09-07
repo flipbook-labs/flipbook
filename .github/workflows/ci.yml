@@ -117,11 +117,5 @@ jobs:
       - name: Lint
         run: lute run lint
 
-      - name: Validate repository policy
-        run: lute run policy validate
-
-      - name: Test repository policy tooling
-        run: lute test tests/policy
-
       - name: Run Luau analysis
         run: lute run analyze
