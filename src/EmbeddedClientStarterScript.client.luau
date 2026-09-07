@@ -38,7 +38,11 @@ screenGui.Parent = playerGui
 local FlipbookCore = require("@workspace/flipbook-core/src")
 local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchData")
 
-local launchData = getLaunchData(localPlayer:GetJoinData().LaunchData)
+if not localPlayer:GetAttribute("FlipbookLaunchDataReady") then
+	localPlayer:GetAttributeChangedSignal("FlipbookLaunchDataReady"):Wait()
+end
+
+local launchData = getLaunchData(localPlayer:GetAttribute("FlipbookLaunchData"))
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	launchData = launchData,
