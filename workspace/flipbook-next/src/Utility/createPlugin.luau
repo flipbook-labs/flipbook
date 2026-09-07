@@ -2,7 +2,7 @@ local App = require("@root/Components/App")
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local function createPlugin(_plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
+local function createPlugin(plugin: Plugin, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
 	local root = ReactRoblox.createRoot(widget)
 	local app = React.createElement(App)

@@ -7,7 +7,6 @@ end
 local startTime = os.clock()
 local prefix = `[{script.Name}]`
 
--- lute-lint-ignore(unused_variable): property writes are not counted as reads.
 local Players = game:GetService("Players")
 
 print(`{prefix} starting...`)

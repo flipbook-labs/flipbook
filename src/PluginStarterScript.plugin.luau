@@ -8,7 +8,6 @@ if _G.BUILD_CHANNEL == "development" then
 	_G.__DEV__ = true
 end
 
--- lute-lint-ignore(unused_variable): property writes are not counted as reads.
 local Charm = require("@pkg/Charm")
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
