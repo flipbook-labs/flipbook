@@ -27,7 +27,7 @@ local function validateGreptileContext()
 			typeof(entry.description) == "string",
 			`.greptile/files.json files[{index}].description must be a string`
 		)
-		assert(fs.exists(entry.path), `Greptile initial-load file does not exist: {entry.path}`)
+		assert(fs.exists(expectedPath), `Greptile initial-load file does not exist: {expectedPath}`)
 	end
 
 	local greptileConfig = json.deserialize(fs.readFileToString(".greptile/config.json")) :: any
