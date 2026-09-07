@@ -4,20 +4,25 @@ local process = require("@std/process")
 
 local writeTemporaryJson = require("@scripts/lib/policy/writeTemporaryJson")
 
-local function showRulesetPlan(desired: any, live: any): boolean
+local function showRulesetPlan(desired: any, live: any, dependencies: any?): boolean
+	local deps = dependencies or {}
+	local writeJson = deps.writeTemporaryJson or writeTemporaryJson
+	local runProcess = deps.runProcess or process.run
+	local remove = deps.remove or fs.remove
+
 	if json.serialize(desired) == json.serialize(live) then
 		print("Ruleset is in sync.")
 		return false
 	end
 
-	local livePath = writeTemporaryJson("live", live)
-	local desiredPath = writeTemporaryJson("desired", desired)
+	local livePath = writeJson("live", live)
+	local desiredPath = writeJson("desired", desired)
 	print("Ruleset drift detected:")
-	process.run({ "git", "diff", "--no-index", "--", tostring(livePath), tostring(desiredPath) }, {
+	runProcess({ "git", "diff", "--no-index", "--", tostring(livePath), tostring(desiredPath) }, {
 		stdio = "inherit",
 	})
-	fs.remove(livePath)
-	fs.remove(desiredPath)
+	remove(livePath)
+	remove(desiredPath)
 	return true
 end
 

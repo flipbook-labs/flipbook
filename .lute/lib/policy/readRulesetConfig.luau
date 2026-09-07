@@ -4,8 +4,8 @@ local path = require("@std/path")
 
 local CONFIG_PATH = path.resolve(".github/ruleset.json")
 
-local function readRulesetConfig(): any
-	local config = json.deserialize(fs.readFileToString(CONFIG_PATH)) :: any
+local function readRulesetConfig(configPath: path.Pathlike?): any
+	local config = json.deserialize(fs.readFileToString(configPath or CONFIG_PATH)) :: any
 	assert(typeof(config) == "table", "ruleset config must be a table")
 
 	local repository: any = config.repository

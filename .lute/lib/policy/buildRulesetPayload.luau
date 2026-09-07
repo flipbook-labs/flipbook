@@ -1,10 +1,10 @@
 local resolveTeamId = require("@scripts/lib/policy/resolveTeamId")
 
-local function buildReviewers(config: any): { any }
+local function buildReviewers(config: any, resolveId: (any, string) -> number): { any }
 	local result = {}
 	for _, reviewer in config.reviewers do
 		table.insert(result, {
-			reviewer = { id = resolveTeamId(config, reviewer.team), type = "Team" },
+			reviewer = { id = resolveId(config, reviewer.team), type = "Team" },
 			minimum_approvals = reviewer.minimumApprovals,
 			file_patterns = reviewer.filePatterns,
 		})
@@ -36,7 +36,8 @@ local function buildBypassActors(config: any): { any }
 	return result
 end
 
-local function buildRulesetPayload(config: any): any
+local function buildRulesetPayload(config: any, resolveId: ((any, string) -> number)?): any
+	local resolve = resolveId or resolveTeamId
 	local pullRequest = config.pullRequest
 	return {
 		name = config.repository.ruleset,
@@ -52,7 +53,7 @@ local function buildRulesetPayload(config: any): any
 				parameters = {
 					required_approving_review_count = pullRequest.requiredApprovals,
 					dismiss_stale_reviews_on_push = pullRequest.dismissStaleApprovals,
-					required_reviewers = buildReviewers(config),
+					required_reviewers = buildReviewers(config, resolve),
 					require_code_owner_review = pullRequest.requireCodeOwnerReview,
 					dismissal_restriction = { enabled = false, allowed_actors = {} },
 					require_last_push_approval = pullRequest.requireLastPushApproval,
