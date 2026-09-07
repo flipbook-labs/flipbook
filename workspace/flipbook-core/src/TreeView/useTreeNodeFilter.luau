@@ -14,14 +14,12 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 	local leaves = useSignalState(root.getLeafNodes)
 
 	useEffect(function()
-		if filter then
-			-- Resetting the filtered state to do it all over again for the new
-			-- filter function
-			root.setIsFiltered(false)
-			for _, descendant in root.getDescendants() do
-				descendant.setIsFiltered(false)
-			end
+		root.setIsFiltered(false)
+		for _, descendant in root.getDescendants() do
+			descendant.setIsFiltered(false)
+		end
 
+		if filter then
 			local included = {}
 
 			for _, leaf in leaves do
@@ -55,6 +53,7 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 					if filter(node) then
 						node.setIsFiltered(true)
 					else
+						node.expandUp()
 						included[node.id] = true
 						node.setIsFiltered(false)
 						includeRemainingNodes = true

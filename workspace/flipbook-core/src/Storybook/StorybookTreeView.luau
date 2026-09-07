@@ -271,7 +271,7 @@ local function StorybookTreeView(props: Props)
 
 	return React.createElement(TreeView.TreeView, {
 		root = rootNode,
-		filter = filter,
+		filter = if props.searchTerm and props.searchTerm ~= "" then filter else nil,
 		layoutOrder = props.layoutOrder,
 	})
 end
