@@ -4,13 +4,9 @@ local types = require("@root/Embedding/types")
 
 type LaunchData = types.LaunchData
 
-export type Options = {
-	launchData: LaunchData?,
-}
-
-local function createEmbeddedFlipbookApp(screenGui: ScreenGui, options: Options?)
+local function createEmbeddedFlipbookApp(screenGui: ScreenGui, launchData: LaunchData?)
 	local app = createFlipbookApp(screenGui, {
-		launchData = if options then options.launchData else nil,
+		launchData = launchData,
 		overlayGui = screenGui :: GuiBase2d,
 		mode = AppMode.EmbeddedClient,
 	})

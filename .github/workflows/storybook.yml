@@ -77,7 +77,7 @@ jobs:
 
       # Preview state is carried in Roblox launch data, so the PR comment's
       # launch link includes the same example used for acceptance testing.
-      - name: Add search to PR preview link
+      - name: Add launch data to PR preview link
         if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}

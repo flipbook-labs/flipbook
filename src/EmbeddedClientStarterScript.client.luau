@@ -52,8 +52,6 @@ while launchData == nil do
 end
 launchDataConnection:Disconnect()
 
-FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
-	launchData = launchData,
-})
+FlipbookCore.createEmbeddedFlipbookApp(screenGui, launchData)
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

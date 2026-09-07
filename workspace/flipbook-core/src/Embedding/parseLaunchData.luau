@@ -3,14 +3,16 @@ local types = require("./types")
 
 export type LaunchData = types.LaunchData
 
-local function getLaunchData(launchData: unknown): LaunchData
+local function parseLaunchData(launchData: unknown): LaunchData
 	local result: LaunchData = {}
 
 	if type(launchData) ~= "string" or launchData == "" then
 		return result
 	end
 
-	local success, decoded = pcall(HttpService.JSONDecode, HttpService, launchData)
+	local success, decoded = pcall(function()
+		return HttpService:JSONDecode(launchData)
+	end)
 	if not success or type(decoded) ~= "table" then
 		return result
 	end
@@ -25,4 +27,4 @@ local function getLaunchData(launchData: unknown): LaunchData
 	return result
 end
 
-return getLaunchData
+return parseLaunchData

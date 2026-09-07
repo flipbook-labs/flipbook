@@ -9,7 +9,7 @@ local prefix = `[{script.Name}]`
 
 local Players = game:GetService("Players")
 
-local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchData")
+local parseLaunchData = require("@workspace/flipbook-core/src/Embedding/parseLaunchData")
 
 local LAUNCH_DATA_REMOTE_NAME = "LaunchData"
 
@@ -30,7 +30,7 @@ launchDataRemote.OnServerEvent:Connect(function(player)
 	end
 
 	launchDataSent[player] = true
-	launchDataRemote:FireClient(player, getLaunchData(player:GetJoinData().LaunchData))
+	launchDataRemote:FireClient(player, parseLaunchData(player:GetJoinData().LaunchData))
 end)
 
 Players.PlayerRemoving:Connect(function(player)
