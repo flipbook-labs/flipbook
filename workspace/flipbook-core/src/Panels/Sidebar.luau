@@ -4,10 +4,9 @@ local React = require("@pkg/React")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local Storyteller = require("@pkg/Storyteller")
 
-local IconName = Foundation.Enums.IconName
 local InputSize = Foundation.Enums.InputSize
 local ScrollView = Foundation.ScrollView
-local TextInput = Foundation.TextInput
+local SearchInput = Foundation.SearchInput
 local View = Foundation.View
 local withCommonProps = Foundation.Utility.withCommonProps
 
@@ -42,9 +41,7 @@ local function Sidebar(props: SidebarProps)
 				LayoutOrder = 1,
 				tag = "auto-y padding-medium size-full-0",
 			}, {
-				SearchBar = e(TextInput, {
-					label = "",
-					leadingIcon = IconName.MagnifyingGlass,
+				SearchBar = e(SearchInput, {
 					onChanged = onSearchTermChanged,
 					placeholder = "Search...",
 					size = InputSize.Small,
