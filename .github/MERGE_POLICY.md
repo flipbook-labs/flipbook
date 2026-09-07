@@ -57,7 +57,7 @@ The default-branch ruleset should enforce the following configuration:
 - Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
 - Organization administrators retain pull-request bypass permission.
 
-The required-reviewer patterns in `.github/ruleset.json` are the authoritative ownership map. Application review initially covers all of `workspace/flipbook-core/**/*` and `workspace/flipbook-next/**/*`. Add narrow engine exclusions only when maintainers encounter paths that should no longer require application review.
+The required-reviewer patterns in `.github/ruleset.json` are the authoritative ownership map. Application review initially covers all of `workspace/flipbook-core/**/*` and `workspace/flipbook-next/**/*`. When maintainers encounter application paths that should instead be engine-owned, add the positive engine pattern and matching application exclusion together.
 
 ## Changing this policy
 

@@ -44,23 +44,7 @@
         "src/**/*",
         "stylua.toml",
         "wally.lock",
-        "wally.toml",
-        "workspace/flipbook-core/*.project.json",
-        "workspace/flipbook-core/*.toml",
-        "workspace/flipbook-core/src/Common/ContextProviders.luau",
-        "workspace/flipbook-core/src/Embedding/createEmbeddedFlipbookApp.luau",
-        "workspace/flipbook-core/src/Embedding/embedFlipbookRuntime.luau",
-        "workspace/flipbook-core/src/Plugin/**/*",
-        "workspace/flipbook-core/src/StoryControls/**/*",
-        "workspace/flipbook-core/src/Storybook/StoryPreview.luau",
-        "workspace/flipbook-core/src/Storybook/createLoadedStorybook.luau",
-        "workspace/flipbook-core/src/Storybook/createTreeNode*.luau",
-        "workspace/flipbook-core/src/Testing/**/*",
-        "workspace/flipbook-core/src/createFlipbookApp.luau",
-        "workspace/flipbook-core/src/init.luau",
-        "workspace/flipbook-core/src/init.storybook.luau",
-        "workspace/flipbook-core/src/jest.config.luau",
-        "workspace/flipbook-core/src/stories.spec.luau"
+        "wally.toml"
       ]
     }
   ],

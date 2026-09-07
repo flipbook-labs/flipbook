@@ -25,11 +25,6 @@ end
 
 run("selene", { table.unpack(project.FOLDERS_TO_LINT) })
 
-run("lute", {
-	"lint",
-	table.unpack(project.FOLDERS_TO_LINT),
-})
-
 run("stylua", {
 	"--check",
 	table.unpack(project.FOLDERS_TO_LINT),

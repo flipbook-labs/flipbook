@@ -20,23 +20,7 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 
 ### Pull Requests
 
-**Template:** Use the template at `.github/pull_request_template.md` (verified 2026-07-01).
-
-```markdown
-## Problem
-
-## Solution
-
-## Screenshots
-
-### Before
-
-### After
-
-## Testing
-
-## Notes for reviewers
-```
+**Template:** Use the template at `.github/pull_request_template.md`.
 
 Fill every section concisely. The Problem/Solution should describe what the change does in present tense on its own ("Add a foo helper to consolidate X"), not its origin story.
 
