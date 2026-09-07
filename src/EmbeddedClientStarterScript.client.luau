@@ -17,6 +17,7 @@ end
 local Players = game:GetService("Players")
 
 local prefix = `[{script.Name}]`
+local LAUNCH_DATA_REMOTE_NAME = "LaunchData"
 
 local localPlayer = Players.LocalPlayer
 if localPlayer == nil then
@@ -36,9 +37,20 @@ screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
-local getLaunchData = require("@workspace/flipbook-core/src/Embedding/getLaunchData")
 
-local launchData = getLaunchData(localPlayer:GetJoinData().LaunchData)
+local launchDataRemote = script.Parent:WaitForChild(LAUNCH_DATA_REMOTE_NAME)
+assert(launchDataRemote:IsA("RemoteEvent"), `{LAUNCH_DATA_REMOTE_NAME} must be a RemoteEvent`)
+
+local launchData = nil
+local launchDataConnection = launchDataRemote.OnClientEvent:Connect(function(receivedLaunchData)
+	launchData = receivedLaunchData
+end)
+
+launchDataRemote:FireServer()
+while launchData == nil do
+	task.wait()
+end
+launchDataConnection:Disconnect()
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, {
 	launchData = launchData,
