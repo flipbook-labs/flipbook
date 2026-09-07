@@ -14,9 +14,6 @@ local REQUIRED_GREPTILE_FILES = {
 local REQUIRED_PR_TEMPLATE_MARKERS = {
 	"## Problem",
 	"## Solution",
-	"## Ownership",
-	"- [ ] Flipbook App",
-	"- [ ] Flipbook Engine",
 	"## Screenshots",
 	"### Before",
 	"### After",

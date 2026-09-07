@@ -176,9 +176,11 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Mark every application or engine domain the change touches in the pull request template. Mixed application and engine changes require application review; repository-stewardship changes follow maintainer ownership without another checklist option.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Mixed application and engine changes require application review; repository-stewardship changes follow maintainer ownership.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
+
+Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant vendored skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then its vendored skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
 
 Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only an organization administrator may bypass it; agents must not bypass merge requirements.
 
