@@ -28,7 +28,7 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
-**Review routing:** `.github/MERGE_POLICY.md` is the policy source of truth, and `.github/ruleset.json` records the reviewed ownership and enforcement configuration. Ownership is inferred from changed files. Application changes require one human application-team approval. While the engine team has one member, engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI; increase the engine minimum to one approval when a second member joins. Mixed changes follow both paths. During the policy trial, administrators update the live ruleset through GitHub and keep the JSON record aligned with intentional changes.
+**Review routing:** `.github/MERGE_POLICY.md` is the policy source of truth, and the [Flipbook Labs GitHub governance stack](https://github.com/flipbook-labs/infra/tree/main/stacks/github) manages the live ownership and enforcement configuration. Ownership is inferred from changed files. Application changes require one human application-team approval. While the engine team has one member, engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI; increase the engine minimum to one approval when a second member joins. Mixed changes follow both paths.
 
 **Greptile findings:** Evaluate each finding. Fix valid findings; respond with repository evidence and request another review when a finding is invalid. If Greptile retains a finding, the code must change unless an organization administrator chooses to bypass the required status. Agents never bypass merge requirements.
 
@@ -426,7 +426,7 @@ Quick reference for determining what CI gates a change needs.
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-09-06 (against `.github/MERGE_POLICY.md`, `.github/ruleset.json`, the pull request template, repository workflows, and repo files).
+**Last verified:** 2026-09-08 (against `.github/MERGE_POLICY.md`, the live GitHub ruleset, the pull request template, repository workflows, and repo files).
 
 **Re-verification commands:**
 
@@ -436,7 +436,9 @@ cat .github/pull_request_template.md
 
 # Confirm merge policy is current
 cat .github/MERGE_POLICY.md
-cat .github/ruleset.json
+
+# Inspect the live ruleset; its configuration is managed in flipbook-labs/infra
+gh api repos/flipbook-labs/flipbook/rulesets
 
 # Confirm CI/strict/storybook workflows exist
 ls -la .github/workflows/{ci,strict,storybook}.yml

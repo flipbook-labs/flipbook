@@ -17,13 +17,11 @@ A Greptile finding does not become correct merely because it is blocking. Author
 | `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
 | `flipbook-engine` | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |     0 (current) |
 
-The version-controlled `.github/ruleset.json` records the proposed application and engine ownership, team assignment, approval counts, required checks, and administrator bypass. The live GitHub ruleset is the enforcement point. During this trial, administrators apply approved policy changes there and keep the JSON record aligned with intentional changes. In the proposed configuration, the general approval count is zero and required code-owner review is disabled so the engine domain remains non-blocking while its team has one member. Increase the engine team's minimum approval count to one when a second member joins.
+The live GitHub ruleset is the enforcement point. Its ownership paths and merge requirements are managed centrally in the [Flipbook Labs GitHub governance stack](https://github.com/flipbook-labs/infra/tree/main/stacks/github). Increase the engine team's minimum approval count to one when a second member joins.
 
 ## Application review
 
 Any pull request touching an application-owned path requires approval from `@flipbook-labs/flipbook-app`. Application review covers the user-facing result rather than only the implementation. Include screenshots, video, or the pull request's Storybook preview when the change affects visible appearance or interaction.
-
-New reviewable commits dismiss an existing application approval. The application team must review the current result, not an earlier revision.
 
 ## Engine review
 
@@ -41,22 +39,6 @@ Some files necessarily mix integration and presentation. Keep those application-
 
 Organization administrators may bypass required reviews or status checks when exercising maintainer judgment. A PR-body note or comment can preserve useful context, but a public explanation is not required. Agents must never bypass a merge requirement or recommend concealing a bypass.
 
-## GitHub ruleset
-
-The default-branch ruleset should enforce the following configuration:
-
-- Pull requests are required.
-- The general approving-review count is zero.
-- Required code-owner review is disabled.
-- `flipbook-app` is a required reviewer with one approval for application-owned paths.
-- `flipbook-engine` is a required reviewer with zero approvals while the team has one member, increasing to one approval when a second member joins.
-- Greptile 5/5 and the repository's build, analysis, test, and documentation checks are required.
-- New reviewable commits dismiss existing approvals.
-- Squash is the only merge method, linear history is required, and branch deletion and force-push protections remain enabled.
-- Organization administrators retain pull-request bypass permission.
-
-The required-reviewer patterns in `.github/ruleset.json` are the reviewed ownership map. Application review initially covers all of `workspace/flipbook-core/**/*` and `workspace/flipbook-next/**/*`. When maintainers encounter application paths that should instead be engine-owned, add the positive engine pattern and matching application exclusion together.
-
 ## Changing this policy
 
-Changes to this policy, `.github/ruleset.json`, the pull request template, Greptile context, or the change-control skill belong to repository administrators. Update all affected representations in one pull request so human guidance, agent guidance, and enforcement do not drift.
+Changes to this policy, the centrally managed ruleset, the pull request template, Greptile context, or the change-control skill belong to repository administrators. Coordinate changes across Flipbook and the infrastructure repository so human guidance, agent guidance, and enforcement do not drift.
