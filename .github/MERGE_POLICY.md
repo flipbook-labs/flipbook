@@ -4,7 +4,7 @@ This policy describes who owns a change and what must happen before it merges. R
 
 ## Requirements for every pull request
 
-Every change merges through a pull request. The pull request must use the repository template, pass the required build and test checks, and receive a 5/5 Greptile review for its current head commit.
+Every change merges through a pull request using the repository template. Greptile must report 5/5 for the current head commit.
 
 Greptile's required status is emitted by the review; it is not a separate review or charge. Each completed review counts as one Greptile review, including reviews automatically triggered by later commits. Batch related fixes when practical instead of creating review churn.
 
