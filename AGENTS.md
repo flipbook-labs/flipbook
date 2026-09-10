@@ -61,7 +61,7 @@ flipbook/
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
-Most application code lives under `workspace/flipbook-core/src/`, not `src/`. The root `src/init.server.luau` is only a thin bootstrap that calls `FlipbookCore.createFlipbookPlugin(...)`.
+Most application code lives under `workspace/flipbook-core/src/`, not `src/`. The root `src/` directory contains only thin plugin and embedded bootstraps; `src/PluginStarterScript.plugin.luau` delegates plugin startup to `FlipbookCore.createFlipbookPlugin(...)`.
 
 ### Storyteller / ModuleLoader
 
@@ -151,12 +151,12 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 ### FlipbookCore vs the plugin shell
 
-- `src/init.server.luau` is minimal: it guards against non-edit mode, sets `_G.__DEV__` in dev builds, and delegates to `FlipbookCore.createFlipbookPlugin(plugin, widget, button)`.
+- `src/PluginStarterScript.plugin.luau` is minimal: it guards against non-edit mode, sets `_G.__DEV__` in dev builds, and delegates to `FlipbookCore.createFlipbookPlugin(plugin, widget, button)`.
 - All real functionality is in `workspace/flipbook-core/src/`. When working on Flipbook features, start there, not in `src/`.
 
 ### Charm flags workaround
 
-`src/init.server.luau` sets `Charm.flags.frozen = false`. This is a documented workaround for a Storyteller issue (issue #100). Do not remove it.
+`src/PluginStarterScript.plugin.luau` sets `Charm.flags.frozen = false`. This is a documented workaround for a Storyteller issue (issue #100). Do not remove it.
 
 ### Workspace members and production pruning
 
@@ -175,6 +175,14 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 ---
 
 ## Project Skills
+
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
+
+Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
+
+Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant vendored skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then its vendored skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
+
+Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only a member of `@flipbook-labs/flipbook-admins` may bypass it; agents must not bypass merge requirements.
 
 Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
 
