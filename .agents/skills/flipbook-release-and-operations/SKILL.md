@@ -76,13 +76,13 @@ Once the release is published, GitHub Actions triggers:
 #### `release.yml → publish-plugin` job
 - **Condition:** Only runs on release events.
 - **Environment gate:** `roblox-creator-store` (requires approval secret `ROBLOX_API_KEY`).
-- **What it does:** Calls `lune run publish-plugin --channel prod --apiKey <key>`, which invokes rbxasset to publish to the Creator Store asset `8517129161` (Flipbook prod).
+- **What it does:** Calls `lute run publish-plugin --channel prod --apiKey <key>`, which invokes rbxasset to publish to the Creator Store asset `8517129161` (Flipbook prod).
 - **Concurrency:** `production` group (one release at a time; blocks nightly builds).
 
 #### `release.yml → publish-nightly-plugin` job (automatic per-push to main)
 - **Condition:** Runs only on pushes to main (not releases).
 - **Environment gate:** `roblox-creator-store-dev` (separate secret, separate Creator Store asset).
-- **What it does:** Calls `lune run publish-plugin --channel beta --apiKey <key>`, publishing to asset `88523969718241` (Flipbook dev/nightly).
+- **What it does:** Calls `lute run publish-plugin --channel beta --apiKey <key>`, publishing to asset `88523969718241` (Flipbook dev/nightly).
 - **Concurrency:** `nightly` group (independent of release, but serialized with itself).
 
 **Asset mapping (in `.lune/publish-plugin.luau`)**
@@ -172,7 +172,7 @@ Each build channel has different behavior:
 
 **What it does:**
 ```sh
-lune run publish-plugin --smoketest --channel prod --apiKey <key>
+lute run publish-plugin --smoketest --channel prod --apiKey <key>
 ```
 
 **Behavior:** Builds prod channel, publishes to asset `smoketest` (defined in rbxasset.toml), validates the publish succeeded. Does not test actual loading in Studio (offline validation only).
@@ -358,7 +358,7 @@ placeId = 84837374448022
 - Dev (nightly): 88523969718241
 - Smoketest: (internal, not published to store)
 
-The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the corresponding asset based on channel mapping (dev → dev asset, beta → dev asset, prod → prod asset).
+The script `.lute/publish-plugin.luau` reads rbxasset.toml and publishes to the corresponding asset based on channel mapping (dev → dev asset, beta → dev asset, prod → prod asset).
 
 ---
 

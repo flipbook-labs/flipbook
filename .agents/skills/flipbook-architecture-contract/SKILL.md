@@ -234,7 +234,7 @@ Aliases defined in `.luaurc`:
 - `@workspace/` → workspace members (e.g., flipbook-core)
 - `@root/` → workspace/flipbook-core/src/
 - `@repo/` → repo root (project.luau, etc.)
-- `@scripts/`, `@lute/`, `@std/`, `@lune/` — Lute utilities
+- `@scripts/`, `@lute/`, `@std/` — Lute utilities
 
 ### Build Pipeline
 

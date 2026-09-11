@@ -126,7 +126,7 @@ Greptile must report 5/5 for the pull request's current head commit. The require
    - **Fails if:** any `*.spec.luau` test fails.
 
 2. **`smoketest`** — Creator Store smoketest publish.
-   - Runs `lune run publish-plugin --smoketest --channel prod --apiKey <key>`.
+   - Runs `lute run publish-plugin --smoketest --channel prod --apiKey <key>`.
    - Publishes dev plugin to Creator Store smoketest asset for manual QA.
    - **Proves:** plugin package is valid; Creator Store API accepts the build.
    - **Fails if:** publish fails (e.g., malformed rbxm, asset mismatch).

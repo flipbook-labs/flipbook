@@ -108,9 +108,6 @@ jobs:
       - name: Install dependencies
         run: lute run install
 
-      - name: Setup Lune typedefs
-        run: lune setup
-
       - name: Setup Lute typedefs
         run: lute setup
 

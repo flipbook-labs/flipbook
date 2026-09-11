@@ -35,6 +35,25 @@ return {
       sourceKind = "github",
       dependencies = {},
     },
+    ["rbxasset@main"] = {
+      installPath = "Packages/rbxasset@main",
+      name = "rbxasset",
+      rev = "main",
+      source = "https://github.com/Roblox/rbxasset",
+      sourceKind = "github",
+      dependencies = {
+        Lute = "Lute@v1.0.0",
+        t = "t@v3.0.0",
+      },
+    },
+    ["t@v3.0.0"] = {
+      installPath = "Packages/t@v3.0.0",
+      name = "t",
+      rev = "v3.0.0",
+      source = "https://github.com/osyrisrblx/t",
+      sourceKind = "github",
+      dependencies = {},
+    },
   },
-  packages = {"flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "lute@v1.0.0"},
+  packages = {"flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "rbxasset@main", "lute@v1.0.0"},
 }

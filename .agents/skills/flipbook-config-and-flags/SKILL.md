@@ -173,7 +173,6 @@ File: `.luaurc`
 | `aliases` (8 total) | See below | Module path aliases for cleaner requires; used throughout codebase |
 
 **Aliases:**
-- `@lune` → `~/.lune/.typedefs/0.9.4/` — Lune CLI typedefs
 - `@lint` → `~/.lute/typedefs/1.0.0/lint` — Selene lint types
 - `@lute` → `~/.lute/typedefs/1.0.0/lute` — Lute CLI types
 - `@std` → `~/.lute/typedefs/1.0.0/std` — Luau standard lib types
