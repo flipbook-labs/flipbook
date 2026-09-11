@@ -20,14 +20,7 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 
 ### Pull Requests
 
-**Template:** Use the template at `.github/pull_request_template.md` (verified 2026-07-01).
-
-```markdown
-## Problem
-## Solution
-## Testing
-## Notes for reviewers
-```
+**Template:** Use the template at `.github/pull_request_template.md`.
 
 Fill every section concisely. The Problem/Solution should describe what the change does in present tense on its own ("Add a foo helper to consolidate X"), not its origin story.
 
@@ -35,7 +28,9 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
-**Review routing:** `CODEOWNERS` at the repo root assigns all paths (`*`) to `@flipbook-labs/flipbook-maintainers` and `@flipbook-labs/flipbook-contributors` (verified 2026-07-01), so every PR automatically requests review from those teams — there is no per-directory ownership split.
+**Review routing:** `.github/MERGE_POLICY.md` is the policy source of truth, and the [Flipbook Labs GitHub governance stack](https://github.com/flipbook-labs/infra/tree/main/stacks/github) manages the live ownership and enforcement configuration. Ownership is inferred from changed files. Application changes require one human application-team approval. While the engine team has one member, engine changes require no human approval but still require the current Greptile 5/5 status and all applicable CI; increase the engine minimum to one approval when a second member joins. Mixed changes follow both paths. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins`, the catch-all team with blanket organization permissions, and have no separate human-approval requirement or path-based ruleset.
+
+**Greptile findings:** Evaluate each finding. Fix valid findings; respond with repository evidence and request another review when a finding is invalid. If Greptile retains a finding, the code must change unless a member of `@flipbook-labs/flipbook-admins` chooses to bypass the required status. Agents never bypass merge requirements.
 
 ### Commit Hygiene
 
@@ -54,6 +49,7 @@ Releasing Flipbook is gated and automated — no manual tag pushes, no direct ve
 **Only method:** `lute run bump-version <major|minor|patch>` (verified in repo `.lute/` scripts).
 
 This is the single authoritative version source. The command:
+
 1. Bumps `package.toml` (or equivalent version file)
 2. Creates a release commit
 3. Tags the commit with the new version
@@ -76,11 +72,11 @@ Never edit version strings by hand or push tags directly.
 
 Flipbook has three build channels (verified in `ci.yml` matrix: dev/beta/prod, and `.lute/build.luau`):
 
-| Channel | Use | Keeps | Prunes |
-|---------|-----|-------|--------|
-| **dev** | local dev, CI proof | tests, stories, storybooks, example/ | — |
-| **beta** | internal validation (experimental) | same as dev | — |
-| **prod** | release to Creator Store, end users | core plugin only | `code-samples/`, `example/`, `template/`, `test-runner/`, `*.spec.luau`, `*.story.luau`, `*.storybook.luau`, `jest.config.luau*` |
+| Channel  | Use                                 | Keeps                                | Prunes                                                                                                                           |
+| -------- | ----------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| **dev**  | local dev, CI proof                 | tests, stories, storybooks, example/ | —                                                                                                                                |
+| **beta** | internal validation (experimental)  | same as dev                          | —                                                                                                                                |
+| **prod** | release to Creator Store, end users | core plugin only                     | `code-samples/`, `example/`, `template/`, `test-runner/`, `*.spec.luau`, `*.story.luau`, `*.storybook.luau`, `jest.config.luau*` |
 
 Default channel is `prod`. Pass `--channel dev` or `--channel beta` to `lute run build` to retain development files.
 
@@ -92,6 +88,10 @@ Default channel is `prod`. Pass `--channel dev` or `--channel beta` to `lute run
 
 Every PR must pass the following gate jobs before merge is recommended:
 
+### Greptile review
+
+Greptile must report 5/5 for the pull request's current head commit. The required status is an output of that review rather than a second review. Each completed review counts as one Greptile review, including a review triggered after another commit, so batch related fixes when practical.
+
 ### `ci.yml` — Standard Build & Attestation
 
 **Trigger:** every push to main, every PR to main, manual dispatch.
@@ -99,11 +99,13 @@ Every PR must pass the following gate jobs before merge is recommended:
 **Build matrix:** channels `dev`, `beta`, `prod` × targets `plugin`, `flipbook-core-rotriever`.
 
 **What it proves:**
+
 - Source → Darklua → Rojo pipeline succeeds for all channels.
 - Build artifacts are reproducible (provenance attestation via GitHub Attestations API, verified 2026-07-01).
 - No syntax errors or broken requires.
 
 **Fails if:**
+
 - `lute run build plugin --channel <X>` fails.
 - Sourcemap resolution breaks.
 - Darklua dead-code elimination fails.
@@ -130,6 +132,7 @@ Every PR must pass the following gate jobs before merge is recommended:
    - **Fails if:** publish fails (e.g., malformed rbxm, asset mismatch).
 
 **Environment Gating:** (verified in `.github/workflows/strict.yml`, grep the conditional `environment:` job key)
+
 - **Fork PRs** (external contributions): `luau-execution-gated` environment requires approval.
 - **Internal PRs** (from flipbook-labs org): `luau-execution` environment (auto-approved).
 - **Main/manual:** runs without gating.
@@ -141,11 +144,13 @@ Every PR must pass the following gate jobs before merge is recommended:
 **Trigger:** every PR, every push to main.
 
 **What it proves:**
+
 - `lute run build storybook` (the test place bundle) succeeds.
 - Storybook can deploy to a place via `flipbook-labs/deploy-storybook@v0.4.0` (verified 2026-07-01).
 - Dev/beta builds can sync to Studio without errors.
 
 **Fails if:**
+
 - Rojo workspace sync fails.
 - deploy-storybook GitHub Action fails.
 
@@ -156,6 +161,7 @@ Every PR must pass the following gate jobs before merge is recommended:
 **Trigger:** every PR, every push to main (as part of `ci.yml`'s `analyze` job).
 
 **What it proves:**
+
 - No Selene lint violations (`std = "roblox"`, `global_usage = "allow"`).
 - StyLua formatting (`sort_requires = true`, verified in `stylua.toml`).
 - Prettier markdown formatting.
@@ -169,16 +175,16 @@ Every PR must pass the following gate jobs before merge is recommended:
 
 Use this table to determine which CI gates your change requires and whether it is safe.
 
-| Change Type | Behavior Change | Test Payload | Required Gates | Notes |
-|-------------|-----------------|--------------|----------------|-------|
-| Plugin code (`.luau` in `src/` or `workspace/flipbook-core/src/`) | Yes | Yes | `ci.yml` + `strict.yml` | All logic changes; story render, controls, theme/locale, navigation, permissions, etc. |
-| Build script (`.lute/`, `darklua.json`, `wally.toml`) | Conditional | Varies | `ci.yml` | If it changes build output (e.g., new global, new pruned file), re-run full matrix. If it only touches tooling setup, `ci.yml` alone may suffice; but always err toward strict.yml. |
-| Test (`*.spec.luau`) | No | Yes | `ci.yml` + `strict.yml` | New tests; updated test fixtures. Must pass in cloud. |
-| Story or storybook (`*.story.luau`, `*.storybook.luau`) | No | No | `storybook.yml` + `ci.yml` | Dev channel only (pruned in prod); no impact on end users. |
-| CI workflow (`.github/workflows/*.yml`) | No | No | Manual re-run of affected workflow | Changes to job conditions, artifact handling, secrets wiring, environment gating. |
-| Documentation (`.md`, docs vault, AGENTS.md) | No | No | `docs.yml` (if exists); linting only | No code impact. Markdown must pass Prettier. |
-| Type definitions, aliases (`.luaurc`) | Conditional | Possibly | `ci.yml` + `strict.yml` | Language mode or alias changes affect all downstream analysis. |
-| Dependencies (Wally `wally.toml`, Loom, Rokit versions) | Yes | Maybe | `ci.yml` + `strict.yml` + manual local test | **See "Dependency Change Discipline" below.** |
+| Change Type                                                       | Behavior Change | Test Payload | Required Gates                              | Notes                                                                                                                                                                               |
+| ----------------------------------------------------------------- | --------------- | ------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plugin code (`.luau` in `src/` or `workspace/flipbook-core/src/`) | Yes             | Yes          | `ci.yml` + `strict.yml`                     | All logic changes; story render, controls, theme/locale, navigation, permissions, etc.                                                                                              |
+| Build script (`.lute/`, `darklua.json`, `wally.toml`)             | Conditional     | Varies       | `ci.yml`                                    | If it changes build output (e.g., new global, new pruned file), re-run full matrix. If it only touches tooling setup, `ci.yml` alone may suffice; but always err toward strict.yml. |
+| Test (`*.spec.luau`)                                              | No              | Yes          | `ci.yml` + `strict.yml`                     | New tests; updated test fixtures. Must pass in cloud.                                                                                                                               |
+| Story or storybook (`*.story.luau`, `*.storybook.luau`)           | No              | No           | `storybook.yml` + `ci.yml`                  | Dev channel only (pruned in prod); no impact on end users.                                                                                                                          |
+| CI workflow (`.github/workflows/*.yml`)                           | No              | No           | Manual re-run of affected workflow          | Changes to job conditions, artifact handling, secrets wiring, environment gating.                                                                                                   |
+| Documentation (`.md`, docs vault, AGENTS.md)                      | No              | No           | `docs.yml` (if exists); linting only        | No code impact. Markdown must pass Prettier.                                                                                                                                        |
+| Type definitions, aliases (`.luaurc`)                             | Conditional     | Possibly     | `ci.yml` + `strict.yml`                     | Language mode or alias changes affect all downstream analysis.                                                                                                                      |
+| Dependencies (Wally `wally.toml`, Loom, Rokit versions)           | Yes             | Maybe        | `ci.yml` + `strict.yml` + manual local test | **See "Dependency Change Discipline" below.**                                                                                                                                       |
 
 ---
 
@@ -219,6 +225,7 @@ When updating a Wally dependency in `wally.toml` (e.g., Storyteller, ModuleLoade
    - Reason: partial builds can hide missing or broken transitive requires.
 
 2. **Test locally** before opening a PR:
+
    ```bash
    lute run build plugin --channel dev --clean
    lute run lint
@@ -241,6 +248,7 @@ Loom manages tooling packages (`.lute/` scripts use these). Upgrades are high-ri
 - Branch `upgrade-loom-dependencies` stalled 53 days (as of 2026-07-01) after "nightmare" fixes.
 
 **Discipline:** Upgrade Loom/Lute only if necessary. If you do:
+
 1. Test on macOS and Ubuntu (process spawning differs).
 2. Run `--clean` full builds locally.
 3. Document breaking API changes in the PR.
@@ -269,6 +277,7 @@ Flipbook is being brought to internal Roblox teams, but the internal build must 
 ### In Practice
 
 Before merging a feature or fix:
+
 - Ask: "Would a community user (or external creator in Roblox Studio) be able to use this?"
 - If no, the feature is either not ready or not appropriate for this repo.
 - Blocked features belong on a roadmap or research branch, not main.
@@ -340,6 +349,7 @@ These rules have been tested by production failures and are now enforced.
 **Rule:** Releases happen via `lute run bump-version` + GitHub Release, never `git push origin <tag>`.
 
 **Incidents:**
+
 - **PR #535 "Fix broken nightly build"** (2026-03-20): Darklua failed to resolve string requires; symptom was nightly builds failing to publish. Root cause was path format sensitivity in Darklua.
 - **PR #561 "Fix dev deployments triggering for all PRs"** (2026-04-18): Dev build deployed from every PR after fork-workflow switch. Root cause: `pull_request_target` always runs; condition was broken.
 - **PR #562 "Fix smoketest deployments cancelling each other"** (2026-04-18): Smoketest concurrency config interfered with approval gates.
@@ -354,6 +364,7 @@ All of these stemmed from manual coordination between tags, release workflow, an
 **Rule:** `src/PluginStarterScript.plugin.luau` (comment block above `Charm.flags.frozen = false`, verified 2026-07-01; grep `Normally we want this to be`) sets `Charm.flags.frozen = false`. Do not remove this line.
 
 **Incident (Signals→Charm Migration, PR #509, Storyteller #100):**
+
 - PR #509 migrated from Signals to Charm for state management.
 - Storyteller's internal state mutation hits `Charm.flags.frozen = true` and crashes with "Attempt to modify a readonly table."
 - Root cause: Storyteller is mutating immutable state in a context-dependent way (lives in storyteller#100).
@@ -375,6 +386,7 @@ All of these stemmed from manual coordination between tags, release workflow, an
 **Rule:** Comments explain why code is the way it is **now**, for a reader seeing it for the first time. Do not write comments that only make sense as a diff against past shapes.
 
 **Anti-Pattern:**
+
 ```luau
 -- This used to be inline; the logic now lives in X.
 -- Where did all the release logic go? It moved to Y.
@@ -382,6 +394,7 @@ All of these stemmed from manual coordination between tags, release workflow, an
 ```
 
 **Pattern:**
+
 ```luau
 -- Charm.flags.frozen = false works around Storyteller issue #100 (readonly table mutation).
 ```
@@ -398,27 +411,34 @@ All of these stemmed from manual coordination between tags, release workflow, an
 
 Quick reference for determining what CI gates a change needs.
 
-| Change Scope | Gate: ci.yml | Gate: strict.yml | Gate: storybook.yml | Notes |
-|--------------|--------------|------------------|---------------------|-------|
-| Plugin code (logic, UI, telemetry) | ✅ | ✅ | ✅ if affects story render | Always required for user-facing changes |
-| Tests (*.spec.luau) | ✅ | ✅ | — | Runs in cloud; must pass |
-| Stories/storybooks (*.story.luau, *.storybook.luau) | ✅ | — | ✅ | Dev-only; not in prod builds |
-| Build scripts (.lute/, darklua.json) | ✅ | ✅ if output changes | — | Use --clean locally to test |
-| Wally/Loom/Rokit versions | ✅ | ✅ | — | High-risk; test local --clean build first |
-| CI workflows (.github/workflows/*.yml) | — | Manual re-run | — | Test in draft PR before merging |
-| Docs (.md, docs vault) | ✅ linting only | — | — | No code impact; Prettier only |
-| `.luaurc`, language config | ✅ | ✅ | — | Language mode changes affect all files |
+| Change Scope                                        | Gate: ci.yml    | Gate: strict.yml     | Gate: storybook.yml        | Notes                                     |
+| --------------------------------------------------- | --------------- | -------------------- | -------------------------- | ----------------------------------------- |
+| Plugin code (logic, UI, telemetry)                  | ✅              | ✅                   | ✅ if affects story render | Always required for user-facing changes   |
+| Tests (*.spec.luau)                                 | ✅              | ✅                   | —                          | Runs in cloud; must pass                  |
+| Stories/storybooks (*.story.luau, *.storybook.luau) | ✅              | —                    | ✅                         | Dev-only; not in prod builds              |
+| Build scripts (.lute/, darklua.json)                | ✅              | ✅ if output changes | —                          | Use --clean locally to test               |
+| Wally/Loom/Rokit versions                           | ✅              | ✅                   | —                          | High-risk; test local --clean build first |
+| CI workflows (.github/workflows/*.yml)              | —               | Manual re-run        | —                          | Test in draft PR before merging           |
+| Docs (.md, docs vault)                              | ✅ linting only | —                    | —                          | No code impact; Prettier only             |
+| `.luaurc`, language config                          | ✅              | ✅                   | —                          | Language mode changes affect all files    |
 
 ---
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-07-01 (against shared-brief.md, archaeology, flipbook-docs branch, repo files).
+**Last verified:** 2026-09-08 (against `.github/MERGE_POLICY.md`, the live GitHub ruleset, the pull request template, repository workflows, and repo files).
 
 **Re-verification commands:**
+
 ```bash
 # Confirm PR template exists and is current
 cat .github/pull_request_template.md
+
+# Confirm merge policy is current
+cat .github/MERGE_POLICY.md
+
+# Inspect the live ruleset; its configuration is managed in flipbook-labs/infra
+gh api repos/flipbook-labs/flipbook/rulesets
 
 # Confirm CI/strict/storybook workflows exist
 ls -la .github/workflows/{ci,strict,storybook}.yml
@@ -437,6 +457,7 @@ ls .agents/skills/test-dependencies-in-flipbook/SKILL.md
 ```
 
 **Known drift risks:**
+
 - Release workflow changes (rbxasset.toml, Creator Store asset IDs): re-check release.yml every quarter.
 - CI environment gating (fork vs. internal): re-check strict.yml if fork-workflow issues resurface.
 - Storyteller/ModuleLoader APIs: if those skills advance, confirm change-control gates still align.
