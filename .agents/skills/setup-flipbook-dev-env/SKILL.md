@@ -1,55 +1,70 @@
 ---
 name: setup-flipbook-dev-env
-description: Set up or repair the local Flipbook, Storyteller, or ModuleLoader development environment. Use when the user mentions setup, install, rokit, wally, loom, .env, packages, first-time setup, missing dependencies, or environment variables in the Flipbook repo family.
+description: "Set up or repair the Flipbook, Storyteller, or ModuleLoader development environment. Use when: first-time setup, installing dependencies, managing .env files, troubleshooting rokit/wally/lute, or repairing stale tooling in the Flipbook repo family."
+type: process
 ---
 
 # Setup Flipbook Dev Environment
 
-Use this for first-time setup or when package/tooling state looks stale.
+First-time setup or when package/tooling state looks stale. Rokit installs tools; Wally installs packages; Lute runs builds and tests.
 
-## Repo Family
+## When not to use
 
-`flipbook`, `storyteller`, and `module-loader` are expected to be sibling checkouts, for example:
+For testing local dependency changes (storyteller or module-loader), see `test-dependencies-in-flipbook`. For running lint/analyze/test tasks, see `run-flipbook-checks`. For toolchain details, see `flipbook-build-and-toolchain`.
 
+## Repo Family Layout
+
+`flipbook`, `storyteller`, and `module-loader` are expected to be sibling checkouts:
 ```bash
 ~/git/flipbook
 ~/git/storyteller
 ~/git/module-loader
 ```
 
-## Toolchain Manager: Rokit
-
-Rokit is the primary toolchain version manager. It reads `rokit.toml` and installs the pinned tool versions (rojo, darklua, selene, stylua, etc.) into the local toolchain.
-
-Rokit also has backwards compatibility with Foreman and Aftman (its predecessors). Any repo with a `foreman.toml` instead of `rokit.toml` can still use `rokit install` to install those tools.
+The install script detects and works with any repo in this family.
 
 ## Standard Setup
 
-Run these from the repo you are working in:
+Run these commands from the repo root:
 
 ```bash
 rokit install
 lute run install
 ```
 
-For `flipbook`, also make sure a `.env` exists:
+For `flipbook` only, ensure a `.env` file exists:
 
 ```bash
 cp .env.template .env
 ```
 
-`BASE_URL` is required for builds. The default expected value is `https://apis.flipbooklabs.com`.
+**Required:** `BASE_URL` in `.env` must be set to `https://apis.flipbooklabs.com` (the default in `.env.template`). The build task checks for this value (anchor: `if not process.env.BASE_URL` in `.lute/build.luau`).
 
-## What Install Does
+## What `lute run install` Does
 
 - Installs Wally runtime packages into `Packages/`.
-- Installs Loom/Lute tooling packages and moves them to `LuauPackages/`.
-- Generates sourcemaps.
+- Installs Lute tooling packages and moves them to `LuauPackages/`.
+- Generates Rojo sourcemaps.
 - Applies package patches needed by Flipbook.
 
-## Common Checks
+## Common Troubleshooting
 
-- If a `lute run` task cannot resolve packages, run `lute run install` again.
-- If build output seems stale after dependency changes, use a clean build.
-- Do not edit generated package output directly; regenerate it from source.
-- **"ERROR No such file or directory (os error 2)"** — this opaque error means Rokit is trying to invoke a tool at a version it has not installed yet. Run `rokit install` to recover.
+**"Cannot resolve packages"** — `lute run` tasks failing with unresolved imports: run `lute run install` again.
+
+**Stale build output after dependency changes** — Use `lute run build --clean` for a full rebuild from scratch.
+
+**"ERROR No such file or directory (os error 2)"** — Rokit is trying to invoke a tool it has not installed. Run `rokit install` to recover.
+
+**Do not edit `Packages/` or `LuauPackages/` directly** — these are generated. Regenerate with `lute run install` if needed.
+
+---
+
+## Provenance and Maintenance
+
+**Date stamped:** as of 2026-07-02.
+
+**Re-verify these claims when this skill next loads:**
+- `rokit.toml` presence and tool list: run `cat rokit.toml | grep "^\["` to confirm tools section exists
+- `.env.template` contents: run `grep BASE_URL .env.template` to confirm default is `https://apis.flipbooklabs.com`
+- BASE_URL guard in build: run `grep -n "if not process.env.BASE_URL" .lute/build.luau` to verify anchor exists
+- `lute run install` availability: run `lute run install --help` from repo root
