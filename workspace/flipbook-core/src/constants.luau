@@ -17,6 +17,7 @@ return {
 		tension = 700,
 	},
 
+	FLIPBOOK_RUNTIME_TAG = "FlipbookRuntime",
+
 	FLIPBOOK_LOGO = "rbxassetid://76698965087351",
-	GITHUB_LOGO = "rbxassetid://129495436983093",
 }

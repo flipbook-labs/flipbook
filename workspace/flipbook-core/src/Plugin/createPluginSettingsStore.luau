@@ -3,8 +3,11 @@ local HttpService = game:GetService("HttpService")
 local Charm = require("@pkg/Charm")
 
 local CharmTypes = require("@root/Common/CharmTypes")
+local CommonTypes = require("@root/Common/types")
 local PluginStore = require("@root/Plugin/PluginStore")
 local logger = require("@root/logger")
+
+type Pluginlike = CommonTypes.Pluginlike
 
 export type PluginSettingsStore<T> = {
 	getStorage: CharmTypes.Getter<T>,
@@ -36,7 +39,7 @@ local function createPluginSettingsStore<T>(
 	local getIsInitialized, setIsInitialized = Charm.signal(false)
 	local prevStorage: T?
 
-	local function readPluginSettingsAsync(plugin: Plugin): T?
+	local function readPluginSettingsAsync(plugin: Pluginlike): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
 
 		local data
@@ -84,7 +87,7 @@ local function createPluginSettingsStore<T>(
 		return nil
 	end
 
-	local function writePluginSettingsAsync(plugin: Plugin, storage: T)
+	local function writePluginSettingsAsync(plugin: Pluginlike, storage: T)
 		logger:Info("writing plugin settings to disk...")
 		local data
 		local success, err = pcall(function()
@@ -151,7 +154,7 @@ local function createPluginSettingsStore<T>(
 		end
 	end
 
-	local function loadInitialSettings(plugin: Plugin)
+	local function loadInitialSettings(plugin: Pluginlike)
 		if not getIsLoading() then
 			logger:Warn("attempt to load initial plugin settings after loading has already finished")
 			return

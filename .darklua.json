@@ -28,6 +28,11 @@
     },
     {
       "rule": "inject_global_value",
+      "identifier": "BUILD_TARGET",
+      "env": "BUILD_TARGET"
+    },
+    {
+      "rule": "inject_global_value",
       "identifier": "BASE_URL",
       "env": "BASE_URL"
     },
