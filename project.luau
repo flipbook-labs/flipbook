@@ -7,7 +7,7 @@ return {
 	BUILD_CACHE_PATH = path.resolve("./build/build-cache.json"),
 	PACKAGES_PATH = path.resolve("./Packages"),
 	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
-	ROBLOX_PACKAGES_VERSION = "0.715.1.7151119",
+	ROBLOX_PACKAGES_VERSION = "0.737.0.7371584",
 	SCRIPTS_PATH = path.resolve("./.lute"),
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
@@ -16,10 +16,8 @@ return {
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
 	SOURCEMAP_PATH = path.resolve("./sourcemap.json"),
+	SOURCEMAP_PROJECT_PATH = path.resolve("./sourcemap.project.json"),
 	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
-
-	ROJO_BUILD_PROJECT = path.resolve("./build.project.json"),
-	ROJO_TESTS_PROJECT = path.resolve("./tests.project.json"),
 
 	FOLDERS_TO_LINT = {
 		"src",
@@ -41,4 +39,7 @@ return {
 			"jest.config.lua*",
 		},
 	},
+
+	ROBLOX_STORYBOOK_UNIVERSE_ID = 10262009842,
+	ROBLOX_STORYBOOK_PLACE_ID = 139676401890813,
 }
