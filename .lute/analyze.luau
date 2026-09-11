@@ -1,0 +1,48 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local path = require("@std/path")
+local system = require("@std/system")
+
+local project = require("@repo/project")
+local run = FlipbookBatteries.run
+
+local tmpdir = system.tmpdir()
+local globalDefsPath = path.join(tmpdir, "globalTypes.d.luau")
+
+run("curl", {
+	"-s",
+	"-o",
+	globalDefsPath,
+	"-O",
+	"https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua",
+})
+
+run("rojo", {
+	"sourcemap",
+	project.SOURCEMAP_PROJECT_PATH,
+	"-o",
+	project.SOURCEMAP_PATH,
+})
+
+local defaultArgs: { string | path.Pathlike } = {
+	"analyze",
+	`--defs={globalDefsPath}`,
+	"--settings=./.vscode/settings.json",
+}
+
+do
+	local args = table.clone(defaultArgs)
+	table.insert(args, "--platform=standard")
+	table.insert(args, "--flag:LuauSolverV2=true")
+	table.insert(args, tostring(project.SCRIPTS_PATH))
+
+	run("luau-lsp", { table.unpack(args) })
+end
+
+do
+	local args = table.clone(defaultArgs)
+	table.insert(args, `--sourcemap={project.SOURCEMAP_PATH}`)
+	table.insert(args, tostring(project.SOURCE_PATH))
+	table.insert(args, tostring(project.WORKSPACE_PATH))
+
+	run("luau-lsp", { table.unpack(args) })
+end

@@ -1,0 +1,240 @@
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local fs = require("@std/fs")
+local path = require("@std/path")
+local pp = require("@luaupkg/lute@v1.0.0/batteries/pp")
+local process = require("@std/process")
+local richterm = require("@luaupkg/lute@v1.0.0/batteries/richterm")
+local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
+
+local buildSystem = require("@scripts/lib/build-system")
+local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
+local project = require("@repo/project")
+local rojoBuild = require("@scripts/lib/rojoBuild")
+
+local copyInto = FlipbookBatteries.copyInto
+local run = FlipbookBatteries.run
+local watch = FlipbookBatteries.watch
+
+local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
+
+type BuildContext = buildSystem.BuildContext
+
+dotenv.config()
+
+local args = cli.parser()
+
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+args:add("subcommand", "positional", {
+	help = `Can be "plugin", "workspace", or "storybook"`,
+	default = "plugin",
+})
+
+args:add("channel", "option", {
+	help = "Channel to build for",
+	aliases = { "c" },
+	default = "prod",
+})
+args:add("target", "option", {
+	help = "Target to build for",
+	aliases = { "t" },
+	default = "roblox",
+})
+args:add("output", "option", {
+	help = "Full path to the rbxm file to build",
+	aliases = { "o" },
+	default = tostring(path.join(getStudioPluginsPath(), project.PLUGIN_FILENAME)),
+})
+args:add("watch", "flag", {
+	help = "Watch for changes and recompile automatically",
+	aliases = { "w" },
+})
+args:add("skip-reload", "flag", {
+	help = "Skip reloading the plugin in Roblox Studio",
+})
+args:add("clean", "flag", {
+	help = "Performs a full rebuild of the project",
+})
+
+args:parse({ ... })
+
+local subcommand = args:get("subcommand")
+assert(
+	subcommand == "plugin" or subcommand == "workspace" or subcommand == "storybook",
+	`bad value for subcommand (must be one of "plugin", "workspace", or "storybook", got "{subcommand}")`
+)
+
+local channel = args:get("channel")
+assert(
+	channel == "dev" or channel == "beta" or channel == "prod",
+	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
+)
+
+local target = args:get("target")
+assert(
+	target == "roblox" or target == "rotriever",
+	`bad value for target (must be one of "roblox" or "rotriever", got "{target}")`
+)
+
+local output = args:get("output")
+assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
+
+local function readWallyManifestAsync()
+	return toml.deserialize(fs.readFileToString(WALLY_MANIFEST_PATH))
+end
+
+local function getCommitHash()
+	local commitHash = run("git", { "rev-parse", "--short", "HEAD" }, {
+		captureOutput = true,
+	})
+	assert(commitHash ~= nil and commitHash ~= "", "commit hash is empty")
+	return commitHash
+end
+
+-- This environment variable comes from `.env` and is required to be set. This
+-- condition just makes sure if it's _not_ set that the user will then go and
+-- get their `.env` file in order
+if not process.env.BASE_URL then
+	error(table.concat({
+		"One or more critical environment variables are not set.",
+		"Please make sure to copy `.env.template` to `.env`. If you already have a `.env` file, make sure the environment variables from the template match your local copy",
+	}, "\n\n"))
+end
+
+local context: BuildContext = {
+	channel = channel,
+	target = target,
+	shouldRebuild = args:has("clean"),
+	dest = path.join(project.BUILD_PATH, channel, target),
+	env = {
+		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
+		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
+		BUILD_HASH = getCommitHash(),
+		BUILD_TARGET = target,
+		BASE_URL = process.env.BASE_URL,
+		LOG_LEVEL = process.env.LOG_LEVEL,
+	},
+	cache = buildSystem.readBuildCacheAsync(),
+}
+
+local function buildPluginBinary()
+	if subcommand ~= "plugin" then
+		return
+	end
+
+	buildSystem.runBuildGroupAsync({
+		name = "🔌 plugin binary",
+		paths = { context.dest },
+		context = context,
+		step = function()
+			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
+
+			rojoBuild({
+				output = dest,
+				project = {
+					name = "Flipbook",
+					emitLegacyScripts = false,
+					tree = {
+						["$path"] = tostring(path.resolve(context.dest)),
+					},
+				},
+			})
+
+			if args:has("skip-reload") then
+				if output:match(tostring(getStudioPluginsPath())) then
+					return
+				end
+			end
+
+			copyInto(dest, output)
+		end,
+	})
+end
+
+local function build()
+	local startTime = os.clock()
+
+	local contextNoCache = table.clone(context)
+	contextNoCache.cache = nil :: any
+	print(richterm.dim(`build context: {pp(contextNoCache)}`))
+
+	buildSystem.compileAsync(context)
+	buildSystem.writeBuildCacheAsync(context.cache)
+
+	buildPluginBinary()
+
+	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
+end
+
+-- Builds the storybook placefile that hosts our stories. The bundle gets sent
+-- along by the deploy-storybook action and published with the latest version of
+-- Flipbook to the experience.
+--
+-- Check out Flipbook's own storybook here:
+-- https://www.roblox.com/games/139676401890813/Flipbook-Stories
+local function buildStorybookPlace()
+	run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
+
+	local placePath = rojoBuild({
+		output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),
+		project = {
+			name = "Flipbook Stories",
+			emitLegacyScripts = false,
+			tree = {
+				["$className"] = "DataModel",
+				ReplicatedStorage = {
+					FlipbookWorkspace = {
+						["$className"] = "Folder",
+						Packages = {
+							["$path"] = tostring(project.PACKAGES_PATH),
+						},
+						RobloxPackages = {
+							["$path"] = tostring(project.ROBLOX_PACKAGES_PATH),
+						},
+						workspace = {
+							["$path"] = tostring(path.join(project.BUILD_PATH, "dev/roblox/workspace")),
+						},
+					},
+				},
+			},
+		},
+	})
+
+	print(`Built storybook place: {placePath}`)
+end
+
+if subcommand == "storybook" then
+	buildStorybookPlace()
+	return
+end
+
+build()
+
+if args:has("watch") then
+	local function onChanged(filePath: path.Path)
+		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
+			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
+			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
+			buildSystem.writeBuildCacheAsync(context.cache)
+
+			buildPluginBinary()
+		else
+			build()
+		end
+	end
+
+	watch({
+		roots = {
+			tostring(project.SOURCE_PATH),
+			tostring(project.WORKSPACE_PATH),
+		},
+		excludedFilePatterns = {
+			".*Packages",
+			"build",
+		},
+		onChanged = onChanged,
+	})
+end

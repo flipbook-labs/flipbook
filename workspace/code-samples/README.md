@@ -11,8 +11,8 @@ All code samples are analyzed to ensure correctness before being deployed.
 Run the following commands from the root of the repo.
 
 ```sh
-lute scripts/install.luau
-lute scripts/build.luau
+lute run install
+lute run build
 rojo serve code-samples/default.project.json
 ```
 

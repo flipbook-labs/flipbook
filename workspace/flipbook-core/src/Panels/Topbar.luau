@@ -4,6 +4,8 @@ local React = require("@pkg/React")
 local ReactSignals = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
+local AppMode = require("@root/Enums/AppMode")
+local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
@@ -11,11 +13,13 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local Object = LuauPolyfill.Object
 
+local Badge = Foundation.Badge
 local Dialog = Foundation.Dialog
 local Divider = Foundation.Divider
 local Dropdown = Foundation.Dropdown
 local IconButton = Foundation.IconButton
 local IconName = Foundation.Enums.IconName
+local IconPosition = Foundation.Enums.IconPosition
 local IconVariant = Foundation.Enums.IconVariant
 local InputSize = Foundation.Enums.InputSize
 local Menu = Foundation.Menu
@@ -24,7 +28,10 @@ local PopoverAlign = Foundation.Enums.PopoverAlign
 local PopoverSide = Foundation.Enums.PopoverSide
 local Tooltip = Foundation.Tooltip
 local View = Foundation.View
+local ScrollView = Foundation.ScrollView
 local withCommonProps = Foundation.Utility.withCommonProps
+
+local useTokens = Foundation.Hooks.useTokens
 
 local e = React.createElement
 local useCallback = React.useCallback
@@ -35,12 +42,19 @@ local useSignalState = ReactSignals.useSignalState
 
 type ItemId = number | string
 
-type TopbarProps = {} & Foundation.CommonProps
+type TopbarProps = {
+	showDevBadge: boolean?,
+	showBetaBadge: boolean?,
+	showInternalBadge: boolean?,
+} & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
 	local helpButtonRef = useRef(nil :: GuiObject?)
 
+	local tokens = useTokens()
+
 	local isAboutMenuOpen, setIsAboutMenuOpen = useState(false)
+	local isEmbedDialogOpen, setIsEmbedDialogOpen = useState(false)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local isFeedbackDialogOpen, setIsFeedbackDialogOpen = useState(false)
 
@@ -48,6 +62,8 @@ local function Topbar(props: TopbarProps)
 	local storyActions = StoryActionsContext.useStoryActions()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+
+	local hasBadges = props.showDevBadge or props.showBetaBadge or props.showInternalBadge
 
 	local onThemeChanged = useCallback(function(itemId: ItemId)
 		userSettingsStore.setStorage(function(currentValue)
@@ -60,12 +76,21 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large size-full-1400",
 		}),
 		{
-			Actions = e(View, {
+			Actions = e(ScrollView, {
 				LayoutOrder = 1,
-				tag = "auto-x gap-medium row size-0-full",
+				tag = "size-full shrink",
+				scroll = {
+					ScrollingDirection = Enum.ScrollingDirection.X,
+					AutomaticCanvasSize = Enum.AutomaticSize.X,
+					CanvasSize = UDim2.fromScale(0, 0),
+				},
+				layout = {
+					FillDirection = Enum.FillDirection.Horizontal,
+					Padding = UDim.new(0, tokens.Padding.Medium),
+				},
 			}, {
 				Zoom = e(View, {
 					LayoutOrder = 1,
@@ -123,7 +148,7 @@ local function Topbar(props: TopbarProps)
 						}),
 					}),
 
-					Viewport = e(Tooltip, {
+					Viewport = storyActions.mode == AppMode.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -175,45 +200,104 @@ local function Topbar(props: TopbarProps)
 
 			Support = e(View, {
 				LayoutOrder = 2,
-				tag = "auto-x row size-0-full",
+				tag = "auto-x row size-0-full gap-small align-y-center",
 			}, {
-				Help = e(Tooltip, {
+				BadgeCluster = hasBadges and e(View, {
 					LayoutOrder = 1,
-					align = PopoverAlign.Center,
-					side = PopoverSide.Bottom,
-					title = "Help",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = IconName.CircleQuestion,
-						onActivated = function()
-							setIsHelpMenuOpen(true)
-						end,
-						ref = helpButtonRef,
-						size = InputSize.Small,
-					}),
+					DevBadge = if props.showDevBadge
+						then e(Badge, {
+							LayoutOrder = 1,
+							text = "Development",
+							icon = IconName.Code,
+							variant = Foundation.Enums.BadgeVariant.Neutral,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					BetaBadge = if props.showBetaBadge
+						then e(Badge, {
+							LayoutOrder = 2,
+							text = "Beta",
+							icon = {
+								name = IconName.LabBeaker,
+								variant = IconVariant.Filled,
+								position = IconPosition.Left,
+							},
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
+
+					InternalBadge = if props.showInternalBadge
+						then e(Badge, {
+							LayoutOrder = 3,
+							text = "Internal",
+							icon = IconName.Tilt,
+							variant = Foundation.Enums.BadgeVariant.Contrast,
+							size = Foundation.Enums.InputSize.Small,
+						})
+						else nil,
 				}),
 
-				Settings = e(Tooltip, {
+				SupportCluster = e(View, {
 					LayoutOrder = 2,
-					align = PopoverAlign.End,
-					side = PopoverSide.Bottom,
-					title = "Settings",
+					tag = "auto-xy row gap-xsmall",
 				}, {
-					Trigger = e(IconButton, {
-						icon = {
-							name = IconName.Gear,
-							variant = if navigation.currentScreen == "Settings"
-								then IconVariant.Filled
-								else IconVariant.Regular,
-						},
-						onActivated = function()
-							if navigation.currentScreen ~= "Settings" then
-								navigation.navigateTo("Settings")
-							else
-								navigation.navigateTo("Home")
-							end
-						end,
-						size = InputSize.Small,
+					EmbedIntoExperience = storyActions.mode ~= AppMode.EmbeddedClient and e(Tooltip, {
+						LayoutOrder = 1,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Embed into Experience",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.SquareBooks,
+							onActivated = function()
+								setIsEmbedDialogOpen(true)
+							end,
+							size = InputSize.Small,
+						}),
+					}),
+
+					Help = e(Tooltip, {
+						LayoutOrder = 2,
+						align = PopoverAlign.Center,
+						side = PopoverSide.Bottom,
+						title = "Help",
+					}, {
+						Trigger = e(IconButton, {
+							icon = IconName.CircleQuestion,
+							onActivated = function()
+								setIsHelpMenuOpen(true)
+							end,
+							ref = helpButtonRef,
+							size = InputSize.Small,
+						}),
+					}),
+
+					Settings = e(Tooltip, {
+						LayoutOrder = 3,
+						align = PopoverAlign.End,
+						side = PopoverSide.Bottom,
+						title = "Settings",
+					}, {
+						Trigger = e(IconButton, {
+							icon = {
+								name = IconName.Gear,
+								variant = if navigation.currentScreen == "Settings"
+									then IconVariant.Filled
+									else IconVariant.Regular,
+							},
+							onActivated = function()
+								if navigation.currentScreen ~= "Settings" then
+									navigation.navigateTo("Settings")
+								else
+									navigation.navigateTo("Home")
+								end
+							end,
+							size = InputSize.Small,
+						}),
 					}),
 				}),
 			}),
@@ -233,6 +317,14 @@ local function Topbar(props: TopbarProps)
 					View = e(AboutView),
 				}),
 			}),
+
+			EmbedIntoExperienceDialog = if isEmbedDialogOpen
+				then e(EmbedIntoExperienceDialog, {
+					onClose = function()
+						setIsEmbedDialogOpen(false)
+					end,
+				})
+				else nil,
 
 			FeedbackDialog = if isFeedbackDialogOpen
 				then React.createElement(FeedbackDialog, {

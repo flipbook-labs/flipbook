@@ -1,0 +1,76 @@
+name: Storybook Preview
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: storybook-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: storybook-preview
+    env:
+      PREVIEW_PLACE_NAME: "Flipbook Preview ${{ github.event.pull_request.number }}"
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: CompeyDev/setup-rokit@v0.2.1
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      - name: Resolve storybook IDs
+        id: ids
+        run: |
+          echo "universe-id=$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
+          echo "place-id=$(grep -oP 'ROBLOX_STORYBOOK_PLACE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
+
+      - name: Build storybook place
+        run: lute run build storybook
+
+      # On `main` we build a fresh Flipbook.rbxm off the branch and use it as the
+      # runtime, so we catch embedding issues before cutting a release. PR builds
+      # skip this so a PR's own UI changes don't pollute the app underneath its
+      # preview (the deploy-storybook action fetches the latest release instead).
+      - name: Build Flipbook runtime
+        if: github.event_name == 'push'
+        run: lute run build plugin --channel prod --skip-reload --clean
+
+      - name: Deploy main storybook
+        if: github.event_name == 'push'
+        uses: flipbook-labs/deploy-storybook@v0.4.0
+        with:
+          api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
+          universe-id: ${{ steps.ids.outputs.universe-id }}
+          place-name: "Flipbook Stories"
+          place-id: ${{ steps.ids.outputs.place-id }}
+          place-file: build/flipbook-storybook.rbxl
+          flipbook-rbxm: build/prod/Flipbook.rbxm
+          cli-version: "0.6.0"
+
+      - name: Deploy PR storybook
+        if: github.event_name == 'pull_request'
+        uses: flipbook-labs/deploy-storybook@v0.4.0
+        with:
+          api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
+          universe-id: ${{ steps.ids.outputs.universe-id }}
+          place-name: ${{ env.PREVIEW_PLACE_NAME }}
+          place-file: build/flipbook-storybook.rbxl
+          cli-version: "0.6.0"

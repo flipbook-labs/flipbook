@@ -1,12 +1,16 @@
 local MockPlugin = {}
 MockPlugin.__index = MockPlugin
 
+local CommonTypes = require("@root/Common/types")
+
+type Pluginlike = CommonTypes.Pluginlike
+
 local function simulateDiskAccess()
 	task.wait()
 	task.wait()
 end
 
-function MockPlugin.new(): Plugin
+function MockPlugin.new(): Pluginlike
 	local self = {
 		_settings = {},
 	}
@@ -28,6 +32,10 @@ function MockPlugin:GetMouse()
 	return {
 		Icon = "rbxassetid://-1",
 	}
+end
+
+function MockPlugin:OpenScript()
+	error("not implemented")
 end
 
 return MockPlugin

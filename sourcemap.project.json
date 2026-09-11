@@ -1,0 +1,17 @@
+{
+  "name": "Flipbook",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "Folder",
+    "Packages": {
+      "$path": "Packages"
+    },
+    "RobloxPackages": {
+      "$path": "RobloxPackages"
+    },
+    "workspace": {
+      "$path": "workspace"
+    },
+    "$path": "src"
+  }
+}

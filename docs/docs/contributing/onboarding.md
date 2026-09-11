@@ -23,7 +23,7 @@ With the above requirements satisfied, run the following commands from your clon
 rokit install
 
 # Install packages
-lute scripts/install.luau
+lute run install
 ```
 
 :::tip
@@ -39,7 +39,7 @@ Part of our build process uses [darklua](https://github.com/seaofvoices/darklua)
 The following command will build production Flipbook to your Roblox Studio plugins directory:
 
 ```sh
-lute scripts/build.luau
+lute run build
 ```
 
 Once built, open up a Baseplate to start interacting with the plugin.
@@ -47,7 +47,7 @@ Once built, open up a Baseplate to start interacting with the plugin.
 Production builds prune development files like unit tests, Storybooks, and Stories. The latter two can be handy to have during development so you can use Flipbook to develop it. To keep development files, pass the `--channel` flag to set the environment to build for:
 
 ```sh
-lute scripts/build.luau --channel dev
+lute run build --channel dev
 ```
 
 There's also a `--watch` flag to automatically rebuild on file changes.
@@ -59,7 +59,7 @@ When building, pass the `--output` flag to determine where Flipbook will build t
 Run the following to build Flipbook to the root of the repo:
 
 ```sh
-lute scripts/build.luau --output Flipbook.rbxm
+lute run build --output Flipbook.rbxm
 ```
 
 ## Testing
@@ -69,7 +69,7 @@ Running tests requires an Open Cloud API key. Reach out to the maintainers for a
 Then run the following to run all unit tests for the project:
 
 ```sh
-lute scripts/test.luau
+lute run test
 ```
 
 We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
