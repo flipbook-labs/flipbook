@@ -7,6 +7,7 @@ local BUILD_INFO = {
 	{ label = "Version", value = _G.BUILD_VERSION },
 	{ label = "Channel", value = _G.BUILD_CHANNEL },
 	{ label = "Hash", value = _G.BUILD_HASH },
+	{ label = "Target", value = _G.BUILD_TARGET },
 }
 
 export type Props = {

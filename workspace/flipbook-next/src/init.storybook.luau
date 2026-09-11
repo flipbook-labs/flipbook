@@ -9,10 +9,10 @@ return {
 	mapStory = function(Story)
 		return function(storyProps)
 			return React.createElement(FoundationProvider, nil, {
-				Story = React.createElement(Story, storyProps)
+				Story = React.createElement(Story, storyProps),
 			})
 		end
 	end,
 	packages = { React = React, ReactRoblox = ReactRoblox },
-	storyRoots = { script.Parent }
+	storyRoots = { script.Parent },
 }

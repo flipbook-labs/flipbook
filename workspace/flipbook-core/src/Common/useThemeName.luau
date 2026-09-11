@@ -1,12 +1,12 @@
 local React = require("@pkg/React")
-local SignalsReact = require("@rbxpkg/SignalsReact")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local useMemo = React.useMemo
 local useState = React.useState
 local useEffect = React.useEffect
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 export type ThemeName = "Dark" | "Light"
 

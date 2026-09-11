@@ -1,14 +1,14 @@
 local RunService = game:GetService("RunService")
 
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local PluginStore = require("@root/Plugin/PluginStore")
 local types = require("@root/Panels/types")
-local useColors = require("@root/Common/useColors")
+local useBrandAccent = require("@root/Common/useBrandAccent")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 local defaultProps = {
 	size = 8, -- px
@@ -30,7 +30,7 @@ type InternalProps = Props & typeof(defaultProps)
 
 local function DragHandle(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
-	local colors = useColors()
+	local brandAccent = useBrandAccent()
 
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
@@ -152,8 +152,8 @@ local function DragHandle(providedProps: Props)
 		Highlght = React.createElement("Frame", {
 			Size = highlightSize,
 			BorderSizePixel = 0,
-			BackgroundTransparency = if isHovered or isDragging then colors.accent.Transparency else 1,
-			BackgroundColor3 = colors.accent.Color3,
+			BackgroundTransparency = if isHovered or isDragging then brandAccent.Transparency else 1,
+			BackgroundColor3 = brandAccent.Color3,
 		}),
 	})
 end

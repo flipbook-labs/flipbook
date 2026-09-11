@@ -2,27 +2,33 @@ local CoreGui = game:GetService("CoreGui")
 
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryError = require("@root/Storybook/StoryError")
+local types = require("@root/Storybook/types")
 
 local e = React.createElement
 local useState = React.useState
 local useEffect = React.useEffect
+local useSignalState = ReactCharm.useSignalState
 
 type LoadedStory = Storyteller.LoadedStory<unknown>
 
 export type Props = {
-	LayoutOrder: number?,
 	story: LoadedStory,
-	controls: Storyteller.StoryControls,
-	extraProps: Storyteller.StoryControls, -- TODO: Change to ExtraStoryProps
+
+	extraProps: types.ExtraStoryProps?,
+	LayoutOrder: number?,
 }
 
 local function StoryPreview(props: Props): React.Node
 	local storyActions = StoryActionsContext.useStoryActions()
+	local storyControls = StoryControlsContext.useStoryControls()
+	local controls = useSignalState(storyControls.getControls)
 	local err: string?, setErr = useState(nil :: string?)
 
 	useEffect(function()
@@ -44,7 +50,7 @@ local function StoryPreview(props: Props): React.Node
 			}, {
 				StoryContainer = e(Storyteller.StoryContainer, {
 					story = props.story,
-					controls = props.controls,
+					controls = controls,
 					extraProps = props.extraProps,
 					onError = setErr,
 				}),
@@ -57,7 +63,10 @@ local function StoryPreview(props: Props): React.Node
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
-			CanvasSize = UDim2.new(0, 0),
+			CanvasSize = UDim2.fromScale(0, 0),
+		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
 		},
 		LayoutOrder = props.LayoutOrder,
 		ref = storyActions.storyContainerRef,
@@ -68,7 +77,7 @@ local function StoryPreview(props: Props): React.Node
 
 		StoryContainer = e(Storyteller.StoryContainer, {
 			story = props.story,
-			controls = props.controls,
+			controls = controls,
 			extraProps = props.extraProps,
 			onError = setErr,
 		}),

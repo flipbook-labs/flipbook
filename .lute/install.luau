@@ -1,0 +1,190 @@
+local fs = require("@std/fs")
+local json = require("@std/json")
+local path = require("@std/path")
+local process = require("@std/process")
+local system = require("@std/system")
+
+local getDescendants = require("@scripts/lib/getDescendants")
+
+local project = require("@repo/project")
+
+local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
+
+local function move(src: path.Pathlike, dest: path.Pathlike)
+	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
+		stdio = "inherit",
+	})
+	assert(res.ok, res.stderr)
+end
+
+-- Install Loom dependencies first since the rest of the script depends on them
+do
+	local res = process.run({ "lute", "pkg", "install" }, {
+		stdio = "inherit",
+	})
+	assert(res.ok, res.stderr)
+
+	fs.removeDirectory(project.LUAU_PACKAGES_PATH, {
+		recursive = true,
+	})
+
+	-- Since Wally and Loom both write to the Packages dir, we disambiguate our
+	-- packages by moving all the Loom dependencies into LuauPackages
+	move(project.PACKAGES_PATH, project.LUAU_PACKAGES_PATH)
+end
+
+do
+	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+
+	local run = FlipbookBatteries.run
+	local find = FlipbookBatteries.find
+	local findAndReplace = FlipbookBatteries.findAndReplace
+
+	-- Some of our Wally packages are written with string requires which are not
+	-- yet supported by ModuleLoader or Jest. To allow us to still use these
+	-- packages, this function patches them using darklua to resolve the string
+	-- requires to Roblox ones
+	local function patchStringRequires()
+		local packages = {
+			"^luaulog$",
+			"^charm$",
+			"^react%-charm$",
+		}
+
+		for _, package in packages do
+			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
+
+			assert(packageRoot, `no package found matching "{package}"`)
+
+			print(`patching {packageRoot}`)
+
+			local darkluaConfig = {
+				process = {
+					{
+						rule = "convert_require",
+						current = {
+							name = "luau",
+						},
+						target = {
+							name = "roblox",
+							indexing_style = "property",
+						},
+					},
+				},
+			}
+
+			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
+			fs.writeStringToFile(darkluaConfigPath, json.serialize(darkluaConfig, true))
+
+			run("darklua", { "process", "src", "src" }, {
+				cwd = packageRoot,
+			})
+
+			-- Darklua doesn't seem to handle `./Foo` paths without a sourcemap,
+			-- and getting the sourcemap working is proving difficult. So the
+			-- following just does a quick pass to convert `"./Foo"` into
+			-- `script.Parent.Foo`
+			for _, descendant in getDescendants(packageRoot) do
+				if path.extname(descendant) == ".luau" then
+					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
+				end
+			end
+		end
+	end
+
+	local function installWallyPackages()
+		run("wally", { "install" })
+		run("rojo", { "sourcemap", project.SOURCEMAP_PROJECT_PATH, "-o", "sourcemap.json" })
+		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
+
+		patchStringRequires()
+	end
+
+	local function installRobloxPackages()
+		local tmpdir = system.tmpdir()
+
+		run("roblox-packages", {
+			"install",
+			tmpdir,
+			"--version",
+			project.ROBLOX_PACKAGES_VERSION,
+			"-d",
+			"Foundation",
+
+			-- These are only included so the above dependencies work as expected.
+			-- It seems like roblox-packages has a bug with its dependency
+			-- resolution that is resulting in over-pruning
+			"-d",
+			"Promise",
+			"-d",
+			"Dash",
+		})
+
+		local dest = project.ROBLOX_PACKAGES_PATH
+		if fs.exists(dest) and fs.type(dest) == "dir" then
+			fs.removeDirectory(dest, {
+				recursive = true,
+			})
+		end
+		move(path.join(tmpdir, "Packages"), project.ROBLOX_PACKAGES_PATH)
+
+		-- Patch React and RoactCompat dependencies to use ours
+		for _, name in { "React", "RoactCompat", "Roact" } do
+			local linkers = find(project.ROBLOX_PACKAGES_PATH, `^{name}%..*`)
+
+			for _, linker in linkers do
+				-- All Roact linkers in RobloxPackages point to Roblox's
+				-- RoactCompat, so we need to update them to point to ours instead.
+				if name == "Roact" then
+					name = "RoactCompat"
+				end
+
+				findAndReplace(
+					linker,
+					"local PackageIndex = .*_Index",
+					'local Root = script:FindFirstAncestor("RobloxPackages")'
+				)
+				findAndReplace(
+					linker,
+					"local Package = require%(.*%)",
+					`local Package = require(Root.Parent.Packages.{name})`
+				)
+			end
+		end
+	end
+
+	local function installRbxasset()
+		local fileName = "rbxasset.zip"
+
+		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
+			cwd = project.LUAU_PACKAGES_PATH,
+		})
+
+		run("unzip", { "rbxasset.zip" }, {
+			cwd = project.LUAU_PACKAGES_PATH,
+		})
+
+		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
+	end
+
+	local function pruneDevelopmentFiles()
+		-- Prune any third-party tests or stories that may have slipped through
+		local prunedFiles = {
+			"*.spec.lua*",
+			"*.story.lua*",
+			"*.storybook.lua*",
+		}
+		for _, packagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
+			for _, pattern in prunedFiles do
+				run("find", { packagesPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+			end
+		end
+	end
+
+	run("lute", { "setup" })
+
+	installRobloxPackages()
+	installWallyPackages()
+	installRbxasset()
+	pruneDevelopmentFiles()
+end

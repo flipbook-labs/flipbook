@@ -1,8 +1,9 @@
 local Selection = game:GetService("Selection")
 
+local AppMode = require("@root/Enums/AppMode")
 local PluginStore = require("@root/Plugin/PluginStore")
 local React = require("@pkg/React")
-local ReactSignals = require("@rbxpkg/SignalsReact")
+local ReactSignals = require("@pkg/ReactCharm")
 local useZoom = require("@root/Common/useZoom")
 
 local e = React.createElement
@@ -13,9 +14,12 @@ local useState = React.useState
 
 local useSignalState = ReactSignals.useSignalState
 
+type AppMode = AppMode.AppMode
+
 export type StoryActionsContext = {
 	isDisabled: boolean,
 	isMountedInViewport: boolean,
+	mode: AppMode,
 
 	storyContainerRef: { current: GuiObject? }?,
 
@@ -35,6 +39,7 @@ local StoryActionsContext = React.createContext({} :: StoryActionsContext)
 export type StoryActionsProviderProps = {
 	children: React.ReactNode,
 	story: ModuleScript?,
+	mode: AppMode?,
 }
 
 local function StoryActionsProvider(props: StoryActionsProviderProps)
@@ -75,6 +80,7 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 		value = {
 			isDisabled = props.story == nil,
 			isMountedInViewport = isMountedInViewport,
+			mode = props.mode or AppMode.PluginWidget,
 
 			storyContainerRef = storyContainerRef,
 

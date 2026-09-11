@@ -1,12 +1,12 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local SignalsReact = require("@rbxpkg/SignalsReact")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local TreeNode = require("@root/TreeView/TreeNode")
 local types = require("@root/TreeView/types")
 local useTreeNodeFilter = require("@root/TreeView/useTreeNodeFilter")
 
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 local useEffect = React.useEffect
 
 type TreeNodeStore = types.TreeNodeStore
@@ -24,13 +24,13 @@ local function TreeView(props: Props)
 	useTreeNodeFilter(props.root, props.filter)
 
 	useEffect(function()
-		props.root.setSortOrder(function(a: TreeNodeStore, b: TreeNodeStore, scope: SignalsReact.scope)
-			if a.getIcon(scope) ~= b.getIcon(scope) then
+		props.root.setSortOrder(function(a: TreeNodeStore, b: TreeNodeStore)
+			if a.getIcon() ~= b.getIcon() then
 				-- Sort by type
-				return a.getIcon(scope) < b.getIcon(scope)
+				return a.getIcon() < b.getIcon()
 			else
 				-- Sort alphabetically
-				return a.getName(scope):lower() < b.getName(scope):lower()
+				return a.getName():lower() < b.getName():lower()
 			end
 		end)
 	end, { props.root })

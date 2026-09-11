@@ -17,7 +17,7 @@ end
 
 local sinks = {
 	Log.LogSink.new(function(event)
-		LogsStore.get(false).addLine(event)
+		LogsStore.get().addLine(event)
 	end),
 }
 

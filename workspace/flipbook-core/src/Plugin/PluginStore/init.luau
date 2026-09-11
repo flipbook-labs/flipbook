@@ -1,7 +1,7 @@
-local Signals = require("@rbxpkg/Signals")
+local Charm = require("@pkg/Charm")
 
 local createPluginStore = require("@self/createPluginStore")
 
 return {
-	get = Signals.createComputed(createPluginStore),
+	get = Charm.computed(createPluginStore),
 }

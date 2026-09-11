@@ -65,11 +65,14 @@ local function SettingsView()
 	end
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full col bg-surface-200 gap-large padding-y-large",
+		tag = "size-full bg-surface-200 gap-large padding-y-large",
 		scroll = {
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.fromScale(1, 0),
 			ScrollingDirection = Enum.ScrollingDirection.Y,
+		},
+		layout = {
+			FillDirection = Enum.FillDirection.Vertical,
 		},
 	}, {
 		Title = React.createElement(Foundation.View, {

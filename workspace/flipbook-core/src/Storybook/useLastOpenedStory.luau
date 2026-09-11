@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
-local SignalsReact = require("@rbxpkg/SignalsReact")
 
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
@@ -9,7 +9,7 @@ local getInstancePath = require("@root/Common/getInstancePath")
 
 local useCallback = React.useCallback
 local useMemo = React.useMemo
-local useSignalState = SignalsReact.useSignalState
+local useSignalState = ReactCharm.useSignalState
 
 local function useLastOpenedStory(): (ModuleScript?, (storyModule: ModuleScript?) -> ())
 	local localStorageStore = useSignalState(LocalStorageStore.get)

@@ -1,8 +1,9 @@
 local HttpService = game:GetService("HttpService")
 
+local Charm = require("@pkg/Charm")
 local Sift = require("@pkg/Sift")
-local Signals = require("@rbxpkg/Signals")
 
+local CharmTypes = require("@root/Common/CharmTypes")
 local types = require("@root/TreeView/types")
 
 type TreeNodeStore = types.TreeNodeStore
@@ -13,57 +14,57 @@ type TreeNodeSort = types.TreeNodeSort
 local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
 
-	local getName, setName = Signals.createSignal("Node")
-	local getIcon, setIcon = Signals.createSignal(nil :: TreeNodeIcon?)
-	local getIsSelected, setIsSelected = Signals.createSignal(false)
-	local getIsExpanded, setIsExpanded = Signals.createSignal(false)
-	local getIsVisible, setIsVisible = Signals.createSignal(true)
-	local getIsFiltered, setIsFiltered = Signals.createSignal(false)
-	local getIsPinned, setIsPinned = Signals.createSignal(false)
+	local getName, setName = Charm.signal("Node")
+	local getIcon, setIcon = Charm.signal(nil :: TreeNodeIcon?)
+	local getIsSelected, setIsSelected = Charm.signal(false)
+	local getIsExpanded, setIsExpanded = Charm.signal(false)
+	local getIsVisible, setIsVisible = Charm.signal(true)
+	local getIsFiltered, setIsFiltered = Charm.signal(false)
+	local getIsPinned, setIsPinned = Charm.signal(false)
 
-	local getInstance, setInstance = Signals.createSignal(nil :: Instance?)
+	local getInstance, setInstance = Charm.signal(nil :: Instance?)
 
-	local getParent, setParent = Signals.createSignal(nil :: TreeNodeStore?)
-	local getUnsortedChildren, setUnsortedChildren = Signals.createSignal({} :: { TreeNodeStore })
+	local getParent, setParent = Charm.signal(nil :: TreeNodeStore?)
+	local getUnsortedChildren, setUnsortedChildren = Charm.signal({} :: { TreeNodeStore })
 
-	local getSortOrder, setSortOrderSignal = Signals.createSignal(nil :: TreeNodeSort?)
+	local getSortOrder, setSortOrderSignal = Charm.signal(nil :: TreeNodeSort?)
 
 	local self: TreeNodeStore
 
-	local getChildren = Signals.createComputed(function(scope)
-		local children = table.clone(getUnsortedChildren(scope))
-		local sort = getSortOrder(scope)
+	local getChildren = Charm.computed(function()
+		local children = table.clone(getUnsortedChildren())
+		local sort = getSortOrder()
 
 		if sort then
 			table.sort(children, function(a, b)
-				return sort(a, b, scope)
+				return sort(a, b)
 			end)
 		end
 
 		return children
 	end)
 
-	local getAncestors = Signals.createComputed(function(scope)
+	local getAncestors = Charm.computed(function()
 		local ancestors: { TreeNodeStore } = {}
-		local candidate: TreeNodeStore? = getParent(scope)
+		local candidate: TreeNodeStore? = getParent()
 
 		while candidate do
 			table.insert(ancestors, candidate)
-			candidate = candidate.getParent(scope)
+			candidate = candidate.getParent()
 		end
 
 		return ancestors
 	end)
 
-	local getDescendants = Signals.createComputed(function(scope)
+	local getDescendants = Charm.computed(function()
 		local descendants: { TreeNodeStore } = {}
-		local stack = table.clone(getUnsortedChildren(scope))
+		local stack = table.clone(getUnsortedChildren())
 
 		while #stack > 0 do
 			local candidate = table.remove(stack)
 			if candidate then
 				table.insert(descendants, candidate)
-				stack = Sift.List.join(stack, candidate.getChildren(scope))
+				stack = Sift.List.join(stack, candidate.getChildren())
 			end
 		end
 
@@ -82,18 +83,16 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- Because this isn't scoped newly added descendants won't have the same
 		-- sorting function. This is aleviated by parentTo assigning the new
 		-- parent's sorting function to the node being moved
-		for _, descendant in getDescendants(false) do
+		for _, descendant in Charm.untracked(getDescendants) do
 			descendant.setSortOrder(sort)
 		end
 	end
 
-	local function createDescendantMatcher(
-		predicate: (descendant: TreeNodeStore, scope: Signals.scope) -> boolean?
-	): Signals.getter<{ TreeNodeStore }>
-		return Signals.createComputed(function(scope)
+	local function createDescendantMatcher(predicate: (descendant: TreeNodeStore) -> boolean?): () -> { TreeNodeStore }
+		return Charm.computed(function()
 			local matches = {}
-			for _, descendant in getDescendants(scope) do
-				local result = predicate(descendant, scope)
+			for _, descendant in getDescendants() do
+				local result = predicate(descendant)
 				if result == true then
 					table.insert(matches, descendant)
 				elseif result == false then
@@ -106,33 +105,33 @@ local function createTreeNodeStore(): TreeNodeStore
 		end)
 	end
 
-	local getRoot = Signals.createComputed(function(scope)
-		local ancestors = getAncestors(scope)
+	local getRoot = Charm.computed(function()
+		local ancestors = getAncestors()
 		return ancestors[#ancestors]
 	end)
 
-	local getPath = Signals.createComputed(function(scope)
-		local path = getName(scope)
-		for _, ancestor in getAncestors(scope) do
-			path = `{ancestor.getName(scope)}/{path}`
+	local getPath = Charm.computed(function()
+		local path = getName()
+		for _, ancestor in getAncestors() do
+			path = `{ancestor.getName()}/{path}`
 		end
 		return path
 	end)
 
-	local getLeafNodes = createDescendantMatcher(function(descendant, scope)
-		return #descendant.getChildren(scope) == 0
+	local getLeafNodes = createDescendantMatcher(function(descendant)
+		return #descendant.getChildren() == 0
 	end)
 
-	local getSelectedDescendants = createDescendantMatcher(function(descendant, scope)
-		return descendant.getIsSelected(scope)
+	local getSelectedDescendants = createDescendantMatcher(function(descendant)
+		return descendant.getIsSelected()
 	end)
 
-	local getPinnedDescendants = createDescendantMatcher(function(descendant, scope)
-		return descendant.getIsPinned(scope)
+	local getPinnedDescendants = createDescendantMatcher(function(descendant)
+		return descendant.getIsPinned()
 	end)
 
 	local function findFirstDescendant(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, descendant in getDescendants(false) do
+		for _, descendant in Charm.untracked(getDescendants) do
 			if predicate(descendant) then
 				return descendant
 			end
@@ -141,7 +140,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function findFirstAncestor(predicate: (node: TreeNodeStore) -> boolean): TreeNodeStore?
-		for _, ancestor in getAncestors(false) do
+		for _, ancestor in Charm.untracked(getAncestors) do
 			if predicate(ancestor) then
 				return ancestor
 			end
@@ -150,7 +149,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	end
 
 	local function parentTo(newParent: TreeNodeStore?)
-		local parent = getParent(false)
+		local parent = Charm.untracked(getParent)
 
 		if parent ~= nil then
 			if newParent == parent then
@@ -172,46 +171,46 @@ local function createTreeNodeStore(): TreeNodeStore
 			end)
 
 			-- Inherit the sorting function from the new parent
-			setSortOrder(newParent.getSortOrder(false))
+			setSortOrder(Charm.untracked(newParent.getSortOrder))
 		end
 	end
 
 	local function clearChildren()
-		for _, child in getChildren(false) do
+		for _, child in Charm.untracked(getChildren) do
 			child.parentTo(nil)
 		end
 	end
 
 	local function expandDown()
 		setIsExpanded(true)
-		for _, descendant in getDescendants(false) do
+		for _, descendant in Charm.untracked(getDescendants) do
 			descendant.setIsExpanded(true)
 		end
 	end
 
 	local function expandUp()
 		setIsExpanded(true)
-		for _, ancestor in getAncestors(false) do
+		for _, ancestor in Charm.untracked(getAncestors) do
 			ancestor.setIsExpanded(true)
 		end
 	end
 
 	local function collapseDown()
 		setIsExpanded(false)
-		for _, ancestor in getDescendants(false) do
-			ancestor.setIsExpanded(false)
+		for _, descendant in Charm.untracked(getDescendants) do
+			descendant.setIsExpanded(false)
 		end
 	end
 
 	local function activate()
-		if #getUnsortedChildren(false) > 0 then
+		if #Charm.untracked(getUnsortedChildren) > 0 then
 			setIsExpanded(function(prev)
 				return not prev
 			end)
 		else
-			local root = getRoot(false)
+			local root = Charm.untracked(getRoot)
 			if root then
-				for _, selection in root.getSelectedDescendants(false) do
+				for _, selection in Charm.untracked(root.getSelectedDescendants) do
 					if selection ~= self then
 						selection.setIsSelected(false)
 					end
@@ -227,14 +226,14 @@ local function createTreeNodeStore(): TreeNodeStore
 	local function snapshot(): TreeNodeSnapshot
 		local root = {
 			id = id,
-			name = getName(false),
-			icon = getIcon(false),
-			isVisible = getIsVisible(false),
-			isSelected = getIsSelected(false),
+			name = Charm.untracked(getName),
+			icon = Charm.untracked(getIcon),
+			isVisible = Charm.untracked(getIsVisible),
+			isSelected = Charm.untracked(getIsSelected),
 			children = {},
 		}
 
-		for _, child in getUnsortedChildren(false) do
+		for _, child in Charm.untracked(getUnsortedChildren) do
 			table.insert(root.children, child.snapshot())
 		end
 
@@ -247,8 +246,8 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- Node properties and states
 		getName = getName,
 		setName = setName,
-		getIcon = getIcon,
-		setIcon = setIcon,
+		getIcon = getIcon :: () -> TreeNodeIcon?,
+		setIcon = (setIcon :: any) :: CharmTypes.Setter<TreeNodeIcon?>,
 		getIsVisible = getIsVisible,
 		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,
