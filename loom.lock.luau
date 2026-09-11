@@ -4,7 +4,7 @@ return {
     AgentSkills = "AgentSkills@v0.4.0",
     dotenv = "dotenv@v0.1.0",
     ["flipbook-batteries"] = "flipbook-batteries@v0.12.0",
-    lute = "lute@v1.0.1-nightly.20260909",
+    lute = "lute@v1.0.1-nightly.20260701",
   },
   packages = {
     ["AgentSkills@v0.4.0"] = {
@@ -41,10 +41,10 @@ return {
         Lute = "Lute@v1.0.1-nightly.20260701",
       },
     },
-    ["lute@v1.0.1-nightly.20260909"] = {
-      installPath = "@pkg/lute@v1.0.1-nightly.20260909",
+    ["lute@v1.0.1-nightly.20260701"] = {
+      installPath = "@pkg/lute@v1.0.1-nightly.20260701",
       name = "lute",
-      rev = "v1.0.1-nightly.20260909",
+      rev = "v1.0.1-nightly.20260701",
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       dependencies = {},
