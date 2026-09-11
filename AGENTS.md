@@ -53,11 +53,11 @@ flipbook/
 │   └── flipbook-core-rotriever/  # Rotriever bundle for Studio-internal Flipbook
 ├── .lute/                  # Lute task scripts
 ├── Packages/               # Wally installs (gitignored)
-├── LuauPackages/           # Loom/Lute tooling packages (moved from Packages/ on install)
+├── LuauPackages/           # rbxasset only; Loom packages resolve from the store (~/.loom/store)
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv)
+├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv; AgentSkills dev dep)
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
@@ -165,8 +165,8 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** (`LuauPackages/`) installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv)
-- The install script moves Loom packages out of `Packages/` into `LuauPackages/` to prevent Wally from seeing them as game deps
+- **Loom** installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) into the global store (`~/.loom/store`), which the `@luaupkg` alias resolves requires from directly — nothing is copied into the repo. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime)
+- `LuauPackages/` now holds only rbxasset (a Lune dependency); Wally and Loom no longer share the `Packages/` dir, so no post-install move is needed
 
 ### Darklua and require paths
 
@@ -174,40 +174,37 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ---
 
-## Project Skills
+## Shared skills: flipbook-labs/agent-skills
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
+Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned as a dev dependency in [`loom.config.luau`](loom.config.luau) and installed by `lute run install` into the Loom store (`~/.loom/store`). Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
+
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and the shared `flipbook-change-control` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 
-Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant vendored skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then its vendored skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
+Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant shared skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then the shared skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
 
 Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only a member of `@flipbook-labs/flipbook-admins` may bypass it; agents must not bypass merge requirements.
 
-Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
 
-**Process skills** (runbooks — what to do next):
+Before you write any code, tests, or PR prose:
 
-- `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
-- `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
-- `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
-- `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
-- `flipbook-debugging-playbook` — symptom→solution runbook for runtime issues (stale plugin, hot-reload, re-renders, crashes, test failures).
-- `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
-- `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
-- `flipbook-validation-and-qa` — the evidence bar for proving a fix, test anatomy, spec writing.
-- `flipbook-diagnostics-and-tooling` — measurement: logging, test output parsing, build-cache inspection, rerender accounting.
-- `flipbook-proof-and-analysis-toolkit` — prove claims via mechanism: require-graph, reload isolation, build determinism, type-level proof.
-- `flipbook-research-methodology` — hypothesis/evidence protocol for experiments, PR readiness, documenting dead ends.
-- `flipbook-story-controls-campaign` — story-controls work: reproducing gaps, ranked solutions, validation gates.
-- `flipbook-docs-and-writing` — docs estate (Docusaurus, code samples, vault) and house style.
+1. Install dependencies (this also fetches the skills into the Loom store):
 
-**Knowledge skills** (reference — how the system is and why):
+   ```sh
+   lute run install
+   ```
 
-- `flipbook-architecture-contract` — load-bearing design decisions, invariants, known weak points.
-- `flipbook-domain-reference` — story/storybook contracts, Storyteller, module reload, control types, React-in-Roblox.
-- `flipbook-build-and-toolchain` — source→rbxm pipeline, Darklua transforms, env-global injection, dead-code elimination.
-- `flipbook-config-and-flags` — env vars, injected globals, build channels/targets, user settings.
-- `flipbook-failure-archaeology` — past investigations, dead ends, reverted features, unresolved bugs; check before attempting a "new" fix.
-- `flipbook-community-and-positioning` — community-first doctrine, telemetry/privacy posture, ecosystem claims.
-- `flipbook-research-frontier` — open research problems, blockers, milestones.
+2. Resolve the concrete skills path (do not guess the version):
+
+   ```sh
+   ls -d ~/.loom/store/AgentSkills@*
+   ```
+
+   That prints the one installed copy, `~/.loom/store/AgentSkills@v<version>`, where `<version>` is the `rev` pinned for `AgentSkills` in [`loom.config.luau`](loom.config.luau). Use the printed path wherever `<skills>` appears below.
+
+3. Read the routing index at `<skills>/AGENTS.md` in full. Its **Project Skills** section lists every skill with a trigger-rich one-liner, so you know what exists before you start.
+
+Deep reads of individual `<skills>/src/<scope>/<name>/SKILL.md` files stay on demand: when a task matches a trigger from the index, read that skill before doing the work it covers.
+
+Skills are living documents. If your work here contradicts a skill (a renamed symbol, a changed value, a fixed bug it still calls known), fix it in the agent-skills repo and add a `.changes/` entry there in the same PR. The fix reaches this repo on its next `rev` bump.
