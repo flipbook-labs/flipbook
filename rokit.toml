@@ -6,7 +6,7 @@
 [tools]
 darklua = "seaofvoices/darklua@0.19.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.69.0"
-lune = "lune-org/lune@0.10.5"
+lune = "lune-org/lune@0.9.4"
 lute = "luau-lang/lute@1.0.1-nightly.20260701"
 roblox-packages = "flipbook-labs/roblox-packages@0.5.0"
 rocale = "Roblox/rocale-cli@0.1.3"
