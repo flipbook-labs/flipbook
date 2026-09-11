@@ -125,13 +125,13 @@ local function StoryControlRow(props: Props)
 	}, {
 		Content = e(Foundation.View, {
 			LayoutOrder = 1,
-			tag = "align-y-center auto-y gap-medium padding-medium row size-full-0",
+			tag = "align-y-center auto-y gap-small padding-small row size-full-0",
 		}, {
 			Title = e(Foundation.Text, {
 				LayoutOrder = 1,
 				Size = UDim2.fromScale(0.2, 0),
 				Text = props.controlName,
-				tag = "auto-y text-align-x-left text-label-medium",
+				tag = "auto-y text-align-x-left text-label-small",
 			}),
 
 			Option = e(Foundation.View, {

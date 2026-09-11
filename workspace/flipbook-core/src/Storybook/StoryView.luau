@@ -62,7 +62,7 @@ local function StoryView(props: StoryViewProps)
 			}, {
 				Info = e(View, {
 					LayoutOrder = 1,
-					tag = "auto-y col gap-small padding-large size-full-0",
+					tag = "auto-y col gap-xsmall padding-medium size-full-0",
 				}, {
 					Title = e(Text, {
 						LayoutOrder = 1,
@@ -72,7 +72,7 @@ local function StoryView(props: StoryViewProps)
 							-- one line made for some really weird formatting that I
 							-- couldn't accept.
 							["auto-y content-emphasis size-full-0"] = true,
-							["text-align-x-left text-align-y-top text-heading-large text-wrap"] = true,
+							["text-align-x-left text-align-y-top text-heading-medium text-wrap"] = true,
 						},
 					}),
 
@@ -80,7 +80,7 @@ local function StoryView(props: StoryViewProps)
 						LayoutOrder = 2,
 						Text = story.summary,
 						sizeConstraint = { MaxSize = Vector2.new(600, math.huge) },
-						tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-medium text-wrap",
+						tag = "auto-y size-full-0 text-align-x-left text-align-y-top text-body-small text-wrap",
 					}),
 				}),
 

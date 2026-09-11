@@ -35,12 +35,13 @@ local function CheckControl(props: Props)
 			onActivated = function()
 				onCheckboxActivated(item)
 			end,
+			size = Foundation.Enums.InputSize.XSmall,
 		})
 	end
 
 	-- TODO: Make this a grid
 	return e(Foundation.View, {
-		tag = "size-full-y auto-x col gap-small",
+		tag = "size-full-y auto-x col gap-xsmall",
 	}, checkboxes)
 end
 
