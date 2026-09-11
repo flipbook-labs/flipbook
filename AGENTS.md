@@ -1,0 +1,213 @@
+# Flipbook - Agent Instructions
+
+## Repo Overview
+
+Flipbook is a Roblox Studio plugin for browsing and testing UI stories. The dependency chain is:
+
+```
+Flipbook  ←  Storyteller  ←  ModuleLoader
+```
+
+All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolchain and conventions, and are expected to be checked out as siblings on disk (e.g. `~/git/flipbook`, `~/git/storyteller`, `~/git/module-loader`).
+
+---
+
+## Tech Stack
+
+| Tool                     | Role                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| **Lute**                 | Task runner for all scripts (`lute run <script>`)                              |
+| **Rokit**                | Toolchain version manager (`rokit install` pins tools from `rokit.toml`)       |
+| **Wally**                | Roblox package manager (Roblox runtime deps)                                   |
+| **Loom**                 | Luau package manager for tooling/scripts (installs to `LuauPackages/`)         |
+| **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds |
+| **Darklua**              | Transforms Luau-style `require` paths to Roblox `require()` calls during build |
+| **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud               |
+| **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                |
+| **Selene**               | Luau linter                                                                    |
+| **StyLua**               | Luau formatter                                                                 |
+| **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                          |
+| **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller     |
+| **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories          |
+| **Storyteller**          | Story discovery, loading, and rendering; wraps ModuleLoader                    |
+
+---
+
+## Repository Layout
+
+### Flipbook
+
+```
+flipbook/
+├── src/                    # Thin plugin entry point (Studio bootstrap only)
+├── workspace/              # Real application code, organized as workspace members:
+│   ├── flipbook-core/      # Main library — React app, story browser, telemetry, settings
+│   ├── flipbook-next/      # Experimental next-gen package
+│   ├── test-runner/        # Runs Jest.runCLI against flipbook-core tests
+│   ├── example/            # Dogfood stories/components
+│   ├── code-samples/       # Sample stories for Roact, Fusion, React+Storyteller
+│   └── template/           # Scaffold for new workspace members
+├── build/                  # Build output (gitignored):
+│   ├── dev/roblox/         # Dev plugin build
+│   ├── prod/roblox/        # Production build
+│   └── flipbook-core-rotriever/  # Rotriever bundle for Studio-internal Flipbook
+├── .lute/                  # Lute task scripts
+├── Packages/               # Wally installs (gitignored)
+├── LuauPackages/           # Loom/Lute tooling packages (moved from Packages/ on install)
+├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
+├── project.luau            # Shared path constants used by all Lute scripts
+├── wally.toml              # Roblox runtime dependencies
+├── loom.config.luau        # Loom manifest (Lute, flipbook-batteries, dotenv)
+└── .env / .env.template    # Environment variables (copy template to .env)
+```
+
+Most application code lives under `workspace/flipbook-core/src/`, not `src/`. The root `src/` directory contains only thin plugin and embedded bootstraps; `src/PluginStarterScript.plugin.luau` delegates plugin startup to `FlipbookCore.createFlipbookPlugin(...)`.
+
+### Storyteller / ModuleLoader
+
+Both follow a simpler layout:
+
+```
+<repo>/
+├── src/                    # Authoring source
+├── dist/                   # Build output (gitignored) — what Wally ships
+├── .lute/                  # Lute task scripts
+├── Packages/               # Wally installs
+├── LuauPackages/           # Loom tooling packages
+├── project.luau            # Shared path constants
+├── wally.toml              # Package metadata + dependencies
+└── loom.config.luau        # Loom manifest
+```
+
+Build output (`dist/`) is a Darklua-processed mirror of `src/` with Luau-style requires converted to Roblox `require()` calls. **Wally publishes from `dist/`**, not `src/`.
+
+---
+
+## Scripts (`lute run`)
+
+Lute is the task runner for all three repos — the Luau equivalent of `npm run`. **Before reaching for any external tool or shell command, check whether a `lute run` script already covers it.** All scripts live in `.lute/<name>.luau` and are invoked as `lute run <name>`.
+
+### Common Commands
+
+```bash
+# Flipbook — build dev plugin to Studio plugins folder
+lute run build plugin --channel dev
+
+# Flipbook — full rebuild (use after dependency changes)
+lute run build plugin --channel dev --clean
+
+# Flipbook — watch mode (incremental on workspace member changes)
+lute run build plugin --channel dev --watch
+
+# Flipbook — build FlipbookCore as a rotriever bundle for local integration flows
+lute run build --target rotriever --clean
+
+# Storyteller / ModuleLoader — build dist/ bundle
+lute run build --channel dev
+lute run build --channel prod
+
+# Validation
+lute run lint
+lute run analyze
+lute run test
+```
+
+Use `--clean` after dependency changes or when build output appears stale. `--channel dev` retains tests and stories; `--channel prod` prunes development files.
+
+---
+
+## Code Style and Conventions
+
+- **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
+- **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
+- **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
+- **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
+- **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
+- **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); Darklua converts these to Roblox `require()` during build.
+
+### Comments explain the present, not the history
+
+A comment's job is to explain why the code is the way it is **right now** — for a reader who has never seen any previous version. Write every comment so it stands on its own against the current code.
+
+Do **not** write comments that only make sense as a diff against a past shape. These narrate a refactor instead of the code:
+
+- "This used to be inline; the logic now lives in X."
+- "This workflow is just a thin wrapper now."
+- "Where did all the release logic go? It moved to Y."
+- "Previously we did A, but now we do B."
+
+Such comments have a tiny window of relevance. After the next refactor the code has deviated again, the "previous shape" is two shapes back, and no one can verify the claim or use it — it's just litter carrying dead context forward. The old implementation is not coming back; `git log` already remembers it.
+
+Two tests before keeping a comment:
+
+1. **Would it make sense to someone who never saw the old code?** If it only parses as a contrast with a prior version, cut it or rewrite it to describe the present on its own terms.
+2. **Is the "why" a property of the code as it stands**, or a story about how it got here? Keep the former (e.g. "Charm.flags.frozen = false works around Storyteller issue #100"). Drop the latter.
+
+When editing or reviewing, treat surviving history-relative comments as litter to clean up, the same as dead code.
+
+---
+
+## Architecture Notes
+
+### FlipbookCore vs the plugin shell
+
+- `src/PluginStarterScript.plugin.luau` is minimal: it guards against non-edit mode, sets `_G.__DEV__` in dev builds, and delegates to `FlipbookCore.createFlipbookPlugin(plugin, widget, button)`.
+- All real functionality is in `workspace/flipbook-core/src/`. When working on Flipbook features, start there, not in `src/`.
+
+### Charm flags workaround
+
+`src/PluginStarterScript.plugin.luau` sets `Charm.flags.frozen = false`. This is a documented workaround for a Storyteller issue (issue #100). Do not remove it.
+
+### Workspace members and production pruning
+
+The `workspace/` directory is a monorepo-style structure. Each member has its own `src/` and sometimes `rotriever.toml`. When adding a new workspace member that should not ship in the production plugin, add it to `PROD_CONFIG.prunedDirs` in `project.luau`.
+
+### Wally vs Loom packages
+
+- **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
+- **Loom** (`LuauPackages/`) installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv)
+- The install script moves Loom packages out of `Packages/` into `LuauPackages/` to prevent Wally from seeing them as game deps
+
+### Darklua and require paths
+
+Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Darklua processes `src/` → `build/<channel>/<target>/` (or `dist/` in Storyteller/ModuleLoader) converting these to Roblox `require(script.X)` using Rojo sourcemaps. **Never edit files in `build/` or `dist/` directly.**
+
+---
+
+## Project Skills
+
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
+
+Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
+
+Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant vendored skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then its vendored skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
+
+Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only a member of `@flipbook-labs/flipbook-admins` may bypass it; agents must not bypass merge requirements.
+
+Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditional workflows and reference instead of keeping all details in always-loaded context. **Before starting work, scan this index; when a task matches a trigger, read that skill first.** Conventions, trust model, and maintenance norms are in [.agents/skills/README.md](.agents/skills/README.md) — the short version: skills are living documents, and when your work contradicts one you loaded, fix the skill in the same PR. This index is part of the library: update it in the same commit that adds, renames, or retires a skill.
+
+**Process skills** (runbooks — what to do next):
+
+- `setup-flipbook-dev-env` — first-time setup, stale packages, `.env`, Wally/Loom/Rokit issues.
+- `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
+- `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
+- `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
+- `flipbook-debugging-playbook` — symptom→solution runbook for runtime issues (stale plugin, hot-reload, re-renders, crashes, test failures).
+- `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
+- `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
+- `flipbook-validation-and-qa` — the evidence bar for proving a fix, test anatomy, spec writing.
+- `flipbook-diagnostics-and-tooling` — measurement: logging, test output parsing, build-cache inspection, rerender accounting.
+- `flipbook-proof-and-analysis-toolkit` — prove claims via mechanism: require-graph, reload isolation, build determinism, type-level proof.
+- `flipbook-research-methodology` — hypothesis/evidence protocol for experiments, PR readiness, documenting dead ends.
+- `flipbook-story-controls-campaign` — story-controls work: reproducing gaps, ranked solutions, validation gates.
+- `flipbook-docs-and-writing` — docs estate (Docusaurus, code samples, vault) and house style.
+
+**Knowledge skills** (reference — how the system is and why):
+
+- `flipbook-architecture-contract` — load-bearing design decisions, invariants, known weak points.
+- `flipbook-domain-reference` — story/storybook contracts, Storyteller, module reload, control types, React-in-Roblox.
+- `flipbook-build-and-toolchain` — source→rbxm pipeline, Darklua transforms, env-global injection, dead-code elimination.
+- `flipbook-config-and-flags` — env vars, injected globals, build channels/targets, user settings.
+- `flipbook-failure-archaeology` — past investigations, dead ends, reverted features, unresolved bugs; check before attempting a "new" fix.
+- `flipbook-community-and-positioning` — community-first doctrine, telemetry/privacy posture, ecosystem claims.
+- `flipbook-research-frontier` — open research problems, blockers, milestones.

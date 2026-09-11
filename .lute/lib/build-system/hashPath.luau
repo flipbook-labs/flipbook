@@ -12,15 +12,15 @@ local function bufferToHex(buf: buffer): string
 	return hex
 end
 
-local function hashFile(filePath: path.pathlike): string
-	local content = fs.readfiletostring(filePath)
+local function hashFile(filePath: path.Pathlike): string
+	local content = fs.readFileToString(filePath)
 	return bufferToHex(crypto.digest(HASH_METHOD, content))
 end
 
-local function hashDir(dirPath: path.pathlike): string
+local function hashDir(dirPath: path.Pathlike): string
 	local hashes = {}
 
-	for _, file in fs.listdirectory(dirPath) do
+	for _, file in fs.listDirectory(dirPath) do
 		local filePath = path.join(dirPath, file.name)
 
 		if file.type == "dir" then
@@ -35,7 +35,7 @@ local function hashDir(dirPath: path.pathlike): string
 	return bufferToHex(crypto.digest(HASH_METHOD, joinedHash))
 end
 
-local function hashPath(filePath: path.pathlike): string
+local function hashPath(filePath: path.Pathlike): string
 	assert(fs.exists(filePath), `no file found at {filePath}`)
 
 	if fs.type(filePath) == "dir" then

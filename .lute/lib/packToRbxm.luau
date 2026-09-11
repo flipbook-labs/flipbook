@@ -1,35 +1,21 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-
-local fs = require("@std/fs")
 local path = require("@std/path")
-local system = require("@std/system")
 
-local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
+local rojoBuild = require("./rojoBuild")
 
-local run = FlipbookBatteries.run
-
-local function packToRbxm(filePath: path.pathlike): path.path
-	local projectPath = path.join(system.tmpdir(), "default.project.json")
+local function packToRbxm(filePath: path.Pathlike): path.Path
 	local resolvedFilePath = path.resolve(filePath)
 
-	createRojoProjectAsync(projectPath, {
-		name = path.basename(filePath),
-		tree = {
-			["$path"] = tostring(resolvedFilePath),
+	local modelPath = rojoBuild({
+		output = path.resolve(`{resolvedFilePath}.rbxm`),
+		project = {
+			name = tostring(path.basename(filePath)),
+			tree = {
+				["$path"] = tostring(resolvedFilePath),
+			},
 		},
 	})
-	local outputPath = path.resolve(`{resolvedFilePath}.rbxm`)
 
-	run("rojo", {
-		"build",
-		tostring(projectPath),
-		"-o",
-		tostring(outputPath),
-	})
-
-	fs.remove(projectPath)
-
-	return outputPath
+	return modelPath
 end
 
 return packToRbxm

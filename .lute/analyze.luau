@@ -1,4 +1,4 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local path = require("@std/path")
 local system = require("@std/system")
 
@@ -18,12 +18,12 @@ run("curl", {
 
 run("rojo", {
 	"sourcemap",
-	project.ROJO_BUILD_PROJECT,
+	project.SOURCEMAP_PROJECT_PATH,
 	"-o",
 	project.SOURCEMAP_PATH,
 })
 
-local defaultArgs: { string | path.pathlike } = {
+local defaultArgs: { string | path.Pathlike } = {
 	"analyze",
 	`--defs={globalDefsPath}`,
 	"--settings=./.vscode/settings.json",

@@ -1,4 +1,4 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
 local fs = require("@std/fs")
 local path = require("@std/path")
 
@@ -16,24 +16,30 @@ type BuildContext = types.BuildContext
 
 local function compileAsync(context: BuildContext)
 	if context.shouldRebuild then
-		fs.removedirectory(context.dest, {
+		fs.removeDirectory(context.dest, {
 			recursive = true,
 		})
 	end
-	fs.createdirectory(context.dest, {
-		makeparents = true,
+	fs.createDirectory(context.dest, {
+		makeParents = true,
 	})
 
 	run("rojo", {
 		"sourcemap",
-		project.ROJO_BUILD_PROJECT,
+		project.SOURCEMAP_PROJECT_PATH,
 		"-o",
 		project.DARKLUA_SOURCEMAP_PATH,
 	})
 
+	-- Darklua is failing to resolve string requires when using absolute paths
+	-- for the input. Probably related to the sourcemap, though we've tried
+	-- using the `--absolute` flag with `rojo sourcemap` and that didn't work
+	-- either. We just massage the source path into a relative path to work
+	-- around the issue.
+	local relativeSourcePath = path.relative(project.REPO_PATH, project.SOURCE_PATH)
 	run("darklua", {
 		"process",
-		project.SOURCE_PATH,
+		relativeSourcePath,
 		context.dest,
 	}, {
 		env = context.env,
@@ -54,7 +60,7 @@ local function compileAsync(context: BuildContext)
 		end,
 	})
 
-	for _, member in fs.listdirectory(project.WORKSPACE_PATH) do
+	for _, member in fs.listDirectory(project.WORKSPACE_PATH) do
 		local memberPath = path.join(project.WORKSPACE_PATH, member.name)
 
 		if fs.type(memberPath) == "dir" then
@@ -62,11 +68,11 @@ local function compileAsync(context: BuildContext)
 		end
 	end
 
-	if context.channel == "prod" then
+	if context.channel == "prod" or context.channel == "beta" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 
-			fs.removedirectory(path.join(context.dest, relativePath), {
+			fs.removeDirectory(path.join(context.dest, relativePath), {
 				recursive = true,
 			})
 		end
@@ -76,20 +82,19 @@ local function compileAsync(context: BuildContext)
 		local dest = path.join(project.BUILD_PATH, "flipbook-core-rotriever")
 
 		if context.shouldRebuild then
-			fs.removedirectory(dest, {
+			fs.removeDirectory(dest, {
 				recursive = true,
 			})
 		end
 
 		copyInto(context.dest, path.join(dest, "src"))
 
-		fs.remove(path.join(dest, "src/init.server.luau"))
+		-- Remove all the runtime code since we're just shipping FlipbookCore
+		fs.remove(path.join(dest, "src/EmbeddedClientStarterScript.client.luau"))
+		fs.remove(path.join(dest, "src/EmbeddedServerStarterScript.server.luau"))
+		fs.remove(path.join(dest, "src/PluginStarterScript.plugin.luau"))
 
-		local manifestPaths = find(dest, "rotriever.toml")
-		if #manifestPaths > 0 then
-			local manifestPath = manifestPaths[1]
-			fs.copy(manifestPath, path.join(dest, "rotriever.toml"))
-		end
+		fs.copy(path.join(project.WORKSPACE_PATH, "flipbook-core/rotriever.toml"), path.join(dest, "rotriever.toml"))
 
 		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
 		-- path length limit issues that crop up when consuming internally
@@ -99,14 +104,14 @@ local function compileAsync(context: BuildContext)
 
 			packToRbxm(packagesPath)
 
-			fs.removedirectory(packagesPath, {
+			fs.removeDirectory(packagesPath, {
 				recursive = true,
 			})
 		end
 
 		local linkerPath = path.join(dest, "src/init.lua")
 		local linkerSource = `return require(script.workspace["flipbook-core"])`
-		fs.writestringtofile(linkerPath, linkerSource)
+		fs.writeStringToFile(linkerPath, linkerSource)
 
 		-- Rotriever does not support .luau files, so rename
 		-- them to .lua for compatibility

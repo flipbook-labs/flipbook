@@ -5,7 +5,7 @@ local Sift = require("@pkg/Sift")
 
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
-local useColors = require("@root/Common/useColors")
+local useBrandAccent = require("@root/Common/useBrandAccent")
 
 local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
@@ -20,7 +20,7 @@ export type Props = {
 }
 
 local function SettingRow(props: Props)
-	local colors = useColors()
+	local brandAccent = useBrandAccent()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -82,7 +82,7 @@ local function SettingRow(props: Props)
 		ChangedIndicator = if hasBeenChanged
 			then React.createElement(Foundation.View, {
 				tag = "size-50-full",
-				backgroundStyle = colors.accent,
+				backgroundStyle = brandAccent,
 			})
 			else nil,
 

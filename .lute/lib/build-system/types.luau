@@ -1,6 +1,6 @@
 local path = require("@std/path")
 
-export type Channel = "prod" | "dev"
+export type Channel = "prod" | "beta" | "dev"
 export type Target = "roblox" | "rotriever"
 
 export type BuildCache = {
@@ -11,7 +11,7 @@ export type BuildCache = {
 export type BuildContext = {
 	channel: Channel,
 	target: Target,
-	dest: path.path,
+	dest: path.Path,
 	env: { [string]: string },
 	shouldRebuild: boolean,
 	cache: BuildCache,
@@ -19,7 +19,7 @@ export type BuildContext = {
 
 export type BuildGroup = {
 	name: string,
-	paths: { path.pathlike },
+	paths: { path.Pathlike },
 	context: BuildContext,
 	step: (self: BuildGroup) -> (),
 }

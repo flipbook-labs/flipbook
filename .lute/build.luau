@@ -1,19 +1,19 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries")
-local cli = require("@luaupkg/batteries/cli")
+local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.9.0")
+local cli = require("@luaupkg/lute@v1.0.0/batteries/cli")
+local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
 local fs = require("@std/fs")
 local path = require("@std/path")
-local pp = require("@luaupkg/batteries/pp")
+local pp = require("@luaupkg/lute@v1.0.0/batteries/pp")
 local process = require("@std/process")
-local richterm = require("@luaupkg/batteries/richterm")
-local toml = require("@luaupkg/batteries/toml")
+local richterm = require("@luaupkg/lute@v1.0.0/batteries/richterm")
+local toml = require("@luaupkg/lute@v1.0.0/batteries/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
-local createRojoProjectAsync = require("@scripts/lib/createRojoProjectAsync")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
 local project = require("@repo/project")
+local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local copyInto = FlipbookBatteries.copyInto
-local dotenv = FlipbookBatteries.dotenv
 local run = FlipbookBatteries.run
 local watch = FlipbookBatteries.watch
 
@@ -21,7 +21,7 @@ local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
-dotenv()
+dotenv.config()
 
 local args = cli.parser()
 
@@ -29,7 +29,7 @@ args:add("script", "positional", {
 	help = "Path to the script being run. Provided automatically by Lute",
 })
 args:add("subcommand", "positional", {
-	help = `Can be "plugin" or "workspace"`,
+	help = `Can be "plugin", "workspace", or "storybook"`,
 	default = "plugin",
 })
 
@@ -63,12 +63,15 @@ args:parse({ ... })
 
 local subcommand = args:get("subcommand")
 assert(
-	subcommand == "plugin" or subcommand == "workspace",
-	`bad value for subcommand (must be one of "plugin" or "workspace", got "{subcommand}")`
+	subcommand == "plugin" or subcommand == "workspace" or subcommand == "storybook",
+	`bad value for subcommand (must be one of "plugin", "workspace", or "storybook", got "{subcommand}")`
 )
 
 local channel = args:get("channel")
-assert(channel == "dev" or channel == "prod", `bad value for channel (must be one of "dev" or "prod", got "{channel}")`)
+assert(
+	channel == "dev" or channel == "beta" or channel == "prod",
+	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
+)
 
 local target = args:get("target")
 assert(
@@ -80,7 +83,7 @@ local output = args:get("output")
 assert(typeof(output) == "string", `bad value for output (string expected, got {typeof(output)})`)
 
 local function readWallyManifestAsync()
-	return toml.deserialize(fs.readfiletostring(WALLY_MANIFEST_PATH))
+	return toml.deserialize(fs.readFileToString(WALLY_MANIFEST_PATH))
 end
 
 local function getCommitHash()
@@ -108,8 +111,9 @@ local context: BuildContext = {
 	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
 		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
-		BUILD_CHANNEL = if channel == "prod" then "production" else "development",
+		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
 		BUILD_HASH = getCommitHash(),
+		BUILD_TARGET = target,
 		BASE_URL = process.env.BASE_URL,
 		LOG_LEVEL = process.env.LOG_LEVEL,
 	},
@@ -126,25 +130,18 @@ local function buildPluginBinary()
 		paths = { context.dest },
 		context = context,
 		step = function()
-			local projectPath = path.resolve(path.join(context.dest, "../default.project.json"))
-
-			createRojoProjectAsync(projectPath, {
-				name = "Flipbook",
-				tree = {
-					["$path"] = tostring(path.resolve(context.dest)),
-				},
-			})
-
 			local dest = path.resolve(path.join(context.dest, "..", project.PLUGIN_FILENAME))
 
-			run("rojo", {
-				"build",
-				projectPath,
-				"-o",
-				dest,
+			rojoBuild({
+				output = dest,
+				project = {
+					name = "Flipbook",
+					emitLegacyScripts = false,
+					tree = {
+						["$path"] = tostring(path.resolve(context.dest)),
+					},
+				},
 			})
-
-			fs.remove(projectPath)
 
 			if args:has("skip-reload") then
 				if output:match(tostring(getStudioPluginsPath())) then
@@ -172,10 +169,52 @@ local function build()
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
+-- Builds the storybook placefile that hosts our stories. The bundle gets sent
+-- along by the deploy-storybook action and published with the latest version of
+-- Flipbook to the experience.
+--
+-- Check out Flipbook's own storybook here:
+-- https://www.roblox.com/games/139676401890813/Flipbook-Stories
+local function buildStorybookPlace()
+	run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
+
+	local placePath = rojoBuild({
+		output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),
+		project = {
+			name = "Flipbook Stories",
+			emitLegacyScripts = false,
+			tree = {
+				["$className"] = "DataModel",
+				ReplicatedStorage = {
+					FlipbookWorkspace = {
+						["$className"] = "Folder",
+						Packages = {
+							["$path"] = tostring(project.PACKAGES_PATH),
+						},
+						RobloxPackages = {
+							["$path"] = tostring(project.ROBLOX_PACKAGES_PATH),
+						},
+						workspace = {
+							["$path"] = tostring(path.join(project.BUILD_PATH, "dev/roblox/workspace")),
+						},
+					},
+				},
+			},
+		},
+	})
+
+	print(`Built storybook place: {placePath}`)
+end
+
+if subcommand == "storybook" then
+	buildStorybookPlace()
+	return
+end
+
 build()
 
 if args:has("watch") then
-	local function onChanged(filePath: path.path)
+	local function onChanged(filePath: path.Path)
 		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
 			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)

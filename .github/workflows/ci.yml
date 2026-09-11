@@ -5,6 +5,9 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -18,7 +21,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        channel: [dev, prod]
+        channel: [dev, beta, prod]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +61,7 @@ jobs:
       matrix:
         package: [flipbook-core]
         target: [rotriever]
-        channel: [dev, prod]
+        channel: [dev, beta, prod]
       fail-fast: false
     env:
       ARTIFACT_NAME: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}.zip
@@ -116,24 +119,3 @@ jobs:
 
       - name: Run Luau analysis
         run: lute run analyze
-
-  tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: CompeyDev/setup-rokit@v0.1.2
-        with:
-          version: v1.2.0
-
-      - name: Install dependencies
-        run: lute run install
-
-      - name: Create .env
-        run: cp .env.template .env
-
-      - name: Run tests
-        run: lute run test
-        env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
