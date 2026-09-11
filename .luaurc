@@ -1,7 +1,7 @@
 {
 	"languageMode": "strict",
 	"aliases": {
-		"lune": "~/.lune/.typedefs/0.10.5/",
+		"lune": "~/.lune/.typedefs/0.9.4/",
 		"lint": "~/.lute/typedefs/1.0.1/lint",
 		"lute": "~/.lute/typedefs/1.0.1/lute",
 		"std": "~/.lute/typedefs/1.0.1/std",
