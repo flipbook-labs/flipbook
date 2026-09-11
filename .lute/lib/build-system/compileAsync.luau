@@ -26,7 +26,7 @@ local function compileAsync(context: BuildContext)
 
 	run("rojo", {
 		"sourcemap",
-		project.ROJO_BUILD_PROJECT,
+		project.SOURCEMAP_PROJECT_PATH,
 		"-o",
 		project.DARKLUA_SOURCEMAP_PATH,
 	})
@@ -68,7 +68,7 @@ local function compileAsync(context: BuildContext)
 		end
 	end
 
-	if context.channel == "prod" then
+	if context.channel == "prod" or context.channel == "beta" then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 
@@ -89,13 +89,12 @@ local function compileAsync(context: BuildContext)
 
 		copyInto(context.dest, path.join(dest, "src"))
 
-		fs.remove(path.join(dest, "src/init.server.luau"))
+		-- Remove all the runtime code since we're just shipping FlipbookCore
+		fs.remove(path.join(dest, "src/EmbeddedClientStarterScript.client.luau"))
+		fs.remove(path.join(dest, "src/EmbeddedServerStarterScript.server.luau"))
+		fs.remove(path.join(dest, "src/PluginStarterScript.plugin.luau"))
 
-		local manifestPaths = find(dest, "rotriever.toml")
-		if #manifestPaths > 0 then
-			local manifestPath = manifestPaths[1]
-			fs.copy(manifestPath, path.join(dest, "rotriever.toml"))
-		end
+		fs.copy(path.join(project.WORKSPACE_PATH, "flipbook-core/rotriever.toml"), path.join(dest, "rotriever.toml"))
 
 		-- Bundle up the gigantic dependency bundles into rbxms to alleviate
 		-- path length limit issues that crop up when consuming internally

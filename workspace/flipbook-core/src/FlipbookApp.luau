@@ -3,6 +3,9 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AppMode = require("@root/Enums/AppMode")
+local BuildChannel = require("@root/Enums/BuildChannel")
+local BuildTarget = require("@root/Enums/BuildTarget")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -18,12 +21,17 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 
+type AppMode = AppMode.AppMode
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
-local function App()
+export type Props = {
+	mode: AppMode?,
+}
+
+local function FlipbookApp(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -63,6 +71,7 @@ local function App()
 	}, {
 		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
 			story = storyModule,
+			mode = props.mode,
 		}, {
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				LayoutOrder = nextLayoutOrder(),
@@ -78,10 +87,13 @@ local function App()
 			}),
 
 			MainWrapper = React.createElement(Foundation.View, {
-				tag = "size-full col shrink",
+				tag = "size-full col shrink bg-surface-100",
 				LayoutOrder = nextLayoutOrder(),
 			}, {
 				Topbar = React.createElement(Topbar, {
+					showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
+					showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
+					showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
@@ -102,4 +114,4 @@ local function App()
 	})
 end
 
-return App
+return FlipbookApp
