@@ -149,12 +149,19 @@ do
 
 	local function installRbxasset()
 		local fileName = "rbxasset.zip"
+		local installPath = path.join(project.LUAU_PACKAGES_PATH, "rbxasset")
 
 		-- rbxasset (a Lune dependency, aliased as @lunepkg) is the only thing that
 		-- still lives under LuauPackages, so make sure the directory exists.
 		if not fs.exists(project.LUAU_PACKAGES_PATH) then
 			fs.createDirectory(project.LUAU_PACKAGES_PATH, {
 				makeParents = true,
+			})
+		end
+
+		if fs.exists(installPath) then
+			fs.removeDirectory(installPath, {
+				recursive = true,
 			})
 		end
 

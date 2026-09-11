@@ -3,7 +3,7 @@ return {
   dependencies = {
     dotenv = "dotenv@v0.1.0",
     ["flipbook-batteries"] = "flipbook-batteries@v0.12.0",
-    lute = "lute@v1.0.1-nightly.20260909",
+    lute = "lute@v1.0.1-nightly.20260701",
   },
   packages = {
     ["Lute@v1.0.1-nightly.20260701"] = {
@@ -32,10 +32,10 @@ return {
         Lute = "Lute@v1.0.1-nightly.20260701",
       },
     },
-    ["lute@v1.0.1-nightly.20260909"] = {
-      installPath = "@pkg/lute@v1.0.1-nightly.20260909",
+    ["lute@v1.0.1-nightly.20260701"] = {
+      installPath = "@pkg/lute@v1.0.1-nightly.20260701",
       name = "lute",
-      rev = "v1.0.1-nightly.20260909",
+      rev = "v1.0.1-nightly.20260701",
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       dependencies = {},
