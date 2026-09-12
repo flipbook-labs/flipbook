@@ -90,10 +90,10 @@ test("embeds Flipbook at a discovered destination", function()
 	local implementation = createImplementation()
 
 	local result = implementation.embedFlipbook(getInstancePath(root), false)
+	local runtime = assert(embeddedRuntime, "expected an embedded runtime")
 
-	expect(embeddedRuntime).never.toBeNil()
-	expect(assert(embeddedRuntime).Parent).toBe(root)
-	expect(result).toBe(getInstancePath(assert(embeddedRuntime, "expected an embedded runtime")))
+	expect(runtime.Parent).toBe(root)
+	expect(result).toBe(getInstancePath(runtime))
 end)
 
 test("requires opt-in before replacing an embedded runtime", function()
