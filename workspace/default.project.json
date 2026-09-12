@@ -8,6 +8,9 @@
     "example": {
       "$path": "example"
     },
+    "flipbook-api": {
+      "$path": "flipbook-api"
+    },
     "flipbook-core": {
       "$path": "flipbook-core"
     },
