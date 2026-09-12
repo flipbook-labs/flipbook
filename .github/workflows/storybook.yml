@@ -12,7 +12,6 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
   actions: write
 
 jobs:
@@ -45,13 +44,17 @@ jobs:
       - name: Build storybook place
         run: lute run build storybook
 
-      # On `main` we build a fresh Flipbook.rbxm off the branch and use it as the
-      # runtime, so we catch embedding issues before cutting a release. PR builds
-      # skip this so a PR's own UI changes don't pollute the app underneath its
-      # preview (the deploy-storybook action fetches the latest release instead).
       - name: Build Flipbook runtime
-        if: github.event_name == 'push'
         run: lute run build plugin --channel prod --skip-reload --clean
+
+      - name: Generate preview app token
+        if: github.event_name == 'pull_request'
+        id: preview-app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.FLIPBOOK_PREVIEW_APP_CLIENT_ID }}
+          private-key: ${{ secrets.FLIPBOOK_PREVIEW_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
 
       - name: Deploy main storybook
         if: github.event_name == 'push'
@@ -67,10 +70,11 @@ jobs:
 
       - name: Deploy PR storybook
         if: github.event_name == 'pull_request'
-        uses: flipbook-labs/deploy-storybook@v0.4.0
+        uses: flipbook-labs/deploy-storybook@10df0500439611dd21b42f7188c23854afacf3bf
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
           place-name: ${{ env.PREVIEW_PLACE_NAME }}
           place-file: build/flipbook-storybook.rbxl
-          cli-version: "0.6.0"
+          current-flipbook-rbxm: build/prod/Flipbook.rbxm
+          github-token: ${{ steps.preview-app-token.outputs.token }}
