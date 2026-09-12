@@ -76,7 +76,7 @@ jobs:
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.3.0
+      - uses: flipbook-labs/changewrite@v0.7.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           base: main

@@ -10,12 +10,27 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: read
   id-token: write
   attestations: write
   artifact-metadata: write
   pull-requests: write
 
 jobs:
+  changelog:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: flipbook-labs/changewrite@v0.7.0
+        with:
+          require-entry: 'true'
+          branch: ${{ github.head_ref == 'debug-publish-next-version' && 'debug-publish-next-version' || 'publish-next-version' }}
+
   build-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5

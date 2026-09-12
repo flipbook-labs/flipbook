@@ -14,64 +14,40 @@ type: process
 
 ## Release Runbook (End-to-End)
 
-### 1. Version Bump via `lute run bump-version`
+### 1. Add a Change Entry
 
-Bump the version in all manifest files (wally.toml, loom.config.luau, rotriever.toml). This is the first step and creates a draft PR.
+Every release-worthy pull request adds a Markdown file under `.changes/`. Its frontmatter declares the semantic impact and its body is written for the changelog:
 
-```sh
-lute run bump-version <major|minor|patch>
+```markdown
+---
+bump: minor
+category: Features
+---
+
+Add support for Foo values so Bar can be Bazzed.
 ```
 
-**Implementation:** `.lute/bump-version.luau` reads current version from wally.toml (source of truth), calculates next semver, and updates all three manifests in place. Examples:
-- `lute run bump-version patch` → 2.5.0 → 2.5.1
-- `lute run bump-version minor` → 2.5.0 → 2.6.0
-- `lute run bump-version major` → 2.5.0 → 3.0.0
+The changelog check compares the pull request with its base and requires an entry. `README.md` is ignored. See `.changes/README.md` for the complete format.
 
-**Next steps:**
+### 2. Merge Work to Main
 
-1. Create and push a feature branch:
-```bash
-git checkout -b release/2.6.0
-git push -u origin release/2.6.0
-```
+On every push to `main`, `.github/workflows/release.yml` builds `Flipbook.rbxm` and runs Changewrite. Pending entries are combined into `CHANGELOG.md`; the largest requested bump determines the next version; and `changewrite.toml`, `wally.toml`, `loom.config.luau`, and `workspace/flipbook-core/rotriever.toml` are synchronized in the `publish-next-version` branch.
 
-2. Open a draft PR using the repo template:
-```bash
-gh pr create --draft --title "Bump to 2.6.0" --template .github/pull_request_template.md
-```
+Changewrite opens or updates a ready-for-review `Publish v{version}` pull request. Add `debug:release-pr` to an ordinary pull request to exercise the prepare-only path on `debug-publish-next-version` without drafting or publishing a release.
 
-3. Fill in the PR body with release notes. Ensure CI passes, then merge to main.
+### 3. Review and Merge the Publish Pull Request
 
-**Key constraint (maintainer doctrine; the `flipbook-change-control` skill is the in-repo home for it):** Never push git tags directly. Releases go through `bump-version` PR → merge → manual GitHub Release creation. The rationale is the deployment-orchestration history in `flipbook-failure-archaeology` (incidents #535, #596): direct tag pushes bypass the changelog/version gating and can fire deploy workflows unexpectedly.
+Review the assembled version and release notes. Merging the publish pull request causes Changewrite to:
 
-### 2. Merge Bump PR to Main
+1. Create the `v{version}` tag through the GitHub API.
+2. Draft a GitHub release and attach the previously built `Flipbook.rbxm`.
+3. Publish the GitHub release.
 
-Once the bump PR is approved and CI passes, merge it to main. This is a regular code review checkpoint — the bump PR should have no other changes.
+Never create or push release tags manually. Use the Release workflow's `force-version` input only to recover from a version or tag that cannot be published.
 
-```sh
-# After merge, you're ready for step 3.
-```
+### 4. Publish to the Creator Store
 
-### 3. Create GitHub Release Matching the Tag
-
-**Manual step:** Navigate to [github.com/flipbook-labs/flipbook/releases](https://github.com/flipbook-labs/flipbook/releases) and click "Create a new release".
-
-- **Tag version:** Create a new tag matching the bumped version exactly (e.g., `v2.6.0` if you bumped to 2.6.0; the `v` prefix is required).
-- **Target:** Confirm it's set to `main`.
-- **Title:** Use the version number (e.g., `2.6.0`).
-- **Description:** Add release notes summarizing the changes in human-readable form (e.g., "Added support for X, fixed Y bug, improved Z performance"). Reference related PRs and issues as needed.
-- **Publish:** Click "Publish release" (not "Save as draft").
-
-**Why manual?** The maintainer uses GitHub's UI for final review; automation handles the rest.
-
-### 4. Release CI Publishes (Automatic)
-
-Once the release is published, GitHub Actions triggers:
-
-#### `release.yml → publish-github-release` job
-- **Condition:** Only runs if `github.event.release` exists (i.e., release was published, not a push to main).
-- **What it does:** Builds prod Flipbook.rbxm, attaches it to the release's Assets.
-- **Artifact:** `Flipbook.rbxm` (renamed to `Flipbook-<sha>.rbxm` in CI, then downloaded and renamed back for the release).
+The published GitHub release triggers a separate Release workflow run:
 
 #### `release.yml → publish-plugin` job
 - **Condition:** Only runs on release events.
@@ -264,11 +240,12 @@ Fork PRs require explicit approval before running (environment gate); internal P
 
 **File:** `.github/workflows/release.yml`
 
-Triggered by GitHub release events AND push to main:
+Triggered by pull-request debug labels, pushes to `main`, manual dispatches, and GitHub release events:
 
 | Job | Trigger | Environment | Concurrency |
 |-----|---------|-------------|-------------|
-| publish-github-release | release event only | — | Attaches .rbxm to release assets |
+| build | push, manual, or labeled debug PR | — | Builds the release `.rbxm` artifact |
+| release | after build | — | Prepares the publish PR or creates the tag and GitHub release |
 | publish-plugin | release event only | roblox-creator-store | production (blocks nightly) |
 | publish-nightly-plugin | push to main only | roblox-creator-store-dev | nightly (serialized) |
 
@@ -306,8 +283,9 @@ Concurrency ensures one deployment per PR at a time; main pushes run independent
 
 | Secret | Scope | Value | Source |
 |--------|-------|-------|--------|
+| FLIPBOOK_BACKEND_APP_ID | org | GitHub App Client ID (legacy secret name) | Flipbook backend app settings |
+| FLIPBOOK_BACKEND_APP_PRIVATE_KEY | org | GitHub App private key | Flipbook backend app settings |
 | ROBLOX_API_KEY | org (flipbook-labs) | Open Cloud API key | Manually generated at https://create.roblox.com/dashboard/credentials |
-| WALLY_REGISTRY_TOKEN | org (flipbook-labs) | GitHub PAT for Wally registry publish | From `wally login` → `~/.wally/auth.toml` |
 | ROBLOX_STORYBOOK_PREVIEW_API_KEY | org | Open Cloud API key for storybook universe | Same process as ROBLOX_API_KEY |
 
 ### Variables (in GitHub Actions)
@@ -359,24 +337,6 @@ placeId = 84837374448022
 - Smoketest: (internal, not published to store)
 
 The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the corresponding asset based on channel mapping (dev → dev asset, beta → dev asset, prod → prod asset).
-
----
-
-## Wally Registry Token Rotation
-
-**When needed:** If `WALLY_REGISTRY_TOKEN` expires or is compromised, update it.
-
-**Steps:**
-1. Run `wally login` locally; authenticate via GitHub device flow.
-2. Copy the generated token from `~/.wally/auth.toml`:
-   ```toml
-   [tokens]
-   "https://api.wally.run/" = "gho_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-   ```
-3. Update the secret in GitHub org settings: [github.com/organizations/flipbook-labs/settings/secrets/actions](https://github.com/organizations/flipbook-labs/settings/secrets/actions).
-4. Name: `WALLY_REGISTRY_TOKEN`.
-
-**Why org-level?** All flipbook-labs repos publish to the same Wally scope; the token must be shareable.
 
 ---
 
@@ -436,22 +396,11 @@ The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the 
 
 ---
 
-## Changewrite Adoption (Candidate / Open)
+## Changewrite Release State
 
-**Status:** Branch `adopt-changewrite` exists (1 commit, 2026-06-28) but NOT merged to main.
+`changewrite.toml` is the version authority. It mirrors the version into `wally.toml`, `loom.config.luau`, and `workspace/flipbook-core/rotriever.toml`. Unreleased notes live in `.changes/`; Changewrite v0.7.0 generates `CHANGELOG.md` directly and does not use git-cliff.
 
-**What it is:** Changewrite is a GitHub Action + CLI for automated release cycle management (replaces manual bump-version + changelog editing with PR-driven workflow).
-
-**Current state:** Flipbook still uses manual `lute run bump-version` + GitHub Release creation. Changewrite is adopted by other flipbook-labs repos (flipbook-cli, deploy-storybook) but not yet flipbook.
-
-**Adoption plan:** Merge `adopt-changewrite` to main (pending review); then release workflow becomes:
-1. Contributors add `.changes/*.md` files with semver declarations alongside code changes.
-2. Changewrite Action collects entries, bumps version, opens draft PR.
-3. Merge PR to create release (no manual GitHub Release step).
-
-**Cross-ref:** See flipbook-docs branch `engineering/changewrite.md` for full specification.
-
-**Why candidate?** Not yet verified on main; open question whether to adopt before or after maintenance transition.
+The release job authenticates as the `flipbook-backend` GitHub App. The same token creates the publish pull request and publishes the GitHub release so the resulting release event can trigger Creator Store publishing. Despite its legacy `FLIPBOOK_BACKEND_APP_ID` name, the secret is passed as the App Client ID; this matches the working Storyteller release workflow and the supported `client-id` input.
 
 ---
 
@@ -460,22 +409,24 @@ The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the 
 To keep this skill current and aligned with code changes:
 
 - Verify release.yml event triggers: `grep -A 5 "on:" .github/workflows/release.yml`
+- Verify the Changewrite pin and entry check: `grep -R "changewrite@" .github/workflows`
+- Verify version mirrors and pending entries: `cat changewrite.toml && find .changes -maxdepth 1 -type f -print`
 - Verify asset IDs in rbxasset.toml: `cat rbxasset.toml | grep -E "name|model|universe"`
 - Verify project.luau storybook IDs: `grep ROBLOX_STORYBOOK project.luau`
-- Verify bump-version manifest paths: `grep MANIFEST_PATHS .lute/bump-version.luau`
 - Verify channel-to-asset mapping: `grep -A 5 "ASSET_NAMES_BY_CHANNEL" .lune/publish-plugin.luau`
 - Verify deploy-storybook version pinned in storybook.yml: `grep "deploy-storybook@" .github/workflows/storybook.yml`
-- Verify Wally token docs in creating-releases.md: `cat docs/docs/contributing/creating-releases.md`
+- Verify contributor release docs: `cat docs/docs/contributing/creating-releases.md`
 
 ---
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-07-01 (main branch, commit 78d71e8f "Embed Flipbook in the DataModel")
+**Last verified:** 2026-09-12 (Changewrite v0.7.0 adoption branch against current `main`)
 
 **Verification scope:**
 - All six workflow files (.github/workflows/*.yml) read and command syntax verified
-- .lute/bump-version.luau manifest list verified (3 files: wally.toml, loom.config.luau, rotriever.toml)
+- Changewrite version mirrors verified (wally.toml, loom.config.luau, rotriever.toml)
+- `.changes/` entry format and CI enforcement verified against Changewrite v0.7.0
 - rbxasset.toml asset names and environment config read
 - project.luau universe/place IDs verified (10262009842, 139676401890813)
 - docs/docs/contributing/creating-releases.md release procedure confirmed
@@ -483,7 +434,7 @@ To keep this skill current and aligned with code changes:
 - .lune/publish-plugin.luau channel mapping verified (dev/beta→dev, prod→prod, smoketest→smoketest)
 
 **Known drifts to watch:**
-- Changewrite adoption (adopt-changewrite branch status; not yet on main)
+- Changewrite action version and entry format
 - Creator Store asset IDs (8517129161 prod, 88523969718241 dev) — hardcoded in CI, not in code
 - Environment secret names (ROBLOX_API_KEY vs ROBLOX_STORYBOOK_PREVIEW_API_KEY) — org settings not read-only, may change without code notice
 - Rokit version pinned in workflows (v1.2.0 typical) — minor bumps in action inputs
