@@ -36,32 +36,38 @@ local function FlipbookApp(props: Props)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
+	local storyId: string?, setStoryId = React.useState(nil :: string?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
 	local navigation = NavigationContext.use()
 
-	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
-		navigation.navigateTo("Home")
+	local onStoryChanged = React.useCallback(
+		function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?, newStoryId: string?)
+			navigation.navigateTo("Home")
 
-		setUnavailableStorybook(nil)
+			setUnavailableStorybook(nil)
 
-		if newStoryModule and not newStorybook then
-			newStorybook = defaultStorybook
-		end
+			if newStoryModule and not newStorybook then
+				newStorybook = defaultStorybook
+			end
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "StoryOpened",
-			})
-		end)
+			task.spawn(function()
+				fireEventAsync({
+					eventName = "StoryOpened",
+				})
+			end)
 
-		setStoryModule(newStoryModule)
-		setStorybook(newStorybook)
-	end, { navigation.navigateTo } :: { unknown })
+			setStoryModule(newStoryModule)
+			setStoryId(newStoryId)
+			setStorybook(newStorybook)
+		end,
+		{ navigation.navigateTo } :: { unknown }
+	)
 
 	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
 		setStoryModule(nil)
+		setStoryId(nil)
 		setStorybook(nil)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
@@ -103,6 +109,7 @@ local function FlipbookApp(props: Props)
 				}, {
 					Screen = React.createElement(Screen, {
 						story = storyModule,
+						storyId = storyId,
 						storybook = storybook,
 						unavailableStorybook = unavailableStorybook,
 					}),
