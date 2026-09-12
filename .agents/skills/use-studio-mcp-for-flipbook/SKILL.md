@@ -1,12 +1,12 @@
 ---
 name: use-studio-mcp-for-flipbook
-description: "Build and validate Flipbook through Studio MCP and FlipbookAgentGateway. Use when: driving a local Flipbook plugin in Studio, changing gateway actions, or verifying a Story and its controls through the gateway."
+description: "Build and validate Flipbook through Studio MCP and FlipbookAgentGateway. Use when driving a local Flipbook build, changing gateway actions, or verifying Stories through semantic actions, embedded Play-mode input, and screenshots."
 type: process
 ---
 
 # Use Studio MCP for Flipbook
 
-Build Flipbook, open the generated Storybook experience in Studio, and use the gateway for semantic checks. Keep behavior-specific fixtures and assertions in a reference beside this skill.
+Build Flipbook, open the generated Storybook experience in Studio, use the gateway for semantic checks, and embed Flipbook for Play-mode interaction and screenshots. Keep behavior-specific fixtures and assertions in a reference beside this skill.
 
 ## When not to use
 
@@ -40,18 +40,19 @@ Actions use `{ method = "call", action = "<name>", params = { ... } }`. Response
 Use this sequence:
 
 1. Call `openWidget`.
-2. Poll `listStorybooks` until the target Storybook appears.
-3. Call `listStories` with the returned Storybook path.
-4. Call `openStory` with returned Story and Storybook paths.
-5. Poll `getCurrentStory` until the path matches and `isMounted` is true.
-6. Poll `getControls` until the expected control appears.
-7. Call `setControls`, then confirm the values with `getControls`.
+2. Call `embedFlipbook` before Play mode when visual evidence or virtual input is needed.
+3. Poll `listStorybooks` until the target Storybook appears.
+4. Call `listStories` with the returned Storybook path.
+5. Call `openStory` with returned Story and Storybook paths.
+6. Poll `getCurrentStory` until the path matches and `isMounted` is true.
+7. Poll `getControls` until the expected control appears.
+8. Call `setControls`, then confirm the values with `getControls`.
 
 Do not use fixed sleeps. Discover paths from gateway results instead of hard-coding a DataModel layout.
 
-## Visual evidence
+## Embedded visual and input checks
 
-Studio MCP viewport captures do not include plugin dock widgets. Leave the requested Story open and inspect the native Studio window when visual evidence matters. Semantic gateway results remain authoritative for selected paths and control values.
+Studio MCP viewport captures do not include plugin dock widgets. For visual evidence, or when a missing semantic action makes UI input necessary, follow the [embedded Play-mode workflow](references/embedded-play-mode.md). Prefer gateway actions in Edit mode; use virtual input against the embedded client as an escape hatch and add a focused action when the same interaction becomes routine.
 
 ## Provenance and maintenance
 
@@ -59,6 +60,6 @@ Studio MCP viewport captures do not include plugin dock widgets. Leave the reque
 
 **Re-verify these claims when this skill next loads:**
 
-- Inspect the action names and schemas in `workspace/flipbook-agents/src/actions.luau`.
+- Inspect the action names and schemas, including `embedFlipbook`, in `workspace/flipbook-agents/src/actions.luau`.
 - Inspect the server command in `.mcp.json`.
 - Run `lute run build plugin --channel dev --clean` and `lute run build storybook --channel dev --clean`.
