@@ -2,8 +2,10 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
+local AgentContext = require("@root/Agent/AgentContext")
 local CommonTypes = require("@root/Common/types")
 local ContextStack = require("@root/Common/ContextStack")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local useThemeName = require("@root/Common/useThemeName")
@@ -11,11 +13,13 @@ local useThemeName = require("@root/Common/useThemeName")
 local useEffect = React.useEffect
 
 type Pluginlike = CommonTypes.Pluginlike
+type AgentController = FlipbookAgents.AgentController
 
 export type Props = {
 	plugin: Pluginlike,
 	theme: Foundation.Theme?,
 	overlayGui: GuiBase2d?,
+	agentController: AgentController?,
 	children: React.Node?,
 }
 
@@ -28,6 +32,9 @@ local function ContextProviders(props: Props)
 
 	return React.createElement(ContextStack, {
 		providers = {
+			React.createElement(AgentContext.Provider, {
+				value = props.agentController,
+			}),
 			React.createElement(Foundation.FoundationProvider, {
 				theme = props.theme or themeName,
 				overlayGui = props.overlayGui,
