@@ -12,11 +12,10 @@ A Greptile finding does not become correct merely because it is blocking. Author
 
 ## Ownership domains
 
-| Domain             | Responsibility                                                                                                                                                                 | Human approvals |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
-| `flipbook-app`     | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                                |               1 |
-| `flipbook-engine`  | The runtime and build machinery that stands Flipbook up, including Storyteller, ModuleLoader, story loading and rendering, controls plumbing, and their integration boundaries |     0 (current) |
-| `flipbook-admins`  | Repository administration and catch-all stewardship across Flipbook Labs                                                                                                       |               0 |
+| Domain            | Responsibility                                                                                                                                                              | Human approvals |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------: |
+| `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                             |               1 |
+| `flipbook-engine` | Every path outside the application-owned workspaces, including runtime and build machinery, Storyteller and ModuleLoader integration boundaries, and repository stewardship |     0 (current) |
 
 The live GitHub ruleset is the enforcement point for application and engine ownership. Its ownership paths and merge requirements are managed centrally in the [Flipbook Labs GitHub governance stack](https://github.com/flipbook-labs/infra/tree/main/stacks/github). Increase the engine team's minimum approval count to one when a second member joins.
 
@@ -38,7 +37,7 @@ Some files necessarily mix integration and presentation. Keep those application-
 
 ## Repository stewardship
 
-Administrative and stewardship changes belong to `@flipbook-labs/flipbook-admins`. This team has blanket permissions across Flipbook Labs and serves as the catch-all owner, but it has no path-based approval rule. A stewardship-only pull request therefore has no team-specific human approval requirement beyond the requirements for every pull request. If it also touches application- or engine-owned paths, those domain requirements still apply.
+Repository stewardship belongs to `@flipbook-labs/flipbook-engine` and follows the engine review path. The `@flipbook-labs/flipbook-admins` team remains the repository administration and bypass role, not a separate ownership domain.
 
 ## Administrator bypass
 
@@ -46,4 +45,4 @@ Members of `@flipbook-labs/flipbook-admins` may bypass required reviews or statu
 
 ## Changing this policy
 
-Changes to this policy, the centrally managed ruleset, the pull request template, Greptile context, or the change-control skill belong to `@flipbook-labs/flipbook-admins`. Coordinate changes across Flipbook and the infrastructure repository so human guidance, agent guidance, and enforcement do not drift.
+Changes to this policy, the pull request template, Greptile context, or the change-control skill belong to `@flipbook-labs/flipbook-engine`. Coordinate ownership changes across Flipbook and the centrally managed ruleset in the infrastructure repository so human guidance, agent guidance, and enforcement do not drift.
