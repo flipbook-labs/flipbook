@@ -55,10 +55,10 @@ Studio MCP viewport captures do not include plugin dock widgets. Leave the reque
 
 ## Provenance and maintenance
 
-**Date stamped:** 2026-09-12. Verified against `workspace/flipbook-core/src/Agent/actions.luau`, `.mcp.json`, and the current build task names.
+**Date stamped:** 2026-09-12. Verified against `workspace/flipbook-agents/src/actions.luau`, `.mcp.json`, and the current build task names.
 
 **Re-verify these claims when this skill next loads:**
 
-- Inspect the action names and schemas in `workspace/flipbook-core/src/Agent/actions.luau`.
+- Inspect the action names and schemas in `workspace/flipbook-agents/src/actions.luau`.
 - Inspect the server command in `.mcp.json`.
 - Run `lute run build plugin --channel dev --clean` and `lute run build storybook --channel dev --clean`.

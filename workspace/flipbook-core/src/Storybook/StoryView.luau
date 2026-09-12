@@ -3,14 +3,11 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local AgentContext = require("@root/Agent/AgentContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-local getInstancePath = require("@root/Common/getInstancePath")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -19,7 +16,6 @@ local Text = Foundation.Text
 local View = Foundation.View
 
 local e = React.createElement
-local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
@@ -27,7 +23,6 @@ local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type ExtraStoryProps = types.ExtraStoryProps
-type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
@@ -35,33 +30,11 @@ type StoryViewProps = {
 }
 
 local function StoryView(props: StoryViewProps)
-	local agentController = AgentContext.use()
 	local story, storyError = useStory(props.storyModule, props.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
-	local storyControlsStore = useMemo(function(): StoryControlsStore?
-		return if story then createStoryControlsStore(story.controls) else nil
-	end, { story } :: { unknown })
-
-	useEffect(function()
-		if agentController == nil or storyControlsStore == nil then
-			return
-		end
-		return agentController.registerStory({
-			path = getInstancePath(props.storyModule),
-			getControls = function()
-				return storyControlsStore.getControls() :: any
-			end,
-			setControls = function(controls)
-				for key, value in controls do
-					storyControlsStore.setControl(key, value :: any)
-				end
-				return storyControlsStore.getControls() :: any
-			end,
-		})
-	end, { agentController, props.storyModule, storyControlsStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
@@ -76,7 +49,6 @@ local function StoryView(props: StoryViewProps)
 		StoryControlsContext.StoryControlsProvider,
 		{
 			schema = story and story.controls or nil,
-			store = storyControlsStore,
 		},
 		e(View, {
 			tag = "size-full bg-surface-200",
