@@ -5,6 +5,8 @@ local Storyteller = require("@pkg/Storyteller")
 
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
+local useStoryControlValue = require("@root/StoryControls/useStoryControlValue")
+local useStoryControlValues = require("@root/StoryControls/useStoryControlValues")
 
 local afterEach = JestGlobals.afterEach
 local expect = JestGlobals.expect
@@ -18,8 +20,8 @@ local currentStore: createStoryControlsStore.StoryControlsStore? = nil
 
 local function Consumer()
 	currentStore = StoryControlsContext.useStoryControls()
-	local value = StoryControlsContext.useStoryControlValue("name")
-	local values = StoryControlsContext.useStoryControlValues()
+	local value = useStoryControlValue("name")
+	local values = useStoryControlValues()
 
 	return React.createElement("Folder", nil, {
 		Single = React.createElement("StringValue", {
