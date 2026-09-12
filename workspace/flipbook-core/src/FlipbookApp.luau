@@ -3,6 +3,7 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AgentContext = require("@root/Agent/AgentContext")
 local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
@@ -15,6 +16,7 @@ local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
+local createAppImplementation = require("@root/Agent/createAppImplementation")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -32,14 +34,24 @@ export type Props = {
 }
 
 local function FlipbookApp(props: Props)
+	local agentController = AgentContext.use()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+	local storybooks = Storyteller.useStorybooks()
 
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
 		React.useState(nil :: UnavailableStorybook?)
 	local navigation = NavigationContext.use()
+	local latest = React.useRef({
+		storyModule = storyModule,
+		storybook = storybook,
+		storybooks = storybooks,
+	})
+	latest.current.storyModule = storyModule
+	latest.current.storybook = storybook
+	latest.current.storybooks = storybooks
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
 		navigation.navigateTo("Home")
@@ -65,6 +77,22 @@ local function FlipbookApp(props: Props)
 		setStorybook(nil)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
+
+	React.useEffect(function()
+		if agentController == nil then
+			return
+		end
+
+		return agentController.registerApp(createAppImplementation({
+			getStorybooks = function()
+				return latest.current.storybooks
+			end,
+			getCurrentStory = function()
+				return latest.current.storyModule, latest.current.storybook
+			end,
+			openStory = onStoryChanged,
+		}))
+	end, { agentController, onStoryChanged } :: { unknown })
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
