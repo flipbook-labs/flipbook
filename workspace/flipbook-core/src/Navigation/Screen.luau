@@ -1,15 +1,17 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local AboutView = require("@root/About/AboutView")
 local LogsView = require("@root/Logs/LogsView")
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local NavigationStore = require("@root/Navigation/NavigationStore")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
 local StoryView = require("@root/Storybook/StoryView")
 local StorybookError = require("@root/Storybook/StorybookError")
 
 local useMemo = React.useMemo
+local useSignalState = ReactCharm.useSignalState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -21,8 +23,8 @@ export type Props = {
 }
 
 local function Screen(props: Props)
-	local navigation = NavigationContext.use()
-	local currentScreen = navigation.currentScreen
+	local navigationStore = useSignalState(NavigationStore.get)
+	local currentScreen = useSignalState(navigationStore.getCurrentScreen)
 
 	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then

@@ -51,9 +51,18 @@ export type FeedbackDiscarded = {
 	eventName: "FeedbackDiscarded",
 }
 
+export type AgentActionInvoked = {
+	eventName: "AgentActionInvoked",
+	properties: {
+		action: string,
+		ok: boolean,
+	},
+}
+
 export type TelemetryEvent =
 	AppOpened
 	| AppClosed
+	| AgentActionInvoked
 	| NodePinned
 	| NodeUnpinned
 	| PageChanged

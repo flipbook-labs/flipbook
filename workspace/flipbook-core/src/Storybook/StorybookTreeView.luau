@@ -5,6 +5,7 @@ local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
+local StoryStore = require("@root/Storybook/StoryStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
@@ -20,8 +21,6 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
-local useStorybooks = Storyteller.useStorybooks
-local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
@@ -34,8 +33,9 @@ local function StorybookTreeView(props: Props)
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
-	local storybooks = useStorybooks()
-	local orphanedStoryModules = useOrphanedStoryModules()
+	local storyStore = useSignalState(StoryStore.get)
+	local storybooks = useSignalState(storyStore.getStorybooks)
+	local orphanedStoryModules = useSignalState(storyStore.getOrphanedStoryModules)
 	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
