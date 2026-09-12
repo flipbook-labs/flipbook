@@ -1,10 +1,13 @@
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 type StoryControlsSchema = Storyteller.StoryControlsSchema
+type StoryControls = Storyteller.StoryControls
+type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 
 local StoryControlsContext = React.createContext(nil :: StoryControlsStore?)
 
@@ -12,6 +15,19 @@ local function useStoryControls(): StoryControlsStore
 	local storyControls = React.useContext(StoryControlsContext)
 	assert(storyControls ~= nil, "useStoryControls must be used within a StoryControlsProvider")
 	return storyControls
+end
+
+local function useStoryControlValue(controlName: string): StoryControlValue?
+	local storyControls = useStoryControls()
+	return ReactCharm.useSignalState(
+		storyControls.getControlValue(controlName),
+		{ storyControls, controlName } :: { unknown }
+	)
+end
+
+local function useStoryControlValues(): StoryControls
+	local storyControls = useStoryControls()
+	return ReactCharm.useSignalState(storyControls.getControls, { storyControls })
 end
 
 export type StoryControlsProviderProps = {
@@ -37,5 +53,7 @@ end
 return {
 	StoryControlsContext = StoryControlsContext,
 	StoryControlsProvider = StoryControlsProvider,
+	useStoryControlValue = useStoryControlValue,
+	useStoryControlValues = useStoryControlValues,
 	useStoryControls = useStoryControls,
 }
