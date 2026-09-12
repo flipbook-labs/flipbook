@@ -1,0 +1,64 @@
+---
+name: use-studio-mcp-for-flipbook
+description: "Build and validate Flipbook through Studio MCP and FlipbookAgentGateway. Use when: driving a local Flipbook plugin in Studio, changing gateway actions, or verifying a Story and its controls through the gateway."
+type: process
+---
+
+# Use Studio MCP for Flipbook
+
+Build Flipbook, open the generated Storybook experience in Studio, and use the gateway for semantic checks. Keep behavior-specific fixtures and assertions in a reference beside this skill.
+
+## When not to use
+
+Use `run-flipbook-checks` for headless checks. Use `test-dependencies-in-flipbook` before this workflow when the task overlays Storyteller or ModuleLoader.
+
+## Build and connect
+
+```bash
+lute run build plugin --channel dev --clean
+lute run build storybook --channel dev --clean
+```
+
+Open the generated Storybook experience in a new Studio instance. The repository registers Studio MCP as `Roblox_Studio` in `.mcp.json`. Select the new instance with `list_roblox_studios` and `set_active_studio`, then use the Edit data model for gateway calls.
+
+If Studio MCP reports `Not connected to the WS host`, stop and ask the user to enable Studio MCP in the open Studio session. Selecting the instance again does not repair that connection.
+
+## Discover and call Flipbook
+
+Flipbook publishes `CoreGui.FlipbookAgentGateway`. Begin with its manifest:
+
+```lua
+local HttpService = game:GetService("HttpService")
+local gateway = game:GetService("CoreGui"):FindFirstChild("FlipbookAgentGateway")
+assert(gateway ~= nil, "missing FlipbookAgentGateway")
+
+return HttpService:JSONEncode(gateway:Invoke({ method = "list" }))
+```
+
+Actions use `{ method = "call", action = "<name>", params = { ... } }`. Responses are `{ ok = true, result = ... }` or `{ ok = false, error = ... }`; always check `ok` and read successful payloads from `result`.
+
+Use this sequence:
+
+1. Call `openWidget`.
+2. Poll `listStorybooks` until the target Storybook appears.
+3. Call `listStories` with the returned Storybook path.
+4. Call `openStory` with returned Story and Storybook paths.
+5. Poll `getCurrentStory` until the path matches and `isMounted` is true.
+6. Poll `getControls` until the expected control appears.
+7. Call `setControls`, then confirm the values with `getControls`.
+
+Do not use fixed sleeps. Discover paths from gateway results instead of hard-coding a DataModel layout.
+
+## Visual evidence
+
+Studio MCP viewport captures do not include plugin dock widgets. Leave the requested Story open and inspect the native Studio window when visual evidence matters. Semantic gateway results remain authoritative for selected paths and control values.
+
+## Provenance and maintenance
+
+**Date stamped:** 2026-09-12. Verified against `workspace/flipbook-core/src/Agent/actions.luau`, `.mcp.json`, and the current build task names.
+
+**Re-verify these claims when this skill next loads:**
+
+- Inspect the action names and schemas in `workspace/flipbook-core/src/Agent/actions.luau`.
+- Inspect the server command in `.mcp.json`.
+- Run `lute run build plugin --channel dev --clean` and `lute run build storybook --channel dev --clean`.
