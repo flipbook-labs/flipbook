@@ -8,9 +8,6 @@
     "example": {
       "$path": "example"
     },
-    "flipbook-agents": {
-      "$path": "flipbook-agents"
-    },
     "flipbook-core": {
       "$path": "flipbook-core"
     },
