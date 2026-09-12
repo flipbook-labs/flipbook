@@ -283,7 +283,6 @@ Concurrency ensures one deployment per PR at a time; main pushes run independent
 
 | Secret | Scope | Value | Source |
 |--------|-------|-------|--------|
-| FLIPBOOK_BACKEND_APP_ID | org | GitHub App Client ID (legacy secret name) | Flipbook backend app settings |
 | FLIPBOOK_BACKEND_APP_PRIVATE_KEY | org | GitHub App private key | Flipbook backend app settings |
 | ROBLOX_API_KEY | org (flipbook-labs) | Open Cloud API key | Manually generated at https://create.roblox.com/dashboard/credentials |
 | ROBLOX_STORYBOOK_PREVIEW_API_KEY | org | Open Cloud API key for storybook universe | Same process as ROBLOX_API_KEY |
@@ -292,6 +291,7 @@ Concurrency ensures one deployment per PR at a time; main pushes run independent
 
 | Variable | Scope | Value | Notes |
 |----------|-------|-------|-------|
+| FLIPBOOK_BACKEND_CLIENT_ID | org | Public GitHub App Client ID | Used with the private key to generate release tokens |
 | ROBLOX_STORYBOOK_UNIVERSE_ID | org | 10262009842 | From project.luau; used by storybook.yml |
 
 ---
@@ -337,6 +337,19 @@ placeId = 84837374448022
 - Smoketest: (internal, not published to store)
 
 The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the corresponding asset based on channel mapping (dev → dev asset, beta → dev asset, prod → prod asset).
+
+---
+
+## Wally Registry Token Rotation
+
+Some Flipbook Labs repositories publish packages to the Wally registry. If those workflows begin failing authentication:
+
+1. Create a replacement registry token with `wally login`.
+2. Update the credential's 1Password record without printing the value.
+3. Update the `WALLY_REGISTRY_TOKEN` organization secret at the GitHub Actions execution boundary.
+4. Limit the secret to repositories whose workflows publish to Wally.
+
+Never commit the token or pass its plaintext through OpenTofu inputs or state.
 
 ---
 
@@ -400,7 +413,7 @@ The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the 
 
 `changewrite.toml` is the version authority. It mirrors the version into `wally.toml`, `loom.config.luau`, and `workspace/flipbook-core/rotriever.toml`. Unreleased notes live in `.changes/`; Changewrite v0.7.0 generates `CHANGELOG.md` directly and does not use git-cliff.
 
-The release job authenticates as the `flipbook-backend` GitHub App. The same token creates the publish pull request and publishes the GitHub release so the resulting release event can trigger Creator Store publishing. Despite its legacy `FLIPBOOK_BACKEND_APP_ID` name, the secret is passed as the App Client ID; this matches the working Storyteller release workflow and the supported `client-id` input.
+The release job authenticates as the `flipbook-backend` GitHub App. Its public Client ID comes from the `FLIPBOOK_BACKEND_CLIENT_ID` organization variable, while the private key remains an organization secret. The generated token creates the publish pull request and publishes the GitHub release so the resulting release event can trigger Creator Store publishing.
 
 ---
 

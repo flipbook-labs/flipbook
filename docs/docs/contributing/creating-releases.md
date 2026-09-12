@@ -10,3 +10,9 @@ Every push to `main` collects the pending entries and opens or updates a `Publis
 To cut a release, review the assembled notes and version in the auto-generated publish pull request, then merge it. To preview that pull request without publishing, add the `debug:release-pr` label to a pull request; Changewrite uses a separate debug branch and prepare-only mode.
 
 Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after merging to monitor the deployment.
+
+## Wally registry credential recovery
+
+Some Flipbook Labs repositories publish packages to the Wally registry. If those workflows begin failing authentication, create a replacement registry token with `wally login`, update its 1Password record, and then update the `WALLY_REGISTRY_TOKEN` organization secret at the execution boundary.
+
+Limit GitHub access to the repositories whose workflows publish to Wally. Do not commit the token or pass its plaintext through OpenTofu inputs or state.

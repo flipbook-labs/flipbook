@@ -24,7 +24,7 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 
 Fill every section concisely. The Problem/Solution should describe what the change does in present tense on its own ("Add a foo helper to consolidate X"), not its origin story.
 
-**Status:** Human-authored PRs open as **drafts** (`gh pr create --draft`). Never open ready-for-review and never run `gh pr ready` unless the user explicitly asks. Changewrite's generated `Publish v{version}` PR is the deliberate exception: it opens ready for review because preparing it is the release notification.
+**Status:** Agent-authored PRs open as **drafts** (`gh pr create --draft`). Never open ready-for-review and never run `gh pr ready` unless the user explicitly asks. Changewrite's generated `Publish v{version}` PR is the deliberate exception: it opens ready for review because preparing it is the release notification.
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 

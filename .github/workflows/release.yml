@@ -113,7 +113,7 @@ jobs:
 
   publish-plugin:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     concurrency: production
     environment:
       name: roblox-creator-store
@@ -139,7 +139,7 @@ jobs:
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     concurrency: nightly
     environment:
       name: roblox-creator-store-dev
