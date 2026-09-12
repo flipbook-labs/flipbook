@@ -2,7 +2,7 @@ local Charm = require("@pkg/Charm")
 local Jest = require("@pkg/Jest")
 
 local function runTests()
-	local workspaceRoot = script.Parent
+	local root = script.Parent["flipbook-core"]
 
 	_G.__DEV__ = true
 	_G.__ROACT_17_MOCK_SCHEDULER__ = true
@@ -10,12 +10,11 @@ local function runTests()
 	Charm.flags.strict = true
 	Charm.flags.frozen = true
 
-	local testConfig = script["jest.config"]
-	local status, result = Jest.runCLI(workspaceRoot, {
+	local status, result = Jest.runCLI(root, {
 		verbose = false,
 		ci = false,
 		testPathPattern = _G.JEST_TEST_PATH_PATTERN,
-	}, { testConfig }):awaitStatus()
+	}, { root }):awaitStatus()
 
 	if status == "Rejected" then
 		print(result)
