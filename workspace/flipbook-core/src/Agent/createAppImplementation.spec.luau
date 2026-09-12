@@ -1,8 +1,10 @@
+local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local JestGlobals = require("@pkg/JestGlobals")
 local Storyteller = require("@pkg/Storyteller")
 
+local constants = require("@root/constants")
 local createAppImplementation = require("@root/Agent/createAppImplementation")
 local getInstancePath = require("@root/Common/getInstancePath")
 
@@ -16,6 +18,7 @@ local story: ModuleScript
 local storybookModule: ModuleScript
 local storybook: Storyteller.LoadedStorybook
 local openedStory: ModuleScript?
+local embeddedRuntime: Instance?
 
 beforeEach(function()
 	root = Instance.new("Folder")
@@ -40,6 +43,7 @@ beforeEach(function()
 		storyRoots = { stories :: Instance },
 	}
 	openedStory = nil
+	embeddedRuntime = nil
 end)
 
 afterEach(function()
@@ -48,6 +52,13 @@ end)
 
 local function createImplementation()
 	return createAppImplementation({
+		embedFlipbook = function(destination)
+			local result = Instance.new("Folder")
+			result.Name = "Flipbook"
+			result.Parent = destination
+			embeddedRuntime = result
+			return result
+		end,
 		getStorybooks = function()
 			return { available = { storybook }, unavailable = {} }
 		end,
@@ -73,6 +84,29 @@ test("discovers Storybooks and their Stories without fixed DataModel paths", fun
 			storybook = getInstancePath(storybookModule),
 		},
 	})
+end)
+
+test("embeds Flipbook at a discovered destination", function()
+	local implementation = createImplementation()
+
+	local result = implementation.embedFlipbook(getInstancePath(root), false)
+
+	expect(embeddedRuntime).never.toBeNil()
+	expect(assert(embeddedRuntime).Parent).toBe(root)
+	expect(result).toBe(getInstancePath(assert(embeddedRuntime, "expected an embedded runtime")))
+end)
+
+test("requires opt-in before replacing an embedded runtime", function()
+	local existing = Instance.new("Folder")
+	existing.Name = "ExistingFlipbook"
+	existing.Parent = root
+	CollectionService:AddTag(existing, constants.FLIPBOOK_RUNTIME_TAG)
+
+	local implementation = createImplementation()
+
+	expect(function()
+		implementation.embedFlipbook(getInstancePath(root), false)
+	end).toThrow("pass overwrite = true to replace it")
 end)
 
 test("opens a discovered Story and reports it as current", function()

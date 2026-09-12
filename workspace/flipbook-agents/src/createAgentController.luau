@@ -28,6 +28,10 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 			widget.Enabled = true
 		end,
 
+		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
+			return getAppImplementation().embedFlipbook(parentPath, overwrite == true)
+		end,
+
 		listStorybooks = function()
 			return getAppImplementation().listStorybooks()
 		end,

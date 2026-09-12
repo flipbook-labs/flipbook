@@ -17,20 +17,15 @@ local container = Instance.new("Folder")
 local root = ReactRoblox.createRoot(container)
 
 local currentStore: createStoryControlsStore.StoryControlsStore? = nil
+local currentValue: unknown = nil
+local currentValues: Storyteller.StoryControls? = nil
 
 local function Consumer()
 	currentStore = StoryControlsContext.useStoryControls()
-	local value = useStoryControlValue("name")
-	local values = useStoryControlValues()
+	currentValue = useStoryControlValue("name")
+	currentValues = useStoryControlValues()
 
-	return React.createElement("Folder", nil, {
-		Single = React.createElement("StringValue", {
-			Value = tostring(value),
-		}),
-		All = React.createElement("StringValue", {
-			Value = tostring(values.name),
-		}),
-	})
+	return nil
 end
 
 local function renderWithDefault(defaultValue: string)
@@ -51,25 +46,25 @@ afterEach(function()
 		root:unmount()
 	end)
 	currentStore = nil
+	currentValue = nil
+	currentValues = nil
 end)
 
 test("resubscribes when the provider replaces its story controls store", function()
 	renderWithDefault("Alice")
 
-	local result = container:FindFirstChildWhichIsA("Folder") :: Folder
-	expect((result:FindFirstChild("Single") :: StringValue).Value).toBe("Alice")
-	expect((result:FindFirstChild("All") :: StringValue).Value).toBe("Alice")
+	expect(currentValue).toBe("Alice")
+	expect(assert(currentValues).name).toBe("Alice")
 
 	renderWithDefault("Bob")
 
-	result = container:FindFirstChildWhichIsA("Folder") :: Folder
-	expect((result:FindFirstChild("Single") :: StringValue).Value).toBe("Bob")
-	expect((result:FindFirstChild("All") :: StringValue).Value).toBe("Bob")
+	expect(currentValue).toBe("Bob")
+	expect(assert(currentValues).name).toBe("Bob")
 
 	ReactRoblox.act(function()
 		assert(currentStore, "expected the consumer to expose its current store").setControl("name", "Charlie")
 	end)
 
-	expect((result:FindFirstChild("Single") :: StringValue).Value).toBe("Charlie")
-	expect((result:FindFirstChild("All") :: StringValue).Value).toBe("Charlie")
+	expect(currentValue).toBe("Charlie")
+	expect(assert(currentValues).name).toBe("Charlie")
 end)

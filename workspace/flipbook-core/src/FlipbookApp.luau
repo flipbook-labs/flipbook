@@ -18,6 +18,7 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local createAppImplementation = require("@root/Agent/createAppImplementation")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
+local embedFlipbookRuntime = require("@root/Embedding/embedFlipbookRuntime")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -84,6 +85,7 @@ local function FlipbookApp(props: Props)
 		end
 
 		return agentController.registerApp(createAppImplementation({
+			embedFlipbook = embedFlipbookRuntime,
 			getStorybooks = function()
 				return latest.current.storybooks
 			end,

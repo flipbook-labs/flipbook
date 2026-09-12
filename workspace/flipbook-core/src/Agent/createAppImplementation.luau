@@ -1,6 +1,10 @@
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local Storyteller = require("@pkg/Storyteller")
 
 local FlipbookAgents = require("@workspace/flipbook-agents/src")
+local constants = require("@root/constants")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
 
@@ -16,6 +20,7 @@ type Storybooks = {
 }
 
 export type Options = {
+	embedFlipbook: (destination: Instance) -> Instance,
 	getStorybooks: () -> Storybooks,
 	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
 	openStory: (ModuleScript, LoadedStorybook?) -> (),
@@ -69,6 +74,22 @@ local function createAppImplementation(options: Options): AppImplementation
 	end
 
 	return {
+		embedFlipbook = function(parentPath: string?, overwrite: boolean)
+			local destination = if parentPath then getInstanceFromPath(parentPath) else ReplicatedStorage
+			if destination == nil then
+				error(`embedFlipbook parent not found: {parentPath}`)
+			end
+
+			local existing = CollectionService:GetTagged(constants.FLIPBOOK_RUNTIME_TAG)
+			if #existing > 0 and not overwrite then
+				error(
+					`Flipbook runtime already exists at {getInstancePath(existing[1])}; pass overwrite = true to replace it`
+				)
+			end
+
+			return getInstancePath(options.embedFlipbook(destination))
+		end,
+
 		listStorybooks = function()
 			local result = {}
 			for _, storybook in options.getStorybooks().available do
