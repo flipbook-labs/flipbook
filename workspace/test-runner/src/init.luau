@@ -10,11 +10,12 @@ local function runTests()
 	Charm.flags.strict = true
 	Charm.flags.frozen = true
 
+	local testConfig = script["jest.config"]
 	local status, result = Jest.runCLI(workspaceRoot, {
 		verbose = false,
 		ci = false,
 		testPathPattern = _G.JEST_TEST_PATH_PATTERN,
-	}, { workspaceRoot }):awaitStatus()
+	}, { testConfig }):awaitStatus()
 
 	if status == "Rejected" then
 		print(result)
