@@ -192,6 +192,7 @@ Skill files live under `.agents/skills/<name>/SKILL.md`. Use them for conditiona
 - `run-flipbook-checks` — lint, analyze, and Rocale-backed Jest tests.
 - `test-dependencies-in-flipbook` — verifying local `storyteller` or `module-loader` changes inside Flipbook.
 - `develop-through-studioplugins` — special internal StudioPlugins workflow for explicitly requested FlipbookCore verification.
+- `use-studio-mcp-for-flipbook` — building and driving a local Flipbook plugin through Studio MCP and its AgentGateway actions.
 - `flipbook-debugging-playbook` — symptom→solution runbook for runtime issues (stale plugin, hot-reload, re-renders, crashes, test failures).
 - `flipbook-change-control` — PR workflow, version gating, CI gates, review discipline, non-negotiables.
 - `flipbook-release-and-operations` — release runbooks, deployment orchestration, CI/CD operations.
