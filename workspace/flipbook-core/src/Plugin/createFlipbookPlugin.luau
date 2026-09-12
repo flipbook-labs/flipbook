@@ -1,6 +1,4 @@
 local AppMode = require("@root/Enums/AppMode")
-local createAgentController = require("@root/Agent/createAgentController")
-local createAgentGateway = require("@root/Agent/createAgentGateway")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
 local CommonTypes = require("@root/Common/types")
@@ -9,13 +7,10 @@ type Pluginlike = CommonTypes.Pluginlike
 
 local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
-	local agentController = createAgentController(widget)
-	local cleanupAgentGateway = createAgentGateway(agentController)
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
 		mode = AppMode.PluginWidget,
-		agentController = agentController,
 	})
 
 	if button ~= nil then
@@ -50,7 +45,6 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	end
 
 	local function destroy()
-		cleanupAgentGateway()
 		app.destroy()
 
 		for _, connection in connections do
