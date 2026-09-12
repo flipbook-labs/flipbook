@@ -9,9 +9,20 @@ local prefix = `[{script.Name}]`
 
 local Players = game:GetService("Players")
 
+local FlipbookCore = require("@workspace/flipbook-core/src")
+
+local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
+
 print(`{prefix} starting...`)
 
 print(`{prefix} disabling character auto-loading...`)
 Players.CharacterAutoLoads = false
+
+local getLaunchDataRemote = Instance.new("RemoteFunction")
+getLaunchDataRemote.Name = GET_LAUNCH_DATA_REMOTE_NAME
+getLaunchDataRemote.OnServerInvoke = function(player)
+	return FlipbookCore.parseLaunchData(player:GetJoinData().LaunchData)
+end
+getLaunchDataRemote.Parent = script.Parent
 
 print(`{prefix} successfully initialized in {os.clock() - startTime}s`)
