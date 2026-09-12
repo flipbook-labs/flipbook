@@ -2,19 +2,17 @@ local CoreGui = game:GetService("CoreGui")
 
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
-local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryError = require("@root/Storybook/StoryError")
 local types = require("@root/Storybook/types")
+local useStoryControlValues = require("@root/StoryControls/useStoryControlValues")
 
 local e = React.createElement
 local useState = React.useState
 local useEffect = React.useEffect
-local useSignalState = ReactCharm.useSignalState
 
 type LoadedStory = Storyteller.LoadedStory<unknown>
 
@@ -27,8 +25,7 @@ export type Props = {
 
 local function StoryPreview(props: Props): React.Node
 	local storyActions = StoryActionsContext.useStoryActions()
-	local storyControls = StoryControlsContext.useStoryControls()
-	local controls = useSignalState(storyControls.getControls)
+	local controls = useStoryControlValues()
 	local err: string?, setErr = useState(nil :: string?)
 
 	useEffect(function()
