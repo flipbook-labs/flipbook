@@ -24,7 +24,7 @@ All work proceeds through feature branches and pull requests. **Never commit dir
 
 Fill every section concisely. The Problem/Solution should describe what the change does in present tense on its own ("Add a foo helper to consolidate X"), not its origin story.
 
-**Status:** All PRs open as **drafts** (`gh pr create --draft`). Never open ready-for-review and never run `gh pr ready` unless the user explicitly asks. Opening a non-draft PR pings reviewers prematurely.
+**Status:** Agent-authored PRs open as **drafts** (`gh pr create --draft`). Never open ready-for-review and never run `gh pr ready` unless the user explicitly asks. Changewrite's generated `Publish v{version}` PR is the deliberate exception: it opens ready for review because preparing it is the release notification.
 
 **Disclosure:** Every PR body must disclose AI assistance (e.g., closing line: "🤖 Generated with [Claude Code](https://claude.com/claude-code)"). This is mandatory per user convention and applies even when filling a repo's PR template.
 
@@ -44,27 +44,20 @@ Fill every section concisely. The Problem/Solution should describe what the chan
 
 Releasing Flipbook is gated and automated — no manual tag pushes, no direct version-string edits.
 
-### Version Bumping
+### Change Entries and Version Bumping
 
-**Only method:** `lute run bump-version <major|minor|patch>` (verified in repo `.lute/` scripts).
+Every release-worthy pull request adds a Markdown entry under `.changes/` with a `major`, `minor`, or `patch` bump. Changewrite combines pending entries, selects the largest requested bump, updates `changewrite.toml` and its manifest mirrors, and generates `CHANGELOG.md` in an automated `Publish v{version}` pull request.
 
-This is the single authoritative version source. The command:
-
-1. Bumps `package.toml` (or equivalent version file)
-2. Creates a release commit
-3. Tags the commit with the new version
-
-Never edit version strings by hand or push tags directly.
-
-**Rationale:** Keeps version-of-record in one place and prevents manual tag pushes from diverging from package metadata.
+Never edit mirrored version strings by hand. Use the Release workflow's `force-version` input only to recover from a version or tag that cannot be published.
 
 ### GitHub Releases
 
-**Only method:** GitHub Release workflow (via `gh release create` or GitHub UI after a version bump).
+**Only method:** merge the Changewrite-generated publish pull request.
 
-1. After `lute run bump-version` creates a tag, create a GitHub Release matching that tag.
-2. Release workflow (`.github/workflows/release.yml`, verified 2026-07-01) then publishes artifacts (`.rbxm` to Creator Store asset 8517129161, dev plugin nightly asset 88523969718241).
-3. Never push git tags directly (`git push origin <tag>`).
+1. Every push to `main` opens or updates the publish pull request when unreleased entries exist.
+2. Merging that pull request makes Changewrite create the tag and GitHub release, attach `Flipbook.rbxm`, and publish the release.
+3. The release event triggers Creator Store publishing; nightly publishing remains separate on pushes to `main`.
+4. Never create or push release tags directly.
 
 **Rationale (from incident #530, #535, #596):** Manual tag pushes have caused CI coordination failures (nightly build failures #432–435, smoketest concurrency bugs #562, deployment-leakage #561, dev-build routing #596). The GitHub Release workflow with environment gating prevents these.
 
@@ -346,7 +339,7 @@ These rules have been tested by production failures and are now enforced.
 
 ### 3. Never Push Git Tags Directly; Use GitHub Release Workflow
 
-**Rule:** Releases happen via `lute run bump-version` + GitHub Release, never `git push origin <tag>`.
+**Rule:** Releases happen by merging the Changewrite-generated publish pull request, never by creating or pushing tags manually.
 
 **Incidents:**
 
@@ -355,7 +348,7 @@ These rules have been tested by production failures and are now enforced.
 - **PR #562 "Fix smoketest deployments cancelling each other"** (2026-04-18): Smoketest concurrency config interfered with approval gates.
 - **PR #596 "Fix the dev build failing to deploy"** (2026-06-21): Beta channel routed wrong (no asset in rbxasset.toml); fixed by adding channel routing logic in publish-plugin.luau.
 
-All of these stemmed from manual coordination between tags, release workflow, and CI. Using the GitHub Release API (via `gh release create` after a version bump tag exists) ensures atomicity.
+All of these stemmed from manual coordination between tags, release workflow, and CI. Changewrite keeps the version, changelog, tag, release artifact, and downstream Creator Store event in one reviewed flow.
 
 **Rationale:** GitHub Release workflow is atomic and coordinates with CI environment gates. Manual `git push` can race with CI or skip approval steps.
 
@@ -419,6 +412,7 @@ Quick reference for determining what CI gates a change needs.
 | Build scripts (.lute/, darklua.json)                | ✅              | ✅ if output changes | —                          | Use --clean locally to test               |
 | Wally/Loom/Rokit versions                           | ✅              | ✅                   | —                          | High-risk; test local --clean build first |
 | CI workflows (.github/workflows/*.yml)              | —               | Manual re-run        | —                          | Test in draft PR before merging           |
+| Release-worthy changes                              | ✅ changelog    | As otherwise needed  | As otherwise needed        | Add one `.changes/*.md` entry              |
 | Docs (.md, docs vault)                              | ✅ linting only | —                    | —                          | No code impact; Prettier only             |
 | `.luaurc`, language config                          | ✅              | ✅                   | —                          | Language mode changes affect all files    |
 
@@ -426,7 +420,7 @@ Quick reference for determining what CI gates a change needs.
 
 ## Provenance and Maintenance
 
-**Last verified:** 2026-09-08 (against `.github/MERGE_POLICY.md`, the live GitHub ruleset, the pull request template, repository workflows, and repo files).
+**Last verified:** 2026-09-12 (against `.github/MERGE_POLICY.md`, the pull request template, Changewrite v0.7.0, repository workflows, and repo files).
 
 **Re-verification commands:**
 
@@ -449,8 +443,9 @@ grep -n "Charm.flags.frozen = false" src/PluginStarterScript.plugin.luau
 # Confirm build output not in git
 git status | grep "build/" || echo "build/ correctly ignored"
 
-# Confirm lute run bump-version command
-grep -r "bump-version" .lute/ | head -2
+# Confirm Changewrite version mirrors and entry guidance
+cat changewrite.toml
+cat .changes/README.md
 
 # Confirm test-dependencies-in-flipbook skill exists
 ls .agents/skills/test-dependencies-in-flipbook/SKILL.md

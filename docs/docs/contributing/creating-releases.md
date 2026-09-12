@@ -1,48 +1,18 @@
 # Creating Releases
 
-Once ready to cut a new release, bump the version in our manifest files and create a PR for it.
+Releases are automated via [Changewrite](https://github.com/flipbook-labs/changewrite). Every release-worthy pull request adds a Markdown entry under [`.changes/`](https://github.com/flipbook-labs/flipbook/tree/main/.changes) describing the change and whether it warrants a major, minor, or patch release.
 
-We have a script to make version bumps easier. Run the following, replacing `minor` with the version to bump. This can be `major`, `minor`, or `patch`.
+Every push to `main` collects the pending entries and opens or updates a `Publish v{version}` pull request. Merging that pull request:
 
-```sh
-lute run bump-version minor
-```
+1. Tags the commit and creates the GitHub release with `Flipbook.rbxm` attached.
+2. Triggers the `publish-plugin` job, which publishes to the Roblox Creator Store.
 
-Once merged, to publish the new version you must [create a new GitHub release](https://github.com/flipbook-labs/flipbook/releases), matching the tag to the version bump.
+To cut a release, review the assembled notes and version in the auto-generated publish pull request, then merge it. To preview that pull request without publishing, add the `debug:release-pr` label to a pull request; Changewrite uses a separate debug branch and prepare-only mode.
 
-From there, our GitHub Actions will handle building Flipbook to an rbxm, attaching it to the release under the "Assets" list, and publishing it to the Wally registry for consumption.
+Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after merging to monitor the deployment.
 
-Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after publishing the release to check the status of the deployment.
+## Wally registry credential recovery
 
-## Logging in to Wally registry in CI
+Some Flipbook Labs repositories publish packages to the Wally registry. If those workflows begin failing authentication, create a replacement registry token with `wally login`, update its 1Password record, and then update the `WALLY_REGISTRY_TOKEN` organization secret at the execution boundary.
 
-In the event that publishing our Wally packages starts to fail this section shows how to update the login token.
-
-:::warning
-Your GitHub account must have permission to publish to the flipbook-labs org. To add a new account, update [owners.json](https://github.com/UpliftGames/wally-index/blob/main/flipbook-labs/owners.json) with your GitHub user ID.
-:::
-
-First run `wally login` locally and authenticate with your GitHub account.
-
-```sh
-wally login
-[INFO ] Updating package index https://github.com/UpliftGames/wally-index...
-
-Go to https://github.com/login/device
-And enter the code: XXXX-XXXX
-
-Awaiting authorization...
-Authorization successful!
-```
-
-Open `~/.wally/auth.toml` and copy the generated GitHub token.
-
-```toml
-# This is where Wally stores details for authenticating with registries.
-# It can be updated using `wally login` and `wally logout`.
-
-[tokens]
-"https://api.wally.run/" = "gho_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-```
-
-Then navigate to the organization's [secrets settings](https://github.com/organizations/flipbook-labs/settings/secrets/actions) and update `WALLY_REGISTRY_TOKEN` to use the new token to allow all flipbook-labs repos to publish to our scope.
+Limit GitHub access to the repositories whose workflows publish to Wally. Do not commit the token or pass its plaintext through OpenTofu inputs or state.

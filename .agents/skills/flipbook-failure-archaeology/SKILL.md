@@ -365,10 +365,9 @@ Sixteen branches with work-in-progress status. Last activity ranges from 3 days 
 
 #### adopt-changewrite
 
-- **Last activity:** 2026-06-28 (3 days ago)
-- **Commits:** 1 (92fd7caa)
-- **Status:** Appears feature-complete; small surface area; may need final review/merge.
-- **Verdict:** Viable for immediate merge review.
+- **Last activity:** 2026-09-12 (PR #603 refresh)
+- **Status:** Updated to Changewrite v0.7.0's entry-based changelog flow; final review is active.
+- **Verdict:** Viable for merge after the release workflow and Greptile checks pass.
 
 #### agent-actions-registry
 
