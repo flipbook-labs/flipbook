@@ -1,9 +1,12 @@
 local Storyteller = require("@pkg/Storyteller")
 
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
-local types = require("@root/Agent/types")
 
+type AppImplementation = FlipbookAgents.AppImplementation
+type StorybookInfo = FlipbookAgents.StorybookInfo
+type StoryInfo = FlipbookAgents.StoryInfo
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
@@ -18,14 +21,14 @@ export type Options = {
 	openStory: (ModuleScript, LoadedStorybook?) -> (),
 }
 
-local function serializeStorybook(storybook: LoadedStorybook): types.StorybookInfo
+local function serializeStorybook(storybook: LoadedStorybook): StorybookInfo
 	return {
 		name = storybook.name,
 		path = getInstancePath(storybook.source),
 	}
 end
 
-local function serializeStory(story: ModuleScript, storybook: LoadedStorybook?): types.StoryInfo
+local function serializeStory(story: ModuleScript, storybook: LoadedStorybook?): StoryInfo
 	return {
 		name = story.Name:gsub("%.story$", ""),
 		path = getInstancePath(story),
@@ -44,7 +47,7 @@ local function resolveModuleScript(path: string, label: string): ModuleScript
 	return instance
 end
 
-local function createAppImplementation(options: Options): types.AppImplementation
+local function createAppImplementation(options: Options): AppImplementation
 	local function findStorybook(storybookPath: string): LoadedStorybook
 		for _, storybook in options.getStorybooks().available do
 			if getInstancePath(storybook.source) == storybookPath then

@@ -3,9 +3,9 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local AgentContext = require("@root/Agent/AgentContext")
-local AgentTypes = require("@root/Agent/types")
 local CommonTypes = require("@root/Common/types")
 local ContextStack = require("@root/Common/ContextStack")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local useThemeName = require("@root/Common/useThemeName")
@@ -13,7 +13,7 @@ local useThemeName = require("@root/Common/useThemeName")
 local useEffect = React.useEffect
 
 type Pluginlike = CommonTypes.Pluginlike
-type AgentController = AgentTypes.AgentController
+type AgentController = FlipbookAgents.AgentController
 
 export type Props = {
 	plugin: Pluginlike,

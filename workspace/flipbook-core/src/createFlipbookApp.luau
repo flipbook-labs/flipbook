@@ -1,16 +1,16 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local AgentTypes = require("@root/Agent/types")
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
-type AgentController = AgentTypes.AgentController
+type AgentController = FlipbookAgents.AgentController
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {

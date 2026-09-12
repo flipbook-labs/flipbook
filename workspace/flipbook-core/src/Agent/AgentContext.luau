@@ -1,10 +1,12 @@
 local React = require("@pkg/React")
 
-local types = require("@root/Agent/types")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 
-local Context = React.createContext(nil :: types.AgentController?)
+type AgentController = FlipbookAgents.AgentController
 
-local function use(): types.AgentController?
+local Context = React.createContext(nil :: AgentController?)
+
+local function use(): AgentController?
 	return React.useContext(Context)
 end
 

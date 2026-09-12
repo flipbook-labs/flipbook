@@ -51,7 +51,15 @@ local function StoryView(props: StoryViewProps)
 		end
 		return agentController.registerStory({
 			path = getInstancePath(props.storyModule),
-			controlsStore = storyControlsStore,
+			getControls = function()
+				return storyControlsStore.getControls() :: any
+			end,
+			setControls = function(controls)
+				for key, value in controls do
+					storyControlsStore.setControl(key, value :: any)
+				end
+				return storyControlsStore.getControls() :: any
+			end,
 		})
 	end, { agentController, props.storyModule, storyControlsStore } :: { unknown })
 

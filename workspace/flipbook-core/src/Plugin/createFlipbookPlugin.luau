@@ -1,6 +1,5 @@
 local AppMode = require("@root/Enums/AppMode")
-local createAgentController = require("@root/Agent/createAgentController")
-local createAgentGateway = require("@root/Agent/createAgentGateway")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
 local CommonTypes = require("@root/Common/types")
@@ -9,8 +8,8 @@ type Pluginlike = CommonTypes.Pluginlike
 
 local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
-	local agentController = createAgentController(widget)
-	local cleanupAgentGateway = createAgentGateway(agentController)
+	local agentController = FlipbookAgents.createAgentController(widget)
+	local cleanupAgentGateway = FlipbookAgents.createAgentGateway(agentController)
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,

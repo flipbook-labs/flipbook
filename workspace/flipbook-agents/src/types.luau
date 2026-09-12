@@ -1,9 +1,4 @@
-local Storyteller = require("@pkg/Storyteller")
-
-local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-
-type StoryControls = Storyteller.StoryControls
-type StoryControlsStore = createStoryControlsStore.StoryControlsStore
+export type Controls = { [string]: unknown }
 
 export type StorybookInfo = {
 	name: string,
@@ -29,7 +24,8 @@ export type AppImplementation = {
 
 export type StoryImplementation = {
 	path: string,
-	controlsStore: StoryControlsStore,
+	getControls: () -> Controls,
+	setControls: (controls: Controls) -> Controls,
 }
 
 export type AgentController = {
@@ -38,8 +34,8 @@ export type AgentController = {
 	listStories: (storybookPath: string) -> { StoryInfo },
 	openStory: (storyPath: string, storybookPath: string?) -> StoryInfo,
 	getCurrentStory: () -> CurrentStory?,
-	getControls: () -> StoryControls,
-	setControls: (controls: { [string]: unknown }) -> StoryControls,
+	getControls: () -> Controls,
+	setControls: (controls: Controls) -> Controls,
 	registerApp: (implementation: AppImplementation) -> () -> (),
 	registerStory: (implementation: StoryImplementation) -> () -> (),
 }
