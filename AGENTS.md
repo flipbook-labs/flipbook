@@ -176,7 +176,7 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 ## Project Skills
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and `.agents/skills/flipbook-change-control/SKILL.md`. Ownership is inferred from changed files. Application-owned paths belong to `@flipbook-labs/flipbook-app`; every other path, including repository stewardship, belongs to `@flipbook-labs/flipbook-engine`. Mixed application and engine changes require application review.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 
