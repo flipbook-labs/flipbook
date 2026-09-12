@@ -70,7 +70,7 @@ jobs:
 
       - name: Deploy PR storybook
         if: github.event_name == 'pull_request'
-        uses: flipbook-labs/deploy-storybook@da5abf27b6f38556ba5fb4cdef896f27be9dd77f
+        uses: flipbook-labs/deploy-storybook@10df0500439611dd21b42f7188c23854afacf3bf
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
