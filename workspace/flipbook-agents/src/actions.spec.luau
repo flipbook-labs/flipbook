@@ -21,6 +21,7 @@ test("exposes the focused Flipbook action contract", function()
 
 	expect(names).toEqual({
 		"openWidget",
+		"embedFlipbook",
 		"listStorybooks",
 		"listStories",
 		"openStory",
@@ -33,11 +34,18 @@ end)
 test("routes story and control actions through the controller", function()
 	local indexed = indexActions()
 	local opened = false
+	local embeddedParent: string? = nil
+	local embeddedOverwrite = false
 	local controls: { [string]: unknown } = { text = "Before" }
 	local controller = (
 		{
 			openWidget = function()
 				opened = true
+			end,
+			embedFlipbook = function(parent, overwrite)
+				embeddedParent = parent
+				embeddedOverwrite = overwrite == true
+				return "ReplicatedStorage/Flipbook"
 			end,
 			listStorybooks = function()
 				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
@@ -63,6 +71,12 @@ test("routes story and control actions through the controller", function()
 
 	expect(indexed.openWidget.run(controller, nil)).toEqual({ enabled = true })
 	expect(opened).toBe(true)
+	expect(indexed.embedFlipbook.run(controller, {
+		parent = "ReplicatedStorage",
+		overwrite = true,
+	})).toEqual({ path = "ReplicatedStorage/Flipbook" })
+	expect(embeddedParent).toBe("ReplicatedStorage")
+	expect(embeddedOverwrite).toBe(true)
 	local storybooks = indexed.listStorybooks.run(controller, nil) :: any
 	expect(storybooks.storybooks[1].name).toBe("Example")
 	local stories = indexed.listStories.run(controller, { storybook = "ReplicatedStorage/Example.storybook" }) :: any

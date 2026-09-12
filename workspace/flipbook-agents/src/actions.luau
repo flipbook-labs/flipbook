@@ -30,6 +30,17 @@ local function getOptionalString(params: { [string]: unknown }, key: string): st
 	return value
 end
 
+local function getOptionalBoolean(params: { [string]: unknown }, key: string): boolean?
+	local value = params[key]
+	if value == nil then
+		return nil
+	end
+	if type(value) ~= "boolean" then
+		error(`{key} must be a boolean when provided`)
+	end
+	return value
+end
+
 local function create(): { Action }
 	return {
 		{
@@ -39,6 +50,30 @@ local function create(): { Action }
 			run = function(controller)
 				controller.openWidget()
 				return { enabled = true }
+			end,
+		},
+		{
+			name = "embedFlipbook",
+			title = "Embed Flipbook",
+			description = "Embed the Flipbook runtime into the experience for Play-mode input and screenshots.",
+			inputSchema = {
+				type = "object",
+				properties = {
+					parent = {
+						type = "string",
+						description = "Optional destination path. Defaults to ReplicatedStorage.",
+					},
+					overwrite = { type = "boolean", description = "Replace an existing embedded Flipbook runtime." },
+				} :: { [string]: unknown },
+			},
+			run = function(controller, params)
+				local fields = asTable(params)
+				return {
+					path = controller.embedFlipbook(
+						getOptionalString(fields, "parent"),
+						getOptionalBoolean(fields, "overwrite")
+					),
+				}
 			end,
 		},
 		{

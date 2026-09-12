@@ -31,6 +31,11 @@ describe("app registration", function()
 		local widget = createWidget()
 		local controller = createAgentController(widget)
 		local cleanup = controller.registerApp({
+			embedFlipbook = function(parentPath, overwrite)
+				expect(parentPath).toBe("ReplicatedStorage")
+				expect(overwrite).toBe(true)
+				return "ReplicatedStorage/Flipbook"
+			end,
 			listStorybooks = function()
 				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
 			end,
@@ -46,6 +51,7 @@ describe("app registration", function()
 		})
 
 		expect(controller.listStorybooks()[1].name).toBe("Example")
+		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
 		expect(widget.Enabled).toBe(true)
@@ -61,6 +67,9 @@ describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
 		local controller = createAgentController(createWidget())
 		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
 			listStorybooks = function()
 				return {}
 			end,
