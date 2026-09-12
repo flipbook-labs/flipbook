@@ -14,6 +14,7 @@ local SelectControl = require("@root/StoryControls/ControlElements/SelectControl
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
+local useStoryControlValue = require("@root/StoryControls/useStoryControlValue")
 
 local ControlType = Storyteller.ControlType
 type ControlType = Storyteller.ControlType
@@ -46,7 +47,7 @@ local function StoryControlRow(props: Props)
 		storyControls.setControl(props.controlName, newValue)
 	end, { props.controlName, shouldCoerceToNumber, storyControls } :: { unknown })
 
-	local controlValue = StoryControlsContext.useStoryControlValue(props.controlName)
+	local controlValue = useStoryControlValue(props.controlName)
 
 	local controlElement: React.Node
 	if controlType == ControlType.Boolean then

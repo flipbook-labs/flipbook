@@ -6,9 +6,9 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
 local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
-local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryError = require("@root/Storybook/StoryError")
 local types = require("@root/Storybook/types")
+local useStoryControlValues = require("@root/StoryControls/useStoryControlValues")
 
 local e = React.createElement
 local useState = React.useState
@@ -25,7 +25,7 @@ export type Props = {
 
 local function StoryPreview(props: Props): React.Node
 	local storyActions = StoryActionsContext.useStoryActions()
-	local controls = StoryControlsContext.useStoryControlValues()
+	local controls = useStoryControlValues()
 	local err: string?, setErr = useState(nil :: string?)
 
 	useEffect(function()
