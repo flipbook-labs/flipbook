@@ -1,6 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local types = require("@root/Agent/types")
+local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
 

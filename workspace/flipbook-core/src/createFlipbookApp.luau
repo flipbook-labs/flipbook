@@ -1,7 +1,6 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
-local AgentTypes = require("@root/Agent/types")
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
@@ -10,14 +9,12 @@ local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
-type AgentController = AgentTypes.AgentController
 type Pluginlike = CommonTypes.Pluginlike
 
 export type Options = {
 	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
-	agentController: AgentController?,
 }
 
 local defaultPlugin: Pluginlike = {
@@ -48,7 +45,6 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local app = React.createElement(ContextProviders, {
 		plugin = appOptions.plugin or defaultPlugin,
 		overlayGui = appOptions.overlayGui or container,
-		agentController = appOptions.agentController,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
 			mode = appOptions.mode,

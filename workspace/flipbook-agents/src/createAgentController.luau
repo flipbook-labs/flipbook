@@ -1,10 +1,8 @@
-local Storyteller = require("@pkg/Storyteller")
-
-local types = require("@root/Agent/types")
+local types = require("@root/types")
 
 type AgentController = types.AgentController
 type AppImplementation = types.AppImplementation
-type StoryControls = Storyteller.StoryControls
+type Controls = types.Controls
 type StoryImplementation = types.StoryImplementation
 
 local function createAgentController(widget: DockWidgetPluginGui): AgentController
@@ -18,11 +16,11 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 		return appImplementation
 	end
 
-	local function getControls(): StoryControls
+	local function getControls(): Controls
 		if storyImplementation == nil then
 			return {}
 		end
-		return storyImplementation.controlsStore.getControls()
+		return storyImplementation.getControls()
 	end
 
 	return {
@@ -59,15 +57,11 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 
 		getControls = getControls,
 
-		setControls = function(controls: { [string]: unknown })
+		setControls = function(controls: Controls)
 			if storyImplementation == nil then
 				error("setControls requires the story view to be mounted")
 			end
-
-			for key, value in controls do
-				storyImplementation.controlsStore.setControl(key, value :: any)
-			end
-			return getControls()
+			return storyImplementation.setControls(controls)
 		end,
 
 		registerApp = function(implementation: AppImplementation)

@@ -1,7 +1,7 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local actions = require("@root/Agent/actions")
-local types = require("@root/Agent/types")
+local actions = require("@root/actions")
+local types = require("@root/types")
 
 local CONFIG: AgentGateway.Config = {
 	name = "FlipbookAgentGateway",

@@ -42,6 +42,7 @@ flipbook/
 ├── src/                    # Thin plugin entry point (Studio bootstrap only)
 ├── workspace/              # Real application code, organized as workspace members:
 │   ├── flipbook-core/      # Main library — React app, story browser, telemetry, settings
+│   ├── flipbook-agents/    # AgentGateway actions, controller lifecycle, and protocol types
 │   ├── flipbook-next/      # Experimental next-gen package
 │   ├── test-runner/        # Runs Jest.runCLI against flipbook-core tests
 │   ├── example/            # Dogfood stories/components

@@ -1,8 +1,6 @@
 local JestGlobals = require("@pkg/JestGlobals")
-local Storyteller = require("@pkg/Storyteller")
 
-local createAgentController = require("@root/Agent/createAgentController")
-local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
+local createAgentController = require("@root/createAgentController")
 
 local describe = JestGlobals.describe
 local expect = JestGlobals.expect
@@ -12,8 +10,20 @@ local function createWidget()
 	return { Enabled = false } :: any
 end
 
-local function createSchema(default: string): Storyteller.StoryControlsSchema
-	return { label = Storyteller.createStringControl(default) }
+local function createStoryImplementation(path: string, initialValue: string)
+	local controls: { [string]: unknown } = { label = initialValue }
+	return {
+		path = path,
+		getControls = function()
+			return controls
+		end,
+		setControls = function(nextControls)
+			for key, value in nextControls do
+				controls[key] = value
+			end
+			return controls
+		end,
+	}
 end
 
 describe("app registration", function()
@@ -72,10 +82,7 @@ describe("story registration", function()
 		})
 		expect(controller.getControls()).toEqual({})
 
-		local cleanup = controller.registerStory({
-			path = "ReplicatedStorage/Button.story",
-			controlsStore = createStoryControlsStore(createSchema("Before")),
-		})
+		local cleanup = controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "Before"))
 		local mountedStory = controller.getCurrentStory()
 		assert(mountedStory ~= nil, "expected a current story")
 		expect(mountedStory.isMounted).toBe(true)
@@ -92,14 +99,9 @@ describe("story registration", function()
 
 	test("does not let an old cleanup unregister the current story", function()
 		local controller = createAgentController(createWidget())
-		local cleanupFirst = controller.registerStory({
-			path = "ReplicatedStorage/First.story",
-			controlsStore = createStoryControlsStore(createSchema("First")),
-		})
-		controller.registerStory({
-			path = "ReplicatedStorage/Second.story",
-			controlsStore = createStoryControlsStore(createSchema("Second")),
-		})
+		local cleanupFirst =
+			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
+		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
 
 		cleanupFirst()
 
