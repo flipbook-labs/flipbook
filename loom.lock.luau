@@ -1,16 +1,16 @@
 return {
   version = 3,
   dependencies = {
-    AgentSkills = "AgentSkills@v0.4.0",
+    AgentSkills = "AgentSkills@v0.5.1",
     dotenv = "dotenv@v0.1.0",
     ["flipbook-batteries"] = "flipbook-batteries@v0.12.0",
     lute = "lute@v1.0.1-nightly.20260701",
   },
   packages = {
-    ["AgentSkills@v0.4.0"] = {
-      installPath = "@pkg/AgentSkills@v0.4.0",
+    ["AgentSkills@v0.5.1"] = {
+      installPath = "@pkg/AgentSkills@v0.5.1",
       name = "AgentSkills",
-      rev = "v0.4.0",
+      rev = "v0.5.1",
       source = "https://github.com/flipbook-labs/agent-skills",
       sourceKind = "github",
       dependencies = {},

@@ -178,7 +178,7 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned as a dev dependency in [`loom.config.luau`](loom.config.luau) and installed by `lute run install` into the Loom store (`~/.loom/store`). Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and the shared `flipbook-change-control` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Repository-stewardship changes belong to `@flipbook-labs/flipbook-admins` and have no separate human-approval requirement.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and the shared `flipbook-change-control` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Every other path, including repository-stewardship files, belongs to `@flipbook-labs/flipbook-engine`.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 
