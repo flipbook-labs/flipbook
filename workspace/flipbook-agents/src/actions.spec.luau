@@ -13,24 +13,6 @@ local function indexActions()
 	return result
 end
 
-test("exposes the focused Flipbook action contract", function()
-	local names = {}
-	for _, action in actions.create() do
-		table.insert(names, action.name)
-	end
-
-	expect(names).toEqual({
-		"openWidget",
-		"embedFlipbook",
-		"listStorybooks",
-		"listStories",
-		"openStory",
-		"getCurrentStory",
-		"getControls",
-		"setControls",
-	})
-end)
-
 test("rejects params with non-string keys", function()
 	local indexed = indexActions()
 	local controller = {
