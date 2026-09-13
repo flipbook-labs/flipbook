@@ -3,10 +3,12 @@ local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local createFlipbookApp = require("@root/createFlipbookApp")
 
 local function createEmbeddedFlipbookApp(screenGui: ScreenGui)
+	local gatewayParent = screenGui.Parent
+	assert(gatewayParent ~= nil, "embedded ScreenGui must be parented")
+
 	local agentController = FlipbookAgents.createAgentController(function()
 		screenGui.Enabled = true
 	end)
-	local cleanupAgentGateway = FlipbookAgents.createEmbeddedAgentGateway(agentController, screenGui)
 	local app = createFlipbookApp(screenGui, {
 		overlayGui = screenGui :: GuiBase2d,
 		mode = AppMode.EmbeddedClient,
@@ -14,6 +16,7 @@ local function createEmbeddedFlipbookApp(screenGui: ScreenGui)
 	})
 
 	app.mount()
+	local cleanupAgentGateway = FlipbookAgents.createEmbeddedAgentGateway(agentController, gatewayParent)
 
 	local function destroy()
 		cleanupAgentGateway()
