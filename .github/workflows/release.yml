@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
@@ -43,7 +43,7 @@ jobs:
       - name: Build
         run: lute run build --channel prod --output ${{ env.MODEL_FILE }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: flipbook-rbxm
           path: ${{ env.MODEL_FILE }}
@@ -66,13 +66,13 @@ jobs:
           client-id: ${{ vars.FLIPBOOK_BACKEND_CLIENT_ID }}
           private-key: ${{ secrets.FLIPBOOK_BACKEND_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: flipbook-rbxm
 
