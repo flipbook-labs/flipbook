@@ -5,9 +5,9 @@ local actions = require("@root/actions")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function indexActions()
+local function indexActions(actionList)
 	local result = {}
-	for _, action in actions.create() do
+	for _, action in actionList do
 		result[action.name] = action
 	end
 	return result
@@ -31,8 +31,24 @@ test("exposes the focused Flipbook action contract", function()
 	})
 end)
 
+test("exposes only semantic actions to embedded clients", function()
+	local names = {}
+	for _, action in actions.createEmbedded() do
+		table.insert(names, action.name)
+	end
+
+	expect(names).toEqual({
+		"listStorybooks",
+		"listStories",
+		"openStory",
+		"getCurrentStory",
+		"getControls",
+		"setControls",
+	})
+end)
+
 test("rejects params with non-string keys", function()
-	local indexed = indexActions()
+	local indexed = indexActions(actions.create())
 	local controller = {
 		listStories = function()
 			return {}
@@ -45,7 +61,7 @@ test("rejects params with non-string keys", function()
 end)
 
 test("routes story and control actions through the controller", function()
-	local indexed = indexActions()
+	local indexed = indexActions(actions.create())
 	local opened = false
 	local embeddedParent: string? = nil
 	local embeddedOverwrite = false

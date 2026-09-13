@@ -11,4 +11,5 @@ export type StorybookInfo = types.StorybookInfo
 return {
 	createAgentController = require("@root/createAgentController"),
 	createAgentGateway = require("@root/createAgentGateway"),
+	createEmbeddedAgentGateway = require("@root/createEmbeddedAgentGateway"),
 }
