@@ -122,7 +122,7 @@ jobs:
       LOG_LEVEL: debug
     if: ${{ github.event.release }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
@@ -148,7 +148,7 @@ jobs:
       LOG_LEVEL: debug
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
