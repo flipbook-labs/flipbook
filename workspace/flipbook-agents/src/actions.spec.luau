@@ -1,7 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 local JestGlobals = require("@pkg/JestGlobals")
 
-local actions = require("@root/actions")
 local types = require("@root/types")
 
 local expect = JestGlobals.expect
@@ -16,13 +15,7 @@ type ControllerState = {
 	opened: boolean,
 }
 
-local function indexActions(): ActionMap
-	local result: ActionMap = {}
-	for _, action in actions.create() do
-		result[action.name] = action
-	end
-	return result
-end
+local actions: ActionMap = require("@root/actions")
 
 local function createController(): (types.AgentController, ControllerState)
 	local state: ControllerState = {
@@ -89,22 +82,20 @@ local function createController(): (types.AgentController, ControllerState)
 end
 
 test("rejects params with non-string keys", function()
-	local indexed = indexActions()
 	local controller = createController()
 
 	expect(function()
-		indexed.listStories.run(controller, { [1] = "ReplicatedStorage/Example.storybook" })
+		actions.listStories.run(controller, { [1] = "ReplicatedStorage/Example.storybook" })
 	end).toThrow("params must use string keys")
 end)
 
 test("routes widget and embedding actions through the controller", function()
-	local indexed = indexActions()
 	local controller, state = createController()
 
-	expect(indexed.openWidget.run(controller, nil)).toEqual({ enabled = true })
+	expect(actions.openWidget.run(controller, nil)).toEqual({ enabled = true })
 	expect(state.opened).toBe(true)
 
-	expect(indexed.embedFlipbook.run(controller, {
+	expect(actions.embedFlipbook.run(controller, {
 		parent = "ReplicatedStorage",
 		overwrite = true,
 	})).toEqual({ path = "ReplicatedStorage/Flipbook" })
@@ -113,10 +104,9 @@ test("routes widget and embedding actions through the controller", function()
 end)
 
 test("routes story actions through the controller", function()
-	local indexed = indexActions()
 	local controller = createController()
 
-	expect(indexed.listStorybooks.run(controller, nil)).toEqual({
+	expect(actions.listStorybooks.run(controller, nil)).toEqual({
 		storybooks = {
 			{
 				name = "Example",
@@ -124,7 +114,7 @@ test("routes story actions through the controller", function()
 			},
 		},
 	})
-	expect(indexed.listStories.run(controller, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
+	expect(actions.listStories.run(controller, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
 		stories = {
 			{
 				name = "Button",
@@ -133,7 +123,7 @@ test("routes story actions through the controller", function()
 			},
 		},
 	})
-	expect(indexed.openStory.run(controller, {
+	expect(actions.openStory.run(controller, {
 		story = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
 	})).toEqual({
@@ -141,7 +131,7 @@ test("routes story actions through the controller", function()
 		path = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
 	})
-	expect(indexed.getCurrentStory.run(controller, nil)).toEqual({
+	expect(actions.getCurrentStory.run(controller, nil)).toEqual({
 		name = "Button",
 		path = "ReplicatedStorage/Button.story",
 		isMounted = true,
@@ -149,13 +139,12 @@ test("routes story actions through the controller", function()
 end)
 
 test("routes control actions through the controller", function()
-	local indexed = indexActions()
 	local controller = createController()
 
-	expect(indexed.getControls.run(controller, nil)).toEqual({
+	expect(actions.getControls.run(controller, nil)).toEqual({
 		controls = { text = "Before" },
 	})
-	expect(indexed.setControls.run(controller, { controls = { text = "After" } })).toEqual({
+	expect(actions.setControls.run(controller, { controls = { text = "After" } })).toEqual({
 		controls = { text = "After" },
 	})
 end)
