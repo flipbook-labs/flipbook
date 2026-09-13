@@ -11,19 +11,10 @@ local function asTable(params: unknown?): { [string]: unknown }
 	end
 	for key in params :: { [unknown]: unknown } do
 		if type(key) ~= "string" then
-			error("action params must use string keys")
+			error("params must use string keys")
 		end
 	end
 	return params :: { [string]: unknown }
-end
-
-local function createInputSchema(properties: { [string]: unknown }, required: { string }?): InputSchema
-	local inputSchema: InputSchema = {
-		type = "object",
-	}
-	inputSchema.properties = properties
-	inputSchema.required = required
-	return inputSchema
 end
 
 local function getRequiredString(params: { [string]: unknown }, key: string): string
@@ -56,6 +47,14 @@ local function getOptionalBoolean(params: { [string]: unknown }, key: string): b
 	return value
 end
 
+local function objectInputSchema(properties: { [string]: unknown }, required: { string }?): InputSchema
+	return {
+		type = "object",
+		properties = properties,
+		required = required,
+	}
+end
+
 local function create(): { Action }
 	return {
 		{
@@ -71,13 +70,13 @@ local function create(): { Action }
 			name = "embedFlipbook",
 			title = "Embed Flipbook",
 			description = "Embed the Flipbook runtime into the experience for Play-mode input and screenshots.",
-			inputSchema = createInputSchema({
+			inputSchema = objectInputSchema({
 				parent = {
 					type = "string",
 					description = "Optional destination path. Defaults to ReplicatedStorage.",
 				},
 				overwrite = { type = "boolean", description = "Replace an existing embedded Flipbook runtime." },
-			}),
+			}, nil),
 			run = function(controller, params)
 				local fields = asTable(params)
 				return {
@@ -100,7 +99,7 @@ local function create(): { Action }
 			name = "listStories",
 			title = "List Stories",
 			description = "List Story modules for one available Storybook.",
-			inputSchema = createInputSchema({
+			inputSchema = objectInputSchema({
 				storybook = { type = "string", description = "Path to a .storybook ModuleScript" },
 			}, { "storybook" }),
 			run = function(controller, params)
@@ -112,7 +111,7 @@ local function create(): { Action }
 			name = "openStory",
 			title = "Open Story",
 			description = "Open a Story module in Flipbook.",
-			inputSchema = createInputSchema({
+			inputSchema = objectInputSchema({
 				story = { type = "string", description = "Path to a .story ModuleScript" },
 				storybook = { type = "string", description = "Optional path to its .storybook ModuleScript" },
 			}, { "story" }),
@@ -141,7 +140,7 @@ local function create(): { Action }
 			name = "setControls",
 			title = "Set Controls",
 			description = "Set control values for the mounted Story.",
-			inputSchema = createInputSchema({
+			inputSchema = objectInputSchema({
 				controls = { type = "object", description = "Map of control names to values" },
 			}, { "controls" }),
 			run = function(controller, params)
