@@ -285,6 +285,7 @@ Concurrency ensures one deployment per PR at a time; main pushes run independent
 |--------|-------|-------|--------|
 | FLIPBOOK_BACKEND_APP_PRIVATE_KEY | org | GitHub App private key | Flipbook backend app settings |
 | ROBLOX_API_KEY | org (flipbook-labs) | Open Cloud API key | Manually generated at https://create.roblox.com/dashboard/credentials |
+| WALLY_REGISTRY_TOKEN | org (flipbook-labs) | GitHub PAT for Wally registry publish | From `wally login` → `~/.wally/auth.toml` |
 | ROBLOX_STORYBOOK_PREVIEW_API_KEY | org | Open Cloud API key for storybook universe | Same process as ROBLOX_API_KEY |
 
 ### Variables (in GitHub Actions)
@@ -342,14 +343,19 @@ The script `.lune/publish-plugin.luau` reads rbxasset.toml and publishes to the 
 
 ## Wally Registry Token Rotation
 
-Some Flipbook Labs repositories publish packages to the Wally registry. If those workflows begin failing authentication:
+**When needed:** If `WALLY_REGISTRY_TOKEN` expires or is compromised, update it.
 
-1. Create a replacement registry token with `wally login`.
-2. Update the credential's 1Password record without printing the value.
-3. Update the `WALLY_REGISTRY_TOKEN` organization secret at the GitHub Actions execution boundary.
-4. Limit the secret to repositories whose workflows publish to Wally.
+**Steps:**
+1. Run `wally login` locally; authenticate via GitHub device flow.
+2. Copy the generated token from `~/.wally/auth.toml`:
+   ```toml
+   [tokens]
+   "https://api.wally.run/" = "gho_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+   ```
+3. Update the secret in GitHub org settings: [github.com/organizations/flipbook-labs/settings/secrets/actions](https://github.com/organizations/flipbook-labs/settings/secrets/actions).
+4. Name: `WALLY_REGISTRY_TOKEN`.
 
-Never commit the token or pass its plaintext through OpenTofu inputs or state.
+**Why org-level?** All flipbook-labs repos publish to the same Wally scope; the token must be shareable.
 
 ---
 
@@ -428,7 +434,7 @@ To keep this skill current and aligned with code changes:
 - Verify project.luau storybook IDs: `grep ROBLOX_STORYBOOK project.luau`
 - Verify channel-to-asset mapping: `grep -A 5 "ASSET_NAMES_BY_CHANNEL" .lune/publish-plugin.luau`
 - Verify deploy-storybook version pinned in storybook.yml: `grep "deploy-storybook@" .github/workflows/storybook.yml`
-- Verify contributor release docs: `cat docs/docs/contributing/creating-releases.md`
+- Verify Wally token docs in creating-releases.md: `cat docs/docs/contributing/creating-releases.md`
 
 ---
 

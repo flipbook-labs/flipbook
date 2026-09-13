@@ -11,8 +11,35 @@ To cut a release, review the assembled notes and version in the auto-generated p
 
 Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after merging to monitor the deployment.
 
-## Wally registry credential recovery
+## Logging in to Wally registry in CI
 
-Some Flipbook Labs repositories publish packages to the Wally registry. If those workflows begin failing authentication, create a replacement registry token with `wally login`, update its 1Password record, and then update the `WALLY_REGISTRY_TOKEN` organization secret at the execution boundary.
+In the event that publishing our Wally packages starts to fail this section shows how to update the login token.
 
-Limit GitHub access to the repositories whose workflows publish to Wally. Do not commit the token or pass its plaintext through OpenTofu inputs or state.
+:::warning
+Your GitHub account must have permission to publish to the flipbook-labs org. To add a new account, update [owners.json](https://github.com/UpliftGames/wally-index/blob/main/flipbook-labs/owners.json) with your GitHub user ID.
+:::
+
+First run `wally login` locally and authenticate with your GitHub account.
+
+```sh
+wally login
+[INFO ] Updating package index https://github.com/UpliftGames/wally-index...
+
+Go to https://github.com/login/device
+And enter the code: XXXX-XXXX
+
+Awaiting authorization...
+Authorization successful!
+```
+
+Open `~/.wally/auth.toml` and copy the generated GitHub token.
+
+```toml
+# This is where Wally stores details for authenticating with registries.
+# It can be updated using `wally login` and `wally logout`.
+
+[tokens]
+"https://api.wally.run/" = "gho_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
+Then navigate to the organization's [secrets settings](https://github.com/organizations/flipbook-labs/settings/secrets/actions) and update `WALLY_REGISTRY_TOKEN` to use the new token to allow all flipbook-labs repos to publish to our scope.
