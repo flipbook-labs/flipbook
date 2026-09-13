@@ -1,6 +1,7 @@
 local JestGlobals = require("@pkg/JestGlobals")
 
 local actions = require("@root/actions")
+local types = require("@root/types")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -92,4 +93,13 @@ test("routes story and control actions through the controller", function()
 	expect(indexed.setControls.run(controller, { controls = { text = "After" } })).toEqual({
 		controls = { text = "After" },
 	})
+end)
+
+test("rejects action parameter arrays", function()
+	local controller = ({} :: unknown) :: types.AgentController
+	local arrayParams = ({ "unexpected" } :: unknown) :: { [string]: unknown }
+
+	expect(function()
+		indexActions().embedFlipbook.run(controller, arrayParams)
+	end).toThrow("action params must use string keys")
 end)
