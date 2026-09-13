@@ -1,0 +1,10 @@
+{
+  "context": {
+    "repos": [
+      "flipbook-labs/agent-skills",
+      "flipbook-labs/storyteller",
+      "flipbook-labs/module-loader"
+    ]
+  },
+  "statusCheck": true
+}
