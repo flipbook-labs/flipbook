@@ -14,8 +14,8 @@ A Greptile finding does not become correct merely because it is blocking. Author
 
 | Domain            | Responsibility                                                                                                                                                              | Human approvals |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------: |
-| `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next                                                                             |               1 |
-| `flipbook-engine` | Every path outside the application-owned workspaces, including runtime and build machinery, Storyteller and ModuleLoader integration boundaries, and repository stewardship |     0 (current) |
+| `flipbook-app`    | User-facing application structure, behavior, visual presentation, navigation, and Flipbook Next, excluding engine-managed release manifests                                 |               1 |
+| `flipbook-engine` | Every other path, including release metadata wherever located, runtime and build machinery, Storyteller and ModuleLoader integration boundaries, and repository stewardship |     0 (current) |
 
 The live GitHub ruleset is the enforcement point for application and engine ownership. Its ownership paths and merge requirements are managed centrally in the [Flipbook Labs GitHub governance stack](https://github.com/flipbook-labs/infra/tree/main/stacks/github). Increase the engine team's minimum approval count to one when a second member joins.
 
