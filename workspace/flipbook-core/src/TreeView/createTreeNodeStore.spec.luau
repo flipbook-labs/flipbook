@@ -28,6 +28,18 @@ test("nodes can be named", function()
 	expect(root.getName()).toBe("<root>")
 end)
 
+test("nodes can identify and order stories", function()
+	local node = createTreeNodeStore()
+	expect(node.getStoryId()).toBeUndefined()
+	expect(node.getOrder()).toBeUndefined()
+
+	node.setStoryId("primary")
+	node.setOrder(2)
+
+	expect(node.getStoryId()).toBe("primary")
+	expect(node.getOrder()).toBe(2)
+end)
+
 describe("node activation", function()
 	test("activating a node with no children changes its selected state", function()
 		local root = createTreeNodeStore()

@@ -30,13 +30,14 @@ type ExtraStoryProps = types.ExtraStoryProps
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 
 type StoryViewProps = {
+	storyId: string?,
 	storyModule: ModuleScript,
 	storybook: LoadedStorybook,
 }
 
 local function StoryView(props: StoryViewProps)
 	local agentController = AgentContext.use()
-	local story, storyError = useStory(props.storyModule, props.storybook)
+	local story, storyError = useStory(props.storyModule, props.storybook, props.storyId)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
