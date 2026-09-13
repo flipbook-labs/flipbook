@@ -8,7 +8,7 @@ local getDescendants = require("@scripts/lib/getDescendants")
 
 local project = require("@repo/project")
 
-local LOOM_LOCK_PATH = path.join(project.REPO_PATH, "loom.lock.luau")
+local LOOM_MANIFEST_PATH = path.join(project.REPO_PATH, "loom.config.luau")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
@@ -34,6 +34,28 @@ local function loomPackagesAreAvailable(): boolean
 	return ok
 end
 
+local function hydrateLoomStore()
+	local tempProjectPath = path.join(system.tmpdir(), `flipbook-loom-install-{process.pid()}`)
+	if fs.exists(tempProjectPath) then
+		fs.removeDirectory(tempProjectPath, {
+			recursive = true,
+		})
+	end
+	fs.createDirectory(tempProjectPath, {
+		makeParents = true,
+	})
+	fs.writeStringToFile(path.join(tempProjectPath, "loom.config.luau"), fs.readFileToString(LOOM_MANIFEST_PATH))
+
+	local res = process.run({ "lute", "pkg", "install" }, {
+		cwd = tostring(tempProjectPath),
+		stdio = "inherit",
+	})
+	fs.removeDirectory(tempProjectPath, {
+		recursive = true,
+	})
+	assert(res.ok, res.stderr)
+end
+
 -- Install Loom dependencies first since the rest of the script depends on them.
 -- Lute reuses a satisfied lockfile without checking whether its store paths exist,
 -- so force a fresh resolution when an incomplete store survives the first pass.
@@ -41,12 +63,7 @@ do
 	installLoomPackages()
 
 	if not loomPackagesAreAvailable() then
-		local lockContents = fs.readFileToString(LOOM_LOCK_PATH)
-		fs.remove(LOOM_LOCK_PATH)
-
-		local ok, err = pcall(installLoomPackages)
-		fs.writeStringToFile(LOOM_LOCK_PATH, lockContents)
-		assert(ok, tostring(err))
+		hydrateLoomStore()
 		assert(loomPackagesAreAvailable(), "Loom packages are missing after installation")
 	end
 end
