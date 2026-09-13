@@ -6,9 +6,14 @@ type Controls = types.Controls
 type StoryInfo = types.StoryInfo
 type StoryImplementation = types.StoryImplementation
 
-local function createAgentController(openSurface: () -> ()): AgentController
+local function createAgentController(
+	openWidget: () -> (),
+	openViewport: (() -> ())?,
+	openCurrentSurface: (() -> ())?
+): AgentController
 	local appImplementation: AppImplementation? = nil
 	local storyImplementation: StoryImplementation? = nil
+	local showSurface = openCurrentSurface or openWidget
 
 	local function getAppImplementation(): AppImplementation
 		if appImplementation == nil then
@@ -36,7 +41,14 @@ local function createAgentController(openSurface: () -> ()): AgentController
 	end
 
 	return {
-		openWidget = openSurface,
+		openWidget = openWidget,
+
+		openViewport = function()
+			if openViewport == nil then
+				error("Edit-mode viewport surface is unavailable")
+			end
+			openViewport()
+		end,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
 			return getAppImplementation().embedFlipbook(parentPath, overwrite == true)
@@ -51,7 +63,7 @@ local function createAgentController(openSurface: () -> ()): AgentController
 		end,
 
 		openStory = function(storyPath: string, storybookPath: string?, storyId: string?)
-			openSurface()
+			showSurface()
 			return getAppImplementation().openStory(storyPath, storybookPath, storyId)
 		end,
 

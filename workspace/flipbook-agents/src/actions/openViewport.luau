@@ -5,12 +5,12 @@ local types = require("@root/types")
 type Action = AgentGateway.Action<types.AgentController>
 
 local action: Action = {
-	name = "openWidget",
-	title = "Open Widget",
-	description = "Open the Flipbook plugin widget.",
+	name = "openViewport",
+	title = "Open Viewport",
+	description = "Move Flipbook into an Edit-mode ScreenGui visible in the Studio viewport.",
 	run = function(controller)
-		controller.openWidget()
-		return { enabled = true, surface = "widget" }
+		controller.openViewport()
+		return { surface = "viewport" }
 	end,
 }
 

@@ -28,16 +28,29 @@ local function createStoryImplementation(path: string, id: string, initialValue:
 end
 
 describe("app registration", function()
-	test("opens an embedded screen surface", function()
+	test("opens the configured surfaces", function()
 		local screenGui = Instance.new("ScreenGui")
 		screenGui.Enabled = false
+		local viewportOpened = false
 		local controller = createAgentController(function()
 			screenGui.Enabled = true
+		end, function()
+			viewportOpened = true
 		end)
 
 		controller.openWidget()
+		controller.openViewport()
 
 		expect(screenGui.Enabled).toBe(true)
+		expect(viewportOpened).toBe(true)
+	end)
+
+	test("rejects an unavailable viewport surface", function()
+		local controller = createAgentController(function() end)
+
+		expect(function()
+			controller.openViewport()
+		end).toThrow("Edit-mode viewport surface is unavailable")
 	end)
 
 	test("routes app actions through the current implementation", function()

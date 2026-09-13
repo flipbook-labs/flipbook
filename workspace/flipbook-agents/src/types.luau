@@ -34,6 +34,7 @@ export type StoryImplementation = {
 
 export type AgentController = {
 	openWidget: () -> (),
+	openViewport: () -> (),
 	embedFlipbook: (parentPath: string?, overwrite: boolean?) -> string,
 	listStorybooks: () -> { StorybookInfo },
 	listStories: (storybookPath: string) -> { StoryInfo },
