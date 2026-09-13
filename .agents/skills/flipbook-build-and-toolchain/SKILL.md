@@ -94,7 +94,7 @@ Each tool has a specific, narrow job. Understand which tool does what to debug b
 | **Wally** | `wally.toml` | Roblox packages in `Packages/` | Fetch Roblox runtime dependencies (Storyteller, ModuleLoader, React, Charm) | Network timeout; corrupted package index; conflicting semver constraints |
 | **Rojo** | `.project.json` tree + source files | `.rbxm` file or sourcemap JSON | Syncs Luau → Roblox Instance hierarchy; generates sourcemaps for Darklua | Project tree misconfigured; invalid $path; circular dependencies in module tree |
 | **Darklua** | Luau source with string requires + `.darklua.json` rules | Luau source with Roblox requires | Transforms `require("@pkg/Foo")` → `require(script.Parent.Packages.Foo)` using sourcemap; injects `_G` globals; dead-code stripping | Sourcemap drift (Rojo ran but config changed); stale cache; env vars undefined |
-| **Lute** | `.lute/<script>.luau` + args | Task output (built files, published artifacts) | Task runner for all Flipbook scripts (build, test, lint, analyze, etc.) | Malformed Lune Luau; missing dependency; process spawn hanging |
+| **Lute** | `.lute/<script>.luau` + args | Task output (built files, published artifacts) | Task runner for all Flipbook scripts (build, test, lint, analyze, etc.) | Malformed Luau; missing dependency; process spawn hanging |
 
 **The crucial boundary:** Wally and Loom both write to `Packages/`. The install script moves Loom → `LuauPackages/` so they don't collide. Never manually move or delete these directories during a build.
 

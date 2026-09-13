@@ -52,7 +52,7 @@ do
 		}
 
 		for _, package in packages do
-			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
+			local packageRoot = find(PACKAGES_INDEX_PATH, package)[1]
 
 			assert(packageRoot, `no package found matching "{package}"`)
 
@@ -153,20 +153,6 @@ do
 		end
 	end
 
-	local function installRbxasset()
-		local fileName = "rbxasset.zip"
-
-		run("curl", { "-LO", `https://github.com/Roblox/rbxasset/releases/download/v0.2.0/{fileName}` }, {
-			cwd = project.LUAU_PACKAGES_PATH,
-		})
-
-		run("unzip", { "rbxasset.zip" }, {
-			cwd = project.LUAU_PACKAGES_PATH,
-		})
-
-		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
-	end
-
 	local function pruneDevelopmentFiles()
 		-- Prune any third-party tests or stories that may have slipped through
 		local prunedFiles = {
@@ -185,6 +171,5 @@ do
 
 	installRobloxPackages()
 	installWallyPackages()
-	installRbxasset()
 	pruneDevelopmentFiles()
 end

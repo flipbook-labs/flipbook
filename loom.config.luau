@@ -3,6 +3,11 @@ return {
 		name = "Flipbook",
 		version = "2.5.0",
 		dependencies = {
+			["rbxasset"] = {
+				rev = "main",
+				sourceKind = "github",
+				source = "https://github.com/Roblox/rbxasset",
+			},
 			["flipbook-batteries"] = {
 				rev = "v0.9.0",
 				sourceKind = "github",
