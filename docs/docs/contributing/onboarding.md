@@ -61,7 +61,7 @@ This command verifies the branch has a change entry, sets up local type definiti
 
 Push your branch to your fork, then open a pull request against `flipbook-labs/flipbook:main`.
 
-GitHub runs standard fork builds with a read-only token and no repository secrets. Cloud tests and storybook preview publishing use protected jobs that may wait for a maintainer to review the contribution and approve them.
+GitHub runs fork code in jobs that have no repository secrets and only read access. Cloud tests and storybook preview publishing consume the resulting build artifacts on separate protected runners. Those protected jobs may wait for a maintainer to review the contribution and approve them.
 
 You do not need to request a Flipbook Labs Open Cloud key. If GitHub shows a first-time contributor approval banner or a protected job is waiting, no action is required from you.
 

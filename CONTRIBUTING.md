@@ -39,6 +39,6 @@ Install [Rokit](https://github.com/rojo-rbx/rokit/) before running the setup com
 
 6. Push your branch to your fork and open a pull request against `flipbook-labs/flipbook:main`.
 
-Fork pull requests run standard builds without secrets. Cloud tests and storybook preview publishing use protected jobs and may wait for a maintainer to approve them. You do not need a Flipbook Labs Open Cloud key for this process.
+Fork pull requests run builds without secrets. Cloud tests and storybook preview publishing consume those build artifacts on separate protected runners and may wait for a maintainer to approve them. You do not need a Flipbook Labs Open Cloud key for this process.
 
 See the [full onboarding guide](docs/docs/contributing/onboarding.md) for build options, local cloud testing, and using Flipbook to develop Flipbook.
