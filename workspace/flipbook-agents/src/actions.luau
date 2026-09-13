@@ -25,6 +25,7 @@ local function createInputSchema(properties: { [string]: unknown }, required: { 
 	inputSchema.required = required
 	return inputSchema
 end
+
 local function getRequiredString(params: { [string]: unknown }, key: string): string
 	local value = params[key]
 	if type(value) ~= "string" or value == "" then
