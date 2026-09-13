@@ -45,12 +45,14 @@ local function StoryView(props: StoryViewProps)
 	local storyControlsStore = useMemo(function(): StoryControlsStore?
 		return if story then createStoryControlsStore(story.controls) else nil
 	end, { story } :: { unknown })
+	local storyId = if story then story.id else nil
 
 	useEffect(function()
-		if agentController == nil or storyControlsStore == nil then
+		if agentController == nil or storyControlsStore == nil or storyId == nil then
 			return
 		end
 		return agentController.registerStory({
+			id = storyId,
 			path = getInstancePath(props.storyModule),
 			getControls = function()
 				return storyControlsStore.getControls() :: any
@@ -62,7 +64,7 @@ local function StoryView(props: StoryViewProps)
 				return storyControlsStore.getControls() :: any
 			end,
 		})
-	end, { agentController, props.storyModule, storyControlsStore } :: { unknown })
+	end, { agentController, props.storyModule, storyId, storyControlsStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {

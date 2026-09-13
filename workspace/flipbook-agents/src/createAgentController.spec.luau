@@ -10,9 +10,10 @@ local function createWidget()
 	return { Enabled = false } :: any
 end
 
-local function createStoryImplementation(path: string, initialValue: string)
+local function createStoryImplementation(path: string, id: string, initialValue: string)
 	local controls: { [string]: unknown } = { label = initialValue }
 	return {
+		id = id,
 		path = path,
 		getControls = function()
 			return controls
@@ -54,10 +55,17 @@ describe("app registration", function()
 				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
 			end,
 			listStories = function(storybookPath)
-				return { { name = "Button", path = `${storybookPath}/Button.story`, storybook = storybookPath } }
+				return {
+					{
+						id = "primary",
+						name = "Primary",
+						path = `${storybookPath}/Button.story`,
+						storybook = storybookPath,
+					},
+				}
 			end,
-			openStory = function(storyPath, storybookPath)
-				return { name = "Button", path = storyPath, storybook = storybookPath }
+			openStory = function(storyPath, storybookPath, storyId)
+				return { id = storyId or "primary", name = "Primary", path = storyPath, storybook = storybookPath }
 			end,
 			getCurrentStory = function()
 				return nil
@@ -66,8 +74,8 @@ describe("app registration", function()
 
 		expect(controller.listStorybooks()[1].name).toBe("Example")
 		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
-		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
-		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
+		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].id).toBe("primary")
+		expect(controller.openStory("ReplicatedStorage/Button.story", nil, "primary").id).toBe("primary")
 		expect(widget.Enabled).toBe(true)
 
 		cleanup()
@@ -91,24 +99,28 @@ describe("story registration", function()
 				return {}
 			end,
 			openStory = function()
-				return { name = "Button", path = "ReplicatedStorage/Button.story" }
+				return { id = "primary", name = "Primary", path = "ReplicatedStorage/Button.story" }
 			end,
 			getCurrentStory = function()
-				return { name = "Button", path = "ReplicatedStorage/Button.story" }
+				return { id = "primary", name = "Primary", path = "ReplicatedStorage/Button.story" }
 			end,
 		})
 
 		expect(controller.getCurrentStory()).toEqual({
-			name = "Button",
+			id = "primary",
+			name = "Primary",
 			path = "ReplicatedStorage/Button.story",
+			controlsReady = false,
 			isMounted = false,
 		})
 		expect(controller.getControls()).toEqual({})
 
-		local cleanup = controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "Before"))
+		local cleanup =
+			controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "primary", "Before"))
 		local mountedStory = controller.getCurrentStory()
 		assert(mountedStory ~= nil, "expected a current story")
 		expect(mountedStory.isMounted).toBe(true)
+		expect(mountedStory.controlsReady).toBe(true)
 		expect(controller.setControls({ label = "After" })).toEqual({ label = "After" })
 
 		cleanup()
@@ -122,12 +134,61 @@ describe("story registration", function()
 
 	test("does not let an old cleanup unregister the current story", function()
 		local controller = createAgentController(function() end)
+		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
+			listStorybooks = function()
+				return {}
+			end,
+			listStories = function()
+				return {}
+			end,
+			openStory = function()
+				return { id = "primary", name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+			getCurrentStory = function()
+				return { id = "primary", name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+		})
 		local cleanupFirst =
-			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
-		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
+			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "primary", "First"))
+		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "primary", "Second"))
 
 		cleanupFirst()
 
 		expect(controller.getControls()).toEqual({ label = "Second" })
 	end)
+end)
+
+test("does not report a different Story ID from the same module as mounted", function()
+	local controller = createAgentController(function() end)
+	controller.registerApp({
+		embedFlipbook = function()
+			return "ReplicatedStorage/Flipbook"
+		end,
+		listStorybooks = function()
+			return {}
+		end,
+		listStories = function()
+			return {}
+		end,
+		openStory = function()
+			return { id = "secondary", name = "Secondary", path = "ReplicatedStorage/Button.story" }
+		end,
+		getCurrentStory = function()
+			return { id = "secondary", name = "Secondary", path = "ReplicatedStorage/Button.story" }
+		end,
+	})
+	controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "primary", "Before"))
+
+	expect(controller.getCurrentStory()).toMatchObject({
+		id = "secondary",
+		controlsReady = false,
+		isMounted = false,
+	})
+	expect(controller.getControls()).toEqual({})
+	expect(function()
+		controller.setControls({ label = "After" })
+	end).toThrow("setControls requires the story view to be mounted")
 end)

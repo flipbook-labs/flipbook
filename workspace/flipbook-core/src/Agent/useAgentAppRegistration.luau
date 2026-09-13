@@ -14,10 +14,11 @@ type Storybooks = {
 }
 
 export type Options = {
+	storyId: string?,
 	storyModule: ModuleScript?,
 	storybook: LoadedStorybook?,
 	storybooks: Storybooks,
-	openStory: (ModuleScript, LoadedStorybook?) -> (),
+	openStory: (ModuleScript, LoadedStorybook?, string?) -> (),
 }
 
 local function useAgentAppRegistration(options: Options)
@@ -36,10 +37,10 @@ local function useAgentAppRegistration(options: Options)
 				return latest.current.storybooks
 			end,
 			getCurrentStory = function()
-				return latest.current.storyModule, latest.current.storybook
+				return latest.current.storyModule, latest.current.storybook, latest.current.storyId
 			end,
-			openStory = function(storyModule, storybook)
-				latest.current.openStory(storyModule, storybook)
+			openStory = function(storyModule, storybook, storyId)
+				latest.current.openStory(storyModule, storybook, storyId)
 			end,
 		}))
 	end, { agentController })
