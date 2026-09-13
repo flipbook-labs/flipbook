@@ -16,9 +16,8 @@ args:add("apiKey", "option", {
 		.. "supplied by the ROBLOX_API_KEY environment variable",
 	aliases = { "k" },
 })
-
-args:add("filter", "option", {
-	help = "Specify a filepath pattern to match for when running tests",
+args:add("place", "option", {
+	help = "Path to the test place file to run",
 })
 
 args:parse({ ... })
@@ -30,21 +29,22 @@ if not apiKey or apiKey == "" then
 	)
 end
 
-local placePath = path.join(system.tmpdir(), "tests-place.rbxl")
-local buildArgs: { string | number | boolean | path.Pathlike } = {
-	"run",
-	"buildTests",
-	"--output",
-	placePath,
-}
-local filter = args:get("filter")
-if filter then
-	table.insert(buildArgs, "--filter")
-	table.insert(buildArgs, filter)
-end
+local placePath = args:get("place")
+assert(typeof(placePath) == "string", "--place must be supplied with a test place file")
 
-run("lute", buildArgs)
-run("lute", { "run", "runTests", "--place", placePath }, {
+run("rocale", {
+	"run",
+	"--script",
+	".lute/tasks/run-tests.luau",
+	"--load.place",
+	placePath,
+	"--universeId",
+	process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+	"--placeId",
+	process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+	"--output",
+	tostring(path.join(system.tmpdir(), "tests.rbxl")),
+}, {
 	env = {
 		ROBLOX_API_KEY = apiKey,
 	},
