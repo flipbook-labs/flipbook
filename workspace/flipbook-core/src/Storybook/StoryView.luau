@@ -8,6 +8,8 @@ local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local StoryStore = require("@root/Storybook/StoryStore")
+local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -16,6 +18,7 @@ local Text = Foundation.Text
 local View = Foundation.View
 
 local e = React.createElement
+local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
@@ -23,6 +26,7 @@ local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type ExtraStoryProps = types.ExtraStoryProps
+type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 
 type StoryViewProps = {
 	storyId: string?,
@@ -33,9 +37,27 @@ type StoryViewProps = {
 local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook, props.storyId)
 	local theme = useThemeName()
+	local storyStore = useSignalState(StoryStore.get)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
+
+	local storyControlsStore = useMemo(function(): StoryControlsStore?
+		if story == nil then
+			return nil
+		end
+		return createStoryControlsStore(story.controls)
+	end, { story } :: { unknown })
+
+	useEffect(function()
+		storyStore.setActiveControlsStore(storyControlsStore)
+
+		return function()
+			if storyStore.getActiveControlsStore() == storyControlsStore then
+				storyStore.setActiveControlsStore(nil)
+			end
+		end
+	end, { storyStore, storyControlsStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
@@ -50,6 +72,7 @@ local function StoryView(props: StoryViewProps)
 		StoryControlsContext.StoryControlsProvider,
 		{
 			schema = story and story.controls or nil,
+			store = storyControlsStore,
 		},
 		e(View, {
 			tag = "size-full bg-surface-200",
@@ -89,15 +112,18 @@ local function StoryView(props: StoryViewProps)
 					LayoutOrder = 2,
 				}),
 
-				Preview = e(View, {
-					LayoutOrder = 3,
-					tag = "shrink size-full",
-				}, {
-					StoryPreview = React.createElement(StoryPreview, {
+				Preview = e(
+					View,
+					{
+						LayoutOrder = 3,
+						tag = "shrink size-full",
+					},
+					React.createElement(StoryPreview, {
+						key = story.id,
 						story = story,
 						extraProps = extraProps,
-					}),
-				}),
+					})
+				),
 
 				Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
 					LayoutOrder = 4,

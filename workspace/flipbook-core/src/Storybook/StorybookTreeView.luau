@@ -6,6 +6,7 @@ local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
+local StoryStore = require("@root/Storybook/StoryStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
@@ -24,9 +25,7 @@ local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
-local useStorybooks = Storyteller.useStorybooks
 local useStoryModuleRecords = Storyteller.useStoryModuleRecords
-local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
@@ -163,8 +162,9 @@ local function StorybookTreeView(props: Props)
 	local storyModuleNodesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: TreeNodeStore } })
 	local storybookTreeSignaturesBySource = useRef({} :: { [Instance]: { unknown } })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
-	local storybooks = useStorybooks()
-	local orphanedStoryModules = useOrphanedStoryModules()
+	local storyStore = useSignalState(StoryStore.get)
+	local storybooks = useSignalState(storyStore.getStorybooks)
+	local orphanedStoryModules = useSignalState(storyStore.getOrphanedStoryModules)
 	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
 	local orphanedStorybook = useMemo(createLoadedStorybook, {})
 	local storyRequests = useMemo(function(): { StoryRequest }
@@ -356,8 +356,8 @@ local function StorybookTreeView(props: Props)
 				local storyModuleNodes = indexStoryModuleNodes(node, storyModules)
 				local recordSignatures = {}
 				for storyModule in storyModuleNodes do
-					local recordsForModule = storyModuleRecords[storyModule]
-					local record = if recordsForModule then recordsForModule[storybook.source] else nil
+					local recordsForStorybook = storyModuleRecords[storybook.source]
+					local record = if recordsForStorybook then recordsForStorybook[storyModule] else nil
 					if record then
 						recordSignatures[storyModule] = getRecordSignature(record)
 					end
@@ -445,8 +445,8 @@ local function StorybookTreeView(props: Props)
 				continue
 			end
 
-			local recordsForModule = storyModuleRecords[orphan]
-			local record = if recordsForModule then recordsForModule[source] else nil
+			local recordsForStorybook = storyModuleRecords[source]
+			local record = if recordsForStorybook then recordsForStorybook[orphan] else nil
 			local node = createTreeNodeForStoryModule(orphan, record)
 			node.parentTo(unknownStories)
 			nodesByInstance.current[orphan] = node
@@ -465,8 +465,8 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		for _, request in storyRequests do
 			local source = request.storybook.source
-			local recordsForModule = storyModuleRecords[request.storyModule]
-			local record = if recordsForModule then recordsForModule[source] else nil
+			local recordsForStorybook = storyModuleRecords[source]
+			local record = if recordsForStorybook then recordsForStorybook[request.storyModule] else nil
 			if not record then
 				continue
 			end
