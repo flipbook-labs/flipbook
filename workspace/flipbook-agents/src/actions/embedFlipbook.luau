@@ -1,7 +1,9 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
+local asTable = require("@root/actions/params/asTable")
+local getOptionalBoolean = require("@root/actions/params/getOptionalBoolean")
+local getOptionalString = require("@root/actions/params/getOptionalString")
 local objectInputSchema = require("@root/actions/objectInputSchema")
-local params = require("@root/actions/params")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
@@ -18,11 +20,11 @@ local action: Action = {
 		overwrite = { type = "boolean", description = "Replace an existing embedded Flipbook runtime." },
 	}, nil),
 	run = function(controller, rawParams)
-		local fields = params.asTable(rawParams)
+		local fields = asTable(rawParams)
 		return {
 			path = controller.embedFlipbook(
-				params.getOptionalString(fields, "parent"),
-				params.getOptionalBoolean(fields, "overwrite")
+				getOptionalString(fields, "parent"),
+				getOptionalBoolean(fields, "overwrite")
 			),
 		}
 	end,
