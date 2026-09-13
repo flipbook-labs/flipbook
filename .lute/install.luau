@@ -8,6 +8,7 @@ local getDescendants = require("@scripts/lib/getDescendants")
 
 local project = require("@repo/project")
 
+local LOOM_LOCK_PATH = path.join(project.REPO_PATH, "loom.lock.luau")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
@@ -17,14 +18,37 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
--- Install Loom dependencies first since the rest of the script depends on them.
--- Lute installs them into the global store (~/.loom/store), which the @luaupkg
--- alias resolves requires from directly, so nothing needs copying locally.
-do
+local function installLoomPackages()
 	local res = process.run({ "lute", "pkg", "install" }, {
 		stdio = "inherit",
 	})
 	assert(res.ok, res.stderr)
+end
+
+local function loomPackagesAreAvailable(): boolean
+	local ok = pcall(function()
+		require("@luaupkg/flipbook-batteries@v0.12.0")
+		require("@luaupkg/dotenv@v0.1.0/src")
+		require("@batteries/cli")
+	end)
+	return ok
+end
+
+-- Install Loom dependencies first since the rest of the script depends on them.
+-- Lute reuses a satisfied lockfile without checking whether its store paths exist,
+-- so force a fresh resolution when an incomplete store survives the first pass.
+do
+	installLoomPackages()
+
+	if not loomPackagesAreAvailable() then
+		local lockContents = fs.readFileToString(LOOM_LOCK_PATH)
+		fs.remove(LOOM_LOCK_PATH)
+
+		local ok, err = pcall(installLoomPackages)
+		fs.writeStringToFile(LOOM_LOCK_PATH, lockContents)
+		assert(ok, tostring(err))
+		assert(loomPackagesAreAvailable(), "Loom packages are missing after installation")
+	end
 end
 
 do
