@@ -9,6 +9,7 @@ local getDescendants = require("@scripts/lib/getDescendants")
 local project = require("@repo/project")
 
 local LOOM_MANIFEST_PATH = path.join(project.REPO_PATH, "loom.config.luau")
+local ROKIT_MANIFEST_PATH = path.join(project.REPO_PATH, "rokit.toml")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
@@ -45,6 +46,7 @@ local function hydrateLoomStore()
 		makeParents = true,
 	})
 	fs.writeStringToFile(path.join(tempProjectPath, "loom.config.luau"), fs.readFileToString(LOOM_MANIFEST_PATH))
+	fs.writeStringToFile(path.join(tempProjectPath, "rokit.toml"), fs.readFileToString(ROKIT_MANIFEST_PATH))
 
 	local res = process.run({ "lute", "pkg", "install" }, {
 		cwd = tostring(tempProjectPath),
