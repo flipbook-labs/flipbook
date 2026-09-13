@@ -31,6 +31,19 @@ test("exposes the focused Flipbook action contract", function()
 	})
 end)
 
+test("rejects params with non-string keys", function()
+	local indexed = indexActions()
+	local controller = {
+		listStories = function()
+			return {}
+		end,
+	} :: any
+
+	expect(function()
+		indexed.listStories.run(controller, { [1] = "ReplicatedStorage/Example.storybook" })
+	end).toThrow("params must use string keys")
+end)
+
 test("routes story and control actions through the controller", function()
 	local indexed = indexActions()
 	local opened = false

@@ -3,10 +3,16 @@ local AgentGateway = require("@pkg/AgentGateway")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
+type InputSchema = AgentGateway.InputSchema
 
 local function asTable(params: unknown?): { [string]: unknown }
 	if type(params) ~= "table" then
 		return {}
+	end
+	for key in params :: { [unknown]: unknown } do
+		if type(key) ~= "string" then
+			error("params must use string keys")
+		end
 	end
 	return params :: { [string]: unknown }
 end
@@ -41,6 +47,14 @@ local function getOptionalBoolean(params: { [string]: unknown }, key: string): b
 	return value
 end
 
+local function objectInputSchema(properties: { [string]: unknown }, required: { string }?): InputSchema
+	return {
+		type = "object",
+		properties = properties,
+		required = required,
+	}
+end
+
 local function create(): { Action }
 	return {
 		{
@@ -56,16 +70,13 @@ local function create(): { Action }
 			name = "embedFlipbook",
 			title = "Embed Flipbook",
 			description = "Embed the Flipbook runtime into the experience for Play-mode input and screenshots.",
-			inputSchema = {
-				type = "object",
-				properties = {
-					parent = {
-						type = "string",
-						description = "Optional destination path. Defaults to ReplicatedStorage.",
-					},
-					overwrite = { type = "boolean", description = "Replace an existing embedded Flipbook runtime." },
-				} :: { [string]: unknown },
-			},
+			inputSchema = objectInputSchema({
+				parent = {
+					type = "string",
+					description = "Optional destination path. Defaults to ReplicatedStorage.",
+				},
+				overwrite = { type = "boolean", description = "Replace an existing embedded Flipbook runtime." },
+			}, nil),
 			run = function(controller, params)
 				local fields = asTable(params)
 				return {
@@ -88,13 +99,9 @@ local function create(): { Action }
 			name = "listStories",
 			title = "List Stories",
 			description = "List Story modules for one available Storybook.",
-			inputSchema = {
-				type = "object",
-				properties = {
-					storybook = { type = "string", description = "Path to a .storybook ModuleScript" },
-				} :: { [string]: unknown },
-				required = { "storybook" },
-			},
+			inputSchema = objectInputSchema({
+				storybook = { type = "string", description = "Path to a .storybook ModuleScript" },
+			}, { "storybook" }),
 			run = function(controller, params)
 				local fields = asTable(params)
 				return { stories = controller.listStories(getRequiredString(fields, "storybook")) }
@@ -104,14 +111,10 @@ local function create(): { Action }
 			name = "openStory",
 			title = "Open Story",
 			description = "Open a Story module in Flipbook.",
-			inputSchema = {
-				type = "object",
-				properties = {
-					story = { type = "string", description = "Path to a .story ModuleScript" },
-					storybook = { type = "string", description = "Optional path to its .storybook ModuleScript" },
-				} :: { [string]: unknown },
-				required = { "story" },
-			},
+			inputSchema = objectInputSchema({
+				story = { type = "string", description = "Path to a .story ModuleScript" },
+				storybook = { type = "string", description = "Optional path to its .storybook ModuleScript" },
+			}, { "story" }),
 			run = function(controller, params)
 				local fields = asTable(params)
 				return controller.openStory(getRequiredString(fields, "story"), getOptionalString(fields, "storybook"))
@@ -137,13 +140,9 @@ local function create(): { Action }
 			name = "setControls",
 			title = "Set Controls",
 			description = "Set control values for the mounted Story.",
-			inputSchema = {
-				type = "object",
-				properties = {
-					controls = { type = "object", description = "Map of control names to values" },
-				} :: { [string]: unknown },
-				required = { "controls" },
-			},
+			inputSchema = objectInputSchema({
+				controls = { type = "object", description = "Map of control names to values" },
+			}, { "controls" }),
 			run = function(controller, params)
 				local controls = asTable(params).controls
 				if type(controls) ~= "table" then
