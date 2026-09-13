@@ -52,7 +52,7 @@ local function createController(): (types.AgentController, ControllerState)
 			return {
 				{
 					name = "Button",
-					path = `${storybookPath}/Button.story`,
+					path = `{storybookPath}/Button.story`,
 					storybook = storybookPath,
 				},
 			}
