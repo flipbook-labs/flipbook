@@ -1,7 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
 local asTable = require("@root/actions/params/asTable")
-local objectInputSchema = require("@root/actions/objectInputSchema")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
@@ -10,9 +9,16 @@ local action: Action = {
 	name = "setControls",
 	title = "Set Controls",
 	description = "Set control values for the mounted Story.",
-	inputSchema = objectInputSchema({
-		controls = { type = "object", description = "Map of control names to values" },
-	}, { "controls" }),
+	inputSchema = {
+		type = "object",
+		properties = {
+			controls = {
+				type = "object",
+				description = "Map of control names to values",
+			},
+		} :: { [string]: unknown },
+		required = { "controls" },
+	},
 	run = function(controller, rawParams)
 		local controls = asTable(rawParams).controls
 		if type(controls) ~= "table" then
