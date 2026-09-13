@@ -66,6 +66,7 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
       - uses: actions/attest-build-provenance@v3
+        if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
         with:
           subject-path: ${{ env.MODEL_FILE }}
 
@@ -102,6 +103,7 @@ jobs:
           zip -r ../${{ env.ARTIFACT_NAME }} ${{ matrix.package }}-${{ matrix.target }}
 
       - uses: actions/attest-build-provenance@v3
+        if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
         with:
           subject-path: ${{ env.ARTIFACT_NAME }}
 
