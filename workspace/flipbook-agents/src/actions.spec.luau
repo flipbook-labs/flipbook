@@ -1,7 +1,6 @@
 local JestGlobals = require("@pkg/JestGlobals")
 
 local actions = require("@root/actions")
-local types = require("@root/types")
 
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -30,6 +29,19 @@ test("exposes the focused Flipbook action contract", function()
 		"getControls",
 		"setControls",
 	})
+end)
+
+test("rejects params with non-string keys", function()
+	local indexed = indexActions()
+	local controller = {
+		listStories = function()
+			return {}
+		end,
+	} :: any
+
+	expect(function()
+		indexed.listStories.run(controller, { [1] = "ReplicatedStorage/Example.storybook" })
+	end).toThrow("params must use string keys")
 end)
 
 test("routes story and control actions through the controller", function()
@@ -93,13 +105,4 @@ test("routes story and control actions through the controller", function()
 	expect(indexed.setControls.run(controller, { controls = { text = "After" } })).toEqual({
 		controls = { text = "After" },
 	})
-end)
-
-test("rejects action parameter arrays", function()
-	local controller = ({} :: unknown) :: types.AgentController
-	local arrayParams = ({ "unexpected" } :: unknown) :: { [string]: unknown }
-
-	expect(function()
-		indexActions().embedFlipbook.run(controller, arrayParams)
-	end).toThrow("action params must use string keys")
 end)
