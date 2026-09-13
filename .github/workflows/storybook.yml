@@ -114,7 +114,12 @@ jobs:
 
       - name: Comment preview link
         if: github.event_name == 'pull_request_target'
-        run: lute run commentStorybook
+        run: |
+          flipbook-cli comment \
+            --pr "$GITHUB_PULL_REQUEST_NUMBER" \
+            --universe-id "$ROBLOX_STORYBOOK_UNIVERSE_ID" \
+            --place-name "$ROBLOX_STORYBOOK_PLACE_NAME" \
+            --github-repository "$GITHUB_REPOSITORY"
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
