@@ -1,7 +1,9 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
+local asTable = require("@root/actions/params/asTable")
+local getOptionalString = require("@root/actions/params/getOptionalString")
+local getRequiredString = require("@root/actions/params/getRequiredString")
 local objectInputSchema = require("@root/actions/objectInputSchema")
-local params = require("@root/actions/params")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
@@ -15,11 +17,8 @@ local action: Action = {
 		storybook = { type = "string", description = "Optional path to its .storybook ModuleScript" },
 	}, { "story" }),
 	run = function(controller, rawParams)
-		local fields = params.asTable(rawParams)
-		return controller.openStory(
-			params.getRequiredString(fields, "story"),
-			params.getOptionalString(fields, "storybook")
-		)
+		local fields = asTable(rawParams)
+		return controller.openStory(getRequiredString(fields, "story"), getOptionalString(fields, "storybook"))
 	end,
 }
 

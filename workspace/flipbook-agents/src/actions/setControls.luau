@@ -1,7 +1,7 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
+local asTable = require("@root/actions/params/asTable")
 local objectInputSchema = require("@root/actions/objectInputSchema")
-local params = require("@root/actions/params")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
@@ -14,7 +14,7 @@ local action: Action = {
 		controls = { type = "object", description = "Map of control names to values" },
 	}, { "controls" }),
 	run = function(controller, rawParams)
-		local controls = params.asTable(rawParams).controls
+		local controls = asTable(rawParams).controls
 		if type(controls) ~= "table" then
 			error("controls must be a table")
 		end
