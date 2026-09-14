@@ -55,6 +55,7 @@ local function Sidebar(props: SidebarProps)
 					AutomaticCanvasSize = Enum.AutomaticSize.Y,
 					CanvasSize = UDim2.fromScale(0, 0),
 					ScrollingDirection = Enum.ScrollingDirection.Y,
+					VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
 				},
 				layout = {
 					FillDirection = Enum.FillDirection.Vertical,
