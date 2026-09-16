@@ -6,7 +6,7 @@ local describe = JestGlobals.describe
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function createWidget()
+local function createScreen(): LayerCollector
 	return { Enabled = false } :: any
 end
 
@@ -28,8 +28,8 @@ end
 
 describe("app registration", function()
 	test("routes app actions through the current adapter", function()
-		local widget = createWidget()
-		local controller = createAgentController(widget)
+		local screen = createScreen()
+		local controller = createAgentController(screen)
 		local cleanup = controller.registerApp({
 			embedFlipbook = function(parentPath, overwrite)
 				expect(parentPath).toBe("ReplicatedStorage")
@@ -54,7 +54,7 @@ describe("app registration", function()
 		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
-		expect(widget.Enabled).toBe(true)
+		expect(screen.Enabled).toBe(true)
 
 		cleanup()
 		expect(function()
@@ -65,7 +65,7 @@ end)
 
 describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
-		local controller = createAgentController(createWidget())
+		local controller = createAgentController(createScreen())
 		local currentStoryPath = "ReplicatedStorage/Button.story"
 		controller.registerApp({
 			embedFlipbook = function()
@@ -114,7 +114,7 @@ describe("story registration", function()
 	end)
 
 	test("does not let an old cleanup unregister the current story", function()
-		local controller = createAgentController(createWidget())
+		local controller = createAgentController(createScreen())
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
