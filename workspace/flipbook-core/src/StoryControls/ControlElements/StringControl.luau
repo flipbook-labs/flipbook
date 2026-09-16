@@ -16,7 +16,7 @@ local function StringControl(props: Props)
 		onChanged = props.onChanged,
 		text = if props.controlValue then props.controlValue else "",
 		placeholder = "Enter text...",
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 		width = UDim.new(1, 0),
 	})
 end
