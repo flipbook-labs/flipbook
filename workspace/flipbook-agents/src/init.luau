@@ -1,10 +1,11 @@
 local types = require("@root/types")
 
+export type AgentActions = types.AgentActions
 export type AgentController = types.AgentController
-export type AppImplementation = types.AppImplementation
+export type AppAdapter = types.AppAdapter
 export type Controls = types.Controls
 export type CurrentStory = types.CurrentStory
-export type StoryImplementation = types.StoryImplementation
+export type StoryAdapter = types.StoryAdapter
 export type StoryInfo = types.StoryInfo
 export type StorybookInfo = types.StorybookInfo
 

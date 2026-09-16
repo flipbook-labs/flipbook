@@ -15,7 +15,7 @@ export type CurrentStory = StoryInfo & {
 	isMounted: boolean,
 }
 
-export type AppImplementation = {
+export type AppAdapter = {
 	embedFlipbook: (parentPath: string?, overwrite: boolean) -> string,
 	listStorybooks: () -> { StorybookInfo },
 	listStories: (storybookPath: string) -> { StoryInfo },
@@ -23,8 +23,19 @@ export type AppImplementation = {
 	getCurrentStory: () -> StoryInfo?,
 }
 
-export type StoryImplementation = {
+export type StoryAdapter = {
 	path: string,
+	getControls: () -> Controls,
+	setControls: (controls: Controls) -> Controls,
+}
+
+export type AgentActions = {
+	openWidget: () -> (),
+	embedFlipbook: (parentPath: string?, overwrite: boolean?) -> string,
+	listStorybooks: () -> { StorybookInfo },
+	listStories: (storybookPath: string) -> { StoryInfo },
+	openStory: (storyPath: string, storybookPath: string?) -> StoryInfo,
+	getCurrentStory: () -> CurrentStory?,
 	getControls: () -> Controls,
 	setControls: (controls: Controls) -> Controls,
 }
@@ -38,8 +49,8 @@ export type AgentController = {
 	getCurrentStory: () -> CurrentStory?,
 	getControls: () -> Controls,
 	setControls: (controls: Controls) -> Controls,
-	registerApp: (implementation: AppImplementation) -> () -> (),
-	registerStory: (implementation: StoryImplementation) -> () -> (),
+	registerApp: (adapter: AppAdapter) -> () -> (),
+	registerStory: (adapter: StoryAdapter) -> () -> (),
 }
 
 return nil

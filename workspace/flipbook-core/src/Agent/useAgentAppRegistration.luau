@@ -2,7 +2,7 @@ local React = require("@pkg/React")
 local Storyteller = require("@pkg/Storyteller")
 
 local AgentContext = require("@root/Agent/AgentContext")
-local createAppImplementation = require("@root/Agent/createAppImplementation")
+local createAppAdapter = require("@root/Agent/createAppAdapter")
 local embedFlipbookRuntime = require("@root/Embedding/embedFlipbookRuntime")
 
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -30,7 +30,7 @@ local function useAgentAppRegistration(options: Options)
 			return
 		end
 
-		return agentController.registerApp(createAppImplementation({
+		return agentController.registerApp(createAppAdapter({
 			embedFlipbook = embedFlipbookRuntime,
 			getStorybooks = function()
 				return latest.current.storybooks
