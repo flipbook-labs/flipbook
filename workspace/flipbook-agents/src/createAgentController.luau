@@ -3,6 +3,7 @@ local types = require("@root/types")
 type AgentController = types.AgentController
 type AppImplementation = types.AppImplementation
 type Controls = types.Controls
+type StoryInfo = types.StoryInfo
 type StoryImplementation = types.StoryImplementation
 
 local function createAgentController(openSurface: () -> ()): AgentController
@@ -16,11 +17,22 @@ local function createAgentController(openSurface: () -> ()): AgentController
 		return appImplementation
 	end
 
+	local function getMountedStoryImplementation(story: StoryInfo?): StoryImplementation?
+		if story == nil or storyImplementation == nil then
+			return nil
+		end
+		if storyImplementation.path ~= story.path or storyImplementation.id ~= story.id then
+			return nil
+		end
+		return storyImplementation
+	end
+
 	local function getControls(): Controls
-		if storyImplementation == nil then
+		if appImplementation == nil then
 			return {}
 		end
-		return storyImplementation.getControls()
+		local mountedStory = getMountedStoryImplementation(appImplementation.getCurrentStory())
+		return if mountedStory then mountedStory.getControls() else {}
 	end
 
 	return {
@@ -38,9 +50,9 @@ local function createAgentController(openSurface: () -> ()): AgentController
 			return getAppImplementation().listStories(storybookPath)
 		end,
 
-		openStory = function(storyPath: string, storybookPath: string?)
+		openStory = function(storyPath: string, storybookPath: string?, storyId: string?)
 			openSurface()
-			return getAppImplementation().openStory(storyPath, storybookPath)
+			return getAppImplementation().openStory(storyPath, storybookPath, storyId)
 		end,
 
 		getCurrentStory = function()
@@ -49,21 +61,27 @@ local function createAgentController(openSurface: () -> ()): AgentController
 				return nil
 			end
 
+			local isMounted = getMountedStoryImplementation(story) ~= nil
+
 			return {
+				id = story.id,
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				isMounted = storyImplementation ~= nil and storyImplementation.path == story.path,
+				controlsReady = isMounted,
+				isMounted = isMounted,
 			}
 		end,
 
 		getControls = getControls,
 
 		setControls = function(controls: Controls)
-			if storyImplementation == nil then
+			local story = if appImplementation then appImplementation.getCurrentStory() else nil
+			local mountedStory = getMountedStoryImplementation(story)
+			if mountedStory == nil then
 				error("setControls requires the story view to be mounted")
 			end
-			return storyImplementation.setControls(controls)
+			return mountedStory.setControls(controls)
 		end,
 
 		registerApp = function(implementation: AppImplementation)

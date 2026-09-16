@@ -75,6 +75,7 @@ local function FlipbookApp(props: Props)
 	end, {})
 
 	useAgentAppRegistration({
+		storyId = storyId,
 		storyModule = storyModule,
 		storybook = storybook,
 		storybooks = storybooks,

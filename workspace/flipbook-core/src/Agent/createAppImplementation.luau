@@ -11,6 +11,7 @@ local getInstancePath = require("@root/Common/getInstancePath")
 type AppImplementation = FlipbookAgents.AppImplementation
 type StorybookInfo = FlipbookAgents.StorybookInfo
 type StoryInfo = FlipbookAgents.StoryInfo
+type LoadedStory = Storyteller.LoadedStory<unknown>
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
@@ -22,8 +23,8 @@ type Storybooks = {
 export type Options = {
 	embedFlipbook: (destination: Instance) -> Instance,
 	getStorybooks: () -> Storybooks,
-	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
-	openStory: (ModuleScript, LoadedStorybook?) -> (),
+	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?, string?),
+	openStory: (ModuleScript, LoadedStorybook?, string?) -> (),
 }
 
 local function serializeStorybook(storybook: LoadedStorybook): StorybookInfo
@@ -33,12 +34,28 @@ local function serializeStorybook(storybook: LoadedStorybook): StorybookInfo
 	}
 end
 
-local function serializeStory(story: ModuleScript, storybook: LoadedStorybook?): StoryInfo
+local function serializeStory(story: LoadedStory): StoryInfo
 	return {
-		name = story.Name:gsub("%.story$", ""),
-		path = getInstancePath(story),
-		storybook = if storybook then getInstancePath(storybook.source) else nil,
+		id = story.id,
+		name = story.name,
+		path = getInstancePath(story.source),
+		storybook = getInstancePath(story.storybook.source),
 	}
+end
+
+local function loadStory(storyModule: ModuleScript, storybook: LoadedStorybook, storyId: string?): LoadedStory
+	local stories = Storyteller.loadStoriesFromModule(storyModule, storybook)
+	if storyId == nil then
+		return stories[1]
+	end
+
+	for _, story in stories do
+		if story.id == storyId then
+			return story
+		end
+	end
+
+	error(`story id not found in {getInstancePath(storyModule)}: {storyId}`)
 end
 
 local function resolveModuleScript(path: string, label: string): ModuleScript
@@ -101,22 +118,32 @@ local function createAppImplementation(options: Options): AppImplementation
 		listStories = function(storybookPath: string)
 			local storybook = findStorybook(storybookPath)
 			local result = {}
-			for _, story in Storyteller.findStoryModulesForStorybook(storybook) do
-				table.insert(result, serializeStory(story, storybook))
+			for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
+				for _, story in Storyteller.loadStoriesFromModule(storyModule, storybook) do
+					table.insert(result, serializeStory(story))
+				end
 			end
 			return result
 		end,
 
-		openStory = function(storyPath: string, storybookPath: string?)
-			local story = resolveModuleScript(storyPath, "story")
-			local storybook = if storybookPath then findStorybook(storybookPath) else findStorybookForStory(story)
-			options.openStory(story, storybook)
-			return serializeStory(story, storybook)
+		openStory = function(storyPath: string, storybookPath: string?, storyId: string?)
+			local storyModule = resolveModuleScript(storyPath, "story")
+			local storybook = if storybookPath then findStorybook(storybookPath) else findStorybookForStory(storyModule)
+			if storybook == nil then
+				error(`openStory could not resolve a storybook for: {storyPath}`)
+			end
+
+			local story = loadStory(storyModule, storybook, storyId)
+			options.openStory(storyModule, storybook, story.id)
+			return serializeStory(story)
 		end,
 
 		getCurrentStory = function()
-			local story, storybook = options.getCurrentStory()
-			return if story then serializeStory(story, storybook) else nil
+			local storyModule, storybook, storyId = options.getCurrentStory()
+			if storyModule == nil or storybook == nil then
+				return nil
+			end
+			return serializeStory(loadStory(storyModule, storybook, storyId))
 		end,
 	}
 end

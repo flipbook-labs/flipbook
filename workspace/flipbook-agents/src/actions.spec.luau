@@ -44,23 +44,27 @@ local function createController(): (types.AgentController, ControllerState)
 		listStories = function(storybookPath)
 			return {
 				{
-					name = "Button",
+					id = "primary",
+					name = "Primary",
 					path = `{storybookPath}/Button.story`,
 					storybook = storybookPath,
 				},
 			}
 		end,
-		openStory = function(storyPath, storybookPath)
+		openStory = function(storyPath, storybookPath, storyId)
 			return {
-				name = "Button",
+				id = storyId or "primary",
+				name = if storyId == "secondary" then "Secondary" else "Primary",
 				path = storyPath,
 				storybook = storybookPath,
 			}
 		end,
 		getCurrentStory = function()
 			return {
-				name = "Button",
+				id = "primary",
+				name = "Primary",
 				path = "ReplicatedStorage/Button.story",
+				controlsReady = true,
 				isMounted = true,
 			}
 		end,
@@ -117,7 +121,8 @@ test("routes story actions through the controller", function()
 	expect(actions.listStories.run(controller, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
 		stories = {
 			{
-				name = "Button",
+				id = "primary",
+				name = "Primary",
 				path = "ReplicatedStorage/Example.storybook/Button.story",
 				storybook = "ReplicatedStorage/Example.storybook",
 			},
@@ -126,14 +131,18 @@ test("routes story actions through the controller", function()
 	expect(actions.openStory.run(controller, {
 		story = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
+		storyId = "secondary",
 	})).toEqual({
-		name = "Button",
+		id = "secondary",
+		name = "Secondary",
 		path = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
 	})
 	expect(actions.getCurrentStory.run(controller, nil)).toEqual({
-		name = "Button",
+		id = "primary",
+		name = "Primary",
 		path = "ReplicatedStorage/Button.story",
+		controlsReady = true,
 		isMounted = true,
 	})
 end)

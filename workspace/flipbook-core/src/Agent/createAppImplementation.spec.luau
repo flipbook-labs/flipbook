@@ -18,6 +18,7 @@ local story: ModuleScript
 local storybookModule: ModuleScript
 local storybook: Storyteller.LoadedStorybook
 local openedStory: ModuleScript?
+local openedStoryId: string?
 local embeddedRuntime: Instance?
 
 beforeEach(function()
@@ -35,6 +36,15 @@ beforeEach(function()
 
 	story = Instance.new("ModuleScript")
 	story.Name = "Button.story"
+	story.Source = [[
+		return {
+			name = "Buttons",
+			stories = {
+				{ id = "primary", name = "Primary", story = function() end },
+				{ id = "secondary", name = "Secondary", story = function() end },
+			},
+		}
+	]]
 	story.Parent = stories
 
 	storybook = {
@@ -43,6 +53,7 @@ beforeEach(function()
 		storyRoots = { stories :: Instance },
 	}
 	openedStory = nil
+	openedStoryId = nil
 	embeddedRuntime = nil
 end)
 
@@ -63,10 +74,11 @@ local function createImplementation()
 			return { available = { storybook }, unavailable = {} }
 		end,
 		getCurrentStory = function()
-			return openedStory, if openedStory then storybook else nil
+			return openedStory, if openedStory then storybook else nil, openedStoryId
 		end,
-		openStory = function(nextStory)
+		openStory = function(nextStory, _, nextStoryId)
 			openedStory = nextStory
+			openedStoryId = nextStoryId
 		end,
 	})
 end
@@ -79,7 +91,14 @@ test("discovers Storybooks and their Stories without fixed DataModel paths", fun
 	})
 	expect(implementation.listStories(getInstancePath(storybookModule))).toEqual({
 		{
-			name = "Button",
+			id = "primary",
+			name = "Primary",
+			path = getInstancePath(story),
+			storybook = getInstancePath(storybookModule),
+		},
+		{
+			id = "secondary",
+			name = "Secondary",
 			path = getInstancePath(story),
 			storybook = getInstancePath(storybookModule),
 		},
@@ -109,12 +128,22 @@ test("requires opt-in before replacing an embedded runtime", function()
 	end).toThrow("pass overwrite = true to replace it")
 end)
 
-test("opens a discovered Story and reports it as current", function()
+test("opens a concrete Story and reports its identity as current", function()
 	local implementation = createImplementation()
 
-	local result = implementation.openStory(getInstancePath(story), getInstancePath(storybookModule))
+	local result = implementation.openStory(getInstancePath(story), getInstancePath(storybookModule), "secondary")
 
 	expect(result.path).toBe(getInstancePath(story))
+	expect(result.id).toBe("secondary")
 	expect(openedStory).toBe(story)
+	expect(openedStoryId).toBe("secondary")
 	expect(implementation.getCurrentStory()).toEqual(result)
+end)
+
+test("rejects an unknown concrete Story ID", function()
+	local implementation = createImplementation()
+
+	expect(function()
+		implementation.openStory(getInstancePath(story), getInstancePath(storybookModule), "missing")
+	end).toThrow("story id not found")
 end)
