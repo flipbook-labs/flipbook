@@ -19,6 +19,7 @@ local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+local useAgentAppRegistration = require("@root/Agent/useAgentAppRegistration")
 
 local useSignalState = ReactCharm.useSignalState
 
@@ -37,6 +38,7 @@ export type Props = {
 local function FlipbookApp(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+	local storybooks = Storyteller.useStorybooks()
 
 	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
 	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
@@ -68,6 +70,13 @@ local function FlipbookApp(props: Props)
 		setStorybook(nil)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
+
+	useAgentAppRegistration({
+		storyModule = storyModule,
+		storybook = storybook,
+		storybooks = storybooks,
+		openStory = onStoryChanged,
+	})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
