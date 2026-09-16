@@ -5,7 +5,7 @@ local getOptionalBoolean = require("@root/actions/params/getOptionalBoolean")
 local getOptionalString = require("@root/actions/params/getOptionalString")
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "embedFlipbook",

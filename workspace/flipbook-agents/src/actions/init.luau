@@ -2,7 +2,7 @@ local AgentGateway = require("@pkg/AgentGateway")
 
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local actions: { [string]: Action } = {
 	embedFlipbook = require("@root/actions/embedFlipbook"),
