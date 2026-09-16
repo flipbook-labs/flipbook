@@ -1,4 +1,3 @@
-local AgentGateway = require("@pkg/AgentGateway")
 local JestGlobals = require("@pkg/JestGlobals")
 
 local types = require("@root/types")
@@ -6,8 +5,6 @@ local types = require("@root/types")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-type Action = AgentGateway.Action<types.AgentController>
-type ActionMap = { [string]: Action }
 type ControllerState = {
 	controls: types.Controls,
 	embeddedOverwrite: boolean,
@@ -15,7 +12,7 @@ type ControllerState = {
 	opened: boolean,
 }
 
-local actions: ActionMap = require("@root/actions")
+local actions = require("@root/actions")
 
 local function createController(): (types.AgentController, ControllerState)
 	local state: ControllerState = {
