@@ -6,7 +6,7 @@ local describe = JestGlobals.describe
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function createWidget()
+local function createScreen(): LayerCollector
 	return { Enabled = false } :: any
 end
 
@@ -40,9 +40,9 @@ describe("app registration", function()
 	end)
 
 	test("routes app actions through the current adapter", function()
-		local widget = createWidget()
+		local screen = createScreen()
 		local controller = createAgentController(function()
-			widget.Enabled = true
+			screen.Enabled = true
 		end)
 		local cleanup = controller.registerApp({
 			embedFlipbook = function(parentPath, overwrite)
@@ -68,7 +68,7 @@ describe("app registration", function()
 		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
-		expect(widget.Enabled).toBe(true)
+		expect(screen.Enabled).toBe(true)
 
 		cleanup()
 		expect(function()
