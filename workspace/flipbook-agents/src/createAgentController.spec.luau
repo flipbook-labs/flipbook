@@ -10,7 +10,7 @@ local function createWidget()
 	return { Enabled = false } :: any
 end
 
-local function createStoryImplementation(path: string, initialValue: string)
+local function createStoryAdapter(path: string, initialValue: string)
 	local controls: { [string]: unknown } = { label = initialValue }
 	return {
 		path = path,
@@ -92,7 +92,7 @@ describe("story registration", function()
 		})
 		expect(controller.getControls()).toEqual({})
 
-		local cleanup = controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "Before"))
+		local cleanup = controller.registerStory(createStoryAdapter("ReplicatedStorage/Button.story", "Before"))
 		local mountedStory = controller.getCurrentStory()
 		assert(mountedStory ~= nil, "expected a current story")
 		expect(mountedStory.isMounted).toBe(true)
@@ -132,9 +132,8 @@ describe("story registration", function()
 				return { name = "Second", path = "ReplicatedStorage/Second.story" }
 			end,
 		})
-		local cleanupFirst =
-			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
-		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
+		local cleanupFirst = controller.registerStory(createStoryAdapter("ReplicatedStorage/First.story", "First"))
+		controller.registerStory(createStoryAdapter("ReplicatedStorage/Second.story", "Second"))
 
 		cleanupFirst()
 

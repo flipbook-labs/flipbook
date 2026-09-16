@@ -4,7 +4,7 @@ local asTable = require("@root/actions/params/asTable")
 local getRequiredString = require("@root/actions/params/getRequiredString")
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "listStories",

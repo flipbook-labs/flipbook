@@ -3,7 +3,7 @@ local AgentGateway = require("@pkg/AgentGateway")
 local asTable = require("@root/actions/params/asTable")
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "setControls",
