@@ -8,7 +8,7 @@ local constants = require("@root/constants")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
 
-type AppImplementation = FlipbookAgents.AppImplementation
+type AppAdapter = FlipbookAgents.AppAdapter
 type StorybookInfo = FlipbookAgents.StorybookInfo
 type StoryInfo = FlipbookAgents.StoryInfo
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -52,7 +52,7 @@ local function resolveModuleScript(path: string, label: string): ModuleScript
 	return instance
 end
 
-local function createAppImplementation(options: Options): AppImplementation
+local function createAppAdapter(options: Options): AppAdapter
 	local function findStorybook(storybookPath: string): LoadedStorybook
 		for _, storybook in options.getStorybooks().available do
 			if getInstancePath(storybook.source) == storybookPath then
@@ -121,4 +121,4 @@ local function createAppImplementation(options: Options): AppImplementation
 	}
 end
 
-return createAppImplementation
+return createAppAdapter
