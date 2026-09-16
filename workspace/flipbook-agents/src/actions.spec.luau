@@ -28,6 +28,9 @@ local function createController(): (types.AgentController, ControllerState)
 		openWidget = function()
 			state.opened = true
 		end,
+		openViewport = function()
+			state.opened = true
+		end,
 		embedFlipbook = function(parent, overwrite)
 			state.embeddedParent = parent
 			state.embeddedOverwrite = overwrite == true
@@ -96,7 +99,8 @@ end)
 test("routes widget and embedding actions through the controller", function()
 	local controller, state = createController()
 
-	expect(actions.openWidget.run(controller, nil)).toEqual({ enabled = true })
+	expect(actions.openWidget.run(controller, nil)).toEqual({ enabled = true, surface = "widget" })
+	expect(actions.openViewport.run(controller, nil)).toEqual({ surface = "viewport" })
 	expect(state.opened).toBe(true)
 
 	expect(actions.embedFlipbook.run(controller, {
