@@ -7,7 +7,7 @@ type StoryImplementation = types.StoryImplementation
 
 local function createAgentController(openSurface: () -> ()): AgentController
 	local appImplementation: AppImplementation? = nil
-	local storyImplementations: { [string]: StoryImplementation } = {}
+	local storyImplementation: StoryImplementation? = nil
 
 	local function getAppImplementation(): AppImplementation
 		if appImplementation == nil then
@@ -18,11 +18,11 @@ local function createAgentController(openSurface: () -> ()): AgentController
 
 	local function getMountedStoryImplementation(): StoryImplementation?
 		local currentStory = getAppImplementation().getCurrentStory()
-		if currentStory == nil then
+		if currentStory == nil or storyImplementation == nil or storyImplementation.path ~= currentStory.path then
 			return nil
 		end
 
-		return storyImplementations[currentStory.path]
+		return storyImplementation
 	end
 
 	local function getControls(): Controls
@@ -63,7 +63,7 @@ local function createAgentController(openSurface: () -> ()): AgentController
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				isMounted = storyImplementations[story.path] ~= nil,
+				isMounted = storyImplementation ~= nil and storyImplementation.path == story.path,
 			}
 		end,
 
@@ -87,10 +87,10 @@ local function createAgentController(openSurface: () -> ()): AgentController
 		end,
 
 		registerStory = function(implementation: StoryImplementation)
-			storyImplementations[implementation.path] = implementation
+			storyImplementation = implementation
 			return function()
-				if storyImplementations[implementation.path] == implementation then
-					storyImplementations[implementation.path] = nil
+				if storyImplementation == implementation then
+					storyImplementation = nil
 				end
 			end
 		end,
