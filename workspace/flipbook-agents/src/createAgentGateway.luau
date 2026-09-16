@@ -4,7 +4,7 @@ local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentController>
 
-local actions: { [string]: Action } = require("@root/actions")
+local actions = require("@root/actions")
 
 local CONFIG: AgentGateway.Config = {
 	name = "FlipbookAgentGateway",

@@ -80,6 +80,7 @@ end)
 describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
 		local controller = createAgentController(function() end)
+		local currentStoryPath = "ReplicatedStorage/Button.story"
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
@@ -94,7 +95,7 @@ describe("story registration", function()
 				return { name = "Button", path = "ReplicatedStorage/Button.story" }
 			end,
 			getCurrentStory = function()
-				return { name = "Button", path = "ReplicatedStorage/Button.story" }
+				return { name = "Button", path = currentStoryPath }
 			end,
 		})
 
@@ -111,6 +112,12 @@ describe("story registration", function()
 		expect(mountedStory.isMounted).toBe(true)
 		expect(controller.setControls({ label = "After" })).toEqual({ label = "After" })
 
+		currentStoryPath = "ReplicatedStorage/Other.story"
+		expect(controller.getControls()).toEqual({})
+		expect(function()
+			controller.setControls({ label = "Wrong story" })
+		end).toThrow("setControls requires the story view to be mounted")
+
 		cleanup()
 		local unmountedStory = controller.getCurrentStory()
 		assert(unmountedStory ~= nil, "expected a current story")
@@ -122,6 +129,23 @@ describe("story registration", function()
 
 	test("does not let an old cleanup unregister the current story", function()
 		local controller = createAgentController(function() end)
+		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
+			listStorybooks = function()
+				return {}
+			end,
+			listStories = function()
+				return {}
+			end,
+			openStory = function()
+				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+			getCurrentStory = function()
+				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+		})
 		local cleanupFirst =
 			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
 		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
