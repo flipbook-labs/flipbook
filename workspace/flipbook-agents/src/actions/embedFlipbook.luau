@@ -1,6 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local asTable = require("@root/actions/params/asTable")
+local asDictionary = require("@root/actions/params/asDictionary")
 local getOptionalBoolean = require("@root/actions/params/getOptionalBoolean")
 local getOptionalString = require("@root/actions/params/getOptionalString")
 local types = require("@root/types")
@@ -25,7 +25,7 @@ local action: Action = {
 		} :: { [string]: unknown },
 	},
 	run = function(controller, rawParams)
-		local fields = asTable(rawParams)
+		local fields = asDictionary(rawParams)
 		return {
 			path = controller.embedFlipbook(
 				getOptionalString(fields, "parent"),
