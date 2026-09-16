@@ -27,9 +27,23 @@ local function createStoryAdapter(path: string, initialValue: string)
 end
 
 describe("app registration", function()
+	test("opens an embedded screen surface", function()
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Enabled = false
+		local controller = createAgentController(function()
+			screenGui.Enabled = true
+		end)
+
+		controller.openWidget()
+
+		expect(screenGui.Enabled).toBe(true)
+	end)
+
 	test("routes app actions through the current adapter", function()
 		local screen = createScreen()
-		local controller = createAgentController(screen)
+		local controller = createAgentController(function()
+			screen.Enabled = true
+		end)
 		local cleanup = controller.registerApp({
 			embedFlipbook = function(parentPath, overwrite)
 				expect(parentPath).toBe("ReplicatedStorage")
@@ -65,7 +79,7 @@ end)
 
 describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
-		local controller = createAgentController(createScreen())
+		local controller = createAgentController(function() end)
 		local currentStoryPath = "ReplicatedStorage/Button.story"
 		controller.registerApp({
 			embedFlipbook = function()
@@ -114,7 +128,7 @@ describe("story registration", function()
 	end)
 
 	test("does not let an old cleanup unregister the current story", function()
-		local controller = createAgentController(createScreen())
+		local controller = createAgentController(function() end)
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
