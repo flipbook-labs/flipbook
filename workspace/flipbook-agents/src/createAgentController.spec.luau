@@ -27,9 +27,23 @@ local function createStoryImplementation(path: string, initialValue: string)
 end
 
 describe("app registration", function()
+	test("opens an embedded screen surface", function()
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Enabled = false
+		local controller = createAgentController(function()
+			screenGui.Enabled = true
+		end)
+
+		controller.openWidget()
+
+		expect(screenGui.Enabled).toBe(true)
+	end)
+
 	test("routes app actions through the current implementation", function()
 		local widget = createWidget()
-		local controller = createAgentController(widget)
+		local controller = createAgentController(function()
+			widget.Enabled = true
+		end)
 		local cleanup = controller.registerApp({
 			embedFlipbook = function(parentPath, overwrite)
 				expect(parentPath).toBe("ReplicatedStorage")
@@ -65,7 +79,7 @@ end)
 
 describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
-		local controller = createAgentController(createWidget())
+		local controller = createAgentController(function() end)
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
@@ -107,7 +121,7 @@ describe("story registration", function()
 	end)
 
 	test("does not let an old cleanup unregister the current story", function()
-		local controller = createAgentController(createWidget())
+		local controller = createAgentController(function() end)
 		local cleanupFirst =
 			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
 		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))

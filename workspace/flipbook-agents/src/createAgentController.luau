@@ -5,7 +5,7 @@ type AppImplementation = types.AppImplementation
 type Controls = types.Controls
 type StoryImplementation = types.StoryImplementation
 
-local function createAgentController(widget: DockWidgetPluginGui): AgentController
+local function createAgentController(openSurface: () -> ()): AgentController
 	local appImplementation: AppImplementation? = nil
 	local storyImplementation: StoryImplementation? = nil
 
@@ -24,9 +24,7 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 	end
 
 	return {
-		openWidget = function()
-			widget.Enabled = true
-		end,
+		openWidget = openSurface,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
 			return getAppImplementation().embedFlipbook(parentPath, overwrite == true)
@@ -41,7 +39,7 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 		end,
 
 		openStory = function(storyPath: string, storybookPath: string?)
-			widget.Enabled = true
+			openSurface()
 			return getAppImplementation().openStory(storyPath, storybookPath)
 		end,
 
