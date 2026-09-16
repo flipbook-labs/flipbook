@@ -6,20 +6,43 @@ local types = require("@root/TreeView/types")
 
 local useSignalState = ReactCharm.useSignalState
 local useEffect = React.useEffect
+local useRef = React.useRef
 
 type TreeNodeStore = types.TreeNodeStore
 type TreeNodeFilter = types.TreeNodeFilter
 
 local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 	local leaves = useSignalState(root.getLeafNodes)
+	local expansionBeforeFilter = useRef(nil :: { [TreeNodeStore]: boolean }?)
+
+	local function restoreExpansion()
+		local expansion = expansionBeforeFilter.current
+		if expansion then
+			for node, wasExpanded in expansion do
+				node.setIsExpanded(wasExpanded)
+			end
+			expansionBeforeFilter.current = nil
+		end
+	end
 
 	useEffect(function()
+		return restoreExpansion
+	end, { root })
+
+	useEffect(function()
+		root.setIsFiltered(false)
+		for _, descendant in root.getDescendants() do
+			descendant.setIsFiltered(false)
+		end
+
 		if filter then
-			-- Resetting the filtered state to do it all over again for the new
-			-- filter function
-			root.setIsFiltered(false)
-			for _, descendant in root.getDescendants() do
-				descendant.setIsFiltered(false)
+			local expansion: { [TreeNodeStore]: boolean } = expansionBeforeFilter.current or {}
+			expansionBeforeFilter.current = expansion
+
+			for _, node in Sift.List.join({ root }, root.getDescendants()) do
+				if expansion[node] == nil then
+					expansion[node] = node.getIsExpanded()
+				end
 			end
 
 			local included = {}
@@ -55,14 +78,17 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 					if filter(node) then
 						node.setIsFiltered(true)
 					else
+						node.expandUp()
 						included[node.id] = true
 						node.setIsFiltered(false)
 						includeRemainingNodes = true
 					end
 				end
 			end
+		else
+			restoreExpansion()
 		end
-	end, { filter, leaves } :: { unknown })
+	end, { root, filter, leaves } :: { unknown })
 end
 
 return useTreeNodeFilter
