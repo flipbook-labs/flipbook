@@ -42,4 +42,4 @@ export type AgentController = {
 	registerStory: (implementation: StoryImplementation) -> () -> (),
 }
 
-return {}
+return nil

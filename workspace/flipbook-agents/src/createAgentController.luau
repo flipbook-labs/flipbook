@@ -5,7 +5,7 @@ type AppImplementation = types.AppImplementation
 type Controls = types.Controls
 type StoryImplementation = types.StoryImplementation
 
-local function createAgentController(widget: DockWidgetPluginGui): AgentController
+local function createAgentController(widget: LayerCollector): AgentController
 	local appImplementation: AppImplementation? = nil
 	local storyImplementation: StoryImplementation? = nil
 
@@ -16,11 +16,21 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 		return appImplementation
 	end
 
+	local function getMountedStoryImplementation(): StoryImplementation?
+		local currentStory = getAppImplementation().getCurrentStory()
+		if currentStory == nil or storyImplementation == nil or storyImplementation.path ~= currentStory.path then
+			return nil
+		end
+
+		return storyImplementation
+	end
+
 	local function getControls(): Controls
-		if storyImplementation == nil then
+		local mountedStoryImplementation = getMountedStoryImplementation()
+		if mountedStoryImplementation == nil then
 			return {}
 		end
-		return storyImplementation.getControls()
+		return mountedStoryImplementation.getControls()
 	end
 
 	return {
@@ -62,10 +72,11 @@ local function createAgentController(widget: DockWidgetPluginGui): AgentControll
 		getControls = getControls,
 
 		setControls = function(controls: Controls)
-			if storyImplementation == nil then
+			local mountedStoryImplementation = getMountedStoryImplementation()
+			if mountedStoryImplementation == nil then
 				error("setControls requires the story view to be mounted")
 			end
-			return storyImplementation.setControls(controls)
+			return mountedStoryImplementation.setControls(controls)
 		end,
 
 		registerApp = function(implementation: AppImplementation)
