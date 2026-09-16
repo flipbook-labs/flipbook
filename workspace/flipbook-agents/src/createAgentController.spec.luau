@@ -127,8 +127,9 @@ describe("story registration", function()
 		end).toThrow("setControls requires the story view to be mounted")
 	end)
 
-	test("does not let an old cleanup unregister the current story", function()
+	test("routes controls among concurrently registered stories", function()
 		local controller = createAgentController(function() end)
+		local currentStoryPath = "ReplicatedStorage/First.story"
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
@@ -140,15 +141,19 @@ describe("story registration", function()
 				return {}
 			end,
 			openStory = function()
-				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+				return { name = "Current", path = currentStoryPath }
 			end,
 			getCurrentStory = function()
-				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+				return { name = "Current", path = currentStoryPath }
 			end,
 		})
 		local cleanupFirst =
 			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
 		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
+
+		expect(controller.getControls()).toEqual({ label = "First" })
+		currentStoryPath = "ReplicatedStorage/Second.story"
+		expect(controller.getControls()).toEqual({ label = "Second" })
 
 		cleanupFirst()
 
