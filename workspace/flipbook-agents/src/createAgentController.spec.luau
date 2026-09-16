@@ -27,7 +27,7 @@ local function createStoryAdapter(path: string, initialValue: string)
 end
 
 describe("app registration", function()
-	test("routes app actions through the current implementation", function()
+	test("routes app actions through the current adapter", function()
 		local widget = createWidget()
 		local controller = createAgentController(widget)
 		local cleanup = controller.registerApp({
