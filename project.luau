@@ -7,7 +7,7 @@ return {
 	BUILD_CACHE_PATH = path.resolve("./build/build-cache.json"),
 	PACKAGES_PATH = path.resolve("./Packages"),
 	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
-	ROBLOX_PACKAGES_VERSION = "0.737.0.7371584",
+	ROBLOX_PACKAGES_VERSION = "0.738.0.7381393",
 	SCRIPTS_PATH = path.resolve("./.lute"),
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
