@@ -7,7 +7,7 @@ type StoryImplementation = types.StoryImplementation
 
 local function createAgentController(widget: LayerCollector): AgentController
 	local appImplementation: AppImplementation? = nil
-	local storyImplementation: StoryImplementation? = nil
+	local storyImplementations: { [string]: StoryImplementation } = {}
 
 	local function getAppImplementation(): AppImplementation
 		if appImplementation == nil then
@@ -18,11 +18,11 @@ local function createAgentController(widget: LayerCollector): AgentController
 
 	local function getMountedStoryImplementation(): StoryImplementation?
 		local currentStory = getAppImplementation().getCurrentStory()
-		if currentStory == nil or storyImplementation == nil or storyImplementation.path ~= currentStory.path then
+		if currentStory == nil then
 			return nil
 		end
 
-		return storyImplementation
+		return storyImplementations[currentStory.path]
 	end
 
 	local function getControls(): Controls
@@ -65,7 +65,7 @@ local function createAgentController(widget: LayerCollector): AgentController
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				isMounted = storyImplementation ~= nil and storyImplementation.path == story.path,
+				isMounted = storyImplementations[story.path] ~= nil,
 			}
 		end,
 
@@ -89,10 +89,10 @@ local function createAgentController(widget: LayerCollector): AgentController
 		end,
 
 		registerStory = function(implementation: StoryImplementation)
-			storyImplementation = implementation
+			storyImplementations[implementation.path] = implementation
 			return function()
-				if storyImplementation == implementation then
-					storyImplementation = nil
+				if storyImplementations[implementation.path] == implementation then
+					storyImplementations[implementation.path] = nil
 				end
 			end
 		end,
