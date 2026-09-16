@@ -5,4 +5,5 @@ return {
 
 	createFlipbookPlugin = require("@self/Plugin/createFlipbookPlugin"),
 	createEmbeddedFlipbookApp = require("@self/Embedding/createEmbeddedFlipbookApp"),
+	parseLaunchData = require("@self/Embedding/parseLaunchData"),
 }
