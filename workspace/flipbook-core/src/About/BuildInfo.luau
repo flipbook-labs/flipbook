@@ -25,7 +25,7 @@ local function BuildInfo(props: Props)
 	end
 
 	return React.createElement(Foundation.View, {
-		tag = "auto-xy col gap-medium align-x-center",
+		tag = "auto-xy col gap-small align-x-center",
 		LayoutOrder = props.layoutOrder,
 	}, children)
 end

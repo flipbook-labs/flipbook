@@ -44,7 +44,7 @@ local function CodeBlock(props: Props)
 	end, { props.source })
 
 	return React.createElement(Foundation.View, {
-		tag = "size-full-0 auto-y bg-surface-200 gap-medium row radius-medium padding-medium",
+		tag = "size-full-0 auto-y bg-surface-200 gap-small row radius-medium padding-small",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		LineNumbers = React.createElement("TextLabel", {

@@ -65,7 +65,7 @@ local function TelemetryOptOutDialog(): React.Node?
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Wrapper = React.createElement(Foundation.View, {
-				tag = "auto-xy col gap-large",
+				tag = "auto-xy col gap-medium",
 			}, {
 				MainParagraph = React.createElement(Foundation.Dialog.Text, {
 					tag = "auto-xy text-wrap text-body-medium",
@@ -83,6 +83,7 @@ local function TelemetryOptOutDialog(): React.Node?
 					label = "Help improve Flipbook by sending anonymous usage data",
 					isChecked = isOptedIn,
 					onActivated = setIsOptedIn,
+					size = Foundation.Enums.InputSize.Small,
 					LayoutOrder = nextLayoutOrder(),
 				}),
 			}),

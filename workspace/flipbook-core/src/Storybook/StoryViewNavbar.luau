@@ -35,7 +35,7 @@ local function StoryViewNavbar(props: Props)
 	end, { userSettingsStore.setStorage })
 
 	return e(Foundation.View, {
-		tag = "size-full-0 auto-y row gap-small align-y-center",
+		tag = "size-full-0 auto-y row gap-xsmall align-y-center",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Zoom = e(Foundation.View, {
@@ -45,12 +45,14 @@ local function StoryViewNavbar(props: Props)
 			Magnify = e(Foundation.IconButton, {
 				icon = Foundation.Enums.IconName.MagnifyingGlassPlus,
 				onActivated = props.onZoomIn or noop,
+				size = Foundation.Enums.InputSize.Small,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
 			Minify = e(Foundation.IconButton, {
 				icon = Foundation.Enums.IconName.MagnifyingGlassMinus,
 				onActivated = props.onZoomOut or noop,
+				size = Foundation.Enums.InputSize.Small,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 		}),
