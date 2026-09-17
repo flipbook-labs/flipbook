@@ -40,15 +40,7 @@ export type AgentActions = {
 	setControls: (controls: Controls) -> Controls,
 }
 
-export type AgentController = {
-	openWidget: () -> (),
-	embedFlipbook: (parentPath: string?, overwrite: boolean?) -> string,
-	listStorybooks: () -> { StorybookInfo },
-	listStories: (storybookPath: string) -> { StoryInfo },
-	openStory: (storyPath: string, storybookPath: string?) -> StoryInfo,
-	getCurrentStory: () -> CurrentStory?,
-	getControls: () -> Controls,
-	setControls: (controls: Controls) -> Controls,
+export type AgentController = AgentActions & {
 	registerApp: (adapter: AppAdapter) -> () -> (),
 	registerStory: (adapter: StoryAdapter) -> () -> (),
 }
