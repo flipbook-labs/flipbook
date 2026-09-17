@@ -4,6 +4,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local AgentContext = require("@root/Agent/AgentContext")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
@@ -26,13 +27,20 @@ local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type AgentControls = FlipbookAgents.Controls
 type ExtraStoryProps = types.ExtraStoryProps
+type StoryControls = Storyteller.StoryControls
+type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
 	storybook: LoadedStorybook,
 }
+
+local function toAgentControls(controls: StoryControls): AgentControls
+	return table.clone(controls)
+end
 
 local function StoryView(props: StoryViewProps)
 	local agentController = AgentContext.use()
@@ -52,13 +60,13 @@ local function StoryView(props: StoryViewProps)
 		return agentController.registerStory({
 			path = getInstancePath(props.storyModule),
 			getControls = function()
-				return storyControlsStore.getControls() :: any
+				return toAgentControls(storyControlsStore.getControls())
 			end,
 			setControls = function(controls)
 				for key, value in controls do
-					storyControlsStore.setControl(key, value :: any)
+					storyControlsStore.setControl(key, value :: StoryControlValue)
 				end
-				return storyControlsStore.getControls() :: any
+				return toAgentControls(storyControlsStore.getControls())
 			end,
 		})
 	end, { agentController, props.storyModule, storyControlsStore } :: { unknown })
