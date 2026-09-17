@@ -19,7 +19,7 @@ type Storybooks = {
 	unavailable: { UnavailableStorybook },
 }
 
-export type Options = {
+export type Dependencies = {
 	embedFlipbook: (destination: Instance) -> Instance,
 	getStorybooks: () -> Storybooks,
 	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
@@ -52,9 +52,9 @@ local function resolveModuleScript(path: string, label: string): ModuleScript
 	return instance
 end
 
-local function createAppAdapter(options: Options): AppAdapter
+local function createAppAdapter(dependencies: Dependencies): AppAdapter
 	local function findStorybook(storybookPath: string): LoadedStorybook
-		for _, storybook in options.getStorybooks().available do
+		for _, storybook in dependencies.getStorybooks().available do
 			if getInstancePath(storybook.source) == storybookPath then
 				return storybook
 			end
@@ -63,7 +63,7 @@ local function createAppAdapter(options: Options): AppAdapter
 	end
 
 	local function findStorybookForStory(story: ModuleScript): LoadedStorybook?
-		for _, storybook in options.getStorybooks().available do
+		for _, storybook in dependencies.getStorybooks().available do
 			for _, storyRoot in storybook.storyRoots do
 				if storyRoot == story or storyRoot:IsAncestorOf(story) then
 					return storybook
@@ -87,12 +87,12 @@ local function createAppAdapter(options: Options): AppAdapter
 				)
 			end
 
-			return getInstancePath(options.embedFlipbook(destination))
+			return getInstancePath(dependencies.embedFlipbook(destination))
 		end,
 
 		listStorybooks = function()
 			local result = {}
-			for _, storybook in options.getStorybooks().available do
+			for _, storybook in dependencies.getStorybooks().available do
 				table.insert(result, serializeStorybook(storybook))
 			end
 			return result
@@ -110,12 +110,12 @@ local function createAppAdapter(options: Options): AppAdapter
 		openStory = function(storyPath: string, storybookPath: string?)
 			local story = resolveModuleScript(storyPath, "story")
 			local storybook = if storybookPath then findStorybook(storybookPath) else findStorybookForStory(story)
-			options.openStory(story, storybook)
+			dependencies.openStory(story, storybook)
 			return serializeStory(story, storybook)
 		end,
 
 		getCurrentStory = function()
-			local story, storybook = options.getCurrentStory()
+			local story, storybook = dependencies.getCurrentStory()
 			return if story then serializeStory(story, storybook) else nil
 		end,
 	}

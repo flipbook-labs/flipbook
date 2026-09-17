@@ -19,7 +19,7 @@ local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useAgentAppRegistration = require("@root/Agent/useAgentAppRegistration")
+local useAgentRegistration = require("@root/Agent/useAgentRegistration")
 
 local useSignalState = ReactCharm.useSignalState
 
@@ -71,7 +71,7 @@ local function FlipbookApp(props: Props)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	useAgentAppRegistration({
+	useAgentRegistration({
 		storyModule = storyModule,
 		storybook = storybook,
 		storybooks = storybooks,
