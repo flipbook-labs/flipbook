@@ -77,7 +77,15 @@ test("rejects params with non-string keys", function()
 
 	expect(function()
 		actions.listStories.run(agentActions, { [1] = "ReplicatedStorage/Example.storybook" })
-	end).toThrow("params must use string keys")
+	end).toThrow("dictionary keys must be strings")
+end)
+
+test("rejects controls with non-string keys", function()
+	local agentActions = createActions()
+
+	expect(function()
+		actions.setControls.run(agentActions, { controls = { [1] = "After" } })
+	end).toThrow("dictionary keys must be strings")
 end)
 
 test("opens the widget", function()

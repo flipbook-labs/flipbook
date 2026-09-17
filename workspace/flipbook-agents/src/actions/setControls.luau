@@ -1,6 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local asTable = require("@root/actions/params/asTable")
+local asDictionary = require("@root/actions/params/asDictionary")
 local types = require("@root/types")
 
 type Action = AgentGateway.Action<types.AgentActions>
@@ -20,16 +20,11 @@ local action: Action = {
 		required = { "controls" },
 	},
 	run = function(controller, rawParams)
-		local controls = asTable(rawParams).controls
+		local controls = asDictionary(rawParams).controls
 		if type(controls) ~= "table" then
 			error("controls must be a table")
 		end
-		for key in controls :: { [unknown]: unknown } do
-			if type(key) ~= "string" then
-				error("control names must be strings")
-			end
-		end
-		return { controls = controller.setControls(controls :: { [string]: unknown }) }
+		return { controls = controller.setControls(asDictionary(controls)) }
 	end,
 }
 

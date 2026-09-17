@@ -1,6 +1,6 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local asTable = require("@root/actions/params/asTable")
+local asDictionary = require("@root/actions/params/asDictionary")
 local getRequiredString = require("@root/actions/params/getRequiredString")
 local types = require("@root/types")
 
@@ -21,7 +21,7 @@ local action: Action = {
 		required = { "storybook" },
 	},
 	run = function(controller, rawParams)
-		local fields = asTable(rawParams)
+		local fields = asDictionary(rawParams)
 		return { stories = controller.listStories(getRequiredString(fields, "storybook")) }
 	end,
 }
