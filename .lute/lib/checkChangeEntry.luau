@@ -1,3 +1,4 @@
+local fs = require("@std/fs")
 local path = require("@std/path")
 local process = require("@std/process")
 
@@ -11,6 +12,69 @@ local function getCurrentBranch(): string
 	local result = process.run({ "git", "branch", "--show-current" })
 	assert(result.ok, result.stderr)
 	return trim(result.stdout)
+end
+
+local function splitLines(value: string): { string }
+	local lines = {}
+	local normalized = value:gsub("\r\n", "\n")
+	for line in (`{normalized}\n`):gmatch("(.-)\n") do
+		table.insert(lines, line)
+	end
+	return lines
+end
+
+local function stripQuotes(value: string): string
+	local quote = value:sub(1, 1)
+	if (quote == '"' or quote == "'") and value:sub(-1) == quote then
+		return value:sub(2, -2)
+	end
+	return value
+end
+
+local function validateChangeEntry(filePath: string)
+	local lines = splitLines(fs.readFileToString(filePath))
+	local index = 1
+	while index <= #lines and trim(lines[index]) == "" do
+		index += 1
+	end
+	assert(trim(lines[index] or "") == "---", `{filePath}: missing opening --- frontmatter`)
+	index += 1
+
+	local bump = nil
+	local closed = false
+	while index <= #lines do
+		local line = lines[index]
+		index += 1
+		if trim(line) == "---" then
+			closed = true
+			break
+		end
+
+		local key, value = line:match("^%s*([%w_]+)%s*:%s*(.-)%s*$")
+		if key == "bump" and value ~= nil then
+			bump = stripQuotes(value)
+		end
+	end
+	assert(closed, `{filePath}: frontmatter is not closed with ---`)
+	assert(bump == "major" or bump == "minor" or bump == "patch", `{filePath}: bump must be major, minor, or patch`)
+
+	local bodyLines = {}
+	for bodyIndex = index, #lines do
+		table.insert(bodyLines, lines[bodyIndex])
+	end
+	assert(trim(table.concat(bodyLines, "\n")) ~= "", `{filePath}: change entry has no body`)
+end
+
+local function validateChangeEntries()
+	for _, entry in fs.listDirectory(".changes") do
+		if
+			entry.type == "file"
+			and string.lower(path.extname(entry.name)) == ".md"
+			and string.lower(entry.name) ~= "readme.md"
+		then
+			validateChangeEntry(tostring(path.join(".changes", entry.name)))
+		end
+	end
 end
 
 local function hasPendingChangeEntry(): boolean
@@ -34,6 +98,8 @@ local function hasPendingChangeEntry(): boolean
 end
 
 local function checkChangeEntry()
+	validateChangeEntries()
+
 	local isPullRequest = process.env.GITHUB_EVENT_NAME == "pull_request"
 	local isMain = if process.env.GITHUB_REF_NAME
 		then process.env.GITHUB_REF_NAME == "main"
