@@ -5,7 +5,7 @@ type AppAdapter = types.AppAdapter
 type Controls = types.Controls
 type StoryAdapter = types.StoryAdapter
 
-local function createAgentController(screen: LayerCollector): AgentController
+local function createAgentController(openSurface: () -> ()): AgentController
 	local appAdapter: AppAdapter? = nil
 	local storyAdapter: StoryAdapter? = nil
 
@@ -34,9 +34,7 @@ local function createAgentController(screen: LayerCollector): AgentController
 	end
 
 	return {
-		openWidget = function()
-			screen.Enabled = true
-		end,
+		openWidget = openSurface,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
 			return getAppAdapter().embedFlipbook(parentPath, overwrite == true)
@@ -51,7 +49,7 @@ local function createAgentController(screen: LayerCollector): AgentController
 		end,
 
 		openStory = function(storyPath: string, storybookPath: string?)
-			screen.Enabled = true
+			openSurface()
 			return getAppAdapter().openStory(storyPath, storybookPath)
 		end,
 
