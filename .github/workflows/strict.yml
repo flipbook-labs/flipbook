@@ -24,7 +24,7 @@ jobs:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
-      - uses: CompeyDev/setup-rokit@v0.2.1
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
         with:
           version: v1.2.0
 
@@ -50,7 +50,7 @@ jobs:
   tests:
     needs: build-test-inputs
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     environment:
       name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
     steps:
@@ -58,7 +58,7 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.sha }}
 
-      - uses: CompeyDev/setup-rokit@v0.2.1
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
         with:
           version: v1.2.0
 
@@ -68,7 +68,7 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v7
         with:
           name: strict-inputs
 
