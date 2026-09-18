@@ -4,6 +4,7 @@ local system = require("@std/system")
 
 local run = FlipbookBatteries.run
 
+run("lune", { "setup" })
 run("lute", { "setup" })
 run("lute", { "run", "lint" })
 run("lute", { "run", "analyze" })
