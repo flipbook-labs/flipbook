@@ -5,6 +5,9 @@ local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
 
+local project = require("@repo/project")
+local rojoBuild = require("@scripts/lib/rojoBuild")
+
 local run = FlipbookBatteries.run
 
 dotenv.config()
@@ -20,32 +23,80 @@ args:add("apiKey", "option", {
 args:add("filter", "option", {
 	help = "Specify a filepath pattern to match for when running tests",
 })
+args:add("place", "option", {
+	help = "Path to the test place file to build or run",
+	default = tostring(path.join(system.tmpdir(), "tests-place.rbxl")),
+})
+args:add("build-only", "flag", {
+	help = "Build the test place without running cloud tests",
+})
+args:add("run-only", "flag", {
+	help = "Run cloud tests from an existing test place",
+})
 
 args:parse({ ... })
 
-local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
-if not apiKey or apiKey == "" then
-	error(
-		"A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
-	)
+local buildOnly = args:has("build-only")
+local runOnly = args:has("run-only")
+if buildOnly and runOnly then
+	error("--build-only and --run-only cannot be used together")
 end
 
-local placePath = path.join(system.tmpdir(), "tests-place.rbxl")
-local buildArgs: { string | number | boolean | path.Pathlike } = {
-	"run",
-	"buildTests",
-	"--output",
-	placePath,
-}
-local filter = args:get("filter")
-if filter then
-	table.insert(buildArgs, "--filter")
-	table.insert(buildArgs, filter)
+local placePath = args:get("place")
+assert(typeof(placePath) == "string", `bad value for place (string expected, got {typeof(placePath)})`)
+
+if not runOnly then
+	local filter = args:get("filter")
+	process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
+
+	run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
+
+	local builtPlacePath = rojoBuild({
+		output = placePath,
+		project = {
+			name = "Flipbook",
+			tree = {
+				["$className"] = "DataModel",
+				ServerScriptService = {
+					["$properties"] = {
+						LoadStringEnabled = true,
+					},
+				},
+				ReplicatedStorage = {
+					Flipbook = {
+						["$path"] = tostring(path.join(project.BUILD_PATH, "dev", "roblox")),
+					},
+				},
+			},
+		},
+	})
+
+	print(`Built test place: {builtPlacePath}`)
 end
 
-run("lute", buildArgs)
-run("lute", { "run", "runTests", "--place", placePath }, {
-	env = {
-		ROBLOX_API_KEY = apiKey,
-	},
-})
+if not buildOnly then
+	local apiKey = process.env.ROBLOX_API_KEY or args:get("apiKey")
+	if not apiKey or apiKey == "" then
+		error(
+			"A valid Open Cloud API key must be supplied with either the --apiKey flag or the ROBLOX_API_KEY environment variable"
+		)
+	end
+
+	run("rocale", {
+		"run",
+		"--script",
+		".lute/tasks/run-tests.luau",
+		"--load.place",
+		placePath,
+		"--universeId",
+		process.env.ROBLOX_UNIT_TESTING_UNIVERSE_ID,
+		"--placeId",
+		process.env.ROBLOX_UNIT_TESTING_PLACE_ID,
+		"--output",
+		tostring(path.join(system.tmpdir(), "tests.rbxl")),
+	}, {
+		env = {
+			ROBLOX_API_KEY = apiKey,
+		},
+	})
+end
