@@ -28,7 +28,7 @@ jobs:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
-      - uses: CompeyDev/setup-rokit@v0.2.1
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
         with:
           version: v1.2.0
 
@@ -78,7 +78,7 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.sha }}
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v7
         with:
           name: storybook-inputs
           path: build
@@ -86,6 +86,7 @@ jobs:
       - name: Resolve storybook IDs
         id: ids
         run: |
+          set -euo pipefail
           echo "universe-id=$(grep -oP 'ROBLOX_STORYBOOK_UNIVERSE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
           echo "place-id=$(grep -oP 'ROBLOX_STORYBOOK_PLACE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
 
@@ -115,6 +116,7 @@ jobs:
       - name: Comment preview link
         if: github.event_name == 'pull_request_target'
         run: |
+          set -euo pipefail
           flipbook-cli comment \
             --pr "$GITHUB_PULL_REQUEST_NUMBER" \
             --universe-id "$ROBLOX_STORYBOOK_UNIVERSE_ID" \
