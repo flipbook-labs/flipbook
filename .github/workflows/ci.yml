@@ -125,14 +125,8 @@ jobs:
       - name: Install dependencies
         run: lute run install
 
-      - name: Setup Lune typedefs
-        run: lune setup
+      - name: Create .env
+        run: cp .env.template .env
 
-      - name: Setup Lute typedefs
-        run: lute setup
-
-      - name: Lint
-        run: lute run lint
-
-      - name: Run Luau analysis
-        run: lute run analyze
+      - name: Run contributor check
+        run: lute run check

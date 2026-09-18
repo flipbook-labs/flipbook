@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Onboarding
 
-Thank you for your interest in contributing to Flipbook! You can build and validate a contribution without access to any Flipbook Labs secrets.
+Thank you for your interest in contributing to Flipbook! This guide walks through setting up a development environment, validating changes, and opening a pull request.
 
 :::info
 This guide covers development of the Flipbook plugin. See [Getting Started](/docs/intro) to learn how to use Flipbook in your own project.
