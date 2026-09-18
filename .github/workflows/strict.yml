@@ -16,8 +16,8 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    # Run 35297385551 spent 9m43 in Creator Store deployment before the
-    # previous 10-minute job limit cancelled it, so allow a second window.
+    # Creator Store deployment latency can exceed ten minutes, so allow enough
+    # time for the deployment to complete while retaining a bounded timeout.
     timeout-minutes: 20
     environment:
       # This giant expression is unfortunately the best we can do right now. The
