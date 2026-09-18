@@ -50,6 +50,8 @@ jobs:
   tests:
     needs: build-test-inputs
     runs-on: ubuntu-latest
+    # Run 35297385551 spent 9m43 in Creator Store deployment before the
+    # previous 10-minute job limit cancelled it, so allow a second window.
     timeout-minutes: 20
     environment:
       name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}
@@ -68,7 +70,7 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: strict-inputs
 
