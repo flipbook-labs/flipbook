@@ -1,17 +1,17 @@
 {
-  "languageMode": "strict",
-  "aliases": {
-    "lune": "~/.lune/.typedefs/0.9.4/",
-    "lint": "~/.lute/typedefs/1.0.1/lint",
-    "lute": "~/.lute/typedefs/1.0.1/lute",
-    "std": "~/.lute/typedefs/1.0.1/std",
-    "luaupkg": "~/.loom/store",
-    "batteries": "@luaupkg/lute@v1.0.1-nightly.20260909/batteries",
-    "lunepkg": "./LuauPackages",
-    "pkg": "./Packages",
-    "rbxpkg": "./RobloxPackages",
-    "repo": ".",
-    "scripts": "./.lute",
-    "workspace": "./workspace"
-  }
+	"languageMode": "strict",
+	"aliases": {
+		"lune": "~/.lune/.typedefs/0.9.4/",
+		"lint": "~/.lute/typedefs/1.0.1/lint",
+		"lute": "~/.lute/typedefs/1.0.1/lute",
+		"std": "~/.lute/typedefs/1.0.1/std",
+		"luaupkg": "~/.loom/store",
+		"batteries": "@luaupkg/lute@v1.0.1-nightly.20260909/batteries",
+		"lunepkg": "./LuauPackages",
+		"pkg": "./Packages",
+		"rbxpkg": "./RobloxPackages",
+		"repo": ".",
+		"scripts": "./.lute",
+		"workspace": "./workspace"
+	}
 }
