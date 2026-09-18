@@ -16,7 +16,7 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     environment:
       # This giant expression is unfortunately the best we can do right now. The
       # hope was to offload it to an `env` variable, but those can't be accessed
