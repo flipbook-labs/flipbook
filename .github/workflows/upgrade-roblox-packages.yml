@@ -59,6 +59,7 @@ jobs:
       pull-requests: write
     env:
       BRANCH_NAME: upgrade-roblox-packages
+      LATEST_VERSION: ${{ needs.version-check.outputs.latest-version }}
     if: ${{ needs.version-check.outputs.should-upgrade == 'true' }}
     steps:
       # Authenticate as the flipbook-backend GitHub App. Commits and PRs made
@@ -104,25 +105,47 @@ jobs:
             git checkout -B "$BRANCH_NAME" origin/main
           fi
 
-      - name: Apply new version
-        env:
-          LATEST_VERSION: ${{ needs.version-check.outputs.latest-version }}
+      - name: Apply Version and Changelog Entry
+        id: apply
         run: |
-          sed -i "s/ROBLOX_PACKAGES_VERSION = \"[^\"]*\"/ROBLOX_PACKAGES_VERSION = \"$LATEST_VERSION\"/" project.luau
-          cat project.luau
+          set -euo pipefail
 
-      - name: Commit and push the version bump
+          sed -i "s/ROBLOX_PACKAGES_VERSION = \"[^\"]*\"/ROBLOX_PACKAGES_VERSION = \"$LATEST_VERSION\"/" project.luau
+
+          changelogFile=$(git diff --name-only --diff-filter=A origin/main...HEAD -- '.changes/upgrade-roblox-packages-*.md' | sed -n '1p')
+          if [ -z "$changelogFile" ]; then
+            changelogFile=".changes/upgrade-roblox-packages-$LATEST_VERSION.md"
+          fi
+
+          mkdir -p .changes
+          printf '%s\n' \
+            '---' \
+            'bump: patch' \
+            'category: Dependencies' \
+            '---' \
+            '' \
+            "Upgrade RobloxPackages to $LATEST_VERSION." \
+            > "$changelogFile"
+
+          echo "changelog_file=$changelogFile" >> "$GITHUB_OUTPUT"
+
+          cat project.luau
+          cat "$changelogFile"
+
+      - name: Commit and Push Version Bump
         id: commit
         env:
-          LATEST_VERSION: ${{ needs.version-check.outputs.latest-version }}
+          CHANGELOG_FILE: ${{ steps.apply.outputs.changelog_file }}
         run: |
-          if git diff --quiet -- project.luau; then
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain -- project.luau "$CHANGELOG_FILE")" ]; then
             echo "The branch already tracks $LATEST_VERSION; nothing to push."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          git add project.luau
+          git add project.luau "$CHANGELOG_FILE"
           git commit -m "Upgrade RobloxPackages to $LATEST_VERSION"
 
           # The new commit is stacked on top of the branch's existing history,
@@ -137,7 +160,6 @@ jobs:
         if: ${{ steps.branch_existence.outcome == 'failure' && steps.commit.outputs.changed == 'true' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          LATEST_VERSION: ${{ needs.version-check.outputs.latest-version }}
           PR_BODY: |
             This PR upgrades RobloxPackages to **${{ needs.version-check.outputs.latest-version }}**
 
