@@ -35,7 +35,7 @@ jobs:
         run: cp .env.template .env
 
       - name: Build test place
-        run: lute run buildTests --output tests-place.rbxl
+        run: lute run test --build-only --place tests-place.rbxl
 
       - name: Build smoketest plugin
         run: lute run build plugin --channel prod --clean --output Flipbook.rbxm
@@ -73,7 +73,7 @@ jobs:
           name: strict-inputs
 
       - name: Run tests
-        run: lute run runTests --place tests-place.rbxl
+        run: lute run test --run-only --place tests-place.rbxl
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
