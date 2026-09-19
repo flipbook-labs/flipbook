@@ -118,3 +118,27 @@ test("opens a discovered Story and reports it as current", function()
 	expect(openedStory).toBe(story)
 	expect(adapter.getCurrentStory()).toEqual(result)
 end)
+
+test("rejects a non-Story module", function()
+	local helper = Instance.new("ModuleScript")
+	helper.Name = "Helper"
+	helper.Parent = story.Parent
+
+	local adapter = createAdapter()
+
+	expect(function()
+		adapter.openStory(getInstancePath(helper), nil)
+	end).toThrow("story must be a discovered .story ModuleScript")
+end)
+
+test("rejects a Story outside the selected Storybook", function()
+	local orphan = Instance.new("ModuleScript")
+	orphan.Name = "Orphan.story"
+	orphan.Parent = root
+
+	local adapter = createAdapter()
+
+	expect(function()
+		adapter.openStory(getInstancePath(orphan), getInstancePath(storybookModule))
+	end).toThrow("story is not discovered by storybook")
+end)

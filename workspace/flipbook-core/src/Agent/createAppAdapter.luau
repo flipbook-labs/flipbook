@@ -53,6 +53,10 @@ local function resolveModuleScript(path: string, label: string): ModuleScript
 end
 
 local function createAppAdapter(dependencies: Dependencies): AppAdapter
+	local function isDiscoveredStory(story: ModuleScript, storybook: LoadedStorybook): boolean
+		return table.find(Storyteller.findStoryModulesForStorybook(storybook), story) ~= nil
+	end
+
 	local function findStorybook(storybookPath: string): LoadedStorybook
 		for _, storybook in dependencies.getStorybooks().available do
 			if getInstancePath(storybook.source) == storybookPath then
@@ -64,10 +68,8 @@ local function createAppAdapter(dependencies: Dependencies): AppAdapter
 
 	local function findStorybookForStory(story: ModuleScript): LoadedStorybook?
 		for _, storybook in dependencies.getStorybooks().available do
-			for _, storyRoot in storybook.storyRoots do
-				if storyRoot == story or storyRoot:IsAncestorOf(story) then
-					return storybook
-				end
+			if isDiscoveredStory(story, storybook) then
+				return storybook
 			end
 		end
 		return nil
@@ -110,6 +112,12 @@ local function createAppAdapter(dependencies: Dependencies): AppAdapter
 		openStory = function(storyPath: string, storybookPath: string?)
 			local story = resolveModuleScript(storyPath, "story")
 			local storybook = if storybookPath then findStorybook(storybookPath) else findStorybookForStory(story)
+			if storybook ~= nil and not isDiscoveredStory(story, storybook) then
+				error(`story is not discovered by storybook {storybookPath}: {storyPath}`)
+			end
+			if storybook == nil and not Storyteller.isStoryModule(story) then
+				error(`story must be a discovered .story ModuleScript: {storyPath}`)
+			end
 			dependencies.openStory(story, storybook)
 			return serializeStory(story, storybook)
 		end,

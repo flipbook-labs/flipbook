@@ -16,6 +16,21 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 		mode = AppMode.PluginWidget,
 		agentController = agentController,
 	})
+	local isMounted = false
+
+	local function mount()
+		if not isMounted then
+			isMounted = true
+			app.mount()
+		end
+	end
+
+	local function unmount()
+		if isMounted then
+			isMounted = false
+			app.unmount()
+		end
+	end
 
 	if button ~= nil then
 		table.insert(
@@ -33,24 +48,12 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 		)
 	end
 
-	table.insert(
-		connections,
-		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-			if widget.Enabled then
-				app.mount()
-			else
-				app.unmount()
-			end
-		end)
-	)
-
-	if widget.Enabled then
-		app.mount()
-	end
+	-- Agent discovery must remain available while the widget is hidden.
+	mount()
 
 	local function destroy()
 		cleanupAgentGateway()
-		app.destroy()
+		unmount()
 
 		for _, connection in connections do
 			connection:Disconnect()
@@ -58,8 +61,8 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	end
 
 	return {
-		mount = app.mount,
-		unmount = app.unmount,
+		mount = mount,
+		unmount = unmount,
 		destroy = destroy,
 	}
 end
