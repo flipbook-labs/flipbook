@@ -86,6 +86,27 @@ test("discovers Storybooks and their Stories without fixed DataModel paths", fun
 	})
 end)
 
+test("discovers orphaned Stories without a Storybook path", function()
+	local orphan = Instance.new("ModuleScript")
+	orphan.Name = "Orphan.story"
+	orphan.Parent = root
+
+	local adapter = createAdapter()
+	local orphanPath = getInstancePath(orphan)
+	local orphanedStory
+	for _, storyInfo in adapter.listStories(nil) do
+		if storyInfo.path == orphanPath then
+			orphanedStory = storyInfo
+			break
+		end
+	end
+
+	expect(orphanedStory).toEqual({
+		name = "Orphan",
+		path = orphanPath,
+	})
+end)
+
 test("embeds Flipbook at a discovered destination", function()
 	local adapter = createAdapter()
 

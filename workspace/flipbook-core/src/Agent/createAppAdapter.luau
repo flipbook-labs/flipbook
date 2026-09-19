@@ -100,11 +100,17 @@ local function createAppAdapter(dependencies: Dependencies): AppAdapter
 			return result
 		end,
 
-		listStories = function(storybookPath: string)
-			local storybook = findStorybook(storybookPath)
+		listStories = function(storybookPath: string?)
 			local result = {}
-			for _, story in Storyteller.findStoryModulesForStorybook(storybook) do
-				table.insert(result, serializeStory(story, storybook))
+			if storybookPath == nil then
+				for _, story in Storyteller.findOrphanedStoryModules(game, dependencies.getStorybooks().available) do
+					table.insert(result, serializeStory(story, nil))
+				end
+			else
+				local storybook = findStorybook(storybookPath)
+				for _, story in Storyteller.findStoryModulesForStorybook(storybook) do
+					table.insert(result, serializeStory(story, storybook))
+				end
 			end
 			return result
 		end,
