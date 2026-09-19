@@ -7,7 +7,7 @@ type Action = AgentGateway.Action<types.AgentActions>
 local action: Action = {
 	name = "getControls",
 	title = "Get Controls",
-	description = "Return effective control values for the mounted Story.",
+	description = "Return effective control values for the mounted Story in JSON-safe form.",
 	run = function(controller)
 		return { controls = controller.getControls() }
 	end,

@@ -39,6 +39,14 @@ local function createActions(): (types.AgentActions, ActionsState)
 			}
 		end,
 		listStories = function(storybookPath)
+			if storybookPath == nil then
+				return {
+					{
+						name = "Orphan",
+						path = "ReplicatedStorage/Orphan.story",
+					},
+				}
+			end
 			return {
 				{
 					name = "Button",
@@ -128,6 +136,19 @@ test("lists stories", function()
 				name = "Button",
 				path = "ReplicatedStorage/Example.storybook/Button.story",
 				storybook = "ReplicatedStorage/Example.storybook",
+			},
+		},
+	})
+end)
+
+test("lists orphaned stories when the Storybook is omitted", function()
+	local agentActions = createActions()
+
+	expect(actions.listStories.run(agentActions, nil)).toEqual({
+		stories = {
+			{
+				name = "Orphan",
+				path = "ReplicatedStorage/Orphan.story",
 			},
 		},
 	})
