@@ -8,9 +8,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
-	local agentController = FlipbookAgents.createAgentController(function()
-		widget.Enabled = true
-	end)
+	local agentController = FlipbookAgents.createAgentController(widget)
 	local cleanupAgentGateway = FlipbookAgents.createAgentGateway(agentController)
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,

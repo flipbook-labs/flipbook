@@ -5,9 +5,13 @@ type AppAdapter = types.AppAdapter
 type Controls = types.Controls
 type StoryAdapter = types.StoryAdapter
 
-local function createAgentController(openSurface: () -> ()): AgentController
+local function createAgentController(surface: LayerCollector): AgentController
 	local appAdapter: AppAdapter? = nil
 	local storyAdapter: StoryAdapter? = nil
+
+	local function openSurface()
+		surface.Enabled = true
+	end
 
 	local function getAppAdapter(): AppAdapter
 		if appAdapter == nil then

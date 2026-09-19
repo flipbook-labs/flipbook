@@ -9,9 +9,7 @@ local function createEmbeddedFlipbookApp(screenGui: ScreenGui, launchData: Launc
 	local gatewayParent = screenGui.Parent
 	assert(gatewayParent ~= nil, "embedded ScreenGui must be parented")
 
-	local agentController = FlipbookAgents.createAgentController(function()
-		screenGui.Enabled = true
-	end)
+	local agentController = FlipbookAgents.createAgentController(screenGui)
 	local app = createFlipbookApp(screenGui, {
 		launchData = launchData,
 		overlayGui = screenGui :: GuiBase2d,
