@@ -50,8 +50,8 @@ jobs:
   tests:
     needs: build-test-inputs
     runs-on: ubuntu-latest
-    # Run 35297385551 spent 9m43 in Creator Store deployment before the
-    # previous 10-minute job limit cancelled it, so allow a second window.
+    # Creator Store deployment latency can exceed ten minutes, so allow enough
+    # time for the deployment to complete while retaining a bounded timeout.
     timeout-minutes: 20
     environment:
       name: ${{ (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) && 'luau-execution-gated' || 'luau-execution' }}

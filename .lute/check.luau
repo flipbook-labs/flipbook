@@ -2,9 +2,11 @@ local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
 local path = require("@std/path")
 local system = require("@std/system")
 
+local checkChangeEntry = require("@scripts/lib/checkChangeEntry")
+
 local run = FlipbookBatteries.run
 
-run("lune", { "setup" })
+checkChangeEntry()
 run("lute", { "setup" })
 run("lute", { "run", "lint" })
 run("lute", { "run", "analyze" })

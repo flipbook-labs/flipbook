@@ -29,13 +29,13 @@ Install [Rokit](https://github.com/rojo-rbx/rokit/) before running the setup com
    cp .env.template .env
    ```
 
-4. Make your change and run the secret-free contributor check:
+4. Make your change and add one file under [`.changes/`](.changes/README.md) describing its user-visible effect. Internal-only changes still use a patch entry.
+
+5. Run the repository checks:
 
    ```sh
    lute run check
    ```
-
-5. Add one file under [`.changes/`](.changes/README.md) describing the user-visible effect of your pull request. Internal-only changes still use a patch entry.
 
 6. Push your branch to your fork and open a pull request against `flipbook-labs/flipbook:main`.
 

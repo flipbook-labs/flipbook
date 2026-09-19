@@ -47,15 +47,15 @@ In Visual Studio Code, press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on macOS
 
 ## Validate your change
 
-Run the contributor check before opening or updating a pull request:
+Every pull request needs one change entry. Add a Markdown file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
+
+Run the repository checks before opening or updating a pull request:
 
 ```sh
 lute run check
 ```
 
-This command sets up local type definitions, checks formatting and static analysis, and produces a development plugin build. It does not require an Open Cloud API key.
-
-Every pull request needs one change entry. Add a Markdown file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
+This command verifies the branch has a change entry, sets up local type definitions, checks formatting and static analysis, and produces a development plugin build. It does not require an Open Cloud API key.
 
 ## Open a pull request
 
