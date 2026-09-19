@@ -6,8 +6,8 @@ local describe = JestGlobals.describe
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function createScreen(): LayerCollector
-	return { Enabled = false } :: any
+local function createScreen(): ScreenGui
+	return Instance.new("ScreenGui")
 end
 
 local function createStoryAdapter(path: string, initialValue: string)
@@ -27,6 +27,16 @@ local function createStoryAdapter(path: string, initialValue: string)
 end
 
 describe("app registration", function()
+	test("opens an embedded screen surface", function()
+		local screenGui = createScreen()
+		screenGui.Enabled = false
+		local controller = createAgentController(screenGui)
+
+		controller.openWidget()
+
+		expect(screenGui.Enabled).toBe(true)
+	end)
+
 	test("routes app actions through the current adapter", function()
 		local screen = createScreen()
 		local controller = createAgentController(screen)
