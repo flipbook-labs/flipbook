@@ -86,6 +86,27 @@ test("discovers Storybooks and their Stories without fixed DataModel paths", fun
 	})
 end)
 
+test("discovers orphaned Stories without a Storybook path", function()
+	local orphan = Instance.new("ModuleScript")
+	orphan.Name = "Orphan.story"
+	orphan.Parent = root
+
+	local adapter = createAdapter()
+	local orphanPath = getInstancePath(orphan)
+	local orphanedStory
+	for _, storyInfo in adapter.listStories(nil) do
+		if storyInfo.path == orphanPath then
+			orphanedStory = storyInfo
+			break
+		end
+	end
+
+	expect(orphanedStory).toEqual({
+		name = "Orphan",
+		path = orphanPath,
+	})
+end)
+
 test("embeds Flipbook at a discovered destination", function()
 	local adapter = createAdapter()
 
@@ -117,4 +138,28 @@ test("opens a discovered Story and reports it as current", function()
 	expect(result.path).toBe(getInstancePath(story))
 	expect(openedStory).toBe(story)
 	expect(adapter.getCurrentStory()).toEqual(result)
+end)
+
+test("rejects a non-Story module", function()
+	local helper = Instance.new("ModuleScript")
+	helper.Name = "Helper"
+	helper.Parent = story.Parent
+
+	local adapter = createAdapter()
+
+	expect(function()
+		adapter.openStory(getInstancePath(helper), nil)
+	end).toThrow("story must be a discovered .story ModuleScript")
+end)
+
+test("rejects a Story outside the selected Storybook", function()
+	local orphan = Instance.new("ModuleScript")
+	orphan.Name = "Orphan.story"
+	orphan.Parent = root
+
+	local adapter = createAdapter()
+
+	expect(function()
+		adapter.openStory(getInstancePath(orphan), getInstancePath(storybookModule))
+	end).toThrow("story is not discovered by storybook")
 end)

@@ -39,6 +39,14 @@ local function createActions(): (types.AgentActions, ActionsState)
 			}
 		end,
 		listStories = function(storybookPath)
+			if storybookPath == nil then
+				return {
+					{
+						name = "Orphan",
+						path = "ReplicatedStorage/Orphan.story",
+					},
+				}
+			end
 			return {
 				{
 					name = "Button",
@@ -77,7 +85,15 @@ test("rejects params with non-string keys", function()
 
 	expect(function()
 		actions.listStories.run(agentActions, { [1] = "ReplicatedStorage/Example.storybook" })
-	end).toThrow("params must use string keys")
+	end).toThrow("dictionary keys must be strings")
+end)
+
+test("rejects controls with non-string keys", function()
+	local agentActions = createActions()
+
+	expect(function()
+		actions.setControls.run(agentActions, { controls = { [1] = "After" } })
+	end).toThrow("dictionary keys must be strings")
 end)
 
 test("opens the widget", function()
@@ -120,6 +136,19 @@ test("lists stories", function()
 				name = "Button",
 				path = "ReplicatedStorage/Example.storybook/Button.story",
 				storybook = "ReplicatedStorage/Example.storybook",
+			},
+		},
+	})
+end)
+
+test("lists orphaned stories when the Storybook is omitted", function()
+	local agentActions = createActions()
+
+	expect(actions.listStories.run(agentActions, nil)).toEqual({
+		stories = {
+			{
+				name = "Orphan",
+				path = "ReplicatedStorage/Orphan.story",
 			},
 		},
 	})

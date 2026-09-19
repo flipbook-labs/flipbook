@@ -20,7 +20,7 @@ export type Options = {
 	openStory: (ModuleScript, LoadedStorybook?) -> (),
 }
 
-local function useAgentAppRegistration(options: Options)
+local function useAgentRegistration(options: Options)
 	local agentController = AgentContext.use()
 	local latest = React.useRef(options)
 	latest.current = options
@@ -45,4 +45,4 @@ local function useAgentAppRegistration(options: Options)
 	end, { agentController })
 end
 
-return useAgentAppRegistration
+return useAgentRegistration

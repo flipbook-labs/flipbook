@@ -9,6 +9,7 @@ local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local createControlValueCodec = require("@root/Agent/createControlValueCodec")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local getInstancePath = require("@root/Common/getInstancePath")
 local types = require("@root/Storybook/types")
@@ -27,6 +28,7 @@ local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
 type ExtraStoryProps = types.ExtraStoryProps
+type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 
 type StoryViewProps = {
@@ -44,24 +46,27 @@ local function StoryView(props: StoryViewProps)
 	local storyControlsStore = useMemo(function(): StoryControlsStore?
 		return if story then createStoryControlsStore(story.controls) else nil
 	end, { story } :: { unknown })
+	local controlValueCodec = useMemo(function()
+		return if story then createControlValueCodec(story.controls or {}) else nil
+	end, { story } :: { unknown })
 
 	useEffect(function()
-		if agentController == nil or storyControlsStore == nil then
+		if agentController == nil or storyControlsStore == nil or controlValueCodec == nil then
 			return
 		end
 		return agentController.registerStory({
 			path = getInstancePath(props.storyModule),
 			getControls = function()
-				return storyControlsStore.getControls() :: any
+				return controlValueCodec.encode(storyControlsStore.getControls())
 			end,
 			setControls = function(controls)
-				for key, value in controls do
-					storyControlsStore.setControl(key, value :: any)
+				for key, value in controlValueCodec.decode(controls) do
+					storyControlsStore.setControl(key, value :: StoryControlValue)
 				end
-				return storyControlsStore.getControls() :: any
+				return controlValueCodec.encode(storyControlsStore.getControls())
 			end,
 		})
-	end, { agentController, props.storyModule, storyControlsStore } :: { unknown })
+	end, { agentController, controlValueCodec, props.storyModule, storyControlsStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {

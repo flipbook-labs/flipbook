@@ -48,7 +48,7 @@ local function createAgentController(surface: LayerCollector): AgentController
 			return getAppAdapter().listStorybooks()
 		end,
 
-		listStories = function(storybookPath: string)
+		listStories = function(storybookPath: string?)
 			return getAppAdapter().listStories(storybookPath)
 		end,
 
@@ -57,7 +57,7 @@ local function createAgentController(surface: LayerCollector): AgentController
 			return getAppAdapter().openStory(storyPath, storybookPath)
 		end,
 
-		getCurrentStory = function()
+		getCurrentStory = function(): types.CurrentStory?
 			local story = getAppAdapter().getCurrentStory()
 			if story == nil then
 				return nil
