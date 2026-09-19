@@ -1,4 +1,5 @@
 local fs = require("@std/fs")
+local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 
@@ -15,8 +16,19 @@ local function getCurrentBranch(): string
 end
 
 local function getMainBranch(): string
-	if process.env.REPOSITORY_DEFAULT_BRANCH and process.env.REPOSITORY_DEFAULT_BRANCH ~= "" then
-		return process.env.REPOSITORY_DEFAULT_BRANCH
+	local eventPath = process.env.GITHUB_EVENT_PATH
+	if eventPath and eventPath ~= "" then
+		-- actions/checkout fetches branches without creating origin/HEAD, so CI
+		-- uses the event payload while local clones use Git's remote default.
+		local event = json.asObject(json.deserialize(fs.readFileToString(eventPath)))
+		assert(event, `Expected a JSON object in {eventPath}`)
+
+		local repository = json.asObject(event.repository)
+		assert(repository, `Expected repository details in {eventPath}`)
+
+		local mainBranch = repository.default_branch
+		assert(type(mainBranch) == "string", `Expected repository.default_branch in {eventPath}`)
+		return mainBranch
 	end
 
 	local result = process.run({ "git", "symbolic-ref", "--short", MAIN_BRANCH_REF })
