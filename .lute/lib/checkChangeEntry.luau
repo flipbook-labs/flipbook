@@ -15,20 +15,29 @@ local function getCurrentBranch(): string
 	return trim(result.stdout)
 end
 
-local function getMainBranch(): string
+local function getGitHubMainBranch(): string?
 	local eventPath = process.env.GITHUB_EVENT_PATH
-	if eventPath and eventPath ~= "" then
-		-- actions/checkout fetches branches without creating origin/HEAD, so CI
-		-- uses the event payload while local clones use Git's remote default.
-		local event = json.asObject(json.deserialize(fs.readFileToString(eventPath)))
-		assert(event, `Expected a JSON object in {eventPath}`)
+	if not eventPath or eventPath == "" then
+		return nil
+	end
 
-		local repository = json.asObject(event.repository)
-		assert(repository, `Expected repository details in {eventPath}`)
+	local event = json.asObject(json.deserialize(fs.readFileToString(eventPath)))
+	assert(event, `Expected a JSON object in {eventPath}`)
 
-		local mainBranch = repository.default_branch
-		assert(type(mainBranch) == "string", `Expected repository.default_branch in {eventPath}`)
-		return mainBranch
+	local repository = json.asObject(event.repository)
+	assert(repository, `Expected repository details in {eventPath}`)
+
+	local mainBranch = repository.default_branch
+	assert(type(mainBranch) == "string", `Expected repository.default_branch in {eventPath}`)
+	return mainBranch
+end
+
+local function getMainBranch(): string
+	-- actions/checkout fetches branches without creating origin/HEAD, so CI
+	-- uses the event payload while local clones use Git's remote default.
+	local githubMainBranch = getGitHubMainBranch()
+	if githubMainBranch then
+		return githubMainBranch
 	end
 
 	local result = process.run({ "git", "symbolic-ref", "--short", MAIN_BRANCH_REF })
