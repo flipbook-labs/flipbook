@@ -1,8 +1,20 @@
 local CommonTypes = require("@root/Common/types")
+local Storyteller = require("@pkg/Storyteller")
 local useThemeName = require("@root/Common/useThemeName")
 
 type Pluginlike = CommonTypes.Pluginlike
 type ThemeName = useThemeName.ThemeName
+
+export type SelectedStory = {
+	kind: "Story",
+	storyModule: ModuleScript,
+	storybook: Storyteller.LoadedStorybook,
+}
+
+export type StorySelection = { kind: "None" } | SelectedStory | {
+	kind: "UnavailableStorybook",
+	unavailableStorybook: Storyteller.UnavailableStorybook,
+}
 
 export type ExtraStoryProps = {
 	theme: ThemeName,
