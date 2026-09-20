@@ -4,9 +4,47 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .darklua.json
+      - .env.template
+      - .github/scripts/comment-storybook-preview.cjs
+      - .github/workflows/storybook.yml
+      - .luaurc
+      - .lute/**
+      - default.project.json
+      - loom.config.luau
+      - loom.lock.luau
+      - project.luau
+      - rbxasset.lock
+      - rbxasset.toml
+      - rokit.toml
+      - sourcemap.project.json
+      - src/**
+      - wally.lock
+      - wally.toml
+      - workspace/**
   pull_request_target:
     branches:
       - main
+    paths:
+      - .darklua.json
+      - .env.template
+      - .github/scripts/comment-storybook-preview.cjs
+      - .github/workflows/storybook.yml
+      - .luaurc
+      - .lute/**
+      - default.project.json
+      - loom.config.luau
+      - loom.lock.luau
+      - project.luau
+      - rbxasset.lock
+      - rbxasset.toml
+      - rokit.toml
+      - sourcemap.project.json
+      - src/**
+      - wally.lock
+      - wally.toml
+      - workspace/**
   workflow_dispatch:
 
 concurrency:
