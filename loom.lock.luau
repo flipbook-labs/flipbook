@@ -1,40 +1,53 @@
 return {
-  version = 2,
+  version = 3,
   dependencies = {
-    ["Lute@v1.0.0"] = {
-      installPath = "Packages/Lute@v1.0.0",
+    AgentSkills = "AgentSkills@v0.6.0",
+    dotenv = "dotenv@v0.1.0",
+    ["flipbook-batteries"] = "flipbook-batteries@v0.12.0",
+    lute = "lute@v1.0.1-nightly.20260909",
+  },
+  packages = {
+    ["AgentSkills@v0.6.0"] = {
+      installPath = "@pkg/AgentSkills@v0.6.0",
+      name = "AgentSkills",
+      rev = "v0.6.0",
+      source = "https://github.com/flipbook-labs/agent-skills",
+      sourceKind = "github",
+      dependencies = {},
+    },
+    ["Lute@v1.0.1-nightly.20260701"] = {
+      installPath = "@pkg/Lute@v1.0.1-nightly.20260701",
       name = "Lute",
-      rev = "v1.0.0",
+      rev = "v1.0.1-nightly.20260701",
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       dependencies = {},
     },
     ["dotenv@v0.1.0"] = {
-      installPath = "Packages/dotenv@v0.1.0",
+      installPath = "@pkg/dotenv@v0.1.0",
       name = "dotenv",
       rev = "v0.1.0",
       source = "https://github.com/erlcx/lute-dotenv",
       sourceKind = "github",
       dependencies = {},
     },
-    ["flipbook-batteries@v0.9.0"] = {
-      installPath = "Packages/flipbook-batteries@v0.9.0",
+    ["flipbook-batteries@v0.12.0"] = {
+      installPath = "@pkg/flipbook-batteries@v0.12.0",
       name = "flipbook-batteries",
-      rev = "v0.9.0",
+      rev = "v0.12.0",
       source = "https://github.com/flipbook-labs/flipbook-batteries",
       sourceKind = "github",
       dependencies = {
-        Lute = "Lute@v1.0.0",
+        Lute = "Lute@v1.0.1-nightly.20260701",
       },
     },
-    ["lute@v1.0.0"] = {
-      installPath = "Packages/lute@v1.0.0",
+    ["lute@v1.0.1-nightly.20260909"] = {
+      installPath = "@pkg/lute@v1.0.1-nightly.20260909",
       name = "lute",
-      rev = "v1.0.0",
+      rev = "v1.0.1-nightly.20260909",
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       dependencies = {},
     },
   },
-  packages = {"flipbook-batteries@v0.9.0", "dotenv@v0.1.0", "lute@v1.0.0"},
 }
