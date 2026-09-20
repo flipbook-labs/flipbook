@@ -11,17 +11,16 @@ test('renders both runtime and story combinations', () => {
 	const comment = renderPreviewComment(123, 456)
 
 	assert.match(comment, new RegExp(`^${MARKER}`))
-	assert.match(comment, /> ### Released Flipbook \+ PR stories/)
-	assert.match(comment, /> ### PR Flipbook \+ PR stories/)
 	assert.match(
 		comment,
-		/> \*\*\[▶ Join preview\]\(https:\/\/www\.roblox\.com\/games\/start\?placeId=123\)\*\*/,
+		/\*\*\[▶ Launch Storybook\]\(https:\/\/www\.roblox\.com\/games\/start\?placeId=123\)\*\* - <sub><a href="https:\/\/www\.roblox\.com\/games\/123">Experience page ↗<\/a><\/sub>/,
 	)
 	assert.match(
 		comment,
-		/> <sub><a href="https:\/\/www\.roblox\.com\/games\/456">Experience page ↗<\/a><\/sub>/,
+		/\*\*\[▶ Launch Storybook \(_Branch build_\)\]\(https:\/\/www\.roblox\.com\/games\/start\?placeId=456\)\*\* - <sub><a href="https:\/\/www\.roblox\.com\/games\/456">Experience page ↗<\/a><\/sub>/,
 	)
 	assert.doesNotMatch(comment, /\| Runtime and stories \|/)
+	assert.doesNotMatch(comment, /^>/m)
 })
 
 test('resolves places across paginated results', async () => {

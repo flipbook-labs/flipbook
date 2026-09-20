@@ -7,17 +7,9 @@ function renderPreviewComment(releasePlaceId, prPlaceId) {
 	return `${MARKER}
 ## Storybook Preview
 
-> ### Released Flipbook + PR stories
->
-> **[▶ Join preview](${launchUrl(releasePlaceId)})**
->
-> <sub><a href="${experienceUrl(releasePlaceId)}">Experience page ↗</a></sub>
+**[▶ Launch Storybook](${launchUrl(releasePlaceId)})** - <sub><a href="${experienceUrl(releasePlaceId)}">Experience page ↗</a></sub>
 
-> ### PR Flipbook + PR stories
->
-> **[▶ Join preview](${launchUrl(prPlaceId)})**
->
-> <sub><a href="${experienceUrl(prPlaceId)}">Experience page ↗</a></sub>
+**[▶ Launch Storybook (_Branch build_)](${launchUrl(prPlaceId)})** - <sub><a href="${experienceUrl(prPlaceId)}">Experience page ↗</a></sub>
 `
 }
 
