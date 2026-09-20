@@ -60,7 +60,7 @@ async function comment({ github, context }) {
 	const request = {
 		owner: context.repo.owner,
 		repo: context.repo.repo,
-		issue_number: Number(process.env.GITHUB_PULL_REQUEST_NUMBER || context.issue.number),
+		issue_number: context.issue.number,
 	}
 	const comments = await github.paginate(github.rest.issues.listComments, {
 		...request,

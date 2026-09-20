@@ -8,15 +8,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      pull_request_number:
-        description: Pull request whose preview places should be updated
-        required: true
-        type: number
-      head_sha:
-        description: Pull request commit to build
-        required: true
-        type: string
 
 concurrency:
   group: storybook-preview-${{ github.event.pull_request.number || github.ref }}
@@ -34,7 +25,7 @@ jobs:
       # only its built artifacts on fresh runners.
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.head_sha || github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
@@ -80,8 +71,8 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      PREVIEW_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number || inputs.pull_request_number }}
-      PR_RUNTIME_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number || inputs.pull_request_number }} PR Flipbook
+      PREVIEW_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }}
+      PR_RUNTIME_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }} PR Flipbook
     steps:
       - uses: actions/checkout@v7
         with:
@@ -100,7 +91,7 @@ jobs:
           echo "place-id=$(grep -oP 'ROBLOX_STORYBOOK_PLACE_ID\s*=\s*\K\d+' project.luau)" >> "$GITHUB_OUTPUT"
 
       - name: Deploy main storybook
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request_target'
         uses: flipbook-labs/deploy-storybook@v0.4.0
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
@@ -112,7 +103,7 @@ jobs:
           cli-version: 0.6.0
 
       - name: Deploy PR stories with released Flipbook
-        if: github.event_name == 'pull_request_target' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'pull_request_target'
         uses: flipbook-labs/deploy-storybook@v0.4.0
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
@@ -123,7 +114,7 @@ jobs:
           comment: 'false'
 
       - name: Deploy PR stories with pull request Flipbook
-        if: github.event_name == 'pull_request_target' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'pull_request_target'
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
@@ -136,14 +127,13 @@ jobs:
             --flipbook-rbxm build/prod/Flipbook.rbxm
 
       - name: Comment preview links
-        if: github.event_name == 'pull_request_target' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'pull_request_target'
         uses: actions/github-script@v9
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
           RELEASE_RUNTIME_PLACE_NAME: ${{ env.PREVIEW_PLACE_NAME }}
           PR_RUNTIME_PLACE_NAME: ${{ env.PR_RUNTIME_PLACE_NAME }}
-          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
         with:
           script: |
             const comment = require('./.github/scripts/comment-storybook-preview.cjs')
