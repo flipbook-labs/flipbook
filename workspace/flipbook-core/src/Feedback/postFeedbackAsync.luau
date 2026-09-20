@@ -1,5 +1,5 @@
 local getBuildInfo = require("@root/Common/getBuildInfo")
-local getLocalUserId = require("@root/Telemetry/getLocalUserId")
+local getLocalUserId = require("@root/Common/getLocalUserId")
 local requestAsync = require("@root/Http/requestAsync")
 
 local function postFeedbackAsync(title: string, body: string)

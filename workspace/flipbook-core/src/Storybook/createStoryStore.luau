@@ -2,13 +2,13 @@ local Selection = game:GetService("Selection")
 
 local Charm = require("@pkg/Charm")
 local Storyteller = require("@pkg/Storyteller")
+local Telemetry = require(script.Parent.Parent.Parent["flipbook-telemetry"])
 
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local StorySelectionKind = require("@root/Storybook/StorySelectionKind")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local types = require("@root/Storybook/types")
 
 type AppMode = AppMode.AppMode
@@ -18,6 +18,7 @@ type SelectedStory = types.SelectedStory
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 type StorySelection = types.StorySelection
 type StorySelectionKind = StorySelectionKind.StorySelectionKind
+type TelemetryClient = Telemetry.TelemetryClient
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local ZOOM_INCREMENT = 0.25
@@ -25,6 +26,7 @@ local ZOOM_INCREMENT = 0.25
 export type Options = {
 	mode: AppMode,
 	plugin: Pluginlike,
+	telemetry: TelemetryClient?,
 }
 
 export type StoryStore = {
@@ -86,11 +88,11 @@ local function createStoryStore(options: Options): StoryStore
 	end
 
 	local function reportStoryOpened()
-		task.spawn(function()
-			fireEventAsync({
+		if options.telemetry then
+			options.telemetry.capture({
 				eventName = "StoryOpened",
 			})
-		end)
+		end
 	end
 
 	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?)
