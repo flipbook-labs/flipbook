@@ -7,7 +7,6 @@ on:
     paths:
       - .darklua.json
       - .env.template
-      - .github/scripts/comment-storybook-preview.cjs
       - .github/workflows/storybook.yml
       - .luaurc
       - .lute/**
@@ -29,7 +28,6 @@ on:
     paths:
       - .darklua.json
       - .env.template
-      - .github/scripts/comment-storybook-preview.cjs
       - .github/workflows/storybook.yml
       - .luaurc
       - .lute/**
@@ -80,6 +78,8 @@ jobs:
         run: lute run build storybook
 
       - name: Build Flipbook runtime
+        # Pull request runtimes are built without secrets and reach only the
+        # branch-build place after the protected deployment gate.
         run: lute run build plugin --channel prod --skip-reload --clean
 
       - uses: actions/upload-artifact@v7
@@ -110,7 +110,7 @@ jobs:
       pull-requests: write
     env:
       PREVIEW_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }}
-      PR_RUNTIME_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }} PR Flipbook
+      BRANCH_RUNTIME_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }} PR Flipbook
     steps:
       - uses: actions/checkout@v7
         with:
@@ -156,23 +156,14 @@ jobs:
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
-        run: |
-          set -euo pipefail
-          flipbook-cli deploy \
-            --universe-id "$ROBLOX_STORYBOOK_UNIVERSE_ID" \
-            --place-name "$PR_RUNTIME_PLACE_NAME" \
-            --place-file build/flipbook-storybook.rbxl \
-            --flipbook-rbxm build/prod/Flipbook.rbxm
+        run: lute run deploy-storybook-preview
 
       - name: Comment preview links
         if: github.event_name == 'pull_request_target'
-        uses: actions/github-script@v9
         env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
           RELEASE_RUNTIME_PLACE_NAME: ${{ env.PREVIEW_PLACE_NAME }}
-          PR_RUNTIME_PLACE_NAME: ${{ env.PR_RUNTIME_PLACE_NAME }}
-        with:
-          script: |
-            const comment = require('./.github/scripts/comment-storybook-preview.cjs')
-            await comment({ github, context })
+        run: lute run comment-storybook-preview

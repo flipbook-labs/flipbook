@@ -3,6 +3,7 @@ local path = require("@std/path")
 local system = require("@std/system")
 
 local checkChangeEntry = require("@scripts/lib/checkChangeEntry")
+local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
 
@@ -10,6 +11,7 @@ checkChangeEntry()
 run("lute", { "setup" })
 run("lute", { "run", "lint" })
 run("lute", { "run", "analyze" })
+run("lute", { "test", project.SCRIPTS_PATH })
 run("lute", {
 	"run",
 	"build",
