@@ -5,6 +5,7 @@ local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
 local EmbeddingTypes = require("@root/Embedding/types")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
@@ -30,12 +31,11 @@ local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 export type Props = {
 	launchData: LaunchData?,
 	searchTerm: string?,
-	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
-	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
 
 local function StorybookTreeView(props: Props)
+	local flipbookStore = FlipbookStoreContext.use()
 	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
 	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
@@ -236,39 +236,33 @@ local function StorybookTreeView(props: Props)
 	useEffect(
 		function()
 			if selectedNode ~= prevSelectedNode then
-				if props.onStoryChanged then
-					if selectedNode then
-						local icon = selectedNode.getIcon()
-						local instance = selectedNode.getInstance()
-
-						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
-							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
-								return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
-							end)
-
-							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
-
-							props.onStoryChanged(instance, storybook)
-							setLastOpenedStory(instance)
-						end
-					else
-						props.onStoryChanged(nil, nil)
-					end
+				if selectedNode == nil then
+					flipbookStore.openStory(nil, nil)
+					return
 				end
 
-				if props.onShowErrorPage then
-					if selectedNode and selectedNode.getIcon() == TreeView.TreeNodeIcon.Alert then
-						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
-						if unavailableStorybook then
-							props.onShowErrorPage(unavailableStorybook)
-						end
+				local icon = selectedNode.getIcon()
+				local instance = selectedNode.getInstance()
+
+				if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
+					local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
+						return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
+					end)
+
+					local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
+
+					flipbookStore.openStory(instance, storybook)
+					setLastOpenedStory(instance)
+				elseif icon == TreeView.TreeNodeIcon.Alert then
+					local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
+					if unavailableStorybook then
+						flipbookStore.showUnavailableStorybook(unavailableStorybook)
 					end
 				end
 			end
 		end,
 		{
-			props.onShowErrorPage,
-			props.onStoryChanged,
+			flipbookStore,
 			selectedNode,
 			prevSelectedNode,
 			setLastOpenedStory,
