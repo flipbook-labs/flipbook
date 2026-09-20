@@ -27,14 +27,15 @@ Two tools handle this:
 
 1. Go to [Creator Hub](https://create.roblox.com/dashboard/creations) and create a new experience.
 2. Note the **UniverseId** and **PlaceId**. You'll need these later.
-3. Close the experience in Studio after publishing to avoid conflicts during deploys.
-4. Open the start place settings and enable **Direct Access Control > Fully Open**. This is what makes stable, shareable deep-links to each story work.
+3. Enable **Allow Copying** on the start place if the deployment should create per-PR places by cloning it.
+4. Close the experience in Studio after publishing to avoid conflicts during deploys.
+5. Open the start place settings and enable **Direct Access Control > Fully Open**. This is what makes stable, shareable deep-links to each story work.
 
 ### Create an Open Cloud API Key
 
 1. Go to [Creator Hub > Credentials](https://create.roblox.com/dashboard/credentials).
 2. Click **Create API Key** and scope it to your storybook experience.
-3. Grant it `universe-places:write` access (and `universe.place.luau-execution-session` access if you need it).
+3. Grant it `universe-places:write`, `universe.place.luau-execution-session:read`, and `universe.place.luau-execution-session:write` access for the Storybook experience.
 4. Copy the generated key.
 
 ### Add Secrets to Your Repository
@@ -72,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build storybook
         run: rojo build storybook.project.json -o storybook.rbxl
@@ -102,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: storybook-preview
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build storybook
         run: rojo build storybook.project.json -o storybook.rbxl
@@ -117,17 +118,32 @@ jobs:
 
 The Action resolves the place by name and creates it if it doesn't exist yet. Pass an explicit `place-id` if you have multiple places with the same name.
 
+For a focused review link, run `flipbook-cli comment` directly and pass a JSON object through `--launch-data`:
+
+```sh
+flipbook-cli comment \
+  --pr 123 \
+  --universe-id 123 \
+  --place-name "PR 123" \
+  --launch-data '{"search":"Button|Dialog","story":"Examples/Button"}'
+```
+
+The resulting launch link prepopulates embedded Flipbook's search and can open one Story by its sidebar-relative path. See [[usage/embedding-flipbook#Opening a Focused Preview Link|Opening a Focused Preview Link]] for the supported fields.
+
 ### Action Inputs
 
-| Input           | Required | Description                                                    | Default  |
-| --------------- | -------- | -------------------------------------------------------------- | -------- |
-| `api-key`       | yes      | Roblox Open Cloud API key                                      |          |
-| `universe-id`   | yes      | Universe (experience) ID to deploy to                          |          |
-| `place-name`    | yes      | Name of the place to update or create                          |          |
-| `place-file`    | yes      | Path to the built `.rbxl` place file                           |          |
-| `place-id`      | no       | Explicit place ID; disambiguates same-named places             |          |
-| `flipbook-rbxm` | no       | Path to a local `Flipbook.rbxm`; skips downloading from GitHub |          |
-| `comment`       | no       | Post a preview comment on the PR after deploy                  | `'true'` |
+| Input           | Required | Description                                                    | Default        |
+| --------------- | -------- | -------------------------------------------------------------- | -------------- |
+| `api-key`       | yes      | Roblox Open Cloud API key                                      |                |
+| `universe-id`   | yes      | Universe (experience) ID to deploy to                          |                |
+| `place-name`    | yes      | Name of the place to update or create                          |                |
+| `place-file`    | yes      | Path to the built `.rbxl` place file                           |                |
+| `place-id`      | no       | Explicit place ID; disambiguates same-named places             |                |
+| `flipbook-rbxm` | no       | Path to a local `Flipbook.rbxm`; skips downloading from GitHub |                |
+| `cli-version`   | no       | `flipbook-cli` version to install, without a leading `v`       | `0.6.0`        |
+| `rokit-version` | no       | Rokit version used to install the CLI                          | `v1.2.0`       |
+| `github-token`  | no       | Token for release downloads and preview comments               | workflow token |
+| `comment`       | no       | Post a preview comment on the PR after deploy                  | `'true'`       |
 
 ## Using Flipbook-cli Directly
 

@@ -33,7 +33,7 @@ Opening the `ReactButtonControls` Story in Flipbook will include an accompanying
 
 ![[button-with-controls.png]]
 
-As controls are modified the Story will live-reload with the new props.
+As Controls are modified, the Story updates with the new props. If the Story source reloads while it is open, the replacement Controls store stays connected to both the panel and the preview, so later changes do not require reopening the Story.
 
 <!-- capture {
   "asset": "assets/button-with-controls-changed.png",

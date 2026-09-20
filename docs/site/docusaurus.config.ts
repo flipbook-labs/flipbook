@@ -27,7 +27,6 @@ const config: Config = {
 	// Relaxed while the vault is mid-migration; tighten back to 'throw' once
 	// unresolved wikilinks are cleaned up.
 	onBrokenLinks: "warn",
-	onBrokenMarkdownLinks: "warn",
 
 	i18n: {
 		defaultLocale: "en",
@@ -38,6 +37,9 @@ const config: Config = {
 	// `{ ... }` in tables don't trip the stricter MDX compiler.
 	markdown: {
 		format: "detect",
+		hooks: {
+			onBrokenMarkdownLinks: "warn",
+		},
 	},
 
 	presets: [

@@ -47,6 +47,17 @@ A few things work differently outside Studio:
 
 Everything else works as it does in Studio: the sidebar, search, the canvas, and [[usage/controls|Controls]].
 
+## Opening a Focused Preview Link
+
+An embedded preview link can pass JSON launch data with two optional fields:
+
+| Field    | Effect                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------- |
+| `search` | Prepopulates the sidebar search. Separate terms with a vertical bar to match any of them. |
+| `story`  | Opens a Story by its sidebar-relative path after the Storybook tree discovers that Story. |
+
+Malformed launch data and fields with non-string values are ignored. The deployment tooling can attach this launch data to a preview URL so a reviewer lands on the relevant Stories instead of the unfiltered Storybook.
+
 ## Removing the Embedded Runtime
 
 The runtime is the cloned `Flipbook` instance at the destination you chose, tagged `FlipbookRuntime`. Delete it to remove Flipbook from the experience. Embedding again also offers to overwrite it for you.

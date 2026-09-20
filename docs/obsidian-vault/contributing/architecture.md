@@ -7,31 +7,37 @@ linter-yaml-title-alias: Architecture
 
 A map of the codebase and the build pipeline that turns it into a distributable Roblox plugin.
 
-## Source layout
+## Source Layout
 
 ```
 flipbook/
-  src/
-    init.server.luau       # Plugin entry point
-  .lute/                   # Lute task scripts (build, test, lint, …)
-    build.luau
-    test.luau
-    analyze.luau
-    tasks/                 # Sub-tasks imported by top-level scripts
-  .darklua.json            # darklua transformation config
-  default.project.json     # Rojo project (points to build/dev/roblox)
-  dev.project.json         # Rojo project for dev builds
-  tests.project.json       # Rojo project for running tests
-  loom.config.luau         # Version source (kept in sync by changewrite)
-  rokit.toml               # Toolchain: darklua, rojo, lute, luau-lsp, …
+  src/                     # Thin plugin and embedded-runtime bootstraps
+  workspace/
+    flipbook-core/         # React app, story browser, settings, and telemetry
+    flipbook-agents/       # AgentGateway actions, controller, and protocol types
+    test-runner/           # Jest runner
+    example/               # Dogfood Stories and components
+    code-samples/          # Source-backed documentation examples
+    flipbook-next/         # Experimental next-generation package
+    template/              # Workspace-member scaffold
+  docs/
+    obsidian-vault/        # Documentation source
+    site/                  # Docusaurus renderer
+    code-samples/          # Shared code-sample extraction tools
+  .lute/                   # Build, test, lint, analysis, and install tasks
+  project.luau             # Shared repository paths and build configuration
+  sourcemap.project.json   # Rojo source map input
+  loom.config.luau         # Lute dependencies and AgentSkills pin
+  wally.toml               # Roblox runtime dependencies and version mirror
+  rokit.toml               # Pinned command-line tools
 ```
 
-Source code lives in `src/` and is written in Luau with **string requires** (`require("@scripts/lib/foo")`, `require("@repo/project")`, `require("@luaupkg/...")`), the same syntax as Lute scripts. These require strings are not valid inside Roblox and must be rewritten before packaging.
+Most application code lives in `workspace/flipbook-core/src/`. The root `src/` directory contains the bootstraps that create the plugin or start the embedded runtime. Source uses string requires such as `require("@workspace/flipbook-core/src")` and `require("@repo/project")`. Darklua rewrites them before Roblox packages the result.
 
 ## Build pipeline
 
 ```
-src/ (Luau, string requires)
+src/ + workspace/ (Luau, string requires)
   │
   ▼
 darklua
@@ -52,41 +58,52 @@ Flipbook.rbxm  /  Studio plugins folder
 
 The whole pipeline is driven by `lute run build`. Lute is a Luau task runner; build scripts live in `.lute/`.
 
-**Why darklua?** Roblox requires property access (`require(script.Parent.Foo)`) while string requires are far more ergonomic for a large codebase. darklua bridges the gap by rewriting requires at compile time, letting source code and Lute scripts share the same import syntax.
+**Why darklua?** Roblox requires property access such as `require(script.Parent.Foo)`. Darklua rewrites the source imports at compile time so application code and Lute scripts can use the same aliases.
 
-**Channels**: `dev` keeps test files, Storybooks, and Stories in the build (useful for working on Flipbook itself). `prod` strips them. Pass `--channel dev` or `--channel prod` to `lute run build`.
+**Channels**: `dev` keeps test files, Storybooks, and Stories in the build. `beta` and `prod` prune development-only workspace members and files. Pass the channel to `lute run build plugin --channel <channel>`.
 
-**Watch mode**: `lute run build --watch` reruns darklua + Rojo on file changes and reloads the plugin in Studio (requires "Plugin Debugging Enabled" in Studio settings).
+**Targets**: the default `roblox` target builds the plugin. The `rotriever` target builds the `flipbook-core` package used by internal consumers. `lute run build storybook` produces the preview place consumed by the Storybook deployment workflow.
+
+**Watch mode**: `lute run build plugin --channel dev --watch` recompiles changed source and reloads the plugin in Studio. Studio must have Plugin Debugging Enabled.
+
+## Agent Runtime
+
+`workspace/flipbook-agents` provides the AgentGateway boundary separately from `flipbook-core`. Its controller receives application and mounted-Story adapters, then exposes actions for opening the widget, embedding Flipbook, listing Storybooks and Stories, opening a Story, reading the current Story, and getting or setting Controls.
+
+The controller only exposes operations backed by the currently registered adapters. For example, `setControls` requires the selected Story view to be mounted. Keeping this layer separate lets plugin and embedded surfaces share the protocol without putting Studio objects into the action definitions.
 
 ## Testing
 
 Tests are in `.spec.luau` files colocated with source modules, using jsdotlua's [Jest](https://jsdotlua.github.io/jest-lua/) port.
 
-To run them locally:
+Run the local repository checks before opening a pull request:
 
-1. Copy `.env.template` to `.env` and set `ROBLOX_API_KEY` to a valid Open Cloud key (ask a maintainer).
-2. Run:
+```sh
+lute run check
+```
+
+This command validates the change entry, runs formatting and static analysis, and produces a clean development plugin build. Cloud tests require an Open Cloud key and a test universe that you control:
 
 ```sh
 lute run test
 ```
 
-Tests run **inside Roblox** via Lune's Roblox environment. The test entry point (`tests.project.json`) bootstraps the Jest runner from a place file. This means tests can touch real Roblox APIs.
+The strict workflow builds the test place from pull-request code on a secretless runner. A protected runner then executes that artifact against Roblox after environment approval.
 
 > [!TIP]
 > The CI `analyze` job runs luau-lsp type checking (`lute run analyze`) and selene linting (`lute run lint`) on every PR. Run them locally before opening a PR to catch type errors early.
 
 ## CI
 
-| Job             | When                    | What it does                                             |
-| --------------- | ----------------------- | -------------------------------------------------------- |
-| `build-plugin`  | every PR / push to main | Builds `dev` + `prod` plugin `.rbxm`, attests provenance |
-| `build-package` | every PR / push to main | Builds the `flipbook-core` package for Rotriever         |
-| `analyze`       | every PR / push to main | Luau type check + selene lint                            |
+| Job             | When                    | What it does                                                           |
+| --------------- | ----------------------- | ---------------------------------------------------------------------- |
+| `changelog`     | every PR                | Requires a valid Changewrite entry                                     |
+| `build-plugin`  | every PR / push to main | Builds and uploads `dev`, `beta`, and `prod` plugin models             |
+| `build-package` | every PR / push to main | Builds `flipbook-core` for Rotriever in all three channels             |
+| `analyze`       | every PR / push to main | Runs `lute run check`, including lint, analysis, and a clean dev build |
+| `strict`        | protected workflow      | Runs Roblox tests and deploys the smoketest plugin from built inputs   |
 
-Tests do not run in CI (they require a secret API key and run against Roblox infra). Type checking catches most logic errors instead.
-
-The release workflow (`release.yml`) triggers on GitHub release events to build and publish the plugin to the Creator Store.
+The release workflow builds `Flipbook.rbxm` and lets Changewrite open or update the next publish pull request. Publishing that generated release triggers the Creator Store deployment. Pushes to `main` also publish the beta build.
 
 > [!seealso]
 > [[contributing/onboarding|Onboarding]]: First-time setup and build commands

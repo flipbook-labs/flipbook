@@ -4,12 +4,9 @@
     "**/_Index/**",
     "**/build/**",
     "**/*Packages/**",
-    "**/.lute/typedefs/**"
+    "**/.lute/typedefs/**",
+    "**/.loom/store/**"
   ],
-
-  // Prettier formats docs only: the config lives at docs/.prettierrc.json, and
-  // requireConfig means files without a resolvable config (e.g. root AGENTS.md,
-  // Luau) are left alone. Luau keeps using stylua.
   "prettier.requireConfig": true,
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",

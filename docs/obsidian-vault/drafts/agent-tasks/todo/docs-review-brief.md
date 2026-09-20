@@ -5,7 +5,7 @@
 
 ## Read first
 
-**`.agents/skills/write-docs/SKILL.md`** is the house style guide. Read it fully before touching anything. The two rules most likely to be violated below are the **no-em-dash hard rule** and **Title Case headings**.
+Follow the repository root `AGENTS.md` instructions to locate the shared AgentSkills library, then read `src/flipbook/write-docs/SKILL.md` in full before touching anything. The two rules most likely to be violated below are the **no-em-dash hard rule** and **Title Case headings**.
 
 Note the skill's scope rule on the banlist: the _banned words_ list (powerful, simply, unlock, etc.) constrains only AI-generated text and you should **not** course-correct human-written prose. But the **em-dash ban is explicitly a hard rule that applies to all prose**, human or not. So: fix em dashes everywhere; only fix banned _words_ in agent-written text.
 

@@ -6,14 +6,14 @@
 
 ## Read First, in This Order
 
-1. **`.agents/skills/write-docs/SKILL.md`** (this branch). The authoritative house style. The hard rules you will most likely trip on: no em dashes anywhere, Title Case headings, wikilinks for internal links, `> [!seealso]` at the bottom of the page, sidebar order comes from `index.md` link lists (never `sidebar_position`), and the accuracy bar: never state a behavior you have not traced to source.
+1. Follow the repository root `AGENTS.md` instructions to locate the shared AgentSkills library, then read **`src/flipbook/write-docs/SKILL.md`**. It is the authoritative house style. The hard rules you will most likely trip on: no em dashes anywhere, Title Case headings, wikilinks for internal links, `> [!seealso]` at the bottom of the page, sidebar order comes from `index.md` link lists (never `sidebar_position`), and the accuracy bar: never state a behavior you have not traced to source.
 2. **`docs/code-samples/README.md`**. The `code-sample` fenced-block mechanism that embeds real Luau from `workspace/code-samples/src/`. All new examples use it; never hand-write a fenced `lua` block for anything longer than a fragment.
 3. **`drafts/agent-tasks/todo/docs-review-brief.md`**. A prior accuracy pass over the Track A pages came back clean. Do not re-litigate those checks; do preserve their conclusions when you edit those pages.
 4. **The knowledgebase branch `origin/claude-skills-library`** (unmerged; do not check it out or merge it). Read skills with `git show origin/claude-skills-library:.agents/skills/<name>/SKILL.md`. Most useful here:
    - `flipbook-domain-reference`: story/storybook contracts, the six rendering paths, the 11 control types, ModuleLoader hot-reload semantics. Your fastest route to domain fluency.
    - `flipbook-architecture-contract`: the Pluginlike abstraction and the embedding architecture behind PR #582 (needed for W2).
    - `run-flipbook-checks` and `flipbook-validation-and-qa`: validation commands and what counts as evidence.
-   - `flipbook-docs-and-writing`: useful estate map, but it was written against an older docs layout. Where it conflicts with `.agents/skills/write-docs/SKILL.md` or with the repo as it stands (the site lives at `docs/site/`, not `docs/`), the local skill and the repo win.
+   - `flipbook-docs-and-writing`: useful estate map, but it was written against an older docs layout. Where it conflicts with the shared `flipbook/write-docs` skill or with the repo as it stands (the site lives at `docs/site/`, not `docs/`), the current skill and the repo win.
 
 > [!warning]
 > `wally.toml` pins Storyteller 1.12.0. The vendored copy under `Packages/_Index` can lag behind the pin until an install refreshes it, so confirm the pinned version in `wally.toml` (not the `_Index` folder name) and read the matching source. Treat every factual claim in this brief the same way: it came from an exploration pass, so verify in source before it lands in a page.
