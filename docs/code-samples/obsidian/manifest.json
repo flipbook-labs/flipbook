@@ -1,0 +1,9 @@
+{
+	"id": "code-sample",
+	"name": "Code Sample",
+	"version": "1.0.0",
+	"minAppVersion": "1.4.0",
+	"description": "Expands `code-sample` fenced blocks in reading view by reading the referenced source file from the repository.",
+	"author": "flipbook-labs",
+	"isDesktopOnly": true
+}
