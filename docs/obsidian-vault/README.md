@@ -34,14 +34,6 @@ With native support for popular UI libraries like [[usage/frameworks/react|React
 - [[contributing/onboarding|Onboarding]]: Dev environment setup, building, and testing
 - [[contributing/creating-releases|Creating Releases]]: Version bumping and publishing
 
-## Engineering
-
-- [[engineering/index|Engineering]]: Technical specs, proposals, and internal working notes
-
-## Product
-
-- [[product/index|Product]]: Northstars, roadmap, and feature wishlist
-
 ---
 
 ## Inspirations

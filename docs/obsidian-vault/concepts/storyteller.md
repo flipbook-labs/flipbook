@@ -17,4 +17,3 @@ Add Storyteller to your project through Wally, or grab the released model from i
 > [!seealso]
 > [[usage/controls|Controls]]: declaring controls with Storyteller's constructors
 > [[usage/typechecking|Typechecking]]: type-safe Stories with Storyteller's exported types
-> [[engineering/proposals/storyteller-api|Storyteller API]]: Proposed API surface for the library

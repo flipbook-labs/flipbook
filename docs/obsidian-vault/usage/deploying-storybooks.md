@@ -173,4 +173,3 @@ The deploy command:
 > [!seealso]
 > [[usage/embedding-flipbook|Embedding Flipbook]]: the one-click version for the place you have open
 > [[usage/getting-started|Getting Started]]: Writing your first story
-> [[engineering/ecosystem|Ecosystem]]: Overview of all flipbook-labs repos

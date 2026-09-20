@@ -3,4 +3,4 @@ bump: minor
 category: Features
 ---
 
-Build the Flipbook knowledgebase from an Obsidian vault, publish it through Docusaurus, and add source-backed user, API, contributor, engineering, and product documentation.
+Publish source-backed user, API, concept, and contributor documentation from the Flipbook Obsidian vault.

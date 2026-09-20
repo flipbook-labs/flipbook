@@ -131,31 +131,3 @@ vault. After your first install, open the vault in Obsidian and enable the
 **Code Sample** plugin under Settings -> Community plugins. See
 [[contributing/architecture|Architecture]] or the `docs/code-samples/README.md`
 for how the marker, the shared extractor, and the two adapters fit together.
-
-## Internal Documentation
-
-For deeper context on architecture, product direction, and in-flight proposals:
-
-**Technical:**
-
-- [[contributing/architecture|Architecture]]: Codebase layout and build pipeline details
-- [[engineering/index|Technical Index]]: Module Loader, Story Container, Controls, Embedding, and more
-
-**Product:**
-
-- [[product/index|Northstars]]: Product vision and goals
-- [[product/2026-roadmap|2026 Roadmap]]: Current quarterly roadmap
-- [[product/2025-flipbook-product-spec/index|2025 Product Spec]]: Audiences and feature goals
-
-**Proposals:**
-
-- [[engineering/proposals/story-renderer-spec|Story Renderer Spec]] _(In Progress)_
-- [[engineering/proposals/storyteller-api|Storyteller API]] _(In Progress)_
-- [[engineering/proposals/story-storybook-typechecking|Story and Storybook Typechecking]] _(In Progress)_
-- [[engineering/proposals/documentation-stories|Documentation Stories]] _(Approved)_
-- [[engineering/proposals/modular-story-format|Modular Story Format]]
-- [[engineering/proposals/create-flipbook-package|Flipbook Package]]
-
-**Ideas:**
-
-- [[product/ideas/index|Ideas Index]]: Toolbar, Storybook Selection UX, Right-click Context Menu
