@@ -1,9 +1,10 @@
 local Charm = require("@pkg/Charm")
+local Telemetry = require(script.Parent.Parent.Parent["flipbook-telemetry"])
 
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local navigationEnums = require("@root/Navigation/enums")
 
 type Screen = navigationEnums.Screen
+type TelemetryClient = Telemetry.TelemetryClient
 
 export type NavigationStore = {
 	getNavigationStack: () -> { Screen },
@@ -14,7 +15,7 @@ export type NavigationStore = {
 	getBreadcrumbs: () -> { Screen },
 }
 
-local function createNavigationStore(): NavigationStore
+local function createNavigationStore(telemetry: TelemetryClient?): NavigationStore
 	local getNavigationStack, setNavigationStack = Charm.signal({ navigationEnums.Screen.Home } :: { Screen })
 
 	local getCurrentScreenSignal = Charm.computed(function()
@@ -27,14 +28,14 @@ local function createNavigationStore(): NavigationStore
 	end
 
 	local function reportPageChanged(screen: Screen)
-		task.spawn(function()
-			fireEventAsync({
+		if telemetry then
+			telemetry.capture({
 				eventName = "PageChanged",
 				properties = {
 					page = screen,
 				},
 			})
-		end)
+		end
 	end
 
 	local function navigateTo(newScreen: Screen)

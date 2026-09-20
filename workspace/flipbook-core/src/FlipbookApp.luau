@@ -8,7 +8,7 @@ local EmbeddingTypes = require("@root/Embedding/types")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
-local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
+local TelemetryConsentDialog = require("@root/Telemetry/TelemetryConsentDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
@@ -60,7 +60,7 @@ local function FlipbookApp(props: Props)
 			}),
 		}),
 
-		TelemetryOptOutDialog = React.createElement(TelemetryOptOutDialog),
+		TelemetryConsentDialog = React.createElement(TelemetryConsentDialog),
 	})
 end
 

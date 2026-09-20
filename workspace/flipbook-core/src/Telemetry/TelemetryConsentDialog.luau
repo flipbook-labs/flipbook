@@ -1,53 +1,33 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
-local Sift = require("@pkg/Sift")
+local Telemetry = require(script.Parent.Parent.Parent["flipbook-telemetry"])
 
-local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local AppMode = require("@root/Enums/AppMode")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
 local useState = React.useState
 
-local function TelemetryOptOutDialog(): React.Node?
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local localStorageStore = useSignalState(LocalStorageStore.get)
-	local storage = useSignalState(localStorageStore.getStorage)
-	local isStorageLoading = useSignalState(localStorageStore.getIsLoading)
-	local isOptedIn, setIsOptedIn = useState(true)
+local function TelemetryConsentDialog(): React.Node?
+	local flipbookStore = FlipbookStoreContext.use()
+	local consent = useSignalState(flipbookStore.telemetry.getConsent)
+	local isOptedIn, setIsOptedIn = useState(false)
 
 	local onClose = useCallback(function()
-		localStorageStore.setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
-				wasUserPromptedForTelemetry = true,
+		if isOptedIn then
+			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Granted)
+			flipbookStore.telemetry.capture({
+				eventName = "TelemetryOptedIn",
 			})
-		end)
+		else
+			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Denied)
+		end
+	end, { flipbookStore.telemetry, isOptedIn } :: { unknown })
 
-		userSettingsStore.setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
-				collectAnonymousUsageData = isOptedIn,
-			})
-		end)
-
-		task.spawn(function()
-			if isOptedIn then
-				fireEventAsync({
-					eventName = "TelemetryOptedIn",
-				})
-			else
-				fireEventAsync({
-					eventName = "TelemetryOptedOut",
-				})
-			end
-		end)
-	end, { localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown })
-
-	-- We check `isStorageLoading` to prevent the dialog from briefly flashing
-	-- on screen
-	if isStorageLoading or storage.wasUserPromptedForTelemetry then
+	if flipbookStore.story.getMode() == AppMode.EmbeddedClient or consent ~= Telemetry.ConsentState.Unknown then
 		return nil
 	end
 
@@ -69,13 +49,13 @@ local function TelemetryOptOutDialog(): React.Node?
 			}, {
 				MainParagraph = React.createElement(Foundation.Dialog.Text, {
 					tag = "auto-xy text-wrap text-body-medium",
-					Text = "Flipbook would like to send anonymized usage data to help us improve the quality of the plugin.",
+					Text = "Flipbook does not send usage data until you choose to share it. Anonymous usage data helps us improve the quality of the plugin.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
-				WhereToOptOut = React.createElement(Foundation.Dialog.Text, {
+				WhatIsExcluded = React.createElement(Foundation.Dialog.Text, {
 					tag = "auto-xy text-wrap text-body-medium",
-					Text = "You can opt out at any time in the settings.",
+					Text = "No personal data or story content is collected. You can change this choice at any time in Settings.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
@@ -101,4 +81,4 @@ local function TelemetryOptOutDialog(): React.Node?
 	})
 end
 
-return TelemetryOptOutDialog
+return TelemetryConsentDialog
