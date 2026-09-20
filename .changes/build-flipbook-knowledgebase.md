@@ -3,4 +3,4 @@ bump: minor
 category: Features
 ---
 
-Publish source-backed user, API, concept, and contributor documentation from the Flipbook Obsidian vault.
+Publish Flipbook documentation and accessible engineering and product notes from the project's Obsidian vault.

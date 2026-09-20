@@ -48,13 +48,7 @@ const config: Config = {
 			{
 				docs: {
 					path: "../obsidian-vault",
-					exclude: [
-						"**/.obsidian/**",
-						"**/*.base",
-						"drafts/**",
-						"engineering/**",
-						"product/**",
-					],
+					exclude: ["**/.obsidian/**", "**/*.base", "drafts/**"],
 					sidebarPath: "./sidebars.ts",
 					sidebarItemsGenerator: obsidianSidebarItems({
 						vault: path.resolve(__dirname, "../obsidian-vault"),

@@ -7,6 +7,9 @@ linter-yaml-title-alias: Engineering
 
 Technical specs, proposals, and working notes for Flipbook maintainers.
 
+> [!note]
+> These living documents preserve design context for contributors and readers who want to learn from Flipbook's development. They may be incomplete or out of date. Use the Usage, API Reference, and Contributing sections for supported behavior.
+
 - [[engineering/proposals/index|Proposals]]: In-flight RFCs and design docs
 - [[engineering/story-controls/index|Story Controls]]: Controls revamp design and implementation notes
 - [[engineering/storybook-embedding/index|Storybook Embedding]]: Embedding Flipbook in Storybook experiences

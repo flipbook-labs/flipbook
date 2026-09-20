@@ -327,7 +327,7 @@ Lua Markdown parser:
 - [https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender](https://github.com/Quenty/NevermoreEngine/tree/main/src/markdownrender)
 - Plain regex parsing: https://github.com/Roblox/luau-regexp
 
-[pashley](mailto:passhley1219@gmail.com) Example of how an [MDX](https://mdxjs.com/)-like approach could look
+Pashley's example of how an [MDX](https://mdxjs.com/)-like approach could look
 
 ```lua
 local Root = script:FindFirstAncestor("ProjectName")

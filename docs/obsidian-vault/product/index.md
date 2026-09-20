@@ -6,6 +6,9 @@ linter-yaml-title-alias: Product
 
 # Product
 
+> [!note]
+> These living product notes preserve ideas and planning context. Roadmaps, specifications, and ideas may be incomplete or out of date, and do not represent commitments.
+
 ## Northstars
 
 - Flipbook is the ubiquitous storybooking plugin for Roblox UI
