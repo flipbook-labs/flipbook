@@ -155,15 +155,19 @@ jobs:
         if: github.event_name == 'pull_request_target'
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-          ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
-        run: lute run deploy-storybook-preview
+        run: >-
+          lute run deploy-storybook-preview
+          --universe-id "${{ steps.ids.outputs.universe-id }}"
+          --place-name "$BRANCH_RUNTIME_PLACE_NAME"
 
       - name: Comment preview links
         if: github.event_name == 'pull_request_target'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-          ROBLOX_STORYBOOK_UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
-          RELEASE_RUNTIME_PLACE_NAME: ${{ env.PREVIEW_PLACE_NAME }}
-        run: lute run comment-storybook-preview
+        run: >-
+          lute run comment-storybook-preview
+          --universe-id "${{ steps.ids.outputs.universe-id }}"
+          --release-place-name "$PREVIEW_PLACE_NAME"
+          --branch-place-name "$BRANCH_RUNTIME_PLACE_NAME"
+          --pull-request "${{ github.event.pull_request.number }}"
