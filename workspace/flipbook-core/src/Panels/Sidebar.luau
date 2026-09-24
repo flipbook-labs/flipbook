@@ -20,7 +20,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
 	launchData: LaunchData?,
-	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
+	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
 
