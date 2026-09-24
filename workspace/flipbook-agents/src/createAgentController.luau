@@ -1,50 +1,64 @@
 local types = require("@root/types")
 
 type AgentController = types.AgentController
-type AppImplementation = types.AppImplementation
+type AppAdapter = types.AppAdapter
 type Controls = types.Controls
-type StoryImplementation = types.StoryImplementation
+type StoryAdapter = types.StoryAdapter
 
-local function createAgentController(openSurface: () -> ()): AgentController
-	local appImplementation: AppImplementation? = nil
-	local storyImplementation: StoryImplementation? = nil
+local function createAgentController(surface: LayerCollector): AgentController
+	local appAdapter: AppAdapter? = nil
+	local storyAdapter: StoryAdapter? = nil
 
-	local function getAppImplementation(): AppImplementation
-		if appImplementation == nil then
+	local function openSurface()
+		surface.Enabled = true
+	end
+
+	local function getAppAdapter(): AppAdapter
+		if appAdapter == nil then
 			error("Flipbook app is not mounted")
 		end
-		return appImplementation
+		return appAdapter
+	end
+
+	local function getMountedStoryAdapter(): StoryAdapter?
+		local currentStory = getAppAdapter().getCurrentStory()
+		if currentStory == nil or storyAdapter == nil or storyAdapter.path ~= currentStory.path then
+			return nil
+		end
+
+		return storyAdapter
 	end
 
 	local function getControls(): Controls
-		if storyImplementation == nil then
+		local mountedStoryAdapter = getMountedStoryAdapter()
+		if mountedStoryAdapter == nil then
 			return {}
 		end
-		return storyImplementation.getControls()
+		return mountedStoryAdapter.getControls()
 	end
 
 	return {
 		openWidget = openSurface,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
-			return getAppImplementation().embedFlipbook(parentPath, overwrite == true)
+			return getAppAdapter().embedFlipbook(parentPath, overwrite == true)
 		end,
 
 		listStorybooks = function()
-			return getAppImplementation().listStorybooks()
+			return getAppAdapter().listStorybooks()
 		end,
 
-		listStories = function(storybookPath: string)
-			return getAppImplementation().listStories(storybookPath)
+		listStories = function(storybookPath: string?)
+			return getAppAdapter().listStories(storybookPath)
 		end,
 
 		openStory = function(storyPath: string, storybookPath: string?)
 			openSurface()
-			return getAppImplementation().openStory(storyPath, storybookPath)
+			return getAppAdapter().openStory(storyPath, storybookPath)
 		end,
 
-		getCurrentStory = function()
-			local story = getAppImplementation().getCurrentStory()
+		getCurrentStory = function(): types.CurrentStory?
+			local story = getAppAdapter().getCurrentStory()
 			if story == nil then
 				return nil
 			end
@@ -53,33 +67,34 @@ local function createAgentController(openSurface: () -> ()): AgentController
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				isMounted = storyImplementation ~= nil and storyImplementation.path == story.path,
+				isMounted = storyAdapter ~= nil and storyAdapter.path == story.path,
 			}
 		end,
 
 		getControls = getControls,
 
 		setControls = function(controls: Controls)
-			if storyImplementation == nil then
+			local mountedStoryAdapter = getMountedStoryAdapter()
+			if mountedStoryAdapter == nil then
 				error("setControls requires the story view to be mounted")
 			end
-			return storyImplementation.setControls(controls)
+			return mountedStoryAdapter.setControls(controls)
 		end,
 
-		registerApp = function(implementation: AppImplementation)
-			appImplementation = implementation
+		registerApp = function(adapter: AppAdapter)
+			appAdapter = adapter
 			return function()
-				if appImplementation == implementation then
-					appImplementation = nil
+				if appAdapter == adapter then
+					appAdapter = nil
 				end
 			end
 		end,
 
-		registerStory = function(implementation: StoryImplementation)
-			storyImplementation = implementation
+		registerStory = function(adapter: StoryAdapter)
+			storyAdapter = adapter
 			return function()
-				if storyImplementation == implementation then
-					storyImplementation = nil
+				if storyAdapter == adapter then
+					storyAdapter = nil
 				end
 			end
 		end,

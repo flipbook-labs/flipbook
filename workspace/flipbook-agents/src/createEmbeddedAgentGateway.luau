@@ -2,7 +2,7 @@ local AgentGateway = require("@pkg/AgentGateway")
 
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local actions: { [string]: Action } = require("@root/actions")
 
@@ -15,13 +15,13 @@ local EMBEDDED_ACTIONS: { Action } = {
 	actions.setControls,
 }
 
-local function createEmbeddedAgentGateway(controller: types.AgentController, parent: Instance): () -> ()
+local function createEmbeddedAgentGateway(agentActions: types.AgentActions, parent: Instance): () -> ()
 	local config: AgentGateway.Config = {
 		name = "FlipbookAgentGateway",
 		protocolVersion = 1,
 		parent = parent,
 	}
-	local registry = AgentGateway.createActionRegistry(config, controller, EMBEDDED_ACTIONS)
+	local registry = AgentGateway.createActionRegistry(config, agentActions, EMBEDDED_ACTIONS)
 	return AgentGateway.createGateway(registry, config)
 end
 

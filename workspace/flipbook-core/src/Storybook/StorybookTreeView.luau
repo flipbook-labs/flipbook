@@ -5,14 +5,18 @@ local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
+local EmbeddingTypes = require("@root/Embedding/types")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
+local doesTreeNodeMatchSearch = require("@root/Storybook/doesTreeNodeMatchSearch")
+local findTreeNodeFromPath = require("@root/TreeView/findTreeNodeFromPath")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNodeStore = TreeView.TreeNodeStore
+type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 type StoryModuleRecord = Storyteller.StoryModuleRecord
@@ -29,6 +33,7 @@ local useStoryModuleRecords = Storyteller.useStoryModuleRecords
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
+	launchData: LaunchData?,
 	searchTerm: string?,
 	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> ())?,
 	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
@@ -294,7 +299,7 @@ local function StorybookTreeView(props: Props)
 			return false
 		end
 
-		return node.getName():lower():match(props.searchTerm:lower()) == nil
+		return not doesTreeNodeMatchSearch(node.getName(), props.searchTerm)
 	end, { props.searchTerm })
 
 	-- There can be pinned paths that were never apart of the current DataModel,
@@ -550,16 +555,21 @@ local function StorybookTreeView(props: Props)
 		end
 	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules, orphanedStorybook } :: { unknown })
 
-	-- Reopening the story from the previous session
-	local wasLastStoryOpened = useRef(false)
+	-- Open the requested story, or reopen the story from the previous session.
+	local wasInitialStoryOpened = useRef(false)
 	local descendants = useSignalState(rootNode.getDescendants)
 	useEffect(
 		function()
-			if wasLastStoryOpened.current then
+			if wasInitialStoryOpened.current then
 				return
 			end
 
-			if lastOpenedStory then
+			local storyPath = if props.launchData then props.launchData.story else nil
+			local node
+			if storyPath then
+				local pathNode = findTreeNodeFromPath(rootNode, storyPath)
+				node = if pathNode then findStoryNode(pathNode, nil) else nil
+			elseif lastOpenedStory then
 				local storyModuleNode
 				if lastOpenedStory.storybookSource then
 					local nodesForStorybook = storyModuleNodesByStorybookSource.current[lastOpenedStory.storybookSource]
@@ -568,22 +578,22 @@ local function StorybookTreeView(props: Props)
 					storyModuleNode = nodesByInstance.current[lastOpenedStory.storyModule]
 						or findStoryModuleNode(rootNode, lastOpenedStory.storyModule)
 				end
-				local node = if storyModuleNode then findStoryNode(storyModuleNode, lastOpenedStory.storyId) else nil
+				node = if storyModuleNode then findStoryNode(storyModuleNode, lastOpenedStory.storyId) else nil
+			end
 
-				if node then
-					wasLastStoryOpened.current = true
-					node.activate()
-					node.expandUp()
-				end
+			if node and node.getIcon() == TreeView.TreeNodeIcon.Story then
+				wasInitialStoryOpened.current = true
+				node.activate()
+				node.expandUp()
 			end
 		end,
 		{
+			props.launchData,
 			lastOpenedStory,
 			rootNode,
 			storyModuleRecords,
 			-- This value isn't used in the effect body but is necessary so that
-			-- the effect will run again if the last opened story has not but
-			-- found yet
+			-- the effect runs again while the target story is still being added.
 			descendants,
 		} :: { unknown }
 	)
@@ -634,7 +644,7 @@ local function StorybookTreeView(props: Props)
 	local children: { [string]: React.ReactNode } = {
 		TreeView = React.createElement(TreeView.TreeView, {
 			root = rootNode,
-			filter = filter,
+			filter = if props.searchTerm and props.searchTerm ~= "" then filter else nil,
 			layoutOrder = props.layoutOrder,
 		}),
 	}

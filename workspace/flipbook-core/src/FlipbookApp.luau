@@ -6,6 +6,7 @@ local Storyteller = require("@pkg/Storyteller")
 local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
+local EmbeddingTypes = require("@root/Embedding/types")
 local NavigationContext = require("@root/Navigation/NavigationContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
@@ -18,17 +19,19 @@ local constants = require("@root/constants")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
-local useAgentAppRegistration = require("@root/Agent/useAgentAppRegistration")
+local useAgentRegistration = require("@root/Agent/useAgentRegistration")
 
 local useSignalState = ReactCharm.useSignalState
 
 type AppMode = AppMode.AppMode
+type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 local defaultStorybook = createLoadedStorybook()
 
 export type Props = {
+	launchData: LaunchData?,
 	mode: AppMode?,
 }
 
@@ -74,7 +77,7 @@ local function FlipbookApp(props: Props)
 		setUnavailableStorybook(newUnavailableStorybook)
 	end, {})
 
-	useAgentAppRegistration({
+	useAgentRegistration({
 		storyModule = storyModule,
 		storybook = storybook,
 		storybooks = storybooks,
@@ -96,6 +99,7 @@ local function FlipbookApp(props: Props)
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {
 				Sidebar = React.createElement(Sidebar, {
+					launchData = props.launchData,
 					onStoryChanged = onStoryChanged,
 					onShowErrorPage = onShowErrorPage,
 				}),

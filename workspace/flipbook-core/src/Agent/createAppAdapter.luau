@@ -8,7 +8,7 @@ local constants = require("@root/constants")
 local getInstanceFromPath = require("@root/Common/getInstanceFromPath")
 local getInstancePath = require("@root/Common/getInstancePath")
 
-type AppImplementation = FlipbookAgents.AppImplementation
+type AppAdapter = FlipbookAgents.AppAdapter
 type StorybookInfo = FlipbookAgents.StorybookInfo
 type StoryInfo = FlipbookAgents.StoryInfo
 type LoadedStorybook = Storyteller.LoadedStorybook
@@ -19,7 +19,7 @@ type Storybooks = {
 	unavailable: { UnavailableStorybook },
 }
 
-export type Options = {
+export type Dependencies = {
 	embedFlipbook: (destination: Instance) -> Instance,
 	getStorybooks: () -> Storybooks,
 	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
@@ -52,9 +52,13 @@ local function resolveModuleScript(path: string, label: string): ModuleScript
 	return instance
 end
 
-local function createAppImplementation(options: Options): AppImplementation
+local function createAppAdapter(dependencies: Dependencies): AppAdapter
+	local function isDiscoveredStory(story: ModuleScript, storybook: LoadedStorybook): boolean
+		return table.find(Storyteller.findStoryModulesForStorybook(storybook), story) ~= nil
+	end
+
 	local function findStorybook(storybookPath: string): LoadedStorybook
-		for _, storybook in options.getStorybooks().available do
+		for _, storybook in dependencies.getStorybooks().available do
 			if getInstancePath(storybook.source) == storybookPath then
 				return storybook
 			end
@@ -63,11 +67,9 @@ local function createAppImplementation(options: Options): AppImplementation
 	end
 
 	local function findStorybookForStory(story: ModuleScript): LoadedStorybook?
-		for _, storybook in options.getStorybooks().available do
-			for _, storyRoot in storybook.storyRoots do
-				if storyRoot == story or storyRoot:IsAncestorOf(story) then
-					return storybook
-				end
+		for _, storybook in dependencies.getStorybooks().available do
+			if isDiscoveredStory(story, storybook) then
+				return storybook
 			end
 		end
 		return nil
@@ -87,22 +89,28 @@ local function createAppImplementation(options: Options): AppImplementation
 				)
 			end
 
-			return getInstancePath(options.embedFlipbook(destination))
+			return getInstancePath(dependencies.embedFlipbook(destination))
 		end,
 
 		listStorybooks = function()
 			local result = {}
-			for _, storybook in options.getStorybooks().available do
+			for _, storybook in dependencies.getStorybooks().available do
 				table.insert(result, serializeStorybook(storybook))
 			end
 			return result
 		end,
 
-		listStories = function(storybookPath: string)
-			local storybook = findStorybook(storybookPath)
+		listStories = function(storybookPath: string?)
 			local result = {}
-			for _, story in Storyteller.findStoryModulesForStorybook(storybook) do
-				table.insert(result, serializeStory(story, storybook))
+			if storybookPath == nil then
+				for _, story in Storyteller.findOrphanedStoryModules(game, dependencies.getStorybooks().available) do
+					table.insert(result, serializeStory(story, nil))
+				end
+			else
+				local storybook = findStorybook(storybookPath)
+				for _, story in Storyteller.findStoryModulesForStorybook(storybook) do
+					table.insert(result, serializeStory(story, storybook))
+				end
 			end
 			return result
 		end,
@@ -110,15 +118,21 @@ local function createAppImplementation(options: Options): AppImplementation
 		openStory = function(storyPath: string, storybookPath: string?)
 			local story = resolveModuleScript(storyPath, "story")
 			local storybook = if storybookPath then findStorybook(storybookPath) else findStorybookForStory(story)
-			options.openStory(story, storybook)
+			if storybook ~= nil and not isDiscoveredStory(story, storybook) then
+				error(`story is not discovered by storybook {storybookPath}: {storyPath}`)
+			end
+			if storybook == nil and not Storyteller.isStoryModule(story) then
+				error(`story must be a discovered .story ModuleScript: {storyPath}`)
+			end
+			dependencies.openStory(story, storybook)
 			return serializeStory(story, storybook)
 		end,
 
 		getCurrentStory = function()
-			local story, storybook = options.getCurrentStory()
+			local story, storybook = dependencies.getCurrentStory()
 			return if story then serializeStory(story, storybook) else nil
 		end,
 	}
 end
 
-return createAppImplementation
+return createAppAdapter

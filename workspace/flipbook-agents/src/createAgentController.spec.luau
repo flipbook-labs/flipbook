@@ -6,11 +6,11 @@ local describe = JestGlobals.describe
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local function createWidget()
-	return { Enabled = false } :: any
+local function createScreen(): ScreenGui
+	return Instance.new("ScreenGui")
 end
 
-local function createStoryImplementation(path: string, initialValue: string)
+local function createStoryAdapter(path: string, initialValue: string)
 	local controls: { [string]: unknown } = { label = initialValue }
 	return {
 		path = path,
@@ -28,22 +28,18 @@ end
 
 describe("app registration", function()
 	test("opens an embedded screen surface", function()
-		local screenGui = Instance.new("ScreenGui")
+		local screenGui = createScreen()
 		screenGui.Enabled = false
-		local controller = createAgentController(function()
-			screenGui.Enabled = true
-		end)
+		local controller = createAgentController(screenGui)
 
 		controller.openWidget()
 
 		expect(screenGui.Enabled).toBe(true)
 	end)
 
-	test("routes app actions through the current implementation", function()
-		local widget = createWidget()
-		local controller = createAgentController(function()
-			widget.Enabled = true
-		end)
+	test("routes app actions through the current adapter", function()
+		local screen = createScreen()
+		local controller = createAgentController(screen)
 		local cleanup = controller.registerApp({
 			embedFlipbook = function(parentPath, overwrite)
 				expect(parentPath).toBe("ReplicatedStorage")
@@ -54,6 +50,14 @@ describe("app registration", function()
 				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
 			end,
 			listStories = function(storybookPath)
+				if storybookPath == nil then
+					return {
+						{
+							name = "Orphan",
+							path = "ReplicatedStorage/Orphan.story",
+						},
+					}
+				end
 				return { { name = "Button", path = `${storybookPath}/Button.story`, storybook = storybookPath } }
 			end,
 			openStory = function(storyPath, storybookPath)
@@ -67,8 +71,9 @@ describe("app registration", function()
 		expect(controller.listStorybooks()[1].name).toBe("Example")
 		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
+		expect(controller.listStories(nil)[1].name).toBe("Orphan")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
-		expect(widget.Enabled).toBe(true)
+		expect(screen.Enabled).toBe(true)
 
 		cleanup()
 		expect(function()
@@ -79,7 +84,8 @@ end)
 
 describe("story registration", function()
 	test("reports readiness and updates controls through the mounted story", function()
-		local controller = createAgentController(function() end)
+		local controller = createAgentController(createScreen())
+		local currentStoryPath = "ReplicatedStorage/Button.story"
 		controller.registerApp({
 			embedFlipbook = function()
 				return "ReplicatedStorage/Flipbook"
@@ -94,7 +100,7 @@ describe("story registration", function()
 				return { name = "Button", path = "ReplicatedStorage/Button.story" }
 			end,
 			getCurrentStory = function()
-				return { name = "Button", path = "ReplicatedStorage/Button.story" }
+				return { name = "Button", path = currentStoryPath }
 			end,
 		})
 
@@ -105,11 +111,17 @@ describe("story registration", function()
 		})
 		expect(controller.getControls()).toEqual({})
 
-		local cleanup = controller.registerStory(createStoryImplementation("ReplicatedStorage/Button.story", "Before"))
+		local cleanup = controller.registerStory(createStoryAdapter("ReplicatedStorage/Button.story", "Before"))
 		local mountedStory = controller.getCurrentStory()
 		assert(mountedStory ~= nil, "expected a current story")
 		expect(mountedStory.isMounted).toBe(true)
 		expect(controller.setControls({ label = "After" })).toEqual({ label = "After" })
+
+		currentStoryPath = "ReplicatedStorage/Other.story"
+		expect(controller.getControls()).toEqual({})
+		expect(function()
+			controller.setControls({ label = "Wrong story" })
+		end).toThrow("setControls requires the story view to be mounted")
 
 		cleanup()
 		local unmountedStory = controller.getCurrentStory()
@@ -121,10 +133,26 @@ describe("story registration", function()
 	end)
 
 	test("does not let an old cleanup unregister the current story", function()
-		local controller = createAgentController(function() end)
-		local cleanupFirst =
-			controller.registerStory(createStoryImplementation("ReplicatedStorage/First.story", "First"))
-		controller.registerStory(createStoryImplementation("ReplicatedStorage/Second.story", "Second"))
+		local controller = createAgentController(createScreen())
+		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
+			listStorybooks = function()
+				return {}
+			end,
+			listStories = function()
+				return {}
+			end,
+			openStory = function()
+				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+			getCurrentStory = function()
+				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+			end,
+		})
+		local cleanupFirst = controller.registerStory(createStoryAdapter("ReplicatedStorage/First.story", "First"))
+		controller.registerStory(createStoryAdapter("ReplicatedStorage/Second.story", "Second"))
 
 		cleanupFirst()
 
