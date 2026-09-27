@@ -361,8 +361,8 @@ local function StorybookTreeView(props: Props)
 				local storyModuleNodes = indexStoryModuleNodes(node, storyModules)
 				local recordSignatures = {}
 				for storyModule in storyModuleNodes do
-					local recordsForModule = storyModuleRecords[storyModule]
-					local record = if recordsForModule then recordsForModule[storybook.source] else nil
+					local recordsForStorybook = storyModuleRecords[storybook.source]
+					local record = if recordsForStorybook then recordsForStorybook[storyModule] else nil
 					if record then
 						recordSignatures[storyModule] = getRecordSignature(record)
 					end
@@ -450,8 +450,8 @@ local function StorybookTreeView(props: Props)
 				continue
 			end
 
-			local recordsForModule = storyModuleRecords[orphan]
-			local record = if recordsForModule then recordsForModule[source] else nil
+			local recordsForStorybook = storyModuleRecords[source]
+			local record = if recordsForStorybook then recordsForStorybook[orphan] else nil
 			local node = createTreeNodeForStoryModule(orphan, record)
 			node.parentTo(unknownStories)
 			nodesByInstance.current[orphan] = node
@@ -470,8 +470,8 @@ local function StorybookTreeView(props: Props)
 	useEffect(function()
 		for _, request in storyRequests do
 			local source = request.storybook.source
-			local recordsForModule = storyModuleRecords[request.storyModule]
-			local record = if recordsForModule then recordsForModule[source] else nil
+			local recordsForStorybook = storyModuleRecords[source]
+			local record = if recordsForStorybook then recordsForStorybook[request.storyModule] else nil
 			if not record then
 				continue
 			end

@@ -15,8 +15,8 @@ local function createTreeNodesForStorybook(storybook: LoadedStorybook, records: 
 	root.setInstance(storybook.source)
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-		local recordsForModule = if records then records[storyModule] else nil
-		local record = if recordsForModule then recordsForModule[storybook.source] else nil
+		local recordsForStorybook = if records then records[storybook.source] else nil
+		local record = if recordsForStorybook then recordsForStorybook[storyModule] else nil
 		local currentNode = createTreeNodeForStoryModule(storyModule, record)
 
 		for _, ancestor in getAncestors(storyModule) do
