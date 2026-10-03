@@ -15,6 +15,7 @@ if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
 end
 
 local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
 
 local prefix = `[{script.Name}]`
 local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
@@ -28,11 +29,14 @@ local startClock = os.clock()
 print(`{prefix} starting...`)
 
 print(`{prefix} setting up Flipbook UI...`)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+
 local playerGui = localPlayer:WaitForChild("PlayerGui")
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Flipbook"
 screenGui.ResetOnSpawn = false
+screenGui.ScreenInsets = Enum.ScreenInsets.None
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 

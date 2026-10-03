@@ -20,6 +20,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
 	launchData: LaunchData?,
+	topbarInset: Rect?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
@@ -35,6 +36,11 @@ local function Sidebar(props: SidebarProps)
 		View,
 		withCommonProps(props, {
 			tag = "bg-surface-0 col size-full",
+			padding = if props.topbarInset
+				then {
+					top = UDim.new(0, props.topbarInset.Max.Y),
+				}
+				else nil,
 		}),
 		{
 			Search = e(View, {
