@@ -45,9 +45,11 @@ local function FlipbookApp(props: Props)
 		React.useState(nil :: UnavailableStorybook?)
 	local navigation = NavigationContext.use()
 
-	-- The embedded app renders flush with the top of the screen, so it lays
-	-- out around the Roblox topbar buttons that remain on top of it.
-	local topbarInset = useTopbarInset()
+	local appRef = React.useRef(nil :: GuiObject?)
+	local topbarInset = useTopbarInset(appRef)
+
+	-- The embedded app extends into the Roblox topbar, so it lays out around
+	-- the core buttons drawn on top of it.
 	local occludingTopbarInset = if props.mode == AppMode.EmbeddedClient then topbarInset else nil
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
@@ -77,6 +79,7 @@ local function FlipbookApp(props: Props)
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
+		ref = appRef,
 	}, {
 		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
 			story = storyModule,

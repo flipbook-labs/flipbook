@@ -36,7 +36,7 @@ local playerGui = localPlayer:WaitForChild("PlayerGui")
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Flipbook"
 screenGui.ResetOnSpawn = false
-screenGui.ScreenInsets = Enum.ScreenInsets.None
+screenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
