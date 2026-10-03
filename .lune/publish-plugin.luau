@@ -2,7 +2,7 @@
 -- to Lute. Follow this PR for updates: https://github.com/Roblox/rbxasset/pull/5
 
 local process = require("@lune/process")
-local rbxasset = require("@luaupkg/rbxasset")
+local rbxasset = require("@lunepkg/rbxasset")
 
 local parseArgs = require("./lib/parseArgs")
 local run = require("./lib/run")
@@ -15,10 +15,15 @@ assert(
 	`bad value for channel (must be one of "dev", "beta", or "prod", got "{channel}")`
 )
 
-local apiKey = assert(args.apiKey, "--apiKey must be supplied with a valid Open Cloud API key")
+local apiKey = assert(
+	process.env.ROBLOX_API_KEY or args.apiKey,
+	"An Open Cloud API key must be supplied with either --apiKey or ROBLOX_API_KEY"
+)
 assert(typeof(apiKey) == "string", `bad value for apiKey (string expected, got {typeof(apiKey)})`)
 
-run("lute", { "run", "build", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
+if not args.skipBuild then
+	run("lute", { "run", "build", "plugin", "--channel", channel, "--output", "Flipbook.rbxm" })
+end
 
 type ChannelName = "dev" | "beta" | "prod"
 type AssetName = "dev" | "prod" | "smoketest"

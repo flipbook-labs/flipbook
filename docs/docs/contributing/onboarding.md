@@ -4,86 +4,113 @@ sidebar_position: 1
 
 # Onboarding
 
-Thank you for your interest in contributing to Flipbook! This guide will help you get your environment setup so you can have the best possible development experience.
+Thank you for your interest in contributing to Flipbook! This guide walks through setting up a development environment, validating changes, and opening a pull request.
 
 :::info
-All contents under the Contributing section are for the development of the Flipbook plugin. Please see [Getting Started](/docs/intro) for documentation on how to use Flipbook.
+This guide covers development of the Flipbook plugin. See [Getting Started](/docs/intro) to learn how to use Flipbook in your own project.
 :::
 
-## First-time setup
+## Fork and clone the repository
 
-We use [Visual Studio Code](https://code.visualstudio.com/) to work on this project, so you'll get the best mileage from using it too. We also have several [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json) that should be installed.
-
-You will also need [Rokit](https://github.com/rojo-rbx/rokit/) for installing the various command-line tools we use.
-
-With the above requirements satisfied, run the following commands from your clone of the repo to start developing:
+Start by [forking Flipbook](https://github.com/flipbook-labs/flipbook/fork). Clone your fork, then add the main repository as an `upstream` remote:
 
 ```sh
-# Install command-line tools (like Lute)
-rokit install
-
-# Install packages
-lute run install
+git clone https://github.com/<your-account>/flipbook.git
+cd flipbook
+git remote add upstream https://github.com/flipbook-labs/flipbook.git
 ```
 
+Create each contribution from the latest `main` branch:
+
+```sh
+git fetch upstream
+git switch -c my-change upstream/main
+```
+
+## Set up your environment
+
+We use [Visual Studio Code](https://code.visualstudio.com/) to work on Flipbook. The repository includes [recommended extensions](https://github.com/flipbook-labs/flipbook/blob/main/.vscode/extensions.json).
+
+Install [Rokit](https://github.com/rojo-rbx/rokit/), then run these commands from the repository root:
+
+```sh
+rokit install
+lute run install
+cp .env.template .env
+```
+
+The checked-in `.env.template` values are enough for builds, linting, and static analysis. Keep `.env` local and never commit credentials.
+
 :::tip
-When using VSCode, you can press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on MacOS to execute the included build task which will build the Flipbook plugin for your OS.
+In Visual Studio Code, press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on macOS to run the included plugin build task.
 :::
+
+## Validate your change
+
+Every pull request needs one change entry. Add a Markdown file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
+
+Run the repository checks before opening or updating a pull request:
+
+```sh
+lute run check
+```
+
+This command verifies the branch has a change entry, sets up local type definitions, checks formatting and static analysis, and produces a development plugin build. It does not require an Open Cloud API key.
+
+## Open a pull request
+
+Push your branch to your fork, then open a pull request against `flipbook-labs/flipbook:main`.
+
+GitHub runs fork code in jobs that have no repository secrets and only read access. Cloud tests and storybook preview publishing consume the resulting build artifacts on separate protected runners. Those protected jobs may wait for a maintainer to review the contribution and approve them.
+
+You do not need to request a Flipbook Labs Open Cloud key. If GitHub shows a first-time contributor approval banner or a protected job is waiting, no action is required from you.
 
 ## Building
 
-Part of our build process uses [darklua](https://github.com/seaofvoices/darklua) to compile our Luau source code for Roblox. This is largely to support string requires so our source code can use the same syntax as our Lute scripts.
+Flipbook uses [darklua](https://github.com/seaofvoices/darklua) to compile Luau source code for Roblox and support string requires in both source code and Lute scripts.
 
 ### Build for Studio
 
-The following command will build production Flipbook to your Roblox Studio plugins directory:
+The following command builds production Flipbook to your Roblox Studio plugins directory:
 
 ```sh
 lute run build
 ```
 
-Once built, open up a Baseplate to start interacting with the plugin.
+Open a Baseplate in Studio to start interacting with the plugin.
 
-Production builds prune development files like unit tests, Storybooks, and Stories. The latter two can be handy to have during development so you can use Flipbook to develop it. To keep development files, pass the `--channel` flag to set the environment to build for:
+Production builds prune development files such as unit tests, storybooks, and stories. Use the development channel to keep them:
 
 ```sh
 lute run build --channel dev
 ```
 
-There's also a `--watch` flag to automatically rebuild on file changes.
+Add `--watch` to rebuild automatically when files change.
 
-### Build to rbxm
+### Build an rbxm file
 
-When building, pass the `--output` flag to determine where Flipbook will build to. By default, Flipbook builds to the Roblox Studio plugins directory.
-
-Run the following to build Flipbook to the root of the repo:
+Pass `--output` to choose where Flipbook writes the model. For example, this command writes it to the repository root:
 
 ```sh
 lute run build --output Flipbook.rbxm
 ```
 
-## Testing
+## Run cloud tests locally
 
-Running tests requires an Open Cloud API key. Reach out to the maintainers for access, then copy the `.env.template` file to `.env` and set `ROBLOX_API_KEY` to the value of the API key.
-
-Then run the following to run all unit tests for the project:
+Local cloud tests are optional. They require an Open Cloud API key and test universe that you control, with the corresponding values configured in your local `.env` file:
 
 ```sh
 lute run test
 ```
 
-We use jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for authoring and executing unit tests. [Read the docs](https://jsdotlua.github.io/jest-lua/) and look to our existing `.spec.luau` modules for how to write tests.
+Flipbook uses jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for unit tests. Existing `.spec.luau` modules show the expected patterns.
 
-:::tip
-If your code is not properly tested maintainers will let you know and offer suggestions on how to improve your tests so you can get your pull request merged.
-:::
+## Use Flipbook to develop Flipbook
 
-## Using Flipbook to develop Flipbook
+Flipbook's React components have story files, so you can develop the plugin through its own storybook.
 
-Flipbook is made up of React components, each of which has a story file. This means you can use Flipbook itself for developing it.
-
-Once you have Flipbook built, navigate to the Studio settings and turn on "Plugin Debugging Enabled."
+After building Flipbook, open Studio settings and turn on "Plugin Debugging Enabled."
 
 ![Screenshot of the Studio settings showing the Plugin Debugging Enabled option](./plugin-debugging-enabled.png)
 
-Then load a new Baseplate and open the Flipbook plugin. Its storybook should now appear in the sidebar.
+Load a new Baseplate and open Flipbook. Its storybook appears in the sidebar.

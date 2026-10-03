@@ -1,6 +1,5 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local BooleanControl = require("@root/StoryControls/ControlElements/BooleanControl")
@@ -15,13 +14,13 @@ local SelectControl = require("@root/StoryControls/ControlElements/SelectControl
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
+local useStoryControlValue = require("@root/StoryControls/useStoryControlValue")
 
 local ControlType = Storyteller.ControlType
 type ControlType = Storyteller.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback
-local useSignalState = ReactCharm.useSignalState
 
 local useStoryControls = StoryControlsContext.useStoryControls
 
@@ -48,7 +47,7 @@ local function StoryControlRow(props: Props)
 		storyControls.setControl(props.controlName, newValue)
 	end, { props.controlName, shouldCoerceToNumber, storyControls } :: { unknown })
 
-	local controlValue = useSignalState(storyControls.getControlValue(props.controlName))
+	local controlValue = useStoryControlValue(props.controlName)
 
 	local controlElement: React.Node
 	if controlType == ControlType.Boolean then

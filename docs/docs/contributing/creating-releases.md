@@ -1,18 +1,15 @@
 # Creating Releases
 
-Once ready to cut a new release, bump the version in our manifest files and create a PR for it.
+Releases are automated via [Changewrite](https://github.com/flipbook-labs/changewrite). Every release-worthy pull request adds a Markdown entry under [`.changes/`](https://github.com/flipbook-labs/flipbook/tree/main/.changes) describing the change and whether it warrants a major, minor, or patch release.
 
-We have a script to make version bumps easier. Run the following, replacing `minor` with the version to bump. This can be `major`, `minor`, or `patch`.
+Every push to `main` collects the pending entries and opens or updates a `Publish v{version}` pull request. Merging that pull request:
 
-```sh
-lute run bump-version minor
-```
+1. Tags the commit and creates the GitHub release with `Flipbook.rbxm` attached.
+2. Triggers the `publish-plugin` job, which publishes to the Roblox Creator Store.
 
-Once merged, to publish the new version you must [create a new GitHub release](https://github.com/flipbook-labs/flipbook/releases), matching the tag to the version bump.
+To cut a release, review the assembled notes and version in the auto-generated publish pull request, then merge it. To preview that pull request without publishing, add the `debug:release-pr` label to a pull request; Changewrite uses a separate debug branch and prepare-only mode.
 
-From there, our GitHub Actions will handle building Flipbook to an rbxm, attaching it to the release under the "Assets" list, and publishing it to the Wally registry for consumption.
-
-Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after publishing the release to check the status of the deployment.
+Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after merging to monitor the deployment.
 
 ## Logging in to Wally registry in CI
 

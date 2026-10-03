@@ -1,12 +1,12 @@
+local EmbeddingTypes = require("@root/Embedding/types")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 local Storyteller = require("@pkg/Storyteller")
 
-local IconName = Foundation.Enums.IconName
 local InputSize = Foundation.Enums.InputSize
 local ScrollView = Foundation.ScrollView
-local TextInput = Foundation.TextInput
+local SearchInput = Foundation.SearchInput
 local View = Foundation.View
 local withCommonProps = Foundation.Utility.withCommonProps
 
@@ -15,15 +15,18 @@ local useCallback = React.useCallback
 local useState = React.useState
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type LaunchData = EmbeddingTypes.LaunchData
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
+	launchData: LaunchData?,
 	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
 	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+	local initialSearchTerm = if props.launchData then props.launchData.search else nil
+	local searchTerm: string?, setSearchTerm = useState(initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
@@ -38,13 +41,11 @@ local function Sidebar(props: SidebarProps)
 				LayoutOrder = 1,
 				tag = "auto-y padding-medium size-full-0",
 			}, {
-				SearchBar = e(TextInput, {
-					label = "",
-					leadingIcon = IconName.MagnifyingGlass,
+				SearchBar = e(SearchInput, {
 					onChanged = onSearchTermChanged,
 					placeholder = "Search...",
 					size = InputSize.Small,
-					text = "",
+					text = searchTerm or "",
 					width = UDim.new(1, 0),
 				}),
 			}),
@@ -62,6 +63,7 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
+					launchData = props.launchData,
 					onShowErrorPage = props.onShowErrorPage,
 					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
