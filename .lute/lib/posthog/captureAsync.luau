@@ -9,7 +9,10 @@ local types = require("@scripts/lib/posthog/types")
 -- ID and the `ci_` event prefix to stay separable from user events.
 local DISTINCT_ID = "github-actions"
 
--- Namespace for CI event UUIDs. Changing it changes every event's UUID.
+-- A version 5 UUID is a hash of a namespace and a name, not random, so the
+-- same event for the same commit always gets the same UUID. This namespace is
+-- a fixed, arbitrary UUID that scopes those hashes to Flipbook's CI events.
+-- Changing it changes every event's UUID.
 local EVENT_NAMESPACE = "64441ae0-fde6-4d6a-9f94-765ed5f015ba"
 
 local function captureAsync(token: string, event: types.Event, dryRun: boolean)

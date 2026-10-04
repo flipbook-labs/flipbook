@@ -8,6 +8,7 @@ run("changewrite", { "check" })
 run("lute", { "setup" })
 run("lute", { "run", "lint" })
 run("lute", { "run", "analyze" })
+run("lute", { "test", ".lute" })
 run("lute", {
 	"run",
 	"build",

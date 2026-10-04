@@ -159,3 +159,6 @@ jobs:
 
       - name: Run Luau analysis
         run: lute run analyze
+
+      - name: Test Lute scripts
+        run: lute test .lute
