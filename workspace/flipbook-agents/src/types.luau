@@ -18,7 +18,7 @@ export type CurrentStory = StoryInfo & {
 export type AppAdapter = {
 	embedFlipbook: (parentPath: string?, overwrite: boolean) -> string,
 	listStorybooks: () -> { StorybookInfo },
-	listStories: (storybookPath: string) -> { StoryInfo },
+	listStories: (storybookPath: string?) -> { StoryInfo },
 	openStory: (storyPath: string, storybookPath: string?) -> StoryInfo,
 	getCurrentStory: () -> StoryInfo?,
 }
@@ -33,7 +33,7 @@ export type AgentActions = {
 	openWidget: () -> (),
 	embedFlipbook: (parentPath: string?, overwrite: boolean?) -> string,
 	listStorybooks: () -> { StorybookInfo },
-	listStories: (storybookPath: string) -> { StoryInfo },
+	listStories: (storybookPath: string?) -> { StoryInfo },
 	openStory: (storyPath: string, storybookPath: string?) -> StoryInfo,
 	getCurrentStory: () -> CurrentStory?,
 	getControls: () -> Controls,

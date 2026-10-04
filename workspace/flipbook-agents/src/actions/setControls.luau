@@ -14,7 +14,7 @@ local action: Action = {
 		properties = {
 			controls = {
 				type = "object",
-				description = "Map of control names to values",
+				description = "Map of control names to JSON-safe values in the format returned by getControls",
 			},
 		} :: { [string]: unknown },
 		required = { "controls" },

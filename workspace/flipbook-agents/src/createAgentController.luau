@@ -46,7 +46,7 @@ local function createAgentController(screen: LayerCollector): AgentController
 			return getAppAdapter().listStorybooks()
 		end,
 
-		listStories = function(storybookPath: string)
+		listStories = function(storybookPath: string?)
 			return getAppAdapter().listStories(storybookPath)
 		end,
 
