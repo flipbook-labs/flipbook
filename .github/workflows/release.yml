@@ -76,14 +76,11 @@ jobs:
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.7.0
+      - uses: flipbook-labs/changewrite@v0.9.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          base: main
-          branch: ${{ github.event_name == 'pull_request' && 'debug-publish-next-version' || 'publish-next-version' }}
-          prepare-only: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
+          debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
           force-version: ${{ inputs.force-version || '' }}
-          pr-title: ${{ github.event_name == 'pull_request' && '[DEBUG] Publish v{{version}}' || 'Publish v{{version}}' }}
           pr-body: |
             >[!IMPORTANT]
             > This PR prepares the next release by bumping the version and updating the changelog.
