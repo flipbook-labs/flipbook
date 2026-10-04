@@ -12,9 +12,9 @@ local PROJECT_FILE = "project.luau"
 local VERSION_PATTERN = 'ROBLOX_PACKAGES_VERSION = "[^"]*"'
 local ENTRY_PATHSPEC = ".changes/upgrade-roblox-packages-*.md"
 local BASE_BRANCH = "main"
-local REVIEWER = "vocksel"
+local REVIEWER = "flipbook-labs/flipbook-engine"
 
-local function getEnv(name: string): string
+local function assertEnv(name: string): string
 	local value = process.env[name]
 	assert(value ~= nil and value ~= "", `{name} must be set`)
 	return value
@@ -149,8 +149,8 @@ local function syncPullRequest(version: string, branch: string)
 	end
 end
 
-local version = getEnv("LATEST_VERSION")
-local branch = getEnv("BRANCH_NAME")
+local version = assertEnv("LATEST_VERSION")
+local branch = assertEnv("BRANCH_NAME")
 
 applyVersion(version)
 local entryPath = writeChangeEntry(version)
