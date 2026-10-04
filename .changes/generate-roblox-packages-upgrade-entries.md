@@ -1,6 +1,6 @@
 ---
 bump: patch
-category: Changes
+category: Internal
 ---
 
 Include automated RobloxPackages upgrades in release notes.
