@@ -16,7 +16,7 @@ Add support for Foo values so Bar can be Bazzed.
 ```
 
 - **`bump`** (required) — how much to move the version: `major`, `minor`, or `patch`.
-- **`category`** (optional) — the heading this entry appears under in the changelog, such as `Features`, `Fixes`, or `Dependencies`. Defaults to `Changes`.
+- **`category`** (optional) — the heading this entry appears under in the changelog: `Features`, `Changes`, `Fixes`, `Dependencies`, or `Internal`. Defaults to `Changes`. The changelog lists the headings in that order, as set by `categories` in [`changewrite.toml`](../changewrite.toml).
 - **Body** — everything below the frontmatter is the changelog text. Aim for one or two sentences; it can span multiple paragraphs if a change needs it.
 
 ## How the version is chosen
