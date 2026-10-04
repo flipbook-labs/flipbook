@@ -84,7 +84,7 @@ local function MultiSelectControl(props: Props)
 		label = "",
 		onItemChanged = onItemChanged,
 		placeholder = placeholder,
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 		width = UDim.new(1, 0),
 	})
 end

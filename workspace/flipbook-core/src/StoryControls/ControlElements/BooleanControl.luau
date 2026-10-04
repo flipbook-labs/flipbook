@@ -20,7 +20,7 @@ local function BooleanControl(props: Props)
 		isChecked = props.controlValue,
 		label = "",
 		onActivated = onActivated,
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 	})
 end
 

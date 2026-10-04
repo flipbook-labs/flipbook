@@ -33,7 +33,7 @@ local function RobloxProfile(props: Props)
 	end, { props.userId })
 
 	return React.createElement(Foundation.View, {
-		tag = "auto-xy row align-y-center gap-small",
+		tag = "auto-xy row align-y-center gap-xsmall",
 		LayoutOrder = props.LayoutOrder,
 	}, {
 		Avatar = React.createElement(Foundation.Avatar, {

@@ -39,7 +39,7 @@ local function Sidebar(props: SidebarProps)
 		{
 			Search = e(View, {
 				LayoutOrder = 1,
-				tag = "auto-y padding-medium size-full-0",
+				tag = "auto-y padding-small size-full-0",
 			}, {
 				SearchBar = e(SearchInput, {
 					onChanged = onSearchTermChanged,

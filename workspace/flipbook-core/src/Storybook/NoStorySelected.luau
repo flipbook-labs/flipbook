@@ -11,7 +11,7 @@ local function NoStorySelected()
 	local tokens = useTokens()
 
 	return e(Foundation.View, {
-		tag = "size-full col bg-surface-200 gap-medium align-y-center align-x-center",
+		tag = "size-full col bg-surface-200 gap-small align-y-center align-x-center",
 	}, {
 		Icon = e(Foundation.Icon, {
 			name = Foundation.Enums.IconName.SquareBooks,
@@ -21,7 +21,7 @@ local function NoStorySelected()
 		}),
 
 		Message = e(Foundation.Text, {
-			tag = "auto-xy text-heading-medium",
+			tag = "auto-xy text-heading-small",
 			Text = "Select a story to preview it",
 			LayoutOrder = nextLayoutOrder(),
 		}),

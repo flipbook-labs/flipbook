@@ -11,7 +11,7 @@ local function App()
 			ScaleType = Enum.ScaleType.Tile,
 			TileSize = UDim2.fromOffset(4, 4),
 			imageStyle = { Color3 = Color3.new(1, 1, 1), Transparency = 0.975 },
-			tag = "bg-surface-0 padding-medium size-full",
+			tag = "bg-surface-0 padding-small size-full",
 		}),
 	})
 end

@@ -61,7 +61,7 @@ local function SelectControl(props: Props)
 		label = "",
 		onItemChanged = onItemChanged,
 		value = tostring(props.controlValue),
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 		width = UDim.new(1, 0),
 	})
 end

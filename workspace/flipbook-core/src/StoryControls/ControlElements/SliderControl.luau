@@ -24,7 +24,7 @@ local function SliderControl(props: Props)
 	return e(Foundation.Slider, {
 		label = "",
 		onValueChanged = onValueChanged,
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 		step = props.controlSchema.step,
 		range = props.controlSchema.range,
 		value = value,

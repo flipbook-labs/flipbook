@@ -17,17 +17,17 @@ export type Props = {
 
 local function StoryMeta(props: Props)
 	return e(Foundation.View, {
-		tag = "size-full-0 auto-y col gap-medium",
+		tag = "size-full-0 auto-y col gap-small",
 		LayoutOrder = props.layoutOrder,
 	}, {
 		Title = e(Foundation.Text, {
-			tag = "auto-xy text-heading-large",
+			tag = "auto-xy text-heading-medium",
 			Text = props.story.name,
 			LayoutOrder = nextLayoutOrder(),
 		}),
 
 		Summary = props.story.summary and e(Foundation.Text, {
-			tag = "auto-xy text-body-medium text-wrap",
+			tag = "auto-xy text-body-small text-wrap",
 			LayoutOrder = nextLayoutOrder(),
 			Text = props.story.summary,
 			sizeConstraint = {
