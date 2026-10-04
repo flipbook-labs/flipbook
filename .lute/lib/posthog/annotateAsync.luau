@@ -1,9 +1,9 @@
 local json = require("@std/json")
 
-local types = require("@scripts/lib/posthog/types")
+local sendAsync = require("@scripts/lib/posthog/sendAsync")
 
-local function annotate(apiKey: string, projectId: string, content: string): types.Request
-	return {
+local function annotateAsync(apiKey: string, projectId: string, content: string, dryRun: boolean)
+	sendAsync({
 		url = `https://us.posthog.com/api/projects/{projectId}/annotations/`,
 		metadata = {
 			method = "POST",
@@ -17,7 +17,7 @@ local function annotate(apiKey: string, projectId: string, content: string): typ
 				scope = "project",
 			})),
 		},
-	}
+	}, dryRun)
 end
 
-return annotate
+return annotateAsync

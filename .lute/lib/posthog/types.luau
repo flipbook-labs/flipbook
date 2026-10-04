@@ -1,8 +1,6 @@
 local json = require("@std/json")
 local net = require("@std/net")
 
--- A request to PostHog, built separately from sending it so a dry run can
--- print it instead.
 export type Request = {
 	url: string,
 	metadata: net.Metadata,

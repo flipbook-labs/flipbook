@@ -10,14 +10,13 @@ local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
 local cli = require("@batteries/cli")
 local fs = require("@std/fs")
 local json = require("@std/json")
-local net = require("@std/net")
 local path = require("@std/path")
 local process = require("@std/process")
 
-local annotate = require("@scripts/lib/posthog/annotate")
-local capture = require("@scripts/lib/posthog/capture")
-local checkProjectToken = require("@scripts/lib/posthog/checkProjectToken")
-local listAnnotations = require("@scripts/lib/posthog/listAnnotations")
+local annotateAsync = require("@scripts/lib/posthog/annotateAsync")
+local captureAsync = require("@scripts/lib/posthog/captureAsync")
+local checkPersonalApiKeyAsync = require("@scripts/lib/posthog/checkPersonalApiKeyAsync")
+local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
 local types = require("@scripts/lib/posthog/types")
 
 local run = FlipbookBatteries.run
@@ -33,21 +32,6 @@ local function readSecret(name: string): string
 	local value = process.env[name]
 	assert(value ~= nil and value ~= "", `{name} is not set`)
 	return value
-end
-
-local function send(request: types.Request)
-	if dryRun then
-		print(`{request.metadata.method} {request.url}`)
-		if request.metadata.body then
-			print(request.metadata.body)
-		end
-		return
-	end
-
-	local response = net.request(request.url, request.metadata)
-	if not response.ok then
-		error(`PostHog returned {response.status} for {request.url}\n{response.body}`, 0)
-	end
 end
 
 -- Changewrite's gate reports the version its configured source currently holds.
@@ -69,14 +53,19 @@ end
 -- product events.
 local function buildEvent(name: string): types.Event
 	local commit = assert(run("git", { "rev-parse", "HEAD" }, { captureOutput = true }))
+	local buildHash = assert(run("git", { "rev-parse", "--short", "HEAD" }, { captureOutput = true }))
+	local timestamp = assert(run("git", { "log", "-1", "--format=%cI", "HEAD" }, { captureOutput = true }))
+	local version = readVersion()
+
 	local properties: { [string]: json.Value } = {
-		version = readVersion(),
-		build_hash = assert(run("git", { "rev-parse", "--short", "HEAD" }, { captureOutput = true })),
+		version = version,
+		build_hash = buildHash,
 		commit = commit,
 	}
 
-	local server, repository, runId =
-		process.env.GITHUB_SERVER_URL, process.env.GITHUB_REPOSITORY, process.env.GITHUB_RUN_ID
+	local server = process.env.GITHUB_SERVER_URL
+	local repository = process.env.GITHUB_REPOSITORY
+	local runId = process.env.GITHUB_RUN_ID
 	if server and repository and runId then
 		properties.run_url = `{server}/{repository}/actions/runs/{runId}`
 	end
@@ -84,23 +73,17 @@ local function buildEvent(name: string): types.Event
 	return {
 		name = name,
 		commit = commit,
-		timestamp = assert(run("git", { "log", "-1", "--format=%cI", "HEAD" }, { captureOutput = true })),
+		timestamp = timestamp,
 		properties = properties,
 	}
 end
 
-local function report(event: types.Event)
-	local token = readSecret("POSTHOG_PROJECT_TOKEN")
-	send(checkProjectToken(token))
-	send(capture(token, event))
-end
-
 local function check()
-	send(checkProjectToken(readSecret("POSTHOG_PROJECT_TOKEN")))
+	checkProjectTokenAsync(readSecret("POSTHOG_PROJECT_TOKEN"), dryRun)
 	print("PostHog accepted the project token")
 
 	if dryRun or process.env.POSTHOG_PERSONAL_API_KEY then
-		send(listAnnotations(readSecret("POSTHOG_PERSONAL_API_KEY"), readSecret("POSTHOG_PROJECT_ID")))
+		checkPersonalApiKeyAsync(readSecret("POSTHOG_PERSONAL_API_KEY"), readSecret("POSTHOG_PROJECT_ID"), dryRun)
 		print("PostHog accepted the personal API key and project ID")
 	end
 end
@@ -116,12 +99,12 @@ local function reportPendingChanges()
 
 	local event = buildEvent("ci_pending_changes")
 	event.properties.total = total
-	report(event)
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), event, dryRun)
 	print(`Reported {total} pending changes`)
 end
 
 local function reportBetaPublished()
-	report(buildEvent("ci_beta_published"))
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), buildEvent("ci_beta_published"), dryRun)
 	print("Reported the beta publish")
 end
 
@@ -133,15 +116,14 @@ local function reportProdReleased()
 	local moduleLoader = readLockedVersion("flipbook-labs/module-loader")
 	event.properties.storyteller_version = storyteller
 	event.properties.module_loader_version = moduleLoader
-	report(event)
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), event, dryRun)
 
 	local version = event.properties.version
-	send(
-		annotate(
-			readSecret("POSTHOG_PERSONAL_API_KEY"),
-			readSecret("POSTHOG_PROJECT_ID"),
-			`Flipbook v{version} released (Storyteller {storyteller}, ModuleLoader {moduleLoader})`
-		)
+	annotateAsync(
+		readSecret("POSTHOG_PERSONAL_API_KEY"),
+		readSecret("POSTHOG_PROJECT_ID"),
+		`Flipbook v{version} released (Storyteller {storyteller}, ModuleLoader {moduleLoader})`,
+		dryRun
 	)
 	print(`Reported the v{version} release`)
 end
