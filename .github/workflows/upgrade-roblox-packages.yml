@@ -86,25 +86,6 @@ jobs:
           git config user.name "$APP_SLUG[bot]"
           git config user.email "$userId+$APP_SLUG[bot]@users.noreply.github.com"
 
-      - name: Check branch existence
-        id: branch_existence
-        continue-on-error: true
-        run: git ls-remote --exit-code --heads origin ${{ env.BRANCH_NAME }}
-
-      - name: Check out the upgrade branch
-        # When an upgrade PR is already in flight we build on top of it instead
-        # of recreating it from main. Version bumps can sit open for a while
-        # because we're blocked working out the code changes needed to
-        # accommodate the new packages, and a destructive rebuild would wipe
-        # out that in-progress work. Bumping the version in place and pushing
-        # on top keeps those changes intact.
-        run: |
-          if [ "${{ steps.branch_existence.outcome }}" = "success" ]; then
-            git checkout -B "$BRANCH_NAME" "origin/$BRANCH_NAME"
-          else
-            git checkout -B "$BRANCH_NAME" origin/main
-          fi
-
       - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0

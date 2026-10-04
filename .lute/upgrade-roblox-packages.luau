@@ -1,6 +1,6 @@
 -- Moves the upgrade branch to a new RobloxPackages version and keeps its pull
--- request current. Runs from the upgrade workflow with the upgrade branch
--- checked out, and reads its inputs from the environment:
+-- request current. Runs from the upgrade workflow on a checkout of main, and
+-- reads its inputs from the environment:
 --
 -- - LATEST_VERSION: the RobloxPackages version to upgrade to
 -- - BRANCH_NAME: the upgrade branch to push and open the pull request from
@@ -24,6 +24,23 @@ local function run(command: { string }): string
 	local result = process.run(command)
 	assert(result.ok, `{table.concat(command, " ")} failed: {result.stderr}`)
 	return (result.stdout:gsub("%s+$", ""))
+end
+
+-- When an upgrade PR is already in flight, build on top of it instead of
+-- recreating it from main. Version bumps can sit open for a while as the code
+-- changes needed for the new packages get worked out, and recreating the branch
+-- would wipe out that work.
+--
+-- The script is loaded before this checkout, so it still runs when the
+-- existing branch predates it.
+local function checkOutUpgradeBranch(branch: string)
+	local exists = process.run({ "git", "ls-remote", "--exit-code", "--heads", "origin", branch }).ok
+	if exists then
+		run({ "git", "fetch", "origin", branch })
+		run({ "git", "checkout", "-B", branch, `origin/{branch}` })
+	else
+		run({ "git", "checkout", "-B", branch, `origin/{BASE_BRANCH}` })
+	end
 end
 
 local function applyVersion(version: string)
@@ -147,6 +164,7 @@ end
 local version = assertEnv("LATEST_VERSION")
 local branch = assertEnv("BRANCH_NAME")
 
+checkOutUpgradeBranch(branch)
 applyVersion(version)
 local entryPath = writeChangeEntry(version)
 
