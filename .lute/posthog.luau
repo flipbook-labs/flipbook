@@ -47,14 +47,11 @@ local function readLockedVersion(packageName: string): string
 	return assert(version, `Could not find {packageName} in wally.lock`)
 end
 
--- Each event reports one commit, so its commit time stands in for when it
--- happened and stays the same across re-runs. `build_hash` matches the
--- BUILD_HASH that `lute run build` bakes into the plugin, so CI events join
--- product events.
+-- `build_hash` matches the BUILD_HASH that `lute run build` bakes into the
+-- plugin, so CI events join product events.
 local function buildEvent(name: string): types.Event
 	local commit = assert(run("git", { "rev-parse", "HEAD" }, { captureOutput = true }))
 	local buildHash = assert(run("git", { "rev-parse", "--short", "HEAD" }, { captureOutput = true }))
-	local timestamp = assert(run("git", { "log", "-1", "--format=%cI", "HEAD" }, { captureOutput = true }))
 	local version = readVersion()
 
 	local properties: { [string]: json.Value } = {
@@ -72,8 +69,6 @@ local function buildEvent(name: string): types.Event
 
 	return {
 		name = name,
-		commit = commit,
-		timestamp = timestamp,
 		properties = properties,
 	}
 end
@@ -108,8 +103,6 @@ local function reportBetaPublished()
 	print("Reported the beta publish")
 end
 
--- The release event is captured before its annotation. If the annotation
--- fails, a re-run sends the same event again and PostHog drops the duplicate.
 local function reportProdReleased()
 	local event = buildEvent("ci_prod_released")
 	local storyteller = readLockedVersion("flipbook-labs/storyteller")

@@ -8,10 +8,6 @@ export type Request = {
 
 export type Event = {
 	name: string,
-	-- The full commit SHA the event reports.
-	commit: string,
-	-- ISO 8601. Fixed per commit so a re-run matches the first send.
-	timestamp: string,
 	properties: { [string]: json.Value },
 }
 
