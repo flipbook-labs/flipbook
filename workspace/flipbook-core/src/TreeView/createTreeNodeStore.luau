@@ -15,6 +15,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
 
 	local getName, setName = Charm.signal("Node")
+	local getOrder, setOrder = Charm.signal(nil :: number?)
 	local getIcon, setIcon = Charm.signal(nil :: TreeNodeIcon?)
 	local getIsSelected, setIsSelected = Charm.signal(false)
 	local getIsExpanded, setIsExpanded = Charm.signal(false)
@@ -23,6 +24,7 @@ local function createTreeNodeStore(): TreeNodeStore
 	local getIsPinned, setIsPinned = Charm.signal(false)
 
 	local getInstance, setInstance = Charm.signal(nil :: Instance?)
+	local getStoryId, setStoryId = Charm.signal(nil :: string?)
 
 	local getParent, setParent = Charm.signal(nil :: TreeNodeStore?)
 	local getUnsortedChildren, setUnsortedChildren = Charm.signal({} :: { TreeNodeStore })
@@ -246,6 +248,8 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- Node properties and states
 		getName = getName,
 		setName = setName,
+		getOrder = getOrder,
+		setOrder = setOrder,
 		getIcon = getIcon :: () -> TreeNodeIcon?,
 		setIcon = (setIcon :: any) :: CharmTypes.Setter<TreeNodeIcon?>,
 		getIsVisible = getIsVisible,
@@ -285,6 +289,8 @@ local function createTreeNodeStore(): TreeNodeStore
 		-- DataModel
 		getInstance = getInstance,
 		setInstance = setInstance,
+		getStoryId = getStoryId,
+		setStoryId = setStoryId,
 
 		-- Other
 		snapshot = snapshot,
