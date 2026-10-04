@@ -105,7 +105,7 @@ jobs:
             git checkout -B "$BRANCH_NAME" origin/main
           fi
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
