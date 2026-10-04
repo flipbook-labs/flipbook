@@ -61,6 +61,17 @@ local function getBuildProperties(): { [string]: json.Value }
 	return properties
 end
 
+-- Each event reports one commit, so the commit identifies it and its commit
+-- time stands in for when it happened. Both stay the same across re-runs.
+local function buildEvent(name: string, properties: { [string]: json.Value }): postHog.Event
+	return {
+		name = name,
+		dedupeKey = properties.commit :: string,
+		timestamp = git({ "log", "-1", "--format=%cI", "HEAD" }),
+		properties = properties,
+	}
+end
+
 local function toPropertyKey(prefix: string, name: string): string
 	return `{prefix}_{name:lower():gsub("[^%w]+", "_")}`
 end
@@ -76,12 +87,12 @@ local function reportPendingChanges()
 		properties[toPropertyKey("bump", bump)] = count
 	end
 
-	postHog.capture(options, "ci_pending_changes", properties)
+	postHog.capture(options, buildEvent("ci_pending_changes", properties))
 	print(`Reported {counts.total} pending changes`)
 end
 
 local function reportBetaPublished()
-	postHog.capture(options, "ci_beta_published", getBuildProperties())
+	postHog.capture(options, buildEvent("ci_beta_published", getBuildProperties()))
 	print("Reported the beta publish")
 end
 
@@ -95,17 +106,16 @@ local function check()
 	end
 end
 
+-- The release event is captured before its annotation. If the annotation
+-- fails, a re-run sends the same event again and PostHog drops the duplicate.
 local function reportProdReleased()
-	-- Checked first so a bad key fails before the release event is sent.
-	postHog.checkPersonalApiKey(options)
-
 	local properties = getBuildProperties()
 	local storyteller = readLockedVersion("flipbook-labs/storyteller")
 	local moduleLoader = readLockedVersion("flipbook-labs/module-loader")
 	properties.storyteller_version = storyteller
 	properties.module_loader_version = moduleLoader
 
-	postHog.capture(options, "ci_prod_released", properties)
+	postHog.capture(options, buildEvent("ci_prod_released", properties))
 	postHog.annotate(
 		options,
 		`Flipbook v{properties.version} released (Storyteller {storyteller}, ModuleLoader {moduleLoader})`

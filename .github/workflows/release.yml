@@ -163,12 +163,13 @@ jobs:
   # Charts release health in PostHog: how many changes are waiting on a
   # release, and when beta builds and releases go out. The `posthog`
   # environment holds the 1Password service account token that `op run`
-  # resolves the op:// references with.
-  report-main-to-posthog:
-    needs: publish-nightly-plugin
-    if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  # resolves the op:// references with. Reporting never fails a release run;
+  # the PostHog Check workflow is where a broken credential shows up.
+  report-pending-changes:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    continue-on-error: true
     environment: posthog
     env:
       OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
@@ -187,14 +188,34 @@ jobs:
       - name: Report pending changes
         run: op run -- lute run posthog pending-changes
 
+  report-beta-publish:
+    needs: publish-nightly-plugin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook Edge/flipbook-posthog-ci/project-token
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
       - name: Report the beta publish
-        if: ${{ needs.publish-nightly-plugin.result == 'success' }}
         run: op run -- lute run posthog beta-published
 
-  report-release-to-posthog:
+  report-release:
     needs: publish-plugin
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    continue-on-error: true
     environment: posthog
     env:
       OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}

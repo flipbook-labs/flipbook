@@ -1,3 +1,4 @@
+local crypto = require("@lute/crypto")
 local json = require("@std/json")
 local net = require("@std/net")
 local process = require("@std/process")
@@ -99,10 +100,39 @@ local function checkPersonalApiKey(options: Options)
 	expectOk("POSTHOG_PERSONAL_API_KEY", response)
 end
 
-local function capture(options: Options, event: string, properties: { [string]: json.Value })
+-- A name-based UUID, so the same event for the same commit always gets the same
+-- ID. PostHog drops an event whose UUID, timestamp, name, and distinct ID all
+-- match one it already has, which makes re-running a failed job safe.
+local function deriveUuid(name: string): string
+	local digest = crypto.digest(crypto.hash.sha256, name)
+	local bytes = {}
+	for i = 0, 15 do
+		bytes[i + 1] = buffer.readu8(digest, i)
+	end
+	bytes[7] = bit32.bor(bit32.band(bytes[7], 0x0f), 0x50) -- version 5
+	bytes[9] = bit32.bor(bit32.band(bytes[9], 0x3f), 0x80) -- RFC 4122 variant
+
+	local hex = {}
+	for i, byte in bytes do
+		hex[i] = string.format("%02x", byte)
+	end
+	local text = table.concat(hex)
+	return `{text:sub(1, 8)}-{text:sub(9, 12)}-{text:sub(13, 16)}-{text:sub(17, 20)}-{text:sub(21, 32)}`
+end
+
+export type Event = {
+	name: string,
+	-- Identifies this occurrence of the event, such as the commit it reports.
+	dedupeKey: string,
+	-- ISO 8601. Fixed per occurrence so a re-run matches the first send.
+	timestamp: string,
+	properties: { [string]: json.Value },
+}
+
+local function capture(options: Options, event: Event)
 	checkProjectToken(options)
 
-	local eventProperties = table.clone(properties)
+	local eventProperties = table.clone(event.properties)
 	-- A fixed CI identity has no person behind it, so skip creating a profile.
 	eventProperties["$process_person_profile"] = false
 
@@ -114,7 +144,9 @@ local function capture(options: Options, event: string, properties: { [string]: 
 		{},
 		json.object({
 			api_key = readSecret(options, "POSTHOG_PROJECT_TOKEN"),
-			event = event,
+			event = event.name,
+			uuid = deriveUuid(`{event.name}:{event.dedupeKey}`),
+			timestamp = event.timestamp,
 			distinct_id = DISTINCT_ID,
 			properties = json.object(eventProperties),
 		})
