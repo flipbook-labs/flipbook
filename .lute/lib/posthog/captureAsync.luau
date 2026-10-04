@@ -1,12 +1,16 @@
 local json = require("@std/json")
 
 local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
+local createUuidV5 = require("@scripts/lib/createUuidV5")
 local sendAsync = require("@scripts/lib/posthog/sendAsync")
 local types = require("@scripts/lib/posthog/types")
 
 -- CI events share the product's PostHog project, so they use a fixed distinct
 -- ID and the `ci_` event prefix to stay separable from user events.
 local DISTINCT_ID = "github-actions"
+
+-- Namespace for CI event UUIDs. Changing it changes every event's UUID.
+local EVENT_NAMESPACE = "64441ae0-fde6-4d6a-9f94-765ed5f015ba"
 
 local function captureAsync(token: string, event: types.Event, dryRun: boolean)
 	checkProjectTokenAsync(token, dryRun)
@@ -16,11 +20,9 @@ local function captureAsync(token: string, event: types.Event, dryRun: boolean)
 	properties["$process_person_profile"] = false
 
 	-- PostHog drops an event whose UUID, timestamp, name, and distinct ID all
-	-- match one it already has. Reusing the commit SHA as the UUID makes
-	-- re-running a job for the same commit safe, and the event name keeps
-	-- different events for one commit apart.
-	local sha = event.commit
-	local uuid = `{sha:sub(1, 8)}-{sha:sub(9, 12)}-{sha:sub(13, 16)}-{sha:sub(17, 20)}-{sha:sub(21, 32)}`
+	-- match one it already has. Deriving the UUID from the event and its commit
+	-- makes re-running a job for the same commit safe.
+	local uuid = createUuidV5(EVENT_NAMESPACE, `{event.name}:{event.commit}`)
 
 	sendAsync({
 		url = "https://us.i.posthog.com/i/v0/e/",
