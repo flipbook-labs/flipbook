@@ -1,2 +1,3 @@
 **/*.lock linguist-generated=true
 **/*.lock.luau linguist-generated=true
+docs/obsidian-vault/drafts/** linguist-generated=true

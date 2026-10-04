@@ -1,0 +1,32 @@
+/* Filename header above an expanded code sample, mirroring the title bar that
+   Docusaurus renders for `title=` code blocks. */
+.code-sample-title {
+	border: 1px solid var(--background-modifier-border);
+	border-bottom: none;
+	border-radius: var(--code-radius, var(--radius-s))
+		var(--code-radius, var(--radius-s)) 0 0;
+	background: var(--code-background, var(--background-secondary));
+	color: var(--text-muted);
+	padding: var(--size-4-2) var(--size-4-3);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+}
+
+/* Square off the top of the code block so it sits flush under the title. */
+.code-sample > .code-sample-title + pre {
+	margin-top: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+/* Shown in reading view when a `code-sample` block can't be resolved (bad path,
+   out-of-range lines, etc.) so authors notice the broken reference. */
+.code-sample-error {
+	border: 1px solid var(--background-modifier-error);
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-error-hover);
+	color: var(--text-error);
+	padding: var(--size-4-2) var(--size-4-3);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-small);
+}

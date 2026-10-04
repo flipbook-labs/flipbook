@@ -23,15 +23,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: docs
+        working-directory: docs/site
+
+      - name: Check formatting
+        run: npm run format:check
+        working-directory: docs/site
 
       - name: Build
         run: npm run build
-        working-directory: docs
+        working-directory: docs/site
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/build
+          path: docs/site/build
 
   deploy-docs:
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
