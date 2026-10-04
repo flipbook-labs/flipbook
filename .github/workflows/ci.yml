@@ -124,6 +124,9 @@ jobs:
         with:
           version: v1.2.0
 
+      - name: Install dependencies
+        run: lute run install
+
       - name: Dry-run PostHog reports
         run: |
           set -euo pipefail

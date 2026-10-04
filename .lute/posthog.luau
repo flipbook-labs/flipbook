@@ -10,6 +10,7 @@
 --
 -- `check` confirms PostHog accepts the credentials without sending any data.
 -- It checks the personal API key only when POSTHOG_PERSONAL_API_KEY is set.
+local cli = require("@batteries/cli")
 local fs = require("@std/fs")
 local json = require("@std/json")
 local process = require("@std/process")
@@ -19,10 +20,27 @@ local postHog = require("@scripts/lib/postHog")
 
 local CHANGES_DIR = ".changes"
 
--- `lute run` passes the script name first, then the arguments after it.
-local args = { ... }
-local subcommand = args[2]
-local options: postHog.Options = { dryRun = table.find(args, "--dry-run") ~= nil }
+local args = cli.parser()
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+
+local COMMANDS = {
+	{ "check", "Confirm PostHog accepts the credentials without sending any data" },
+	{ "pending-changes", "Report how many change entries are waiting on a release" },
+	{ "beta-published", "Report a beta build publishing to the Creator Store" },
+	{ "prod-released", "Report a release and annotate it" },
+}
+for _, entry in COMMANDS do
+	local command = args:subcommand(entry[1], { help = entry[2] })
+	command:add("dry-run", "flag", { help = "Print each request instead of sending it" })
+end
+
+args:parse({ ... })
+
+local subcommand, commandArgs = args:selected()
+assert(subcommand and commandArgs, `Expected a command:\n{args:help()}`)
+local options: postHog.Options = { dryRun = commandArgs:has("dry-run") }
 
 local function git(gitArgs: { string }): string
 	local command = { "git" }
@@ -32,9 +50,13 @@ local function git(gitArgs: { string }): string
 	return (result.stdout:gsub("%s+$", ""))
 end
 
+-- Changewrite's gate reports the version its configured source currently holds.
 local function readVersion(): string
-	local version = fs.readFileToString("changewrite.toml"):match('current%s*=%s*"([^"]+)"')
-	return assert(version, "Could not read the current version from changewrite.toml")
+	local result = process.run({ "changewrite", "gate" })
+	assert(result.ok, `changewrite gate failed: {result.stderr}`)
+	local gate = json.asObject(json.deserialize(result.stdout))
+	local version = if gate then gate.version else nil
+	return assert(if typeof(version) == "string" then version else nil, "changewrite gate reported no version")
 end
 
 local function readLockedVersion(packageName: string): string
@@ -131,6 +153,4 @@ elseif subcommand == "beta-published" then
 	reportBetaPublished()
 elseif subcommand == "prod-released" then
 	reportProdReleased()
-else
-	error(`Expected check, pending-changes, beta-published, or prod-released, got {subcommand or "nothing"}`, 0)
 end
