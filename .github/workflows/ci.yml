@@ -26,10 +26,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: flipbook-labs/changewrite@v0.7.0
+      - uses: flipbook-labs/changewrite@v0.9.0
         with:
           require-entry: 'true'
-          branch: ${{ github.head_ref == 'debug-publish-next-version' && 'debug-publish-next-version' || 'publish-next-version' }}
 
   build-plugin:
     runs-on: ubuntu-latest
@@ -117,8 +116,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: CompeyDev/setup-rokit@v0.1.2
         with:
@@ -130,5 +127,11 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      - name: Run checks
-        run: lute run check
+      - name: Setup Lute typedefs
+        run: lute setup
+
+      - name: Lint
+        run: lute run lint
+
+      - name: Run Luau analysis
+        run: lute run analyze
