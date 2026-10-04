@@ -1,0 +1,40 @@
+name: PostHog Check
+
+# Confirms PostHog accepts the release workflow's credentials without sending
+# any data. The credentials live in 1Password, so after replacing one there,
+# dispatch this from main to confirm the fix with no commit. The weekly run
+# catches a revoked key before a release depends on it.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 17 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook Edge/flipbook-posthog-ci/project-token
+      POSTHOG_PERSONAL_API_KEY: op://Flipbook Edge/flipbook-posthog-ci/personal-api-key
+      POSTHOG_PROJECT_ID: op://Flipbook Edge/flipbook-posthog-ci/project-id
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
+      - name: Check PostHog credentials
+        run: op run -- lute run posthog check
