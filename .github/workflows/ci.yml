@@ -111,6 +111,27 @@ jobs:
           path: ${{ env.ARTIFACT_NAME }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
 
+  # Runs every PostHog report without credentials, printing the requests the
+  # release workflow would send, so changes to them are exercised before they
+  # reach main.
+  posthog-dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Dry-run PostHog reports
+        run: |
+          set -euo pipefail
+          lute run posthog check --dry-run
+          lute run posthog pending-changes --dry-run
+          lute run posthog beta-published --dry-run
+          lute run posthog prod-released --dry-run
+
   analyze:
     runs-on: ubuntu-latest
     timeout-minutes: 5

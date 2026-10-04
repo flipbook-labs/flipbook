@@ -1,12 +1,15 @@
 -- Reports release pipeline events to PostHog so release health can be charted
 -- next to product telemetry.
 --
--- Usage: lute run posthog <pending-changes | beta-published | prod-released> [--dry-run]
+-- Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
 --
 -- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release annotation also
 -- reads POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID. POSTHOG_HOST and
 -- POSTHOG_APP_HOST override the US cloud hosts. --dry-run prints each request
 -- instead of sending it and needs none of these.
+--
+-- `check` confirms PostHog accepts the credentials without sending any data.
+-- It checks the personal API key only when POSTHOG_PERSONAL_API_KEY is set.
 local fs = require("@std/fs")
 local json = require("@std/json")
 local process = require("@std/process")
@@ -82,7 +85,20 @@ local function reportBetaPublished()
 	print("Reported the beta publish")
 end
 
+local function check()
+	postHog.checkProjectToken(options)
+	print("PostHog accepted the project token")
+
+	if options.dryRun or process.env.POSTHOG_PERSONAL_API_KEY then
+		postHog.checkPersonalApiKey(options)
+		print("PostHog accepted the personal API key and project ID")
+	end
+end
+
 local function reportProdReleased()
+	-- Checked first so a bad key fails before the release event is sent.
+	postHog.checkPersonalApiKey(options)
+
 	local properties = getBuildProperties()
 	local storyteller = readLockedVersion("flipbook-labs/storyteller")
 	local moduleLoader = readLockedVersion("flipbook-labs/module-loader")
@@ -97,12 +113,14 @@ local function reportProdReleased()
 	print(`Reported the v{properties.version} release`)
 end
 
-if subcommand == "pending-changes" then
+if subcommand == "check" then
+	check()
+elseif subcommand == "pending-changes" then
 	reportPendingChanges()
 elseif subcommand == "beta-published" then
 	reportBetaPublished()
 elseif subcommand == "prod-released" then
 	reportProdReleased()
 else
-	error(`Expected pending-changes, beta-published, or prod-released, got {subcommand or "nothing"}`, 0)
+	error(`Expected check, pending-changes, beta-published, or prod-released, got {subcommand or "nothing"}`, 0)
 end
