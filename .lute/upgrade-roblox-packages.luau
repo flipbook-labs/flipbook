@@ -130,22 +130,17 @@ local function syncPullRequest(version: string, branch: string)
 		run({ "gh", "pr", "edit", number, "--title", title, "--body", body })
 		print(`Updated pull request #{number}`)
 	else
-		run({
-			"gh",
-			"pr",
-			"create",
-			"--base",
-			BASE_BRANCH,
-			"--head",
-			branch,
-			"--title",
-			title,
-			"--reviewer",
-			REVIEWER,
-			"--body",
-			body,
-		})
-		print("Opened a pull request")
+		local url =
+			run({ "gh", "pr", "create", "--base", BASE_BRANCH, "--head", branch, "--title", title, "--body", body })
+		number = assert(url:match("/pull/(%d+)"), `Could not read the pull request number from {url}`)
+		print(`Opened pull request #{number}`)
+	end
+
+	-- Requested separately so a reviewer the token can't request never blocks
+	-- opening or refreshing the pull request.
+	local requested = process.run({ "gh", "pr", "edit", number, "--add-reviewer", REVIEWER })
+	if not requested.ok then
+		print(`Could not request {REVIEWER} on #{number}: {requested.stderr}`)
 	end
 end
 
