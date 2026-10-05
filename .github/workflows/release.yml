@@ -173,7 +173,7 @@ jobs:
     environment: posthog
     env:
       OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-      POSTHOG_PROJECT_TOKEN: op://Flipbook Edge/flipbook-posthog-ci/project-token
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
     steps:
       - uses: actions/checkout@v7
 
@@ -199,7 +199,7 @@ jobs:
     environment: posthog
     env:
       OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-      POSTHOG_PROJECT_TOKEN: op://Flipbook Edge/flipbook-posthog-ci/project-token
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
     steps:
       - uses: actions/checkout@v7
 
@@ -225,9 +225,9 @@ jobs:
     environment: posthog
     env:
       OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-      POSTHOG_PROJECT_TOKEN: op://Flipbook Edge/flipbook-posthog-ci/project-token
-      POSTHOG_PERSONAL_API_KEY: op://Flipbook Edge/flipbook-posthog-ci/personal-api-key
-      POSTHOG_PROJECT_ID: op://Flipbook Edge/flipbook-posthog-ci/project-id
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
+      POSTHOG_PERSONAL_API_KEY: op://Flipbook CI/flipbook-posthog-ci/personal-api-key
+      POSTHOG_PROJECT_ID: op://Flipbook CI/flipbook-posthog-ci/project-id
     steps:
       - uses: actions/checkout@v7
 
