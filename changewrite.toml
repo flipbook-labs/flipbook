@@ -1,7 +1,7 @@
 categories = ["Features", "Changes", "Fixes", "Dependencies", "Internal"]
 
 [version]
-current = "2.5.0"
+current = "2.6.0"
 mirror = [
   { file = "wally.toml" },
   { file = "loom.config.luau" },
