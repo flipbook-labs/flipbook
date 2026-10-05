@@ -3,4 +3,4 @@ bump: patch
 category: Internal
 ---
 
-Track pending changes, beta publishes, and releases in PostHog.
+Report pending changes, beta publishes, and releases to PostHog from the release workflow.
