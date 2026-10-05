@@ -2,10 +2,11 @@ local CoreGui = game:GetService("CoreGui")
 
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local StoryError = require("@root/Storybook/StoryError")
 local types = require("@root/Storybook/types")
 local useStoryControlValues = require("@root/StoryControls/useStoryControlValues")
@@ -13,6 +14,7 @@ local useStoryControlValues = require("@root/StoryControls/useStoryControlValues
 local e = React.createElement
 local useState = React.useState
 local useEffect = React.useEffect
+local useSignalState = ReactCharm.useSignalState
 
 type LoadedStory = Storyteller.LoadedStory<unknown>
 
@@ -24,7 +26,9 @@ export type Props = {
 }
 
 local function StoryPreview(props: Props): React.Node
-	local storyActions = StoryActionsContext.useStoryActions()
+	local flipbookStore = FlipbookStoreContext.use()
+	local isMountedInViewport = useSignalState(flipbookStore.story.getIsMountedInViewport)
+	local zoom = useSignalState(flipbookStore.story.getZoom)
 	local controls = useStoryControlValues()
 	local err: string?, setErr = useState(nil :: string?)
 
@@ -39,11 +43,11 @@ local function StoryPreview(props: Props): React.Node
 		})
 	end
 
-	if storyActions.isMountedInViewport then
+	if isMountedInViewport then
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-				ref = storyActions.storyContainerRef,
+				ref = flipbookStore.story.setStoryContainer,
 			}, {
 				StoryContainer = e(Storyteller.StoryContainer, {
 					story = props.story,
@@ -66,10 +70,10 @@ local function StoryPreview(props: Props): React.Node
 			FillDirection = Enum.FillDirection.Vertical,
 		},
 		LayoutOrder = props.LayoutOrder,
-		ref = storyActions.storyContainerRef,
+		ref = flipbookStore.story.setStoryContainer,
 	}, {
 		Scale = e("UIScale", {
-			Scale = 1 + storyActions.zoom.value,
+			Scale = 1 + zoom,
 		}),
 
 		StoryContainer = e(Storyteller.StoryContainer, {

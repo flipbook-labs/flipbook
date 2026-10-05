@@ -6,6 +6,7 @@ local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookApp = require("@root/FlipbookApp")
+local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
@@ -42,16 +43,23 @@ end
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
 	local appOptions: Options = options or {}
+	local appPlugin = appOptions.plugin or defaultPlugin
+	local appMode: AppMode = appOptions.mode or AppMode.PluginWidget
+	local store = createFlipbookStore({
+		mode = appMode,
+		plugin = appPlugin,
+	})
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
-		plugin = appOptions.plugin or defaultPlugin,
+		plugin = appPlugin,
 		overlayGui = appOptions.overlayGui or container,
+		mode = appMode,
+		store = store,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
 			launchData = appOptions.launchData,
-			mode = appOptions.mode,
 		}),
 	})
 

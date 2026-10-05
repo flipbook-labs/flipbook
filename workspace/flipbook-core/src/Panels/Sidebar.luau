@@ -2,7 +2,6 @@ local EmbeddingTypes = require("@root/Embedding/types")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local Storyteller = require("@pkg/Storyteller")
 
 local InputSize = Foundation.Enums.InputSize
 local ScrollView = Foundation.ScrollView
@@ -14,14 +13,10 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
 
-type LoadedStorybook = Storyteller.LoadedStorybook
 type LaunchData = EmbeddingTypes.LaunchData
-type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 type SidebarProps = {
 	launchData: LaunchData?,
-	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
-	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
@@ -64,8 +59,6 @@ local function Sidebar(props: SidebarProps)
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
 					launchData = props.launchData,
-					onShowErrorPage = props.onShowErrorPage,
-					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
 				}),
 			}),

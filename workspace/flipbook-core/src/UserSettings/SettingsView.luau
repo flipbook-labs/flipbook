@@ -2,7 +2,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local SettingRow = require("@root/UserSettings/SettingRow")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
@@ -18,7 +18,7 @@ type SettingsGroup = {
 }
 
 local function SettingsView()
-	local navigation = NavigationContext.use()
+	local flipbookStore = FlipbookStoreContext.use()
 	local settingsByGroup: { SettingsGroup } = useMemo(function()
 		local settings = Sift.Dictionary.values(defaultSettings)
 
@@ -90,7 +90,7 @@ local function SettingsView()
 				icon = "x",
 				isCircular = true,
 				onActivated = function()
-					navigation.navigateTo("Home")
+					flipbookStore.navigation.navigateTo("Home")
 				end,
 				variant = Foundation.Enums.ButtonVariant.OverMedia,
 			}),

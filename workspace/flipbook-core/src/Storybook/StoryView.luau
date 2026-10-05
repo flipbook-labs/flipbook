@@ -3,11 +3,13 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
 local useThemeName = require("@root/Common/useThemeName")
 
@@ -16,25 +18,37 @@ local Text = Foundation.Text
 local View = Foundation.View
 
 local e = React.createElement
+local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
-type LoadedStorybook = Storyteller.LoadedStorybook
 type ExtraStoryProps = types.ExtraStoryProps
 
-type StoryViewProps = {
-	storyModule: ModuleScript,
-	storybook: LoadedStorybook,
-}
+local function StoryView()
+	local flipbookStore = FlipbookStoreContext.use()
+	local selectedStory = useSignalState(flipbookStore.story.getSelectedStory)
+	assert(selectedStory ~= nil, "StoryView requires an active story selection")
 
-local function StoryView(props: StoryViewProps)
-	local story, storyError = useStory(props.storyModule, props.storybook)
+	local story, storyError = useStory(selectedStory.storyModule, selectedStory.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
+	local controlsStore = useMemo(function()
+		return createStoryControlsStore(if story then story.controls else nil)
+	end, { story } :: { unknown })
+
+	useEffect(function()
+		flipbookStore.story.setActiveControlsStore(controlsStore)
+
+		return function()
+			if flipbookStore.story.getActiveControlsStore() == controlsStore then
+				flipbookStore.story.setActiveControlsStore(nil)
+			end
+		end
+	end, { controlsStore, flipbookStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
@@ -48,7 +62,7 @@ local function StoryView(props: StoryViewProps)
 	return e(
 		StoryControlsContext.StoryControlsProvider,
 		{
-			schema = story and story.controls or nil,
+			store = controlsStore,
 		},
 		e(View, {
 			tag = "size-full bg-surface-200",
