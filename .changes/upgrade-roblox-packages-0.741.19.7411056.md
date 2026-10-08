@@ -3,4 +3,4 @@ bump: patch
 category: Dependencies
 ---
 
-Upgrade RobloxPackages to 0.741.19.7411056.
+Upgrade RobloxPackages to 0.742.0.7421053.
