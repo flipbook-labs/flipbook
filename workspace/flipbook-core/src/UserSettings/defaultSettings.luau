@@ -1,4 +1,8 @@
+local Foundation = require("@rbxpkg/Foundation")
+
 local constants = require("@root/constants")
+
+local ThemeName = Foundation.Enums.ThemeName
 
 export type SettingType = "checkbox" | "dropdown" | "number"
 
@@ -78,28 +82,62 @@ local rememberLastOpenedStory: CheckboxSetting = {
 	value = true,
 }
 
-local theme: DropdownSetting = {
-	name = "theme",
+local colorMode: DropdownSetting = {
+	name = "colorMode",
 	group = SettingGroup.UI,
-	displayName = "UI theme",
-	description = "Select the UI theme to use. By default, Flipbook will use the same theme as Studio",
+	displayName = "Color mode",
+	description = "Select light or dark mode. By default, Flipbook will use the same color mode as Studio",
 	settingType = SettingType.Dropdown,
 	choices = {
 		{
 			name = "system",
 			displayName = "System",
-			description = "Match the theme selected for Studio",
+			description = "Match the color mode selected for Studio",
 		},
 		{
 			name = "dark",
 			displayName = "Dark",
-			description = "Force the theme to use dark mode",
+			description = "Always use dark mode",
 		},
 		{
 			name = "light",
 			displayName = "Light",
-			description = "Force the theme to use light mode",
+			description = "Always use light mode",
 		},
+	},
+}
+
+local function themeNameChoice(themeName: Foundation.ThemeName): SettingChoice
+	return {
+		name = themeName,
+		displayName = themeName,
+		description = `Use the {themeName} theme`,
+	}
+end
+
+local themeName: DropdownSetting = {
+	name = "themeName",
+	group = SettingGroup.UI,
+	displayName = "Theme",
+	description = "Select the app theme that Flipbook and stories render with",
+	settingType = SettingType.Dropdown,
+	choices = {
+		themeNameChoice(ThemeName.Default),
+		themeNameChoice(ThemeName.CircuitRush),
+		themeNameChoice(ThemeName.CosmicDust),
+		themeNameChoice(ThemeName.ElectricLime),
+		themeNameChoice(ThemeName.HyperPlum),
+		themeNameChoice(ThemeName.InfernoBlast),
+		themeNameChoice(ThemeName.Kids),
+		themeNameChoice(ThemeName.KineticEnergy),
+		themeNameChoice(ThemeName.LavaGlow),
+		themeNameChoice(ThemeName.NebulaDrift),
+		themeNameChoice(ThemeName.NitroFrost),
+		themeNameChoice(ThemeName.PixelPop),
+		themeNameChoice(ThemeName.PolarFreeze),
+		themeNameChoice(ThemeName.QuantumPulse),
+		themeNameChoice(ThemeName.StarBurst),
+		themeNameChoice(ThemeName.SuperCharge),
 	},
 }
 
@@ -135,7 +173,8 @@ local collectAnonymousUsageData: CheckboxSetting = {
 local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
 	rememberLastOpenedStory = rememberLastOpenedStory,
-	theme = theme,
+	colorMode = colorMode,
+	themeName = themeName,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,
 	collectAnonymousUsageData = collectAnonymousUsageData,
