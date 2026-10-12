@@ -32,10 +32,10 @@ local function useColorMode(): ColorMode
 	local studioTheme, setStudioTheme = useState(studio.Theme.Name)
 
 	local colorMode = useMemo(function(): ColorMode
-		if userSettings.theme ~= "system" then
-			if userSettings.theme == "dark" then
+		if userSettings.colorMode ~= "system" then
+			if userSettings.colorMode == "dark" then
 				return "Dark"
-			elseif userSettings.theme == "light" then
+			elseif userSettings.colorMode == "light" then
 				return "Light"
 			end
 		else
@@ -44,7 +44,7 @@ local function useColorMode(): ColorMode
 			end
 		end
 		return "Dark"
-	end, { userSettings.theme, studioTheme } :: { unknown })
+	end, { userSettings.colorMode, studioTheme } :: { unknown })
 
 	useEffect(function(): any
 		local conn = studio.ThemeChanged:Connect(function()

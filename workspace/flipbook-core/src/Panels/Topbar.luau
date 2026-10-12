@@ -74,7 +74,7 @@ local function Topbar(props: TopbarProps)
 	local onColorModeChanged = useCallback(function(itemId: ItemId)
 		userSettingsStore.setStorage(function(currentValue)
 			return Object.assign({}, currentValue, {
-				theme = itemId,
+				colorMode = itemId,
 			})
 		end)
 	end, { userSettingsStore.setStorage })
@@ -207,7 +207,7 @@ local function Topbar(props: TopbarProps)
 					onItemChanged = onColorModeChanged,
 					placeholder = "Color mode",
 					size = InputSize.Small,
-					value = userSettings.theme,
+					value = userSettings.colorMode,
 					width = UDim.new(0, 160),
 				}),
 

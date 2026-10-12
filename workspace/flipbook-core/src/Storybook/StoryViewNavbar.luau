@@ -26,10 +26,10 @@ local function StoryViewNavbar(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local onThemeChanged = useCallback(function(itemId: string | number)
+	local onColorModeChanged = useCallback(function(itemId: string | number)
 		userSettingsStore.setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
-				theme = itemId,
+				colorMode = itemId,
 			})
 		end)
 	end, { userSettingsStore.setStorage })
@@ -87,12 +87,12 @@ local function StoryViewNavbar(props: Props)
 			LayoutOrder = nextLayoutOrder(),
 		}),
 
-		ThemeSelection = e(Foundation.Dropdown.Root, {
+		ColorModeSelection = e(Foundation.Dropdown.Root, {
 			size = Foundation.Enums.InputSize.Small,
 			label = "",
-			onItemChanged = onThemeChanged,
+			onItemChanged = onColorModeChanged,
 			width = UDim.new(0, 150),
-			value = userSettings.theme,
+			value = userSettings.colorMode,
 			items = {
 				{
 					id = "system",

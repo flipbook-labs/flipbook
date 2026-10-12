@@ -82,8 +82,8 @@ local rememberLastOpenedStory: CheckboxSetting = {
 	value = true,
 }
 
-local theme: DropdownSetting = {
-	name = "theme",
+local colorMode: DropdownSetting = {
+	name = "colorMode",
 	group = SettingGroup.UI,
 	displayName = "Color mode",
 	description = "Select light or dark mode. By default, Flipbook will use the same color mode as Studio",
@@ -92,17 +92,17 @@ local theme: DropdownSetting = {
 		{
 			name = "system",
 			displayName = "System",
-			description = "Match the theme selected for Studio",
+			description = "Match the color mode selected for Studio",
 		},
 		{
 			name = "dark",
 			displayName = "Dark",
-			description = "Force the theme to use dark mode",
+			description = "Always use dark mode",
 		},
 		{
 			name = "light",
 			displayName = "Light",
-			description = "Force the theme to use light mode",
+			description = "Always use light mode",
 		},
 	},
 }
@@ -173,7 +173,7 @@ local collectAnonymousUsageData: CheckboxSetting = {
 local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
 	rememberLastOpenedStory = rememberLastOpenedStory,
-	theme = theme,
+	colorMode = colorMode,
 	themeName = themeName,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,
