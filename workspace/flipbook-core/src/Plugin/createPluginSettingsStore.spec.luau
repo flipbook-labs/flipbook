@@ -139,6 +139,35 @@ test("automatically load data on disk", function()
 	})
 end)
 
+test("fill keys missing from disk with their defaults", function()
+	mockPlugin:SetSetting(
+		MOCK_STORAGE_KEY,
+		HttpService:JSONEncode({
+			greeting = "Hello!",
+		})
+	)
+
+	local pluginSettingsStore = createPluginSettingsStore(
+		MOCK_STORAGE_KEY,
+		{
+			greeting = "Hi!",
+			farewell = "Bye!",
+		},
+		t.interface({
+			greeting = t.string,
+			farewell = t.string,
+		})
+	)
+
+	pluginSettingsStore.waitForLoaded()
+
+	expect(pluginSettingsStore.getErr()).toBeNil()
+	expect(pluginSettingsStore.getStorage()).toEqual({
+		greeting = "Hello!",
+		farewell = "Bye!",
+	})
+end)
+
 test("setting data writes to disk", function()
 	local pluginSettingsStore = createPluginSettingsStore(
 		MOCK_STORAGE_KEY,

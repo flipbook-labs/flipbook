@@ -44,11 +44,13 @@ The type of the `story` property is dependent on what kind of Story is being ren
 
 A Story's `story` function is passed in a `StoryProps` object that contains the following.
 
-| **Property** | **Type**        | **Description**                                        |
-| ------------ | --------------- | ------------------------------------------------------ |
-| `container`  | `Instance`      |                                                        |
-| `theme`      | `string`        | A string representing the current Roblox Studio theme. |
-| `controls`   | `StoryControls` | Defaults to an empty table.                            |
+| **Property** | **Type**        | **Description**                                                                                    |
+| ------------ | --------------- | -------------------------------------------------------------------------------------------------- |
+| `container`  | `Instance`      |                                                                                                    |
+| `colorMode`  | `string`        | The selected color mode, either `"Light"` or `"Dark"`. Follows the Roblox Studio theme by default. |
+| `themeName`  | `string`        | The selected app theme, such as `"Default"` or `"Kids"`. Matches Foundation's `ThemeName` enum.    |
+| `theme`      | `string`        | **Deprecated.** Use `colorMode` instead.                                                           |
+| `controls`   | `StoryControls` | Defaults to an empty table.                                                                        |
 
 Example of using `StoryProps`:
 

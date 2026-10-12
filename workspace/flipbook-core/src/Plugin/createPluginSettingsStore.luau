@@ -1,6 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
 local Charm = require("@pkg/Charm")
+local Sift = require("@pkg/Sift")
 
 local CharmTypes = require("@root/Common/CharmTypes")
 local CommonTypes = require("@root/Common/types")
@@ -67,6 +68,12 @@ local function createPluginSettingsStore<T>(
 				logger:Warn(`failed to load plugin settings for {storageKey}: {err}`)
 				setErr(err)
 				return nil
+			end
+
+			-- Saved settings lack any keys added to the defaults since they were
+			-- written, so fill those in before validating.
+			if typeof(json) == "table" and typeof(defaultValue) == "table" then
+				json = Sift.Dictionary.join(defaultValue, json)
 			end
 
 			success, err = validate(json)

@@ -1,4 +1,8 @@
+local Foundation = require("@rbxpkg/Foundation")
+
 local constants = require("@root/constants")
+
+local ThemeName = Foundation.Enums.ThemeName
 
 export type SettingType = "checkbox" | "dropdown" | "number"
 
@@ -81,8 +85,8 @@ local rememberLastOpenedStory: CheckboxSetting = {
 local theme: DropdownSetting = {
 	name = "theme",
 	group = SettingGroup.UI,
-	displayName = "UI theme",
-	description = "Select the UI theme to use. By default, Flipbook will use the same theme as Studio",
+	displayName = "Color mode",
+	description = "Select light or dark mode. By default, Flipbook will use the same color mode as Studio",
 	settingType = SettingType.Dropdown,
 	choices = {
 		{
@@ -100,6 +104,40 @@ local theme: DropdownSetting = {
 			displayName = "Light",
 			description = "Force the theme to use light mode",
 		},
+	},
+}
+
+local function themeNameChoice(themeName: Foundation.ThemeName): SettingChoice
+	return {
+		name = themeName,
+		displayName = themeName,
+		description = `Use the {themeName} theme`,
+	}
+end
+
+local themeName: DropdownSetting = {
+	name = "themeName",
+	group = SettingGroup.UI,
+	displayName = "Theme",
+	description = "Select the app theme that Flipbook and stories render with",
+	settingType = SettingType.Dropdown,
+	choices = {
+		themeNameChoice(ThemeName.Default),
+		themeNameChoice(ThemeName.CircuitRush),
+		themeNameChoice(ThemeName.CosmicDust),
+		themeNameChoice(ThemeName.ElectricLime),
+		themeNameChoice(ThemeName.HyperPlum),
+		themeNameChoice(ThemeName.InfernoBlast),
+		themeNameChoice(ThemeName.Kids),
+		themeNameChoice(ThemeName.KineticEnergy),
+		themeNameChoice(ThemeName.LavaGlow),
+		themeNameChoice(ThemeName.NebulaDrift),
+		themeNameChoice(ThemeName.NitroFrost),
+		themeNameChoice(ThemeName.PixelPop),
+		themeNameChoice(ThemeName.PolarFreeze),
+		themeNameChoice(ThemeName.QuantumPulse),
+		themeNameChoice(ThemeName.StarBurst),
+		themeNameChoice(ThemeName.SuperCharge),
 	},
 }
 
@@ -136,6 +174,7 @@ local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
 	rememberLastOpenedStory = rememberLastOpenedStory,
 	theme = theme,
+	themeName = themeName,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,
 	collectAnonymousUsageData = collectAnonymousUsageData,
