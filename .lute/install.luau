@@ -190,6 +190,41 @@ do
 		end
 	end
 
+	-- Foundation's StyleSheetRegistry and Translator modules create instances
+	-- as soon as they're required. They parent them to whatever Foundation's
+	-- getMainGui helper returns: CoreGui when the code can read it, or the
+	-- player's PlayerGui in a running game. Tests run headless in the cloud
+	-- through rocale, where neither is available, so getMainGui returns nil.
+	-- Each module then asserts the result isn't nil, which fails because the
+	-- test runner sets `_G.__DEV__`. Translator would error on the nil parent
+	-- even without the assert.
+	--
+	-- This patch removes the assert from both modules and falls back to
+	-- Foundation's own folder in `_Index` as the parent. When getMainGui finds
+	-- a GUI, the fallback goes unused. Foundation versions without these
+	-- asserts have nothing to match, and the patch leaves them as they are.
+	local function patchFoundationMainGui()
+		local foundationRoot = path.join(project.ROBLOX_PACKAGES_PATH, "_Index", "Foundation")
+		assert(fs.exists(foundationRoot), "no Foundation package found in RobloxPackages")
+
+		for _, descendant in getDescendants(foundationRoot) do
+			local extension = path.extname(descendant)
+			if fs.type(descendant) ~= "file" or (extension ~= ".lua" and extension ~= ".luau") then
+				continue
+			end
+
+			local source = fs.readFileToString(descendant)
+			local patched, count = source:gsub(
+				'local mainGui = getMainGui%(%)\ndevAssert%(mainGui ~= nil, "MainGui not found"%)\n',
+				"local mainGui = getMainGui() or FoundationRoot\n"
+			)
+			if count > 0 then
+				print(`patching {descendant}`)
+				fs.writeStringToFile(descendant, patched)
+			end
+		end
+	end
+
 	local function installRbxasset()
 		local fileName = "rbxasset.zip"
 		local installPath = path.join(project.LUAU_PACKAGES_PATH, "rbxasset")
@@ -236,6 +271,7 @@ do
 	run("lute", { "setup" })
 
 	installRobloxPackages()
+	patchFoundationMainGui()
 	installWallyPackages()
 	installRbxasset()
 	pruneDevelopmentFiles()
