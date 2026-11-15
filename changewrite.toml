@@ -1,4 +1,4 @@
-categories = ["Features", "Changes", "Fixes", "Dependencies", "Internal"]
+categories = ["Features", "Changes", "Fixes", "Dependencies", "Roblox", "Internal"]
 
 [version]
 current = "2.5.0"
