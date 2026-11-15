@@ -93,6 +93,9 @@ jobs:
         with:
           version: v1.2.0
 
+      - name: Install Dependencies
+        run: lute run install
+
       - name: Record Refreshed Commit
         id: refreshed
         run: lute run publish-lock record-main

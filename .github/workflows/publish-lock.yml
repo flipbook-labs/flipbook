@@ -29,6 +29,9 @@ jobs:
         with:
           version: v1.2.0
 
+      - name: Install Dependencies
+        run: lute run install
+
       - name: Check Publish Branch Head
         id: head
         env:

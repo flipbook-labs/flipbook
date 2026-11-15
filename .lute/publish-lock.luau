@@ -22,6 +22,7 @@
 --   lock can land before this run's unlock, which then overwrites it. When
 --   main has moved, the publish pull request is missing that change, so the
 --   Release workflow locks it again.
+local cli = require("@batteries/cli")
 local fs = require("@std/fs")
 local process = require("@std/process")
 
@@ -77,27 +78,47 @@ local function boolString(value: boolean): string
 	return if value then "true" else "false"
 end
 
-local commands: { [string]: () -> () } = {
-	["is-publish-head"] = function()
-		local headSha = assertEnv("HEAD_SHA")
-		writeOutput("is-publish-head", boolString(readBranchHead(PUBLISH_BRANCH) == headSha))
-	end,
-
-	["record-main"] = function()
-		writeOutput("sha", run({ "git", "rev-parse", "HEAD" }))
-	end,
-
-	["main-moved"] = function()
-		local refreshedSha = assertEnv("REFRESHED_SHA")
-		local mainSha = assert(readBranchHead(BASE_BRANCH), `{BASE_BRANCH} does not exist`)
-		writeOutput("moved", boolString(mainSha ~= refreshedSha))
-	end,
+local COMMANDS = {
+	{
+		name = "is-publish-head",
+		help = "Whether HEAD_SHA is the publish branch's current commit",
+		run = function()
+			local headSha = assertEnv("HEAD_SHA")
+			writeOutput("is-publish-head", boolString(readBranchHead(PUBLISH_BRANCH) == headSha))
+		end,
+	},
+	{
+		name = "record-main",
+		help = "The commit checked out in the current directory",
+		run = function()
+			writeOutput("sha", run({ "git", "rev-parse", "HEAD" }))
+		end,
+	},
+	{
+		name = "main-moved",
+		help = "Whether main has moved past REFRESHED_SHA",
+		run = function()
+			local refreshedSha = assertEnv("REFRESHED_SHA")
+			local mainSha = assert(readBranchHead(BASE_BRANCH), `{BASE_BRANCH} does not exist`)
+			writeOutput("moved", boolString(mainSha ~= refreshedSha))
+		end,
+	},
 }
 
--- The first argument is the script's own name.
-local _, name = ...
-local command = commands[name]
-if not command then
-	error("Usage: lute run publish-lock <is-publish-head | record-main | main-moved>")
+local args = cli.parser()
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+for _, command in COMMANDS do
+	args:subcommand(command.name, { help = command.help })
 end
-command()
+args:parse({ ... })
+
+local selected = args:selected()
+assert(selected, `Expected a command:\n{args:help()}`)
+
+for _, command in COMMANDS do
+	if command.name == selected then
+		command.run()
+	end
+end
