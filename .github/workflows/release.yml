@@ -89,6 +89,10 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
 
+      - name: Record the main commit this run refreshes from
+        id: refreshed
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/download-artifact@v8
         with:
           name: flipbook-rbxm
@@ -130,6 +134,35 @@ jobs:
         uses: flipbook-labs/changewrite/publish-lock@v0.11.0
         with:
           locked: false
+          url: ${{ env.RUN_URL }}
+
+      # A push to main during this job starts a newer Release run. That run's
+      # lock job sits outside the concurrency group, so its lock can land
+      # before the unlock above, which then overwrites it. When main has moved
+      # past the commit this run refreshed from, the publish pull request is
+      # missing that change, so the next step locks it again. The newer run's
+      # release job queues behind this one in the concurrency group, so its
+      # unlock always comes after this lock.
+      - name: Check whether main moved during the refresh
+        id: main-moved
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          REFRESHED_SHA: ${{ steps.refreshed.outputs.sha }}
+        run: |
+          set -euo pipefail
+          current_sha=$(gh api "repos/$REPO/git/ref/heads/main" --jq .object.sha)
+          if [[ "$current_sha" != "$REFRESHED_SHA" ]]; then
+            echo "main moved from $REFRESHED_SHA to $current_sha; locking again."
+            echo "moved=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Lock Publish Pull Request Again
+        if: steps.main-moved.outputs.moved == 'true'
+        uses: flipbook-labs/changewrite/publish-lock@v0.11.0
+        with:
+          locked: true
           url: ${{ env.RUN_URL }}
 
   publish-plugin:

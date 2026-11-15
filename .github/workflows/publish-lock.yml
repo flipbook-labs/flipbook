@@ -1,3 +1,6 @@
+# `publish-lock` is a required check on main. The Release workflow fails it on
+# the publish pull request while that pull request is being regenerated, and
+# this workflow passes it on every other pull request so they can merge.
 name: Publish Lock
 
 on:
@@ -13,9 +16,41 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
+      contents: read
       statuses: write
     steps:
-      - uses: flipbook-labs/changewrite/publish-lock@v0.11.0
+      # The job's `if` skips the publish pull request itself. A commit status
+      # belongs to a commit, not to a pull request, though. Anyone can open a
+      # pull request from a fork branch that points at the publish branch's
+      # current commit, and a passing status posted for that pull request would
+      # unlock the publish pull request too. So this step also skips any pull
+      # request whose head is that commit, and leaves its status to Release.
+      - name: Check whether the head is the publish branch's commit
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          if publish_sha=$(gh api "repos/$REPO/git/ref/heads/publish-next-version" --jq .object.sha 2>stderr.txt); then
+            :
+          elif grep -q "HTTP 404" stderr.txt; then
+            # No publish pull request is open, so there's nothing to protect.
+            publish_sha=""
+          else
+            cat stderr.txt >&2
+            exit 1
+          fi
+
+          if [[ "$publish_sha" == "$HEAD_SHA" ]]; then
+            echo "Head $HEAD_SHA is the publish branch's commit; leaving its status to the Release workflow."
+            echo "is-publish-head=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.head.outputs.is-publish-head != 'true'
+        uses: flipbook-labs/changewrite/publish-lock@v0.11.0
         with:
           locked: false
           sha: ${{ github.event.pull_request.head.sha }}
