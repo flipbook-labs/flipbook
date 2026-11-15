@@ -39,7 +39,7 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 
 	local startTime = os.clock()
 	-- Luau can't infer xpcall's generics when the error handler is
-	-- debug.traceback, so xpcall is cast to skip the check.
+	-- debug.traceback, so xpcall is cast to `any`.
 	-- lute-lint-ignore(no_any)
 	local ok, err = (xpcall :: any)(function()
 		buildGroup.step(processedBuildGroup)

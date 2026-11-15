@@ -16,7 +16,7 @@ function MockPlugin.new(): Pluginlike
 	}
 
 	-- MockPlugin gets its methods through a metatable, which Luau can't check
-	-- against Pluginlike.
+	-- against the Pluginlike type that MockPlugin.new returns.
 	-- lute-lint-ignore(no_any)
 	return setmetatable(self, MockPlugin) :: any
 end

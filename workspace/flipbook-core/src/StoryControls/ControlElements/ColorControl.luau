@@ -9,8 +9,9 @@ local useEffect = React.useEffect
 local useState = React.useState
 local useRef = React.useRef
 
--- Foundation doesn't export the type of ColorPicker's availableModes, and a
--- plain string array doesn't match it.
+-- ColorPicker's availableModes takes an array of mode names, but Foundation
+-- doesn't export that type. Without it, Luau infers this table as a string
+-- array, which doesn't match, so the constant is typed `{ any }` instead.
 -- lute-lint-ignore(no_any)
 local COLOR_PICKER_MODES: { any } = {
 	"Hex",

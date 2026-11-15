@@ -20,8 +20,8 @@ export type Props = {
 	onClose: () -> (),
 }
 
--- Foundation doesn't export the type of a dialog action, so it's read off the
--- props of Dialog.Actions.
+-- Foundation doesn't export the type of a dialog action, so it's read off
+-- Foundation.DialogActionsProps.
 type DialogActions = typeof(({} :: Foundation.DialogActionsProps).actions)
 
 type EmbedStep = "SelectDestination" | "ConfirmOverwrite" | "Success"

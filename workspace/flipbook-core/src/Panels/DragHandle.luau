@@ -139,8 +139,9 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { plugin, isDragging, isHovered } :: { unknown })
 
-	-- React types MouseEnter and MouseLeave handlers with a generic signature that
-	-- no plain function matches, so these handlers are cast.
+	-- React's types expect MouseEnter and MouseLeave handlers to be generic over
+	-- the instance, as in `<a>(a, InputObject) -> ()`. A non-generic function
+	-- like these doesn't match that type, so they're passed as `any`.
 	-- lute-lint-ignore(no_any)
 	local untypedOnMouseEnter, untypedOnMouseLeave = onMouseEnter :: any, onMouseLeave :: any
 

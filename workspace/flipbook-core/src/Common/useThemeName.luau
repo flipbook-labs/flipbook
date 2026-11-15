@@ -23,8 +23,9 @@ local function useThemeName(): ThemeName
 
 	local studio: Studio = useMemo(function()
 		local success, result = pcall(function()
-			-- MOCK_STUDIO stands in for Studio when settings() isn't available,
-			-- and the cast lets both share the Studio type.
+			-- Outside Studio, settings() errors and MOCK_STUDIO is used instead.
+			-- The mock isn't a real Studio object, so Studio is read untyped to
+			-- let either one fit the `studio: Studio` annotation.
 			-- lute-lint-ignore(no_any)
 			return (settings() :: any).Studio
 		end)
