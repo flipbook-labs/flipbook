@@ -93,7 +93,6 @@ local function createStoryStore(options: Options): StoryStore
 	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?)
 		Charm.batch(function()
 			setActiveControlsStore(nil)
-			setStoryContainer(nil)
 			setZoom(0)
 
 			if storyModule == nil then
@@ -115,7 +114,6 @@ local function createStoryStore(options: Options): StoryStore
 	local function showUnavailableStorybook(unavailableStorybook: UnavailableStorybook)
 		Charm.batch(function()
 			setActiveControlsStore(nil)
-			setStoryContainer(nil)
 			setZoom(0)
 			setSelection({
 				kind = StorySelectionKind.UnavailableStorybook,
