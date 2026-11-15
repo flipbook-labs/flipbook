@@ -13,29 +13,17 @@ mirror = [
 text = "Stories"
 color = "#9a6700"
 
-[kind.stories.colorMode.dark]
-color = "#d29922"
-
 [kind.sidebar]
 text = "Sidebar"
 color = "#0e7490"
-
-[kind.sidebar.colorMode.dark]
-color = "#3bc9db"
 
 [kind.preview]
 text = "Preview"
 color = "#bf3989"
 
-[kind.preview.colorMode.dark]
-color = "#db61a2"
-
 [kind.controls]
 text = "Controls"
 color = "#0969da"
-
-[kind.controls.colorMode.dark]
-color = "#4493f8"
 
 [kind.app]
 text = "App"
@@ -45,36 +33,21 @@ color = "#5b5bd6"
 text = "Plugin"
 color = "#bc4c00"
 
-[kind.plugin.colorMode.dark]
-color = "#db6d28"
-
 [kind.embedded]
 text = "Embedded"
 color = "#1a7f37"
-
-[kind.embedded.colorMode.dark]
-color = "#3fb950"
 
 [kind.agents]
 text = "Agents"
 color = "#8250df"
 
-[kind.agents.colorMode.dark]
-color = "#ab7df8"
-
 [kind.telemetry]
 text = "Telemetry"
 color = "#5c7c0a"
 
-[kind.telemetry.colorMode.dark]
-color = "#94c11f"
-
 [kind.docs]
 text = "Docs"
 color = "#8a5a2b"
-
-[kind.docs.colorMode.dark]
-color = "#c4915c"
 
 [kind.build]
 text = "Build"
@@ -87,9 +60,6 @@ color = "#4e8079"
 [kind.packages]
 text = "Packages"
 color = "#7a7444"
-
-[kind.packages.colorMode.dark]
-color = "#b5ad78"
 
 [kind.ci]
 text = "CI"
