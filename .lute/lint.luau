@@ -12,7 +12,7 @@ local findWhere = FlipbookBatteries.findWhere
 -- runs alongside its own. `lute run install` puts Loom packages in a store under
 -- the home folder rather than in this repo, so the rules are read from there.
 -- The version in this path has to match the CodeQuality `rev` in
--- loom.config.luau.
+-- loom.config.luau and the check in install.luau.
 local CODE_QUALITY_RULES_PATH = path.join(
 	process.homedir(),
 	".loom",
