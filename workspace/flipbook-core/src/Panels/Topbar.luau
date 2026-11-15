@@ -78,7 +78,14 @@ local function Topbar(props: TopbarProps)
 		View,
 		withCommonProps(props, {
 			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large",
-			Size = UDim2.new(1, 0, 0, if props.topbarInset then props.topbarInset.Max.Y else tokens.Size.Size_1400),
+			Size = UDim2.new(
+				1,
+				0,
+				0,
+				if props.topbarInset
+					then math.max(props.topbarInset.Max.Y, tokens.Size.Size_1400)
+					else tokens.Size.Size_1400
+			),
 		}),
 		{
 			Actions = e(ScrollView, {

@@ -38,7 +38,7 @@ local function Sidebar(props: SidebarProps)
 			tag = "bg-surface-0 col size-full",
 			padding = if props.topbarInset
 				then {
-					top = UDim.new(0, props.topbarInset.Max.Y),
+					top = UDim.new(0, math.max(props.topbarInset.Max.Y, 0)),
 				}
 				else nil,
 		}),
