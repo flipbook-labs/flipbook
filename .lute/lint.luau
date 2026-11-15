@@ -52,8 +52,11 @@ if not fs.exists(CODE_QUALITY_RULES_PATH) then
 	process.exit(1)
 end
 
+-- Lute's parallel linting can crash at random, which fails lint for no reason,
+-- so files are linted one at a time: https://github.com/luau-lang/lute/blob/v1.0.1-nightly.20260909/lute/runtime/src/runtime.cpp#L113-L117
 run("lute", {
 	"lint",
+	"--sequential",
 	"--rules",
 	path.format(CODE_QUALITY_RULES_PATH),
 	table.unpack(project.FOLDERS_TO_LINT),
