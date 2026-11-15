@@ -1,4 +1,4 @@
-local EmbeddingTypes = require("@root/Embedding/types")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
@@ -13,14 +13,12 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
 
-type LaunchData = EmbeddingTypes.LaunchData
-
-type SidebarProps = {
-	launchData: LaunchData?,
-} & Foundation.CommonProps
+type SidebarProps = Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local initialSearchTerm = if props.launchData then props.launchData.search else nil
+	local flipbookStore = FlipbookStoreContext.use()
+	local launchData = flipbookStore.getLaunchData()
+	local initialSearchTerm = if launchData then launchData.search else nil
 	local searchTerm: string?, setSearchTerm = useState(initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
@@ -58,7 +56,6 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
-					launchData = props.launchData,
 					searchTerm = searchTerm,
 				}),
 			}),

@@ -4,7 +4,6 @@ local ReactCharm = require("@pkg/ReactCharm")
 
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
-local EmbeddingTypes = require("@root/Embedding/types")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
@@ -16,13 +15,7 @@ local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 
-type LaunchData = EmbeddingTypes.LaunchData
-
-export type Props = {
-	launchData: LaunchData?,
-}
-
-local function FlipbookApp(props: Props)
+local function FlipbookApp()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -36,9 +29,7 @@ local function FlipbookApp(props: Props)
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 		}, {
-			Sidebar = React.createElement(Sidebar, {
-				launchData = props.launchData,
-			}),
+			Sidebar = React.createElement(Sidebar),
 		}),
 
 		MainWrapper = React.createElement(Foundation.View, {

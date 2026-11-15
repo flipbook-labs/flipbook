@@ -39,7 +39,7 @@ export type StoryStore = {
 	getActiveControlsStore: () -> StoryControlsStore?,
 	setActiveControlsStore: (store: StoryControlsStore?) -> (),
 
-	getIsStoryActionsDisabled: () -> boolean,
+	getAreStoryActionsDisabled: () -> boolean,
 	getIsMountedInViewport: () -> boolean,
 	getMode: () -> AppMode,
 	getStoryContainer: () -> GuiBase2d?,
@@ -62,12 +62,9 @@ local function createStoryStore(options: Options): StoryStore
 	local getStoryContainer, setStoryContainer = Charm.signal(nil :: GuiBase2d?)
 	local getZoom, setZoom = Charm.signal(0)
 
-	local getSelectionKindSignal = Charm.computed(function(): StorySelectionKind
+	local getSelectionKind = Charm.computed(function(): StorySelectionKind
 		return getSelection().kind
-	end)
-	local function getSelectionKind(): StorySelectionKind
-		return getSelectionKindSignal() :: StorySelectionKind
-	end
+	end) :: () -> StorySelectionKind
 
 	local getSelectedStory = Charm.computed(function(): SelectedStory?
 		local selection = getSelection()
@@ -79,7 +76,7 @@ local function createStoryStore(options: Options): StoryStore
 		return if selection.kind == StorySelectionKind.UnavailableStorybook then selection.unavailableStorybook else nil
 	end)
 
-	local getIsStoryActionsDisabled = Charm.computed(function()
+	local getAreStoryActionsDisabled = Charm.computed(function()
 		return getSelectedStory() == nil
 	end)
 
@@ -176,7 +173,7 @@ local function createStoryStore(options: Options): StoryStore
 		getActiveControlsStore = getActiveControlsStore,
 		setActiveControlsStore = setActiveControlsStore,
 
-		getIsStoryActionsDisabled = getIsStoryActionsDisabled,
+		getAreStoryActionsDisabled = getAreStoryActionsDisabled,
 		getIsMountedInViewport = getIsMountedInViewport,
 		getMode = getMode,
 		getStoryContainer = getStoryContainer,

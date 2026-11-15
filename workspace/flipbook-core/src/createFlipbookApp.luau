@@ -47,6 +47,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local store = createFlipbookStore({
 		mode = appMode,
 		plugin = appPlugin,
+		launchData = appOptions.launchData,
 	})
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
@@ -57,9 +58,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		mode = appMode,
 		store = store,
 	}, {
-		FlipbookApp = React.createElement(FlipbookApp, {
-			launchData = appOptions.launchData,
-		}),
+		FlipbookApp = React.createElement(FlipbookApp),
 	})
 
 	local function unmount()

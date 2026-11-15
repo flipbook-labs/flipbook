@@ -18,14 +18,10 @@ export type NavigationStore = {
 local function createNavigationStore(telemetry: TelemetryClient?): NavigationStore
 	local getNavigationStack, setNavigationStack = Charm.signal({ navigationEnums.Screen.Home } :: { Screen })
 
-	local getCurrentScreenSignal = Charm.computed(function()
+	local getCurrentScreen = Charm.computed(function(): Screen
 		local stack = getNavigationStack()
 		return stack[#stack]
-	end)
-
-	local function getCurrentScreen(): Screen
-		return getCurrentScreenSignal() :: Screen
-	end
+	end) :: () -> Screen
 
 	local function reportPageChanged(screen: Screen)
 		if telemetry then

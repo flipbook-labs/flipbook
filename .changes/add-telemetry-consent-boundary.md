@@ -1,6 +1,7 @@
 ---
 bump: patch
 category: Fixes
+kind: telemetry
 ---
 
-Wait for explicit consent before collecting anonymous telemetry, and consolidate telemetry policy behind one internal package.
+Wait for explicit consent before collecting anonymous telemetry.

@@ -25,12 +25,15 @@ local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
 type ExtraStoryProps = types.ExtraStoryProps
+type SelectedStory = types.SelectedStory
 
-local function StoryView()
+type SelectedStoryViewProps = {
+	selectedStory: SelectedStory,
+}
+
+local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
-	local selectedStory = useSignalState(flipbookStore.story.getSelectedStory)
-	assert(selectedStory ~= nil, "StoryView requires an active story selection")
-
+	local selectedStory = props.selectedStory
 	local story, storyError = useStory(selectedStory.storyModule, selectedStory.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
@@ -119,6 +122,19 @@ local function StoryView()
 			}),
 		})
 	)
+end
+
+local function StoryView(): React.Node
+	local flipbookStore = FlipbookStoreContext.use()
+	local selectedStory = useSignalState(flipbookStore.story.getSelectedStory)
+
+	if selectedStory == nil then
+		return nil
+	end
+
+	return e(SelectedStoryView, {
+		selectedStory = selectedStory,
+	})
 end
 
 return React.memo(StoryView)
