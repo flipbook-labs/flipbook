@@ -1,6 +1,5 @@
--- The events in this file mirror the TelementryEventName enum in the backend.
--- The backend must be updated first before adding new events.
-
+-- Event names and properties mirror the backend telemetry contract. Update the
+-- backend before extending this union.
 export type AppOpened = {
 	eventName: "AppOpened",
 }
@@ -23,6 +22,7 @@ export type PageChanged = {
 		page: string,
 	},
 }
+
 export type StoryOpened = {
 	eventName: "StoryOpened",
 }
@@ -64,5 +64,45 @@ export type TelemetryEvent =
 	| FeedbackDialogOpened
 	| FeedbackSubmitted
 	| FeedbackDiscarded
+
+export type TelemetryEventName =
+	"AppOpened"
+	| "AppClosed"
+	| "NodePinned"
+	| "NodeUnpinned"
+	| "PageChanged"
+	| "StoryClosed"
+	| "StoryOpened"
+	| "TelemetryOptedIn"
+	| "TelemetryOptedOut"
+	| "FeedbackDialogOpened"
+	| "FeedbackSubmitted"
+	| "FeedbackDiscarded"
+
+export type TelemetryEnvelope = {
+	eventName: TelemetryEventName,
+	properties: { page: string }?,
+	anonymizedUserId: string,
+	buildVersion: string,
+	buildChannel: string,
+	buildHash: string,
+}
+
+export type TelemetryContext = {
+	buildVersion: string,
+	buildChannel: string,
+	buildHash: string,
+}
+
+export type TelemetryOptions = {
+	context: TelemetryContext,
+	isEnabled: () -> boolean,
+	getAnonymousId: () -> string,
+	transport: (envelope: TelemetryEnvelope) -> (),
+}
+
+export type TelemetryClient = {
+	capture: (event: TelemetryEvent) -> boolean,
+}
 
 return nil

@@ -7,7 +7,6 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookApp = require("@root/FlipbookApp")
 local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
@@ -69,11 +68,9 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`unmounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "AppClosed",
-			})
-		end)
+		store.telemetry.capture({
+			eventName = "AppClosed",
+		})
 	end
 
 	local function mount()
@@ -83,11 +80,9 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`mounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "AppOpened",
-			})
-		end)
+		store.telemetry.capture({
+			eventName = "AppOpened",
+		})
 	end
 
 	local function destroy()
