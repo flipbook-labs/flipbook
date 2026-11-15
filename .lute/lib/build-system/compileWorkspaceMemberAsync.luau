@@ -39,7 +39,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 		end,
 	})
 
-	if context.channel == "prod" then
+	if context.channel == types.Channel.Prod then
 		runBuildGroupAsync({
 			name = `✂️ prune {relativeMemberPath}`,
 			paths = { memberBuildPath },

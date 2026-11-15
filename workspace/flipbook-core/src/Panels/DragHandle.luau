@@ -45,22 +45,22 @@ local function DragHandle(providedProps: Props)
 		local position: UDim2
 		local anchorPoint: Vector2
 
-		if props.handle == "Right" or props.handle == "Left" then
+		if props.handle == types.DragHandle.Right or props.handle == types.DragHandle.Left then
 			hitboxSize = UDim2.new(0, props.size, 1, 0)
 			highlightSize = UDim2.new(0, props.size / 4, 1, 0)
 
-			if props.handle == "Right" then
+			if props.handle == types.DragHandle.Right then
 				position = UDim2.fromScale(1, 0)
 				anchorPoint = Vector2.new(0.5, 0)
 			else
 				position = UDim2.fromScale(0, 0)
 				anchorPoint = Vector2.new(0, 0)
 			end
-		elseif props.handle == "Top" or props.handle == "Bottom" then
+		elseif props.handle == types.DragHandle.Top or props.handle == types.DragHandle.Bottom then
 			hitboxSize = UDim2.new(1, 0, 0, props.size)
 			highlightSize = UDim2.new(1, 0, 0, props.size / 4)
 
-			if props.handle == "Bottom" then
+			if props.handle == types.DragHandle.Bottom then
 				position = UDim2.fromScale(0, 1)
 				anchorPoint = Vector2.new(0, 0.5)
 			else
@@ -128,9 +128,9 @@ local function DragHandle(providedProps: Props)
 			local mouse = plugin:GetMouse()
 
 			if isHovered or isDragging then
-				if props.handle == "Left" or props.handle == "Right" then
+				if props.handle == types.DragHandle.Left or props.handle == types.DragHandle.Right then
 					mouse.Icon = props.hoverIconX
-				elseif props.handle == "Top" or props.handle == "Bottom" then
+				elseif props.handle == types.DragHandle.Top or props.handle == types.DragHandle.Bottom then
 					mouse.Icon = props.hoverIconY
 				end
 			else

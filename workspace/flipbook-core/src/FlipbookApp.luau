@@ -8,6 +8,7 @@ local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
 local EmbeddingTypes = require("@root/Embedding/types")
 local NavigationContext = require("@root/Navigation/NavigationContext")
+local PanelTypes = require("@root/Panels/types")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
@@ -79,7 +80,7 @@ local function FlipbookApp(props: Props)
 			SidebarWrapper = React.createElement(ResizablePanel, {
 				LayoutOrder = nextLayoutOrder(),
 				initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
-				dragHandles = { "Right" :: "Right" },
+				dragHandles = { PanelTypes.DragHandle.Right },
 				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 			}, {

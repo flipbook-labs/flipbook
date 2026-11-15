@@ -16,7 +16,7 @@ type Props = {
 return {
 	controls = controls,
 	story = function(props: Props)
-		local dragHandles: { types.DragHandle } = { "Right", "Bottom" }
+		local dragHandles: { types.DragHandle } = { types.DragHandle.Right, types.DragHandle.Bottom }
 
 		return React.createElement(ResizablePanel, {
 			initialSize = UDim2.fromOffset(props.controls.maxWidth - props.controls.minWidth, 300),

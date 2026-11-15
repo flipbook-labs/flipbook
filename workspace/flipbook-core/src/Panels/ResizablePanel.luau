@@ -37,14 +37,16 @@ local function ResizablePanel(providedProps: Props)
 
 	local isWidthResizable = React.useMemo(function()
 		if props.dragHandles then
-			return Sift.Array.includes(props.dragHandles, "Left") or Sift.Array.includes(props.dragHandles, "Right")
+			return Sift.Array.includes(props.dragHandles, types.DragHandle.Left)
+				or Sift.Array.includes(props.dragHandles, types.DragHandle.Right)
 		end
 		return false
 	end, { props.dragHandles })
 
 	local isHeightResizable = React.useMemo(function()
 		if props.dragHandles then
-			return Sift.Array.includes(props.dragHandles, "Top") or Sift.Array.includes(props.dragHandles, "Bottom")
+			return Sift.Array.includes(props.dragHandles, types.DragHandle.Top)
+				or Sift.Array.includes(props.dragHandles, types.DragHandle.Bottom)
 		end
 		return false
 	end, { props.dragHandles })
@@ -74,9 +76,9 @@ local function ResizablePanel(providedProps: Props)
 			local x = prev.X + delta.X
 			local y = prev.Y - delta.Y
 
-			if handle == "Top" or handle == "Bottom" then
+			if handle == types.DragHandle.Top or handle == types.DragHandle.Bottom then
 				x = prev.X
-			elseif handle == "Right" or handle == "Left" then
+			elseif handle == types.DragHandle.Right or handle == types.DragHandle.Left then
 				y = prev.Y
 			end
 
