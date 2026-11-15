@@ -49,7 +49,8 @@ end
 -- codebase doesn't pass every rule yet. Until it does, warnings are printed
 -- without failing this script. The JSON output tells warnings apart from a real
 -- failure, because `lute lint --json` exits cleanly when all it found was
--- warnings.
+-- warnings. That check lints one file at a time, since linting in parallel with
+-- `--json` has crashed Lute in CI.
 local lintArgs = {
 	"lute",
 	"lint",
@@ -64,6 +65,7 @@ local lintResult = process.run(lintArgs, {
 if not lintResult.ok then
 	local jsonArgs = table.clone(lintArgs)
 	table.insert(jsonArgs, 3, "--json")
+	table.insert(jsonArgs, 4, "--sequential")
 
 	local jsonResult = process.run(jsonArgs)
 	if not jsonResult.ok then
