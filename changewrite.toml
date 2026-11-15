@@ -10,19 +10,19 @@ mirror = [
 ]
 
 [kind]
-stories      = { text = "Stories", color = "#9a6700" }
-sidebar      = { text = "Sidebar", color = "#0e7490" }
-preview      = { text = "Preview", color = "#bf3989" }
-controls     = { text = "Controls", color = "#0969da" }
-app          = { text = "App", color = "#5b5bd6" }
-plugin       = { text = "Plugin", color = "#bc4c00" }
-embedded     = { text = "Embedded", color = "#1a7f37" }
-agents       = { text = "Agents", color = "#8250df" }
-telemetry    = { text = "Telemetry", color = "#5c7c0a" }
-docs         = { text = "Docs", color = "#8a5a2b" }
-build        = { text = "Build", color = "#5a7396" }
-tooling      = { text = "Tooling", color = "#4e8079" }
-packages     = { text = "Packages", color = "#7a7444" }
-ci           = { text = "CI", color = "#75659a" }
-release      = { text = "Release", color = "#94606f" }
+stories = { text = "Stories", color = "#9a6700" }
+sidebar = { text = "Sidebar", color = "#0e7490" }
+preview = { text = "Preview", color = "#bf3989" }
+controls = { text = "Controls", color = "#0969da" }
+app = { text = "App", color = "#5b5bd6" }
+plugin = { text = "Plugin", color = "#bc4c00" }
+embedded = { text = "Embedded", color = "#1a7f37" }
+agents = { text = "Agents", color = "#8250df" }
+telemetry = { text = "Telemetry", color = "#5c7c0a" }
+docs = { text = "Docs", color = "#8a5a2b" }
+build = { text = "Build", color = "#5a7396" }
+tooling = { text = "Tooling", color = "#4e8079" }
+packages = { text = "Packages", color = "#7a7444" }
+ci = { text = "CI", color = "#75659a" }
+release = { text = "Release", color = "#94606f" }
 contributing = { text = "Contributing", color = "#5f7f55" }
