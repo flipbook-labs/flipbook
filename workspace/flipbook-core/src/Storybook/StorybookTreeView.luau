@@ -4,7 +4,6 @@ local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
-local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
@@ -15,7 +14,6 @@ local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNodeStore = TreeView.TreeNodeStore
-type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 type LoadedStory<T> = Storyteller.LoadedStory<T>
@@ -29,7 +27,6 @@ local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
-	launchData: LaunchData?,
 	searchTerm: string?,
 	layoutOrder: number?,
 }
@@ -209,7 +206,8 @@ local function StorybookTreeView(props: Props)
 				return
 			end
 
-			local storyPath = if props.launchData then props.launchData.story else nil
+			local launchData = flipbookStore.getLaunchData()
+			local storyPath = if launchData then launchData.story else nil
 			local node = if storyPath
 				then findTreeNodeFromPath(rootNode, storyPath)
 				elseif lastOpenedStory then rootNode.findFirstDescendant(function(descendant)
@@ -224,7 +222,7 @@ local function StorybookTreeView(props: Props)
 			end
 		end,
 		{
-			props.launchData,
+			flipbookStore,
 			lastOpenedStory,
 			rootNode,
 			-- This value isn't used in the effect body but is necessary so that

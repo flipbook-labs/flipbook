@@ -64,3 +64,18 @@ test("notifies only subscribers affected by a state change", function()
 	expect(selectionUpdates).toBe(0)
 	expect(zoomUpdates).toBe(1)
 end)
+
+test("keeps the launch data it was created with", function()
+	local launchData = {
+		search = "Button",
+		story = "ReplicatedStorage/Button.story",
+	}
+	local store = createFlipbookStore({
+		mode = AppMode.EmbeddedClient,
+		plugin = MockPlugin.new(),
+		launchData = launchData,
+	})
+
+	expect(store.getLaunchData()).toBe(launchData)
+	expect(createStore().getLaunchData()).toBeUndefined()
+end)

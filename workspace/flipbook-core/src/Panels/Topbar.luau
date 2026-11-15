@@ -59,7 +59,7 @@ local function Topbar(props: TopbarProps)
 
 	local flipbookStore = FlipbookStoreContext.use()
 	local currentScreen = useSignalState(flipbookStore.navigation.getCurrentScreen)
-	local isStoryActionsDisabled = useSignalState(flipbookStore.story.getIsStoryActionsDisabled)
+	local areStoryActionsDisabled = useSignalState(flipbookStore.story.getAreStoryActionsDisabled)
 	local storyMode = flipbookStore.story.getMode()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
@@ -105,7 +105,7 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassPlus,
-							isDisabled = isStoryActionsDisabled,
+							isDisabled = areStoryActionsDisabled,
 							onActivated = flipbookStore.story.zoomIn,
 							size = InputSize.Small,
 						}),
@@ -119,7 +119,7 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassMinus,
-							isDisabled = isStoryActionsDisabled,
+							isDisabled = areStoryActionsDisabled,
 							onActivated = flipbookStore.story.zoomOut,
 							size = InputSize.Small,
 						}),
@@ -143,7 +143,7 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Code,
-							isDisabled = isStoryActionsDisabled,
+							isDisabled = areStoryActionsDisabled,
 							onActivated = flipbookStore.story.viewCode,
 							size = InputSize.Small,
 						}),
@@ -157,7 +157,7 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Eye,
-							isDisabled = isStoryActionsDisabled,
+							isDisabled = areStoryActionsDisabled,
 							onActivated = flipbookStore.story.viewportPreview,
 							size = InputSize.Small,
 						}),
@@ -171,7 +171,7 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlass,
-							isDisabled = isStoryActionsDisabled,
+							isDisabled = areStoryActionsDisabled,
 							onActivated = flipbookStore.story.viewExplorer,
 							size = InputSize.Small,
 						}),
