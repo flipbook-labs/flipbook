@@ -10,7 +10,9 @@ local action: Action = {
 	description = "Open the Flipbook plugin widget.",
 	run = function(controller)
 		controller.openWidget()
-		return { enabled = true }
+		return {
+			enabled = true,
+		}
 	end,
 }
 

@@ -23,7 +23,8 @@ end
 local function run(command: { string }): string
 	local result = process.run(command)
 	assert(result.ok, `{table.concat(command, " ")} failed: {result.stderr}`)
-	return (result.stdout:gsub("%s+$", ""))
+	local stdout = result.stdout:gsub("%s+$", "")
+	return stdout
 end
 
 -- When an upgrade PR is already in flight, build on top of it instead of

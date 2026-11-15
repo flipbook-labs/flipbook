@@ -14,7 +14,6 @@ end
 
 local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local prefix = richterm.bold(`[{buildGroup.name}]`)
-	local buildCache = buildGroup.context.cache
 	local changedPaths = {}
 
 	for _, filePath in buildGroup.paths do
@@ -23,8 +22,8 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{filePath}`
 		local hash = hashPath(filePath)
 
-		if hash ~= buildCache[key] or buildGroup.context.shouldRebuild then
-			buildCache[key] = hash
+		if hash ~= buildGroup.context.cache[key] or buildGroup.context.shouldRebuild then
+			buildGroup.context.cache[key] = hash
 			table.insert(changedPaths, filePath)
 		end
 	end

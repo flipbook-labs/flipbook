@@ -58,15 +58,13 @@ local function SettingRow(props: Props)
 				onItemChanged = setSetting,
 			})
 		elseif props.setting.settingType == "number" then
-			local range = props.setting.range
-
 			return React.createElement(Foundation.NumberInput, {
 				value = value,
 				label = props.setting.displayName,
 				hint = props.setting.description,
 				step = 10,
-				maximum = if range then range.Max else nil,
-				minimum = if range then range.Min else nil,
+				maximum = if props.setting.range then props.setting.range.Max else nil,
+				minimum = if props.setting.range then props.setting.range.Min else nil,
 				onChanged = setSetting,
 			})
 		end

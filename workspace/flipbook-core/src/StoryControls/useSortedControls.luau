@@ -19,7 +19,10 @@ local function useSortedControls(controls: { [string]: unknown }): { Control }
 	return useMemo(function()
 		return Array.sort(
 			Array.map(Dictionary.entries(controls), function(entry)
-				return { key = entry[1], value = entry[2] }
+				return {
+					key = entry[1],
+					value = entry[2],
+				}
 			end),
 			filterControls
 		)

@@ -15,7 +15,7 @@ export type StoryControlsStore = {
 local function createStoryControlsStore(schema: StoryControlsSchema?): StoryControlsStore
 	type ControlSignal = {
 		get: () -> StoryControlValue?,
-		set: (StoryControlValue?) -> (),
+		set: (value: StoryControlValue?) -> (),
 	}
 	local signals: { [string]: ControlSignal } = {}
 	local valueGetters: { [string]: () -> StoryControlValue? } = {}
