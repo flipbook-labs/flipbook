@@ -1,0 +1,137 @@
+{
+  "chips": {
+    "flag/breaking": {
+      "text": "Breaking",
+      "hash": "f2bfb954",
+      "light": "flag-breaking-f2bfb954-light.svg",
+      "dark": "flag-breaking-f2bfb954-dark.svg",
+      "fallback": "flag-breaking-f2bfb954-light.png"
+    },
+    "flag/deprecated": {
+      "text": "Deprecated",
+      "hash": "ad2b1551",
+      "light": "flag-deprecated-ad2b1551-light.svg",
+      "dark": "flag-deprecated-ad2b1551-dark.svg",
+      "fallback": "flag-deprecated-ad2b1551-light.png"
+    },
+    "flag/security": {
+      "text": "Security",
+      "hash": "9730f29c",
+      "light": "flag-security-9730f29c-light.svg",
+      "dark": "flag-security-9730f29c-dark.svg",
+      "fallback": "flag-security-9730f29c-light.png"
+    },
+    "kind/agents": {
+      "text": "Agents",
+      "hash": "3c64c020",
+      "light": "kind-agents-3c64c020-light.svg",
+      "dark": "kind-agents-3c64c020-dark.svg",
+      "fallback": "kind-agents-3c64c020-light.png"
+    },
+    "kind/app": {
+      "text": "App",
+      "hash": "1b552321",
+      "light": "kind-app-1b552321-light.svg",
+      "dark": "kind-app-1b552321-dark.svg",
+      "fallback": "kind-app-1b552321-light.png"
+    },
+    "kind/build": {
+      "text": "Build",
+      "hash": "f6b8eba2",
+      "light": "kind-build-f6b8eba2-light.svg",
+      "dark": "kind-build-f6b8eba2-dark.svg",
+      "fallback": "kind-build-f6b8eba2-light.png"
+    },
+    "kind/ci": {
+      "text": "CI",
+      "hash": "0a149ca6",
+      "light": "kind-ci-0a149ca6-light.svg",
+      "dark": "kind-ci-0a149ca6-dark.svg",
+      "fallback": "kind-ci-0a149ca6-light.png"
+    },
+    "kind/contributing": {
+      "text": "Contributing",
+      "hash": "180a0ffb",
+      "light": "kind-contributing-180a0ffb-light.svg",
+      "dark": "kind-contributing-180a0ffb-dark.svg",
+      "fallback": "kind-contributing-180a0ffb-light.png"
+    },
+    "kind/controls": {
+      "text": "Controls",
+      "hash": "c6cbe705",
+      "light": "kind-controls-c6cbe705-light.svg",
+      "dark": "kind-controls-c6cbe705-dark.svg",
+      "fallback": "kind-controls-c6cbe705-light.png"
+    },
+    "kind/docs": {
+      "text": "Docs",
+      "hash": "554e4efe",
+      "light": "kind-docs-554e4efe-light.svg",
+      "dark": "kind-docs-554e4efe-dark.svg",
+      "fallback": "kind-docs-554e4efe-light.png"
+    },
+    "kind/embedded": {
+      "text": "Embedded",
+      "hash": "cd781796",
+      "light": "kind-embedded-cd781796-light.svg",
+      "dark": "kind-embedded-cd781796-dark.svg",
+      "fallback": "kind-embedded-cd781796-light.png"
+    },
+    "kind/packages": {
+      "text": "Packages",
+      "hash": "7bdcd58f",
+      "light": "kind-packages-7bdcd58f-light.svg",
+      "dark": "kind-packages-7bdcd58f-dark.svg",
+      "fallback": "kind-packages-7bdcd58f-light.png"
+    },
+    "kind/plugin": {
+      "text": "Plugin",
+      "hash": "7346171c",
+      "light": "kind-plugin-7346171c-light.svg",
+      "dark": "kind-plugin-7346171c-dark.svg",
+      "fallback": "kind-plugin-7346171c-light.png"
+    },
+    "kind/preview": {
+      "text": "Preview",
+      "hash": "f7c232d0",
+      "light": "kind-preview-f7c232d0-light.svg",
+      "dark": "kind-preview-f7c232d0-dark.svg",
+      "fallback": "kind-preview-f7c232d0-light.png"
+    },
+    "kind/release": {
+      "text": "Release",
+      "hash": "58a716ae",
+      "light": "kind-release-58a716ae-light.svg",
+      "dark": "kind-release-58a716ae-dark.svg",
+      "fallback": "kind-release-58a716ae-light.png"
+    },
+    "kind/sidebar": {
+      "text": "Sidebar",
+      "hash": "8f3ee7e7",
+      "light": "kind-sidebar-8f3ee7e7-light.svg",
+      "dark": "kind-sidebar-8f3ee7e7-dark.svg",
+      "fallback": "kind-sidebar-8f3ee7e7-light.png"
+    },
+    "kind/stories": {
+      "text": "Stories",
+      "hash": "8cbad7d1",
+      "light": "kind-stories-8cbad7d1-light.svg",
+      "dark": "kind-stories-8cbad7d1-dark.svg",
+      "fallback": "kind-stories-8cbad7d1-light.png"
+    },
+    "kind/telemetry": {
+      "text": "Telemetry",
+      "hash": "d13c03c3",
+      "light": "kind-telemetry-d13c03c3-light.svg",
+      "dark": "kind-telemetry-d13c03c3-dark.svg",
+      "fallback": "kind-telemetry-d13c03c3-light.png"
+    },
+    "kind/tooling": {
+      "text": "Tooling",
+      "hash": "2b32fae4",
+      "light": "kind-tooling-2b32fae4-light.svg",
+      "dark": "kind-tooling-2b32fae4-dark.svg",
+      "fallback": "kind-tooling-2b32fae4-light.png"
+    }
+  }
+}

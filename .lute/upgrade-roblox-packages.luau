@@ -70,6 +70,7 @@ local function writeChangeEntry(version: string): string
 			"---",
 			"bump: patch",
 			"category: Dependencies",
+			"kind: packages",
 			"---",
 			"",
 			`Upgrade RobloxPackages to {version}.`,
