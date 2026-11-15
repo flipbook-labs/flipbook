@@ -19,37 +19,25 @@ jobs:
       contents: read
       statuses: write
     steps:
-      # The job's `if` skips the publish pull request itself. A commit status
-      # belongs to a commit, not to a pull request, though. Anyone can open a
-      # pull request from a fork branch that points at the publish branch's
-      # current commit, and a passing status posted for that pull request would
-      # unlock the publish pull request too. So this step also skips any pull
-      # request whose head is that commit, and leaves its status to Release.
-      - name: Check whether the head is the publish branch's commit
+      # pull_request_target checks out the base branch, never the pull
+      # request's code.
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Check Publish Branch Head
         id: head
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
+        run: lute run publish-lock is-publish-head
 
-          if publish_sha=$(gh api "repos/$REPO/git/ref/heads/publish-next-version" --jq .object.sha 2>stderr.txt); then
-            :
-          elif grep -q "HTTP 404" stderr.txt; then
-            # No publish pull request is open, so there's nothing to protect.
-            publish_sha=""
-          else
-            cat stderr.txt >&2
-            exit 1
-          fi
-
-          if [[ "$publish_sha" == "$HEAD_SHA" ]]; then
-            echo "Head $HEAD_SHA is the publish branch's commit; leaving its status to the Release workflow."
-            echo "is-publish-head=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - if: steps.head.outputs.is-publish-head != 'true'
+      - name: Unlock Pull Request
+        if: steps.head.outputs.is-publish-head != 'true'
         uses: flipbook-labs/changewrite/publish-lock@v0.11.0
         with:
           locked: false
