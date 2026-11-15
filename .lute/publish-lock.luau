@@ -3,6 +3,12 @@
 -- publish pull request while regenerating that pull request, and the Publish
 -- Lock workflow passes it on every other pull request.
 --
+-- Changewrite's `publish-lock` action posts whatever state it's given, so these
+-- checks guard the two cases where an unlock would wrongly clear a stale
+-- publish pull request. They belong in Changewrite itself, and this script goes
+-- away once a release includes them:
+-- https://github.com/flipbook-labs/changewrite/issues/90
+--
 -- Usage: lute run publish-lock <is-publish-head | record-main | main-moved>
 --
 -- Each command writes its answer as a step output to the file named by
