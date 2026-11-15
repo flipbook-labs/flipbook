@@ -41,9 +41,6 @@ color = "#4493f8"
 text = "App"
 color = "#5b5bd6"
 
-[kind.app.colorMode.dark]
-color = "#8b8bf5"
-
 [kind.plugin]
 text = "Plugin"
 color = "#bc4c00"
@@ -83,15 +80,9 @@ color = "#c4915c"
 text = "Build"
 color = "#5a7396"
 
-[kind.build.colorMode.dark]
-color = "#8ea6c9"
-
 [kind.tooling]
 text = "Tooling"
 color = "#4e8079"
-
-[kind.tooling.colorMode.dark]
-color = "#7fb5ad"
 
 [kind.packages]
 text = "Packages"
@@ -104,19 +95,10 @@ color = "#b5ad78"
 text = "CI"
 color = "#75659a"
 
-[kind.ci.colorMode.dark]
-color = "#a898cc"
-
 [kind.release]
 text = "Release"
 color = "#94606f"
 
-[kind.release.colorMode.dark]
-color = "#c995a4"
-
 [kind.contributing]
 text = "Contributing"
 color = "#5f7f55"
-
-[kind.contributing.colorMode.dark]
-color = "#95b58a"
