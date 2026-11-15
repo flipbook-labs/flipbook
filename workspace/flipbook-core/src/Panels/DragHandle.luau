@@ -37,7 +37,7 @@ local function DragHandle(providedProps: Props)
 
 	local isDragging, setIsDragging = useState(false)
 	local isHovered, setIsHovered = useState(false)
-	local mouseInput: InputObject?, setMouseInput = useState(nil :: InputObject?)
+	local mouseInput: InputObject?, setMouseInput = useState<<InputObject?>>(nil)
 
 	local getHandleProperties = useCallback(function()
 		local hitboxSize: UDim2

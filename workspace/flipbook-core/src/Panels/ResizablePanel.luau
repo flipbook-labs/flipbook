@@ -24,7 +24,7 @@ type InternalProps = Props & typeof(defaultProps)
 local function ResizablePanel(providedProps: Props)
 	local props: InternalProps = Sift.Dictionary.merge(defaultProps, providedProps)
 
-	local absoluteSize, setAbsoluteSize = React.useState(nil :: Vector2?)
+	local absoluteSize, setAbsoluteSize = React.useState<<Vector2?>>(nil)
 
 	local clampedAbsoluteSize = React.useMemo(function()
 		return if absoluteSize
@@ -66,7 +66,11 @@ local function ResizablePanel(providedProps: Props)
 	end, {})
 
 	local onHandleDragged = React.useCallback(function(handle: types.DragHandle, delta: Vector2)
-		setAbsoluteSize(function(prev: Vector2)
+		setAbsoluteSize(function(prev: Vector2?)
+			if prev == nil then
+				return nil
+			end
+
 			local x = prev.X + delta.X
 			local y = prev.Y - delta.Y
 

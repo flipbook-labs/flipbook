@@ -33,7 +33,7 @@ local function createStoryControlsStore(schema: StoryControlsSchema?): StoryCont
 
 	local function ensureSignal(key: string): ControlSignal
 		if signals[key] == nil then
-			local get, set = Charm.signal(nil :: StoryControlValue?)
+			local get, set = Charm.signal<<StoryControlValue?>>(nil)
 			signals[key] = { get = get, set = set }
 		end
 		return signals[key]

@@ -38,10 +38,10 @@ local function FlipbookApp(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
-	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
+	local storyModule: ModuleScript?, setStoryModule = React.useState<<ModuleScript?>>(nil)
+	local storybook, setStorybook = React.useState<<LoadedStorybook?>>(nil)
 	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
-		React.useState(nil :: UnavailableStorybook?)
+		React.useState<<UnavailableStorybook?>>(nil)
 	local navigation = NavigationContext.use()
 
 	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)

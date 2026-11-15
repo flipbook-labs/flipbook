@@ -35,7 +35,7 @@ local function createPluginSettingsStore<T>(
 ): PluginSettingsStore<T>
 	local getStorage, setStorageSignal = Charm.signal(defaultValue)
 	local getIsLoading, setIsLoading = Charm.signal(true)
-	local getErr, setErr = Charm.signal(nil :: string?)
+	local getErr, setErr = Charm.signal<<string?>>(nil)
 	local getIsInitialized, setIsInitialized = Charm.signal(false)
 	local prevStorage: T?
 

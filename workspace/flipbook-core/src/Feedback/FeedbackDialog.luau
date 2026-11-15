@@ -19,15 +19,15 @@ export type Props = {
 type IssueType = "bug" | "feature" | "feedback" | "other"
 
 local function FeedbackDialog(props: Props)
-	local title, setTitle = useState("" :: string?)
+	local title, setTitle = useState("")
 	local wasTitleChanged, setWasTitleChanged = useState(false)
-	local body, setBody = useState("" :: string?)
+	local body, setBody = useState("")
 	local wasBodyChanged, setWasBodyChanged = useState(false)
 	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
-	local err: string?, setErr = useState(nil :: string?)
+	local err: string?, setErr = useState<<string?>>(nil)
 
 	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 

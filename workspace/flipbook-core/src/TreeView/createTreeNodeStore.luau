@@ -15,19 +15,19 @@ local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
 
 	local getName, setName = Charm.signal("Node")
-	local getIcon, setIcon = Charm.signal(nil :: TreeNodeIcon?)
+	local getIcon, setIcon = Charm.signal<<TreeNodeIcon?>>(nil)
 	local getIsSelected, setIsSelected = Charm.signal(false)
 	local getIsExpanded, setIsExpanded = Charm.signal(false)
 	local getIsVisible, setIsVisible = Charm.signal(true)
 	local getIsFiltered, setIsFiltered = Charm.signal(false)
 	local getIsPinned, setIsPinned = Charm.signal(false)
 
-	local getInstance, setInstance = Charm.signal(nil :: Instance?)
+	local getInstance, setInstance = Charm.signal<<Instance?>>(nil)
 
-	local getParent, setParent = Charm.signal(nil :: TreeNodeStore?)
-	local getUnsortedChildren, setUnsortedChildren = Charm.signal({} :: { TreeNodeStore })
+	local getParent, setParent = Charm.signal<<TreeNodeStore?>>(nil)
+	local getUnsortedChildren, setUnsortedChildren = Charm.signal<<{ TreeNodeStore }>>({})
 
-	local getSortOrder, setSortOrderSignal = Charm.signal(nil :: TreeNodeSort?)
+	local getSortOrder, setSortOrderSignal = Charm.signal<<TreeNodeSort?>>(nil)
 
 	local self: TreeNodeStore
 

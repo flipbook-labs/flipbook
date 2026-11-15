@@ -13,7 +13,7 @@ type TreeNodeFilter = types.TreeNodeFilter
 
 local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 	local leaves = useSignalState(root.getLeafNodes)
-	local expansionBeforeFilter = useRef(nil :: { [TreeNodeStore]: boolean }?)
+	local expansionBeforeFilter = useRef<<{ [TreeNodeStore]: boolean }?>>(nil)
 
 	local function restoreExpansion()
 		local expansion = expansionBeforeFilter.current

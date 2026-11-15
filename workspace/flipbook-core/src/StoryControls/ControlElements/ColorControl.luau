@@ -22,7 +22,7 @@ local function ColorControl(props: Props)
 
 	local isColorPickerOpen, setIsColorPickerOpen = useState(false)
 
-	local anchorRef = useRef(nil :: GuiObject?)
+	local anchorRef = useRef<<GuiObject?>>(nil)
 
 	local onColorPreviewActivated = useCallback(function()
 		setIsColorPickerOpen(function(prev)

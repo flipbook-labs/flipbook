@@ -36,12 +36,12 @@ export type Props = {
 }
 
 local function StorybookTreeView(props: Props)
-	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
-	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
+	local storybookByNodeId = useRef<<{ [string]: LoadedStorybook }>>({})
+	local unavailableStorybookByNodeId = useRef<<{ [string]: UnavailableStorybook }>>({})
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
-	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
+	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 

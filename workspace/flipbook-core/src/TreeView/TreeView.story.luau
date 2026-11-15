@@ -116,7 +116,7 @@ end
 
 return {
 	story = function()
-		local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+		local searchTerm: string?, setSearchTerm = useState<<string?>>(nil)
 
 		local onExpand = useCallback(function()
 			local node = root.findFirstDescendant(function(descendant)

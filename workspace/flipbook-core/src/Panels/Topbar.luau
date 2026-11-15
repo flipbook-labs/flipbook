@@ -49,7 +49,7 @@ type TopbarProps = {
 } & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
-	local helpButtonRef = useRef(nil :: GuiObject?)
+	local helpButtonRef = useRef<<GuiObject?>>(nil)
 
 	local tokens = useTokens()
 
