@@ -13,14 +13,7 @@ local findWhere = FlipbookBatteries.findWhere
 -- the home folder rather than in this repo, so the rules are read from there.
 -- The version in this path has to match the CodeQuality `rev` in
 -- loom.config.luau and the check in install.luau.
-local CODE_QUALITY_RULES_PATH = path.join(
-	process.homedir(),
-	".loom",
-	"store",
-	"CodeQuality@abafa51fdac79cda09bb2e54c6b21af628840b33",
-	"src",
-	"rules"
-)
+local CODE_QUALITY_RULES_PATH = path.join(process.homedir(), ".loom", "store", "CodeQuality@v0.2.0", "src", "rules")
 
 local function findLuaFiles()
 	local result = {}

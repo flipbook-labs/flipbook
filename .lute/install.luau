@@ -31,7 +31,7 @@ local function loomPackagesAreAvailable(): boolean
 		require("@luaupkg/flipbook-batteries@v0.12.0")
 		require("@luaupkg/dotenv@v0.1.0/src")
 		require("@batteries/cli")
-		require("@luaupkg/CodeQuality@abafa51fdac79cda09bb2e54c6b21af628840b33/src/rules/noAny")
+		require("@luaupkg/CodeQuality@v0.2.0/src/rules/noAny")
 	end)
 	return ok
 end
