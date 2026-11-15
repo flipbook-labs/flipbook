@@ -1,0 +1,22 @@
+name: Publish Lock
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  status:
+    if: github.event.pull_request.head.ref != 'publish-next-version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+    steps:
+      - uses: flipbook-labs/changewrite/publish-lock@v0.11.0
+        with:
+          locked: false
+          sha: ${{ github.event.pull_request.head.sha }}
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
