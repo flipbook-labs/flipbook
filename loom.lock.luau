@@ -2,6 +2,7 @@ return {
   version = 3,
   dependencies = {
     AgentSkills = "AgentSkills@v0.6.0",
+    CodeQuality = "CodeQuality@v0.1.0",
     dotenv = "dotenv@v0.1.0",
     ["flipbook-batteries"] = "flipbook-batteries@v0.12.0",
     lute = "lute@v1.0.1-nightly.20260909",
@@ -12,6 +13,14 @@ return {
       name = "AgentSkills",
       rev = "v0.6.0",
       source = "https://github.com/flipbook-labs/agent-skills",
+      sourceKind = "github",
+      dependencies = {},
+    },
+    ["CodeQuality@v0.1.0"] = {
+      installPath = "@pkg/CodeQuality@v0.1.0",
+      name = "CodeQuality",
+      rev = "v0.1.0",
+      source = "https://github.com/flipbook-labs/code-quality",
       sourceKind = "github",
       dependencies = {},
     },

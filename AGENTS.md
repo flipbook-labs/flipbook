@@ -26,6 +26,7 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 | **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                |
 | **Selene**               | Luau linter                                                                    |
 | **StyLua**               | Luau formatter                                                                 |
+| **CodeQuality**          | Shared Luau lint rules; `lute run lint` runs them with `lute lint`             |
 | **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                          |
 | **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller     |
 | **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories          |
@@ -166,7 +167,7 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) into the global store (`~/.loom/store`), which the `@luaupkg` alias resolves requires from directly — nothing is copied into the repo. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime)
+- **Loom** installs tooling packages used by `.lute/` scripts (Lute batteries, flipbook-batteries, dotenv) into the global store (`~/.loom/store`), which the `@luaupkg` alias resolves requires from directly — nothing is copied into the repo. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime). The `CodeQuality` lint rules are another dev dependency in the store, which `.lute/lint.luau` points `lute lint` at
 - `LuauPackages/` now holds only rbxasset (a Lune dependency); Wally and Loom no longer share the `Packages/` dir, so no post-install move is needed
 
 ### Darklua and require paths
