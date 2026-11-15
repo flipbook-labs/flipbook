@@ -7,10 +7,11 @@ local test = JestGlobals.test
 local jest = JestGlobals.jest
 local afterEach = JestGlobals.afterEach
 
-local LocalStorageStore
 local MockPlugin = require("@root/Testing/MockPlugin")
 
-local pinnedInstanceStore
+-- Required in beforeEach, after PluginStore is mocked.
+local LocalStorageStore: typeof(require("@root/Plugin/LocalStorageStore"))
+local pinnedInstanceStore: typeof(require("./createPinnedInstanceStore")())
 
 beforeEach(function()
 	local mockPlugin = MockPlugin.new()

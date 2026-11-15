@@ -67,7 +67,7 @@ local function FeedbackDialog(props: Props)
 
 				setIsSendingFeedback(false)
 
-				if res.Success then
+				if res and res.Success then
 					setIsSuccessDialogOpen(true)
 					fireEventAsync({
 						eventName = "FeedbackSubmitted",

@@ -14,7 +14,7 @@ type TreeNodeStore = types.TreeNodeStore
 local root = createTreeNodeStore()
 root.setName("<root>")
 
-local deepStory
+local deepStory: types.TreeNodeStore
 
 do
 	local pins = createTreeNodeStore()

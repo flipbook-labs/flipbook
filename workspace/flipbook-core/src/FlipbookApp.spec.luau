@@ -16,8 +16,8 @@ local jest = JestGlobals.jest
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local container
-local mockSettings
+local container: Folder
+local mockSettings: { [string]: unknown }
 local mockPlugin: Pluginlike
 
 beforeEach(function()
