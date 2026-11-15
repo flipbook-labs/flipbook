@@ -110,7 +110,7 @@ local context: BuildContext = {
 	shouldRebuild = args:has("clean"),
 	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
-		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
+		BUILD_VERSION = (readWallyManifestAsync() :: { package: { version: string } }).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
 		BUILD_HASH = getCommitHash(),
 		BUILD_TARGET = target,
@@ -157,8 +157,8 @@ end
 local function build()
 	local startTime = os.clock()
 
-	local contextNoCache = table.clone(context)
-	contextNoCache.cache = nil :: any
+	local contextNoCache = table.clone(context) :: { [string]: unknown }
+	contextNoCache.cache = nil
 	print(richterm.dim(`build context: {pp(contextNoCache)}`))
 
 	buildSystem.compileAsync(context)

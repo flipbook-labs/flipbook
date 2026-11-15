@@ -35,6 +35,8 @@ local function StoryControlRow(props: Props)
 	local controlType = props.control.type
 	local shouldCoerceToNumber = controlType == ControlType.Number or controlType == ControlType.Slider
 
+	-- Each kind of control passes its own value type through here.
+	-- lute-lint-ignore(no_any)
 	local setControl = useCallback(function(newValue: any)
 		if shouldCoerceToNumber then
 			local newValueAsNumber = tonumber(newValue)

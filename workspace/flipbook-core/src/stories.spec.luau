@@ -9,6 +9,8 @@ local Storyteller = require("@pkg/Storyteller")
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 local describe = JestGlobals.describe
+-- JestGlobals doesn't type describe.each.
+-- lute-lint-ignore(no_any)
 local describeEach = describe.each :: any
 local expect = JestGlobals.expect
 local test = JestGlobals.test
@@ -30,6 +32,7 @@ describeEach({
 	-- FIXME: This is needed to get around a bug with React renders. I'm hoping
 	-- to keep this for now, but in the future this should really be a
 	-- ModuleLoader instance
+	-- lute-lint-ignore(no_any)
 	local mockModuleLoader = ({
 		require = function(_self, path)
 			return (require :: any)(path)
@@ -43,6 +46,8 @@ describeEach({
 	})("%s", function(storyModule)
 		local testOrSkip = test
 		if storyModule.Name == "ArrayControls.story" or storyModule.Name == "AboutView.story" then
+			-- JestGlobals doesn't type test.skip.
+			-- lute-lint-ignore(no_any)
 			testOrSkip = (test :: any).skip
 		end
 

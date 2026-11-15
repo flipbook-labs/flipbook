@@ -102,7 +102,7 @@ local function DragHandle(providedProps: Props)
 
 	local hitboxSize, highlightSize, position, anchorPoint = getHandleProperties()
 
-	useEffect(function(): any
+	useEffect(function(): unknown
 		if mouseInput and isDragging then
 			local lastPosition = mouseInput.Position
 			local conn = RunService.Heartbeat:Connect(function()
@@ -139,6 +139,11 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { plugin, isDragging, isHovered } :: { unknown })
 
+	-- React types MouseEnter and MouseLeave handlers with a generic signature that
+	-- no plain function matches, so these handlers are cast.
+	-- lute-lint-ignore(no_any)
+	local untypedOnMouseEnter, untypedOnMouseLeave = onMouseEnter :: any, onMouseLeave :: any
+
 	return React.createElement("ImageButton", {
 		Size = hitboxSize,
 		Position = position,
@@ -146,8 +151,8 @@ local function DragHandle(providedProps: Props)
 		BackgroundTransparency = 1,
 		[React.Event.InputBegan] = onInputBegan,
 		[React.Event.InputEnded] = onInputEnded,
-		[React.Event.MouseEnter] = onMouseEnter :: any,
-		[React.Event.MouseLeave] = onMouseLeave :: any,
+		[React.Event.MouseEnter] = untypedOnMouseEnter,
+		[React.Event.MouseLeave] = untypedOnMouseLeave,
 	}, {
 		Highlght = React.createElement("Frame", {
 			Size = highlightSize,

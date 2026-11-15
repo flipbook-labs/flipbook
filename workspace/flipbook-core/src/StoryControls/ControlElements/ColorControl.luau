@@ -9,6 +9,14 @@ local useEffect = React.useEffect
 local useState = React.useState
 local useRef = React.useRef
 
+-- Foundation doesn't export the type of ColorPicker's availableModes, and a
+-- plain string array doesn't match it.
+-- lute-lint-ignore(no_any)
+local COLOR_PICKER_MODES: { any } = {
+	"Hex",
+	"RGB",
+}
+
 export type Props = {
 	controlSchema: Storyteller.ColorControl,
 	controlValue: Color3?,
@@ -92,10 +100,7 @@ local function ColorControl(props: Props)
 				}, {
 					ColorPicker = e(Foundation.ColorPicker, {
 						initialColor = color,
-						availableModes = {
-							"Hex",
-							"RGB",
-						} :: { any },
+						availableModes = COLOR_PICKER_MODES,
 						onColorChanged = onColorChanged,
 					}),
 				}),

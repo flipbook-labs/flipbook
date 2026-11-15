@@ -22,6 +22,9 @@ export type Options = {
 
 local defaultPlugin: Pluginlike = {
 	GetMouse = function()
+		-- PluginMouse can't be created outside a plugin, so this stand-in only
+		-- has the Icon field Flipbook sets.
+		-- lute-lint-ignore(no_any)
 		return {
 			Icon = "",
 		} :: any

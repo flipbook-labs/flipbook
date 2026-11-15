@@ -31,7 +31,7 @@ export type PluginSettingsStore<T> = {
 local function createPluginSettingsStore<T>(
 	storageKey: string,
 	defaultValue: T,
-	validate: (value: any) -> (boolean, string)
+	validate: (value: unknown) -> (boolean, string)
 ): PluginSettingsStore<T>
 	local getStorage, setStorageSignal = Charm.signal(defaultValue)
 	local getIsLoading, setIsLoading = Charm.signal(true)

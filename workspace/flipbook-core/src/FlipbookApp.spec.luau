@@ -31,7 +31,7 @@ beforeEach(function()
 			task.wait() -- Simulate reading from disk
 			return mockSettings[key]
 		end),
-		SetSetting = jest.fn(function(_self, key: string, value: any)
+		SetSetting = jest.fn(function(_self, key: string, value: unknown)
 			task.wait() -- Simulate writing to disk
 			mockSettings[key] = value
 		end),

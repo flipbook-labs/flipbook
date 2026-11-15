@@ -8,14 +8,14 @@ local useMemo = React.useMemo
 
 export type Control = {
 	key: string,
-	value: any,
+	value: unknown,
 }
 
 local function filterControls(controlA: Control, controlB: Control)
 	return controlA.key < controlB.key
 end
 
-local function useSortedControls(controls: { [string]: any }): { Control }
+local function useSortedControls(controls: { [string]: unknown }): { Control }
 	return useMemo(function()
 		return Array.sort(
 			Array.map(Dictionary.entries(controls), function(entry)

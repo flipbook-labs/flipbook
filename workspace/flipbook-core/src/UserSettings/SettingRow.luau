@@ -24,7 +24,7 @@ local function SettingRow(props: Props)
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	local setSetting = useCallback(function(newValue: any)
+	local setSetting = useCallback(function(newValue: unknown)
 		userSettingsStore.setStorage(function(prev)
 			return Sift.Dictionary.join(prev, {
 				[props.setting.name] = newValue,

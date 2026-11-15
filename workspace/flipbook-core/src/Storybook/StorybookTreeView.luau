@@ -129,10 +129,10 @@ local function StorybookTreeView(props: Props)
 				continue
 			end
 
-			local node = createTreeNodesForStorybook(storybook :: any)
+			local node = createTreeNodesForStorybook(storybook)
 
 			nodesByInstance.current[storybook.source] = node
-			storybookByNodeId.current[node.id] = storybook :: any
+			storybookByNodeId.current[node.id] = storybook
 
 			if pinnedInstanceStore.isPinned(storybook.source) then
 				node.setIsPinned(true)

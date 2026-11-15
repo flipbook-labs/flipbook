@@ -8,7 +8,7 @@ local function requestAsync(
 	options: {
 		method: string?,
 		headers: { [string]: string | number | boolean }?,
-		body: { [any]: any }?,
+		body: unknown?,
 	}?
 )
 	local requestOptions = Sift.Dictionary.join({

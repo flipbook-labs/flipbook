@@ -12,7 +12,7 @@ type RojoBuildOptions = {
 	project: {
 		name: string,
 		emitLegacyScripts: boolean?,
-		tree: { [string]: any },
+		tree: { [string]: unknown },
 	},
 	output: path.Pathlike,
 }
@@ -24,7 +24,7 @@ local function rojoBuild(options: RojoBuildOptions): path.Path
 	local tempProjectPath =
 		createRojoProjectAsync(path.join(system.tmpdir(), tempProjectName), options.project :: json.Value)
 
-	local ok, err = (pcall :: any)(function()
+	local ok, err = pcall(function()
 		run("rojo", { "build", tempProjectPath, "--output", options.output })
 	end)
 	fs.remove(tempProjectPath)

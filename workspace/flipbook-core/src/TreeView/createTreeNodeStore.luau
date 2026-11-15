@@ -77,6 +77,7 @@ local function createTreeNodeStore(): TreeNodeStore
 			-- to how Signals types its setter functions, where it can take
 			-- either a value or an update function. Since we _want_ to store a
 			-- function, that might be what's tripping it up
+			-- lute-lint-ignore(no_any)
 			return sort :: any
 		end)
 
@@ -247,7 +248,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getName = getName,
 		setName = setName,
 		getIcon = getIcon :: () -> TreeNodeIcon?,
-		setIcon = (setIcon :: any) :: CharmTypes.Setter<TreeNodeIcon?>,
+		setIcon = (setIcon :: unknown) :: CharmTypes.Setter<TreeNodeIcon?>,
 		getIsVisible = getIsVisible,
 		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,

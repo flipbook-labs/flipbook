@@ -7,7 +7,9 @@ local expect = JestGlobals.expect
 local test = JestGlobals.test
 
 local function createScreen(): LayerCollector
-	return { Enabled = false } :: any
+	local screen = Instance.new("ScreenGui")
+	screen.Enabled = false
+	return screen
 end
 
 local function createStoryAdapter(path: string, initialValue: string)

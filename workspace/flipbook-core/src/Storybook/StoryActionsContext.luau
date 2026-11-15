@@ -66,7 +66,7 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 		if plugin ~= nil then
 			plugin:OpenScript(props.story)
 		end
-	end, { plugin, props.story } :: { any })
+	end, { plugin, props.story } :: { unknown })
 
 	local viewExplorer = useCallback(function()
 		if storyContainerRef.current == nil then
