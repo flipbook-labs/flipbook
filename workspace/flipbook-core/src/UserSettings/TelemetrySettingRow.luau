@@ -16,16 +16,20 @@ export type Props = {
 local function TelemetrySettingRow(props: Props): React.Node?
 	local flipbookStore = FlipbookStoreContext.use()
 	local consent = useSignalState(flipbookStore.telemetry.getConsent)
+	local isLoading = useSignalState(flipbookStore.telemetry.getIsLoading)
 
 	local onActivated = useCallback(function(isChecked: boolean)
-		if isChecked then
-			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Granted)
-			flipbookStore.telemetry.capture({
-				eventName = "TelemetryOptedIn",
-			})
-		else
-			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Denied)
-		end
+		task.spawn(function()
+			local decision: Telemetry.ConsentDecision = if isChecked
+				then Telemetry.ConsentState.Granted
+				else Telemetry.ConsentState.Denied
+			local saved = flipbookStore.telemetry.setConsent(decision)
+			if saved and isChecked then
+				flipbookStore.telemetry.capture({
+					eventName = "TelemetryOptedIn",
+				})
+			end
+		end)
 	end, { flipbookStore.telemetry } :: { unknown })
 
 	if flipbookStore.story.getMode() == AppMode.EmbeddedClient then
@@ -43,6 +47,7 @@ local function TelemetrySettingRow(props: Props): React.Node?
 				label = "Help improve Flipbook by sending anonymous usage data",
 				hint = "Allow Flipbook to collect anonymous usage data. No personal data or story content is collected.",
 				isChecked = consent == Telemetry.ConsentState.Granted,
+				isDisabled = isLoading,
 				onActivated = onActivated,
 			}),
 		}),

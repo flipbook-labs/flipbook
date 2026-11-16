@@ -107,15 +107,18 @@ export type TelemetryStorage = {
 export type TelemetryOptions = {
 	context: TelemetryContext,
 	disabled: boolean?,
-	legacyConsent: ConsentState?,
+	readLegacyConsent: (() -> ConsentState?)?,
 	storage: TelemetryStorage?,
 	transport: (envelope: TelemetryEnvelope) -> (),
+	warn: ((message: string) -> ())?,
 }
 
 export type TelemetryClient = {
 	capture: (event: TelemetryEvent) -> boolean,
 	getConsent: () -> ConsentState,
-	setConsent: (consent: ConsentDecision) -> (),
+	getIsLoading: () -> boolean,
+	setConsent: (consent: ConsentDecision) -> boolean,
+	waitForLoaded: () -> (),
 }
 
 return nil

@@ -62,31 +62,31 @@ local function getProperties(event: TelemetryEvent): { page: string }?
 end
 
 local function createTelemetryClient(options: TelemetryOptions, createAnonymousId: () -> string): TelemetryClient
-	local storedConsent: StoredConsent?
-	if not options.disabled and options.storage then
-		local success, value = pcall(options.storage.read)
-		if success then
-			storedConsent = decodeStoredConsent(value)
-		end
-	end
+	local isDisabled = options.disabled == true
+	local storage = if isDisabled then nil else options.storage
+	local readLegacyConsent = if isDisabled then nil else options.readLegacyConsent
 
-	local initialConsent: ConsentState = ConsentState.Unknown
+	local getConsentSignal, setConsentSignal = Charm.signal(ConsentState.Unknown :: ConsentState)
+	local getIsLoadingSignal, setIsLoading = Charm.signal(storage ~= nil or readLegacyConsent ~= nil)
 	local anonymousId: string?
-	if storedConsent then
-		initialConsent = storedConsent.consent
-		anonymousId = storedConsent.anonymousId
-	elseif options.legacyConsent == ConsentState.Denied then
-		initialConsent = ConsentState.Denied
-	end
 
-	local getConsentSignal, setConsentSignal = Charm.signal(initialConsent)
 	local function getConsent(): ConsentState
 		return getConsentSignal() :: ConsentState
 	end
 
-	local function persist(consent: ConsentDecision)
-		if options.storage == nil then
-			return
+	local function getIsLoading(): boolean
+		return getIsLoadingSignal() :: boolean
+	end
+
+	local function warn(message: string)
+		if options.warn then
+			options.warn(message)
+		end
+	end
+
+	local function persist(consent: ConsentDecision): boolean
+		if storage == nil then
+			return true
 		end
 
 		local record: StoredConsent = {
@@ -94,35 +94,76 @@ local function createTelemetryClient(options: TelemetryOptions, createAnonymousI
 			consent = consent,
 			anonymousId = anonymousId,
 		}
-		local success, encoded = pcall(function()
-			return HttpService:JSONEncode(record)
+		local success, err = pcall(function()
+			storage.write(HttpService:JSONEncode(record))
 		end)
-		if success then
-			pcall(options.storage.write, encoded)
+		if not success then
+			warn(`failed to save telemetry consent: {err}`)
+		end
+
+		return success
+	end
+
+	local function load()
+		local storedConsent: StoredConsent?
+		if storage then
+			local success, value = pcall(storage.read)
+			if success then
+				storedConsent = decodeStoredConsent(value)
+			else
+				warn(`failed to read telemetry consent: {value}`)
+			end
+		end
+
+		if storedConsent then
+			anonymousId = storedConsent.anonymousId
+			setConsentSignal(storedConsent.consent)
+		elseif readLegacyConsent then
+			local success, legacyConsent = pcall(readLegacyConsent)
+			if success and legacyConsent == ConsentState.Denied then
+				setConsentSignal(ConsentState.Denied)
+				persist(ConsentState.Denied)
+			end
+		end
+
+		setIsLoading(false)
+	end
+
+	local function waitForLoaded()
+		while getIsLoading() do
+			task.wait()
 		end
 	end
 
-	if not options.disabled and storedConsent == nil and initialConsent == ConsentState.Denied then
-		persist(ConsentState.Denied)
-	end
-
-	local function setConsent(consent: ConsentDecision)
-		if options.disabled then
-			return
+	local function setConsent(consent: ConsentDecision): boolean
+		if isDisabled then
+			return false
+		end
+		if getIsLoading() then
+			warn("cannot change telemetry consent before it finishes loading")
+			return false
 		end
 
+		local previousConsent = getConsent()
+		local previousAnonymousId = anonymousId
 		if consent == ConsentState.Granted then
 			anonymousId = anonymousId or createAnonymousId()
 		else
 			anonymousId = nil
 		end
-
 		setConsentSignal(consent)
-		persist(consent)
+
+		local saved = persist(consent)
+		if not saved and consent == ConsentState.Granted then
+			anonymousId = previousAnonymousId
+			setConsentSignal(previousConsent)
+		end
+
+		return saved
 	end
 
 	local function capture(event: TelemetryEvent): boolean
-		if options.disabled or getConsent() ~= ConsentState.Granted then
+		if isDisabled or getConsent() ~= ConsentState.Granted then
 			return false
 		end
 
@@ -130,7 +171,7 @@ local function createTelemetryClient(options: TelemetryOptions, createAnonymousI
 		if activeAnonymousId == nil then
 			activeAnonymousId = createAnonymousId()
 			anonymousId = activeAnonymousId
-			persist(ConsentState.Granted)
+			task.spawn(persist, ConsentState.Granted)
 		end
 		assert(activeAnonymousId ~= nil, "consented telemetry requires an anonymous identifier")
 
@@ -150,10 +191,16 @@ local function createTelemetryClient(options: TelemetryOptions, createAnonymousI
 		return true
 	end
 
+	if getIsLoading() then
+		task.spawn(load)
+	end
+
 	return {
 		capture = capture,
 		getConsent = getConsent,
+		getIsLoading = getIsLoading,
 		setConsent = setConsent,
+		waitForLoaded = waitForLoaded,
 	}
 end
 

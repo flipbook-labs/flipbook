@@ -14,20 +14,38 @@ local useState = React.useState
 local function TelemetryConsentDialog(): React.Node?
 	local flipbookStore = FlipbookStoreContext.use()
 	local consent = useSignalState(flipbookStore.telemetry.getConsent)
+	local isLoading = useSignalState(flipbookStore.telemetry.getIsLoading)
 	local isOptedIn, setIsOptedIn = useState(false)
+	local isSaving, setIsSaving = useState(false)
+	local didSaveFail, setDidSaveFail = useState(false)
 
 	local onClose = useCallback(function()
-		if isOptedIn then
-			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Granted)
-			flipbookStore.telemetry.capture({
-				eventName = "TelemetryOptedIn",
-			})
-		else
-			flipbookStore.telemetry.setConsent(Telemetry.ConsentState.Denied)
+		if isSaving then
+			return
 		end
-	end, { flipbookStore.telemetry, isOptedIn } :: { unknown })
 
-	if flipbookStore.story.getMode() == AppMode.EmbeddedClient or consent ~= Telemetry.ConsentState.Unknown then
+		setIsSaving(true)
+		task.spawn(function()
+			local decision: Telemetry.ConsentDecision = if isOptedIn
+				then Telemetry.ConsentState.Granted
+				else Telemetry.ConsentState.Denied
+			local saved = flipbookStore.telemetry.setConsent(decision)
+			if saved and isOptedIn then
+				flipbookStore.telemetry.capture({
+					eventName = "TelemetryOptedIn",
+				})
+			end
+
+			setDidSaveFail(not saved)
+			setIsSaving(false)
+		end)
+	end, { flipbookStore.telemetry, isOptedIn, isSaving } :: { unknown })
+
+	if flipbookStore.story.getMode() == AppMode.EmbeddedClient or isLoading then
+		return nil
+	end
+
+	if consent ~= Telemetry.ConsentState.Unknown and not didSaveFail then
 		return nil
 	end
 
@@ -65,6 +83,14 @@ local function TelemetryConsentDialog(): React.Node?
 					onActivated = setIsOptedIn,
 					LayoutOrder = nextLayoutOrder(),
 				}),
+
+				SaveError = if didSaveFail
+					then React.createElement(Foundation.Dialog.Text, {
+						tag = "auto-xy text-wrap text-body-medium content-alert",
+						Text = "Flipbook couldn't save your choice. Try again.",
+						LayoutOrder = nextLayoutOrder(),
+					})
+					else nil,
 			}),
 		}),
 

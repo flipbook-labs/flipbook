@@ -51,7 +51,9 @@ local function createTelemetry(mode: AppMode, plugin: Pluginlike): TelemetryClie
 			buildVersion = buildInfo.version,
 		},
 		disabled = isEmbedded,
-		legacyConsent = if isEmbedded then nil else getLegacyConsent(plugin),
+		readLegacyConsent = function()
+			return getLegacyConsent(plugin)
+		end,
 		storage = if isEmbedded
 			then nil
 			else {
@@ -68,6 +70,9 @@ local function createTelemetry(mode: AppMode, plugin: Pluginlike): TelemetryClie
 				method = "POST",
 				body = envelope,
 			})
+		end,
+		warn = function(message: string)
+			logger:Warn(message)
 		end,
 	})
 end
