@@ -169,7 +169,7 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** installs the tooling packages that `.lute/` scripts use, declared in `pkg.luau`, into the global store (`~/.loom/store`). Each package lands in a folder named with hashes of its source and rev, and `pkg.lock.luau` records that path. `lute run install` runs `lute pkg install` and then writes those paths into the `@batteries` (Lute batteries) and `@flipbookbatteries` (flipbook-batteries) aliases in `.config.luau`. Nothing is copied into the repo. Scripts load `.env` with flipbook-batteries' `dotenv`. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime)
+- **Loom** installs the tooling packages that `.lute/` scripts use, declared in `pkg.luau`, into the global store (`~/.loom/store`). Each package lands in a folder named with hashes of its source and rev, and `pkg.lock.luau` records that path. `lute run install` runs `lute pkg install` and then writes those paths into the `@batteries` (Lute batteries) and `@flipbook-batteries` (flipbook-batteries) aliases in `.config.luau`. Nothing is copied into the repo. Scripts load `.env` with flipbook-batteries' `dotenv`. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read (not required at runtime)
 - `LuauPackages/` holds only rbxasset (a Lune dependency)
 
 ### Darklua and require paths

@@ -22,7 +22,7 @@ local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 -- `.config.luau`, and values are dependency names in `pkg.luau`.
 local DEPENDENCY_ALIASES: { [string]: string } = {
 	batteries = "Lute",
-	flipbookbatteries = "FlipbookBatteries",
+	["flipbook-batteries"] = "FlipbookBatteries",
 }
 
 type Lockfile = {
@@ -61,7 +61,14 @@ do
 
 	for alias, name in DEPENDENCY_ALIASES do
 		local storePath = getStorePath(lockfile, name)
-		local updated, count = config:gsub(`(%f[%w]{alias}%s*=%s*")[^"]*(")`, `%1{storePath}%2`)
+
+		-- An alias that isn't a plain identifier, like `flipbook-batteries`,
+		-- is written as a quoted key, `["flipbook-batteries"]`, in
+		-- `.config.luau`. Each alias sits on its own line there, so the match
+		-- starts at a line break.
+		local key = if alias:match("^[%a_][%w_]*$") then alias else `["{alias}"]`
+		local keyPattern = key:gsub("%p", "%%%0")
+		local updated, count = config:gsub(`(\n%s*{keyPattern}%s*=%s*")[^"]*(")`, `%1{storePath}%2`)
 		assert(count == 1, `Expected one "{alias}" alias in .config.luau, found {count}`)
 		config = updated
 	end
@@ -71,7 +78,7 @@ do
 end
 
 do
-	local FlipbookBatteries = require("@flipbookbatteries")
+	local FlipbookBatteries = require("@flipbook-batteries")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
