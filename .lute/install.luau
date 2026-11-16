@@ -1,5 +1,6 @@
 local fs = require("@std/fs")
 local json = require("@std/json")
+local luau = require("@std/luau")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
@@ -8,9 +9,27 @@ local getDescendants = require("@scripts/lib/getDescendants")
 
 local project = require("@repo/project")
 
-local LOOM_MANIFEST_PATH = path.join(project.REPO_PATH, "loom.config.luau")
-local ROKIT_MANIFEST_PATH = path.join(project.REPO_PATH, "rokit.toml")
+local CONFIG_PATH = path.join(project.REPO_PATH, ".config.luau")
+local LOCKFILE_PATH = path.join(project.REPO_PATH, "pkg.lock.luau")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
+
+-- `lute pkg install` puts each dependency in the Loom store, `~/.loom/store`,
+-- under a folder whose name includes hashes of its source and rev. A dependency
+-- with a `target` in `pkg.luau` installs only that subfolder, like Lute's
+-- `batteries`. The lockfile records where each one landed, but `lute check` and
+-- editors read aliases only from `.config.luau`. So after installing, this
+-- copies each recorded path into that dependency's alias. Keys are aliases in
+-- `.config.luau`, and values are dependency names in `pkg.luau`.
+local DEPENDENCY_ALIASES: { [string]: string } = {
+	batteries = "Lute",
+	flipbookbatteries = "FlipbookBatteries",
+}
+
+type Lockfile = {
+	dependencies: { [string]: string },
+	devDependencies: { [string]: string }?,
+	packages: { [string]: { installPath: string } },
+}
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
 	local res = process.run({ "mv", tostring(src), tostring(dest) }, {
@@ -19,59 +38,40 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
-local function installLoomPackages()
+local function getStorePath(lockfile: Lockfile, name: string): string
+	local key = lockfile.dependencies[name] or (lockfile.devDependencies and lockfile.devDependencies[name])
+	assert(key, `{name} is not a dependency in pkg.lock.luau`)
+
+	-- The lockfile writes `@pkg/` for the store, and the path of a dependency
+	-- without a target ends in `/.`.
+	local installPath = lockfile.packages[key].installPath
+	return (installPath:gsub("^@pkg/", "~/.loom/store/"):gsub("/%.$", ""))
+end
+
+-- The rest of this script requires flipbook-batteries through its alias, so the
+-- Loom packages are installed and their aliases written first.
+do
 	local res = process.run({ "lute", "pkg", "install" }, {
 		stdio = "inherit",
 	})
 	assert(res.ok, res.stderr)
-end
 
-local function loomPackagesAreAvailable(): boolean
-	local ok = pcall(function()
-		require("@luaupkg/flipbook-batteries@v0.12.0")
-		require("@luaupkg/dotenv@v0.1.0/src")
-		require("@batteries/cli")
-	end)
-	return ok
-end
+	local lockfile: Lockfile = luau.loadModule(tostring(LOCKFILE_PATH))
+	local config = fs.readFileToString(CONFIG_PATH)
 
-local function hydrateLoomStore()
-	local tempProjectPath = path.join(system.tmpdir(), `flipbook-loom-install-{process.pid()}`)
-	if fs.exists(tempProjectPath) then
-		fs.removeDirectory(tempProjectPath, {
-			recursive = true,
-		})
+	for alias, name in DEPENDENCY_ALIASES do
+		local storePath = getStorePath(lockfile, name)
+		local updated, count = config:gsub(`(%f[%w]{alias}%s*=%s*")[^"]*(")`, `%1{storePath}%2`)
+		assert(count == 1, `Expected one "{alias}" alias in .config.luau, found {count}`)
+		config = updated
 	end
-	fs.createDirectory(tempProjectPath, {
-		makeParents = true,
-	})
-	fs.writeStringToFile(path.join(tempProjectPath, "loom.config.luau"), fs.readFileToString(LOOM_MANIFEST_PATH))
-	fs.writeStringToFile(path.join(tempProjectPath, "rokit.toml"), fs.readFileToString(ROKIT_MANIFEST_PATH))
 
-	local res = process.run({ "lute", "pkg", "install" }, {
-		cwd = tostring(tempProjectPath),
-		stdio = "inherit",
-	})
-	fs.removeDirectory(tempProjectPath, {
-		recursive = true,
-	})
-	assert(res.ok, res.stderr)
-end
-
--- Install Loom dependencies first since the rest of the script depends on them.
--- Lute reuses a satisfied lockfile without checking whether its store paths exist,
--- so force a fresh resolution when an incomplete store survives the first pass.
-do
-	installLoomPackages()
-
-	if not loomPackagesAreAvailable() then
-		hydrateLoomStore()
-		assert(loomPackagesAreAvailable(), "Loom packages are missing after installation")
-	end
+	fs.writeStringToFile(CONFIG_PATH, config)
+	print("wrote dependency aliases to .config.luau")
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
+	local FlipbookBatteries = require("@flipbookbatteries")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
