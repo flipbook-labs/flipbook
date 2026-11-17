@@ -4,4 +4,4 @@ category: Internal
 kind: tooling
 ---
 
-Manage the Lute tooling dependencies with `pkg.luau` on Lute 1.0.1-nightly.20261115.
+Manage the Lute tooling dependencies with `pkg.luau` on Lute 1.0.1-nightly.20261115. `lute run install` copies them into `LuauPackages/`, so `.config.luau` aliases stable paths instead of hashed store folders.

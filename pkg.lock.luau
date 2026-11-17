@@ -1,8 +1,8 @@
 return {
   version = 5,
   dependencies = {
+    Batteries = "Batteries@v1.0.1-nightly.20261115",
     FlipbookBatteries = "FlipbookBatteries@v0.13.0",
-    Lute = "Lute@v1.0.1-nightly.20261115",
   },
   devDependencies = {
     AgentSkills = "AgentSkills@v0.7.0",
@@ -14,6 +14,15 @@ return {
       rev = "v0.7.0",
       source = "https://github.com/flipbook-labs/agent-skills",
       sourceKind = "github",
+      dependencies = {},
+    },
+    ["Batteries@v1.0.1-nightly.20261115"] = {
+      installPath = "@pkg/lute--github-6e87d56ef86974ca90629c5ef7ab70e40b102f8210ee178dc95916f940d6854e@6dba55fa3cf083d10fb5dcb54a22cb87d3d11735a512215b835f33d3c571033d/batteries",
+      name = "Batteries",
+      rev = "v1.0.1-nightly.20261115",
+      source = "https://github.com/luau-lang/lute",
+      sourceKind = "github",
+      target = "batteries",
       dependencies = {},
     },
     ["FlipbookBatteries@v0.13.0"] = {
