@@ -1,5 +1,5 @@
+local CodeQuality = require("@luaupkg/CodeQuality@v0.3.0")
 local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
-local fs = require("@std/fs")
 local path = require("@std/path")
 local process = require("@std/process")
 
@@ -7,13 +7,6 @@ local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
 local findWhere = FlipbookBatteries.findWhere
-
--- CodeQuality is the org's shared package of Luau lint rules, which `lute lint`
--- runs alongside its own. `lute run install` puts Loom packages in a store under
--- the home folder rather than in this repo, so the rules are read from there.
--- The version in this path has to match the CodeQuality `rev` in
--- loom.config.luau and the check in install.luau.
-local CODE_QUALITY_RULES_PATH = path.join(process.homedir(), ".loom", "store", "CodeQuality@v0.2.0", "src", "rules")
 
 local function findLuaFiles()
 	local result = {}
@@ -38,20 +31,14 @@ run("stylua", {
 	table.unpack(project.FOLDERS_TO_LINT),
 })
 
-if not fs.exists(CODE_QUALITY_RULES_PATH) then
-	print(
-		`[err] CodeQuality rules not found at {path.format(CODE_QUALITY_RULES_PATH)}. Run 'lute run install' and try again`
-	)
-	process.exit(1)
-end
-
--- Lute's parallel linting can crash at random, which fails lint for no reason,
--- so files are linted one at a time.
+-- CodeQuality is the org's shared package of Luau lint rules, which `lute lint`
+-- runs alongside its own. Lute's parallel linting can crash at random
+-- (flipbook-labs/code-quality#27), so files are linted one at a time.
 run("lute", {
 	"lint",
 	"--sequential",
 	"--rules",
-	path.format(CODE_QUALITY_RULES_PATH),
+	CodeQuality.RULES_PATH,
 	table.unpack(project.FOLDERS_TO_LINT),
 })
 
