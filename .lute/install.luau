@@ -9,25 +9,33 @@ local getDescendants = require("@scripts/lib/getDescendants")
 
 local project = require("@repo/project")
 
+local CONFIG_PATH = path.join(project.REPO_PATH, ".config.luau")
 local LOCKFILE_PATH = path.join(project.REPO_PATH, "pkg.lock.luau")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 -- `lute pkg install` puts each dependency in the Loom store, `~/.loom/store`,
--- under a folder whose name includes hashes of its source and rev. Requires
--- resolve only through aliases in `.config.luau`, which can't name a dependency
--- from the lockfile. So after installing, this copies each dependency into
--- `LuauPackages/<name>`, using its name from `pkg.luau`, and `.config.luau`
--- aliases those folders. https://github.com/flipbook-labs/flipbook/issues/689
--- tracks removing this once Lute resolves dependencies by name.
+-- under a folder whose name includes hashes of its source and rev. A dependency
+-- with a `target` in `pkg.luau` installs only that subfolder, like Lute's
+-- `batteries`. Requires resolve only through aliases in `.config.luau`, which
+-- can't name a dependency from the lockfile. So after installing, this copies
+-- each dependency's store path from the lockfile into its alias.
+-- https://github.com/flipbook-labs/flipbook/issues/689 tracks removing this.
 --
--- A vendored package's own `.config.luau` aliases its dependencies the same
--- way, as `./LuauPackages/<name>` inside its folder. So each package's
--- dependencies are copied into its own `LuauPackages/`, all the way down.
+-- The hashes depend only on the source and rev, so the paths are the same on
+-- every machine, and `.config.luau` commits them.
+--
+-- Keys are aliases in `.config.luau`, and values are dependency names in
+-- `pkg.luau`. `agent-skills` points agents at the shared skills library.
+local DEPENDENCY_ALIASES: { [string]: string } = {
+	batteries = "Batteries",
+	["flipbook-batteries"] = "FlipbookBatteries",
+	["agent-skills"] = "AgentSkills",
+}
 
 type Lockfile = {
 	dependencies: { [string]: string },
 	devDependencies: { [string]: string }?,
-	packages: { [string]: { installPath: string, dependencies: { [string]: string } } },
+	packages: { [string]: { installPath: string } },
 }
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
@@ -38,35 +46,17 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 end
 
 -- The lockfile writes `@pkg/` for the store, and the path of a dependency
--- without a `target` ends in `/.`.
-local function getStorePath(lockfile: Lockfile, key: string): path.Path
+-- without a target ends in `/.`.
+local function getStorePath(lockfile: Lockfile, name: string): string
+	local key = lockfile.dependencies[name] or (lockfile.devDependencies and lockfile.devDependencies[name])
+	assert(key, `{name} is not a dependency in pkg.lock.luau`)
+
 	local installPath = lockfile.packages[key].installPath
-	local relative = installPath:gsub("^@pkg/", ""):gsub("/%.$", "")
-	return path.join(process.homedir(), ".loom", "store", relative)
-end
-
-local function copyDirectory(src: path.Path, dest: path.Path)
-	fs.createDirectory(dest, { makeParents = true })
-	for _, entry in fs.listDirectory(src) do
-		local from = path.join(src, entry.name)
-		local to = path.join(dest, entry.name)
-		if entry.type == "dir" then
-			copyDirectory(from, to)
-		else
-			fs.copy(from, to)
-		end
-	end
-end
-
-local function vendor(lockfile: Lockfile, key: string, dest: path.Path)
-	copyDirectory(getStorePath(lockfile, key), dest)
-	for name, dependencyKey in lockfile.packages[key].dependencies do
-		vendor(lockfile, dependencyKey, path.join(dest, "LuauPackages", name))
-	end
+	return (installPath:gsub("^@pkg/", "~/.loom/store/"):gsub("/%.$", ""))
 end
 
 -- The rest of this script requires flipbook-batteries through its alias, so the
--- Loom packages are installed and copied into `LuauPackages/` first.
+-- Loom packages are installed and their aliases written first.
 do
 	local res = process.run({ "lute", "pkg", "install" }, {
 		stdio = "inherit",
@@ -74,20 +64,23 @@ do
 	assert(res.ok, "lute pkg install failed")
 
 	local lockfile: Lockfile = luau.loadModule(tostring(LOCKFILE_PATH))
+	local config = fs.readFileToString(CONFIG_PATH)
 
-	-- Clearing the folder first drops dependencies that `pkg.luau` no longer
-	-- lists. It also removes rbxasset, which `installRbxasset` puts back below.
-	if fs.exists(project.LUAU_PACKAGES_PATH) then
-		fs.removeDirectory(project.LUAU_PACKAGES_PATH, { recursive = true })
+	for alias, name in DEPENDENCY_ALIASES do
+		local storePath = getStorePath(lockfile, name)
+
+		-- An alias that isn't a plain identifier, like `agent-skills`, is
+		-- written as a quoted key, `["agent-skills"]`. Each alias sits on its
+		-- own line, so the match starts at a line break.
+		local key = if alias:match("^[%a_][%w_]*$") then alias else `["{alias}"]`
+		local keyPattern = key:gsub("%p", "%%%0")
+		local updated, count = config:gsub(`(\n%s*{keyPattern}%s*=%s*")[^"]*(")`, `%1{storePath}%2`)
+		assert(count == 1, `Expected one "{alias}" alias in .config.luau, found {count}`)
+		config = updated
 	end
 
-	for _, dependencies in { lockfile.dependencies, lockfile.devDependencies or {} } do
-		for name, key in dependencies do
-			vendor(lockfile, key, path.join(project.LUAU_PACKAGES_PATH, name))
-		end
-	end
-
-	print(`vendored Loom dependencies into {project.LUAU_PACKAGES_PATH}`)
+	fs.writeStringToFile(CONFIG_PATH, config)
+	print("wrote dependency aliases to .config.luau")
 end
 
 do
@@ -249,8 +242,8 @@ do
 		local fileName = "rbxasset.zip"
 		local installPath = path.join(project.LUAU_PACKAGES_PATH, "rbxasset")
 
-		-- rbxasset is a Lune dependency, which Lune requires as `@lunepkg`. It
-		-- sits in LuauPackages beside the Loom dependencies.
+		-- rbxasset (a Lune dependency, aliased as @lunepkg) is the only thing that
+		-- still lives under LuauPackages, so make sure the directory exists.
 		if not fs.exists(project.LUAU_PACKAGES_PATH) then
 			fs.createDirectory(project.LUAU_PACKAGES_PATH, {
 				makeParents = true,
