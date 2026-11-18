@@ -25,8 +25,9 @@ export type SourcemapNode = {
 
 export type Options = {
 	repoPath: string,
-	-- A sourcemap from `rojo sourcemap` for the project the build output syncs
-	-- into, where the root instance is the one the output folder becomes.
+	-- A sourcemap from `rojo sourcemap` of the source tree. The build output
+	-- copies that tree's layout, so a path from one instance to another in the
+	-- sourcemap is the same path in the build.
 	sourcemap: SourcemapNode,
 	-- Names of the `_G` globals to replace. A global with no value becomes `nil`.
 	globalNames: { string },
@@ -113,8 +114,9 @@ local function readAliases(rewriter: Rewriter, folder: string): { [string]: stri
 
 	local configAliases: { [unknown]: unknown } = if config and config.aliases then config.aliases else {}
 	for name, value in configAliases do
-		-- Home-relative aliases point at Lute tooling, which never reaches
-		-- Roblox. Decoded JSON objects also carry a marker key, which is skipped.
+		-- Aliases that start with `~`, the home folder, point at Lute tooling,
+		-- which never reaches Roblox. Lute's JSON decoder also tags each object
+		-- with a key that isn't a string, so the type checks skip it.
 		if typeof(name) == "string" and typeof(value) == "string" and not value:match("^~") then
 			aliases[string.lower(name)] = join(folder, value)
 		end
@@ -139,8 +141,10 @@ end
 
 -- Returns the file or folder a require string points at, without extension.
 local function resolveRequirePath(rewriter: Rewriter, requirer: string, requirePath: string): string
-	-- A module's own path is its folder when it's an init file. `./` and `../`
-	-- start from the folder that path sits in, and `@self` from the path itself.
+	-- An init file stands for its folder, so its module path is that folder.
+	-- As in Luau, `./` and `../` start from the folder holding the module path,
+	-- which for an init file is its folder's parent. `@self` starts at the
+	-- module path itself, so an init file reaches its own children with it.
 	local modulePath = if isInit(requirer) then dirname(requirer) else (requirer:gsub("%.[%w%.]+$", ""))
 
 	local alias, rest = requirePath:match("^@([^/]+)/?(.*)$")

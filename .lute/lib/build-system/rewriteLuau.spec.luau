@@ -15,7 +15,8 @@ local function writeFile(relative: string, contents: string)
 end
 
 -- A small repo laid out like Flipbook: plugin scripts in `src`, packages in
--- `Packages`, and a workspace member whose `.luaurc` defines `@root`.
+-- `Packages`, and a workspace member whose `.luaurc` defines `@root` and its
+-- own `@pkg`.
 local sourcemap: rewriteLuau.SourcemapNode = {
 	name = "Root",
 	children = {
@@ -87,6 +88,14 @@ test.suite("RewriteLuau", function(suite)
 				"workspace/my-member/src/Utils/format.luau"
 			),
 			"return require(script.Parent.Parent.Button)"
+		)
+	end)
+
+	suite:case("startsRelativeRequiresInAnInitFileFromItsFoldersParent", function(assert)
+		local rewriter = createRewriter()
+		assert.eq(
+			rewriteLuau.rewriteSource(rewriter, `return require("./src/Button")`, "workspace/my-member/src/init.luau"),
+			"return require(script.Button)"
 		)
 	end)
 

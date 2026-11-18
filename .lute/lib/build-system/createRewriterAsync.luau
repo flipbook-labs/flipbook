@@ -8,8 +8,9 @@ local types = require("@scripts/lib/build-system/types")
 
 local run = FlipbookBatteries.run
 
--- Maps the current source tree with `rojo sourcemap`, so the rewriter can turn
--- each string require into the instance it points at in the build output.
+-- Maps the source tree with `rojo sourcemap`, so the rewriter knows which
+-- instance each file becomes. The build output keeps the same layout, so the
+-- instance paths it writes hold there too.
 local function createRewriterAsync(context: types.BuildContext): rewriteLuau.Rewriter
 	run("rojo", {
 		"sourcemap",
