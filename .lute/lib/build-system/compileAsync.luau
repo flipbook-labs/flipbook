@@ -3,14 +3,15 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local createRewriterAsync = require("@scripts/lib/build-system/createRewriterAsync")
 local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
+local rewriteLuau = require("@scripts/lib/build-system/rewriteLuau")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
 local find = FlipbookBatteries.find
-local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
@@ -24,26 +25,8 @@ local function compileAsync(context: BuildContext)
 		makeParents = true,
 	})
 
-	run("rojo", {
-		"sourcemap",
-		project.SOURCEMAP_PROJECT_PATH,
-		"-o",
-		project.DARKLUA_SOURCEMAP_PATH,
-	})
-
-	-- Darklua is failing to resolve string requires when using absolute paths
-	-- for the input. Probably related to the sourcemap, though we've tried
-	-- using the `--absolute` flag with `rojo sourcemap` and that didn't work
-	-- either. We just massage the source path into a relative path to work
-	-- around the issue.
-	local relativeSourcePath = path.relative(project.REPO_PATH, project.SOURCE_PATH)
-	run("darklua", {
-		"process",
-		relativeSourcePath,
-		context.dest,
-	}, {
-		env = context.env,
-	})
+	local rewriter = createRewriterAsync(context)
+	rewriteLuau.rewriteFolder(rewriter, project.SOURCE_PATH, context.dest)
 
 	runBuildGroupAsync({
 		name = "🚚 dependencies",
@@ -61,7 +44,7 @@ local function compileAsync(context: BuildContext)
 	})
 
 	for _, memberPath in project.WORKSPACE_MEMBER_PATHS do
-		compileWorkspaceMemberAsync(memberPath, context)
+		compileWorkspaceMemberAsync(memberPath, context, rewriter)
 	end
 
 	if context.channel == "prod" or context.channel == "beta" then

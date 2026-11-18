@@ -115,6 +115,8 @@ local context: BuildContext = {
 		BUILD_TARGET = target,
 		BASE_URL = process.env.BASE_URL,
 		LOG_LEVEL = process.env.LOG_LEVEL,
+		ENABLE_OUTPUT_LOGGING = process.env.ENABLE_OUTPUT_LOGGING,
+		JEST_TEST_PATH_PATTERN = process.env.JEST_TEST_PATH_PATTERN,
 	},
 	cache = buildSystem.readBuildCacheAsync(),
 }
@@ -216,7 +218,7 @@ if args:has("watch") then
 	local function onChanged(filePath: path.Path)
 		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
 			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
-			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
+			buildSystem.compileWorkspaceMemberAsync(memberPath, context, buildSystem.createRewriterAsync(context))
 			buildSystem.writeBuildCacheAsync(context.cache)
 
 			buildPluginBinary()

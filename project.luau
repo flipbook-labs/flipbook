@@ -46,7 +46,20 @@ return {
 
 	SOURCEMAP_PATH = path.resolve("./sourcemap.json"),
 	SOURCEMAP_PROJECT_PATH = path.resolve("./sourcemap.project.json"),
-	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
+	BUILD_SOURCEMAP_PATH = path.resolve("./sourcemap-build.json"),
+
+	-- `_G` globals the build replaces with their values, read from the build's
+	-- environment. A global with no value there becomes `nil`.
+	BUILD_GLOBALS = {
+		"BUILD_VERSION",
+		"BUILD_CHANNEL",
+		"BUILD_HASH",
+		"BUILD_TARGET",
+		"BASE_URL",
+		"LOG_LEVEL",
+		"ENABLE_OUTPUT_LOGGING",
+		"JEST_TEST_PATH_PATTERN",
+	},
 
 	FOLDERS_TO_LINT = {
 		"src",

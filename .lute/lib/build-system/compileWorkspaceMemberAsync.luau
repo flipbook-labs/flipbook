@@ -3,6 +3,7 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local project = require("@repo/project")
+local rewriteLuau = require("@scripts/lib/build-system/rewriteLuau")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local types = require("@scripts/lib/build-system/types")
 
@@ -11,7 +12,11 @@ local run = FlipbookBatteries.run
 
 type BuildContext = types.BuildContext
 
-local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: BuildContext): path.Path
+local function compileWorkspaceMemberAsync(
+	memberPath: path.Pathlike,
+	context: BuildContext,
+	rewriter: rewriteLuau.Rewriter
+): path.Path
 	local relativeMemberPath = path.relative(project.REPO_PATH, memberPath)
 	local memberBuildPath = path.join(memberPath, "build")
 
@@ -29,13 +34,7 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 				makeParents = true,
 			})
 
-			run("darklua", {
-				"process",
-				path.join(relativeMemberPath, "src"),
-				memberBuildPath,
-			}, {
-				env = context.env,
-			})
+			rewriteLuau.rewriteFolder(rewriter, path.join(memberPath, "src"), memberBuildPath)
 		end,
 	})
 

@@ -67,7 +67,7 @@ You do not need to request a Flipbook Labs Open Cloud key. If GitHub shows a fir
 
 ## Building
 
-Flipbook uses [darklua](https://github.com/seaofvoices/darklua) to compile Luau source code for Roblox and support string requires in both source code and Lute scripts.
+Flipbook's build turns the string requires in its Luau source into the instance requires Roblox runs, and fills in build values such as the version and channel.
 
 ### Build for Studio
 

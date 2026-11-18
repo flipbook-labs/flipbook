@@ -45,6 +45,9 @@ local placePath = args:get("place")
 assert(typeof(placePath) == "string", `bad value for place (string expected, got {typeof(placePath)})`)
 
 if not runOnly then
+	-- Specs for the Lute scripts, such as the build's require rewriter.
+	run("lute", { "test", ".lute" })
+
 	local filter = args:get("filter")
 	process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
