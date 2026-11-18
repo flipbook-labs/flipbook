@@ -59,7 +59,7 @@ flipbook/
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; AgentSkills dev dep)
+├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; agent-skills dev dep)
 ├── pkg.lock.luau           # Loom lockfile, including each package's store path
 ├── .config.luau            # Luau aliases; `lute run install` writes the Loom store paths
 ├── .darklua.json           # Darklua rules, including the require aliases the build resolves
@@ -170,7 +170,7 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 ### Wally vs Loom packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Loom** installs the tooling packages that `.lute/` scripts use, declared in `pkg.luau`, into the global store (`~/.loom/store`). Each package lands in a folder named with hashes of its source and rev, and `pkg.lock.luau` records that path. `lute run install` runs `lute pkg install` and then writes those paths into the `@batteries` (Lute batteries), `@flipbook-batteries` (flipbook-batteries) and `agent-skills` aliases in `.config.luau`. The hashes depend only on the source and rev, so the paths are the same on every machine and `.config.luau` commits them. [#689](https://github.com/flipbook-labs/flipbook/issues/689) tracks removing this injection. Scripts load `.env` with flipbook-batteries' `dotenv`. The `AgentSkills` shared skill library is a Loom dev dependency that lands in the same store for agents to read through the `agent-skills` alias (not required at runtime)
+- **Loom** installs the tooling packages that `.lute/` scripts use, declared in `pkg.luau`, into the global store (`~/.loom/store`). Each package lands in a folder named with hashes of its source and rev, and `pkg.lock.luau` records that path. Dependency keys in `pkg.luau` are lowercase kebab-case. `lute run install` runs `lute pkg install` and then writes an alias for each dependency into `.config.luau`, named after its key, such as `@batteries` (Lute batteries), `@flipbook-batteries` and `agent-skills`. The hashes depend only on the source and rev, so the paths are the same on every machine and `.config.luau` commits them. [#689](https://github.com/flipbook-labs/flipbook/issues/689) tracks removing this injection. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` Loom dev dependency, which that lands in the same store for agents to read through the `agent-skills` alias (not required at runtime)
 - `LuauPackages/` holds only rbxasset, which `.lune/publish-plugin.luau` requires as `@lunepkg`. Lune reads aliases only from `.luaurc`, so `.lune/.luaurc` declares the Lune aliases
 
 ### Darklua and require paths
