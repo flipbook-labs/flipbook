@@ -14,13 +14,13 @@ return {
 			["flipbook-core"] = member("flipbook-core"),
 			["flipbook-next"] = member("flipbook-next"),
 
-			Batteries = {
+			batteries = {
 				rev = "v1.0.1-nightly.20261115",
 				sourceKind = "github",
 				source = "https://github.com/luau-lang/lute",
 				target = "batteries",
 			},
-			FlipbookBatteries = {
+			["flipbook-batteries"] = {
 				rev = "v0.13.0",
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/flipbook-batteries",
@@ -32,7 +32,7 @@ return {
 			template = member("template"),
 			["test-runner"] = member("test-runner"),
 
-			AgentSkills = {
+			["agent-skills"] = {
 				rev = "v0.7.0",
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/agent-skills",
