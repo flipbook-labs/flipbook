@@ -25,7 +25,12 @@ local function rojoBuild(options: RojoBuildOptions): path.Path
 		createRojoProjectAsync(path.join(system.tmpdir(), tempProjectName), options.project :: json.Value)
 
 	local ok, err = pcall(function()
-		run("rojo", { "build", tempProjectPath, "--output", options.output })
+		run("rojo", {
+			"build",
+			tempProjectPath,
+			"--output",
+			options.output,
+		})
 	end)
 	fs.remove(tempProjectPath)
 

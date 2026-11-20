@@ -53,31 +53,39 @@ local function FeedbackDialog(props: Props)
 		setIsDiscardChangesDialogOpen(false)
 	end, {})
 
-	local onSubmit = useCallback(function()
-		if isSendingFeedback then
-			return
-		end
+	local onSubmit = useCallback(
+		function()
+			if isSendingFeedback then
+				return
+			end
 
-		if title ~= "" and body ~= "" and isAcknowledgedByUser then
-			setErr(nil)
-			setIsSendingFeedback(true)
+			if title ~= "" and body ~= "" and isAcknowledgedByUser then
+				setErr(nil)
+				setIsSendingFeedback(true)
 
-			task.spawn(function()
-				local res = postFeedbackAsync(title, body)
+				task.spawn(function()
+					local res = postFeedbackAsync(title, body)
 
-				setIsSendingFeedback(false)
+					setIsSendingFeedback(false)
 
-				if res and res.Success then
-					setIsSuccessDialogOpen(true)
-					fireEventAsync({
-						eventName = "FeedbackSubmitted",
-					})
-				else
-					setErr("Failed to submit feedback. Please try again later")
-				end
-			end)
-		end
-	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
+					if res and res.Success then
+						setIsSuccessDialogOpen(true)
+						fireEventAsync({
+							eventName = "FeedbackSubmitted",
+						})
+					else
+						setErr("Failed to submit feedback. Please try again later")
+					end
+				end)
+			end
+		end,
+		{
+			title,
+			body,
+			isAcknowledgedByUser,
+			isSendingFeedback,
+		} :: { unknown }
+	)
 
 	local onTitleChanged = useCallback(function(text)
 		if text ~= title then

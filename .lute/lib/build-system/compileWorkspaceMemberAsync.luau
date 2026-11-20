@@ -46,7 +46,14 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 			context = context,
 			step = function()
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
-					run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+					run("find", {
+						memberBuildPath,
+						"-type",
+						"f",
+						"-name",
+						`"{pattern}"`,
+						"-delete",
+					})
 				end
 			end,
 		})

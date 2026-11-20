@@ -39,7 +39,9 @@ describe("app registration", function()
 				return "ReplicatedStorage/Flipbook"
 			end,
 			listStorybooks = function()
-				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
+				return {
+					{ name = "Example", path = "ReplicatedStorage/Example.storybook" },
+				}
 			end,
 			listStories = function(storybookPath)
 				return {

@@ -175,7 +175,14 @@ end
 -- Check out Flipbook's own storybook here:
 -- https://www.roblox.com/games/139676401890813/Flipbook-Stories
 local function buildStorybookPlace()
-	run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
+	run("lute", {
+		"run",
+		"build",
+		"workspace",
+		"--channel",
+		"dev",
+		"--clean",
+	})
 
 	local placePath = rojoBuild({
 		output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),
