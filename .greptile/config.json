@@ -11,8 +11,8 @@
   "rules": [
     {
       "id": "storyteller-boundary",
-      "rule": "When a change calls into Storyteller or ModuleLoader, or uses a type either one exports, compare the call with their source in context: function names, arguments, return shapes, and types. Their default branch can be ahead of the version pinned in wally.toml, so report a mismatch as a question to confirm unless the pinned version clearly has the same API. Also flag code that relies on behavior those packages do not document or test.",
-      "scope": ["workspace/**/*.luau", "src/**/*.luau"],
+      "rule": "When a change calls into Storyteller or ModuleLoader, or uses a type either one exports, compare the call with their source in context: function names, arguments, return shapes, and types. Their default branch can be ahead of the version pinned in wally.toml, so report a mismatch as a question to confirm unless the pinned version clearly has the same API. Also flag code that relies on behavior those packages do not document or test. When wally.toml changes a pin, recheck existing uses of that package against its source.",
+      "scope": ["workspace/**/*.luau", "src/**/*.luau", "wally.toml"],
       "severity": "high"
     },
     {
@@ -34,7 +34,7 @@
     },
     {
       "id": "spec-coverage",
-      "rule": "New or changed logic needs a colocated *.spec.luau test that would fail without the change. Flag tests that only restate what the implementation returns, mock the module under test, or cannot fail.",
+      "rule": "New or changed production behavior needs a test that would fail without the change, either a colocated *.spec.luau or existing integration coverage. Stories, test fixtures, and refactors that keep behavior the same don't need new specs. Flag tests that only restate what the implementation returns, mock the module under test, or cannot fail.",
       "scope": [
         "workspace/flipbook-core/src/**/*.luau",
         "workspace/flipbook-agents/src/**/*.luau"
@@ -56,7 +56,14 @@
     {
       "id": "no-install-patches",
       "rule": "Do not add new install-time patches to upstream packages. Flag a change that rewrites files under Packages/, RobloxPackages/, or .lpm/ after they are installed. A problem in an upstream package gets an issue filed with that package instead.",
-      "scope": [".lute/**", "pkg.luau", "wally.toml", "rokit.toml"],
+      "scope": [
+        ".lute/**",
+        "pkg.luau",
+        "wally.toml",
+        "rokit.toml",
+        ".github/workflows/**",
+        ".github/actions/**"
+      ],
       "severity": "medium"
     },
     {
