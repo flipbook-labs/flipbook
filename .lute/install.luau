@@ -8,8 +8,6 @@ local getDescendants = require("@scripts/lib/getDescendants")
 
 local project = require("@repo/project")
 
-local LOOM_MANIFEST_PATH = path.join(project.REPO_PATH, "loom.config.luau")
-local ROKIT_MANIFEST_PATH = path.join(project.REPO_PATH, "rokit.toml")
 local PACKAGES_INDEX_PATH = path.join(project.PACKAGES_PATH, "_Index")
 
 local function move(src: path.Pathlike, dest: path.Pathlike)
@@ -19,60 +17,25 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
-local function installLoomPackages()
-	local res = process.run({ "lute", "pkg", "install" }, {
-		stdio = "inherit",
-	})
-	assert(res.ok, res.stderr)
-end
-
-local function loomPackagesAreAvailable(): boolean
-	local ok = pcall(function()
-		require("@luaupkg/flipbook-batteries@v0.12.0")
-		require("@luaupkg/dotenv@v0.1.0/src")
-		require("@batteries/cli")
-		require("@luaupkg/CodeQuality@v0.1.0/src/rules/noAny")
-	end)
-	return ok
-end
-
-local function hydrateLoomStore()
-	local tempProjectPath = path.join(system.tmpdir(), `flipbook-loom-install-{process.pid()}`)
-	if fs.exists(tempProjectPath) then
-		fs.removeDirectory(tempProjectPath, {
-			recursive = true,
-		})
-	end
-	fs.createDirectory(tempProjectPath, {
-		makeParents = true,
-	})
-	fs.writeStringToFile(path.join(tempProjectPath, "loom.config.luau"), fs.readFileToString(LOOM_MANIFEST_PATH))
-	fs.writeStringToFile(path.join(tempProjectPath, "rokit.toml"), fs.readFileToString(ROKIT_MANIFEST_PATH))
-
-	local res = process.run({ "lute", "pkg", "install" }, {
-		cwd = tostring(tempProjectPath),
-		stdio = "inherit",
-	})
-	fs.removeDirectory(tempProjectPath, {
-		recursive = true,
-	})
-	assert(res.ok, res.stderr)
-end
-
--- Install Loom dependencies first since the rest of the script depends on them.
--- Lute reuses a satisfied lockfile without checking whether its store paths exist,
--- so force a fresh resolution when an incomplete store survives the first pass.
+-- Installs the dependencies in `pkg.luau`. `--vendor` copies each one into a
+-- `.lpm/<key>@<rev>` folder, and the `lpm` alias in `.config.luau` points at
+-- `.lpm`. When a vendored package requires through `@lpm`, the require uses
+-- the `lpm` alias of whichever project vendored it. So any project that
+-- vendors such a package has to define the same alias.
+-- The following issue tracks removing that requirement:
+-- https://github.com/flipbook-labs/flipbook/issues/694
+--
+-- The rest of this script requires flipbook-batteries from `.lpm`, so this
+-- runs first.
 do
-	installLoomPackages()
-
-	if not loomPackagesAreAvailable() then
-		hydrateLoomStore()
-		assert(loomPackagesAreAvailable(), "Loom packages are missing after installation")
-	end
+	local res = process.run({ "lute", "pkg", "install", "--vendor" }, {
+		stdio = "inherit",
+	})
+	assert(res.ok, "lute pkg install failed")
 end
 
 do
-	local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
+	local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
