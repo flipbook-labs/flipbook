@@ -1,12 +1,11 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
-local cli = require("@batteries/cli")
-local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
-local pp = require("@batteries/pp")
+local pp = require("@lpm/batteries@v1.0.1-nightly.20261115/pp")
 local process = require("@std/process")
-local richterm = require("@batteries/richterm")
-local toml = require("@batteries/toml")
+local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
+local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
@@ -21,7 +20,7 @@ local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
-dotenv.config()
+FlipbookBatteries.dotenv()
 
 local args = cli.parser()
 
