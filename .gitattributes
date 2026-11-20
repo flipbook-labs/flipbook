@@ -1,2 +1,7 @@
 **/*.lock linguist-generated=true
 **/*.lock.luau linguist-generated=true
+
+# `lute pkg install` writes the lockfile, so GitHub collapses its diff in pull
+# requests and leaves it out of language stats. GitHub doesn't apply the
+# `**/` pattern above to a file at the repository root.
+pkg.lock.luau linguist-generated=true
