@@ -52,17 +52,17 @@ export type StoryStore = {
 
 local function createStoryStore(options: Options): StoryStore
 	local defaultStorybook = createLoadedStorybook()
-	local getSelection, setSelection = Charm.signal({
+	local getSelection, setSelection = Charm.signal<<StorySelection>>({
 		kind = StorySelectionKind.None,
-	} :: StorySelection)
-	local getActiveControlsStore, setActiveControlsStore = Charm.signal(nil :: StoryControlsStore?)
+	})
+	local getActiveControlsStore, setActiveControlsStore = Charm.signal<<StoryControlsStore?>>(nil)
 	local getIsMountedInViewport, setIsMountedInViewport = Charm.signal(false)
-	local getStoryContainer, setStoryContainer = Charm.signal(nil :: GuiBase2d?)
+	local getStoryContainer, setStoryContainer = Charm.signal<<GuiBase2d?>>(nil)
 	local getZoom, setZoom = Charm.signal(0)
 
-	local getSelectionKind = Charm.computed(function(): StorySelectionKind
+	local getSelectionKind = Charm.computed<<StorySelectionKind>>(function()
 		return getSelection().kind
-	end) :: () -> StorySelectionKind
+	end)
 
 	local getSelectedStory = Charm.computed(function(): SelectedStory?
 		local selection = getSelection()

@@ -15,12 +15,12 @@ export type NavigationStore = {
 }
 
 local function createNavigationStore(): NavigationStore
-	local getNavigationStack, setNavigationStack = Charm.signal({ navigationEnums.Screen.Home } :: { Screen })
+	local getNavigationStack, setNavigationStack = Charm.signal<<{ Screen }>>({ navigationEnums.Screen.Home })
 
-	local getCurrentScreen = Charm.computed(function(): Screen
+	local getCurrentScreen = Charm.computed<<Screen>>(function()
 		local stack = getNavigationStack()
 		return stack[#stack]
-	end) :: () -> Screen
+	end)
 
 	local function reportPageChanged(screen: Screen)
 		task.spawn(function()

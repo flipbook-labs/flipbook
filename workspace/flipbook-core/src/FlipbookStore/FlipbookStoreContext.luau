@@ -4,7 +4,7 @@ local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
 
 type FlipbookStore = createFlipbookStore.FlipbookStore
 
-local Context = React.createContext(nil :: FlipbookStore?)
+local Context = React.createContext<<FlipbookStore?>>(nil)
 
 export type Props = {
 	store: FlipbookStore,

@@ -30,7 +30,7 @@ local function StoryPreview(props: Props): React.Node
 	local isMountedInViewport = useSignalState(flipbookStore.story.getIsMountedInViewport)
 	local zoom = useSignalState(flipbookStore.story.getZoom)
 	local controls = useStoryControlValues()
-	local err: string?, setErr = useState(nil :: string?)
+	local err: string?, setErr = useState<<string?>>(nil)
 
 	useEffect(function()
 		setErr(nil)
