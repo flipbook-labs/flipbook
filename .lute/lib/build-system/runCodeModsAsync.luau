@@ -28,14 +28,16 @@ export type Options = {
 --    It resolves each require through the nearest `.config.luau` or `.luaurc`
 --    and looks the file up in the sourcemap `compileAsync` writes. A require
 --    it can't resolve stops the build.
--- 2. `injectGlobalValue` replaces each of `project.BUILD_GLOBALS`, such as
---    `_G.BUILD_CHANNEL`, with its value from the build's environment. A global
---    with no value there becomes `nil`.
+-- 2. `injectGlobalValue` replaces reads of the globals in
+--    `project.BUILD_GLOBALS`, such as `_G.BUILD_CHANNEL`, with their values
+--    from the build's environment. A global with no value there becomes `nil`,
+--    and the mod prints a warning.
 -- 3. The rest fold the expressions those values make constant and remove the
 --    code that can never run, such as a dev-only branch in a prod build.
 --
 -- The mods go in the order CodeQuality's README lists, since a later mod
--- cleans up what an earlier one leaves behind.
+-- cleans up what an earlier one leaves behind:
+-- https://github.com/flipbook-labs/code-quality#building-without-darklua
 local function runCodeModsAsync(options: Options)
 	local targets: { string } = {}
 	for _, target in options.paths do

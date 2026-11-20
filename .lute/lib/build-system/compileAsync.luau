@@ -25,8 +25,9 @@ local function compileAsync(context: BuildContext)
 		makeParents = true,
 	})
 
-	-- The code mods look up which instance each file becomes in this
-	-- sourcemap of the source tree. The build output keeps the same layout.
+	-- The code mods look up which instance each source file becomes in this
+	-- sourcemap of `sourcemap.project.json`, which lays out `src/`, the
+	-- packages, and the workspace members as the plugin does.
 	run("rojo", {
 		"sourcemap",
 		project.SOURCEMAP_PROJECT_PATH,

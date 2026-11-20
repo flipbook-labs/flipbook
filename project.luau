@@ -19,8 +19,9 @@ return {
 	SOURCEMAP_PROJECT_PATH = path.resolve("./sourcemap.project.json"),
 	BUILD_SOURCEMAP_PATH = path.resolve("./sourcemap-build.json"),
 
-	-- `_G` globals the build replaces with their values, read from the
-	-- build's environment. A global with no value there becomes `nil`.
+	-- Globals such as `_G.BUILD_CHANNEL` that the build replaces with their
+	-- values, read from the build's environment. A global with no value there
+	-- becomes `nil`.
 	BUILD_GLOBALS = {
 		"BUILD_VERSION",
 		"BUILD_CHANNEL",
