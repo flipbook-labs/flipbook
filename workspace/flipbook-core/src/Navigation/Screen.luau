@@ -16,6 +16,7 @@ type UnavailableStorybook = Storyteller.UnavailableStorybook
 
 export type Props = {
 	story: ModuleScript?,
+	storyId: string?,
 	storybook: LoadedStorybook?,
 	unavailableStorybook: UnavailableStorybook?,
 }
@@ -28,6 +29,7 @@ local function Screen(props: Props)
 		if currentScreen == "Home" then
 			if props.story and props.storybook then
 				return React.createElement(StoryView, {
+					storyId = props.storyId,
 					storyModule = props.story,
 					storybook = props.storybook,
 				})
