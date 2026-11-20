@@ -14,23 +14,22 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 
 ## Tech Stack
 
-| Tool                     | Role                                                                                |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| **Lute**                 | Task runner for all scripts (`lute run <script>`)                                   |
-| **Rokit**                | Toolchain version manager (`rokit install` pins tools from `rokit.toml`)            |
-| **Wally**                | Roblox package manager (Roblox runtime deps)                                        |
-| **Lute packages**        | Tooling dependencies for scripts, declared in `pkg.luau` and vendored into `.lpm/`  |
-| **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds      |
-| **CodeQuality**          | Shared lint rules, and the code mods the build uses to turn source into Roblox code |
-| **Darklua**              | Patches string requires in a few Wally packages during `lute run install`           |
-| **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                    |
-| **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                     |
-| **Selene**               | Luau linter                                                                         |
-| **StyLua**               | Luau formatter                                                                      |
-| **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                               |
-| **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller          |
-| **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories               |
-| **Storyteller**          | Story discovery, loading, and rendering; wraps ModuleLoader                         |
+| Tool                     | Role                                                                               |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| **Lute**                 | Task runner for all scripts (`lute run <script>`)                                  |
+| **Rokit**                | Toolchain version manager (`rokit install` pins tools from `rokit.toml`)           |
+| **Wally**                | Roblox package manager (Roblox runtime deps)                                       |
+| **Lute packages**        | Tooling dependencies for scripts, declared in `pkg.luau` and vendored into `.lpm/` |
+| **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds     |
+| **CodeQuality**          | Shared lint rules, and the code mods that turn string requires into Roblox ones    |
+| **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                   |
+| **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                    |
+| **Selene**               | Luau linter                                                                        |
+| **StyLua**               | Luau formatter                                                                     |
+| **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                              |
+| **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller         |
+| **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories              |
+| **Storyteller**          | Story discovery, loading, and rendering; wraps ModuleLoader                        |
 
 ---
 

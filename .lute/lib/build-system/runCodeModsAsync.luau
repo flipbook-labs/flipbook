@@ -1,4 +1,4 @@
-local CodeQuality = require("@lpm/code-quality@v0.5.0")
+local CodeQuality = require("@lpm/code-quality@v0.6.0")
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local json = require("@std/json")
 local path = require("@std/path")
