@@ -54,17 +54,17 @@ export type StoryStore = {
 
 local function createStoryStore(options: Options): StoryStore
 	local defaultStorybook = createLoadedStorybook()
-	local getSelection, setSelection = Charm.signal({
+	local getSelection, setSelection = Charm.signal<<StorySelection>>({
 		kind = StorySelectionKind.None,
-	} :: StorySelection)
-	local getActiveControlsStore, setActiveControlsStore = Charm.signal(nil :: StoryControlsStore?)
+	})
+	local getActiveControlsStore, setActiveControlsStore = Charm.signal<<StoryControlsStore?>>(nil)
 	local getIsMountedInViewport, setIsMountedInViewport = Charm.signal(false)
-	local getStoryContainer, setStoryContainer = Charm.signal(nil :: GuiBase2d?)
+	local getStoryContainer, setStoryContainer = Charm.signal<<GuiBase2d?>>(nil)
 	local getZoom, setZoom = Charm.signal(0)
 
-	local getSelectionKind = Charm.computed(function(): StorySelectionKind
+	local getSelectionKind = Charm.computed<<StorySelectionKind>>(function()
 		return getSelection().kind
-	end) :: () -> StorySelectionKind
+	end)
 
 	local getSelectedStory = Charm.computed(function(): SelectedStory?
 		local selection = getSelection()
@@ -95,7 +95,6 @@ local function createStoryStore(options: Options): StoryStore
 	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?)
 		Charm.batch(function()
 			setActiveControlsStore(nil)
-			setStoryContainer(nil)
 			setZoom(0)
 
 			if storyModule == nil then
@@ -117,7 +116,6 @@ local function createStoryStore(options: Options): StoryStore
 	local function showUnavailableStorybook(unavailableStorybook: UnavailableStorybook)
 		Charm.batch(function()
 			setActiveControlsStore(nil)
-			setStoryContainer(nil)
 			setZoom(0)
 			setSelection({
 				kind = StorySelectionKind.UnavailableStorybook,

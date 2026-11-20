@@ -94,6 +94,17 @@ describe("story-scoped state", function()
 		expect(store.getZoom()).toBe(0)
 	end)
 
+	test("keeps the story container when the story changes", function()
+		local store = createStore()
+		local storyContainer = Instance.new("ScreenGui")
+
+		store.openStory(createStoryModule(), createLoadedStorybook())
+		store.setStoryContainer(storyContainer)
+		store.openStory(createStoryModule(), createLoadedStorybook())
+
+		expect(store.getStoryContainer()).toBe(storyContainer)
+	end)
+
 	test("toggles viewport preview state", function()
 		local store = createStore()
 

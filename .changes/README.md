@@ -10,13 +10,15 @@ Create a Markdown file in this folder. The filename is up to you — it only exi
 ---
 bump: minor
 category: Features
+kind: controls
 ---
 
 Add support for Foo values so Bar can be Bazzed.
 ```
 
 - **`bump`** (required) — how much to move the version: `major`, `minor`, or `patch`.
-- **`category`** (optional) — the heading this entry appears under in the changelog, such as `Features`, `Fixes`, or `Dependencies`. Defaults to `Changes`.
+- **`category`** (required) — the heading this entry appears under in the changelog: `Features`, `Changes`, `Fixes`, `Dependencies`, or `Internal`. The changelog lists the headings in that order, as set by `categories` in [`changewrite.toml`](../changewrite.toml). Dependencies and Internal start collapsed in GitHub release notes.
+- **`kind`** (required) — the part of Flipbook the change landed in, shown as a chip beside the entry. Pick one of the `[kind.*]` tables in [`changewrite.toml`](../changewrite.toml): `stories`, `sidebar`, `preview`, `controls`, `app`, `plugin`, `embedded`, `agents`, `telemetry`, `docs`, `build`, `tooling`, `packages`, `ci`, `release`, or `contributing`. A refactor takes the kind of whatever it touches.
 - **Body** — everything below the frontmatter is the changelog text. Aim for one or two sentences; it can span multiple paragraphs if a change needs it.
 
 ## How the version is chosen

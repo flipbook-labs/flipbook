@@ -33,8 +33,7 @@ type SelectedStoryViewProps = {
 
 local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
-	local selectedStory = props.selectedStory
-	local story, storyError = useStory(selectedStory.storyModule, selectedStory.storybook)
+	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)

@@ -47,7 +47,7 @@ local function TreeNode(props: TreeNodeProps)
 	local iconName, iconStyle = useTreeNodeIcon(icon :: Types.TreeNodeIcon)
 
 	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
-	local ref = useRef(nil :: GuiObject?)
+	local ref = useRef<<GuiObject?>>(nil)
 
 	local tokens = useTokens()
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
