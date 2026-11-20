@@ -4,4 +4,4 @@ category: Internal
 kind: build
 ---
 
-Build the plugin with CodeQuality's code mods instead of darklua.
+Build and install Flipbook without darklua.
