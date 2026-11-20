@@ -22,9 +22,10 @@ local function FlipbookApp()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
-	-- The navigation store sends a PageChanged event each time the screen
-	-- changes, but not for the screen the app opens on. This sends one for
-	-- that first screen once the app mounts.
+	-- The navigation store sends a PageChanged event when navigateTo or goBack
+	-- runs. Creating the store sends nothing, so building one has no side
+	-- effects. This sends the event for the screen the app opens on, once the
+	-- app mounts with its store.
 	useEffect(function()
 		flipbookStore.navigation.reportCurrentScreen()
 	end, { flipbookStore })
