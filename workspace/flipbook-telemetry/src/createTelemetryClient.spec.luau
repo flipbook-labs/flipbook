@@ -168,7 +168,7 @@ describe("telemetry consent", function()
 	end)
 
 	test("migrates an explicit legacy denial without creating an identifier", function()
-		local storedValue
+		local storedValue: string?
 		local createdIds = 0
 		local client = createTelemetryClient({
 			context = {

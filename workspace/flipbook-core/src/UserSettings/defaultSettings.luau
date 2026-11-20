@@ -2,18 +2,18 @@ local constants = require("@root/constants")
 
 export type SettingType = "checkbox" | "dropdown" | "number"
 
-local SettingType = {
+local SettingType = table.freeze({
 	Checkbox = "checkbox" :: "checkbox",
 	Dropdown = "dropdown" :: "dropdown",
 	Number = "number" :: "number",
-}
+})
 
 export type SettingGroup = "UI" | "Stories"
 
-local SettingGroup = {
+local SettingGroup = table.freeze({
 	UI = "UI" :: "UI",
 	Stories = "Stories" :: "Stories",
-}
+})
 
 export type SettingChoice = {
 	description: string,
