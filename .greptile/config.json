@@ -7,7 +7,6 @@
     ]
   },
   "statusCheck": true,
-  "effort": "plus",
   "instructions": "Review for impact beyond the changed files as well as local correctness. In the summary, name the parts of Flipbook, Storyteller, or ModuleLoader that the change could affect outside the files it touches.\n\nWhen the PR description links an issue, compare the diff with that issue and call out work it does not cover. When no issue is linked, say so in the summary without treating it as a defect.\n\nThe 5/5 score gates merging. Withhold it for defects and for high- or medium-severity rule violations. Leave low-severity rule notes as comments that do not lower the score.",
   "rules": [
     {
