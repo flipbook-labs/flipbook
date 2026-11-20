@@ -24,6 +24,6 @@ t = "osyrisrblx/t@3.0.0"
 
 # dev dependencies
 Fusion = "elttob/fusion@0.2.0"
-Jest = "jsdotlua/jest@3.10.0"
-JestGlobals = "jsdotlua/jest-globals@3.10.0"
+Jest = "roblox/jest@3.21.0"
+JestGlobals = "roblox/jest-globals@3.21.0"
 Roact = "roblox/roact@1.4.4"
