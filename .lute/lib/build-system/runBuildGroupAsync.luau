@@ -1,6 +1,6 @@
 local fs = require("@std/fs")
 local process = require("@std/process")
-local richterm = require("@batteries/richterm")
+local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
 
 local hashPath = require("@scripts/lib/build-system/hashPath")
 local types = require("@scripts/lib/build-system/types")

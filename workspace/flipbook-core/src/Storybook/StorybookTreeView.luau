@@ -33,12 +33,12 @@ export type Props = {
 
 local function StorybookTreeView(props: Props)
 	local flipbookStore = FlipbookStoreContext.use()
-	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
-	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
+	local storybookByNodeId = useRef<<{ [string]: LoadedStorybook }>>({})
+	local unavailableStorybookByNodeId = useRef<<{ [string]: UnavailableStorybook }>>({})
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
-	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
+	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -126,10 +126,10 @@ local function StorybookTreeView(props: Props)
 				continue
 			end
 
-			local node = createTreeNodesForStorybook(storybook :: any)
+			local node = createTreeNodesForStorybook(storybook)
 
 			nodesByInstance.current[storybook.source] = node
-			storybookByNodeId.current[node.id] = storybook :: any
+			storybookByNodeId.current[node.id] = storybook
 
 			if pinnedInstanceStore.isPinned(storybook.source) then
 				node.setIsPinned(true)
