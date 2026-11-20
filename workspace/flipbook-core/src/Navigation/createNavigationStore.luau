@@ -12,6 +12,7 @@ export type NavigationStore = {
 	goBack: () -> (),
 	canGoBack: () -> boolean,
 	getBreadcrumbs: () -> { Screen },
+	reportCurrentScreen: () -> (),
 }
 
 local function createNavigationStore(): NavigationStore
@@ -63,6 +64,10 @@ local function createNavigationStore(): NavigationStore
 		return getNavigationStack()
 	end
 
+	local function reportCurrentScreen()
+		reportPageChanged(getCurrentScreen())
+	end
+
 	return {
 		getNavigationStack = getNavigationStack,
 		getCurrentScreen = getCurrentScreen,
@@ -70,6 +75,7 @@ local function createNavigationStore(): NavigationStore
 		goBack = goBack,
 		canGoBack = canGoBack,
 		getBreadcrumbs = getBreadcrumbs,
+		reportCurrentScreen = reportCurrentScreen,
 	}
 end
 
