@@ -6,8 +6,8 @@
 -- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release annotation also
 -- reads POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID. --dry-run prints each
 -- request instead of sending it and needs none of these.
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
-local cli = require("@batteries/cli")
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")

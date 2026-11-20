@@ -28,7 +28,7 @@
 --   lock can land before this run's unlock, which then overwrites it. When
 --   main has moved, the publish pull request is missing that change, so the
 --   Release workflow locks it again.
-local cli = require("@batteries/cli")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local process = require("@std/process")
 

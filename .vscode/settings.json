@@ -5,6 +5,6 @@
     "**/build/**",
     "**/*Packages/**",
     "**/.lute/typedefs/**",
-    "**/.loom/store/**"
+    "**/.lpm/**"
   ]
 }
