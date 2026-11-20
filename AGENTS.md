@@ -24,7 +24,6 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 | **CodeQuality**          | Shared lint rules, and the code mods that turn string requires into Roblox ones    |
 | **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                   |
 | **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                    |
-| **Selene**               | Luau linter                                                                        |
 | **StyLua**               | Luau formatter                                                                     |
 | **CodeQuality**          | Shared Luau lint rules; `lute run lint` runs them with `lute lint`                 |
 | **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                              |
@@ -125,7 +124,7 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 
 - **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
 - **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
-- **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
+- **Luau linter:** `lute lint` with the CodeQuality rules, run by `lute run lint`. `global_usage` is off in `.config.luau`.
 - **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
 - **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); the build converts these to Roblox `require()` calls.
