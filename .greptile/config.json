@@ -6,5 +6,65 @@
       "flipbook-labs/module-loader"
     ]
   },
-  "statusCheck": true
+  "statusCheck": true,
+  "effort": "plus",
+  "instructions": "Review for impact beyond the changed files as well as local correctness. In the summary, name the parts of Flipbook, Storyteller, or ModuleLoader that the change could affect outside the files it touches.\n\nWhen the PR description links an issue, compare the diff with that issue and call out work it does not cover. When no issue is linked, say so in the summary without treating it as a defect.\n\nThe 5/5 score gates merging. Withhold it for defects and for high- or medium-severity rule violations. Leave low-severity rule notes as comments that do not lower the score.",
+  "rules": [
+    {
+      "id": "storyteller-boundary",
+      "rule": "When a change calls into Storyteller or ModuleLoader, or uses a type either one exports, compare the call with their source in context: function names, arguments, return shapes, and types. Their default branch can be ahead of the version pinned in wally.toml, so report a mismatch as a question to confirm unless the pinned version clearly has the same API. Also flag code that relies on behavior those packages do not document or test.",
+      "scope": ["workspace/**/*.luau", "src/**/*.luau"],
+      "severity": "high"
+    },
+    {
+      "id": "skill-drift",
+      "rule": "When a change renames a symbol, changes a value, or fixes a bug that a skill in flipbook-labs/agent-skills describes, name the skill that now needs updating. That fix lands in agent-skills, so this is a follow-up note for the author.",
+      "severity": "low"
+    },
+    {
+      "id": "present-tense-comments",
+      "rule": "Comments explain why the code is the way it is now, for a reader who never saw an earlier version. Flag comments that only make sense against a past shape of the code, such as ones that say what the code 'used to' do, what happened 'previously', or where logic 'moved to'.",
+      "scope": ["**/*.luau"],
+      "severity": "medium"
+    },
+    {
+      "id": "inline-hook-deps",
+      "rule": "React hook dependency arrays stay inline in the hook call (useEffect, useMemo, useCallback, and similar). Flag a dependency array assigned to a local variable and passed by name.",
+      "scope": ["workspace/**/*.luau"],
+      "severity": "medium"
+    },
+    {
+      "id": "spec-coverage",
+      "rule": "New or changed logic needs a colocated *.spec.luau test that would fail without the change. Flag tests that only restate what the implementation returns, mock the module under test, or cannot fail.",
+      "scope": [
+        "workspace/flipbook-core/src/**/*.luau",
+        "workspace/flipbook-agents/src/**/*.luau"
+      ],
+      "severity": "medium"
+    },
+    {
+      "id": "visual-evidence",
+      "rule": "When a change affects what users see or how they interact with Flipbook, the PR description includes screenshots, video, or the PR's Storybook preview. Flag a visible change that has none.",
+      "scope": ["workspace/flipbook-core/**", "workspace/flipbook-next/**"],
+      "severity": "medium"
+    },
+    {
+      "id": "workflow-conventions",
+      "rule": "Check logic belongs in .lute/ scripts that workflows call, not inline in workflow YAML. Action pinning and job timeouts follow org/repo-conventions in flipbook-labs/agent-skills.",
+      "scope": [".github/workflows/**", ".github/actions/**"],
+      "severity": "medium"
+    },
+    {
+      "id": "no-install-patches",
+      "rule": "Do not add new install-time patches to upstream packages. Flag a change that rewrites files under Packages/, RobloxPackages/, or .lpm/ after they are installed. A problem in an upstream package gets an issue filed with that package instead.",
+      "scope": [".lute/**", "pkg.luau", "wally.toml", "rokit.toml"],
+      "severity": "medium"
+    },
+    {
+      "id": "changelog-entry",
+      "rule": "A PR adds at most one .changes/ entry. Its body is one short sentence, about 140 characters at most, in present tense, with no references to PRs, branches, or how the change was developed. Maintenance with no user-facing effect uses the Internal category and a patch bump.",
+      "scope": [".changes/**"],
+      "severity": "low"
+    }
+  ]
 }
