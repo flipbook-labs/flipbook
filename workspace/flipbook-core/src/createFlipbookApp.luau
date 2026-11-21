@@ -48,22 +48,29 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local appOptions: Options = options or {}
 	local appPlugin = appOptions.plugin or defaultPlugin
 	local appMode: AppMode = appOptions.mode or AppMode.PluginWidget
-	local store = createFlipbookStore({
-		mode = appMode,
-		plugin = appPlugin,
-		launchData = appOptions.launchData,
-	})
 
-	-- FIXME: ContextProviders having an error won't fail tests. We really need
-	-- a smoketest for this file
-	local app = React.createElement(ContextProviders, {
-		plugin = appPlugin,
-		overlayGui = appOptions.overlayGui or container,
-		mode = appMode,
-		store = store,
-	}, {
-		FlipbookApp = React.createElement(FlipbookApp),
-	})
+	-- The plugin unmounts the app when its widget closes and mounts it again
+	-- when the widget opens. Each mount builds a new store, so a reopened
+	-- widget starts on Home with no story selected. A story comes back only
+	-- when rememberLastOpenedStory is on and restores the last one opened.
+	local function createApp(): React.Node
+		local store = createFlipbookStore({
+			mode = appMode,
+			plugin = appPlugin,
+			launchData = appOptions.launchData,
+		})
+
+		-- FIXME: ContextProviders having an error won't fail tests. We really need
+		-- a smoketest for this file
+		return React.createElement(ContextProviders, {
+			plugin = appPlugin,
+			overlayGui = appOptions.overlayGui or container,
+			mode = appMode,
+			store = store,
+		}, {
+			FlipbookApp = React.createElement(FlipbookApp),
+		})
+	end
 
 	local function unmount()
 		logger:Info("unmounting app...")
@@ -82,7 +89,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local function mount()
 		logger:Info("mounting app...")
 		local elapsedMs = stopwatch(function()
-			root:render(app)
+			root:render(createApp())
 		end)
 		logger:Info(`mounted app in {elapsedMs}`)
 
