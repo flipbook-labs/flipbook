@@ -30,9 +30,10 @@ local function runCodeModsAsync(options: Options)
 		table.insert(paths, path.format(target))
 	end
 
-	-- A global the build context doesn't set is read from the environment
-	-- variable of the same name, which `{"env": "NAME"}` asks for. One that
-	-- isn't set there either becomes `nil`, with a warning.
+	-- The build sets most globals' values in `context.env`. A global missing
+	-- from there is read from the environment variable of the same name, which
+	-- `{"env": "NAME"}` asks for. One that isn't set there either becomes
+	-- `nil`, with a warning.
 	local globals: { [string]: json.Value } = {}
 	for _, name in project.BUILD_GLOBALS do
 		local value = options.context.env[name]
