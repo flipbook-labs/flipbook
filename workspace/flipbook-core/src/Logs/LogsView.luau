@@ -22,7 +22,7 @@ local function LogsView()
 	end
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full col gap-xsmall padding-medium",
+		tag = "size-full col gap-xxsmall padding-small",
 		scroll = {
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.fromScale(1, 0),

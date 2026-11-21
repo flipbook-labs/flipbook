@@ -89,7 +89,7 @@ local function StoryControls(props: StoryControlsProps)
 		-- spacing, but ideally Foundation can handle this for us. When it can:
 		-- remove this wrapper.
 		TabsWrapper = e(Foundation.View, {
-			tag = "size-full-0 auto-y padding-x-medium gap-y-small",
+			tag = "size-full-0 auto-y padding-x-small gap-y-xsmall",
 		}, {
 			Tabs = e(Foundation.Tabs, {
 				tabs = {
@@ -123,19 +123,19 @@ local function StoryControls(props: StoryControlsProps)
 			}, {
 				Content = e(View, {
 					LayoutOrder = 1,
-					tag = "auto-y align-y-center gap-medium padding-medium row size-full-0",
+					tag = "auto-y align-y-center gap-small padding-small row size-full-0",
 				}, {
 					Name = e(Text, {
 						LayoutOrder = 1,
 						Size = UDim2.fromScale(0.2, 0),
 						Text = "Name",
-						tag = "auto-y content-muted text-align-x-left text-title-medium",
+						tag = "auto-y content-muted text-align-x-left text-title-small",
 					}),
 
 					Control = e(Text, {
 						LayoutOrder = 2,
 						Text = "Control",
-						tag = "auto-y content-muted fill text-align-x-left text-title-medium",
+						tag = "auto-y content-muted fill text-align-x-left text-title-small",
 					}),
 				}),
 
