@@ -21,7 +21,7 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 | **Wally**                | Roblox package manager (Roblox runtime deps)                                       |
 | **Lute packages**        | Tooling dependencies for scripts, declared in `pkg.luau` and vendored into `.lpm/` |
 | **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds     |
-| **Darklua**              | Transforms Luau-style `require` paths to Roblox `require()` calls during build     |
+| **CodeQuality**          | Shared lint rules, and the code mods that turn string requires into Roblox ones    |
 | **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                   |
 | **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                    |
 | **Selene**               | Luau linter                                                                        |
@@ -59,10 +59,9 @@ flipbook/
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── pkg.luau                # Lute package manifest (batteries, flipbook-batteries; agent-skills dev dep)
+├── pkg.luau                # Lute package manifest (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
 ├── pkg.lock.luau           # Lute package lockfile
 ├── .config.luau            # Luau aliases, including `@lpm` for the vendored Lute packages
-├── .darklua.json           # Darklua rules, including the require aliases the build resolves
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
@@ -84,7 +83,7 @@ Both follow a simpler layout:
 └── pkg.luau                # Lute package manifest
 ```
 
-Build output (`dist/`) is a Darklua-processed mirror of `src/` with Luau-style requires converted to Roblox `require()` calls. **Wally publishes from `dist/`**, not `src/`.
+Build output (`dist/`) mirrors `src/` with Luau-style requires converted to Roblox `require()` calls. **Wally publishes from `dist/`**, not `src/`.
 
 ---
 
@@ -128,7 +127,7 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 - **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
 - **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
-- **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); Darklua converts these to Roblox `require()` during build.
+- **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); the build converts these to Roblox `require()` calls.
 
 ### Comments explain the present, not the history
 
@@ -173,9 +172,9 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 - **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime)
 - `LuauPackages/` holds only rbxasset, which `.lune/publish-plugin.luau` requires as `@lunepkg`. Lune reads aliases only from `.luaurc`, so `.lune/.luaurc` declares the Lune aliases
 
-### Darklua and require paths
+### The build and require paths
 
-Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Darklua doesn't read `.config.luau`, so the aliases the root `src/` build needs (`@pkg`, `@rbxpkg`, `@workspace`) are declared in `.darklua.json`, and each workspace member declares its own in a `.luaurc`. Darklua leaves a require it can't resolve unconverted rather than failing. Darklua processes `src/` → `build/<channel>/<target>/` (or `dist/` in Storyteller/ModuleLoader) converting these to Roblox `require(script.X)` using Rojo sourcemaps. **Never edit files in `build/` or `dist/` directly.**
+Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). The build copies `src/` into `build/<channel>/<target>/`, and each workspace member's `src/` into its own `build/` folder, then runs [CodeQuality](https://github.com/flipbook-labs/code-quality)'s code mods over the copies (`.lute/lib/build-system/runCodeModsAsync.luau`). `convertRequire` resolves each require through the nearest `.config.luau` or `.luaurc` (the root `src/` uses the root `.config.luau`, and each workspace member has its own `.luaurc`), then writes the Roblox `require(script.X)` path from a Rojo sourcemap. A require it can't resolve fails the build. `injectGlobalValue` fills in the build globals listed in `project.luau`'s `BUILD_GLOBALS`, and the cleanup mods remove the branches those values make unreachable. **Never edit files in `build/` or `dist/` directly.**
 
 ---
 

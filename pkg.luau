@@ -21,6 +21,11 @@ return {
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/agent-skills",
 			},
+			["code-quality"] = {
+				rev = "v0.7.0",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/code-quality",
+			},
 		},
 	},
 }
