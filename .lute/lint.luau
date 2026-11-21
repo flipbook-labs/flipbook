@@ -1,3 +1,4 @@
+local CodeQuality = require("@lpm/code-quality@v0.7.0")
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local path = require("@std/path")
 local process = require("@std/process")
@@ -29,6 +30,11 @@ run("stylua", {
 	"--check",
 	table.unpack(project.FOLDERS_TO_LINT),
 })
+
+-- The codebase doesn't pass every CodeQuality rule yet, so findings are
+-- printed without failing lint. Lint still fails if `lute lint` itself errors,
+-- such as when a rule throws.
+CodeQuality.lint(project.FOLDERS_TO_LINT, { blocking = false })
 
 local files = findLuaFiles()
 if #files > 0 then
