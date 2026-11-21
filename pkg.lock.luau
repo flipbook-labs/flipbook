@@ -6,7 +6,7 @@ return {
   },
   devDependencies = {
     ["agent-skills"] = "agent-skills@v0.7.0",
-    ["code-quality"] = "code-quality@v0.6.0",
+    ["code-quality"] = "code-quality@v0.7.0",
   },
   packages = {
     ["agent-skills@v0.7.0"] = {
@@ -26,10 +26,10 @@ return {
       target = "batteries",
       dependencies = {},
     },
-    ["code-quality@v0.6.0"] = {
-      installPath = "@pkg/code-quality--github-1234fc23be7b191af0dfcb12c5bcd80ec53c2a90ee282c59e48cdfd534b41adb@070533466467296d77e7d309371c2c322c9ef7d1f47dade632571711ce1bc5f9/.",
+    ["code-quality@v0.7.0"] = {
+      installPath = "@pkg/code-quality--github-1234fc23be7b191af0dfcb12c5bcd80ec53c2a90ee282c59e48cdfd534b41adb@50ab7418ec44018e5cfb2826c68fe26616f4ae4399ad5da286264e4e826b123b/.",
       name = "code-quality",
-      rev = "v0.6.0",
+      rev = "v0.7.0",
       source = "https://github.com/flipbook-labs/code-quality",
       sourceKind = "github",
       dependencies = {},
