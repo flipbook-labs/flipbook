@@ -34,7 +34,7 @@ export type FlipbookStore = {
 }
 
 local function createFlipbookStore(options: Options): FlipbookStore
-	local telemetry = createTelemetry()
+	local telemetry = createTelemetry(options.mode, options.plugin)
 	local navigation = createNavigationStore(telemetry)
 	local story = createStoryStore({
 		mode = options.mode,

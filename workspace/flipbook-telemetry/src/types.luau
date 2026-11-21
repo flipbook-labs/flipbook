@@ -1,3 +1,8 @@
+local ConsentState = require("@root/ConsentState")
+
+export type ConsentState = ConsentState.ConsentState
+export type ConsentDecision = ConsentState.ConsentDecision
+
 -- Event names and properties mirror the backend telemetry contract. Update the
 -- backend before extending this union.
 export type AppOpened = {
@@ -94,15 +99,26 @@ export type TelemetryContext = {
 	buildHash: string,
 }
 
+export type TelemetryStorage = {
+	read: () -> unknown,
+	write: (value: string) -> (),
+}
+
 export type TelemetryOptions = {
 	context: TelemetryContext,
-	isEnabled: () -> boolean,
-	getAnonymousId: () -> string,
+	disabled: boolean?,
+	readLegacyConsent: (() -> ConsentState?)?,
+	storage: TelemetryStorage?,
 	transport: (envelope: TelemetryEnvelope) -> (),
+	warn: ((message: string) -> ())?,
 }
 
 export type TelemetryClient = {
 	capture: (event: TelemetryEvent) -> boolean,
+	getConsent: () -> ConsentState,
+	getIsLoading: () -> boolean,
+	setConsent: (consent: ConsentDecision) -> boolean,
+	waitForLoaded: () -> (),
 }
 
 return nil
