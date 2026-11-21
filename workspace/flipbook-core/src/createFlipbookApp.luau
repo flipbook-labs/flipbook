@@ -5,11 +5,13 @@ local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local FlipbookApp = require("@root/FlipbookApp")
 local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
+type AgentController = FlipbookAgents.AgentController
 type LaunchData = EmbeddingTypes.LaunchData
 type Pluginlike = CommonTypes.Pluginlike
 
@@ -18,6 +20,8 @@ export type Options = {
 	plugin: Pluginlike?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
+	agentController: AgentController?,
+	trackLifecycleTelemetry: boolean?,
 }
 
 local defaultPlugin: Pluginlike = {
@@ -42,12 +46,14 @@ end
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
 	local appOptions: Options = options or {}
+	local trackLifecycleTelemetry = appOptions.trackLifecycleTelemetry ~= false
 
 	-- FIXME: ContextProviders having an error won't fail tests. We really need
 	-- a smoketest for this file
 	local app = React.createElement(ContextProviders, {
 		plugin = appOptions.plugin or defaultPlugin,
 		overlayGui = appOptions.overlayGui or container,
+		agentController = appOptions.agentController,
 	}, {
 		FlipbookApp = React.createElement(FlipbookApp, {
 			launchData = appOptions.launchData,
@@ -62,11 +68,13 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`unmounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "AppClosed",
-			})
-		end)
+		if trackLifecycleTelemetry then
+			task.spawn(function()
+				fireEventAsync({
+					eventName = "AppClosed",
+				})
+			end)
+		end
 	end
 
 	local function mount()
@@ -76,11 +84,13 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`mounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "AppOpened",
-			})
-		end)
+		if trackLifecycleTelemetry then
+			task.spawn(function()
+				fireEventAsync({
+					eventName = "AppOpened",
+				})
+			end)
+		end
 	end
 
 	local function destroy()
