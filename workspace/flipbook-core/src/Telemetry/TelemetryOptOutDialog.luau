@@ -3,9 +3,9 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Sift = require("@pkg/Sift")
 
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
@@ -13,37 +13,39 @@ local useCallback = React.useCallback
 local useState = React.useState
 
 local function TelemetryOptOutDialog(): React.Node?
+	local flipbookStore = FlipbookStoreContext.use()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local localStorageStore = useSignalState(LocalStorageStore.get)
 	local storage = useSignalState(localStorageStore.getStorage)
 	local isStorageLoading = useSignalState(localStorageStore.getIsLoading)
 	local isOptedIn, setIsOptedIn = useState(true)
 
-	local onClose = useCallback(function()
-		localStorageStore.setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
-				wasUserPromptedForTelemetry = true,
-			})
-		end)
+	local onClose = useCallback(
+		function()
+			localStorageStore.setStorage(function(prev)
+				return Sift.Dictionary.join(prev, {
+					wasUserPromptedForTelemetry = true,
+				})
+			end)
 
-		userSettingsStore.setStorage(function(prev)
-			return Sift.Dictionary.join(prev, {
-				collectAnonymousUsageData = isOptedIn,
-			})
-		end)
+			userSettingsStore.setStorage(function(prev)
+				return Sift.Dictionary.join(prev, {
+					collectAnonymousUsageData = isOptedIn,
+				})
+			end)
 
-		task.spawn(function()
 			if isOptedIn then
-				fireEventAsync({
+				flipbookStore.telemetry.capture({
 					eventName = "TelemetryOptedIn",
 				})
 			else
-				fireEventAsync({
+				flipbookStore.telemetry.capture({
 					eventName = "TelemetryOptedOut",
 				})
 			end
-		end)
-	end, { localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown })
+		end,
+		{ flipbookStore.telemetry, localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown }
+	)
 
 	-- We check `isStorageLoading` to prevent the dialog from briefly flashing
 	-- on screen
