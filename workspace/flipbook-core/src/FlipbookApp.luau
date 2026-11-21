@@ -4,6 +4,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
@@ -13,11 +14,21 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
+local useEffect = React.useEffect
 local useSignalState = ReactCharm.useSignalState
 
 local function FlipbookApp()
+	local flipbookStore = FlipbookStoreContext.use()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+
+	-- The navigation store sends a PageChanged event when navigateTo or goBack
+	-- runs. Creating the store sends nothing, so building one has no side
+	-- effects. This sends the event for the screen the app opens on, once the
+	-- app mounts with its store.
+	useEffect(function()
+		flipbookStore.navigation.reportCurrentScreen()
+	end, { flipbookStore })
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",

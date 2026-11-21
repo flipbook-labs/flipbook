@@ -13,6 +13,7 @@ export type NavigationStore = {
 	goBack: () -> (),
 	canGoBack: () -> boolean,
 	getBreadcrumbs: () -> { Screen },
+	reportCurrentScreen: () -> (),
 }
 
 local function createNavigationStore(telemetry: TelemetryClient?): NavigationStore
@@ -64,6 +65,10 @@ local function createNavigationStore(telemetry: TelemetryClient?): NavigationSto
 		return getNavigationStack()
 	end
 
+	local function reportCurrentScreen()
+		reportPageChanged(getCurrentScreen())
+	end
+
 	return {
 		getNavigationStack = getNavigationStack,
 		getCurrentScreen = getCurrentScreen,
@@ -71,6 +76,7 @@ local function createNavigationStore(telemetry: TelemetryClient?): NavigationSto
 		goBack = goBack,
 		canGoBack = canGoBack,
 		getBreadcrumbs = getBreadcrumbs,
+		reportCurrentScreen = reportCurrentScreen,
 	}
 end
 
