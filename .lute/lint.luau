@@ -31,8 +31,9 @@ run("stylua", {
 	table.unpack(project.FOLDERS_TO_LINT),
 })
 
--- The codebase doesn't pass every CodeQuality rule yet, so findings print as
--- warnings without failing lint.
+-- The codebase doesn't pass every CodeQuality rule yet, so findings are
+-- printed without failing lint. Lint still fails if `lute lint` itself errors,
+-- such as when a rule throws.
 CodeQuality.lint(project.FOLDERS_TO_LINT, { blocking = false })
 
 local files = findLuaFiles()
