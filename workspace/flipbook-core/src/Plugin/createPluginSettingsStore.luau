@@ -1,6 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
 local Charm = require("@pkg/Charm")
+local Sift = require("@pkg/Sift")
 
 local CharmTypes = require("@root/Common/CharmTypes")
 local CommonTypes = require("@root/Common/types")
@@ -27,11 +28,15 @@ export type PluginSettingsStore<T> = {
 	Settings are persisted using Plugin:SetSetting and Plugin:GetSetting, and are
 	stored as JSON strings. The settings are loaded once when the store is first
 	created, and any changes to the settings are automatically saved.
+
+	`migrate` receives the decoded settings before defaults are filled in and
+	validation runs, so renamed keys can be carried over.
 ]]
 local function createPluginSettingsStore<T>(
 	storageKey: string,
 	defaultValue: T,
-	validate: (value: any) -> (boolean, string)
+	validate: (value: any) -> (boolean, string),
+	migrate: ((saved: { [string]: any }) -> { [string]: any })?
 ): PluginSettingsStore<T>
 	local getStorage, setStorageSignal = Charm.signal(defaultValue)
 	local getIsLoading, setIsLoading = Charm.signal(true)
@@ -67,6 +72,16 @@ local function createPluginSettingsStore<T>(
 				logger:Warn(`failed to load plugin settings for {storageKey}: {err}`)
 				setErr(err)
 				return nil
+			end
+
+			if migrate and typeof(json) == "table" then
+				json = migrate(json)
+			end
+
+			-- Saved settings lack any keys added to the defaults since they were
+			-- written, so fill those in before validating.
+			if typeof(json) == "table" and typeof(defaultValue) == "table" then
+				json = Sift.Dictionary.join(defaultValue, json)
 			end
 
 			success, err = validate(json)

@@ -9,6 +9,7 @@ local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local types = require("@root/Storybook/types")
+local useColorMode = require("@root/Common/useColorMode")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -22,7 +23,9 @@ local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
 type LoadedStorybook = Storyteller.LoadedStorybook
+type ColorMode = useColorMode.ColorMode
 type ExtraStoryProps = types.ExtraStoryProps
+type ThemeName = Foundation.ThemeName
 
 type StoryViewProps = {
 	storyModule: ModuleScript,
@@ -31,19 +34,22 @@ type StoryViewProps = {
 
 local function StoryView(props: StoryViewProps)
 	local story, storyError = useStory(props.storyModule, props.storybook)
-	local theme = useThemeName()
+	local colorMode = useColorMode()
+	local themeName = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
-			theme = theme :: useThemeName.ThemeName,
+			colorMode = colorMode :: ColorMode,
+			themeName = themeName :: ThemeName,
+			theme = colorMode :: ColorMode,
 			locale = "en-us",
 			plugin = plugin,
 			widget = overlayGui,
 		}
-	end, { theme, plugin, overlayGui } :: { unknown })
+	end, { colorMode, themeName, plugin, overlayGui } :: { unknown })
 
 	return e(
 		StoryControlsContext.StoryControlsProvider,

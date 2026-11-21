@@ -17,7 +17,8 @@ return {
 		return function(props)
 			return React.createElement(ContextProviders, {
 				plugin = MockPlugin.new(),
-				theme = props.theme,
+				colorMode = props.colorMode,
+				themeName = props.themeName,
 				overlayGui = props.container,
 			}, {
 				Story = React.createElement(Story, props),

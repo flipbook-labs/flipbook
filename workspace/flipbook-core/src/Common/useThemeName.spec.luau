@@ -7,10 +7,10 @@ local useThemeName = require("./useThemeName")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-test("gets the current theme", function()
+test("defaults to the Default theme", function()
 	local getThemeName = renderHook(function()
 		return useThemeName()
 	end)
 
-	expect(getThemeName()).toBe("Light")
+	expect(getThemeName()).toBe("Default")
 end)

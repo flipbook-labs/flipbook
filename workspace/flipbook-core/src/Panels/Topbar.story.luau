@@ -17,7 +17,7 @@ type Props = {
 }
 
 return {
-	summary = "Top bar with story actions, theme picker, and environment badges",
+	summary = "Top bar with story actions, color mode and theme pickers, and environment badges",
 	controls = controls,
 	story = function(props: Props)
 		return e(NavigationContext.Provider, {
