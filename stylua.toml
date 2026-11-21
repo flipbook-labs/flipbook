@@ -1,2 +1,7 @@
+# By default StyLua parses a mix of every Lua dialect, which can't handle some
+# Luau-only syntax. Explicit type instantiation (`f<<T>>()`) is one of them, and
+# the CodeQuality `explicit_instantiation` lint rule asks for it.
+syntax = "Luau"
+
 [sort_requires]
 enabled = true
