@@ -414,7 +414,12 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 	end)
 
 	test("basic alphabetical sorting", function()
@@ -438,13 +443,23 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 
 		root.setSortOrder(function(a, b)
 			return a.getName() < b.getName()
 		end)
 
-		expect(root.getChildren()).toEqual({ childA, childB, childC, childD })
+		expect(root.getChildren()).toEqual({
+			childA,
+			childB,
+			childC,
+			childD,
+		})
 	end)
 
 	test("specifying the sort function will cascade down to descendants", function()
@@ -474,13 +489,23 @@ describe("node sorting", function()
 		childA.parentTo(descendant2)
 		childB.parentTo(descendant2)
 
-		expect(descendant2.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(descendant2.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 
 		root.setSortOrder(function(a, b)
 			return a.getName() < b.getName()
 		end)
 
-		expect(descendant2.getChildren()).toEqual({ childA, childB, childC, childD })
+		expect(descendant2.getChildren()).toEqual({
+			childA,
+			childB,
+			childC,
+			childD,
+		})
 	end)
 
 	test("nodes are sorted as they get added", function()
@@ -531,7 +556,15 @@ describe("expand and collapse nodes", function()
 
 		root.expandDown()
 
-		for _, node in { root, descendant1, descendant2, descendant3, descendant4 } do
+		for _, node in
+			{
+				root,
+				descendant1,
+				descendant2,
+				descendant3,
+				descendant4,
+			}
+		do
 			expect(node.getIsExpanded()).toBe(true)
 		end
 	end)

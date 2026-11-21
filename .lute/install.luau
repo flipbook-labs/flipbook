@@ -28,7 +28,12 @@ end
 -- The rest of this script requires flipbook-batteries from `.lpm`, so this
 -- runs first.
 do
-	local res = process.run({ "lute", "pkg", "install", "--vendor" }, {
+	local res = process.run({
+		"lute",
+		"pkg",
+		"install",
+		"--vendor",
+	}, {
 		stdio = "inherit",
 	})
 	assert(res.ok, "lute pkg install failed")
@@ -95,7 +100,12 @@ do
 
 	local function installWallyPackages()
 		run("wally", { "install" })
-		run("rojo", { "sourcemap", project.SOURCEMAP_PROJECT_PATH, "-o", "sourcemap.json" })
+		run("rojo", {
+			"sourcemap",
+			project.SOURCEMAP_PROJECT_PATH,
+			"-o",
+			"sourcemap.json",
+		})
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
 		patchStringRequires()
@@ -227,7 +237,14 @@ do
 		}
 		for _, packagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 			for _, pattern in prunedFiles do
-				run("find", { packagesPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+				run("find", {
+					packagesPath,
+					"-type",
+					"f",
+					"-name",
+					`"{pattern}"`,
+					"-delete",
+				})
 			end
 		end
 	end

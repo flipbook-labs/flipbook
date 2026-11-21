@@ -23,7 +23,8 @@ end
 local function run(command: { string }): string
 	local result = process.run(command)
 	assert(result.ok, `{table.concat(command, " ")} failed: {result.stderr}`)
-	return (result.stdout:gsub("%s+$", ""))
+	local stdout = result.stdout:gsub("%s+$", "")
+	return stdout
 end
 
 -- When an upgrade PR is already in flight, build on top of it instead of
@@ -34,12 +35,36 @@ end
 -- The script is loaded before this checkout, so it still runs when the
 -- existing branch predates it.
 local function checkOutUpgradeBranch(branch: string)
-	local exists = process.run({ "git", "ls-remote", "--exit-code", "--heads", "origin", branch }).ok
+	local exists = process.run({
+		"git",
+		"ls-remote",
+		"--exit-code",
+		"--heads",
+		"origin",
+		branch,
+	}).ok
 	if exists then
-		run({ "git", "fetch", "origin", branch })
-		run({ "git", "checkout", "-B", branch, `origin/{branch}` })
+		run({
+			"git",
+			"fetch",
+			"origin",
+			branch,
+		})
+		run({
+			"git",
+			"checkout",
+			"-B",
+			branch,
+			`origin/{branch}`,
+		})
 	else
-		run({ "git", "checkout", "-B", branch, `origin/{BASE_BRANCH}` })
+		run({
+			"git",
+			"checkout",
+			"-B",
+			branch,
+			`origin/{BASE_BRANCH}`,
+		})
 	end
 end
 
@@ -145,18 +170,45 @@ local function syncPullRequest(version: string, branch: string)
 	})
 
 	if number ~= "" then
-		run({ "gh", "pr", "edit", number, "--title", title, "--body", body })
+		run({
+			"gh",
+			"pr",
+			"edit",
+			number,
+			"--title",
+			title,
+			"--body",
+			body,
+		})
 		print(`Updated pull request #{number}`)
 	else
-		local url =
-			run({ "gh", "pr", "create", "--base", BASE_BRANCH, "--head", branch, "--title", title, "--body", body })
+		local url = run({
+			"gh",
+			"pr",
+			"create",
+			"--base",
+			BASE_BRANCH,
+			"--head",
+			branch,
+			"--title",
+			title,
+			"--body",
+			body,
+		})
 		number = assert(url:match("/pull/(%d+)"), `Could not read the pull request number from {url}`)
 		print(`Opened pull request #{number}`)
 	end
 
 	-- Requested separately so a reviewer the token can't request never blocks
 	-- opening or refreshing the pull request.
-	local requested = process.run({ "gh", "pr", "edit", number, "--add-reviewer", REVIEWER })
+	local requested = process.run({
+		"gh",
+		"pr",
+		"edit",
+		number,
+		"--add-reviewer",
+		REVIEWER,
+	})
 	if not requested.ok then
 		print(`Could not request {REVIEWER} on #{number}: {requested.stderr}`)
 	end
@@ -169,18 +221,41 @@ checkOutUpgradeBranch(branch)
 applyVersion(version)
 local entryPath = writeChangeEntry(version)
 
-if run({ "git", "status", "--porcelain", "--", PROJECT_FILE, entryPath }) == "" then
+if run({
+	"git",
+	"status",
+	"--porcelain",
+	"--",
+	PROJECT_FILE,
+	entryPath,
+}) == "" then
 	print(`The branch already tracks {version}; nothing to push.`)
 	return
 end
 
-run({ "git", "add", "--", PROJECT_FILE, entryPath })
-run({ "git", "commit", "-m", `Upgrade RobloxPackages to {version}` })
+run({
+	"git",
+	"add",
+	"--",
+	PROJECT_FILE,
+	entryPath,
+})
+run({
+	"git",
+	"commit",
+	"-m",
+	`Upgrade RobloxPackages to {version}`,
+})
 
 -- The new commit is stacked on top of the branch's existing history, so a
 -- plain push fast-forwards the remote. If someone pushed to the branch after it
 -- was fetched, this push fails rather than clobbering their work, and the job
 -- can be re-run.
-run({ "git", "push", "origin", branch })
+run({
+	"git",
+	"push",
+	"origin",
+	branch,
+})
 
 syncPullRequest(version, branch)

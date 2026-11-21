@@ -26,7 +26,7 @@ export type Props = {
 local function StoryPreview(props: Props): React.Node
 	local storyActions = StoryActionsContext.useStoryActions()
 	local controls = useStoryControlValues()
-	local err: string?, setErr = useState(nil :: string?)
+	local err: string?, setErr = useState<<string?>>(nil)
 
 	useEffect(function()
 		setErr(nil)

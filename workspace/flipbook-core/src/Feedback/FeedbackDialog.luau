@@ -19,15 +19,15 @@ export type Props = {
 type IssueType = "bug" | "feature" | "feedback" | "other"
 
 local function FeedbackDialog(props: Props)
-	local title, setTitle = useState("" :: string?)
+	local title, setTitle = useState("")
 	local wasTitleChanged, setWasTitleChanged = useState(false)
-	local body, setBody = useState("" :: string?)
+	local body, setBody = useState("")
 	local wasBodyChanged, setWasBodyChanged = useState(false)
 	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
-	local err: string?, setErr = useState(nil :: string?)
+	local err: string?, setErr = useState<<string?>>(nil)
 
 	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 
@@ -53,31 +53,39 @@ local function FeedbackDialog(props: Props)
 		setIsDiscardChangesDialogOpen(false)
 	end, {})
 
-	local onSubmit = useCallback(function()
-		if isSendingFeedback then
-			return
-		end
+	local onSubmit = useCallback(
+		function()
+			if isSendingFeedback then
+				return
+			end
 
-		if title ~= "" and body ~= "" and isAcknowledgedByUser then
-			setErr(nil)
-			setIsSendingFeedback(true)
+			if title ~= "" and body ~= "" and isAcknowledgedByUser then
+				setErr(nil)
+				setIsSendingFeedback(true)
 
-			task.spawn(function()
-				local res = postFeedbackAsync(title, body)
+				task.spawn(function()
+					local res = postFeedbackAsync(title, body)
 
-				setIsSendingFeedback(false)
+					setIsSendingFeedback(false)
 
-				if res.Success then
-					setIsSuccessDialogOpen(true)
-					fireEventAsync({
-						eventName = "FeedbackSubmitted",
-					})
-				else
-					setErr("Failed to submit feedback. Please try again later")
-				end
-			end)
-		end
-	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
+					if res and res.Success then
+						setIsSuccessDialogOpen(true)
+						fireEventAsync({
+							eventName = "FeedbackSubmitted",
+						})
+					else
+						setErr("Failed to submit feedback. Please try again later")
+					end
+				end)
+			end
+		end,
+		{
+			title,
+			body,
+			isAcknowledgedByUser,
+			isSendingFeedback,
+		} :: { unknown }
+	)
 
 	local onTitleChanged = useCallback(function(text)
 		if text ~= title then

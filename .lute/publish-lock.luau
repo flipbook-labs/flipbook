@@ -44,7 +44,8 @@ end
 local function run(command: { string }): string
 	local result = process.run(command)
 	assert(result.ok, `{table.concat(command, " ")} failed: {result.stderr}`)
-	return (result.stdout:gsub("%s+$", ""))
+	local output = result.stdout:gsub("%s+$", "")
+	return output
 end
 
 local function writeOutput(name: string, value: string)
@@ -72,7 +73,8 @@ local function readBranchHead(branch: string): string?
 		".object.sha",
 	})
 	if result.ok then
-		return (result.stdout:gsub("%s+$", ""))
+		local head = result.stdout:gsub("%s+$", "")
+		return head
 	end
 	if result.stderr:find("HTTP 404", 1, true) then
 		return nil

@@ -15,19 +15,19 @@ local function createTreeNodeStore(): TreeNodeStore
 	local id = HttpService:GenerateGUID()
 
 	local getName, setName = Charm.signal("Node")
-	local getIcon, setIcon = Charm.signal(nil :: TreeNodeIcon?)
+	local getIcon, setIcon = Charm.signal<<TreeNodeIcon?>>(nil)
 	local getIsSelected, setIsSelected = Charm.signal(false)
 	local getIsExpanded, setIsExpanded = Charm.signal(false)
 	local getIsVisible, setIsVisible = Charm.signal(true)
 	local getIsFiltered, setIsFiltered = Charm.signal(false)
 	local getIsPinned, setIsPinned = Charm.signal(false)
 
-	local getInstance, setInstance = Charm.signal(nil :: Instance?)
+	local getInstance, setInstance = Charm.signal<<Instance?>>(nil)
 
-	local getParent, setParent = Charm.signal(nil :: TreeNodeStore?)
-	local getUnsortedChildren, setUnsortedChildren = Charm.signal({} :: { TreeNodeStore })
+	local getParent, setParent = Charm.signal<<TreeNodeStore?>>(nil)
+	local getUnsortedChildren, setUnsortedChildren = Charm.signal<<{ TreeNodeStore }>>({})
 
-	local getSortOrder, setSortOrderSignal = Charm.signal(nil :: TreeNodeSort?)
+	local getSortOrder, setSortOrderSignal = Charm.signal<<TreeNodeSort?>>(nil)
 
 	local self: TreeNodeStore
 
@@ -77,6 +77,7 @@ local function createTreeNodeStore(): TreeNodeStore
 			-- to how Signals types its setter functions, where it can take
 			-- either a value or an update function. Since we _want_ to store a
 			-- function, that might be what's tripping it up
+			-- lute-lint-ignore(no_any)
 			return sort :: any
 		end)
 
@@ -247,7 +248,7 @@ local function createTreeNodeStore(): TreeNodeStore
 		getName = getName,
 		setName = setName,
 		getIcon = getIcon :: () -> TreeNodeIcon?,
-		setIcon = (setIcon :: any) :: CharmTypes.Setter<TreeNodeIcon?>,
+		setIcon = (setIcon :: unknown) :: CharmTypes.Setter<TreeNodeIcon?>,
 		getIsVisible = getIsVisible,
 		setIsVisible = setIsVisible,
 		getIsSelected = getIsSelected,

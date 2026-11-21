@@ -7,7 +7,7 @@ local controls: Storyteller.StoryControlsSchema = {
 	text = "Click Me",
 }
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	controls = controls,
 	story = function(props)
 		return React.createElement(ReactButton, {

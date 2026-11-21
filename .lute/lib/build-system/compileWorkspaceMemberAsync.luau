@@ -39,14 +39,21 @@ local function compileWorkspaceMemberAsync(memberPath: path.Pathlike, context: B
 		end,
 	})
 
-	if context.channel == "prod" then
+	if context.channel == types.Channel.Prod then
 		runBuildGroupAsync({
 			name = `✂️ prune {relativeMemberPath}`,
 			paths = { memberBuildPath },
 			context = context,
 			step = function()
 				for _, pattern in project.PROD_CONFIG.prunedFiles do
-					run("find", { memberBuildPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+					run("find", {
+						memberBuildPath,
+						"-type",
+						"f",
+						"-name",
+						`"{pattern}"`,
+						"-delete",
+					})
 				end
 			end,
 		})

@@ -124,7 +124,11 @@ end
 -- The battery's subcommands only parse arguments, so each one's handler sits
 -- beside it here and runs once parsing picks it.
 local COMMANDS = {
-	{ name = "check", help = "Confirm PostHog accepts the credentials without sending any data", run = check },
+	{
+		name = "check",
+		help = "Confirm PostHog accepts the credentials without sending any data",
+		run = check,
+	},
 	{
 		name = "pending-changes",
 		help = "Report how many change entries are waiting on a release",
@@ -135,7 +139,11 @@ local COMMANDS = {
 		help = "Report a beta build publishing to the Creator Store",
 		run = reportBetaPublished,
 	},
-	{ name = "prod-released", help = "Report a release and annotate it", run = reportProdReleased },
+	{
+		name = "prod-released",
+		help = "Report a release and annotate it",
+		run = reportProdReleased,
+	},
 }
 
 local args = cli.parser()
