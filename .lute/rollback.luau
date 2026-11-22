@@ -165,23 +165,62 @@ local function toSeconds(timestamp: string): number
 	})
 end
 
--- The publish job in release.yml times out after 15 minutes. A release's own
--- version is created well within this long after the release.
-local PUBLISH_WINDOW_SECONDS = 30 * 60
+-- When a Rollback workflow run was in progress, from start to its last update.
+type RollbackRun = {
+	startedAt: number,
+	endedAt: number,
+}
 
--- The Release workflow publishes a release to the prod asset as soon as the
--- release goes out. So a release's own version is the oldest one created in
--- the publish window after it, and before the next release. When its publish
--- failed, nothing falls in that window and this returns nil. A rollback also
--- creates versions, as copies of earlier ones, but one would only land in the
--- window if it ran within minutes of the release.
-local function findReleaseVersion(versions: { AssetVersion }, releases: { Release }, index: number): AssetVersion?
-	local releasedAt = toSeconds(releases[index].publishedAt)
-	local windowEnd = releasedAt + PUBLISH_WINDOW_SECONDS
-	local nextRelease = releases[index + 1]
-	if nextRelease then
-		windowEnd = math.min(windowEnd, toSeconds(nextRelease.publishedAt))
+-- The newest 100 runs of the Rollback workflow, each of which may have made a
+-- rollback copy. Before the workflow first lands on the default branch, GitHub
+-- answers 404 and there are no runs.
+local function readRollbackRuns(repo: string): { RollbackRun }
+	local result = process.run({
+		"gh",
+		"api",
+		`repos/{repo}/actions/workflows/rollback.yml/runs?per_page=100`,
+		"--jq",
+		'.workflow_runs[] | "\\(.run_started_at) \\(.updated_at)"',
+	})
+	if not result.ok then
+		if result.stderr:find("HTTP 404", 1, true) then
+			return {}
+		end
+		error(`Could not read Rollback workflow runs: {result.stderr}`)
 	end
+
+	local runs = {}
+	for startedAt, updatedAt in result.stdout:gmatch("(%S+) (%S+)") do
+		table.insert(runs, { startedAt = toSeconds(startedAt :: string), endedAt = toSeconds(updatedAt :: string) })
+	end
+	return runs
+end
+
+local function isRollbackCopy(version: AssetVersion, runs: { RollbackRun }): boolean
+	local createdAt = toSeconds(version.createTime)
+	for _, rollbackRun in runs do
+		if createdAt >= rollbackRun.startedAt and createdAt <= rollbackRun.endedAt then
+			return true
+		end
+	end
+	return false
+end
+
+-- The Release workflow publishes each release to the prod asset, so a
+-- release's own version is created after it and before the next release.
+-- Rollbacks create versions in that span too, as copies of earlier ones, so
+-- any version made while a Rollback workflow run was in progress is skipped.
+-- Of what's left, the oldest is the release's own version. A publish can be
+-- retried late and still count. When it never succeeded, this returns nil.
+local function findReleaseVersion(
+	versions: { AssetVersion },
+	releases: { Release },
+	index: number,
+	runs: { RollbackRun }
+): AssetVersion?
+	local releasedAt = toSeconds(releases[index].publishedAt)
+	local nextRelease = releases[index + 1]
+	local nextReleasedAt = if nextRelease then toSeconds(nextRelease.publishedAt) else math.huge
 
 	local found = nil
 	for _, version in versions do
@@ -189,17 +228,22 @@ local function findReleaseVersion(versions: { AssetVersion }, releases: { Releas
 		if createdAt < releasedAt then
 			break
 		end
-		if createdAt < windowEnd then
+		if createdAt < nextReleasedAt and not isRollbackCopy(version, runs) then
 			found = version
 		end
 	end
 	return found
 end
 
--- Finds the release that published this prod version. A copy made by a
--- rollback was created after some release too, but it isn't that release's
--- own version, so it gets nil instead of being mistaken for that release.
-local function findReleaseOf(target: AssetVersion, versions: { AssetVersion }, releases: { Release }): Release?
+-- Finds the release that published this prod version. A rollback copy isn't
+-- any release's own version, so it gets nil instead of being mistaken for the
+-- release before it.
+local function findReleaseOf(
+	target: AssetVersion,
+	versions: { AssetVersion },
+	releases: { Release },
+	runs: { RollbackRun }
+): Release?
 	local createdAt = toSeconds(target.createTime)
 	local candidateIndex = nil
 	for index, release in releases do
@@ -209,7 +253,7 @@ local function findReleaseOf(target: AssetVersion, versions: { AssetVersion }, r
 	end
 
 	if candidateIndex then
-		local original = findReleaseVersion(versions, releases, candidateIndex)
+		local original = findReleaseVersion(versions, releases, candidateIndex, runs)
 		if original and original.number == target.number then
 			return releases[candidateIndex]
 		end
@@ -222,6 +266,7 @@ end
 local function chooseProdTarget(versions: { AssetVersion }, requested: number?): (AssetVersion, string?)
 	local repo = assertEnv("GITHUB_REPOSITORY")
 	local releases = githubReleases.readPublished(repo)
+	local runs = readRollbackRuns(repo)
 
 	if requested then
 		local target
@@ -232,7 +277,7 @@ local function chooseProdTarget(versions: { AssetVersion }, requested: number?):
 		end
 		assert(target, `The prod asset has no version {requested}`)
 
-		local release = findReleaseOf(target, versions, releases)
+		local release = findReleaseOf(target, versions, releases, runs)
 		return target, if release then release.tag else nil
 	end
 
@@ -248,7 +293,7 @@ local function chooseProdTarget(versions: { AssetVersion }, requested: number?):
 
 	local previous = releases[previousIndex]
 	local target = assert(
-		findReleaseVersion(versions, releases, previousIndex),
+		findReleaseVersion(versions, releases, previousIndex, runs),
 		`No prod asset version was published for {previous.tag}`
 	)
 	return target, previous.tag
