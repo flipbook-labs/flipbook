@@ -14,8 +14,8 @@ Install Flipbook from the [Creator Store](https://create.roblox.com/store/asset/
 
 ## Use
 
-1. Add a ModuleScript whose name ends in `.storybook` anywhere in your place. Its `storyRoots` list tells Flipbook where to look for stories.
-2. Beside a component, add a ModuleScript whose name ends in `.story` that returns the UI to render.
+1. Add a ModuleScript whose name ends in `.storybook` to a folder of your UI, and have it return `{ storyRoots = { script.Parent } }`. The `storyRoots` list tells Flipbook where to look for stories.
+2. In that folder, add a ModuleScript whose name ends in `.story` that returns the UI to render.
 3. Open Flipbook from the Plugins tab and select the story.
 
 The smallest story returns a plain Instance:
