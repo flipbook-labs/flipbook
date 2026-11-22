@@ -7,7 +7,7 @@ Flipbook ships to two Creator Store assets:
 - [Flipbook](https://create.roblox.com/store/asset/8517129161) is the prod plugin. It updates only when you cut a release.
 - [Flipbook (Dev)](https://create.roblox.com/store/asset/88523969718241) is the beta plugin. It updates on every push to `main`.
 
-Roblox keeps every version of both assets. Rolling back publishes an earlier version again, so you never need to rebuild an old release to undo a bad one.
+Every GitHub release keeps the `Flipbook.rbxm` it shipped, and Roblox keeps every version of both assets. So rolling back republishes an earlier build, and you never need to rebuild an old release to undo a bad one.
 
 ## From a pull request to users
 
@@ -29,7 +29,7 @@ To preview the publish pull request without releasing anything, add the `debug:r
 
 ## When a publish fails
 
-If `publish-plugin` fails, the GitHub release exists but the prod asset still has the previous version. Open the failed run in the Actions tab and choose **Re-run failed jobs**. A retry that succeeds hours later still counts as that release's publish, so rollbacks keep working afterward.
+If `publish-plugin` fails, the GitHub release exists but the prod asset still has the previous version. Open the failed run in the Actions tab and choose **Re-run failed jobs**.
 
 When a version or tag can't be published at all, a maintainer can run the Release workflow by hand with the `force-version` input. It opens a publish pull request that sets that exact version. Use it only to recover from a stuck version.
 
@@ -40,23 +40,21 @@ When a release reaches users and turns out to be broken, roll it back first. Fix
 1. In the Actions tab, open the **Rollback** workflow and choose **Run workflow**.
 2. Pick `prod`, leave the version empty, and run it.
 
-The run puts the prod plugin back on the release before the current Latest release. It also does the following:
+The run republishes the `Flipbook.rbxm` attached to the release before the current Latest release. It also does the following:
 
 - It marks the restored release as Latest on GitHub.
 - It reruns the Release workflow, so the publish pull request opens with a red caution banner saying prod is rolled back.
 - It reports the rollback to PostHog and adds an annotation, as releases do.
 
-The run's log names the asset versions it rolled back from and to, along with the restored release. Note the version it rolled back from in case you want to undo the rollback.
-
-If the restored release is also broken, run the workflow again with the version left empty. Each run steps back one more release.
+If the restored release is also broken, run the workflow again with the version left empty. Each run steps back one more release. To restore a specific release instead, enter its tag, such as `v2.4.0`, as the version.
 
 ### Roll back beta
 
-Run the same workflow with `beta`. With no version, it restores the Flipbook (Dev) version before the latest one. The next push to `main` publishes a new beta build over it, so a beta rollback lasts only until then.
+Run the same workflow with `beta`. Beta builds have no releases, so a beta rollback works from the asset's version history instead. With no version, it restores the Flipbook (Dev) version before the latest one. To restore a specific build, enter its asset version number, which the run's log prints. The next push to `main` publishes a new beta build over it, so a beta rollback lasts only until then.
 
 ### Undo a rollback
 
-Run the Rollback workflow with `prod` and set the version to the newest release's own asset version. The first rollback's log names it as the version it rolled back from. Restoring it marks the newest release as Latest again, and the banner goes away.
+Run the Rollback workflow with `prod` and set the version to the newest release's tag. It republishes that release and marks it as Latest again, so the banner goes away.
 
 ### Ship the fix
 
@@ -66,21 +64,19 @@ Fix the problem in a normal pull request with a `.changes/` entry. The publish p
 
 This section is the reference for the Release and Rollback workflows. If a run does something this section doesn't describe, one of them is wrong.
 
-### Rollback picks a version
+### Rolling back prod
 
-- A rollback publishes an earlier asset version again as a new version. It never rebuilds or uploads a file.
-- For `prod` with no version given, it restores the release before the current Latest release.
-- For `beta` with no version given, it restores the version before the latest.
-- With a version given, it restores that version, which must be older than the latest one.
-- The rollback for each channel shares its publish job's concurrency group, so a rollback and a publish to the same asset never run at once.
+- A prod rollback publishes the `Flipbook.rbxm` attached to a published GitHub release, through the same publish script as a release with its build step skipped. Then it marks that release as Latest.
+- With no version given, it restores the release before the current Latest release. With a tag given, it restores that release, which can be older or newer than Latest.
+- It shares the `publish-plugin` job's concurrency group, so a rollback and a release publish never run at once.
 
-### Matching prod versions to releases
+Releases published before the prod publish started uploading the attached file ship an attachment that was built separately from what users got. Rolling back to one of those publishes that attached build.
 
-A prod asset version belongs to a release when it's the oldest version created after that release and before the next one, ignoring versions made while a Rollback run was in progress. Those versions are rollback copies.
+### Rolling back beta
 
-- Restoring a release's own version marks that release as Latest.
-- Restoring a rollback copy, or any version no release published, leaves Latest alone, and the run says so.
-- Rollback copies are recognized from the Rollback workflow's run history. A rollback run any other way, such as `lute run rollback restore` on your machine, isn't recognized, so keep local runs to `--dry-run`.
+- A beta rollback asks Open Cloud to publish an earlier version of the Flipbook (Dev) asset again as a new version. It never rebuilds or uploads a file.
+- With no version given, it restores the version before the latest. With a version number given, it restores that version, which must be older than the latest one.
+- It shares the beta publish job's concurrency group, so it never runs at the same time as a beta publish.
 
 ### The publish pull request banner
 

@@ -9,7 +9,7 @@ on:
         options: [prod, beta]
         default: prod
       version:
-        description: "Asset version number to restore. Leave empty for the version before the latest"
+        description: "What to restore: a release tag for prod, such as v2.4.0, or an asset version number for beta. Leave empty to step back one"
         default: ""
         required: false
 

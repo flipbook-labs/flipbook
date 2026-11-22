@@ -25,8 +25,8 @@ local function run(command: { string }): string
 end
 
 -- The published releases among the newest 100 releases, oldest first. Drafts
--- never reach the Creator Store, and GitHub can't mark a prerelease as Latest,
--- so both are left out.
+-- never reach the Creator Store. Prereleases are left out too, because GitHub
+-- can't mark one as Latest, so the rollback banner couldn't track it.
 function releases.readPublished(repo: string): { Release }
 	local output = run({
 		"gh",
@@ -44,8 +44,9 @@ function releases.readPublished(repo: string): { Release }
 	return published
 end
 
--- The Latest release is the one GitHub badges on the repository page. Returns
--- nil when the repository has none yet.
+-- The Latest release is the one GitHub badges on the repository page. GitHub
+-- answers 404 when there isn't one, such as when every release is a draft or
+-- prerelease, and this returns nil then.
 function releases.readLatestTag(repo: string): string?
 	local result = process.run({ "gh", "api", `repos/{repo}/releases/latest`, "--jq", ".tag_name" })
 	if result.ok then
