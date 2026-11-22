@@ -24,10 +24,6 @@ jobs:
     permissions:
       contents: write
       actions: write
-    outputs:
-      from-version: ${{ steps.restore.outputs.from-version }}
-      to-version: ${{ steps.restore.outputs.to-version }}
-      tag: ${{ steps.restore.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
 
@@ -39,7 +35,6 @@ jobs:
         run: lute run install
 
       - name: Roll Back
-        id: restore
         run: lute run rollback restore --channel "$CHANNEL" --version "$VERSION"
         env:
           CHANNEL: ${{ inputs.channel }}
@@ -82,9 +77,7 @@ jobs:
           version: 2.39.0
 
       - name: Report the Rollback
-        run: op run -- lute run posthog rolled-back --channel "$CHANNEL" --from "$FROM" --to "$TO" --tag "$TAG"
+        run: op run -- lute run posthog rolled-back --channel "$CHANNEL"
         env:
           CHANNEL: ${{ inputs.channel }}
-          FROM: ${{ needs.rollback.outputs.from-version }}
-          TO: ${{ needs.rollback.outputs.to-version }}
-          TAG: ${{ needs.rollback.outputs.tag }}
+          GH_TOKEN: ${{ github.token }}

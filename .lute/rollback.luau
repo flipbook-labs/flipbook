@@ -17,23 +17,24 @@
 --   tell that a rollback is in effect. When n is a version that no release
 --   published, such as a copy an earlier rollback made, it says so and leaves
 --   Latest alone. --dry-run prints what it would do and changes nothing on
---   the Creator Store or GitHub. Reads
---   ROBLOX_API_KEY.
--- - banner: a caution admonition for the publish pull request body while prod
---   is rolled back, or an empty string otherwise. Prod counts as rolled back
---   when the repository's Latest release is not its newest one. The next
---   release becomes Latest and clears it.
+--   the Creator Store or GitHub. Reads ROBLOX_API_KEY.
+-- - banner: while prod is rolled back, a caution admonition for the top of
+--   the publish pull request's body, which release.yml writes for the next
+--   release. Otherwise, an empty string. The admonition ends with a blank
+--   line, so the body can follow it directly. It prints the banner, and also
+--   writes it as the `banner` step output to the file named by GITHUB_OUTPUT
+--   when that's set. The next release becomes Latest and clears it.
 --
--- Each command prints its results, and also writes them as step outputs to
--- the file named by GITHUB_OUTPUT when that's set. The GitHub steps read
--- GITHUB_REPOSITORY (owner/name) and need `gh` to be signed in, through
--- GH_TOKEN in CI.
+-- `banner` and prod restores read GITHUB_REPOSITORY (owner/name) and need `gh`
+-- to be signed in, through GH_TOKEN in CI.
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local json = require("@std/json")
 local net = require("@std/net")
 local process = require("@std/process")
 local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
+
+local githubReleases = require("@scripts/lib/releases")
 
 local ASSETS_URL = "https://apis.roblox.com/assets/v1/assets"
 
@@ -50,10 +51,7 @@ type AssetVersion = {
 	createTime: string,
 }
 
-type Release = {
-	tag: string,
-	publishedAt: string,
-}
+type Release = githubReleases.Release
 
 local function assertEnv(name: string): string
 	local value = process.env[name]
@@ -67,8 +65,7 @@ local function run(command: { string }): string
 	return (result.stdout:gsub("%s+$", ""))
 end
 
--- A multiline value uses GitHub's delimiter syntax, so every value is written
--- that way, including empty ones.
+-- A multiline value uses GitHub's delimiter syntax, which keeps blank lines.
 local function writeOutput(name: string, value: string)
 	print(`{name}={value}`)
 
@@ -152,60 +149,47 @@ local function readVersion(assetId: string, number: number, apiKey: string): Ass
 	return parseAssetVersion(requestJson("GET", `{ASSETS_URL}/{assetId}/versions/{number}`, apiKey))
 end
 
--- Both APIs give UTC timestamps like 2026-04-10T15:51:08Z, but Open Cloud adds
--- fractional seconds. Trimming those lets the two compare as strings.
-local function trimToSeconds(timestamp: string): string
-	return `{timestamp:sub(1, 19)}Z`
-end
-
--- The newest 100 published releases, oldest first. Drafts never reach the
--- Creator Store, and GitHub can't mark a prerelease as Latest, so both are
--- left out.
-local function readReleases(repo: string): { Release }
-	local output = run({
-		"gh",
-		"api",
-		`repos/{repo}/releases?per_page=100`,
-		"--jq",
-		"[.[] | select((.draft | not) and (.prerelease | not))] | sort_by(.published_at) | .[]"
-			.. ' | "\\(.tag_name) \\(.published_at)"',
+-- Both APIs give UTC timestamps like 2026-04-10T15:51:08Z, and Open Cloud adds
+-- fractional seconds, which are dropped here. Every timestamp goes through the
+-- same conversion, so the results compare and subtract correctly.
+local function toSeconds(timestamp: string): number
+	local year, month, day, hour, min, sec = timestamp:match("^(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)")
+	assert(year, `Unexpected timestamp {timestamp}`)
+	return os.time({
+		year = tonumber(year) :: number,
+		month = tonumber(month) :: number,
+		day = tonumber(day) :: number,
+		hour = tonumber(hour) :: number,
+		min = tonumber(min) :: number,
+		sec = tonumber(sec) :: number,
 	})
-
-	local releases = {}
-	for tag, publishedAt in output:gmatch("(%S+) (%S+)") do
-		table.insert(releases, { tag = tag :: string, publishedAt = publishedAt :: string })
-	end
-	return releases
 end
 
--- Returns nil when the repository has no Latest release yet.
-local function readLatestReleaseTag(repo: string): string?
-	local result = process.run({ "gh", "api", `repos/{repo}/releases/latest`, "--jq", ".tag_name" })
-	if result.ok then
-		return (result.stdout:gsub("%s+$", ""))
-	end
-	if result.stderr:find("HTTP 404", 1, true) then
-		return nil
-	end
-	error(`Could not read the Latest release: {result.stderr}`)
-end
+-- The publish job in release.yml times out after 15 minutes. A release's own
+-- version is created well within this long after the release.
+local PUBLISH_WINDOW_SECONDS = 30 * 60
 
 -- The Release workflow publishes a release to the prod asset as soon as the
--- release goes out, so a release's own version is the first one created
--- between it and the next release. When its publish failed, nothing falls in
--- that window and this returns nil. A rollback also creates versions, as
--- copies of earlier ones, but one would only land first if it ran in the few
--- minutes a publish takes.
+-- release goes out. So a release's own version is the oldest one created in
+-- the publish window after it, and before the next release. When its publish
+-- failed, nothing falls in that window and this returns nil. A rollback also
+-- creates versions, as copies of earlier ones, but one would only land in the
+-- window if it ran within minutes of the release.
 local function findReleaseVersion(versions: { AssetVersion }, releases: { Release }, index: number): AssetVersion?
-	local release = releases[index]
+	local releasedAt = toSeconds(releases[index].publishedAt)
+	local windowEnd = releasedAt + PUBLISH_WINDOW_SECONDS
 	local nextRelease = releases[index + 1]
+	if nextRelease then
+		windowEnd = math.min(windowEnd, toSeconds(nextRelease.publishedAt))
+	end
+
 	local found = nil
 	for _, version in versions do
-		local createTime = trimToSeconds(version.createTime)
-		if createTime < release.publishedAt then
+		local createdAt = toSeconds(version.createTime)
+		if createdAt < releasedAt then
 			break
 		end
-		if nextRelease == nil or createTime < nextRelease.publishedAt then
+		if createdAt < windowEnd then
 			found = version
 		end
 	end
@@ -216,10 +200,10 @@ end
 -- rollback was created after some release too, but it isn't that release's
 -- own version, so it gets nil instead of being mistaken for that release.
 local function findReleaseOf(target: AssetVersion, versions: { AssetVersion }, releases: { Release }): Release?
-	local cutoff = trimToSeconds(target.createTime)
+	local createdAt = toSeconds(target.createTime)
 	local candidateIndex = nil
 	for index, release in releases do
-		if release.publishedAt <= cutoff then
+		if toSeconds(release.publishedAt) <= createdAt then
 			candidateIndex = index
 		end
 	end
@@ -237,7 +221,7 @@ end
 -- `versions` is the asset's whole history, newest first.
 local function chooseProdTarget(versions: { AssetVersion }, requested: number?): (AssetVersion, string?)
 	local repo = assertEnv("GITHUB_REPOSITORY")
-	local releases = readReleases(repo)
+	local releases = githubReleases.readPublished(repo)
 
 	if requested then
 		local target
@@ -252,7 +236,8 @@ local function chooseProdTarget(versions: { AssetVersion }, requested: number?):
 		return target, if release then release.tag else nil
 	end
 
-	local latestTag = assert(readLatestReleaseTag(repo), "The repository has no Latest release to step back from")
+	local latestTag =
+		assert(githubReleases.readLatestTag(repo), "The repository has no Latest release to step back from")
 	local previousIndex = nil
 	for index, release in releases do
 		if release.tag == latestTag and index > 1 then
@@ -323,24 +308,11 @@ local function restore(commandArgs: cli.Parser)
 	if channel == "prod" and tag == nil then
 		print("No release published the restored version, so the Latest release is left unchanged")
 	end
-
-	writeOutput("from-version", tostring(latest.number))
-	writeOutput("to-version", tostring(target.number))
-	writeOutput("tag", tag or "")
 end
 
 local function banner()
-	local repo = assertEnv("GITHUB_REPOSITORY")
-	local latest = readLatestReleaseTag(repo)
-	local newest = run({
-		"gh",
-		"api",
-		`repos/{repo}/releases?per_page=100`,
-		"--jq",
-		"[.[] | select((.draft | not) and (.prerelease | not))] | sort_by(.published_at) | last | .tag_name // empty",
-	})
-
-	if latest == nil or newest == "" or latest == newest then
+	local state = githubReleases.readRollbackState(assertEnv("GITHUB_REPOSITORY"))
+	if state == nil then
 		writeOutput("banner", "")
 		return
 	end
@@ -349,8 +321,10 @@ local function banner()
 		"banner",
 		table.concat({
 			"> [!CAUTION]",
-			`> Flipbook is rolled back to {latest} on the Creator Store after a problem with {newest}.`,
+			`> Flipbook is rolled back to {state.restoredTag} on the Creator Store after a problem with {state.newestTag}.`,
 			"> Merging this PR publishes a release that replaces the rollback.",
+			"",
+			"",
 		}, "\n")
 	)
 end
