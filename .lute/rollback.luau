@@ -116,8 +116,12 @@ end
 -- publish to the dev asset, as ASSET_NAMES_BY_CHANNEL in
 -- .lune/publish-plugin.luau decides.
 local function readDevAssetId(): string
-	local lock = toml.deserialize(fs.readFileToString("rbxasset.lock")) :: any
-	local assetId = lock.assets and lock.assets.dev and lock.assets.dev.assetId
+	local function field(value: unknown, key: string): unknown
+		return if typeof(value) == "table" then (value :: { [string]: unknown })[key] else nil
+	end
+
+	local lock: unknown = toml.deserialize(fs.readFileToString("rbxasset.lock"))
+	local assetId = field(field(field(lock, "assets"), "dev"), "assetId")
 	assert(typeof(assetId) == "string", `rbxasset.lock has no asset ID for "dev"`)
 	return assetId
 end
