@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
@@ -176,18 +176,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
         run: lute run install
 
-      - name: Create .env
-        run: cp .env.template .env
+      - name: Download Release Model
+        run: gh release download "$TAG" --pattern Flipbook.rbxm
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --channel prod --skipBuild --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -202,7 +205,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
