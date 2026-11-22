@@ -26,11 +26,11 @@ failing silently or breaking the build.
 
 One shared extractor, two thin adapters, so the surfaces can't drift:
 
-| Piece | Path | Role |
-| --- | --- | --- |
-| Extractor | `extract.mjs` | Pure ESM, zero deps. Parses the spec, reads the file, slices the range, dedents, maps `.luau -> lua`. The single source of truth. |
+| Piece              | Path                                 | Role                                                                                                                                |
+| ------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Extractor          | `extract.mjs`                        | Pure ESM, zero deps. Parses the spec, reads the file, slices the range, dedents, maps `.luau -> lua`. The single source of truth.   |
 | Docusaurus adapter | `../site/src/remark/code-sample.mjs` | Remark plugin (wired in `docusaurus.config.ts`) that rewrites `code-sample` code nodes into highlighted `lua` blocks at build time. |
-| Obsidian adapter | `obsidian/` | Reading-view plugin that reads the out-of-vault source via Node `fs` and renders it through Obsidian's own renderer. |
+| Obsidian adapter   | `obsidian/`                          | Reading-view plugin that reads the out-of-vault source via Node `fs` and renders it through Obsidian's own renderer.                |
 
 ## The Obsidian plugin
 

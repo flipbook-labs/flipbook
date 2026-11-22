@@ -13,8 +13,8 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "format": "prettier --write \"../obsidian-vault/**/*.md\" \"src/**/*.{ts,tsx,mjs,css}\" docusaurus.config.ts sidebars.ts",
-    "format:check": "prettier --check \"../obsidian-vault/**/*.md\" \"src/**/*.{ts,tsx,mjs,css}\" docusaurus.config.ts sidebars.ts"
+    "format": "prettier --write \"../obsidian-vault/**/*.md\" \"../code-samples/**/*.{md,mjs,ts,css}\" \"src/**/*.{ts,tsx,mjs,css}\" docusaurus.config.ts sidebars.ts",
+    "format:check": "prettier --check \"../obsidian-vault/**/*.md\" \"../code-samples/**/*.{md,mjs,ts,css}\" \"src/**/*.{ts,tsx,mjs,css}\" docusaurus.config.ts sidebars.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
