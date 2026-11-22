@@ -14,10 +14,10 @@ General idea:
   - Hand: Click and drag to move around the story view
 - Drag to reposition the toolbar (probably just snaps to top/bottom. Maybe reorient for left/right?)
 
-![[assets/Screenshot_2025-09-20_at_2.38.46_PM.png]]
+![Screenshot 2025 09 20 at 2.38.46 PM](../../assets/Screenshot_2025-09-20_at_2.38.46_PM.png)
 
-![[assets/Screenshot_2025-09-20_at_2.35.43_PM.png]]
+![Screenshot 2025 09 20 at 2.35.43 PM](../../assets/Screenshot_2025-09-20_at_2.35.43_PM.png)
 
 Figma also has zoom out/in buttons and a help button mounted to the bottom right corner in FigJams
 
-![[assets/Screenshot_2025-09-22_at_4.47.41_PM.png]]
+![Screenshot 2025 09 22 at 4.47.41 PM](../../assets/Screenshot_2025-09-22_at_4.47.41_PM.png)

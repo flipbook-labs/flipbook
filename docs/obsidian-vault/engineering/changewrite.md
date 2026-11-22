@@ -70,4 +70,4 @@ The `mirror` list tells changewrite which files to patch with the new version st
 Live at [flipbook-labs/changewrite](https://github.com/flipbook-labs/changewrite), currently v0.3.0. Used by the flipbook-labs org repos. The flipbook plugin repo itself still uses a manual GitHub release workflow and has not yet adopted changewrite.
 
 > [!seealso]
-> [[contributing/creating-releases|Creating Releases]]: the current manual release process for the flipbook plugin
+> [Creating Releases](../contributing/creating-releases.md): the current manual release process for the flipbook plugin

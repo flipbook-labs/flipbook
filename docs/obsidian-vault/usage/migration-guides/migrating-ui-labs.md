@@ -42,11 +42,11 @@ controls = {
 }
 ```
 
-See [[usage/controls|Controls]] for the full set of control types and their constructors.
+See [Controls](../controls.md) for the full set of control types and their constructors.
 
 ## Converting the Story
 
-UI Labs and Flipbook both use the `.story` extension, but the module's return shape differs. Write your Story in Flipbook's [[api/story-format|Story Format]] (a table with a `story` function) and add a [[concepts/storybook|Storybook]] with `storyRoots` so Flipbook can discover it. See [[usage/writing-stories|Writing Stories]] for the details.
+UI Labs and Flipbook both use the `.story` extension, but the module's return shape differs. Write your Story in Flipbook's [Story Format](../../api/story-format.md) (a table with a `story` function) and add a [Storybook](../../concepts/storybook.md) with `storyRoots` so Flipbook can discover it. See [Writing Stories](../writing-stories.md) for the details.
 
 > [!seealso]
-> [[usage/controls|Controls]] · [[usage/writing-stories|Writing Stories]] · [[usage/migration-guides/migrating-hoarcekat|Migrating from Hoarcekat]]
+> [Controls](../controls.md) · [Writing Stories](../writing-stories.md) · [Migrating from Hoarcekat](./migrating-hoarcekat.md)

@@ -7,11 +7,11 @@ linter-yaml-title-alias: Embedding Flipbook
 
 Flipbook usually runs as a Studio plugin, but you can also embed it into an experience so it runs while the game plays. Anyone who joins the place gets the full Flipbook interface, rendered as in-game UI, and can browse the Storybooks that live in that place. This is how you check a component in the real client, or hand a preview to someone without Studio open.
 
-If you want a dedicated, always-up-to-date preview experience published from CI instead, see [[usage/deploying-storybooks|Deploying Storybooks]]. Embedding is the local, one-click version of the same idea: it puts your installed Flipbook build into the place you have open right now.
+If you want a dedicated, always-up-to-date preview experience published from CI instead, see [Deploying Storybooks](./deploying-storybooks.md). Embedding is the local, one-click version of the same idea: it puts your installed Flipbook build into the place you have open right now.
 
 ## Embed into the Open Place
 
-Click **Embed into Experience** in the [[usage/the-flipbook-interface|topbar]]. The dialog clones Flipbook's runtime into the experience and asks where to parent it. ReplicatedStorage is the default; select another instance in the Explorer to change the destination.
+Click **Embed into Experience** in the [topbar](./the-flipbook-interface.md). The dialog clones Flipbook's runtime into the experience and asks where to parent it. ReplicatedStorage is the default; select another instance in the Explorer to change the destination.
 
 <!-- capture {
   "asset": "assets/embed-dialog.png",
@@ -45,7 +45,7 @@ A few things work differently outside Studio:
 - **Preview in Viewport** and **Embed into Experience** are not shown; they only apply when Flipbook runs as a plugin.
 - **View Source Code** and the Settings screen depend on Studio, so opening a Story's source does nothing and settings changes are not saved between sessions.
 
-Everything else works as it does in Studio: the sidebar, search, the canvas, and [[usage/controls|Controls]].
+Everything else works as it does in Studio: the sidebar, search, the canvas, and [Controls](./controls.md).
 
 ## Opening a Focused Preview Link
 
@@ -63,5 +63,5 @@ Malformed launch data and fields with non-string values are ignored. The deploym
 The runtime is the cloned `Flipbook` instance at the destination you chose, tagged `FlipbookRuntime`. Delete it to remove Flipbook from the experience. Embedding again also offers to overwrite it for you.
 
 > [!seealso]
-> [[usage/deploying-storybooks|Deploying Storybooks]]: publish a dedicated preview experience from CI
-> [[usage/the-flipbook-interface|The Flipbook Interface]] · [[usage/getting-started|Getting Started]]
+> [Deploying Storybooks](./deploying-storybooks.md): publish a dedicated preview experience from CI
+> [The Flipbook Interface](./the-flipbook-interface.md) · [Getting Started](./getting-started.md)

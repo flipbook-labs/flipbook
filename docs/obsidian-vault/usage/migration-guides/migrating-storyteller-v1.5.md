@@ -43,4 +43,4 @@ workspace/code-samples/src/MigrationStorytellerV15/UpgradingAfter.luau
 If you're not ready to upgrade, your existing stories will continue to work without any changes. Flipbook performs the migration automatically at load time, so there's no breaking change.
 
 > [!seealso]
-> [[usage/controls|Controls]] · [[usage/migration-guides/index|Migration Guides]]
+> [Controls](../controls.md) · [Migration Guides](./index.md)

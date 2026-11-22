@@ -21,7 +21,7 @@ When you need to manage the UI lifecycle yourself (for example, to parent instan
 workspace/code-samples/src/Default/ButtonWithCleanup.story.luau
 ```
 
-The legacy [[usage/migration-guides/migrating-hoarcekat|Hoarcekat]] shape, where the whole module is a `function(container)` that returns its own cleanup, is supported too. To render with a UI library instead, the same `story` function can return a React, Fusion, or Roact element; see [[usage/writing-stories|Writing Stories]] for wiring one up.
+The legacy [Hoarcekat](../usage/migration-guides/migrating-hoarcekat.md) shape, where the whole module is a `function(container)` that returns its own cleanup, is supported too. To render with a UI library instead, the same `story` function can return a React, Fusion, or Roact element; see [Writing Stories](../usage/writing-stories.md) for wiring one up.
 
 ## The Canvas
 
@@ -41,18 +41,18 @@ The canvas is closer to a Figma and Storybook hybrid than to a single fixed comp
 
 When you open a Story, Flipbook:
 
-1. Loads the module fresh through [[concepts/module-loader|ModuleLoader]], bypassing Roblox's `require` cache so that editing the Story hot-reloads its preview without restarting the plugin.
-2. Calls the `story` function with a [[api/story-props|StoryProps]] object: the render container, the current [[usage/controls|controls]], the Studio theme, and more.
+1. Loads the module fresh through [ModuleLoader](./module-loader.md), bypassing Roblox's `require` cache so that editing the Story hot-reloads its preview without restarting the plugin.
+2. Calls the `story` function with a [StoryProps](../api/story-props.md) object: the render container, the current [controls](../usage/controls.md), the Studio theme, and more.
 3. Renders whatever the function returns into the canvas, and tears it down when you navigate away.
 
 That fresh-load step is the reason saving a Story updates its preview instantly.
 
 ## Stories Without a Storybook
 
-A Story doesn't strictly need a [[concepts/storybook|Storybook]] to be viewable. A Storybook declares `storyRoots` and tells Flipbook where to look, but a well-formed Story that no Storybook covers still appears. Flipbook surfaces orphaned Stories under an "Unavailable Stories" folder in the tree.
+A Story doesn't strictly need a [Storybook](./storybook.md) to be viewable. A Storybook declares `storyRoots` and tells Flipbook where to look, but a well-formed Story that no Storybook covers still appears. Flipbook surfaces orphaned Stories under an "Unavailable Stories" folder in the tree.
 
-The harder hurdle is getting the module _shape_ right. Storyteller validates the returned table when it loads a Story and raises a "Story is malformed" error if it doesn't match, but there's no static typechecking to catch a missing `story` function or a misplaced field as you write, so a mistake tends to surface only when you open the Story. [[usage/typechecking|Typechecking]] with Storyteller's types is how you get ahead of it.
+The harder hurdle is getting the module _shape_ right. Storyteller validates the returned table when it loads a Story and raises a "Story is malformed" error if it doesn't match, but there's no static typechecking to catch a missing `story` function or a misplaced field as you write, so a mistake tends to surface only when you open the Story. [Typechecking](../usage/typechecking.md) with Storyteller's types is how you get ahead of it.
 
 > [!seealso]
-> [[api/story-format|Story Format]]: the full module API
-> [[concepts/storybook|Storybook]] · [[usage/writing-stories|Writing Stories]]
+> [Story Format](../api/story-format.md): the full module API
+> [Storybook](./storybook.md) · [Writing Stories](../usage/writing-stories.md)

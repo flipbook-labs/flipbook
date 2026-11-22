@@ -5,21 +5,21 @@ linter-yaml-title-alias: Writing Stories
 
 # Writing Stories
 
-Once you've [[usage/getting-started|rendered your first Story]], this guide covers the two file types in more detail and how to write Stories for your UI framework.
+Once you've [rendered your first Story](./getting-started.md), this guide covers the two file types in more detail and how to write Stories for your UI framework.
 
 ## Storybooks and Stories
 
-A [[concepts/storybook|Storybook]] is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project and defines a `storyRoots` array that tells Flipbook where to search for Stories.
+A [Storybook](../concepts/storybook.md) is any ModuleScript with a `.storybook` extension. It acts as the topmost configuration for each collection of Stories in your project and defines a `storyRoots` array that tells Flipbook where to search for Stories.
 
-A [[concepts/story|Story]] is any ModuleScript with a `.story` extension, typically parented as a sibling to the UI component it renders. Stories are what you will be working with the most. The Storybook is what tells Flipbook how to find and render them.
+A [Story](../concepts/story.md) is any ModuleScript with a `.story` extension, typically parented as a sibling to the UI component it renders. Stories are what you will be working with the most. The Storybook is what tells Flipbook how to find and render them.
 
-See [[api/storybook-format|Storybook Format]] and [[api/story-format|Story Format]] for the full module APIs, including [[api/story-format#What the Story Function Can Return|what a story function can return]] with the default renderer: an Instance, or a cleanup function for when you manage the UI's lifecycle yourself.
+See [Storybook Format](../api/storybook-format.md) and [Story Format](../api/story-format.md) for the full module APIs, including [what a story function can return](../api/story-format.md#what-the-story-function-can-return) with the default renderer: an Instance, or a cleanup function for when you manage the UI's lifecycle yourself.
 
 ## Using Frameworks
 
 By default, Flipbook uses a function-based renderer with support for Roblox Instances to get you up and running. Simply returning an Instance allows Flipbook to manage the creation and destruction of that Instance so you don't leak memory while working.
 
-Flipbook also has built-in support for UI libraries like [[usage/frameworks/react|React]] and [[usage/frameworks/fusion|Fusion]]. The full list can be seen in [[usage/frameworks/index|Frameworks]].
+Flipbook also has built-in support for UI libraries like [React](./frameworks/react.md) and [Fusion](./frameworks/fusion.md). The full list can be seen in [Frameworks](./frameworks/index.md).
 
 You can tell Flipbook to use a particular UI library by passing in the `packages` object. Here's an example with React:
 

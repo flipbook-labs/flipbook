@@ -31,13 +31,13 @@ Fields:
 - `setup`: ordered steps to reach the desired state before capturing.
 - `frame`: `canvas` (story viewport only), `canvas+controls` (viewport plus the controls panel), or `plugin-window` (everything).
 - `theme`: `dark` or `light`. Set Flipbook's theme in Settings before capturing.
-- `alt`: descriptive text for the image. Keep it with the manifest; the Obsidian embed syntax cannot carry it.
+- `alt`: descriptive text for the image. Use it as the image's alt text, and keep it in the manifest so a recapture reuses it.
 
 ## What To Do per Manifest
 
 1. Reach the state described by `kind`, `story`, `setup`, `frame`, and `theme`.
 2. Capture the PNG and write it to the `asset` path under `docs/obsidian-vault/`.
-3. If the line after the closing `-->` is not already an `![[assets/<name>.png]]` embed, insert one there. Leave the comment in place permanently: it is the regeneration manifest that lets a future run recapture every image after a UI change.
+3. If the line after the closing `-->` is not already an image line, insert one there as a relative Markdown image, like `![<alt>](../assets/<name>.png)`, with the path relative to the page. Leave the comment in place permanently: it is the regeneration manifest that lets a future run recapture every image after a UI change.
 
 ## Finding the Manifests
 
@@ -81,7 +81,7 @@ As of 2026-07-02 that finds 19 manifests across 11 pages:
 
 ## Verify
 
-- Every non-`external` manifest has its PNG on disk and an embed line after the comment.
+- Every non-`external` manifest has its PNG on disk and an image line after the comment.
 - `cd docs/site && npm run build`, then grep the log for missing-image warnings.
 
 ## Hand Back

@@ -20,4 +20,4 @@ This removes the need for an `upgrade.sh` script in StudioPlugins for building a
 
 Idea for how Option 2 could work:
 
-![[assets/Screenshot_2025-09-22_at_1.46.26_PM.png]]
+![Screenshot 2025 09 22 at 1.46.26 PM](../assets/Screenshot_2025-09-22_at_1.46.26_PM.png)

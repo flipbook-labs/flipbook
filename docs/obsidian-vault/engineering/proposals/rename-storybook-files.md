@@ -25,7 +25,7 @@ Change the storybook format of `ProjectName.storybook.lua` to `storybook.lua`.
 
 In flipbook’s explorer, the name for the storybook will resolve to the name of the storybook’s parent. For example, flipbook would discover the following storybook and use “ProjectName” in the explorer.
 
-![[assets/Screenshot_2023-12-09_at_10.07.39_AM.png]]
+![Screenshot 2023 12 09 at 10.07.39 AM](../../assets/Screenshot_2023-12-09_at_10.07.39_AM.png)
 
 The `name` property can continue being supplied, which flipbook will use instead of implicitly picking the name.
 

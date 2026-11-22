@@ -106,6 +106,6 @@ The strict workflow builds the test place from pull-request code on a secretless
 The release workflow builds `Flipbook.rbxm` and lets Changewrite open or update the next publish pull request. Publishing that generated release triggers the Creator Store deployment. Pushes to `main` also publish the beta build.
 
 > [!seealso]
-> [[contributing/onboarding|Onboarding]]: First-time setup and build commands
-> [[contributing/creating-releases|Creating Releases]]: Version bumping and publishing
-> [[engineering/module-loader|Module Loader]]: How require bypassing works at runtime
+> [Onboarding](./onboarding.md): First-time setup and build commands
+> [Creating Releases](./creating-releases.md): Version bumping and publishing
+> [Module Loader](../engineering/module-loader.md): How require bypassing works at runtime

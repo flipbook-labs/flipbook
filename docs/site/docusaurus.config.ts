@@ -3,9 +3,10 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import path from "path";
 import remarkDirective from "remark-directive";
-import remarkObsidian from "./src/remark/obsidian.mjs";
+import remarkCallouts from "./src/remark/callouts.mjs";
 import remarkCodeSample from "./src/remark/code-sample.mjs";
-import obsidianSidebarItems from "./src/sidebar/obsidian.mjs";
+import remarkNoWikilinks from "./src/remark/no-wikilinks.mjs";
+import indexNoteSidebarItems from "./src/sidebar/index-notes.mjs";
 
 const ORGANIZATION_NAME = "flipbook-labs";
 const PROJECT_NAME = "Flipbook";
@@ -24,9 +25,7 @@ const config: Config = {
 	organizationName: ORGANIZATION_NAME,
 	projectName: PROJECT_NAME,
 
-	// Relaxed while the vault is mid-migration; tighten back to 'throw' once
-	// unresolved wikilinks are cleaned up.
-	onBrokenLinks: "warn",
+	onBrokenLinks: "throw",
 
 	i18n: {
 		defaultLocale: "en",
@@ -38,7 +37,7 @@ const config: Config = {
 	markdown: {
 		format: "detect",
 		hooks: {
-			onBrokenMarkdownLinks: "warn",
+			onBrokenMarkdownLinks: "throw",
 		},
 	},
 
@@ -50,17 +49,15 @@ const config: Config = {
 					path: "../obsidian-vault",
 					exclude: ["**/.obsidian/**", "**/*.base", "drafts/**"],
 					sidebarPath: "./sidebars.ts",
-					sidebarItemsGenerator: obsidianSidebarItems({
-						vault: path.resolve(__dirname, "../obsidian-vault"),
+					sidebarItemsGenerator: indexNoteSidebarItems({
+						docsPath: path.resolve(__dirname, "../obsidian-vault"),
 						homeLabel: "Overview",
 					}),
 					editUrl: `${REPO_URL}/tree/main/docs/obsidian-vault/`,
 					beforeDefaultRemarkPlugins: [
 						remarkDirective,
-						[
-							remarkObsidian,
-							{ vault: path.resolve(__dirname, "../obsidian-vault") },
-						],
+						remarkNoWikilinks,
+						remarkCallouts,
 						[
 							remarkCodeSample,
 							{ vault: path.resolve(__dirname, "../obsidian-vault") },

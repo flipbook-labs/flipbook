@@ -9,7 +9,7 @@ linter-yaml-title-alias: Story Controls
 
 Controls are Flipbook's mechanism for defining parameters to pass off to the story to live-edit it. Controls can be used to dynamically change props, styles, and other component properties, allowing components to be live-edited.
 
-![[assets/Screenshot_2025-12-28_at_9.50.56_AM.png]]
+![Screenshot 2025 12 28 at 9.50.56 AM](../../assets/Screenshot_2025-12-28_at_9.50.56_AM.png)
 
 ## Problems
 

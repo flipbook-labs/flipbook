@@ -1,7 +1,7 @@
 # Storybook.js vs. Flipbook docs — learning-effectiveness report
 
 > [!note]
-> Scratch report reframing the [[storybook-docs-comparison-coverage|coverage comparison]]
+> Scratch report reframing the [coverage comparison](./storybook-docs-comparison-coverage.md)
 > around **learning effectiveness** (instructional design / pedagogy) rather than
 > feature/content coverage. The question driving it: _does Storybook teach the reader with
 > objectively better methods than we do?_ This report is the basis for the implementation

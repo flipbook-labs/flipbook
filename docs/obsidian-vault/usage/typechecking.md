@@ -5,7 +5,7 @@ linter-yaml-title-alias: Typechecking
 
 # Typechecking
 
-Stories and Storybooks are plain ModuleScripts, so by default a mistake in their shape (a missing `story` function or a misspelled field) only surfaces when Flipbook loads them. [[concepts/storyteller|Storyteller]], the library behind Flipbook, exports types you can annotate with to catch those mistakes as you write instead.
+Stories and Storybooks are plain ModuleScripts, so by default a mistake in their shape (a missing `story` function or a misspelled field) only surfaces when Flipbook loads them. [Storyteller](../concepts/storyteller.md), the library behind Flipbook, exports types you can annotate with to catch those mistakes as you write instead.
 
 Add Storyteller to your project (via Wally, or the released model from the [Storyteller repo](https://github.com/flipbook-labs/storyteller)), then annotate your modules.
 
@@ -32,7 +32,7 @@ With these annotations in place, Luau analysis (for example luau-lsp in your edi
   "alt": "An editor showing a type error on a malformed Story"
 } -->
 
-Storyteller also exports `Storyteller.StoryProps` for the object passed to your story function, and the control types (`Storyteller.StoryControlsSchema` and the individual `*Control` types) for annotating [[usage/controls|controls]].
+Storyteller also exports `Storyteller.StoryProps` for the object passed to your story function, and the control types (`Storyteller.StoryControlsSchema` and the individual `*Control` types) for annotating [controls](./controls.md).
 
 > [!seealso]
-> [[concepts/storyteller|Storyteller]] · [[api/story-format|Story Format]] · [[api/storybook-format|Storybook Format]]
+> [Storyteller](../concepts/storyteller.md) · [Story Format](../api/story-format.md) · [Storybook Format](../api/storybook-format.md)

@@ -6,6 +6,6 @@ aliases: [API Reference]
 
 The module shapes Flipbook reads when discovering and rendering your stories.
 
-- [[api/storybook-format|Storybook Format]]: Storybook module properties
-- [[api/story-format|Story Format]]: Story module properties
-- [[api/story-props|StoryProps]]: Props passed to story functions
+- [Storybook Format](./storybook-format.md): Storybook module properties
+- [Story Format](./story-format.md): Story module properties
+- [StoryProps](./story-props.md): Props passed to story functions

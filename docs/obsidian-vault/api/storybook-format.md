@@ -17,7 +17,7 @@ The properties that can be used in the module are as follows:
 | `storyRoots: { Instance }`                               | Locations that the Storybook manages. Each instance will have its descendants searched for Story modules.                                                                                                                                                                       |
 | `name: string?`                                          | An optional name for the Storybook. Defaults to the module name with the extension removed. i.e. `Sample.storybook` becomes `Sample`.                                                                                                                                           |
 | `packages: { [string]: any }?`                           | An optional dictionary used for supplying the Storybook with the packages to use when rendering its Stories. <br><br>This dictionary can also be supplied per-Story to change the renderer used, but it can be convenient to define your packages globally to avoid repetition. |
-| `mapStory: ((story) -> (props: StoryProps) -> element)?` | Wraps every Story the Storybook renders. See [[api/storybook-format#Wrapping Stories with mapStory\|Wrapping Stories with mapStory]].                                                                                                                                           |
+| `mapStory: ((story) -> (props: StoryProps) -> element)?` | Wraps every Story the Storybook renders. See [Wrapping Stories with mapStory](./storybook-format.md#wrapping-stories-with-mapstory).                                                                                                                                            |
 | `mapDefinition: ((story) -> story)?`                     | Transforms each Story definition before it renders. Like `mapStory`, this applies to the React and Roact renderers.                                                                                                                                                             |
 
 Example Storybook module that names itself and configures React for all of its Stories:
@@ -28,7 +28,7 @@ workspace/code-samples/src/React/React.storybook.luau
 
 ## Wrapping Stories with mapStory
 
-`mapStory` lets a Storybook wrap every one of its Stories in shared UI or context, so each Story doesn't have to repeat it. It receives the Story's `story` value and returns a component that renders in its place, with the same [[api/story-props|StoryProps]]. It applies when Stories render with the React or Roact renderer.
+`mapStory` lets a Storybook wrap every one of its Stories in shared UI or context, so each Story doesn't have to repeat it. It receives the Story's `story` value and returns a component that renders in its place, with the same [StoryProps](./story-props.md). It applies when Stories render with the React or Roact renderer.
 
 This Storybook pads every Story it renders:
 
@@ -55,5 +55,5 @@ Flipbook v1 used a different approach for defining packages. For convenience, v2
 Under the hood these simply map to `packages.Fusion`, `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.
 
 > [!seealso]
-> [[concepts/storybook|Storybook]]: what a Storybook is and how discovery works
-> [[api/story-format|Story Format]] · [[api/story-props|StoryProps]]
+> [Storybook](../concepts/storybook.md): what a Storybook is and how discovery works
+> [Story Format](./story-format.md) · [StoryProps](./story-props.md)

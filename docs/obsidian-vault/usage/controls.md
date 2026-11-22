@@ -31,7 +31,7 @@ Opening the `ReactButtonControls` Story in Flipbook will include an accompanying
   "alt": "The ReactButtonControls story with its controls panel"
 } -->
 
-![[button-with-controls.png]]
+![The ReactButtonControls story with its controls panel](../assets/button-with-controls.png)
 
 As Controls are modified, the Story updates with the new props. If the Story source reloads while it is open, the replacement Controls store stays connected to both the panel and the preview, so later changes do not require reopening the Story.
 
@@ -45,7 +45,7 @@ As Controls are modified, the Story updates with the new props. If the Story sou
   "alt": "The same story re-rendered after changing its controls"
 } -->
 
-![[button-with-controls-changed.png]]
+![The same story re-rendered after changing its controls](../assets/button-with-controls-changed.png)
 
 Controls aren't specific to React. The same `controls` and `props.controls` pattern works with the function-based renderer and plain Roblox Instances:
 
@@ -67,7 +67,7 @@ controls = {
 
 ## Richer Controls
 
-When a control needs more than a starting value, such as a fixed set of options, a numeric range, or a color, use the constructor functions exported by [[concepts/storyteller|Storyteller]]. Each returns a control definition that goes in the same `controls` table, so simple and constructor-based controls can be mixed freely:
+When a control needs more than a starting value, such as a fixed set of options, a numeric range, or a color, use the constructor functions exported by [Storyteller](../concepts/storyteller.md). Each returns a control definition that goes in the same `controls` table, so simple and constructor-based controls can be mixed freely:
 
 ```lua
 local Storyteller = require(path.to.Storyteller)
@@ -80,7 +80,7 @@ controls = {
 ```
 
 > [!tip]
-> The constructors come from Storyteller, which also provides the types for [[usage/typechecking|typechecking]] your Stories. See [[usage/frameworks/index|Frameworks]] for more on the relationship between Storyteller and Flipbook.
+> The constructors come from Storyteller, which also provides the types for [typechecking](./typechecking.md) your Stories. See [Frameworks](./frameworks/index.md) for more on the relationship between Storyteller and Flipbook.
 
 ## Control Types
 
@@ -114,7 +114,7 @@ A control's value is always a `boolean`, `number`, `string`, `Color3`, `DateTime
 
 ## Migrating Existing Controls
 
-Flipbook automatically migrates controls written in [UI Labs](https://github.com/PepeElToro41/ui-labs)' schema or an older Storyteller schema when it loads your Story, so controls authored for those keep working without changes. A dedicated [[usage/migration-guides/index|migration guide]] covers converting them to the native schema.
+Flipbook automatically migrates controls written in [UI Labs](https://github.com/PepeElToro41/ui-labs)' schema or an older Storyteller schema when it loads your Story, so controls authored for those keep working without changes. A dedicated [migration guide](./migration-guides/index.md) covers converting them to the native schema.
 
 > [!seealso]
-> [[usage/writing-stories|Writing Stories]] · [[usage/typechecking|Typechecking]] · [[api/story-format|Story Format]]
+> [Writing Stories](./writing-stories.md) · [Typechecking](./typechecking.md) · [Story Format](../api/story-format.md)

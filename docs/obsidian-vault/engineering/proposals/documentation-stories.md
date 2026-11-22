@@ -46,7 +46,7 @@ return exports
 
 This would render something similar to:
 
-![[assets/287413119-875e3533-81a8-4f7f-9862-db6668f7c93f.png]]
+![287413119 875e3533 81a8 4f7f 9862 db6668f7c93f](../../assets/287413119-875e3533-81a8-4f7f-9862-db6668f7c93f.png)
 
 ## Writing Documentation
 
@@ -192,7 +192,7 @@ By default, the name is implicitly parsed from the filename. For example, a docs
 
 Takes in a string, GuiObject, or ReactNode. Or a function that returns one of those. Or or a table composed of any of those, plus functions.
 
-Check out [[documentation-stories|Documentation stories]] for examples.
+Check out [Documentation stories](./documentation-stories.md) for examples.
 
 ### Components
 

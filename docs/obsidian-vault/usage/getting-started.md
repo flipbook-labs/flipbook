@@ -7,7 +7,7 @@ linter-yaml-title-alias: Getting Started
 
 Flipbook is a storybook plugin that renders your UI components in a sandboxed canvas, isolated from the rest of your game. Instead of navigating a complex interface just to reach the one surface you want to work on, and then wrangling it into each state by hand, you preview that surface on its own and switch between its variations with controls.
 
-It works with however you build UI. Out of the box Flipbook renders plain Roblox Instances with no setup, and it has native support for [[usage/frameworks/react|React]], [[usage/frameworks/fusion|Fusion]], and [[usage/frameworks/roact|Roact]]. You can also share a live preview with your whole team, designers included, straight from a place via [[usage/deploying-storybooks|deployed storybooks]].
+It works with however you build UI. Out of the box Flipbook renders plain Roblox Instances with no setup, and it has native support for [React](./frameworks/react.md), [Fusion](./frameworks/fusion.md), and [Roact](./frameworks/roact.md). You can also share a live preview with your whole team, designers included, straight from a place via [deployed storybooks](./deploying-storybooks.md).
 
 <!-- capture {
   "asset": "assets/main-screenshot.png",
@@ -19,7 +19,7 @@ It works with however you build UI. Out of the box Flipbook renders plain Roblox
   "alt": "The Flipbook plugin rendering a story"
 } -->
 
-![[main-screenshot.png]]
+![The Flipbook plugin rendering a story](../assets/main-screenshot.png)
 
 ## Installation
 
@@ -34,7 +34,7 @@ Install Flipbook from the [Creator Store](https://create.roblox.com/store/asset/
 
 ## Create Your First Story
 
-Flipbook needs two things to render something: a [[concepts/storybook|Storybook]] that tells it where your stories are, and a [[concepts/story|Story]] that renders a single component.
+Flipbook needs two things to render something: a [Storybook](../concepts/storybook.md) that tells it where your stories are, and a [Story](../concepts/story.md) that renders a single component.
 
 Start with the Storybook. It can live anywhere in the experience. The only requirement is a `storyRoots` array pointing at the instances whose descendants Flipbook should search for stories:
 
@@ -60,7 +60,7 @@ To connect these back to Studio, store them as ModuleScripts, for example under 
   "alt": "The Studio Explorer showing the Storybook and Story ModuleScripts under ReplicatedStorage"
 } -->
 
-![[storybook-setup.png]]
+![The Studio Explorer showing the Storybook and Story ModuleScripts under ReplicatedStorage](../assets/storybook-setup.png)
 
 Open Flipbook, select the Button story, and it renders into the canvas. It's already interactive, so click it and watch the output:
 
@@ -74,13 +74,13 @@ Open Flipbook, select the Button story, and it renders into the canvas. It's alr
   "alt": "The Button story rendered in the canvas"
 } -->
 
-![[first-story.png]]
+![The Button story rendered in the canvas](../assets/first-story.png)
 
 Editing the Story live-reloads the preview, so you can shape the button and see the result immediately.
 
 ## Next Steps
 
-- [[usage/the-flipbook-interface|The Flipbook Interface]]: a tour of the sidebar, canvas, topbar, and settings you just used.
-- [[usage/controls|Controls]]: change a story's behavior on the fly, swapping variations and toggling states without touching code.
-- [[usage/writing-stories|Writing Stories]]: the different ways to define a Story, and how to render one with your UI framework.
-- [[usage/frameworks/index|Frameworks]]: complete Storybook and Story examples for React, Fusion, and Roact.
+- [The Flipbook Interface](./the-flipbook-interface.md): a tour of the sidebar, canvas, topbar, and settings you just used.
+- [Controls](./controls.md): change a story's behavior on the fly, swapping variations and toggling states without touching code.
+- [Writing Stories](./writing-stories.md): the different ways to define a Story, and how to render one with your UI framework.
+- [Frameworks](./frameworks/index.md): complete Storybook and Story examples for React, Fusion, and Roact.

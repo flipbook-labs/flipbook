@@ -8,7 +8,7 @@ linter-yaml-title-alias: Contributing
 Thank you for your interest in contributing to Flipbook! This guide walks through setting up a development environment, validating changes, and opening a pull request.
 
 > [!info]
-> This guide covers development of the Flipbook plugin. See [[usage/getting-started|Getting Started]] to learn how to use Flipbook in your own project.
+> This guide covers development of the Flipbook plugin. See [Getting Started](../usage/getting-started.md) to learn how to use Flipbook in your own project.
 
 ## Fork and Clone the Repository
 
@@ -114,6 +114,16 @@ After building Flipbook, open Studio settings and turn on "Plugin Debugging Enab
 
 Load a new Baseplate and open Flipbook. Its Storybook appears in the sidebar.
 
+## Writing Documentation
+
+The docs in `docs/obsidian-vault/` are plain Markdown, so you can edit them in any editor, on GitHub, or in [Obsidian](https://obsidian.md) by opening that folder as a vault.
+
+- Link to other pages with relative Markdown links that include the `.md` extension, like `[Controls](../usage/controls.md)`. The site build fails on a link that doesn't resolve, and on Obsidian `[[wikilinks]]`.
+- Add notes, tips, and warnings as callouts, like `> [!tip]`. Obsidian, GitHub, and the docs site all render them.
+- Each folder's `index.md` lists its pages in the order the sidebar shows them.
+
+If you use Obsidian, open Settings -> Files and links, turn off **Use `[[Wikilinks]]`**, and set **New link format** to **Relative path to file**. Obsidian keeps these settings per machine, so the vault can't set them for you.
+
 ## Documentation Code Samples
 
 Docs pull real Luau straight from `workspace/code-samples/` using a `code-sample`
@@ -129,7 +139,7 @@ The Docusaurus site expands these at build time. For them to render in the
 Obsidian vault, `lute run install` builds a small reading-view plugin into the
 vault. After your first install, open the vault in Obsidian and enable the
 **Code Sample** plugin under Settings -> Community plugins. See
-[[contributing/architecture|Architecture]] or the `docs/code-samples/README.md`
+[Architecture](./architecture.md) or the `docs/code-samples/README.md`
 for how the marker, the shared extractor, and the two adapters fit together.
 
 ## Internal Documentation
@@ -138,24 +148,24 @@ For deeper context on architecture, product direction, and in-flight proposals:
 
 **Technical:**
 
-- [[contributing/architecture|Architecture]]: Codebase layout and build pipeline details
-- [[engineering/index|Technical Index]]: Module Loader, Story Container, Controls, Embedding, and more
+- [Architecture](./architecture.md): Codebase layout and build pipeline details
+- [Technical Index](../engineering/index.md): Module Loader, Story Container, Controls, Embedding, and more
 
 **Product:**
 
-- [[product/index|Northstars]]: Product vision and goals
-- [[product/2026-roadmap|2026 Roadmap]]: Current quarterly roadmap
-- [[product/2025-flipbook-product-spec/index|2025 Product Spec]]: Audiences and feature goals
+- [Northstars](../product/index.md): Product vision and goals
+- [2026 Roadmap](../product/2026-roadmap.md): Current quarterly roadmap
+- [2025 Product Spec](../product/2025-flipbook-product-spec/index.md): Audiences and feature goals
 
 **Proposals:**
 
-- [[engineering/proposals/story-renderer-spec|Story Renderer Spec]] _(In Progress)_
-- [[engineering/proposals/storyteller-api|Storyteller API]] _(In Progress)_
-- [[engineering/proposals/story-storybook-typechecking|Story and Storybook Typechecking]] _(In Progress)_
-- [[engineering/proposals/documentation-stories|Documentation Stories]] _(Approved)_
-- [[engineering/proposals/modular-story-format|Modular Story Format]]
-- [[engineering/proposals/create-flipbook-package|Flipbook Package]]
+- [Story Renderer Spec](../engineering/proposals/story-renderer-spec.md) _(In Progress)_
+- [Storyteller API](../engineering/proposals/storyteller-api.md) _(In Progress)_
+- [Story and Storybook Typechecking](../engineering/proposals/story-storybook-typechecking.md) _(In Progress)_
+- [Documentation Stories](../engineering/proposals/documentation-stories.md) _(Approved)_
+- [Modular Story Format](../engineering/proposals/modular-story-format.md)
+- [Flipbook Package](../engineering/proposals/create-flipbook-package.md)
 
 **Ideas:**
 
-- [[product/ideas/index|Ideas Index]]: Toolbar, Storybook Selection UX, Right-click Context Menu
+- [Ideas Index](../product/ideas/index.md): Toolbar, Storybook Selection UX, Right-click Context Menu

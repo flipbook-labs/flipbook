@@ -37,7 +37,7 @@ Flipbook still runs this shape without changes, since the legacy format is autom
 workspace/code-samples/src/Hoarcekat/HelloWorldLabel.story.luau
 ```
 
-From here you can add a `summary`, [[usage/controls|controls]], and anything else from the [[api/story-format|Story Format]].
+From here you can add a `summary`, [controls](../controls.md), and anything else from the [Story Format](../../api/story-format.md).
 
 > [!seealso]
-> [[api/story-format|Story Format]] · [[concepts/storybook|Storybook]] · [[usage/writing-stories|Writing Stories]]
+> [Story Format](../../api/story-format.md) · [Storybook](../../concepts/storybook.md) · [Writing Stories](../writing-stories.md)

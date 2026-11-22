@@ -10,21 +10,21 @@ Technical specs, proposals, and working notes for Flipbook maintainers.
 > [!note]
 > These living documents preserve design context for contributors and readers who want to learn from Flipbook's development. They may be incomplete or out of date. Use the Usage, API Reference, and Contributing sections for supported behavior.
 
-- [[engineering/proposals/index|Proposals]]: In-flight RFCs and design docs
-- [[engineering/story-controls/index|Story Controls]]: Controls revamp design and implementation notes
-- [[engineering/storybook-embedding/index|Storybook Embedding]]: Embedding Flipbook in Storybook experiences
-- [[engineering/module-loader|Module Loader]]: Module loading and story sandboxing
-- [[engineering/story-container|Story Container]]: Story container architecture
-- [[engineering/instance-collector|Instance Collector]]: Instance collection for story discovery
-- [[engineering/flipbook-mounts-anywhere|Flipbook Mounts Anywhere]]: Mounting in plugin widget, 3D viewport, and standalone experiences
-- [[engineering/flipbook-companion-package|Flipbook Companion Package]]: Tech spec for exposing Storyteller types to story authors
-- [[engineering/ecosystem|Ecosystem]]: Map of all active flipbook-labs repos and their relationships
-- [[engineering/changewrite|Changewrite]]: GitHub Action and CLI for managing release cycles
-- [[engineering/backend-stack|Backend Stack]]: Backend infrastructure notes
-- [[engineering/anonymized-usage-telemetry|Anonymized Usage Telemetry]]: Opt-in telemetry design
-- [[engineering/publishing-to-rotriever|Publishing to Rotriever]]: Notes on packaging Flipbook for Rotriever
-- [[engineering/documentation-sharing|Documentation Sharing]]: Research on documentation hosting
-- [[engineering/luau-api-diffing|Luau API Diffing]]: API diffing tool design
-- [[engineering/flipbook-for-foundation|Flipbook for Foundation]]: Integration milestones for Roblox Foundation
-- [[engineering/flipbook-roblox-internal-deployments|Flipbook → Roblox Internal Deployments]]: Archived internal deployment strategy
-- [[engineering/roblox-internal-support/index|Roblox Internal Support]]: Internal deployment notes and partner support
+- [Proposals](./proposals/index.md): In-flight RFCs and design docs
+- [Story Controls](./story-controls/index.md): Controls revamp design and implementation notes
+- [Storybook Embedding](./storybook-embedding/index.md): Embedding Flipbook in Storybook experiences
+- [Module Loader](./module-loader.md): Module loading and story sandboxing
+- [Story Container](./story-container.md): Story container architecture
+- [Instance Collector](./instance-collector.md): Instance collection for story discovery
+- [Flipbook Mounts Anywhere](./flipbook-mounts-anywhere.md): Mounting in plugin widget, 3D viewport, and standalone experiences
+- [Flipbook Companion Package](./flipbook-companion-package.md): Tech spec for exposing Storyteller types to story authors
+- [Ecosystem](./ecosystem.md): Map of all active flipbook-labs repos and their relationships
+- [Changewrite](./changewrite.md): GitHub Action and CLI for managing release cycles
+- [Backend Stack](./backend-stack.md): Backend infrastructure notes
+- [Anonymized Usage Telemetry](./anonymized-usage-telemetry.md): Opt-in telemetry design
+- [Publishing to Rotriever](./publishing-to-rotriever.md): Notes on packaging Flipbook for Rotriever
+- [Documentation Sharing](./documentation-sharing.md): Research on documentation hosting
+- [Luau API Diffing](./luau-api-diffing.md): API diffing tool design
+- [Flipbook for Foundation](./flipbook-for-foundation.md): Integration milestones for Roblox Foundation
+- [Flipbook → Roblox Internal Deployments](./flipbook-roblox-internal-deployments.md): Archived internal deployment strategy
+- [Roblox Internal Support](./roblox-internal-support/index.md): Internal deployment notes and partner support

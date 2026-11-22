@@ -4,7 +4,7 @@
 > Scratch report comparing Flipbook's user-facing docs against Storybook.js. This is the
 > **coverage framing** — "what content/features do the big hitters document that we don't,
 > and what rough edges does our site have." A companion report,
-> [[storybook-docs-comparison-learning]], reframes the same material around _learning
+> [Storybook.js vs. Flipbook docs — learning-effectiveness report](./storybook-docs-comparison-learning.md), reframes the same material around _learning
 > effectiveness_ (pedagogy) and is the basis for the implementation plan. Lives in `drafts/`
 > (build-excluded). Status: **awaiting review**.
 

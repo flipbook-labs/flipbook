@@ -80,7 +80,7 @@ Screenshot placeholders: one `plugin`-kind full-window shot up top, then one per
 
 PR #582 shipped "Embed into Experience" with zero user-facing docs; only `engineering/storybook-embedding/` notes exist (background reading, not citable). Create `usage/embedding-flipbook.md`:
 
-- What embedding is and when to reach for it versus [[usage/deploying-storybooks|Deploying Storybooks]]; cross-link both ways.
+- What embedding is and when to reach for it versus [Deploying Storybooks](../../../usage/deploying-storybooks.md); cross-link both ways.
 - How to embed via the topbar dialog (`workspace/flipbook-core/src/Embedding/EmbedIntoExperienceDialog.luau`) and what gets added to the DataModel (starter scripts, the tagged runtime folder).
 - What differs in embedded mode (verify in source; the exploration pass says viewport preview is hidden while everything else works, and `AppMode` in `workspace/flipbook-core/src/Enums/AppMode.luau` is the switch).
 - How to remove the embedded runtime.
@@ -95,7 +95,7 @@ Placeholders: the embed dialog (`plugin`) and Flipbook running inside an experie
 
 ### W4: De-Stub the Concepts Section
 
-- **`concepts/storyteller.md`** is one sentence pointing at an engineering proposal. Write two to three paragraphs: Storyteller is the library that discovers and loads Story and Storybook modules and provides the control constructors and types; you meet it directly in [[usage/controls|Controls]] and [[usage/typechecking|Typechecking]]. Link the proposal as background, not as the content.
+- **`concepts/storyteller.md`** is one sentence pointing at an engineering proposal. Write two to three paragraphs: Storyteller is the library that discovers and loads Story and Storybook modules and provides the control constructors and types; you meet it directly in [Controls](../../../usage/controls.md) and [Typechecking](../../../usage/typechecking.md). Link the proposal as background, not as the content.
 - **`concepts/module-loader.md`**: explain locally what it does (fresh `require` on reload, which is why previews update on save) instead of only forward-linking.
 - **`concepts/react.md`, `concepts/fusion.md`, `concepts/roact.md`, `concepts/storybook-js.md`, `concepts/hoarcekat.md`, `concepts/ui-labs.md`**: several carry stub notes. Give each two to four grounded sentences (what it is, its relationship to Flipbook, where to go next) and remove the stub notes. If one genuinely has nothing to say, propose deleting it in the hand-back rather than leaving a stub; check `obsidian backlinks` first.
 - **Dedupe rule**: concepts pages explain the why and link out; property tables live only in `api/`. Where `concepts/story.md` or `concepts/storybook.md` duplicate format tables, trim to a summary plus a wikilink.
@@ -106,7 +106,7 @@ Advisory list from a tech-writer review pass. Verify each against source and cur
 
 - **`getting-started.md`**: add a short prerequisites note (Studio, ModuleScript familiarity, Rojo optional); clarify where the Storybook and Story ModuleScripts conventionally live relative to the component; extend Next Steps with a pointer to the frameworks section and the new interface page.
 - **`writing-stories.md`**: add a table of what a story function may return (Instance, cleanup function, framework element via the configured packages), verified against the pinned Storyteller's renderers and `loadStoryModule`; settle terminology (pick "UI framework" or "UI library" and use it consistently); make clear which files in the walkthrough the reader creates versus already has.
-- **`controls.md`**: state early that constructors come from Storyteller and link [[usage/typechecking|Typechecking]]; call out live-reload on control change as the core workflow beat.
+- **`controls.md`**: state early that constructors come from Storyteller and link [Typechecking](../../../usage/typechecking.md); call out live-reload on control change as the core workflow beat.
 - **`typechecking.md`**: open with the motivation (shape mistakes surface at plugin load time; annotations surface them in the editor); show the Wally dependency line; show what `T` is for each framework variant.
 - **`deploying-storybooks.md`**: add a two-sentence intro stating who this is for (sharing live previews with designers and QA without Studio); add guidance on choosing between the production and per-PR environments; add a short troubleshooting subsection for the failure modes the workflow actually reports.
 - **`frameworks/index.md`**: expand the Default-versus-Storyteller-variant explanation into when-to-pick-which guidance; verify the claim about a planned dedicated `Flipbook` package (link `engineering/proposals/create-flipbook-package` if that is the source, or cut it).
@@ -164,7 +164,7 @@ All nine work items landed, one commit per item.
 
 **Samples added:** `workspace/code-samples/src/MapStory/` and `workspace/code-samples/src/Controls/` (the AllControls capture target). Both pass luau-lsp analysis, StyLua, and Selene.
 
-**Capture affordances:** 19 manifests across 11 pages, including retrofits on all five existing screenshots. Work list and convention: [[drafts/agent-tasks/todo/capture-screenshots|capture-screenshots]].
+**Capture affordances:** 19 manifests across 11 pages, including retrofits on all five existing screenshots. Work list and convention: [capture-screenshots](./capture-screenshots.md).
 
 **Claims verified against Storyteller 1.12.0** after discovering the vendored `_Index` copy had been 1.11.0 (stale install, since refreshed): mapStory/mapDefinition types and renderer coverage (React and Roact only), manual-renderer cleanup and arity behavior, theme values, control constructor exports. All held.
 

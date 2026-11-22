@@ -8,7 +8,7 @@
 //   ```
 //
 // Wired into docusaurus.config.ts via `beforeDefaultRemarkPlugins` alongside
-// remark-obsidian, so the rewritten code block is then highlighted by
+// the callouts plugin, so the rewritten code block is then highlighted by
 // Docusaurus's defaults. Extraction is shared with the Obsidian plugin via
 // docs/code-samples/extract.mjs so the two surfaces can't drift.
 

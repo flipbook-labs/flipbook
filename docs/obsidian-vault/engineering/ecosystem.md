@@ -74,6 +74,6 @@ graph LR
 **[flipbook-batteries](https://github.com/flipbook-labs/flipbook-batteries)**: Shared Lute utility modules. Used as a dependency by changewrite and other tooling repos in the org.
 
 > [!seealso]
-> [[engineering/changewrite|Changewrite]]: Detailed changewrite docs
-> [[usage/deploying-storybooks|Deploying Storybooks]]: User-facing deploy workflow
-> [[engineering/backend-stack|Backend Stack]]: Backend infrastructure details
+> [Changewrite](./changewrite.md): Detailed changewrite docs
+> [Deploying Storybooks](../usage/deploying-storybooks.md): User-facing deploy workflow
+> [Backend Stack](./backend-stack.md): Backend infrastructure details

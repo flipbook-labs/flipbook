@@ -31,4 +31,4 @@ Issues:
 4. [https://github.com/flipbook-labs/flipbook/issues/369](https://github.com/flipbook-labs/flipbook/issues/369)
 5. [https://github.com/flipbook-labs/flipbook/issues/49](https://github.com/flipbook-labs/flipbook/issues/49)
 
-[[engineering/flipbook-mounts-anywhere|Flipbook Mounts Anywhere]]
+[Flipbook Mounts Anywhere](../flipbook-mounts-anywhere.md)

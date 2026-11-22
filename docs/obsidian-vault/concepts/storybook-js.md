@@ -5,4 +5,4 @@ linter-yaml-title-alias: Storybook.js
 
 # Storybook.js
 
-The [JavaScript Storybook](https://storybook.js.org/) that inspired Flipbook. See [[README#Inspirations|Inspirations]] for the other sources Flipbook draws from.
+The [JavaScript Storybook](https://storybook.js.org/) that inspired Flipbook. See [Inspirations](../README.md#inspirations) for the other sources Flipbook draws from.

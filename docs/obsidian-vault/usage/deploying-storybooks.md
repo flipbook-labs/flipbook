@@ -128,7 +128,7 @@ flipbook-cli comment \
   --launch-data '{"search":"Button|Dialog","story":"Examples/Button"}'
 ```
 
-The resulting launch link prepopulates embedded Flipbook's search and can open one Story by its sidebar-relative path. See [[usage/embedding-flipbook#Opening a Focused Preview Link|Opening a Focused Preview Link]] for the supported fields.
+The resulting launch link prepopulates embedded Flipbook's search and can open one Story by its sidebar-relative path. See [Opening a Focused Preview Link](./embedding-flipbook.md#opening-a-focused-preview-link) for the supported fields.
 
 ### Action Inputs
 
@@ -171,6 +171,6 @@ The deploy command:
 3. Injects the latest Flipbook runtime into `ReplicatedStorage.Flipbook`.
 
 > [!seealso]
-> [[usage/embedding-flipbook|Embedding Flipbook]]: the one-click version for the place you have open
-> [[usage/getting-started|Getting Started]]: Writing your first story
-> [[engineering/ecosystem|Ecosystem]]: Overview of all flipbook-labs repos
+> [Embedding Flipbook](./embedding-flipbook.md): the one-click version for the place you have open
+> [Getting Started](./getting-started.md): Writing your first story
+> [Ecosystem](../engineering/ecosystem.md): Overview of all flipbook-labs repos

@@ -16,9 +16,9 @@ We could include the following swimlanes:
 - All storybooks
 - Unavailable storybooks
 
-![[assets/Screenshot_2025-09-20_at_3.01.58_PM.png]]
+![Screenshot 2025 09 20 at 3.01.58 PM](../../assets/Screenshot_2025-09-20_at_3.01.58_PM.png)
 
-![[assets/Screenshot_2025-09-20_at_3.02.40_PM.png]]
+![Screenshot 2025 09 20 at 3.02.40 PM](../../assets/Screenshot_2025-09-20_at_3.02.40_PM.png)
 
 Cons:
 

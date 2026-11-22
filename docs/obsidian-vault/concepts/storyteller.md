@@ -9,12 +9,12 @@ Storyteller is the backbone library behind Flipbook's story discovery and render
 
 Most of the time Storyteller works behind the scenes, but you meet it directly in two places:
 
-- **Control constructors.** Functions like `createSliderControl` and `createSelectControl` come from Storyteller, and you require it in a Story to declare [[usage/controls|Controls]] that need more than a starting value.
-- **Types.** Storyteller exports `Storyteller.Story<T>`, `Storyteller.Storybook`, and the control types, so you can typecheck your Story modules as you write them. See [[usage/typechecking|Typechecking]].
+- **Control constructors.** Functions like `createSliderControl` and `createSelectControl` come from Storyteller, and you require it in a Story to declare [Controls](../usage/controls.md) that need more than a starting value.
+- **Types.** Storyteller exports `Storyteller.Story<T>`, `Storyteller.Storybook`, and the control types, so you can typecheck your Story modules as you write them. See [Typechecking](../usage/typechecking.md).
 
 Add Storyteller to your project through Wally, or grab the released model from its repository, whenever you want either of these.
 
 > [!seealso]
-> [[usage/controls|Controls]]: declaring controls with Storyteller's constructors
-> [[usage/typechecking|Typechecking]]: type-safe Stories with Storyteller's exported types
-> [[engineering/proposals/storyteller-api|Storyteller API]]: Proposed API surface for the library
+> [Controls](../usage/controls.md): declaring controls with Storyteller's constructors
+> [Typechecking](../usage/typechecking.md): type-safe Stories with Storyteller's exported types
+> [Storyteller API](../engineering/proposals/storyteller-api.md): Proposed API surface for the library

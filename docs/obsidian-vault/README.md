@@ -5,11 +5,11 @@ linter-yaml-title-alias: Flipbook
 
 # Flipbook
 
-![[assets/flipbook-icon.png|32]]
+![Flipbook icon](./assets/flipbook-icon.png)
 
 Flipbook is a storybook plugin that previews UI components in a sandboxed environment. With it you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI.
 
-With native support for popular UI libraries like [[usage/frameworks/react|React]], [[usage/frameworks/fusion|Fusion]], and [[usage/frameworks/roact|Roact]], no matter how you create UI you can write a story for it in Flipbook.
+With native support for popular UI libraries like [React](./usage/frameworks/react.md), [Fusion](./usage/frameworks/fusion.md), and [Roact](./usage/frameworks/roact.md), no matter how you create UI you can write a story for it in Flipbook.
 
 [![Get it on Creator Store](assets/link-creator-store.svg)](https://create.roblox.com/store/asset/8517129161/flipbook) [![Read the documentation](assets/link-docs.svg)](https://flipbook-labs.github.io/flipbook) [![Join the discussion on Discord](assets/link-discord.svg)](https://discord.com/channels/385151591524597761/1063913358740443336/1063913358740443336)
 
@@ -17,30 +17,30 @@ With native support for popular UI libraries like [[usage/frameworks/react|React
 
 ## Usage
 
-- [[usage/getting-started|Getting Started]]: Install Flipbook and write your first story
-- [[usage/writing-stories|Writing Stories]]: Storybooks, Stories, and file organization
-- [[usage/controls|Controls]]: On-the-fly UI configuration via story controls
-- [[usage/typechecking|Typechecking]]: Type-safe stories with Storyteller
+- [Getting Started](./usage/getting-started.md): Install Flipbook and write your first story
+- [Writing Stories](./usage/writing-stories.md): Storybooks, Stories, and file organization
+- [Controls](./usage/controls.md): On-the-fly UI configuration via story controls
+- [Typechecking](./usage/typechecking.md): Type-safe stories with Storyteller
 
 ## API Reference
 
-- [[api/storybook-format|Storybook Format]]: Storybook module properties
-- [[api/story-format|Story Format]]: Story module properties
-- [[api/story-props|StoryProps]]: Props passed to story functions
-- [[concepts/index|Concepts]]: Story, Storybook, ModuleLoader, Storyteller
+- [Storybook Format](./api/storybook-format.md): Storybook module properties
+- [Story Format](./api/story-format.md): Story module properties
+- [StoryProps](./api/story-props.md): Props passed to story functions
+- [Concepts](./concepts/index.md): Story, Storybook, ModuleLoader, Storyteller
 
 ## Contributing
 
-- [[contributing/onboarding|Onboarding]]: Dev environment setup, building, and testing
-- [[contributing/creating-releases|Creating Releases]]: Version bumping and publishing
+- [Onboarding](./contributing/onboarding.md): Dev environment setup, building, and testing
+- [Creating Releases](./contributing/creating-releases.md): Version bumping and publishing
 
 ## Engineering
 
-- [[engineering/index|Engineering]]: Technical specs, proposals, and internal working notes
+- [Engineering](./engineering/index.md): Technical specs, proposals, and internal working notes
 
 ## Product
 
-- [[product/index|Product]]: Northstars, roadmap, and feature wishlist
+- [Product](./product/index.md): Northstars, roadmap, and feature wishlist
 
 ---
 

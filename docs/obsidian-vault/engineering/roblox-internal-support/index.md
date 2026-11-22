@@ -7,7 +7,7 @@ linter-yaml-title-alias: Roblox Internal Support
 
 An initiative to allow Roblox employees to use Flipbook in their internal workflows.
 
-- [[engineering/roblox-internal-support/internal-release-strategy|Flipbook Internal Release Strategy]]: Strategy for maintaining an internal fork alongside the public release
-- [[engineering/roblox-internal-support/internal-mirroring-workflow|Internal Mirroring Workflow]]: How changes are mirrored between the public and internal repos
-- [[engineering/roblox-internal-support/flipbook-studio-release-flow|Flipbook → Studio Release Flow]]: Release flow for landing Flipbook in the Studio plugins bundle
-- [[engineering/roblox-internal-support/roblox-internal-package|RobloxInternal Package]]: RobloxInternal package integration notes
+- [Flipbook Internal Release Strategy](./internal-release-strategy.md): Strategy for maintaining an internal fork alongside the public release
+- [Internal Mirroring Workflow](./internal-mirroring-workflow.md): How changes are mirrored between the public and internal repos
+- [Flipbook → Studio Release Flow](./flipbook-studio-release-flow.md): Release flow for landing Flipbook in the Studio plugins bundle
+- [RobloxInternal Package](./roblox-internal-package.md): RobloxInternal package integration notes
