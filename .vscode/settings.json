@@ -5,7 +5,7 @@
     "**/build/**",
     "**/*Packages/**",
     "**/.lute/typedefs/**",
-    "**/.loom/store/**"
+    "**/.lpm/**"
   ],
   "prettier.requireConfig": true,
   "[markdown]": {

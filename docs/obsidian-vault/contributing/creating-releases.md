@@ -12,6 +12,8 @@ Every push to `main` collects the pending entries and opens or updates a `Publis
 1. Tags the commit and creates the GitHub release with `Flipbook.rbxm` attached.
 2. Triggers the `publish-plugin` job, which publishes to the Roblox Creator Store.
 
+The required `publish-lock` status blocks merging the publish pull request while the Release workflow refreshes it. A failed or cancelled refresh leaves the lock in place so a stale publish pull request cannot create a release.
+
 To cut a release, review the assembled notes and version in the auto-generated publish pull request, then merge it. To preview that pull request without publishing, add the `debug:release-pr` label to a pull request; Changewrite uses a separate debug branch and prepare-only mode.
 
 Check out the [Actions tab](https://github.com/flipbook-labs/flipbook/actions) after merging to monitor the deployment.

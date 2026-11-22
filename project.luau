@@ -7,7 +7,7 @@ return {
 	BUILD_CACHE_PATH = path.resolve("./build/build-cache.json"),
 	PACKAGES_PATH = path.resolve("./Packages"),
 	ROBLOX_PACKAGES_PATH = path.resolve("./RobloxPackages"),
-	ROBLOX_PACKAGES_VERSION = "0.737.0.7371584",
+	ROBLOX_PACKAGES_VERSION = "0.747.0.7471481",
 	SCRIPTS_PATH = path.resolve("./.lute"),
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
@@ -17,7 +17,21 @@ return {
 
 	SOURCEMAP_PATH = path.resolve("./sourcemap.json"),
 	SOURCEMAP_PROJECT_PATH = path.resolve("./sourcemap.project.json"),
-	DARKLUA_SOURCEMAP_PATH = path.resolve("./sourcemap-darklua.json"),
+	BUILD_SOURCEMAP_PATH = path.resolve("./sourcemap-build.json"),
+
+	-- Globals such as `_G.BUILD_CHANNEL` that the build replaces with their
+	-- values, read from the build's environment. A global with no value there
+	-- becomes `nil`.
+	BUILD_GLOBALS = {
+		"BUILD_VERSION",
+		"BUILD_CHANNEL",
+		"BUILD_HASH",
+		"BUILD_TARGET",
+		"BASE_URL",
+		"LOG_LEVEL",
+		"ENABLE_OUTPUT_LOGGING",
+		"JEST_TEST_PATH_PATTERN",
+	},
 
 	FOLDERS_TO_LINT = {
 		"src",
