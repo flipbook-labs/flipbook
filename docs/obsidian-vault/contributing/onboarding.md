@@ -46,7 +46,7 @@ The checked-in `.env.template` values are enough for builds, linting, and static
 
 ## Validate Your Change
 
-Every pull request needs one change entry. Add a Markdown file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
+Every pull request needs one change entry. Add a Luau file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
 
 Run the repository checks before opening or updating a pull request:
 
