@@ -11,7 +11,8 @@
 --   uses Latest to tell that a rollback is in effect, through
 --   readRollbackState in .lute/lib/releases/. --version names the
 --   release by tag, such as v2.4.0. Without it, the release before the current
---   Latest is restored, so each run steps back one more release.
+--   Latest is restored, so each run steps back one more release. The
+--   restored tag is also written as the `tag` step output.
 -- - restore, for beta: beta builds have no releases, so this asks Open Cloud to
 --   publish an earlier version of the dev asset again as a new version.
 --   --version is that asset version's number. Without it, the version before
@@ -99,6 +100,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 	local repo = assertEnv("GITHUB_REPOSITORY")
 	local tag = chooseRelease(repo, requested)
 	print(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
+	writeOutput("tag", tag)
 
 	if dryRun then
 		return

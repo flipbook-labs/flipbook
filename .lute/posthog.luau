@@ -2,13 +2,11 @@
 -- next to product telemetry.
 --
 -- Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
---        lute run posthog rolled-back --channel <prod | beta> [--dry-run]
+--        lute run posthog rolled-back --channel <prod | beta> [--tag <tag>] [--dry-run]
 --
 -- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release and rollback
--- annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID. A prod
--- rollback report reads GitHub releases too, so it needs GITHUB_REPOSITORY and
--- `gh` signed in, even with --dry-run. Otherwise, --dry-run prints each
--- request instead of sending it and needs none of these credentials.
+-- annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID.
+-- --dry-run prints each request instead of sending it and needs none of these.
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
@@ -20,7 +18,6 @@ local annotateAsync = require("@scripts/lib/posthog/annotateAsync")
 local captureAsync = require("@scripts/lib/posthog/captureAsync")
 local checkPersonalApiKeyAsync = require("@scripts/lib/posthog/checkPersonalApiKeyAsync")
 local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
-local readRollbackState = require("@scripts/lib/releases/readRollbackState")
 local types = require("@scripts/lib/posthog/types")
 
 local run = FlipbookBatteries.run
@@ -132,52 +129,49 @@ local function reportProdReleased()
 end
 
 -- A rollback publishes an earlier build again, so the checked-out commit says
--- nothing about what's live. For prod, the rollback marks the restored release
--- as Latest, so the event records that release and the newest one instead.
--- When no prod rollback is in effect, such as after restoring the newest
--- release, the event records only the channel and the run.
+-- nothing about what's live. A prod rollback restores a release, and the
+-- Rollback workflow passes its tag along, so the event and annotation name the
+-- release that run restored. Beta builds have no releases, so a beta event
+-- records only the channel and the run.
 local function reportRolledBack()
 	local parsed = assert(commandArgs, "rolled-back ran before its arguments were parsed")
 	local channel = assert(parsed:get("channel"))
-	assert(channel == "prod" or channel == "beta", `bad value for channel (must be "prod" or "beta", got "{channel}")`)
+	local tag = parsed:get("tag")
 
-	local state = nil
+	local version = nil
 	if channel == "prod" then
-		local repo = process.env.GITHUB_REPOSITORY
-		assert(repo ~= nil and repo ~= "", "GITHUB_REPOSITORY must be set to report a prod rollback")
-		state = readRollbackState(repo)
+		assert(tag and tag ~= "", "--tag must name the restored release to report a prod rollback")
+		version = tag:gsub("^v", "")
+	else
+		assert(channel == "beta", `bad value for channel (must be "prod" or "beta", got "{channel}")`)
 	end
-	local restoredVersion = if state then state.restoredTag:gsub("^v", "") else nil
-	local newestVersion = if state then state.newestTag:gsub("^v", "") else nil
 
 	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), {
 		name = "ci_rolled_back",
 		properties = {
 			channel = channel,
-			version = restoredVersion,
-			newest_version = newestVersion,
+			version = version,
 			run_url = readRunUrl(),
 		},
 	}, dryRun)
 
-	if channel == "prod" then
+	if version then
 		annotateAsync(
 			readSecret("POSTHOG_PERSONAL_API_KEY"),
 			readSecret("POSTHOG_PROJECT_ID"),
-			if restoredVersion
-				then `Flipbook rolled back to v{restoredVersion} (newest release v{newestVersion})`
-				else "Flipbook rolled back on the Creator Store",
+			`Flipbook rolled back to v{version}`,
 			dryRun
 		)
 	end
 
-	local note = if restoredVersion then ` to v{restoredVersion}` else ""
+	local note = if version then ` to v{version}` else ""
 	print(`Reported the {channel} rollback{note}`)
 end
 
 type CommandOption = {
 	name: string,
 	help: string,
+	optional: boolean?,
 }
 
 type Command = {
@@ -208,6 +202,7 @@ local COMMANDS: { Command } = {
 		run = reportRolledBack,
 		options = {
 			{ name = "channel", help = `The channel rolled back: "prod" or "beta"` },
+			{ name = "tag", help = "The release a prod rollback restored", optional = true },
 		},
 	},
 }
@@ -221,7 +216,7 @@ for _, command in COMMANDS do
 	parser:add("dry-run", "flag", { help = "Print each request instead of sending it" })
 	local options: { CommandOption } = command.options or {}
 	for _, option in options do
-		parser:add(option.name, "option", { help = option.help, required = true })
+		parser:add(option.name, "option", { help = option.help, required = option.optional ~= true })
 	end
 end
 args:parse({ ... })

@@ -84,7 +84,7 @@ Prod counts as rolled back when the Latest release isn't the newest published re
 
 ### Reporting
 
-Each rollback sends a `ci_rolled_back` event to PostHog with its channel. For prod, the event also records the restored release and the newest release, and an annotation marks the rollback on PostHog charts. Reporting never fails a rollback.
+Each rollback sends a `ci_rolled_back` event to PostHog with its channel. For prod, the event also records the release that run restored, and an annotation marks the rollback on PostHog charts. Reporting never fails a rollback.
 
 ## Logging in to Wally registry in CI
 
