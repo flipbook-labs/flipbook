@@ -21,7 +21,7 @@ Flipbook opens as a single panel split into three areas: the sidebar on the left
 
 The sidebar lists every [Storybook](../concepts/storybook.md) Flipbook found and the [Stories](../concepts/story.md) underneath each one. Selecting a Story renders it in the canvas.
 
-A search box sits at the top. Type into it to filter the tree to matching Stories and Storybooks. Separate terms with `|` to show matches for any term, such as `Button|Dialog`. A Story that no Storybook covers still appears, grouped under an "Unavailable Stories" folder (see [Storybook](../concepts/storybook.md)).
+A search box sits at the top. Type into it to filter the tree to matching Stories and Storybooks. Separate terms with `|` to show matches for any term, such as `Button|Dialog`. A Story that no Storybook covers still appears, grouped under an "Unknown Stories" folder, and won't preview until a Storybook covers it (see [Storybook](../concepts/storybook.md)).
 
 Drag the sidebar's right edge to resize it. The width is remembered between sessions, and you can set a default in [Settings](./the-flipbook-interface.md#settings).
 

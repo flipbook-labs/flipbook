@@ -26,7 +26,7 @@ See [Storybook Format](../api/storybook-format.md) for the full list of properti
 
 The split is deliberate: a Story describes one piece of UI, while the Storybook says where Stories are and how to render them. Keeping discovery and configuration in one place is what lets a Story stay focused on the component it renders.
 
-A Story that no Storybook covers still appears. Flipbook surfaces it under an "Unavailable Stories" folder. See [Stories Without a Storybook](./story.md#stories-without-a-storybook) for what that means in practice.
+A Story that no Storybook covers still appears, under an "Unknown Stories" folder, but Flipbook won't preview it. See [Stories Without a Storybook](./story.md#stories-without-a-storybook) for what that means in practice.
 
 > [!seealso]
 > [Storybook Format](../api/storybook-format.md): the full module API

@@ -27,12 +27,12 @@ flipbook/
   .lute/                   # Build, test, lint, analysis, and install tasks
   project.luau             # Shared repository paths and build configuration
   sourcemap.project.json   # Rojo source map input
-  loom.config.luau         # Lute dependencies and AgentSkills pin
+  pkg.luau                 # Lute dependencies and AgentSkills pin
   wally.toml               # Roblox runtime dependencies and version mirror
   rokit.toml               # Pinned command-line tools
 ```
 
-Most application code lives in `workspace/flipbook-core/src/`. The root `src/` directory contains the bootstraps that create the plugin or start the embedded runtime. Source uses string requires such as `require("@workspace/flipbook-core/src")` and `require("@repo/project")`. Darklua rewrites them before Roblox packages the result.
+Most application code lives in `workspace/flipbook-core/src/`. The root `src/` directory contains the bootstraps that create the plugin or start the embedded runtime. Source uses string requires such as `require("@workspace/flipbook-core/src")` and `require("@repo/project")`. The build rewrites them into Roblox requires before Rojo packages the result.
 
 ## Build pipeline
 
@@ -40,13 +40,16 @@ Most application code lives in `workspace/flipbook-core/src/`. The root `src/` d
 src/ + workspace/ (Luau, string requires)
   │
   ▼
-darklua
-  │  convert_require: rewrites string requires → property access
-  │  inject_global_value: injects BUILD_VERSION, BUILD_CHANNEL, etc. from .env
-  │  remove_unused_if_branch / remove_empty_do / …: dead-code stripping
+copy into build/<channel>/<target>/
   │
   ▼
-build/<channel>/<target>/   (Luau, property-access requires)
+CodeQuality code mods
+  │  convertRequire: rewrites string requires → instance requires
+  │  injectGlobalValue: fills in BUILD_VERSION, BUILD_CHANNEL, etc. (project.luau's BUILD_GLOBALS)
+  │  cleanup mods: remove the branches those values make unreachable
+  │
+  ▼
+build/<channel>/<target>/   (Luau, instance requires)
   │
   ▼
 Rojo
@@ -56,9 +59,9 @@ Rojo
 Flipbook.rbxm  /  Studio plugins folder
 ```
 
-The whole pipeline is driven by `lute run build`. Lute is a Luau task runner; build scripts live in `.lute/`.
+The whole pipeline is driven by `lute run build`. Lute is a Luau task runner; build scripts live in `.lute/`, and `.lute/lib/build-system/runCodeModsAsync.luau` is where the code mods run.
 
-**Why darklua?** Roblox requires property access such as `require(script.Parent.Foo)`. Darklua rewrites the source imports at compile time so application code and Lute scripts can use the same aliases.
+**Why rewrite requires?** Roblox requires instance paths such as `require(script.Parent.Foo)`. [CodeQuality](https://github.com/flipbook-labs/code-quality)'s code mods resolve each string require through the nearest `.config.luau` or `.luaurc` and a Rojo sourcemap, so application code and Lute scripts can use the same aliases. A require it can't resolve fails the build.
 
 **Channels**: `dev` keeps test files, Storybooks, and Stories in the build. `beta` and `prod` prune development-only workspace members and files. Pass the channel to `lute run build plugin --channel <channel>`.
 
@@ -74,7 +77,7 @@ The controller only exposes operations backed by the currently registered adapte
 
 ## Testing
 
-Tests are in `.spec.luau` files colocated with source modules, using jsdotlua's [Jest](https://jsdotlua.github.io/jest-lua/) port.
+Tests are in `.spec.luau` files colocated with source modules, using Roblox's Jest port.
 
 Run the local repository checks before opening a pull request:
 

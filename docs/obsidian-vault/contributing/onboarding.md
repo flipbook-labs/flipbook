@@ -102,7 +102,7 @@ Local cloud tests are optional. They require an Open Cloud API key and test univ
 lute run test
 ```
 
-Flipbook uses jsdotlua's [Jest](https://github.com/jsdotlua/jest-lua) fork for unit tests. Existing `.spec.luau` modules show the expected patterns.
+Flipbook uses Roblox's Jest port for unit tests. Existing `.spec.luau` modules show the expected patterns.
 
 ## Using Flipbook to Develop Flipbook
 
@@ -137,7 +137,8 @@ workspace/code-samples/src/React/ReactButton.luau#L4-L13
 
 The Docusaurus site expands these at build time. For them to render in the
 Obsidian vault, `lute run install` builds a small reading-view plugin into the
-vault. After your first install, open the vault in Obsidian and enable the
+vault. Building it needs Node.js, and the install skips it when Node isn't
+installed. After your first install, open the vault in Obsidian and enable the
 **Code Sample** plugin under Settings -> Community plugins. See
 [Architecture](./architecture.md) or the `docs/code-samples/README.md`
 for how the marker, the shared extractor, and the two adapters fit together.

@@ -26,7 +26,7 @@ Flipbook only lists a Story when both of these hold:
 - The module's name ends in `.story` (like `Button.story`).
 - It is a descendant of one of the instances in some Storybook's `storyRoots`.
 
-A `.story` module that no Storybook covers still shows up, grouped under an "Unavailable Stories" folder, but it renders with the default renderer only, since there is no Storybook to supply `packages`. Add or extend a [Storybook](../concepts/storybook.md) to cover it.
+A `.story` module that no Storybook covers still shows up, grouped under an "Unknown Stories" folder, but selecting it doesn't preview it. Flipbook needs a Storybook to render a Story, so add or extend a [Storybook](../concepts/storybook.md) to cover it.
 
 ## Anything Else
 

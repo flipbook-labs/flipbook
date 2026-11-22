@@ -49,7 +49,7 @@ That fresh-load step is the reason saving a Story updates its preview instantly.
 
 ## Stories Without a Storybook
 
-A Story doesn't strictly need a [Storybook](./storybook.md) to be viewable. A Storybook declares `storyRoots` and tells Flipbook where to look, but a well-formed Story that no Storybook covers still appears. Flipbook surfaces orphaned Stories under an "Unavailable Stories" folder in the tree.
+A Story needs a [Storybook](./storybook.md) to render. The Storybook's `storyRoots` tell Flipbook where to look for Stories. A Story that no Storybook covers still appears in the tree, under an "Unknown Stories" folder, but Flipbook won't preview it until a Storybook covers it.
 
 The harder hurdle is getting the module _shape_ right. Storyteller validates the returned table when it loads a Story and raises a "Story is malformed" error if it doesn't match, but there's no static typechecking to catch a missing `story` function or a misplaced field as you write, so a mistake tends to surface only when you open the Story. [Typechecking](../usage/typechecking.md) with Storyteller's types is how you get ahead of it.
 
