@@ -87,7 +87,7 @@ local function reportPendingChanges()
 	local total = 0
 	for _, entry in fs.listDirectory(CHANGES_DIR) do
 		local name = entry.name:lower()
-		if entry.type == "file" and path.extname(name) == ".md" and name ~= "readme.md" then
+		if entry.type == "file" and path.extname(name) == ".luau" then
 			total += 1
 		end
 	end

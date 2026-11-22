@@ -4,7 +4,7 @@
 # New tools can be added by running `rokit add <tool>` in a terminal.
 
 [tools]
-changewrite = "flipbook-labs/changewrite@0.12.0"
+changewrite = "flipbook-labs/changewrite@0.15.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.69.0"
 lune = "lune-org/lune@0.9.4"
 lute = "luau-lang/lute@1.0.1-nightly.20261117"
