@@ -9,7 +9,7 @@
 --   GitHub release to the prod asset, then marks that release as Latest, the
 --   release GitHub badges on the repository page. The publish pull request
 --   uses Latest to tell that a rollback is in effect, through
---   readRollbackState in .lute/lib/releases.luau. --version names the
+--   readRollbackState in .lute/lib/releases/. --version names the
 --   release by tag, such as v2.4.0. Without it, the release before the current
 --   Latest is restored, so each run steps back one more release.
 -- - restore, for beta: beta builds have no releases, so this asks Open Cloud to
@@ -36,7 +36,9 @@ local net = require("@std/net")
 local process = require("@std/process")
 local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
-local githubReleases = require("@scripts/lib/releases")
+local readLatestReleaseTag = require("@scripts/lib/releases/readLatestReleaseTag")
+local readPublishedReleases = require("@scripts/lib/releases/readPublishedReleases")
+local readRollbackState = require("@scripts/lib/releases/readRollbackState")
 
 local run = FlipbookBatteries.run
 
@@ -68,7 +70,7 @@ end
 -- Picks the release to restore: the one named by tag, or the one before the
 -- current Latest release.
 local function chooseRelease(repo: string, requestedTag: string?): string
-	local published = githubReleases.readPublished(repo)
+	local published = readPublishedReleases(repo)
 
 	if requestedTag then
 		for _, release in published do
@@ -79,8 +81,7 @@ local function chooseRelease(repo: string, requestedTag: string?): string
 		error(`{requestedTag} is not a published release`, 0)
 	end
 
-	local latestTag =
-		assert(githubReleases.readLatestTag(repo), "The repository has no Latest release to step back from")
+	local latestTag = assert(readLatestReleaseTag(repo), "The repository has no Latest release to step back from")
 	for index, release in published do
 		if release.tag == latestTag then
 			local previous = published[index - 1]
@@ -198,7 +199,7 @@ local function restore(commandArgs: cli.Parser)
 end
 
 local function banner()
-	local state = githubReleases.readRollbackState(assertEnv("GITHUB_REPOSITORY"))
+	local state = readRollbackState(assertEnv("GITHUB_REPOSITORY"))
 	if state == nil then
 		writeOutput("banner", "")
 		return

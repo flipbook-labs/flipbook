@@ -20,7 +20,7 @@ local annotateAsync = require("@scripts/lib/posthog/annotateAsync")
 local captureAsync = require("@scripts/lib/posthog/captureAsync")
 local checkPersonalApiKeyAsync = require("@scripts/lib/posthog/checkPersonalApiKeyAsync")
 local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
-local githubReleases = require("@scripts/lib/releases")
+local readRollbackState = require("@scripts/lib/releases/readRollbackState")
 local types = require("@scripts/lib/posthog/types")
 
 local run = FlipbookBatteries.run
@@ -145,7 +145,7 @@ local function reportRolledBack()
 	if channel == "prod" then
 		local repo = process.env.GITHUB_REPOSITORY
 		assert(repo ~= nil and repo ~= "", "GITHUB_REPOSITORY must be set to report a prod rollback")
-		state = githubReleases.readRollbackState(repo)
+		state = readRollbackState(repo)
 	end
 	local restoredVersion = if state then state.restoredTag:gsub("^v", "") else nil
 	local newestVersion = if state then state.newestTag:gsub("^v", "") else nil
