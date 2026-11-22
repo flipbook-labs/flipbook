@@ -191,7 +191,16 @@ do
 		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
+	-- The vault's code-sample plugin is only for people who read the docs in
+	-- Obsidian, and building it needs Node's `npx`. Without Node, this skips the
+	-- plugin so the rest of the install still runs.
 	local function installObsidianPlugin()
+		local hasNpx = process.run({ "sh", "-c", "command -v npx" }).ok
+		if not hasNpx then
+			print("Skipping the Obsidian code-sample plugin because npx isn't installed")
+			return
+		end
+
 		local pluginSrc = path.join(project.REPO_PATH, "docs", "code-samples", "obsidian")
 		local outDir = path.join(project.REPO_PATH, "docs", "obsidian-vault", ".obsidian", "plugins", "code-sample")
 
