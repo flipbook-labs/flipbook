@@ -16,8 +16,8 @@ return {
 ```
 
 - **`bump`** (required) — how much to move the version: `"major"`, `"minor"`, or `"patch"`.
-- **`category`** (required) — the heading this entry appears under in the changelog: `Features`, `Changes`, `Fixes`, `Dependencies`, or `Internal`. The changelog lists the headings in that order, as set by `categories` in [`changewrite.toml`](../changewrite.toml). Dependencies and Internal start collapsed in GitHub release notes.
-- **`kind`** (required) — the part of Flipbook the change landed in, shown as a chip beside the entry. Pick one of the `[kind.*]` tables in [`changewrite.toml`](../changewrite.toml): `stories`, `sidebar`, `preview`, `controls`, `app`, `plugin`, `embedded`, `agents`, `telemetry`, `docs`, `build`, `tooling`, `packages`, `ci`, `release`, or `contributing`. A refactor takes the kind of whatever it touches.
+- **`category`** (required) — the heading this entry appears under in the changelog: `Features`, `Changes`, `Fixes`, `Dependencies`, or `Internal`. The changelog lists the headings in that order, as set by `categories` in [`changewrite.luau`](../changewrite.luau). Dependencies and Internal start collapsed in GitHub release notes.
+- **`kind`** (required) — the part of Flipbook the change landed in, shown as a chip beside the entry. Pick one of the `kind` keys in [`changewrite.luau`](../changewrite.luau): `stories`, `sidebar`, `preview`, `controls`, `app`, `plugin`, `embedded`, `agents`, `telemetry`, `docs`, `build`, `tooling`, `packages`, `ci`, `release`, or `contributing`. A refactor takes the kind of whatever it touches.
 - **`summary`** (required) — the changelog line, written for someone reading the changelog without the pull request. Keep it to one sentence of at most 140 characters; `changewrite check` enforces both.
 - **`body`** (optional) — more detail in Markdown, shown collapsed under the summary.
 
@@ -31,4 +31,4 @@ The next version is the largest bump across all pending entries: a single `major
 
 - `README.md` and `release.md`, the summary for the next release, are not entries.
 - Entries are deleted once released; they live in this folder only while unreleased.
-- The folder location is configurable via `unreleased_changes` in `changewrite.toml` and defaults to `./.changes/`.
+- The folder location is configurable via `unreleasedChanges` in `changewrite.luau` and defaults to `./.changes/`.

@@ -26,7 +26,7 @@ jobs:
       contents: read
       statuses: write
     steps:
-      - uses: flipbook-labs/changewrite/publish-lock@v0.14.1
+      - uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
@@ -104,7 +104,7 @@ jobs:
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.14.1
+      - uses: flipbook-labs/changewrite@v0.15.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
@@ -138,7 +138,7 @@ jobs:
 
       - name: Unlock Publish Pull Request
         if: github.event_name != 'pull_request'
-        uses: flipbook-labs/changewrite/publish-lock@v0.14.1
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: false
           url: ${{ env.RUN_URL }}
@@ -158,7 +158,7 @@ jobs:
 
       - name: Lock Publish Pull Request Again
         if: steps.main-moved.outputs.moved == 'true'
-        uses: flipbook-labs/changewrite/publish-lock@v0.14.1
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
