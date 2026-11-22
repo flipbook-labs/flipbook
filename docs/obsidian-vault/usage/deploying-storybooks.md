@@ -58,7 +58,7 @@ In **Settings > Environments** (or **Secrets and variables > Actions**):
 
 ## Using the GitHub Action
 
-Add the `deploy-storybook` Action to your workflow. Build your storybook `.rbxl` beforehand (e.g. with Rojo), then pass it as `place-file`.
+Add the `deploy-storybook` Action to your workflow. Build your storybook `.rbxl` beforehand (e.g. with Rojo), then pass it as `place-file`. The examples below install Rojo with [Rokit](https://github.com/rojo-rbx/rokit), so they expect Rojo to be pinned in your repository's `rokit.toml`.
 
 ### Deploy on Every Push to Main
 
@@ -74,6 +74,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v6
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Build storybook
         run: rojo build storybook.project.json -o storybook.rbxl
@@ -96,6 +98,7 @@ on:
   pull_request:
 
 permissions:
+  contents: read
   pull-requests: write
 
 jobs:
@@ -104,6 +107,8 @@ jobs:
     environment: storybook-preview
     steps:
       - uses: actions/checkout@v6
+
+      - uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Build storybook
         run: rojo build storybook.project.json -o storybook.rbxl
