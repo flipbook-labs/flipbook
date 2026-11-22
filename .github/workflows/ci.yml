@@ -134,6 +134,8 @@ jobs:
           lute run posthog pending-changes --dry-run
           lute run posthog beta-published --dry-run
           lute run posthog prod-released --dry-run
+          lute run posthog rolled-back --channel prod --from 17 --to 15 --tag v2.4.0 --dry-run
+          lute run posthog rolled-back --channel beta --from 162 --to 161 --tag "" --dry-run
 
   analyze:
     runs-on: ubuntu-latest
