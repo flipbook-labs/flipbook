@@ -11,7 +11,7 @@ Every GitHub release keeps the `Flipbook.rbxm` it shipped, and Roblox keeps ever
 
 ## From a pull request to users
 
-1. A release-worthy pull request adds one entry under [`.changes/`](https://github.com/flipbook-labs/flipbook/tree/main/.changes). The entry describes the change and whether it warrants a major, minor, or patch release.
+1. A release-worthy pull request adds one Luau entry under [`.changes/`](https://github.com/flipbook-labs/flipbook/tree/main/.changes). The entry describes the change and whether it warrants a major, minor, or patch release.
 2. When the pull request merges, the Release workflow publishes a beta build of `main` to Flipbook (Dev).
 3. The same run uses [Changewrite](https://github.com/flipbook-labs/changewrite) to open or update a `Publish v{version}` pull request. It bumps the version and writes the changelog from every pending entry.
 4. Merging the publish pull request tags the commit and creates a GitHub release with `Flipbook.rbxm` attached.

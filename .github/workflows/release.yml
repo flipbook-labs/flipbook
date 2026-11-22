@@ -26,7 +26,7 @@ jobs:
       contents: read
       statuses: write
     steps:
-      - uses: flipbook-labs/changewrite/publish-lock@v0.12.0
+      - uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
@@ -110,7 +110,7 @@ jobs:
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.12.0
+      - uses: flipbook-labs/changewrite@v0.15.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
@@ -146,7 +146,7 @@ jobs:
 
       - name: Unlock Publish Pull Request
         if: github.event_name != 'pull_request'
-        uses: flipbook-labs/changewrite/publish-lock@v0.12.0
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: false
           url: ${{ env.RUN_URL }}
@@ -166,7 +166,7 @@ jobs:
 
       - name: Lock Publish Pull Request Again
         if: steps.main-moved.outputs.moved == 'true'
-        uses: flipbook-labs/changewrite/publish-lock@v0.12.0
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
@@ -184,18 +184,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
         run: lute run install
 
-      - name: Create .env
-        run: cp .env.template .env
+      - name: Download Release Model
+        run: gh release download "$TAG" --pattern Flipbook.rbxm
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --channel prod --skipBuild --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -210,7 +213,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
