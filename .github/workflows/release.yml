@@ -100,6 +100,12 @@ jobs:
         id: refreshed
         run: lute run publish-lock record-main
 
+      - name: Check Rollback
+        id: rollback
+        run: lute run rollback banner
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - uses: actions/download-artifact@v8
         with:
           name: flipbook-rbxm
@@ -110,6 +116,8 @@ jobs:
           debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
           force-version: ${{ inputs.force-version || '' }}
           pr-body: |
+            ${{ steps.rollback.outputs.banner }}
+
             >[!IMPORTANT]
             > This PR prepares the next release by bumping the version and updating the changelog.
             >

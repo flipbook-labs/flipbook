@@ -1,0 +1,90 @@
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Which Creator Store plugin to roll back"
+        type: choice
+        options: [prod, beta]
+        default: prod
+      version:
+        description: "Asset version number to restore. Leave empty for the version before the latest"
+        default: ""
+        required: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Shares each channel's publish concurrency group in release.yml, so a
+    # rollback never races a publish to the same asset.
+    concurrency: ${{ inputs.channel == 'prod' && 'production' || 'nightly' }}
+    environment: ${{ inputs.channel == 'prod' && 'roblox-creator-store' || 'roblox-creator-store-dev' }}
+    permissions:
+      contents: write
+      actions: write
+    outputs:
+      from-version: ${{ steps.restore.outputs.from-version }}
+      to-version: ${{ steps.restore.outputs.to-version }}
+      tag: ${{ steps.restore.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Roll Back
+        id: restore
+        run: lute run rollback restore --channel "$CHANNEL" --version "$VERSION"
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          VERSION: ${{ inputs.version }}
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+
+      # The Release workflow writes the publish pull request's body, including
+      # the warning that prod is rolled back. Running it now shows the warning
+      # without waiting for the next push to main.
+      - name: Refresh Publish Pull Request
+        if: inputs.channel == 'prod'
+        run: gh workflow run release.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  report-rollback:
+    needs: rollback
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
+      POSTHOG_PERSONAL_API_KEY: op://Flipbook CI/flipbook-posthog-ci/personal-api-key
+      POSTHOG_PROJECT_ID: op://Flipbook CI/flipbook-posthog-ci/project-id
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
+      - name: Report the Rollback
+        run: op run -- lute run posthog rolled-back --channel "$CHANNEL" --from "$FROM" --to "$TO" --tag "$TAG"
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          FROM: ${{ needs.rollback.outputs.from-version }}
+          TO: ${{ needs.rollback.outputs.to-version }}
+          TAG: ${{ needs.rollback.outputs.tag }}
