@@ -1,4 +1,4 @@
-# [Flipbook](https://flipbook-labs.github.io/flipbook)
+# Flipbook
 
 <img src="docs/static/img/logo.svg" width="128" height="128" align="right" alt="Flipbook icon" />
 
