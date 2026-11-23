@@ -13,6 +13,10 @@ local useState = React.useState
 
 export type Props = {
 	onClose: () -> (),
+	-- Sends the feedback and returns whether it was accepted. By default this is
+	-- the Feedback module's `postFeedbackAsync`, which posts to the backend.
+	-- Stories pass a fake one to show either outcome without filing a real issue.
+	postFeedbackAsync: ((title: string, body: string) -> boolean)?,
 	LayoutOrder: number?,
 }
 
@@ -28,6 +32,8 @@ local function FeedbackDialog(props: Props)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
 	local err: string?, setErr = useState<<string?>>(nil)
+
+	local sendFeedbackAsync = props.postFeedbackAsync or postFeedbackAsync
 
 	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 
@@ -64,7 +70,7 @@ local function FeedbackDialog(props: Props)
 				setIsSendingFeedback(true)
 
 				task.spawn(function()
-					local succeeded = postFeedbackAsync(title, body)
+					local succeeded = sendFeedbackAsync(title, body)
 
 					setIsSendingFeedback(false)
 
@@ -84,6 +90,7 @@ local function FeedbackDialog(props: Props)
 			body,
 			isAcknowledgedByUser,
 			isSendingFeedback,
+			sendFeedbackAsync,
 		} :: { unknown }
 	)
 
