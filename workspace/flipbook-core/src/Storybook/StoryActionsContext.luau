@@ -34,7 +34,7 @@ export type StoryActionsContext = {
 	},
 }
 
-local StoryActionsContext = React.createContext({} :: StoryActionsContext)
+local StoryActionsContext = React.createContext<<StoryActionsContext?>>(nil)
 
 export type StoryActionsProviderProps = {
 	children: React.ReactNode,
@@ -47,7 +47,7 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 	local plugin = useSignalState(pluginStore.getPlugin)
 
 	local isMountedInViewport, setIsMountedInViewport = useState(false)
-	local storyContainerRef = useRef(nil :: GuiObject?)
+	local storyContainerRef = useRef<<GuiObject?>>(nil)
 	local zoom = useZoom(props.story)
 
 	local viewportPreview = useCallback(function()
@@ -66,7 +66,7 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 		if plugin ~= nil then
 			plugin:OpenScript(props.story)
 		end
-	end, { plugin, props.story } :: { any })
+	end, { plugin, props.story } :: { unknown })
 
 	local viewExplorer = useCallback(function()
 		if storyContainerRef.current == nil then
@@ -94,7 +94,9 @@ local function StoryActionsProvider(props: StoryActionsProviderProps)
 end
 
 local function useStoryActions(): StoryActionsContext
-	return useContext(StoryActionsContext)
+	local storyActions = useContext(StoryActionsContext)
+	assert(storyActions ~= nil, "useStoryActions must be used within a StoryActionsProvider")
+	return storyActions
 end
 
 return {

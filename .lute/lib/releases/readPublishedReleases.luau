@@ -2,10 +2,12 @@ local process = require("@std/process")
 
 local types = require("@scripts/lib/releases/types")
 
--- Every published release of the repository (owner/name), oldest first, read
--- through `gh`. Drafts never reach the Creator Store. Prereleases are left out
--- too, because GitHub can't mark one as Latest, so the rollback banner
--- couldn't track it.
+--[[
+	Every published release of the repository (owner/name), oldest first, read
+	through `gh`. Drafts never reach the Creator Store. Prereleases are left out
+	too, because GitHub can't mark one as Latest, so the rollback banner
+	couldn't track it.
+]]
 local function readPublishedReleases(repo: string): { types.Release }
 	-- --paginate applies the filter to each page of the API's results, so the
 	-- releases are sorted here once every page is in.

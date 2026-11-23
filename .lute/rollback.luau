@@ -1,34 +1,36 @@
--- Rolls a Flipbook plugin on the Creator Store back to an earlier build, and
--- reports whether prod is currently rolled back.
---
--- Usage:
---   lute run rollback restore --channel <prod | beta> [--version <version>] [--dry-run]
---   lute run rollback banner
---
--- - restore, for prod: publishes the Flipbook.rbxm attached to an earlier
---   GitHub release to the prod asset, then marks that release as Latest, the
---   release GitHub badges on the repository page. The publish pull request
---   uses Latest to tell that a rollback is in effect, through
---   readRollbackState in .lute/lib/releases/. --version names the
---   release by tag, such as v2.4.0. Without it, the release before the current
---   Latest is restored, so each run steps back one more release. The
---   restored tag is also written as the `tag` step output.
--- - restore, for beta: beta builds have no releases, so this asks Open Cloud to
---   publish an earlier version of the dev asset again as a new version.
---   --version is that asset version's number. Without it, the version before
---   the latest is restored.
---
---   --dry-run prints what restore would do and changes nothing on the Creator
---   Store or GitHub. restore reads ROBLOX_API_KEY.
--- - banner: while prod is rolled back, a caution admonition for the top of
---   the publish pull request's body, which release.yml writes for the next
---   release. Otherwise, an empty string. The admonition ends with a blank
---   line, so the body can follow it directly. It prints the banner, and also
---   writes it as the `banner` step output to the file named by GITHUB_OUTPUT
---   when that's set. The next release becomes Latest and clears it.
---
--- `banner` and prod restores read GITHUB_REPOSITORY (owner/name) and need `gh`
--- to be signed in, through GH_TOKEN in CI.
+--[[
+	Rolls a Flipbook plugin on the Creator Store back to an earlier build, and
+	reports whether prod is currently rolled back.
+
+	Usage:
+	  lute run rollback restore --channel <prod | beta> [--version <version>] [--dry-run]
+	  lute run rollback banner
+
+	- restore, for prod: publishes the Flipbook.rbxm attached to an earlier
+	  GitHub release to the prod asset, then marks that release as Latest, the
+	  release GitHub badges on the repository page. The publish pull request
+	  uses Latest to tell that a rollback is in effect, through
+	  readRollbackState in .lute/lib/releases/. --version names the
+	  release by tag, such as v2.4.0. Without it, the release before the current
+	  Latest is restored, so each run steps back one more release. The
+	  restored tag is also written as the `tag` step output.
+	- restore, for beta: beta builds have no releases, so this asks Open Cloud to
+	  publish an earlier version of the dev asset again as a new version.
+	  --version is that asset version's number. Without it, the version before
+	  the latest is restored.
+
+	  --dry-run prints what restore would do and changes nothing on the Creator
+	  Store or GitHub. restore reads ROBLOX_API_KEY.
+	- banner: while prod is rolled back, a caution admonition for the top of
+	  the publish pull request's body, which release.yml writes for the next
+	  release. Otherwise, an empty string. The admonition ends with a blank
+	  line, so the body can follow it directly. It prints the banner, and also
+	  writes it as the `banner` step output to the file named by GITHUB_OUTPUT
+	  when that's set. The next release becomes Latest and clears it.
+
+	`banner` and prod restores read GITHUB_REPOSITORY (owner/name) and need `gh`
+	to be signed in, through GH_TOKEN in CI.
+]]
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
@@ -106,9 +108,27 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		return
 	end
 
-	run("gh", { "release", "download", tag, "--pattern", "Flipbook.rbxm", "--clobber" })
-	run("lune", { "run", "publish-plugin", "--channel", "prod", "--skipBuild" })
-	run("gh", { "release", "edit", tag, "--latest" })
+	run("gh", {
+		"release",
+		"download",
+		tag,
+		"--pattern",
+		"Flipbook.rbxm",
+		"--clobber",
+	})
+	run("lune", {
+		"run",
+		"publish-plugin",
+		"--channel",
+		"prod",
+		"--skipBuild",
+	})
+	run("gh", {
+		"release",
+		"edit",
+		tag,
+		"--latest",
+	})
 	print(`Restored {tag} and marked it as the Latest release`)
 end
 
@@ -150,7 +170,10 @@ local function parseAssetVersion(value: json.Value): AssetVersion
 	assert(typeof(versionPath) == "string" and typeof(createTime) == "string", "Malformed asset version")
 
 	local number = tonumber(versionPath:match("/versions/(%d+)$"))
-	return { number = assert(number, `Unexpected version path {versionPath}`), createTime = createTime }
+	return {
+		number = assert(number, `Unexpected version path {versionPath}`),
+		createTime = createTime,
+	}
 end
 
 local function restoreBeta(requested: string?, dryRun: boolean)

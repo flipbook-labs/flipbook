@@ -13,7 +13,10 @@ local function readRollbackState(repo: string): types.RollbackState?
 	if latestTag == nil or newest == nil or newest.tag == latestTag then
 		return nil
 	end
-	return { restoredTag = latestTag, newestTag = newest.tag }
+	return {
+		restoredTag = latestTag,
+		newestTag = newest.tag,
+	}
 end
 
 return readRollbackState

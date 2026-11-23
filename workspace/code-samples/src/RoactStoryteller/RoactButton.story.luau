@@ -3,7 +3,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local RoactButton = require("./RoactButton")
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	story = function()
 		return Roact.createElement(RoactButton, {
 			text = "Click Me",

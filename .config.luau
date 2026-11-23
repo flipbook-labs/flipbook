@@ -13,4 +13,13 @@ return {
 			workspace = "./workspace",
 		},
 	},
+	lute = {
+		lint = {
+			ruleconfigs = {
+				-- Flipbook reads build globals like `_G.BUILD_CHANNEL` and sets
+				-- `_G.__DEV__` on purpose, and `selene.toml` allows `_G` too.
+				global_usage = { off = true },
+			},
+		},
+	},
 }
