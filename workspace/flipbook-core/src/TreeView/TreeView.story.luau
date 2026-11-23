@@ -14,7 +14,7 @@ type TreeNodeStore = types.TreeNodeStore
 local root = createTreeNodeStore()
 root.setName("<root>")
 
-local deepStory
+local deepStory: types.TreeNodeStore
 
 do
 	local pins = createTreeNodeStore()
@@ -116,7 +116,7 @@ end
 
 return {
 	story = function()
-		local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+		local searchTerm: string?, setSearchTerm = useState<<string?>>(nil)
 
 		local onExpand = useCallback(function()
 			local node = root.findFirstDescendant(function(descendant)

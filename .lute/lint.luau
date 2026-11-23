@@ -1,3 +1,4 @@
+local CodeQuality = require("@lpm/code-quality@v0.8.0")
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local path = require("@std/path")
 local process = require("@std/process")
@@ -23,12 +24,12 @@ local function findLuaFiles()
 	return result
 end
 
-run("selene", { table.unpack(project.FOLDERS_TO_LINT) })
-
 run("stylua", {
 	"--check",
 	table.unpack(project.FOLDERS_TO_LINT),
 })
+
+CodeQuality.lint(project.FOLDERS_TO_LINT)
 
 local files = findLuaFiles()
 if #files > 0 then

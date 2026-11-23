@@ -13,6 +13,10 @@ local useState = React.useState
 
 export type Props = {
 	onClose: () -> (),
+	-- Sends the feedback and returns whether it was accepted. By default this is
+	-- the Feedback module's `postFeedbackAsync`, which posts to the backend.
+	-- Stories pass a fake one to show either outcome without filing a real issue.
+	postFeedbackAsync: ((title: string, body: string) -> boolean)?,
 	LayoutOrder: number?,
 }
 
@@ -29,6 +33,8 @@ local function FeedbackDialog(props: Props)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
 	local err: string?, setErr = useState<<string?>>(nil)
+
+	local sendFeedbackAsync = props.postFeedbackAsync or postFeedbackAsync
 
 	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 
@@ -52,31 +58,41 @@ local function FeedbackDialog(props: Props)
 		setIsDiscardChangesDialogOpen(false)
 	end, {})
 
-	local onSubmit = useCallback(function()
-		if isSendingFeedback then
-			return
-		end
+	local onSubmit = useCallback(
+		function()
+			if isSendingFeedback then
+				return
+			end
 
-		if title ~= "" and body ~= "" and isAcknowledgedByUser then
-			setErr(nil)
-			setIsSendingFeedback(true)
+			if title ~= "" and body ~= "" and isAcknowledgedByUser then
+				setErr(nil)
+				setIsSendingFeedback(true)
 
-			task.spawn(function()
-				local res = postFeedbackAsync(title, body)
+				task.spawn(function()
+					local succeeded = sendFeedbackAsync(title, body)
 
-				setIsSendingFeedback(false)
+					setIsSendingFeedback(false)
 
-				if res.Success then
-					setIsSuccessDialogOpen(true)
-					flipbookStore.telemetry.capture({
-						eventName = "FeedbackSubmitted",
-					})
-				else
-					setErr("Failed to submit feedback. Please try again later")
-				end
-			end)
-		end
-	end, { title, body, isAcknowledgedByUser, isSendingFeedback, flipbookStore.telemetry } :: { unknown })
+					if succeeded then
+						setIsSuccessDialogOpen(true)
+						flipbookStore.telemetry.capture({
+							eventName = "FeedbackSubmitted",
+						})
+					else
+						setErr("Failed to submit feedback. Please try again later")
+					end
+				end)
+			end
+		end,
+		{
+			title,
+			body,
+			isAcknowledgedByUser,
+			isSendingFeedback,
+			sendFeedbackAsync,
+			flipbookStore.telemetry,
+		} :: { unknown }
+	)
 
 	local onTitleChanged = useCallback(function(text)
 		if text ~= title then

@@ -1,5 +1,6 @@
-local CommonTypes = require("@root/Common/types")
 local Storyteller = require("@pkg/Storyteller")
+
+local CommonTypes = require("@root/Common/types")
 local useThemeName = require("@root/Common/useThemeName")
 
 type Pluginlike = CommonTypes.Pluginlike

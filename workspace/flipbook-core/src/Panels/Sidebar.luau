@@ -1,6 +1,7 @@
-local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
 
 local InputSize = Foundation.Enums.InputSize

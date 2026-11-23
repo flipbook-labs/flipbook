@@ -70,6 +70,14 @@ export type TelemetryEvent =
 	| FeedbackSubmitted
 	| FeedbackDiscarded
 
+--[[
+	The envelope sent to the backend copies `eventName` from the event it wraps.
+	This union types that field, so it repeats the names in `TelemetryEvent`
+	above and needs updating alongside it. Code passes and checks event names
+	through `TelemetryEvent`, not this type, so a table of named constants for
+	it would go unused.
+]]
+-- lute-lint-ignore(string_union_enum)
 export type TelemetryEventName =
 	"AppOpened"
 	| "AppClosed"

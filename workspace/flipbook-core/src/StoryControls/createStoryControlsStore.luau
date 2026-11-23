@@ -15,7 +15,7 @@ export type StoryControlsStore = {
 local function createStoryControlsStore(schema: StoryControlsSchema?): StoryControlsStore
 	type ControlSignal = {
 		get: () -> StoryControlValue?,
-		set: (StoryControlValue?) -> (),
+		set: (value: StoryControlValue?) -> (),
 	}
 	local signals: { [string]: ControlSignal } = {}
 	local valueGetters: { [string]: () -> StoryControlValue? } = {}
@@ -33,7 +33,7 @@ local function createStoryControlsStore(schema: StoryControlsSchema?): StoryCont
 
 	local function ensureSignal(key: string): ControlSignal
 		if signals[key] == nil then
-			local get, set = Charm.signal(nil :: StoryControlValue?)
+			local get, set = Charm.signal<<StoryControlValue?>>(nil)
 			signals[key] = { get = get, set = set }
 		end
 		return signals[key]
