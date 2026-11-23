@@ -6,6 +6,7 @@ return {
   },
   devDependencies = {
     ["agent-skills"] = "agent-skills@v0.7.0",
+    ["code-quality"] = "code-quality@v0.8.0",
   },
   packages = {
     ["agent-skills@v0.7.0"] = {
@@ -23,6 +24,14 @@ return {
       source = "https://github.com/luau-lang/lute",
       sourceKind = "github",
       target = "batteries",
+      dependencies = {},
+    },
+    ["code-quality@v0.8.0"] = {
+      installPath = "@pkg/code-quality--github-1234fc23be7b191af0dfcb12c5bcd80ec53c2a90ee282c59e48cdfd534b41adb@cf7e01d12b432dc13b6ec03bbd566fb70f92d1a604902f5bb27ca2228415b13b/.",
+      name = "code-quality",
+      rev = "v0.8.0",
+      source = "https://github.com/flipbook-labs/code-quality",
+      sourceKind = "github",
       dependencies = {},
     },
     ["flipbook-batteries@v0.13.1"] = {

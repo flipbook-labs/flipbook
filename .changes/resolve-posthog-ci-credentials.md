@@ -1,7 +1,0 @@
----
-bump: patch
-category: Internal
-kind: release
----
-
-Resolve PostHog credentials from the vault available to CI release workflows.

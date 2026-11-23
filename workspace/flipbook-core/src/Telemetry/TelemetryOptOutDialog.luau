@@ -44,7 +44,12 @@ local function TelemetryOptOutDialog(): React.Node?
 				})
 			end
 		end,
-		{ flipbookStore.telemetry, localStorageStore.setStorage, userSettingsStore.setStorage, isOptedIn } :: { unknown }
+		{
+			flipbookStore.telemetry,
+			localStorageStore.setStorage,
+			userSettingsStore.setStorage,
+			isOptedIn,
+		} :: { unknown }
 	)
 
 	-- We check `isStorageLoading` to prevent the dialog from briefly flashing

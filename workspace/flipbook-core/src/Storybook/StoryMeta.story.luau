@@ -6,7 +6,7 @@ local StoryMeta = require("./StoryMeta")
 return {
 	story = function()
 		local storybooks = Storyteller.useStorybooks(game)
-		local story, setStory = React.useState(nil :: Storyteller.LoadedStory<any>?)
+		local story, setStory = React.useState<<Storyteller.LoadedStory<unknown>?>>(nil)
 
 		React.useEffect(function()
 			local storybook = storybooks.available[1]
