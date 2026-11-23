@@ -45,12 +45,12 @@ Flipbook uses this itself to wrap its own component Stories in the theme and plu
 
 Flipbook v1 used a different approach for defining packages. For convenience, v2 provides backwards compatibility for the following Storybook properties:
 
-| **Property**     | **Description**                                                                                                                    |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| fusion: any      | The version of Fusion to use when mounting Fusion components. Maps to `packages.Fusion`.                                           |
-| roact: any       | The version of Roact to use when mounting Roact components. Maps to `packages.Roact`.                                              |
-| react: any       | The version of React to use when mounting React components. Maps to `packages.React`.                                              |
-| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`. Maps to `packages.ReactRoblox`. |
+| **Property**     | **Description**                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| fusion: any      | The version of Fusion to use when mounting Fusion components. Maps to `packages.Fusion`.                                                        |
+| roact: any       | The version of Roact to use when mounting Roact components. Maps to `packages.Roact`.                                                           |
+| react: any       | The version of React to use when mounting React components. Maps to `packages.React`.                                                           |
+| reactRoblox: any | The version of ReactRoblox to use when mounting React components. Required alongside `react` for React stories. Maps to `packages.ReactRoblox`. |
 
 Under the hood these simply map to `packages.Fusion`, `packages.Roact`, `packages.React`, and `packages.ReactRoblox`.
 

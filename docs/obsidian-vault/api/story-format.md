@@ -49,11 +49,11 @@ When the Storybook or Story configures a UI library via `packages`, the story fu
 
 Flipbook v1 used a different approach for defining packages. For convenience, v2 provides backwards compatibility for the following properties, which map onto `packages`:
 
-| **Property**       | **Description**                                                                                                                    |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `roact: any`       | The version of Roact to use when mounting Roact components. Maps to `packages.Roact`.                                              |
-| `react: any`       | The version of React to use when mounting React components. Maps to `packages.React`.                                              |
-| `reactRoblox: any` | The version of ReactRoblox to use when mounting React components. Mutually exclusive with `react`. Maps to `packages.ReactRoblox`. |
+| **Property**       | **Description**                                                                                                                                 |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `roact: any`       | The version of Roact to use when mounting Roact components. Maps to `packages.Roact`.                                                           |
+| `react: any`       | The version of React to use when mounting React components. Maps to `packages.React`.                                                           |
+| `reactRoblox: any` | The version of ReactRoblox to use when mounting React components. Required alongside `react` for React stories. Maps to `packages.ReactRoblox`. |
 
 > [!seealso]
 > [Story](../concepts/story.md): what a Story is and how it renders
