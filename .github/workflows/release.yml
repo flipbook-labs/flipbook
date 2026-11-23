@@ -100,6 +100,12 @@ jobs:
         id: refreshed
         run: lute run publish-lock record-main
 
+      - name: Check Rollback
+        id: rollback
+        run: lute run rollback banner
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - uses: actions/download-artifact@v8
         with:
           name: flipbook-rbxm
@@ -109,8 +115,10 @@ jobs:
           github-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
           force-version: ${{ inputs.force-version || '' }}
+          # The rollback banner is empty unless prod is rolled back. It ends with
+          # its own blank line, which separates it from the rest of the body.
           pr-body: |
-            >[!IMPORTANT]
+            ${{ steps.rollback.outputs.banner }}>[!IMPORTANT]
             > This PR prepares the next release by bumping the version and updating the changelog.
             >
             > **Merging this PR will:**
