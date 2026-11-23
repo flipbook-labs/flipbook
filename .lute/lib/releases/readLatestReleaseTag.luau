@@ -5,9 +5,16 @@ local process = require("@std/process")
 -- prerelease, and this returns nil then. Reads through `gh`, given the
 -- repository as owner/name.
 local function readLatestReleaseTag(repo: string): string?
-	local result = process.run({ "gh", "api", `repos/{repo}/releases/latest`, "--jq", ".tag_name" })
+	local result = process.run({
+		"gh",
+		"api",
+		`repos/{repo}/releases/latest`,
+		"--jq",
+		".tag_name",
+	})
 	if result.ok then
-		return (result.stdout:gsub("%s+$", ""))
+		local tag = result.stdout:gsub("%s+$", "")
+		return tag
 	end
 	if result.stderr:find("HTTP 404", 1, true) then
 		return nil

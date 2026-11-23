@@ -106,9 +106,27 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		return
 	end
 
-	run("gh", { "release", "download", tag, "--pattern", "Flipbook.rbxm", "--clobber" })
-	run("lune", { "run", "publish-plugin", "--channel", "prod", "--skipBuild" })
-	run("gh", { "release", "edit", tag, "--latest" })
+	run("gh", {
+		"release",
+		"download",
+		tag,
+		"--pattern",
+		"Flipbook.rbxm",
+		"--clobber",
+	})
+	run("lune", {
+		"run",
+		"publish-plugin",
+		"--channel",
+		"prod",
+		"--skipBuild",
+	})
+	run("gh", {
+		"release",
+		"edit",
+		tag,
+		"--latest",
+	})
 	print(`Restored {tag} and marked it as the Latest release`)
 end
 
@@ -150,7 +168,10 @@ local function parseAssetVersion(value: json.Value): AssetVersion
 	assert(typeof(versionPath) == "string" and typeof(createTime) == "string", "Malformed asset version")
 
 	local number = tonumber(versionPath:match("/versions/(%d+)$"))
-	return { number = assert(number, `Unexpected version path {versionPath}`), createTime = createTime }
+	return {
+		number = assert(number, `Unexpected version path {versionPath}`),
+		createTime = createTime,
+	}
 end
 
 local function restoreBeta(requested: string?, dryRun: boolean)

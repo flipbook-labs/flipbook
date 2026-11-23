@@ -138,7 +138,7 @@ local function reportRolledBack()
 	local channel = assert(parsed:get("channel"))
 	local tag = parsed:get("tag")
 
-	local version = nil
+	local version: string? = nil
 	if channel == "prod" then
 		assert(tag and tag ~= "", "--tag must name the restored release to report a prod rollback")
 		version = tag:gsub("^v", "")
