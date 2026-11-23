@@ -64,11 +64,11 @@ local function FeedbackDialog(props: Props)
 				setIsSendingFeedback(true)
 
 				task.spawn(function()
-					local res = postFeedbackAsync(title, body)
+					local succeeded = postFeedbackAsync(title, body)
 
 					setIsSendingFeedback(false)
 
-					if res and res.Success then
+					if succeeded then
 						setIsSuccessDialogOpen(true)
 						fireEventAsync({
 							eventName = "FeedbackSubmitted",
