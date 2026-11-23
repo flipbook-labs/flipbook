@@ -9,4 +9,4 @@ Thank you for your interest in contributing to Flipbook!
 
 - [Onboarding](./onboarding.md): Dev environment setup, building, and running tests
 - [Architecture](./architecture.md): Codebase layout and the build pipeline
-- [Creating Releases](./creating-releases.md): Version bumping and publishing to the Creator Store
+- [Releases and Rollbacks](./creating-releases.md): Cutting releases to the Creator Store and rolling back bad ones

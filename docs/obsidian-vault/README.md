@@ -32,7 +32,7 @@ With native support for popular UI libraries like [React](./usage/frameworks/rea
 ## Contributing
 
 - [Onboarding](./contributing/onboarding.md): Dev environment setup, building, and testing
-- [Creating Releases](./contributing/creating-releases.md): Version bumping and publishing
+- [Releases and Rollbacks](./contributing/creating-releases.md): Cutting releases and rolling back bad ones
 
 ## Engineering
 

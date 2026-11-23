@@ -110,5 +110,5 @@ The release workflow builds `Flipbook.rbxm` and lets Changewrite open or update 
 
 > [!seealso]
 > [Onboarding](./onboarding.md): First-time setup and build commands
-> [Creating Releases](./creating-releases.md): Version bumping and publishing
+> [Releases and Rollbacks](./creating-releases.md): Cutting releases and rolling back bad ones
 > [Module Loader](../engineering/module-loader.md): How require bypassing works at runtime
