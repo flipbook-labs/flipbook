@@ -121,7 +121,7 @@ The docs in `docs/obsidian-vault/` are plain Markdown, so you can edit them in a
 - Link to other pages with relative Markdown links that include the `.md` extension, like `[Controls](../usage/controls.md)`. The site build fails on a link that doesn't resolve, and on Obsidian `[[wikilinks]]`.
 - Add notes, tips, and warnings as callouts, like `> [!tip]`. Obsidian, GitHub, and the docs site all render them.
 - Each folder's `index.md` lists its pages in the order the sidebar shows them.
-- Run `lute run check-docs` before you push. It checks formatting and builds the site, the same as CI.
+- Run `lute run check-docs` before you push. It checks the formatting of every Markdown, YAML, and JSON file in the repo and builds the site, the same as CI. `npm --prefix docs/site run format` fixes the formatting.
 
 If you use Obsidian, open Settings -> Files and links, turn off **Use `[[Wikilinks]]`**, and set **New link format** to **Relative path to file**. Obsidian keeps these settings per machine, so the vault can't set them for you.
 
