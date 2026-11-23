@@ -37,7 +37,7 @@ local function DragHandle(providedProps: Props)
 
 	local isDragging, setIsDragging = useState(false)
 	local isHovered, setIsHovered = useState(false)
-	local mouseInput: InputObject?, setMouseInput = useState(nil :: InputObject?)
+	local mouseInput: InputObject?, setMouseInput = useState<<InputObject?>>(nil)
 
 	local getHandleProperties = useCallback(function()
 		local hitboxSize: UDim2
@@ -45,22 +45,22 @@ local function DragHandle(providedProps: Props)
 		local position: UDim2
 		local anchorPoint: Vector2
 
-		if props.handle == "Right" or props.handle == "Left" then
+		if props.handle == types.DragHandle.Right or props.handle == types.DragHandle.Left then
 			hitboxSize = UDim2.new(0, props.size, 1, 0)
 			highlightSize = UDim2.new(0, props.size / 4, 1, 0)
 
-			if props.handle == "Right" then
+			if props.handle == types.DragHandle.Right then
 				position = UDim2.fromScale(1, 0)
 				anchorPoint = Vector2.new(0.5, 0)
 			else
 				position = UDim2.fromScale(0, 0)
 				anchorPoint = Vector2.new(0, 0)
 			end
-		elseif props.handle == "Top" or props.handle == "Bottom" then
+		elseif props.handle == types.DragHandle.Top or props.handle == types.DragHandle.Bottom then
 			hitboxSize = UDim2.new(1, 0, 0, props.size)
 			highlightSize = UDim2.new(1, 0, 0, props.size / 4)
 
-			if props.handle == "Bottom" then
+			if props.handle == types.DragHandle.Bottom then
 				position = UDim2.fromScale(0, 1)
 				anchorPoint = Vector2.new(0, 0.5)
 			else
@@ -102,7 +102,7 @@ local function DragHandle(providedProps: Props)
 
 	local hitboxSize, highlightSize, position, anchorPoint = getHandleProperties()
 
-	useEffect(function(): any
+	useEffect(function(): unknown
 		if mouseInput and isDragging then
 			local lastPosition = mouseInput.Position
 			local conn = RunService.Heartbeat:Connect(function()
@@ -128,9 +128,9 @@ local function DragHandle(providedProps: Props)
 			local mouse = plugin:GetMouse()
 
 			if isHovered or isDragging then
-				if props.handle == "Left" or props.handle == "Right" then
+				if props.handle == types.DragHandle.Left or props.handle == types.DragHandle.Right then
 					mouse.Icon = props.hoverIconX
-				elseif props.handle == "Top" or props.handle == "Bottom" then
+				elseif props.handle == types.DragHandle.Top or props.handle == types.DragHandle.Bottom then
 					mouse.Icon = props.hoverIconY
 				end
 			else
@@ -139,6 +139,12 @@ local function DragHandle(providedProps: Props)
 		end
 	end, { plugin, isDragging, isHovered } :: { unknown })
 
+	-- React's types expect MouseEnter and MouseLeave handlers to be generic over
+	-- the instance, as in `<a>(a, InputObject) -> ()`. A non-generic function
+	-- like these doesn't match that type, so they're passed as `any`.
+	-- lute-lint-ignore(no_any)
+	local untypedOnMouseEnter, untypedOnMouseLeave = onMouseEnter :: any, onMouseLeave :: any
+
 	return React.createElement("ImageButton", {
 		Size = hitboxSize,
 		Position = position,
@@ -146,8 +152,8 @@ local function DragHandle(providedProps: Props)
 		BackgroundTransparency = 1,
 		[React.Event.InputBegan] = onInputBegan,
 		[React.Event.InputEnded] = onInputEnded,
-		[React.Event.MouseEnter] = onMouseEnter :: any,
-		[React.Event.MouseLeave] = onMouseLeave :: any,
+		[React.Event.MouseEnter] = untypedOnMouseEnter,
+		[React.Event.MouseLeave] = untypedOnMouseLeave,
 	}, {
 		Highlght = React.createElement("Frame", {
 			Size = highlightSize,

@@ -1,4 +1,4 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local fs = require("@std/fs")
 local path = require("@std/path")
 local system = require("@std/system")
@@ -12,7 +12,7 @@ type RojoBuildOptions = {
 	project: {
 		name: string,
 		emitLegacyScripts: boolean?,
-		tree: { [string]: any },
+		tree: { [string]: unknown },
 	},
 	output: path.Pathlike,
 }
@@ -24,8 +24,13 @@ local function rojoBuild(options: RojoBuildOptions): path.Path
 	local tempProjectPath =
 		createRojoProjectAsync(path.join(system.tmpdir(), tempProjectName), options.project :: json.Value)
 
-	local ok, err = (pcall :: any)(function()
-		run("rojo", { "build", tempProjectPath, "--output", options.output })
+	local ok, err = pcall(function()
+		run("rojo", {
+			"build",
+			tempProjectPath,
+			"--output",
+			options.output,
+		})
 	end)
 	fs.remove(tempProjectPath)
 

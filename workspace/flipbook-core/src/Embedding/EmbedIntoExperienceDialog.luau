@@ -20,6 +20,10 @@ export type Props = {
 	onClose: () -> (),
 }
 
+-- Foundation doesn't export the type of a dialog action, so it's read off
+-- Foundation.DialogActionsProps.
+type DialogActions = typeof(({} :: Foundation.DialogActionsProps).actions)
+
 type EmbedStep = "SelectDestination" | "ConfirmOverwrite" | "Success"
 
 local EmbedStep = {
@@ -66,8 +70,8 @@ local function EmbedIntoExperienceDialog(props: Props)
 		onEmbed()
 	end, { onEmbed })
 
-	local content
-	local actions
+	local content: React.Node
+	local actions: DialogActions
 
 	if step == EmbedStep.SelectDestination then
 		content = e(Foundation.View, {

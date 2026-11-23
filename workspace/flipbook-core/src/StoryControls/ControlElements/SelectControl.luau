@@ -21,7 +21,7 @@ local function getItemId(item: unknown): ItemId
 end
 
 local function SelectControl(props: Props)
-	local activeItemId, setActiveItemId = useState(nil :: ItemId?)
+	local activeItemId, setActiveItemId = useState<<ItemId?>>(nil)
 
 	local itemIdToValue = useMemo(function(): { [ItemId]: Storyteller.StoryControlValue }
 		local map = {}

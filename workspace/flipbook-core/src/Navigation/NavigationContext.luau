@@ -20,7 +20,7 @@ export type NavigationContext = {
 	currentScreen: Screen,
 }
 
-local Context = React.createContext({} :: NavigationContext)
+local Context = React.createContext<<NavigationContext?>>(nil)
 
 export type Props = {
 	defaultScreen: Screen,
@@ -81,7 +81,9 @@ local function Provider(props: Props)
 end
 
 local function use(): NavigationContext
-	return useContext(Context)
+	local navigation = useContext(Context)
+	assert(navigation ~= nil, "NavigationContext.use must be used within a NavigationContext.Provider")
+	return navigation
 end
 
 return {

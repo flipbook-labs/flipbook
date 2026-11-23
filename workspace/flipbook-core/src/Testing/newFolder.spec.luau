@@ -14,6 +14,9 @@ test("name children after the dictionary keys", function()
 	local child1 = Instance.new("Part")
 	local child2 = Instance.new("Model")
 
+	-- Folder's type doesn't know about the children, so they're indexed through
+	-- an untyped value.
+	-- lute-lint-ignore(no_any)
 	local folder: any = newFolder({
 		Child1 = child1,
 		Child2 = child2,
@@ -24,6 +27,9 @@ test("name children after the dictionary keys", function()
 end)
 
 test("support nesting newFolder as children", function()
+	-- Folder's type doesn't know about the children, so they're indexed through
+	-- an untyped value.
+	-- lute-lint-ignore(no_any)
 	local folder: any = newFolder({
 		Child = newFolder({
 			AnotherChild = newFolder({
