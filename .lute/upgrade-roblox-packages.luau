@@ -10,7 +10,8 @@ local process = require("@std/process")
 
 local PROJECT_FILE = "project.luau"
 local VERSION_PATTERN = 'ROBLOX_PACKAGES_VERSION = "[^"]*"'
-local ENTRY_PATHSPEC = ".changes/upgrade-roblox-packages-*.md"
+local ENTRY_PATHSPEC = ".changes/upgrade-roblox-packages-*.luau"
+local MARKDOWN_ENTRY_PATHSPEC = ".changes/upgrade-roblox-packages-*.md"
 local BASE_BRANCH = "main"
 local REVIEWER = "flipbook-labs/flipbook-engine"
 
@@ -75,35 +76,51 @@ local function applyVersion(version: string)
 	fs.writeStringToFile(PROJECT_FILE, updated)
 end
 
--- An open upgrade branch already carries the entry it added, so later runs
--- rewrite that entry rather than adding a second one.
-local function writeChangeEntry(version: string): string
-	local added = run({
+local function findAddedEntries(pathspec: string): string
+	return run({
 		"git",
 		"diff",
 		"--name-only",
 		"--diff-filter=A",
 		`origin/{BASE_BRANCH}...HEAD`,
 		"--",
-		ENTRY_PATHSPEC,
+		pathspec,
 	})
-	local entryPath = added:match("^[^\n]+") or `.changes/upgrade-roblox-packages-{version}.md`
+end
+
+-- An open upgrade branch already carries the entry it added, so later runs
+-- rewrite that entry rather than adding a second one. Branches opened before
+-- entries were Luau carry a Markdown entry, which `changewrite check` rejects.
+-- That file is deleted, and its Luau replacement keeps the same base name.
+-- Returns every path it wrote or deleted, for the caller to commit.
+local function writeChangeEntry(version: string): { string }
+	local changedPaths = {}
+	local newEntryPath = `.changes/upgrade-roblox-packages-{version}.luau`
+	local markdownPath = findAddedEntries(MARKDOWN_ENTRY_PATHSPEC):match("^[^\n]+")
+	if markdownPath then
+		if fs.exists(markdownPath) then
+			fs.remove(markdownPath)
+		end
+		table.insert(changedPaths, markdownPath)
+		newEntryPath = (markdownPath:gsub("%.md$", ".luau"))
+	end
+	local entryPath = findAddedEntries(ENTRY_PATHSPEC):match("^[^\n]+") or newEntryPath
+	table.insert(changedPaths, entryPath)
 
 	fs.writeStringToFile(
 		entryPath,
 		table.concat({
-			"---",
-			"bump: patch",
-			"category: Dependencies",
-			"kind: packages",
-			"---",
-			"",
-			`Upgrade RobloxPackages to {version}.`,
+			"return {",
+			'\tbump = "patch",',
+			'\tcategory = "Dependencies",',
+			'\tkind = "packages",',
+			`\tsummary = "Upgrade RobloxPackages to {version}.",`,
+			"}",
 			"",
 		}, "\n")
 	)
 
-	return entryPath
+	return changedPaths
 end
 
 local function renderPullRequestBody(version: string, branch: string): string
@@ -219,15 +236,17 @@ local branch = assertEnv("BRANCH_NAME")
 
 checkOutUpgradeBranch(branch)
 applyVersion(version)
-local entryPath = writeChangeEntry(version)
+local changedPaths = { PROJECT_FILE }
+for _, changedPath in writeChangeEntry(version) do
+	table.insert(changedPaths, changedPath)
+end
 
 if run({
 	"git",
 	"status",
 	"--porcelain",
 	"--",
-	PROJECT_FILE,
-	entryPath,
+	table.unpack(changedPaths),
 }) == "" then
 	print(`The branch already tracks {version}; nothing to push.`)
 	return
@@ -237,8 +256,7 @@ run({
 	"git",
 	"add",
 	"--",
-	PROJECT_FILE,
-	entryPath,
+	table.unpack(changedPaths),
 })
 run({
 	"git",

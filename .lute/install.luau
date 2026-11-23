@@ -1,5 +1,4 @@
 local fs = require("@std/fs")
-local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
@@ -40,16 +39,18 @@ do
 end
 
 do
+	local CodeQuality = require("@lpm/code-quality@v0.7.0")
 	local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
 	local findAndReplace = FlipbookBatteries.findAndReplace
 
-	-- Some of our Wally packages are written with string requires which are not
-	-- yet supported by ModuleLoader or Jest. To allow us to still use these
-	-- packages, this function patches them using darklua to resolve the string
-	-- requires to Roblox ones
+	-- Some of our Wally packages are written with string requires, which
+	-- ModuleLoader and Jest can't load yet (flipbook-labs/module-loader#70).
+	-- CodeQuality's `convertRequire` code mod rewrites them in place into
+	-- instance requires. It looks each module up in the sourcemap that
+	-- `installWallyPackages` writes, which covers `Packages/_Index`.
 	local function patchStringRequires()
 		local packages = {
 			"^luaulog$",
@@ -57,45 +58,17 @@ do
 			"^react%-charm$",
 		}
 
+		local sourceFolders: { string } = {}
 		for _, package in packages do
 			local packageRoot = find(tostring(PACKAGES_INDEX_PATH), package)[1]
-
 			assert(packageRoot, `no package found matching "{package}"`)
-
 			print(`patching {packageRoot}`)
-
-			local darkluaConfig = {
-				process = {
-					{
-						rule = "convert_require",
-						current = {
-							name = "luau",
-						},
-						target = {
-							name = "roblox",
-							indexing_style = "property",
-						},
-					},
-				},
-			}
-
-			local darkluaConfigPath = path.join(packageRoot, ".darklua.json")
-			fs.writeStringToFile(darkluaConfigPath, json.serialize(darkluaConfig, true))
-
-			run("darklua", { "process", "src", "src" }, {
-				cwd = packageRoot,
-			})
-
-			-- Darklua doesn't seem to handle `./Foo` paths without a sourcemap,
-			-- and getting the sourcemap working is proving difficult. So the
-			-- following just does a quick pass to convert `"./Foo"` into
-			-- `script.Parent.Foo`
-			for _, descendant in getDescendants(packageRoot) do
-				if path.extname(descendant) == ".luau" then
-					findAndReplace(descendant, `require%("%./(%w+)"%)`, "require(script.Parent.%1)")
-				end
-			end
+			table.insert(sourceFolders, path.format(path.join(packageRoot, "src")))
 		end
+
+		CodeQuality.transform(CodeQuality.Mod.ConvertRequire, sourceFolders, {
+			sourcemap = "sourcemap.json",
+		})
 	end
 
 	local function installWallyPackages()
