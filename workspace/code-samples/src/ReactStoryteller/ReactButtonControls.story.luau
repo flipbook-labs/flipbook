@@ -8,7 +8,7 @@ local controls: Storyteller.StoryControlsSchema = {
 	isDisabled = false,
 }
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	controls = controls,
 	story = function(props)
 		return React.createElement(ReactButtonControls, {

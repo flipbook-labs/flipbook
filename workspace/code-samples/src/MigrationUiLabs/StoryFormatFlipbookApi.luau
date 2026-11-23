@@ -5,7 +5,7 @@ local controls: Storyteller.StoryControlsSchema = {
 	isVisible = Storyteller.createBooleanControl(true),
 }
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	controls = controls,
 	story = function(props)
 		local label = Instance.new("TextLabel")

@@ -8,7 +8,7 @@ local useState = React.useState
 return {
 	summary = "Lets users pick an Instance from the current Selection",
 	story = function()
-		local value, setValue = useState(nil :: Instance?)
+		local value, setValue = useState<<Instance?>>(nil)
 
 		return React.createElement(Foundation.View, {
 			tag = "size-full-0 auto-y col gap-large",

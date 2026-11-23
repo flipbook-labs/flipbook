@@ -11,7 +11,7 @@ return {
 		ReactRoblox = ReactRoblox,
 	},
 	mapStory = function(Story)
-		return function(props: { [string]: any })
+		return function(props: { [string]: unknown })
 			return React.createElement("Frame", {
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),

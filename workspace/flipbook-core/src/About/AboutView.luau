@@ -17,7 +17,7 @@ local AUTHOR_USER_IDS = {
 local function AboutView()
 	local tokens = useTokens()
 	local currentYear = useMemo(function()
-		return (DateTime.now():ToUniversalTime() :: any).Year
+		return DateTime.now():FormatUniversalTime("YYYY", "en-us")
 	end, {})
 
 	local authors: { [string]: React.Node } = {}

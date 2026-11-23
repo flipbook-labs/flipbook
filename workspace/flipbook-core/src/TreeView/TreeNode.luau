@@ -45,7 +45,7 @@ local function TreeNode(props: TreeNodeProps)
 	local iconName, iconStyle = useTreeNodeIcon(icon :: Types.TreeNodeIcon)
 
 	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
-	local ref = useRef(nil :: GuiObject?)
+	local ref = useRef<<GuiObject?>>(nil)
 
 	local tokens = useTokens()
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
@@ -98,52 +98,61 @@ local function TreeNode(props: TreeNodeProps)
 		} :: { unknown }
 	)
 
-	local contextMenuItems = useMemo(function()
-		local items: { Foundation.MenuItem } = {}
+	local contextMenuItems = useMemo(
+		function()
+			local items: { Foundation.MenuItem } = {}
 
-		if icon == Types.TreeNodeIcon.Storybook then
-			table.insert(items, {
-				id = "pin",
-				text = if isPinned then "Unpin" else "Pin",
-				onActivated = function()
-					onTogglePin()
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if icon == Types.TreeNodeIcon.Storybook then
+				table.insert(items, {
+					id = "pin",
+					text = if isPinned then "Unpin" else "Pin",
+					onActivated = function()
+						onTogglePin()
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		if instance then
-			table.insert(items, {
-				id = "select-in-explorer",
-				text = "Select in Explorer",
-				onActivated = function()
-					Selection:Set({ instance })
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if instance then
+				table.insert(items, {
+					id = "select-in-explorer",
+					text = "Select in Explorer",
+					onActivated = function()
+						Selection:Set({ instance })
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		if #nodeChildren > 0 then
-			table.insert(items, {
-				id = "expand-all",
-				text = "Expand all",
-				onActivated = function()
-					props.node.expandDown()
-					setIsContextMenuOpen(false)
-				end,
-			})
-			table.insert(items, {
-				id = "collapse-all",
-				text = "Collapse all",
-				onActivated = function()
-					props.node.collapseDown()
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if #nodeChildren > 0 then
+				table.insert(items, {
+					id = "expand-all",
+					text = "Expand all",
+					onActivated = function()
+						props.node.expandDown()
+						setIsContextMenuOpen(false)
+					end,
+				})
+				table.insert(items, {
+					id = "collapse-all",
+					text = "Collapse all",
+					onActivated = function()
+						props.node.collapseDown()
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		return items
-	end, { isPinned, icon, instance, nodeChildren, props.node } :: { unknown })
+			return items
+		end,
+		{
+			isPinned,
+			icon,
+			instance,
+			nodeChildren,
+			props.node,
+		} :: { unknown }
+	)
 
 	if isVisible == false or isFiltered == true then
 		return nil

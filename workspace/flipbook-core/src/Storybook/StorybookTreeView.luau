@@ -36,12 +36,12 @@ export type Props = {
 }
 
 local function StorybookTreeView(props: Props)
-	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
-	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
+	local storybookByNodeId = useRef<<{ [string]: LoadedStorybook }>>({})
+	local unavailableStorybookByNodeId = useRef<<{ [string]: UnavailableStorybook }>>({})
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
-	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
+	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -105,43 +105,59 @@ local function StorybookTreeView(props: Props)
 
 	-- This handles automatically moving a node under the Pinned node once the
 	-- node's instance becomes pinned
-	useEffect(function()
-		if pinnedNodes ~= prevPinnedNodes then
-			-- Put any previously pinned nodes back to the root
-			if prevPinnedNodes then
-				for _, node in prevPinnedNodes do
-					if not node.getIsPinned() then
-						node.parentTo(rootNode)
+	useEffect(
+		function()
+			if pinnedNodes ~= prevPinnedNodes then
+				-- Put any previously pinned nodes back to the root
+				if prevPinnedNodes then
+					for _, node in prevPinnedNodes do
+						if not node.getIsPinned() then
+							node.parentTo(rootNode)
+						end
 					end
 				end
-			end
 
-			for _, node in pinnedNodes do
-				node.parentTo(pinned)
+				for _, node in pinnedNodes do
+					node.parentTo(pinned)
+				end
 			end
-		end
-	end, { pinnedNodes, prevPinnedNodes, pinned, rootNode } :: { unknown })
+		end,
+		{
+			pinnedNodes,
+			prevPinnedNodes,
+			pinned,
+			rootNode,
+		} :: { unknown }
+	)
 
 	-- Convert available storybooks into nodes
-	useEffect(function()
-		for _, storybook in storybooks.available do
-			if nodesByInstance.current[storybook.source] then
-				continue
+	useEffect(
+		function()
+			for _, storybook in storybooks.available do
+				if nodesByInstance.current[storybook.source] then
+					continue
+				end
+
+				local node = createTreeNodesForStorybook(storybook)
+
+				nodesByInstance.current[storybook.source] = node
+				storybookByNodeId.current[node.id] = storybook
+
+				if pinnedInstanceStore.isPinned(storybook.source) then
+					node.setIsPinned(true)
+					node.parentTo(pinned)
+				else
+					node.parentTo(rootNode)
+				end
 			end
-
-			local node = createTreeNodesForStorybook(storybook :: any)
-
-			nodesByInstance.current[storybook.source] = node
-			storybookByNodeId.current[node.id] = storybook :: any
-
-			if pinnedInstanceStore.isPinned(storybook.source) then
-				node.setIsPinned(true)
-				node.parentTo(pinned)
-			else
-				node.parentTo(rootNode)
-			end
-		end
-	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
+		end,
+		{
+			storybooks.available,
+			pinnedInstanceStore.isPinned,
+			pinned,
+			rootNode,
+		} :: { unknown }
+	)
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()

@@ -16,36 +16,45 @@ local function move(src: path.Pathlike, dest: path.Pathlike)
 	assert(res.ok, res.stderr)
 end
 
--- Installs the dependencies in `pkg.luau`. `--vendor` copies each one into a
--- `.lpm/<key>@<rev>` folder, and the `lpm` alias in `.config.luau` points at
--- `.lpm`. When a vendored package requires through `@lpm`, the require uses
--- the `lpm` alias of whichever project vendored it. So any project that
--- vendors such a package has to define the same alias.
--- The following issue tracks removing that requirement:
--- https://github.com/flipbook-labs/flipbook/issues/694
---
--- The rest of this script requires flipbook-batteries from `.lpm`, so this
--- runs first.
+--[[
+	Installs the dependencies in `pkg.luau`. `--vendor` copies each one into a
+	`.lpm/<key>@<rev>` folder, and the `lpm` alias in `.config.luau` points at
+	`.lpm`. When a vendored package requires through `@lpm`, the require uses
+	the `lpm` alias of whichever project vendored it. So any project that
+	vendors such a package has to define the same alias.
+	The following issue tracks removing that requirement:
+	https://github.com/flipbook-labs/flipbook/issues/694
+
+	The rest of this script requires flipbook-batteries from `.lpm`, so this
+	runs first.
+]]
 do
-	local res = process.run({ "lute", "pkg", "install", "--vendor" }, {
+	local res = process.run({
+		"lute",
+		"pkg",
+		"install",
+		"--vendor",
+	}, {
 		stdio = "inherit",
 	})
 	assert(res.ok, "lute pkg install failed")
 end
 
 do
-	local CodeQuality = require("@lpm/code-quality@v0.7.0")
+	local CodeQuality = require("@lpm/code-quality@v0.8.0")
 	local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
 	local findAndReplace = FlipbookBatteries.findAndReplace
 
-	-- Some of our Wally packages are written with string requires, which
-	-- ModuleLoader and Jest can't load yet (flipbook-labs/module-loader#70).
-	-- CodeQuality's `convertRequire` code mod rewrites them in place into
-	-- instance requires. It looks each module up in the sourcemap that
-	-- `installWallyPackages` writes, which covers `Packages/_Index`.
+	--[[
+		Some of our Wally packages are written with string requires, which
+		ModuleLoader and Jest can't load yet (flipbook-labs/module-loader#70).
+		CodeQuality's `convertRequire` code mod rewrites them in place into
+		instance requires. It looks each module up in the sourcemap that
+		`installWallyPackages` writes, which covers `Packages/_Index`.
+	]]
 	local function patchStringRequires()
 		local packages = {
 			"^luaulog$",
@@ -68,7 +77,12 @@ do
 
 	local function installWallyPackages()
 		run("wally", { "install" })
-		run("rojo", { "sourcemap", project.SOURCEMAP_PROJECT_PATH, "-o", "sourcemap.json" })
+		run("rojo", {
+			"sourcemap",
+			project.SOURCEMAP_PROJECT_PATH,
+			"-o",
+			"sourcemap.json",
+		})
 		run("wally-package-types", { "--sourcemap", "sourcemap.json", project.PACKAGES_PATH })
 
 		patchStringRequires()
@@ -127,19 +141,21 @@ do
 		end
 	end
 
-	-- Foundation's StyleSheetRegistry and Translator modules create instances
-	-- as soon as they're required. They parent them to whatever Foundation's
-	-- getMainGui helper returns: CoreGui when the code can read it, or the
-	-- player's PlayerGui in a running game. Tests run headless in the cloud
-	-- through rocale, where neither is available, so getMainGui returns nil.
-	-- Each module then asserts the result isn't nil, which fails because the
-	-- test runner sets `_G.__DEV__`. Translator would error on the nil parent
-	-- even without the assert.
-	--
-	-- This patch removes the assert from both modules and falls back to
-	-- Foundation's own folder in `_Index` as the parent. When getMainGui finds
-	-- a GUI, the fallback goes unused. Foundation versions without these
-	-- asserts have nothing to match, and the patch leaves them as they are.
+	--[[
+		Foundation's StyleSheetRegistry and Translator modules create instances
+		as soon as they're required. They parent them to whatever Foundation's
+		getMainGui helper returns: CoreGui when the code can read it, or the
+		player's PlayerGui in a running game. Tests run headless in the cloud
+		through rocale, where neither is available, so getMainGui returns nil.
+		Each module then asserts the result isn't nil, which fails because the
+		test runner sets `_G.__DEV__`. Translator would error on the nil parent
+		even without the assert.
+
+		This patch removes the assert from both modules and falls back to
+		Foundation's own folder in `_Index` as the parent. When getMainGui finds
+		a GUI, the fallback goes unused. Foundation versions without these
+		asserts have nothing to match, and the patch leaves them as they are.
+	]]
 	local function patchFoundationMainGui()
 		local foundationRoot = path.join(project.ROBLOX_PACKAGES_PATH, "_Index", "Foundation")
 		assert(fs.exists(foundationRoot), "no Foundation package found in RobloxPackages")
@@ -234,7 +250,14 @@ do
 		}
 		for _, packagesPath in { project.PACKAGES_PATH, project.ROBLOX_PACKAGES_PATH } do
 			for _, pattern in prunedFiles do
-				run("find", { packagesPath, "-type", "f", "-name", `"{pattern}"`, "-delete" })
+				run("find", {
+					packagesPath,
+					"-type",
+					"f",
+					"-name",
+					`"{pattern}"`,
+					"-delete",
+				})
 			end
 		end
 	end

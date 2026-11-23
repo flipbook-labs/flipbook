@@ -5,7 +5,7 @@ local controls: Storyteller.StoryControlsSchema = {
 	isDisabled = Storyteller.createBooleanControl(false),
 }
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	summary = "A basic button component.",
 	controls = controls,
 	story = function(props)

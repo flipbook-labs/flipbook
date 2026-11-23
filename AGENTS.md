@@ -24,8 +24,8 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 | **CodeQuality**          | Shared lint rules, and the code mods that turn string requires into Roblox ones    |
 | **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                   |
 | **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                    |
-| **Selene**               | Luau linter                                                                        |
 | **StyLua**               | Luau formatter                                                                     |
+| **CodeQuality**          | Shared Luau lint rules; `lute run lint` runs them with `lute lint`                 |
 | **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                              |
 | **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller         |
 | **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories              |
@@ -124,7 +124,7 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 
 - **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
 - **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
-- **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
+- **Luau linter:** `lute lint` with the CodeQuality rules, run by `lute run lint`. `global_usage` is off in `.config.luau`.
 - **Markdown, YAML, JSON, and docs-site formatter:** Prettier, with one config at the repo root (`.prettierrc.json`, `.prettierignore`). Run `lute run check-docs` to check every file; run `npm --prefix docs/site run format` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
 - **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); the build converts these to Roblox `require()` calls.
@@ -169,7 +169,7 @@ The `workspace/` directory is a monorepo-style structure. Each member has its ow
 ### Wally vs Lute packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime)
+- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime). The `code-quality` dev dependency holds the CodeQuality lint rules, which `.lute/lint.luau` points `lute lint` at
 - `LuauPackages/` holds only rbxasset, which `.lune/publish-plugin.luau` requires as `@lunepkg`. Lune reads aliases only from `.luaurc`, so `.lune/.luaurc` declares the Lune aliases
 
 ### The build and require paths

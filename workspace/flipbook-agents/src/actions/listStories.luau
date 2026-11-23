@@ -22,7 +22,9 @@ local action: Action = {
 	},
 	run = function(controller, rawParams)
 		local fields = asDictionary(rawParams)
-		return { stories = controller.listStories(getRequiredString(fields, "storybook")) }
+		return {
+			stories = controller.listStories(getRequiredString(fields, "storybook")),
+		}
 	end,
 }
 

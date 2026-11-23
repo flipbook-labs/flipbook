@@ -15,7 +15,12 @@ local controls = {
 }
 
 type Props = {
-	controls: { [string]: any },
+	controls: {
+		label: string,
+		isDisabled: boolean,
+		textSize: number,
+		backgroundColor: Color3,
+	},
 }
 
 return {
