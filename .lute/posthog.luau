@@ -2,10 +2,11 @@
 -- next to product telemetry.
 --
 -- Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
+--        lute run posthog rolled-back --channel <prod | beta> [--tag <tag>] [--dry-run]
 --
--- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release annotation also
--- reads POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID. --dry-run prints each
--- request instead of sending it and needs none of these.
+-- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release and rollback
+-- annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID.
+-- --dry-run prints each request instead of sending it and needs none of these.
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
@@ -24,6 +25,7 @@ local run = FlipbookBatteries.run
 local CHANGES_DIR = ".changes"
 
 local dryRun = false
+local commandArgs: cli.Parser? = nil
 
 local function readSecret(name: string): string
 	if dryRun then
@@ -47,6 +49,16 @@ local function readLockedVersion(packageName: string): string
 	return assert(version, `Could not find {packageName} in wally.lock`)
 end
 
+local function readRunUrl(): string?
+	local server = process.env.GITHUB_SERVER_URL
+	local repository = process.env.GITHUB_REPOSITORY
+	local runId = process.env.GITHUB_RUN_ID
+	if server and repository and runId then
+		return `{server}/{repository}/actions/runs/{runId}`
+	end
+	return nil
+end
+
 -- `build_hash` matches the BUILD_HASH that `lute run build` bakes into the
 -- plugin, so CI events join product events.
 local function buildEvent(name: string): types.Event
@@ -60,12 +72,7 @@ local function buildEvent(name: string): types.Event
 		commit = commit,
 	}
 
-	local server = process.env.GITHUB_SERVER_URL
-	local repository = process.env.GITHUB_REPOSITORY
-	local runId = process.env.GITHUB_RUN_ID
-	if server and repository and runId then
-		properties.run_url = `{server}/{repository}/actions/runs/{runId}`
-	end
+	properties.run_url = readRunUrl()
 
 	return {
 		name = name,
@@ -87,7 +94,7 @@ local function reportPendingChanges()
 	local total = 0
 	for _, entry in fs.listDirectory(CHANGES_DIR) do
 		local name = entry.name:lower()
-		if entry.type == "file" and path.extname(name) == ".md" and name ~= "readme.md" then
+		if entry.type == "file" and path.extname(name) == ".luau" then
 			total += 1
 		end
 	end
@@ -121,9 +128,62 @@ local function reportProdReleased()
 	print(`Reported the v{version} release`)
 end
 
+-- A rollback publishes an earlier build again, so the checked-out commit says
+-- nothing about what's live. A prod rollback restores a release, and the
+-- Rollback workflow passes its tag along, so the event and annotation name the
+-- release that run restored. Beta builds have no releases, so a beta event
+-- records only the channel and the run.
+local function reportRolledBack()
+	local parsed = assert(commandArgs, "rolled-back ran before its arguments were parsed")
+	local channel = assert(parsed:get("channel"))
+	local tag = parsed:get("tag")
+
+	local version = nil
+	if channel == "prod" then
+		assert(tag and tag ~= "", "--tag must name the restored release to report a prod rollback")
+		version = tag:gsub("^v", "")
+	else
+		assert(channel == "beta", `bad value for channel (must be "prod" or "beta", got "{channel}")`)
+	end
+
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), {
+		name = "ci_rolled_back",
+		properties = {
+			channel = channel,
+			version = version,
+			run_url = readRunUrl(),
+		},
+	}, dryRun)
+
+	if version then
+		annotateAsync(
+			readSecret("POSTHOG_PERSONAL_API_KEY"),
+			readSecret("POSTHOG_PROJECT_ID"),
+			`Flipbook rolled back to v{version}`,
+			dryRun
+		)
+	end
+
+	local note = if version then ` to v{version}` else ""
+	print(`Reported the {channel} rollback{note}`)
+end
+
+type CommandOption = {
+	name: string,
+	help: string,
+	optional: boolean?,
+}
+
+type Command = {
+	name: string,
+	help: string,
+	run: () -> (),
+	options: { CommandOption }?,
+}
+
 -- The battery's subcommands only parse arguments, so each one's handler sits
 -- beside it here and runs once parsing picks it.
-local COMMANDS = {
+local COMMANDS: { Command } = {
 	{ name = "check", help = "Confirm PostHog accepts the credentials without sending any data", run = check },
 	{
 		name = "pending-changes",
@@ -136,6 +196,15 @@ local COMMANDS = {
 		run = reportBetaPublished,
 	},
 	{ name = "prod-released", help = "Report a release and annotate it", run = reportProdReleased },
+	{
+		name = "rolled-back",
+		help = "Report a plugin rollback, annotating it for prod",
+		run = reportRolledBack,
+		options = {
+			{ name = "channel", help = `The channel rolled back: "prod" or "beta"` },
+			{ name = "tag", help = "The release a prod rollback restored", optional = true },
+		},
+	},
 }
 
 local args = cli.parser()
@@ -143,14 +212,19 @@ args:add("script", "positional", {
 	help = "Path to the script being run. Provided automatically by Lute",
 })
 for _, command in COMMANDS do
-	args:subcommand(command.name, { help = command.help })
-		:add("dry-run", "flag", { help = "Print each request instead of sending it" })
+	local parser = args:subcommand(command.name, { help = command.help })
+	parser:add("dry-run", "flag", { help = "Print each request instead of sending it" })
+	local options: { CommandOption } = command.options or {}
+	for _, option in options do
+		parser:add(option.name, "option", { help = option.help, required = option.optional ~= true })
+	end
 end
 args:parse({ ... })
 
-local selected, commandArgs = args:selected()
-assert(selected and commandArgs, `Expected a command:\n{args:help()}`)
-dryRun = commandArgs:has("dry-run")
+local selected, selectedArgs = args:selected()
+assert(selected and selectedArgs, `Expected a command:\n{args:help()}`)
+dryRun = selectedArgs:has("dry-run")
+commandArgs = selectedArgs
 
 for _, command in COMMANDS do
 	if command.name == selected then

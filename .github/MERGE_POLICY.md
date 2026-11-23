@@ -45,4 +45,4 @@ Members of `@flipbook-labs/flipbook-admins` may bypass required reviews or statu
 
 ## Changing this policy
 
-Changes to this policy, the pull request template, Greptile context, or the change-control skill belong to `@flipbook-labs/flipbook-engine`. Coordinate ownership changes across Flipbook and the centrally managed ruleset in the infrastructure repository so human guidance, agent guidance, and enforcement do not drift.
+Changes to this policy, the pull request template, or Greptile context belong to `@flipbook-labs/flipbook-engine`. Coordinate ownership changes across Flipbook and the centrally managed ruleset in the infrastructure repository so human guidance, agent guidance, and enforcement do not drift.

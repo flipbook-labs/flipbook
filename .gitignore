@@ -1,7 +1,7 @@
 # Environment variables
 .env
 
-# Darklua
+# Build output
 build
 
 # Rojo
@@ -11,7 +11,7 @@ build
 
 # Luau
 sourcemap.json
-sourcemap-darklua.json
+sourcemap-build.json
 globalTypes.d.luau
 
 # Third-party libraries

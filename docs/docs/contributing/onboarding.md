@@ -47,7 +47,7 @@ In Visual Studio Code, press `Ctrl+Shift+B` on Windows or `Cmd+Shift+B` on macOS
 
 ## Validate your change
 
-Every pull request needs one change entry. Add a Markdown file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
+Every pull request needs one change entry. Add a Luau file under [`.changes/`](https://github.com/flipbook-labs/flipbook/blob/main/.changes/README.md) that describes the user-visible effect. Internal-only maintenance uses a patch entry.
 
 Run the repository checks before opening or updating a pull request:
 
@@ -67,7 +67,7 @@ You do not need to request a Flipbook Labs Open Cloud key. If GitHub shows a fir
 
 ## Building
 
-Flipbook uses [darklua](https://github.com/seaofvoices/darklua) to compile Luau source code for Roblox and support string requires in both source code and Lute scripts.
+Flipbook's build turns the string requires in its Luau source into the instance requires Roblox runs, and fills in build values such as the version and channel. It does this with [CodeQuality](https://github.com/flipbook-labs/code-quality)'s code mods.
 
 ### Build for Studio
 
