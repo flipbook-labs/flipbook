@@ -1,4 +1,4 @@
-local CodeQuality = require("@lpm/code-quality@v0.7.0")
+local CodeQuality = require("@lpm/code-quality@v0.8.0")
 local json = require("@std/json")
 local path = require("@std/path")
 
