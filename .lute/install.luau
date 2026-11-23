@@ -207,6 +207,40 @@ do
 		fs.remove(path.join(project.LUAU_PACKAGES_PATH, fileName))
 	end
 
+	-- The vault's code-sample plugin is only for people who read the docs in
+	-- Obsidian, and building it needs Node's `npx`. Without Node, this skips the
+	-- plugin so the rest of the install still runs.
+	local function installObsidianPlugin()
+		local hasNpx = process.run({ "sh", "-c", "command -v npx" }).ok
+		if not hasNpx then
+			print("Skipping the Obsidian code-sample plugin because npx isn't installed")
+			return
+		end
+
+		local pluginSrc = path.join(project.REPO_PATH, "docs", "code-samples", "obsidian")
+		local outDir = path.join(project.REPO_PATH, "docs", "obsidian-vault", ".obsidian", "plugins", "code-sample")
+
+		run("mkdir", { "-p", outDir })
+
+		run("npx", {
+			"--yes",
+			"esbuild@0.21.5",
+			path.join(pluginSrc, "main.ts"),
+			"--bundle",
+			"--format=cjs",
+			"--platform=node",
+			"--target=es2020",
+			"--external:obsidian",
+			`--outfile={path.join(outDir, "main.js")}`,
+		})
+
+		run("cp", {
+			path.join(pluginSrc, "manifest.json"),
+			path.join(pluginSrc, "styles.css"),
+			outDir,
+		})
+	end
+
 	local function pruneDevelopmentFiles()
 		-- Prune any third-party tests or stories that may have slipped through
 		local prunedFiles = {
@@ -230,6 +264,7 @@ do
 
 	run("lute", { "setup" })
 
+	installObsidianPlugin()
 	installRobloxPackages()
 	patchFoundationMainGui()
 	installWallyPackages()

@@ -1,12 +1,12 @@
 # Flipbook
 
-<img src="docs/static/img/logo.svg" width="128" height="128" align="right" alt="Flipbook icon" />
+<img src="docs/site/static/img/logo.svg" width="128" height="128" align="right" alt="Flipbook icon" />
 
 Flipbook is a storybook plugin for Roblox Studio. It renders each piece of your UI on its own, in a sandbox, so you can work through edge cases and complex states without playing through the whole game. Stories reload as you edit them, and controls let you change their props without touching code.
 
 Guides live at [flipbook-labs.github.io/flipbook](https://flipbook-labs.github.io/flipbook).
 
-![Flipbook in Roblox Studio rendering a button story, with an isDisabled control below it](docs/static/img/main-screenshot.png)
+![Flipbook in Roblox Studio rendering a button story, with an isDisabled control below it](docs/site/static/img/main-screenshot.png)
 
 ## Install
 
@@ -32,15 +32,15 @@ return {
 }
 ```
 
-See [Writing stories](https://flipbook-labs.github.io/flipbook/docs/creating-stories/writing-stories) for a complete example.
+See [Writing stories](https://flipbook-labs.github.io/flipbook/docs/usage/writing-stories) for a complete example.
 
 ## Frameworks
 
-Flipbook renders plain Roblox Instances by default. Pass your UI library to a storybook or story through `packages` to render React, Roact, or Fusion components. See [Frameworks](https://flipbook-labs.github.io/flipbook/docs/category/frameworks).
+Flipbook renders plain Roblox Instances by default. Pass your UI library to a storybook or story through `packages` to render React, Roact, or Fusion components. See [Frameworks](https://flipbook-labs.github.io/flipbook/docs/usage/frameworks).
 
 ## Migrate
 
-Coming from another storybook plugin? Follow the guide for [Hoarcekat](https://flipbook-labs.github.io/flipbook/docs/migration-guides/migrating-hoarcekat) or [UI Labs](https://flipbook-labs.github.io/flipbook/docs/migration-guides/migrating-ui-labs).
+Coming from another storybook plugin? Follow the guide for [Hoarcekat](https://flipbook-labs.github.io/flipbook/docs/usage/migration-guides/migrating-hoarcekat) or [UI Labs](https://flipbook-labs.github.io/flipbook/docs/usage/migration-guides/migrating-ui-labs).
 
 ## Community
 

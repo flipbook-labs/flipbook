@@ -125,7 +125,7 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 - **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
 - **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
 - **Luau linter:** `lute lint` with the CodeQuality rules, run by `lute run lint`. `global_usage` is off in `.config.luau`.
-- **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
+- **Markdown, YAML, JSON, and docs-site formatter:** Prettier, with one config at the repo root (`.prettierrc.json`, `.prettierignore`). Run `lute run check-docs` to check every file; run `npm --prefix docs/site run format` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
 - **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); the build converts these to Roblox `require()` calls.
 
