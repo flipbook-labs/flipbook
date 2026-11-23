@@ -1,10 +1,12 @@
--- Moves the upgrade branch to a new RobloxPackages version and keeps its pull
--- request current. Runs from the upgrade workflow on a checkout of main, and
--- reads its inputs from the environment:
---
--- - LATEST_VERSION: the RobloxPackages version to upgrade to
--- - BRANCH_NAME: the upgrade branch to push and open the pull request from
--- - GH_TOKEN: a token that can push the branch and edit pull requests
+--[[
+	Moves the upgrade branch to a new RobloxPackages version and keeps its pull
+	request current. Runs from the upgrade workflow on a checkout of main, and
+	reads its inputs from the environment:
+
+	- LATEST_VERSION: the RobloxPackages version to upgrade to
+	- BRANCH_NAME: the upgrade branch to push and open the pull request from
+	- GH_TOKEN: a token that can push the branch and edit pull requests
+]]
 local fs = require("@std/fs")
 local process = require("@std/process")
 
@@ -28,13 +30,15 @@ local function run(command: { string }): string
 	return stdout
 end
 
--- When an upgrade PR is already in flight, build on top of it instead of
--- recreating it from main. Version bumps can sit open for a while as the code
--- changes needed for the new packages get worked out, and recreating the branch
--- would wipe out that work.
---
--- The script is loaded before this checkout, so it still runs when the
--- existing branch predates it.
+--[[
+	When an upgrade PR is already in flight, build on top of it instead of
+	recreating it from main. Version bumps can sit open for a while as the code
+	changes needed for the new packages get worked out, and recreating the branch
+	would wipe out that work.
+
+	The script is loaded before this checkout, so it still runs when the
+	existing branch predates it.
+]]
 local function checkOutUpgradeBranch(branch: string)
 	local exists = process.run({
 		"git",
@@ -88,11 +92,13 @@ local function findAddedEntries(pathspec: string): string
 	})
 end
 
--- An open upgrade branch already carries the entry it added, so later runs
--- rewrite that entry rather than adding a second one. Branches opened before
--- entries were Luau carry a Markdown entry, which `changewrite check` rejects.
--- That file is deleted, and its Luau replacement keeps the same base name.
--- Returns every path it wrote or deleted, for the caller to commit.
+--[[
+	An open upgrade branch already carries the entry it added, so later runs
+	rewrite that entry rather than adding a second one. Branches opened before
+	entries were Luau carry a Markdown entry, which `changewrite check` rejects.
+	That file is deleted, and its Luau replacement keeps the same base name.
+	Returns every path it wrote or deleted, for the caller to commit.
+]]
 local function writeChangeEntry(version: string): { string }
 	local changedPaths = {}
 	local newEntryPath = `.changes/upgrade-roblox-packages-{version}.luau`
@@ -265,10 +271,12 @@ run({
 	`Upgrade RobloxPackages to {version}`,
 })
 
--- The new commit is stacked on top of the branch's existing history, so a
--- plain push fast-forwards the remote. If someone pushed to the branch after it
--- was fetched, this push fails rather than clobbering their work, and the job
--- can be re-run.
+--[[
+	The new commit is stacked on top of the branch's existing history, so a
+	plain push fast-forwards the remote. If someone pushed to the branch after it
+	was fetched, this push fails rather than clobbering their work, and the job
+	can be re-run.
+]]
 run({
 	"git",
 	"push",

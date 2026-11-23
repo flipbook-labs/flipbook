@@ -1,33 +1,35 @@
--- Checks that decide when CI posts Changewrite's `publish-lock` status. That
--- status is a required check on main. The Release workflow fails it on the
--- publish pull request while regenerating that pull request, and the Publish
--- Lock workflow passes it on every other pull request.
---
--- Changewrite's `publish-lock` action posts whatever state it's given, so these
--- checks guard the two cases where an unlock would wrongly clear a stale
--- publish pull request. They belong in Changewrite itself, and this script goes
--- away once a release includes them:
--- https://github.com/flipbook-labs/changewrite/issues/90
---
--- Usage: lute run publish-lock <is-publish-head | record-main | main-moved>
---
--- Each command writes its answer as a step output to the file named by
--- GITHUB_OUTPUT, or prints it when that's unset, so it can also run locally.
--- Commands that call the GitHub API read GITHUB_REPOSITORY (owner/name) and
--- need `gh` to be signed in, through GH_TOKEN in CI.
---
--- - is-publish-head: whether HEAD_SHA is the publish branch's current commit.
---   A commit status belongs to a commit, not to a pull request, so a pull
---   request whose head is that commit, such as one from a fork branch pushed
---   from it, must not get a passing status. That status would unlock the
---   publish pull request too.
--- - record-main: the commit checked out in the current directory, which the
---   Release workflow refreshes the publish pull request from.
--- - main-moved: whether main has moved past REFRESHED_SHA, the commit that
---   record-main wrote. A push during a Release run starts a newer run whose
---   lock can land before this run's unlock, which then overwrites it. When
---   main has moved, the publish pull request is missing that change, so the
---   Release workflow locks it again.
+--[[
+	Checks that decide when CI posts Changewrite's `publish-lock` status. That
+	status is a required check on main. The Release workflow fails it on the
+	publish pull request while regenerating that pull request, and the Publish
+	Lock workflow passes it on every other pull request.
+
+	Changewrite's `publish-lock` action posts whatever state it's given, so these
+	checks guard the two cases where an unlock would wrongly clear a stale
+	publish pull request. They belong in Changewrite itself, and this script goes
+	away once a release includes them:
+	https://github.com/flipbook-labs/changewrite/issues/90
+
+	Usage: lute run publish-lock <is-publish-head | record-main | main-moved>
+
+	Each command writes its answer as a step output to the file named by
+	GITHUB_OUTPUT, or prints it when that's unset, so it can also run locally.
+	Commands that call the GitHub API read GITHUB_REPOSITORY (owner/name) and
+	need `gh` to be signed in, through GH_TOKEN in CI.
+
+	- is-publish-head: whether HEAD_SHA is the publish branch's current commit.
+	  A commit status belongs to a commit, not to a pull request, so a pull
+	  request whose head is that commit, such as one from a fork branch pushed
+	  from it, must not get a passing status. That status would unlock the
+	  publish pull request too.
+	- record-main: the commit checked out in the current directory, which the
+	  Release workflow refreshes the publish pull request from.
+	- main-moved: whether main has moved past REFRESHED_SHA, the commit that
+	  record-main wrote. A push during a Release run starts a newer run whose
+	  lock can land before this run's unlock, which then overwrites it. When
+	  main has moved, the publish pull request is missing that change, so the
+	  Release workflow locks it again.
+]]
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local process = require("@std/process")

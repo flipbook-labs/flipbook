@@ -168,12 +168,14 @@ local function build()
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
--- Builds the storybook placefile that hosts our stories. The bundle gets sent
--- along by the deploy-storybook action and published with the latest version of
--- Flipbook to the experience.
---
--- Check out Flipbook's own storybook here:
--- https://www.roblox.com/games/139676401890813/Flipbook-Stories
+--[[
+	Builds the storybook placefile that hosts our stories. The bundle gets sent
+	along by the deploy-storybook action and published with the latest version of
+	Flipbook to the experience.
+
+	Check out Flipbook's own storybook here:
+	https://www.roblox.com/games/139676401890813/Flipbook-Stories
+]]
 local function buildStorybookPlace()
 	run("lute", {
 		"run",

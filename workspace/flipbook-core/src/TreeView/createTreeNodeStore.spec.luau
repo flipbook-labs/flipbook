@@ -72,14 +72,16 @@ describe("node activation", function()
 		expect(root.getIsSelected()).toBe(true)
 	end)
 
-	-- Initially we were trying to allow any number of nodes to be selected at a
-	-- time but it was getting very difficult to juggle the selection state
-	-- across several nodes from consumers of TreeNodeStore.
-	--
-	-- In Flipbook's case, we only want one node selected at a time and we
-	-- currently have no features that would require multi-selection. So for now
-	-- we're going to only allow one selection, and in the future we can
-	-- look to loosen this restriction
+	--[[
+		Initially we were trying to allow any number of nodes to be selected at a
+		time but it was getting very difficult to juggle the selection state
+		across several nodes from consumers of TreeNodeStore.
+
+		In Flipbook's case, we only want one node selected at a time and we
+		currently have no features that would require multi-selection. So for now
+		we're going to only allow one selection, and in the future we can
+		look to loosen this restriction
+	]]
 	test("only one node in a tree can be selected at a time", function()
 		local root = createTreeNodeStore()
 

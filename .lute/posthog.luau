@@ -1,12 +1,14 @@
--- Reports release pipeline events to PostHog so release health can be charted
--- next to product telemetry.
---
--- Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
---        lute run posthog rolled-back --channel <prod | beta> [--tag <tag>] [--dry-run]
---
--- Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release and rollback
--- annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID.
--- --dry-run prints each request instead of sending it and needs none of these.
+--[[
+	Reports release pipeline events to PostHog so release health can be charted
+	next to product telemetry.
+
+	Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
+	       lute run posthog rolled-back --channel <prod | beta> [--tag <tag>] [--dry-run]
+
+	Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release and rollback
+	annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID.
+	--dry-run prints each request instead of sending it and needs none of these.
+]]
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
@@ -128,11 +130,13 @@ local function reportProdReleased()
 	print(`Reported the v{version} release`)
 end
 
--- A rollback publishes an earlier build again, so the checked-out commit says
--- nothing about what's live. A prod rollback restores a release, and the
--- Rollback workflow passes its tag along, so the event and annotation name the
--- release that run restored. Beta builds have no releases, so a beta event
--- records only the channel and the run.
+--[[
+	A rollback publishes an earlier build again, so the checked-out commit says
+	nothing about what's live. A prod rollback restores a release, and the
+	Rollback workflow passes its tag along, so the event and annotation name the
+	release that run restored. Beta builds have no releases, so a beta event
+	records only the channel and the run.
+]]
 local function reportRolledBack()
 	local parsed = assert(commandArgs, "rolled-back ran before its arguments were parsed")
 	local channel = assert(parsed:get("channel"))

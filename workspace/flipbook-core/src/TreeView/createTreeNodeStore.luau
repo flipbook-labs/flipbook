@@ -73,10 +73,12 @@ local function createTreeNodeStore(): TreeNodeStore
 
 	local function setSortOrder(sort: TreeNodeSort?)
 		setSortOrderSignal(function()
-			-- FIXME: Need to cast to `any` here. It's suspected this is related
-			-- to how Signals types its setter functions, where it can take
-			-- either a value or an update function. Since we _want_ to store a
-			-- function, that might be what's tripping it up
+			--[[
+				FIXME: Need to cast to `any` here. It's suspected this is related
+				to how Signals types its setter functions, where it can take
+				either a value or an update function. Since we _want_ to store a
+				function, that might be what's tripping it up
+			]]
 			-- lute-lint-ignore(no_any)
 			return sort :: any
 		end)
