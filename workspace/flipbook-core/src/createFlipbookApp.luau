@@ -49,10 +49,12 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local appPlugin = appOptions.plugin or defaultPlugin
 	local appMode: AppMode = appOptions.mode or AppMode.PluginWidget
 
-	-- The plugin unmounts the app when its widget closes and mounts it again
-	-- when the widget opens. Each mount builds a new store, so a reopened
-	-- widget starts on Home with no story selected. A story comes back only
-	-- when rememberLastOpenedStory is on and restores the last one opened.
+	--[[
+		The plugin unmounts the app when its widget closes and mounts it again
+		when the widget opens. Each mount builds a new store, so a reopened
+		widget starts on Home with no story selected. A story comes back only
+		when rememberLastOpenedStory is on and restores the last one opened.
+	]]
 	local function createApp(): React.Node
 		local store = createFlipbookStore({
 			mode = appMode,

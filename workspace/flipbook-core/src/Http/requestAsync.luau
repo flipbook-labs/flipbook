@@ -3,12 +3,20 @@ local HttpService = game:GetService("HttpService")
 local Sift = require("@pkg/Sift")
 local logger = require("@root/logger")
 
+type Response = {
+	Success: boolean,
+	StatusCode: number,
+	StatusMessage: string,
+	Headers: { [string]: string },
+	Body: string,
+}
+
 local function requestAsync(
 	url: string,
 	options: {
 		method: string?,
 		headers: { [string]: string | number | boolean }?,
-		body: { [any]: any }?,
+		body: unknown?,
 	}?
 )
 	local requestOptions = Sift.Dictionary.join({
@@ -16,7 +24,7 @@ local function requestAsync(
 		headers = {},
 	}, options)
 
-	local body
+	local body: string?
 	if requestOptions and requestOptions.body then
 		if typeof(requestOptions.body) == "table" then
 			requestOptions.headers["Content-Type"] = "application/json"
@@ -27,7 +35,7 @@ local function requestAsync(
 	end
 
 	logger:Debug(`{requestOptions.method} {url}`)
-	local res
+	local res: Response?
 	local success, err = pcall(function()
 		res = HttpService:RequestAsync({
 			Url = url,

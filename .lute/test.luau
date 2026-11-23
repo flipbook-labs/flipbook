@@ -48,7 +48,15 @@ if not runOnly then
 	local filter = args:get("filter")
 	process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
-	run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
+	run("lute", {
+		"run",
+		"build",
+		"plugin",
+		"--channel",
+		"dev",
+		"--clean",
+		"--skip-reload",
+	})
 
 	local builtPlacePath = rojoBuild({
 		output = placePath,

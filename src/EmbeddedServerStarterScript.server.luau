@@ -7,6 +7,8 @@ end
 local startTime = os.clock()
 local prefix = `[{script.Name}]`
 
+-- Lute's unused_variable lint doesn't count writing a property as a use.
+-- lute-lint-ignore(unused_variable)
 local Players = game:GetService("Players")
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
@@ -18,6 +20,8 @@ print(`{prefix} starting...`)
 print(`{prefix} disabling character auto-loading...`)
 Players.CharacterAutoLoads = false
 
+-- Lute's unused_variable lint doesn't count writing a property as a use.
+-- lute-lint-ignore(unused_variable)
 local getLaunchDataRemote = Instance.new("RemoteFunction")
 getLaunchDataRemote.Name = GET_LAUNCH_DATA_REMOTE_NAME
 getLaunchDataRemote.OnServerInvoke = function(player)
