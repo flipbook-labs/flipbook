@@ -5,6 +5,6 @@
     "JohnnyMorganz.stylua",
     "JohnnyMorganz.luau-lsp",
     "EditorConfig.EditorConfig",
-    "esbenp.prettier-vscode",
+    "esbenp.prettier-vscode"
   ]
 }
