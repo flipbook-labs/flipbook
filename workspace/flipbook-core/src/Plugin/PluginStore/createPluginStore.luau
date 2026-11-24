@@ -20,7 +20,7 @@ export type PluginStore = {
 	store to share it around other parts of the app
 ]]
 local function createPluginStore(): PluginStore
-	local getPlugin, setPlugin = Charm.signal(nil :: Pluginlike?)
+	local getPlugin, setPlugin = Charm.signal<<Pluginlike?>>(nil)
 
 	return {
 		getPlugin = getPlugin,

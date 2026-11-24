@@ -31,18 +31,18 @@ export type PluginSettingsStore<T> = {
 local function createPluginSettingsStore<T>(
 	storageKey: string,
 	defaultValue: T,
-	validate: (value: any) -> (boolean, string)
+	validate: (value: unknown) -> (boolean, string)
 ): PluginSettingsStore<T>
 	local getStorage, setStorageSignal = Charm.signal(defaultValue)
 	local getIsLoading, setIsLoading = Charm.signal(true)
-	local getErr, setErr = Charm.signal(nil :: string?)
+	local getErr, setErr = Charm.signal<<string?>>(nil)
 	local getIsInitialized, setIsInitialized = Charm.signal(false)
 	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Pluginlike): T?
 		logger:Info(`reading plugin settings for {storageKey} from disk...`)
 
-		local data
+		local data: unknown
 		local success, err = pcall(function()
 			data = plugin:GetSetting(storageKey)
 		end)
@@ -58,7 +58,7 @@ local function createPluginSettingsStore<T>(
 		if typeof(data) == "string" then
 			logger:Info(`deserializing plugin settings for {storageKey} to object...`)
 
-			local json
+			local json: unknown
 			success, err = pcall(function()
 				json = HttpService:JSONDecode(data)
 			end)
@@ -79,7 +79,7 @@ local function createPluginSettingsStore<T>(
 
 			logger:Info(`got plugin settings for {storageKey}:`, json)
 
-			return json
+			return json :: T
 		end
 
 		logger:Info("no plugin settings to read")
@@ -89,7 +89,7 @@ local function createPluginSettingsStore<T>(
 
 	local function writePluginSettingsAsync(plugin: Pluginlike, storage: T)
 		logger:Info("writing plugin settings to disk...")
-		local data
+		local data: string?
 		local success, err = pcall(function()
 			data = HttpService:JSONEncode(storage)
 		end)

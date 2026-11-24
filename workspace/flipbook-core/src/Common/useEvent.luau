@@ -1,6 +1,6 @@
 local React = require("@pkg/React")
 
-local function useEvent(event: RBXScriptSignal, callback: (...any) -> ())
+local function useEvent(event: RBXScriptSignal, callback: (...unknown) -> ())
 	React.useEffect(function()
 		local conn = event:Connect(callback)
 

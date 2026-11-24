@@ -21,11 +21,11 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 | **Wally**                | Roblox package manager (Roblox runtime deps)                                       |
 | **Lute packages**        | Tooling dependencies for scripts, declared in `pkg.luau` and vendored into `.lpm/` |
 | **Rojo**                 | Syncs Luau source trees to Roblox place format; used for sourcemaps and builds     |
-| **Darklua**              | Transforms Luau-style `require` paths to Roblox `require()` calls during build     |
+| **CodeQuality**          | Shared lint rules, and the code mods that turn string requires into Roblox ones    |
 | **Rocale**               | Roblox Open Cloud CLI; uploads and runs test places in the cloud                   |
 | **Jest** (jsdotlua)      | Unit test framework; tests run inside a Roblox place via Rocale                    |
-| **Selene**               | Luau linter                                                                        |
 | **StyLua**               | Luau formatter                                                                     |
+| **CodeQuality**          | Shared Luau lint rules; `lute run lint` runs them with `lute lint`                 |
 | **React** (17, jsdotlua) | UI framework used throughout Flipbook and Storyteller                              |
 | **Charm**                | Reactive signals library; used for stores in both Flipbook and Storyteller         |
 | **ModuleLoader**         | Bypasses Roblox's require cache; core to how Flipbook reloads stories              |
@@ -60,10 +60,9 @@ flipbook/
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; agent-skills dev dep)
+├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
 ├── pkg.lock.luau           # Lute package lockfile
 ├── .config.luau            # Luau aliases, including `@lpm` for the vendored Lute packages
-├── .darklua.json           # Darklua rules, including the require aliases the build resolves
 └── .env / .env.template    # Environment variables (copy template to .env)
 ```
 
@@ -85,7 +84,7 @@ Both follow a simpler layout:
 └── pkg.luau                # Lute package manifest
 ```
 
-Build output (`dist/`) is a Darklua-processed mirror of `src/` with Luau-style requires converted to Roblox `require()` calls. **Wally publishes from `dist/`**, not `src/`.
+Build output (`dist/`) mirrors `src/` with Luau-style requires converted to Roblox `require()` calls. **Wally publishes from `dist/`**, not `src/`.
 
 ---
 
@@ -126,10 +125,10 @@ Use `--clean` after dependency changes or when build output appears stale. `--ch
 
 - **File extension:** All Luau files must use **`.luau`**, never `.lua`. The linter will fail if any `.lua` files are found.
 - **Luau formatter:** StyLua with `sort_requires = true`. Run `stylua <file>` or `lute run lint` will check.
-- **Luau linter:** Selene with `std = "roblox"` and `global_usage = "allow"`.
-- **Markdown formatter:** Prettier. Run `lute run lint` to check; run `npx --yes prettier --write "**/*.md"` to auto-fix.
+- **Luau linter:** `lute lint` with the CodeQuality rules, run by `lute run lint`. `global_usage` is off in `.config.luau`.
+- **Markdown, YAML, JSON, and docs-site formatter:** Prettier, with one config at the repo root (`.prettierrc.json`, `.prettierignore`). Run `lute run check-docs` to check every file; run `npm --prefix docs/site run format` to auto-fix.
 - **Test files:** `*.spec.luau` colocated with source files. Jest config uses `testMatch = { "**/*.spec" }`.
-- **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); Darklua converts these to Roblox `require()` during build.
+- **Imports:** In source, use Luau-style path aliases (`@pkg/Charm`, `@workspace/flipbook-core/src`, etc.); the build converts these to Roblox `require()` calls.
 
 ### Comments explain the present, not the history
 
@@ -171,12 +170,12 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 ### Wally vs Lute packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime)
+- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime). The `code-quality` dev dependency holds the CodeQuality lint rules, which `.lute/lint.luau` points `lute lint` at
 - `LuauPackages/` holds only rbxasset, which `.lune/publish-plugin.luau` requires as `@lunepkg`. Lune reads aliases only from `.luaurc`, so `.lune/.luaurc` declares the Lune aliases
 
-### Darklua and require paths
+### The build and require paths
 
-Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Darklua doesn't read `.config.luau`, so the aliases the root `src/` build needs (`@pkg`, `@rbxpkg`, `@workspace`) are declared in `.darklua.json`, and each workspace member declares its own in a `.luaurc`. Darklua leaves a require it can't resolve unconverted rather than failing. Darklua processes `src/` → `build/<channel>/<target>/` (or `dist/` in Storyteller/ModuleLoader) converting these to Roblox `require(script.X)` using Rojo sourcemaps. **Never edit files in `build/` or `dist/` directly.**
+Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). The build copies `src/` into `build/<channel>/<target>/`, and each workspace member's `src/` into its own `build/` folder, then runs [CodeQuality](https://github.com/flipbook-labs/code-quality)'s code mods over the copies (`.lute/lib/build-system/runCodeModsAsync.luau`). `convertRequire` resolves each require through the nearest `.config.luau` or `.luaurc` (the root `src/` uses the root `.config.luau`, and each workspace member has its own `.luaurc`), then writes the Roblox `require(script.X)` path from a Rojo sourcemap. A require it can't resolve fails the build. `injectGlobalValue` fills in the build globals listed in `project.luau`'s `BUILD_GLOBALS`, and the cleanup mods remove the branches those values make unreachable. **Never edit files in `build/` or `dist/` directly.**
 
 ---
 
@@ -184,7 +183,7 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Da
 
 Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned as a dev dependency in [`pkg.luau`](pkg.luau) and vendored by `lute run install` into `.lpm/agent-skills@<rev>`. Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md) and the shared `flipbook-change-control` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Workspace release manifests are an explicit engine-owned exception; every other path outside the application domain, including repository-stewardship files, also belongs to `@flipbook-labs/flipbook-engine`.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md). When the change touches releases, workflows, telemetry, or dependencies, also read the shared `flipbook/release` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Workspace release manifests are an explicit engine-owned exception; every other path outside the application domain, including repository-stewardship files, also belongs to `@flipbook-labs/flipbook-engine`.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 

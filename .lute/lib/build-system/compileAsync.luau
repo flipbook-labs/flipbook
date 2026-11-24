@@ -6,6 +6,7 @@ local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWo
 local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
+local runCodeModsAsync = require("@scripts/lib/build-system/runCodeModsAsync")
 local types = require("@scripts/lib/build-system/types")
 
 local copyInto = FlipbookBatteries.copyInto
@@ -24,25 +25,31 @@ local function compileAsync(context: BuildContext)
 		makeParents = true,
 	})
 
+	-- The code mods look up which instance each source file becomes in this
+	-- sourcemap of `sourcemap.project.json`, which lays out `src/`, the
+	-- packages, and the workspace members as the plugin does.
 	run("rojo", {
 		"sourcemap",
 		project.SOURCEMAP_PROJECT_PATH,
 		"-o",
-		project.DARKLUA_SOURCEMAP_PATH,
+		project.BUILD_SOURCEMAP_PATH,
 	})
 
-	-- Darklua is failing to resolve string requires when using absolute paths
-	-- for the input. Probably related to the sourcemap, though we've tried
-	-- using the `--absolute` flag with `rojo sourcemap` and that didn't work
-	-- either. We just massage the source path into a relative path to work
-	-- around the issue.
-	local relativeSourcePath = path.relative(project.REPO_PATH, project.SOURCE_PATH)
-	run("darklua", {
-		"process",
-		relativeSourcePath,
-		context.dest,
-	}, {
-		env = context.env,
+	-- `src/` sits at the root of the output, beside the dependencies and
+	-- workspace members copied in below. The mods run only on the files that
+	-- came from `src/`, since the workspace members run them in their own step.
+	local sourceCopies: { path.Path } = {}
+	for _, entry in fs.listDirectory(project.SOURCE_PATH) do
+		local dest = path.join(context.dest, entry.name)
+		copyInto(path.join(project.SOURCE_PATH, entry.name), dest)
+		table.insert(sourceCopies, dest)
+	end
+
+	runCodeModsAsync({
+		sourceFolder = project.SOURCE_PATH,
+		buildFolder = context.dest,
+		paths = sourceCopies,
+		context = context,
 	})
 
 	runBuildGroupAsync({
@@ -64,7 +71,7 @@ local function compileAsync(context: BuildContext)
 		compileWorkspaceMemberAsync(memberPath, context)
 	end
 
-	if context.channel == "prod" or context.channel == "beta" then
+	if context.channel == types.Channel.Prod or context.channel == types.Channel.Beta then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 

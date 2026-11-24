@@ -23,6 +23,10 @@ local function useThemeName(): ThemeName
 
 	local studio: Studio = useMemo(function()
 		local success, result = pcall(function()
+			-- Outside Studio, settings() errors and MOCK_STUDIO is used instead.
+			-- The mock isn't a real Studio object, so Studio is read untyped to
+			-- let either one fit the `studio: Studio` annotation.
+			-- lute-lint-ignore(no_any)
 			return (settings() :: any).Studio
 		end)
 
@@ -46,7 +50,7 @@ local function useThemeName(): ThemeName
 		return "Dark"
 	end, { userSettings.theme, studioTheme } :: { unknown })
 
-	useEffect(function(): any
+	useEffect(function(): unknown
 		local conn = studio.ThemeChanged:Connect(function()
 			setStudioTheme(studio.Theme.Name)
 		end)

@@ -13,7 +13,7 @@ type TreeNodeFilter = types.TreeNodeFilter
 
 local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 	local leaves = useSignalState(root.getLeafNodes)
-	local expansionBeforeFilter = useRef(nil :: { [TreeNodeStore]: boolean }?)
+	local expansionBeforeFilter = useRef<<{ [TreeNodeStore]: boolean }?>>(nil)
 
 	local function restoreExpansion()
 		local expansion = expansionBeforeFilter.current
@@ -50,18 +50,22 @@ local function useTreeNodeFilter(root: TreeNodeStore, filter: TreeNodeFilter?)
 			for _, leaf in leaves do
 				local includeRemainingNodes = false
 
-				-- This orders the nodes starting from the leaf and then each
-				-- parent going up the ancestry chain. This is useful so when we
-				-- hit at least one node that shouldn't be filtered we know we
-				-- have to keep the remaining items after that point unfiltered
-				-- too.
+				--[[
+					This orders the nodes starting from the leaf and then each
+					parent going up the ancestry chain. This is useful so when we
+					hit at least one node that shouldn't be filtered we know we
+					have to keep the remaining items after that point unfiltered
+					too.
+				]]
 				local nodes: { TreeNodeStore } = Sift.List.join({ leaf }, leaf.getAncestors())
 
 				for _, node in nodes do
-					-- We've already marked this node as unfiltered, which means
-					-- this node and all of the remaining ancestor nodes we'd be
-					-- iterating through should also be unfiltered. So we just
-					-- exit out here
+					--[[
+						We've already marked this node as unfiltered, which means
+						this node and all of the remaining ancestor nodes we'd be
+						iterating through should also be unfiltered. So we just
+						exit out here
+					]]
 					if included[node.id] then
 						break
 					end
