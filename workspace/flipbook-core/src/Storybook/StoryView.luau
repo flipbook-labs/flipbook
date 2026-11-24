@@ -3,17 +3,15 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local AgentContext = require("@root/Agent/AgentContext")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
-local createControlValueCodec = require("@root/Agent/createControlValueCodec")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-local getInstancePath = require("@root/Common/getInstancePath")
 local types = require("@root/Storybook/types")
+local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -29,7 +27,6 @@ local useOverlay = Foundation.Hooks.useOverlay
 
 type ExtraStoryProps = types.ExtraStoryProps
 type SelectedStory = types.SelectedStory
-type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 
 type SelectedStoryViewProps = {
 	selectedStory: SelectedStory,
@@ -37,7 +34,6 @@ type SelectedStoryViewProps = {
 
 local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
-	local agentController = AgentContext.use()
 	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
@@ -46,35 +42,7 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 	local controlsStore = useMemo(function()
 		return createStoryControlsStore(if story then story.controls else nil)
 	end, { story } :: { unknown })
-	local controlValueCodec = useMemo(function()
-		return if story then createControlValueCodec(story.controls or {}) else nil
-	end, { story } :: { unknown })
-
-	useEffect(
-		function()
-			if agentController == nil or controlValueCodec == nil then
-				return
-			end
-			return agentController.registerStory({
-				path = getInstancePath(props.selectedStory.storyModule),
-				getControls = function()
-					return controlValueCodec.encode(controlsStore.getControls())
-				end,
-				setControls = function(controls)
-					for key, value in controlValueCodec.decode(controls) do
-						controlsStore.setControl(key, value :: StoryControlValue)
-					end
-					return controlValueCodec.encode(controlsStore.getControls())
-				end,
-			})
-		end,
-		{
-			agentController,
-			controlValueCodec,
-			controlsStore,
-			props.selectedStory.storyModule,
-		} :: { unknown }
-	)
+	useAgentStoryRegistration(props.selectedStory.storyModule, story, controlsStore)
 
 	useEffect(function()
 		flipbookStore.story.setActiveControlsStore(controlsStore)
