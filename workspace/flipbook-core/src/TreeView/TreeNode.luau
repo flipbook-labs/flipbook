@@ -4,6 +4,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
@@ -33,6 +34,7 @@ type TreeNodeProps = {
 } & Foundation.CommonProps
 
 local function TreeNode(props: TreeNodeProps)
+	local flipbookStore = FlipbookStoreContext.use()
 	local ancestors = useSignalState(props.node.getAncestors)
 	local icon = useSignalState(props.node.getIcon)
 	local instance = useSignalState(props.node.getInstance)
@@ -82,9 +84,11 @@ local function TreeNode(props: TreeNodeProps)
 			if instance then
 				if isPinned then
 					pinnedInstanceStore.unpin(instance)
+					flipbookStore.telemetry.capture({ eventName = "NodeUnpinned" })
 					props.node.setIsPinned(false)
 				else
 					pinnedInstanceStore.pin(instance)
+					flipbookStore.telemetry.capture({ eventName = "NodePinned" })
 					props.node.setIsPinned(true)
 				end
 			end
@@ -92,6 +96,7 @@ local function TreeNode(props: TreeNodeProps)
 		{
 			instance,
 			isPinned,
+			flipbookStore.telemetry,
 			pinnedInstanceStore.pin,
 			pinnedInstanceStore.unpin,
 			props.node.setIsPinned,

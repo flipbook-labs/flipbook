@@ -7,7 +7,6 @@ local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookApp = require("@root/FlipbookApp")
 local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
@@ -55,12 +54,15 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		widget starts on Home with no story selected. A story comes back only
 		when rememberLastOpenedStory is on and restores the last one opened.
 	]]
+	local store: createFlipbookStore.FlipbookStore? = nil
+
 	local function createApp(): React.Node
-		local store = createFlipbookStore({
+		local newStore = createFlipbookStore({
 			mode = appMode,
 			plugin = appPlugin,
 			launchData = appOptions.launchData,
 		})
+		store = newStore
 
 		-- FIXME: ContextProviders having an error won't fail tests. We really need
 		-- a smoketest for this file
@@ -68,7 +70,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 			plugin = appPlugin,
 			overlayGui = appOptions.overlayGui or container,
 			mode = appMode,
-			store = store,
+			store = newStore,
 		}, {
 			FlipbookApp = React.createElement(FlipbookApp),
 		})
@@ -81,11 +83,11 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`unmounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
+		if store then
+			store.telemetry.capture({
 				eventName = "AppClosed",
 			})
-		end)
+		end
 	end
 
 	local function mount()
@@ -95,11 +97,11 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`mounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
+		if store then
+			store.telemetry.capture({
 				eventName = "AppOpened",
 			})
-		end)
+		end
 	end
 
 	local function destroy()
