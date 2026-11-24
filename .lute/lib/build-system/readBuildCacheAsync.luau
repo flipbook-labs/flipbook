@@ -9,7 +9,7 @@ local function readBuildCacheAsync(): types.BuildCache
 		local content = fs.readFileToString(project.BUILD_CACHE_PATH)
 
 		if content and content ~= "" then
-			return json.deserialize(content) :: any
+			return json.deserialize(content) :: types.BuildCache
 		end
 	end
 

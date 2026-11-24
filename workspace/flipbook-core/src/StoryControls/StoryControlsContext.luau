@@ -6,7 +6,7 @@ local createStoryControlsStore = require("@root/StoryControls/createStoryControl
 type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 type StoryControlsSchema = Storyteller.StoryControlsSchema
 
-local StoryControlsContext = React.createContext(nil :: StoryControlsStore?)
+local StoryControlsContext = React.createContext<<StoryControlsStore?>>(nil)
 
 local function useStoryControls(): StoryControlsStore
 	local storyControls = React.useContext(StoryControlsContext)

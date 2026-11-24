@@ -1,39 +1,31 @@
 local React = require("@pkg/React")
-local Storyteller = require("@pkg/Storyteller")
+local ReactCharm = require("@pkg/ReactCharm")
 
 local AboutView = require("@root/About/AboutView")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local LogsView = require("@root/Logs/LogsView")
-local NavigationContext = require("@root/Navigation/NavigationContext")
 local NoStorySelected = require("@root/Storybook/NoStorySelected")
 local SettingsView = require("@root/UserSettings/SettingsView")
+local StorySelectionKind = require("@root/Storybook/StorySelectionKind")
 local StoryView = require("@root/Storybook/StoryView")
 local StorybookError = require("@root/Storybook/StorybookError")
 
 local useMemo = React.useMemo
+local useSignalState = ReactCharm.useSignalState
 
-type LoadedStorybook = Storyteller.LoadedStorybook
-type UnavailableStorybook = Storyteller.UnavailableStorybook
-
-export type Props = {
-	story: ModuleScript?,
-	storybook: LoadedStorybook?,
-	unavailableStorybook: UnavailableStorybook?,
-}
-
-local function Screen(props: Props)
-	local navigation = NavigationContext.use()
-	local currentScreen = navigation.currentScreen
+local function Screen()
+	local flipbookStore = FlipbookStoreContext.use()
+	local currentScreen = useSignalState(flipbookStore.navigation.getCurrentScreen)
+	local storySelectionKind = useSignalState(flipbookStore.story.getSelectionKind)
+	local unavailableStorybook = useSignalState(flipbookStore.story.getUnavailableStorybook)
 
 	local screenElement = useMemo(function(): React.Node
 		if currentScreen == "Home" then
-			if props.story and props.storybook then
-				return React.createElement(StoryView, {
-					storyModule = props.story,
-					storybook = props.storybook,
-				})
-			elseif props.unavailableStorybook then
+			if storySelectionKind == StorySelectionKind.Story then
+				return React.createElement(StoryView)
+			elseif storySelectionKind == StorySelectionKind.UnavailableStorybook and unavailableStorybook then
 				return React.createElement(StorybookError, {
-					unavailableStorybook = props.unavailableStorybook,
+					unavailableStorybook = unavailableStorybook,
 				})
 			else
 				return React.createElement(NoStorySelected)
@@ -46,7 +38,7 @@ local function Screen(props: Props)
 			return React.createElement(LogsView)
 		end
 		return nil :: never
-	end, { props, currentScreen } :: { unknown })
+	end, { currentScreen, storySelectionKind, unavailableStorybook } :: { unknown })
 
 	return screenElement
 end

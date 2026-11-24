@@ -1,5 +1,5 @@
 local function tryGetService(serviceName: string): Instance?
-	local service
+	local service: Instance?
 
 	pcall(function()
 		service = game:GetService(serviceName)

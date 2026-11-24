@@ -1,7 +1,7 @@
 local AppMode = require("@root/Enums/AppMode")
 local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local createFlipbookApp = require("@root/createFlipbookApp")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local createTelemetry = require("@root/Telemetry/createTelemetry")
 
 local CommonTypes = require("@root/Common/types")
 
@@ -20,21 +20,20 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 		-- owns session telemetry instead of the app lifecycle.
 		trackLifecycleTelemetry = false,
 	})
+	local telemetry = createTelemetry()
 	local isMounted = false
 	local isVisible = widget.Enabled
 
 	local function fireLifecycleEvent(eventName: "AppOpened" | "AppClosed")
-		task.spawn(function()
-			if eventName == "AppOpened" then
-				fireEventAsync({
-					eventName = "AppOpened",
-				})
-			else
-				fireEventAsync({
-					eventName = "AppClosed",
-				})
-			end
-		end)
+		if eventName == "AppOpened" then
+			telemetry.capture({
+				eventName = "AppOpened",
+			})
+		else
+			telemetry.capture({
+				eventName = "AppClosed",
+			})
+		end
 	end
 
 	local function mount()

@@ -23,7 +23,7 @@ export type Dependencies = {
 	embedFlipbook: (destination: Instance) -> Instance,
 	getStorybooks: () -> Storybooks,
 	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
-	openStory: (ModuleScript, LoadedStorybook?) -> (),
+	openStory: (storyModule: ModuleScript, storybook: LoadedStorybook?) -> (),
 }
 
 local function serializeStorybook(storybook: LoadedStorybook): StorybookInfo

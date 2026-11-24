@@ -1,7 +1,7 @@
 local React = require("@pkg/React")
 
-local function usePrevious(value: any)
-	local previous = React.useRef(nil)
+local function usePrevious<T>(value: T): T?
+	local previous = React.useRef<<T?>>(nil)
 
 	React.useEffect(function()
 		previous.current = value

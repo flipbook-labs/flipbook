@@ -111,7 +111,7 @@ jobs:
           place-name: ${{ env.PREVIEW_PLACE_NAME }}
           place-file: build/flipbook-storybook.rbxl
           cli-version: 0.6.0
-          comment: 'false'
+          comment: "false"
 
       - name: Comment preview link
         if: github.event_name == 'pull_request_target'

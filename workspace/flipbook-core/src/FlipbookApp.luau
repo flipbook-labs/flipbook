@@ -6,120 +6,90 @@ local Storyteller = require("@pkg/Storyteller")
 local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
-local EmbeddingTypes = require("@root/Embedding/types")
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
+local PanelTypes = require("@root/Panels/types")
 local ResizablePanel = require("@root/Panels/ResizablePanel")
 local Screen = require("@root/Navigation/Screen")
 local Sidebar = require("@root/Panels/Sidebar")
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
 local TelemetryOptOutDialog = require("@root/Telemetry/TelemetryOptOutDialog")
 local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
-local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useAgentRegistration = require("@root/Agent/useAgentRegistration")
+local useTopbarInset = require("@root/Embedding/useTopbarInset")
 
+local useEffect = React.useEffect
 local useSignalState = ReactCharm.useSignalState
 
-type AppMode = AppMode.AppMode
-type LaunchData = EmbeddingTypes.LaunchData
-type LoadedStorybook = Storyteller.LoadedStorybook
-type UnavailableStorybook = Storyteller.UnavailableStorybook
-
-local defaultStorybook = createLoadedStorybook()
-
-export type Props = {
-	launchData: LaunchData?,
-	mode: AppMode?,
-}
-
-local function FlipbookApp(props: Props)
+local function FlipbookApp()
+	local flipbookStore = FlipbookStoreContext.use()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 	local storybooks = Storyteller.useStorybooks()
 
-	local storyModule: ModuleScript?, setStoryModule = React.useState(nil :: ModuleScript?)
-	local storybook, setStorybook = React.useState(nil :: LoadedStorybook?)
-	local unavailableStorybook: UnavailableStorybook?, setUnavailableStorybook =
-		React.useState(nil :: UnavailableStorybook?)
-	local navigation = NavigationContext.use()
+	local appRef = React.useRef<<GuiObject?>>(nil)
+	local topbarInset = useTopbarInset(appRef)
 
-	local onStoryChanged = React.useCallback(function(newStoryModule: ModuleScript?, newStorybook: LoadedStorybook?)
-		navigation.navigateTo("Home")
+	-- The embedded app extends into the Roblox topbar, so it lays out around
+	-- the core buttons drawn on top of it.
+	local occludingTopbarInset = if flipbookStore.story.getMode() == AppMode.EmbeddedClient then topbarInset else nil
 
-		setUnavailableStorybook(nil)
-
-		if newStoryModule and not newStorybook then
-			newStorybook = defaultStorybook
-		end
-
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "StoryOpened",
-			})
-		end)
-
-		setStoryModule(newStoryModule)
-		setStorybook(newStorybook)
-	end, { navigation.navigateTo } :: { unknown })
-
-	local onShowErrorPage = React.useCallback(function(newUnavailableStorybook: UnavailableStorybook)
-		setStoryModule(nil)
-		setStorybook(nil)
-		setUnavailableStorybook(newUnavailableStorybook)
-	end, {})
+	--[[
+		The navigation store sends a PageChanged event when navigateTo or goBack
+		runs. Creating the store sends nothing, so building one has no side
+		effects. This sends the event for the screen the app opens on, once the
+		app mounts with its store.
+	]]
+	useEffect(function()
+		flipbookStore.navigation.reportCurrentScreen()
+	end, { flipbookStore })
 
 	useAgentRegistration({
-		storyModule = storyModule,
-		storybook = storybook,
+		getCurrentStory = function()
+			local selectedStory = flipbookStore.story.getSelectedStory()
+			if selectedStory == nil then
+				return nil, nil
+			end
+			return selectedStory.storyModule, selectedStory.storybook
+		end,
 		storybooks = storybooks,
-		openStory = onStoryChanged,
+		openStory = flipbookStore.openStory,
 	})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
+		ref = appRef,
 	}, {
-		StoryActionsProvider = React.createElement(StoryActionsContext.Provider, {
-			story = storyModule,
-			mode = props.mode,
+		SidebarWrapper = React.createElement(ResizablePanel, {
+			LayoutOrder = nextLayoutOrder(),
+			initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
+			dragHandles = { PanelTypes.DragHandle.Right },
+			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
+			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 		}, {
-			SidebarWrapper = React.createElement(ResizablePanel, {
+			Sidebar = React.createElement(Sidebar, {
+				topbarInset = occludingTopbarInset,
+			}),
+		}),
+
+		MainWrapper = React.createElement(Foundation.View, {
+			tag = "size-full col shrink bg-surface-100",
+			LayoutOrder = nextLayoutOrder(),
+		}, {
+			Topbar = React.createElement(Topbar, {
+				showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
+				showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
+				showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
+				topbarInset = occludingTopbarInset,
 				LayoutOrder = nextLayoutOrder(),
-				initialSize = UDim2.new(0, userSettings.sidebarWidth, 1, 0),
-				dragHandles = { "Right" :: "Right" },
-				minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
-				maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
-			}, {
-				Sidebar = React.createElement(Sidebar, {
-					launchData = props.launchData,
-					onStoryChanged = onStoryChanged,
-					onShowErrorPage = onShowErrorPage,
-				}),
 			}),
 
-			MainWrapper = React.createElement(Foundation.View, {
-				tag = "size-full col shrink bg-surface-100",
+			ScreenWrapper = React.createElement(Foundation.View, {
 				LayoutOrder = nextLayoutOrder(),
+				tag = "size-full shrink",
 			}, {
-				Topbar = React.createElement(Topbar, {
-					showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
-					showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
-					showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
-					LayoutOrder = nextLayoutOrder(),
-				}),
-
-				ScreenWrapper = React.createElement(Foundation.View, {
-					LayoutOrder = nextLayoutOrder(),
-					tag = "size-full shrink",
-				}, {
-					Screen = React.createElement(Screen, {
-						story = storyModule,
-						storybook = storybook,
-						unavailableStorybook = unavailableStorybook,
-					}),
-				}),
+				Screen = React.createElement(Screen),
 			}),
 		}),
 

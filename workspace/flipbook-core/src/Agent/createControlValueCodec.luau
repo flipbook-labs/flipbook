@@ -210,7 +210,12 @@ end
 
 local function decodeColor(value: unknown, path: string): Color3
 	local fields = getObject(value, path)
-	expectFields(fields, path, { kind = true, r = true, g = true, b = true })
+	expectFields(fields, path, {
+		kind = true,
+		r = true,
+		g = true,
+		b = true,
+	})
 	if fields.kind ~= "Color3" then
 		fail(path, 'must have kind "Color3"')
 	end
