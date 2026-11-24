@@ -41,7 +41,9 @@ Fork and Dependabot builds skip build provenance attestation in `ci.yml`, becaus
 
 ## Storybook previews
 
-A pull request storybook deliberately uses the last public Flipbook release as its runtime, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. On `main`, the workflow embeds a fresh prod build instead, which catches embedding problems before a release. Do not pass `flipbook-rbxm` for pull request deploys. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.0 only comments on `pull_request` events. The deploy job posts the preview link with `flipbook-cli comment` instead.
+Each pull request storybook deploys the branch's stories to two places. One embeds the last public Flipbook release, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. The other embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that second place runs the build that is about to ship. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
+
+The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `luau-execution` approval gate. Never build pull request code in a job that holds secrets. The deploy job posts one comment with links to both places through `lute run comment-storybook-preview`. deploy-storybook's own comment stays off, because v0.4.0 only comments on `pull_request` events.
 
 ## PostHog release reporting
 
@@ -63,6 +65,6 @@ Dependency bumps. After changing `wally.toml`, `pkg.luau`, `rokit.toml`, or `Rob
 ls .github/workflows/release.yml .github/workflows/storybook.yml .github/workflows/strict.yml
 git grep -n ASSET_NAMES_BY_CHANNEL -- .lune/publish-plugin.luau
 git grep -n luau-execution-gated -- .github/workflows
-git grep -n "flipbook-cli comment" -- .github/workflows/storybook.yml
+git grep -n comment-storybook-preview -- .github/workflows/storybook.yml
 ls .lute/posthog.luau
 ```
