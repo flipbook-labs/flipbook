@@ -13,6 +13,7 @@ return {
 			["flipbook-agents"] = member("flipbook-agents"),
 			["flipbook-core"] = member("flipbook-core"),
 			["flipbook-next"] = member("flipbook-next"),
+			["flipbook-telemetry"] = member("flipbook-telemetry"),
 
 			batteries = {
 				rev = "v1.0.1-nightly.20261115",

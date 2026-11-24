@@ -6,6 +6,7 @@ return {
     ["flipbook-batteries"] = "flipbook-batteries@v0.13.1",
     ["flipbook-core"] = "flipbook-core",
     ["flipbook-next"] = "flipbook-next",
+    ["flipbook-telemetry"] = "flipbook-telemetry",
   },
   devDependencies = {
     ["agent-skills"] = "agent-skills@v0.7.0",
@@ -87,6 +88,14 @@ return {
       installPath = "workspace/flipbook-next",
       name = "flipbook-next",
       source = "workspace/flipbook-next",
+      sourceKind = "path",
+      dependencies = {},
+      devDependencies = {},
+    },
+    ["flipbook-telemetry"] = {
+      installPath = "workspace/flipbook-telemetry",
+      name = "flipbook-telemetry",
+      source = "workspace/flipbook-telemetry",
       sourceKind = "path",
       dependencies = {},
       devDependencies = {},
