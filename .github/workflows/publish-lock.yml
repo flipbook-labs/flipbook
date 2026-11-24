@@ -41,7 +41,7 @@ jobs:
 
       - name: Unlock Pull Request
         if: steps.head.outputs.is-publish-head != 'true'
-        uses: flipbook-labs/changewrite/publish-lock@v0.15.0
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.1
         with:
           locked: false
           sha: ${{ github.event.pull_request.head.sha }}
