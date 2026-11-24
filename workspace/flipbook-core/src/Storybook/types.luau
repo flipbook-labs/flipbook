@@ -1,10 +1,22 @@
 local Foundation = require("@rbxpkg/Foundation")
+local Storyteller = require("@pkg/Storyteller")
 
 local CommonTypes = require("@root/Common/types")
 local useColorMode = require("@root/Common/useColorMode")
 
 type ColorMode = useColorMode.ColorMode
 type Pluginlike = CommonTypes.Pluginlike
+
+export type SelectedStory = {
+	kind: "Story",
+	storyModule: ModuleScript,
+	storybook: Storyteller.LoadedStorybook,
+}
+
+export type StorySelection = { kind: "None" } | SelectedStory | {
+	kind: "UnavailableStorybook",
+	unavailableStorybook: Storyteller.UnavailableStorybook,
+}
 
 export type ExtraStoryProps = {
 	colorMode: ColorMode,

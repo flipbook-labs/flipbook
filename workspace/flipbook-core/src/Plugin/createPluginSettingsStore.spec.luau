@@ -13,9 +13,10 @@ local jest = JestGlobals.jest
 
 local MOCK_STORAGE_KEY = "MockStorageKey"
 
-local mockPlugin
+local mockPlugin: typeof(MockPlugin.new())
 
-local createPluginSettingsStore
+-- Required in beforeEach, after PluginStore is mocked.
+local createPluginSettingsStore: typeof(require("./createPluginSettingsStore"))
 
 beforeEach(function()
 	mockPlugin = MockPlugin.new()

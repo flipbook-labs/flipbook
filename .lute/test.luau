@@ -1,6 +1,5 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.12.0")
-local cli = require("@batteries/cli")
-local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
@@ -10,7 +9,7 @@ local rojoBuild = require("@scripts/lib/rojoBuild")
 
 local run = FlipbookBatteries.run
 
-dotenv.config()
+FlipbookBatteries.dotenv()
 
 local args = cli.parser()
 
@@ -49,7 +48,15 @@ if not runOnly then
 	local filter = args:get("filter")
 	process.env.JEST_TEST_PATH_PATTERN = if filter then filter else ""
 
-	run("lute", { "run", "build", "plugin", "--channel", "dev", "--clean", "--skip-reload" })
+	run("lute", {
+		"run",
+		"build",
+		"plugin",
+		"--channel",
+		"dev",
+		"--clean",
+		"--skip-reload",
+	})
 
 	local builtPlacePath = rojoBuild({
 		output = placePath,

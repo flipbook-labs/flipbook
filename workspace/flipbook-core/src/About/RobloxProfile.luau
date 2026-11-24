@@ -18,7 +18,7 @@ export type Props = {
 local function RobloxProfile(props: Props)
 	local tokens = useTokens()
 
-	local username, setUsername = useState(nil :: string?)
+	local username, setUsername = useState<<string?>>(nil)
 
 	local isLoading = username == nil
 

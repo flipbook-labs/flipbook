@@ -6,19 +6,19 @@ local ThemeName = Foundation.Enums.ThemeName
 
 export type SettingType = "checkbox" | "dropdown" | "number"
 
-local SettingType = {
+local SettingType = table.freeze({
 	Checkbox = "checkbox" :: "checkbox",
 	Dropdown = "dropdown" :: "dropdown",
 	Number = "number" :: "number",
-}
+})
 
 export type SettingGroup = "UI" | "Stories" | "Telemetry"
 
-local SettingGroup = {
+local SettingGroup = table.freeze({
 	UI = "UI" :: "UI",
 	Stories = "Stories" :: "Stories",
 	Telemetry = "Telemetry" :: "Telemetry",
-}
+})
 
 export type SettingChoice = {
 	description: string,
@@ -52,26 +52,28 @@ type NumberSetting = BaseSetting & {
 
 export type Setting = CheckboxSetting | DropdownSetting | NumberSetting
 
--- local expandNodesOnStart: Setting = {
--- 	name = "expandNodesOnStart",
--- 	displayName = "Expand nodes on start",
--- 	description = "Re-open the storybooks and folders from before",
--- 	settingType = SettingType.Dropdown,
--- 	choices = {
--- 		{
--- 			name = "off",
--- 			description = "Keep all explorer nodes closed on startup",
--- 		},
--- 		{
--- 			name = "all",
--- 			description = "All explorer nodes are opened on startup",
--- 		},
--- 		{
--- 			name = "lastOpened",
--- 			description = "Reopen the nodes that were opened from previous sessions on startup",
--- 		},
--- 	},
--- }
+--[[
+	local expandNodesOnStart: Setting = {
+		name = "expandNodesOnStart",
+		displayName = "Expand nodes on start",
+		description = "Re-open the storybooks and folders from before",
+		settingType = SettingType.Dropdown,
+		choices = {
+			{
+				name = "off",
+				description = "Keep all explorer nodes closed on startup",
+			},
+			{
+				name = "all",
+				description = "All explorer nodes are opened on startup",
+			},
+			{
+				name = "lastOpened",
+				description = "Reopen the nodes that were opened from previous sessions on startup",
+			},
+		},
+	}
+]]
 
 local rememberLastOpenedStory: CheckboxSetting = {
 	name = "rememberLastOpenedStory",

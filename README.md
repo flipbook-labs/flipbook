@@ -1,29 +1,55 @@
-# <img src="img/FlipbookIcon.png" alt="Plugin icon" height="32" /> Flipbook
+# Flipbook
 
-[![Install on Roblox](https://img.shields.io/badge/%20-Install%20on%20Roblox-00A2FF?logo=robloxstudio&logoColor=fff)](https://create.roblox.com/store/asset/8517129161/flipbook)
-[![Documentation](https://img.shields.io/badge/%20-Documentation-3ECC5F?logo=docusaurus&logoColor=fff)](https://flipbook-labs.github.io/flipbook)
-[![Discord Thread](https://img.shields.io/badge/%20-Discord%20Thread-%235865F2?logo=discord&logoColor=fff)](https://discord.com/channels/385151591524597761/1063913358740443336/1063913358740443336)
-[![DevForum Thread](https://img.shields.io/badge/%20-DevForum%20Thread-%23000?logo=roblox)](https://devforum.roblox.com/t/flipbook-%E2%80%94-storybook-plugin-for-roblox-ui/2184387)
+<img src="docs/site/static/img/logo.svg" width="128" height="128" align="right" alt="Flipbook icon" />
 
+Flipbook is a storybook plugin for Roblox Studio. It renders each piece of your UI on its own, in a sandbox, so you can work through edge cases and complex states without playing through the whole game. Stories reload as you edit them, and controls let you change their props without touching code.
 
-Flipbook is a storybook plugin that previews UI components in a sandboxed environment. With it you can isolate distinct parts of your game's UI to hammer out edge cases and complex states without having to run through the whole UI.
+Guides live at [flipbook-labs.github.io/flipbook](https://flipbook-labs.github.io/flipbook).
 
-With native support for popular UI libraries like [Roact](https://github.com/roblox/roact), [Fusion](https://github.com/Elttob/Fusion), and [Roact 17](https://github.com/grilme99/CorePackages#roact17), no matter how you create UI you can write a story for it in Flipbook
+![Flipbook in Roblox Studio rendering a button story, with an isDisabled control below it](docs/site/static/img/main-screenshot.png)
 
-![Screenshot of Flipbook showing off the ButtonWithControls story](docs/static/img/main-screenshot.png)
+## Install
 
-## Installation
+Install Flipbook from the [Creator Store](https://create.roblox.com/store/asset/8517129161/flipbook) to get updates as they're released. Every [release](https://github.com/flipbook-labs/flipbook/releases) also has an `.rbxm` you can copy into Studio's plugins folder.
 
-You can install Flipbook from the [Roblox marketplace](https://www.roblox.com/library/8517129161) or from the [GitHub releases](https://github.com/flipbook-labs/flipbook/releases) page.
+## Use
 
-## Documentation
+1. Add a ModuleScript whose name ends in `.storybook` to a folder of your UI, and have it return `{ storyRoots = { script.Parent } }`. The `storyRoots` list tells Flipbook where to look for stories.
+2. In that folder, add a ModuleScript whose name ends in `.story` that returns the UI to render.
+3. Open Flipbook from the Plugins tab and select the story.
 
-Learn how to use Flipbook on the [official documentation site](https://flipbook-labs.github.io/flipbook/).
+The smallest story returns a plain Instance:
+
+```luau
+-- Button.story.luau
+return {
+	story = function()
+		local button = Instance.new("TextButton")
+		button.Text = "Click me"
+		button.Size = UDim2.fromOffset(200, 40)
+		return button
+	end,
+}
+```
+
+See [Writing stories](https://flipbook-labs.github.io/flipbook/docs/usage/writing-stories) for a complete example.
+
+## Frameworks
+
+Flipbook renders plain Roblox Instances by default. Pass your UI library to a storybook or story through `packages` to render React, Roact, or Fusion components. See [Frameworks](https://flipbook-labs.github.io/flipbook/docs/usage/frameworks).
+
+## Migrate
+
+Coming from another storybook plugin? Follow the guide for [Hoarcekat](https://flipbook-labs.github.io/flipbook/docs/usage/migration-guides/migrating-hoarcekat) or [UI Labs](https://flipbook-labs.github.io/flipbook/docs/usage/migration-guides/migrating-ui-labs).
+
+## Community
+
+Ask questions and share what you're building in the [Discord thread](https://discord.com/channels/385151591524597761/1063913358740443336/1063913358740443336) or on the [DevForum](https://devforum.roblox.com/t/flipbook-%E2%80%94-storybook-plugin-for-roblox-ui/2184387). Report bugs in [issues](https://github.com/flipbook-labs/flipbook/issues).
 
 ## Contributing
 
-Before opening a pull request, check out our [contributing guide](CONTRIBUTING.md) to learn how we develop the plugin.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-Flipbook is licensed under [MIT License](LICENSE).
+MIT.

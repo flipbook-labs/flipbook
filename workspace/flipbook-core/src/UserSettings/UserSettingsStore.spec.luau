@@ -25,7 +25,7 @@ test("keep colorMode when both colorMode and theme are saved", function()
 end)
 
 test("leave settings without theme unchanged", function()
-	local saved = {
+	local saved: { [string]: unknown } = {
 		colorMode = "system",
 	}
 

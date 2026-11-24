@@ -33,7 +33,7 @@ local validate = t.interface({
 })
 
 -- Settings saved by older versions of Flipbook store the color mode as `theme`.
-local function migrate(saved: { [string]: any }): { [string]: any }
+local function migrate(saved: { [string]: unknown }): { [string]: unknown }
 	if saved.theme ~= nil then
 		return Sift.Dictionary.join(saved, {
 			colorMode = if saved.colorMode ~= nil then saved.colorMode else saved.theme,
