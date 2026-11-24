@@ -17,10 +17,12 @@ permissions:
   contents: read
 
 env:
-  # Changewrite opens the publish PR from this repository's
-  # publish-next-version branch, and its head is the code the next release
-  # ships. Other PR previews run the last public Flipbook release, but this one
-  # runs the PR's own build so reviewers try what's about to go out.
+  # Changewrite opens the publish PR from the publish-next-version branch, and
+  # its head is the code the next release ships. Other PR previews leave
+  # flipbook-rbxm empty, so deploy-storybook embeds the last public Flipbook
+  # release. The publish PR embeds its own build instead, so reviewers try what's
+  # about to go out. The repository check keeps a fork from getting the same
+  # treatment by naming its branch publish-next-version.
   PUBLISH_PR: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.ref == 'publish-next-version' && github.event.pull_request.head.repo.full_name == github.repository }}
 
 jobs:
@@ -141,8 +143,10 @@ jobs:
             --place-name "$ROBLOX_STORYBOOK_PLACE_NAME" \
             --github-repository "$GITHUB_REPOSITORY"
 
-          # flipbook-cli writes the whole comment from a fixed template, so
-          # the publish PR's download link is added to the end of it here.
+          # The build job uploads Flipbook.rbxm only for the publish PR, so the
+          # URL is set only there. flipbook-cli writes the whole comment from a
+          # fixed list of links, so this finds that comment by its marker and
+          # adds the download link as one more item.
           if [[ -n "$FLIPBOOK_RBXM_URL" ]]; then
             comment_id=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$GITHUB_PULL_REQUEST_NUMBER/comments" \
               --jq '.[] | select(.body | contains("<!-- flipbook-pr-preview -->")) | .id' | tail -n 1)
