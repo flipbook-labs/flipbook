@@ -39,6 +39,7 @@ All three repos (`flipbook`, `storyteller`, `module-loader`) use the same toolch
 
 ```
 flipbook/
+├── .claude/skills/         # Flipbook agent skills (see Skills below)
 ├── src/                    # Thin plugin entry point (Studio bootstrap only)
 ├── workspace/              # Real application code, organized as workspace members:
 │   ├── flipbook-core/      # Main library — React app, story browser, telemetry, settings
@@ -179,19 +180,32 @@ Source files use Luau-style aliases (`@pkg/`, `@workspace/`, `@repo/`, etc.). Th
 
 ---
 
-## Shared skills: flipbook-labs/agent-skills
+## Skills
 
-Cross-cutting doctrine and Flipbook-specific runbooks do not live in this repo. They live in the org's shared, versioned [AgentSkills](https://github.com/flipbook-labs/agent-skills) library, pinned as a dev dependency in [`pkg.luau`](pkg.luau) and vendored by `lute run install` into `.lpm/agent-skills@<rev>`. Routing is manual and on demand: read the library's index up front, then read a skill before doing the work it covers.
+Flipbook's own design contracts and runbooks live in [`.claude/skills/`](.claude/skills/), next to the code they describe. Cross-cutting doctrine that applies to every flipbook-labs repo, such as writing style, Luau style, tests, and changelog entries, lives in the org's shared [AgentSkills](https://github.com/flipbook-labs/agent-skills) library. Routing is manual and on demand: read both indexes up front, then read a skill before doing the work it covers.
 
-Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md). When the change touches releases, workflows, telemetry, or dependencies, also read the shared `flipbook/release` skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Workspace release manifests are an explicit engine-owned exception; every other path outside the application domain, including repository-stewardship files, also belongs to `@flipbook-labs/flipbook-engine`.
+Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md). When the change touches releases, workflows, telemetry, or dependencies, also read the [`release`](.claude/skills/release/SKILL.md) skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Workspace release manifests are an explicit engine-owned exception; every other path outside the application domain, including repository-stewardship files, also belongs to `@flipbook-labs/flipbook-engine`.
 
 Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
 
-Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant shared skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then the shared skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
+Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then the shared skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
 
 Greptile findings must be evaluated rather than accepted mechanically. Fix valid findings. For an invalid finding, reply with concrete repository context and request another review. If Greptile still withholds the required 5/5 status, only a member of `@flipbook-labs/flipbook-admins` may bypass it; agents must not bypass merge requirements.
 
-Before you write any code, tests, or PR prose:
+### Flipbook skills
+
+- [`architecture`](.claude/skills/architecture/SKILL.md): the contracts the code does not make obvious. Pluginlike and embedding, the Flipbook to Storyteller to ModuleLoader layering, why state lives in Charm, reload behavior, plugin versus embedded limits, and the community-first policy for the internal build, telemetry, and claims about other tools. Use when changing embedding or bootstrap code, story loading, stores, telemetry, or the internal build.
+- [`dev-env`](.claude/skills/dev-env/SKILL.md): set up, repair, and validate the environment. Installs, `.env`, lint, analyze, cloud tests and their Open Cloud key, testing local Storyteller or ModuleLoader changes in Flipbook, StudioPlugins, and what counts as evidence for a fix. Use when setting up, running checks, when tests cannot run, or when testing a dependency change in Flipbook.
+- [`release`](.claude/skills/release/SKILL.md): how releases happen and what an agent must not do in them. Channels and assets, CI environments and secrets, storybook previews, PostHog release reporting, and the rules for telemetry, community parity, and dependency bumps. Use when a change touches releases, publishing, workflows, telemetry, or dependencies.
+- [`troubleshooting`](.claude/skills/troubleshooting/SKILL.md): non-obvious runtime and build failures, past incidents not to repeat, and measurement techniques. Use when the plugin is stale, an injected global is wrong, tests wait on a fork PR, a Windows or Rotriever build breaks, or you need evidence for a build or re-render fix.
+- [`use-studio-mcp`](.claude/skills/use-studio-mcp/SKILL.md): build and validate Flipbook through Studio MCP and FlipbookAgentGateway. Use when driving a local build, changing gateway actions, or verifying Stories through semantic actions, embedded Play-mode input, and screenshots.
+- [`write-docs`](.claude/skills/write-docs/SKILL.md): authoring the docs site. Where pages live, the sidebar, code samples, and grounding every claim in source. Use when writing or editing anything under `docs/`.
+
+These skills change with the code. When a change renames a symbol, changes a value, or fixes a bug that one of them describes, update the skill in the same pull request. Adding, renaming, or removing a skill means updating this index too.
+
+### Shared skills: flipbook-labs/agent-skills
+
+The shared library is pinned as a dev dependency in [`pkg.luau`](pkg.luau). Before you write any code, tests, or PR prose:
 
 1. Install dependencies (this also vendors the skills into `.lpm/`):
 
@@ -205,4 +219,4 @@ Before you write any code, tests, or PR prose:
 
 Deep reads of individual `<skills>/src/<scope>/<name>/SKILL.md` files stay on demand: when a task matches a trigger from the index, read that skill before doing the work it covers.
 
-Skills are living documents. If your work here contradicts a skill (a renamed symbol, a changed value, a fixed bug it still calls known), fix it in the agent-skills repo and add a `.changes/` entry there in the same PR. The fix reaches this repo on its next `rev` bump.
+If your work here contradicts a shared skill, fix it in the agent-skills repo and add a `.changes/` entry there in the same PR. The fix reaches this repo on its next `rev` bump.

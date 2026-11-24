@@ -65,7 +65,7 @@ graph LR
 
 ## Agent Tooling
 
-**[agent-skills](https://github.com/flipbook-labs/agent-skills)**: The versioned library of agent doctrine and Flipbook-specific runbooks shared across the organization. Repositories pin it as an `AgentSkills` Loom development dependency and route agents through its skill index.
+**[agent-skills](https://github.com/flipbook-labs/agent-skills)**: The versioned library of cross-cutting agent doctrine shared across the organization. Flipbook-specific skills live in this repository under `.claude/skills/`. Repositories pin it as an `AgentSkills` Loom development dependency and route agents through its skill index.
 
 ## Infrastructure
 

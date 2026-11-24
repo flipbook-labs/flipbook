@@ -14,7 +14,9 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
 
-type SidebarProps = Foundation.CommonProps
+type SidebarProps = {
+	topbarInset: Rect?,
+} & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
 	local flipbookStore = FlipbookStoreContext.use()
@@ -29,6 +31,11 @@ local function Sidebar(props: SidebarProps)
 		View,
 		withCommonProps(props, {
 			tag = "bg-surface-0 col size-full",
+			padding = if props.topbarInset
+				then {
+					top = UDim.new(0, math.max(props.topbarInset.Max.Y, 0)),
+				}
+				else nil,
 		}),
 		{
 			Search = e(View, {

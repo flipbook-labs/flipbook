@@ -20,7 +20,7 @@ end
 return table.freeze({
 	-- Flipbook's version. changewrite bumps it here along with the other
 	-- manifests listed in `changewrite.luau`.
-	version = "2.5.0",
+	version = "2.6.0",
 	prunedFiles = table.freeze(PRUNED_FILES),
 	files = table.freeze(files),
 })
