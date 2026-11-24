@@ -44,7 +44,7 @@ local function NumberControl(props: Props)
 		onFocusLost = onFocusLost,
 		step = props.controlSchema.step,
 		value = if isFocused then pending else props.controlValue,
-		size = Foundation.Enums.InputSize.Small,
+		size = Foundation.Enums.InputSize.XSmall,
 		width = UDim.new(1, 0),
 	})
 end

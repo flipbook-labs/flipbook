@@ -59,7 +59,7 @@ local function ColorControl(props: Props)
 	end, { props.controlValue } :: { unknown })
 
 	return e(Foundation.View, {
-		tag = "auto-xy row gap-small align-y-center",
+		tag = "auto-xy row gap-xsmall align-y-center",
 		stateLayer = {
 			affordance = Foundation.Enums.StateLayerAffordance.None,
 		},
@@ -76,7 +76,7 @@ local function ColorControl(props: Props)
 		}),
 
 		ColorValue = e(Foundation.Text, {
-			tag = "auto-xy content-default text-body-medium",
+			tag = "auto-xy content-default text-body-small",
 			Text = `#{color:ToHex():upper()}`,
 			LayoutOrder = nextLayoutOrder(),
 		}),
@@ -94,7 +94,7 @@ local function ColorControl(props: Props)
 				onPressedOutside = onPressedOutside,
 			}, {
 				Wrapper = e(Foundation.View, {
-					tag = "auto-xy padding-medium bg-surface-100 radius-small",
+					tag = "auto-xy padding-small bg-surface-100 radius-small",
 					sizeConstraint = {
 						MaxSize = Vector2.new(200, 200),
 					},

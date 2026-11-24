@@ -23,7 +23,7 @@ local function StoryError(props: Props)
 		layout = {
 			FillDirection = Enum.FillDirection.Vertical,
 		},
-		tag = "size-full padding-small gap-medium",
+		tag = "size-full padding-xsmall gap-small",
 	}, {
 		CodeBlock = React.createElement(CodeBlock, {
 			source = props.errorMessage,

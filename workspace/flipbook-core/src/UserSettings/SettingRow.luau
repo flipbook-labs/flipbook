@@ -41,6 +41,7 @@ local function SettingRow(props: Props)
 				hint = props.setting.description,
 				isChecked = value,
 				onActivated = setSetting,
+				size = Foundation.Enums.InputSize.Medium,
 			})
 		elseif props.setting.settingType == "dropdown" then
 			local items = Sift.List.map(props.setting.choices, function(choice: SettingChoice): Foundation.DropdownItem
@@ -56,6 +57,7 @@ local function SettingRow(props: Props)
 				value = value,
 				items = items,
 				onItemChanged = setSetting,
+				size = Foundation.Enums.InputSize.Medium,
 			})
 		elseif props.setting.settingType == "number" then
 			return React.createElement(Foundation.NumberInput, {
@@ -66,6 +68,7 @@ local function SettingRow(props: Props)
 				maximum = if props.setting.range then props.setting.range.Max else nil,
 				minimum = if props.setting.range then props.setting.range.Min else nil,
 				onChanged = setSetting,
+				size = Foundation.Enums.InputSize.Medium,
 			})
 		end
 		error(`no handling for setting type {props.setting.settingType}`)
@@ -85,7 +88,7 @@ local function SettingRow(props: Props)
 			else nil,
 
 		OptionWrapper = React.createElement(Foundation.View, {
-			tag = "auto-xy padding-x-medium",
+			tag = "auto-xy padding-x-small",
 		}, {
 			Option = optionElement,
 		}),

@@ -35,7 +35,7 @@ export type Props = {
 
 local function LogLine(props: Props)
 	local tokens = useTokens()
-	local fontStyle = tokens.Typography.BodyMedium
+	local fontStyle = tokens.Typography.BodySmall
 
 	local info = useMemo(function()
 		local text = ""

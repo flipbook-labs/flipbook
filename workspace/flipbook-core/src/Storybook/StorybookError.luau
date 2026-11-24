@@ -20,7 +20,7 @@ local function StorybookError(props: Props)
 	local storybookSource = props.unavailableStorybook.storybook.source.Source
 
 	return React.createElement(Foundation.ScrollView, {
-		tag = "size-full padding-large gap-large",
+		tag = "size-full padding-medium gap-medium",
 		scroll = {
 			ScrollingDirection = Enum.ScrollingDirection.XY,
 			AutomaticCanvasSize = Enum.AutomaticSize.XY,
@@ -32,17 +32,17 @@ local function StorybookError(props: Props)
 		LayoutOrder = props.layoutOrder,
 	}, {
 		MainText = React.createElement(Foundation.Text, {
-			tag = "auto-xy text-body-medium text-align-x-left",
+			tag = "auto-xy text-body-small text-align-x-left",
 			Text = `Failed to load {props.unavailableStorybook.storybook.name}`,
 			LayoutOrder = nextLayoutOrder(),
 		}),
 
 		Problem = React.createElement(Foundation.View, {
-			tag = "auto-xy gap-medium col",
+			tag = "auto-xy gap-small col",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Title = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-heading-medium",
+				tag = "auto-xy text-heading-small",
 				Text = "Error",
 				LayoutOrder = nextLayoutOrder(),
 			}),
@@ -55,11 +55,11 @@ local function StorybookError(props: Props)
 		}),
 
 		StorybookSource = React.createElement(Foundation.View, {
-			tag = "auto-xy gap-medium col",
+			tag = "auto-xy gap-small col",
 			LayoutOrder = nextLayoutOrder(),
 		}, {
 			Title = React.createElement(Foundation.Text, {
-				tag = "auto-xy text-heading-medium",
+				tag = "auto-xy text-heading-small",
 				Text = "Storybook Source",
 				LayoutOrder = nextLayoutOrder(),
 			}),

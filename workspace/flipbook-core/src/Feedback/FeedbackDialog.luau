@@ -131,7 +131,7 @@ local function FeedbackDialog(props: Props)
 
 				Content = React.createElement(Foundation.Dialog.Content, nil, {
 					Layout = React.createElement(Foundation.View, {
-						tag = "size-full-0 auto-y col gap-large padding-top-medium",
+						tag = "size-full-0 auto-y col gap-medium padding-top-small",
 					}, {
 						Title = React.createElement(Foundation.TextInput, {
 							label = "Title",
@@ -141,6 +141,7 @@ local function FeedbackDialog(props: Props)
 							hint = "Enter a breif summary of the feedback you're giving",
 							placeholder = "Enter title...",
 							onChanged = onTitleChanged,
+							size = Foundation.Enums.InputSize.Medium,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
@@ -152,6 +153,7 @@ local function FeedbackDialog(props: Props)
 							hint = "Let us know what's on your mind. This can be a feature request, bug report, or any other feedback you'd like to give",
 							placeholder = "Enter feedback...",
 							onChanged = onBodyChanged,
+							size = Foundation.Enums.InputSize.Medium,
 							LayoutOrder = nextLayoutOrder(),
 						}),
 
@@ -165,7 +167,7 @@ local function FeedbackDialog(props: Props)
 
 						ErrorMessage = if err
 							then React.createElement(Foundation.Text, {
-								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-medium content-alert",
+								tag = "auto-xy text-wrap text-align-x-left text-align-y-top padding-bottom-small content-alert",
 								Text = err,
 								LayoutOrder = nextLayoutOrder(),
 							})
