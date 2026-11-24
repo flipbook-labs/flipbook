@@ -41,7 +41,7 @@ Fork and Dependabot builds skip build provenance attestation in `ci.yml`, becaus
 
 ## Storybook previews
 
-A pull request storybook deliberately uses the last public Flipbook release as its runtime, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. On `main`, the workflow embeds a fresh prod build instead, which catches embedding problems before a release. Do not pass `flipbook-rbxm` for pull request deploys. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.0 only comments on `pull_request` events. The deploy job posts the preview link with `flipbook-cli comment` instead.
+A pull request storybook deliberately uses the last public Flipbook release as its runtime, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. On `main`, the workflow embeds a fresh prod build instead, which catches embedding problems before a release. Do not pass `flipbook-rbxm` for pull request deploys. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 still only comments on `pull_request` events. The deploy job posts the preview link with `flipbook-cli comment` instead.
 
 ## PostHog release reporting
 
