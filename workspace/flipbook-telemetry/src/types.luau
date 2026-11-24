@@ -1,0 +1,116 @@
+-- Event names and properties mirror the backend telemetry contract. Update the
+-- backend before extending this union.
+export type AppOpened = {
+	eventName: "AppOpened",
+}
+
+export type AppClosed = {
+	eventName: "AppClosed",
+}
+
+export type NodePinned = {
+	eventName: "NodePinned",
+}
+
+export type NodeUnpinned = {
+	eventName: "NodeUnpinned",
+}
+
+export type PageChanged = {
+	eventName: "PageChanged",
+	properties: {
+		page: string,
+	},
+}
+
+export type StoryOpened = {
+	eventName: "StoryOpened",
+}
+
+export type StoryClosed = {
+	eventName: "StoryClosed",
+}
+
+export type TelemetryOptedIn = {
+	eventName: "TelemetryOptedIn",
+}
+
+export type TelemetryOptedOut = {
+	eventName: "TelemetryOptedOut",
+}
+
+export type FeedbackDialogOpened = {
+	eventName: "FeedbackDialogOpened",
+}
+
+export type FeedbackSubmitted = {
+	eventName: "FeedbackSubmitted",
+}
+
+export type FeedbackDiscarded = {
+	eventName: "FeedbackDiscarded",
+}
+
+export type TelemetryEvent =
+	AppOpened
+	| AppClosed
+	| NodePinned
+	| NodeUnpinned
+	| PageChanged
+	| StoryClosed
+	| StoryOpened
+	| TelemetryOptedIn
+	| TelemetryOptedOut
+	| FeedbackDialogOpened
+	| FeedbackSubmitted
+	| FeedbackDiscarded
+
+--[[
+	The envelope sent to the backend copies `eventName` from the event it wraps.
+	This union types that field, so it repeats the names in `TelemetryEvent`
+	above and needs updating alongside it. Code passes and checks event names
+	through `TelemetryEvent`, not this type, so a table of named constants for
+	it would go unused.
+]]
+-- lute-lint-ignore(string_union_enum)
+export type TelemetryEventName =
+	"AppOpened"
+	| "AppClosed"
+	| "NodePinned"
+	| "NodeUnpinned"
+	| "PageChanged"
+	| "StoryClosed"
+	| "StoryOpened"
+	| "TelemetryOptedIn"
+	| "TelemetryOptedOut"
+	| "FeedbackDialogOpened"
+	| "FeedbackSubmitted"
+	| "FeedbackDiscarded"
+
+export type TelemetryEnvelope = {
+	eventName: TelemetryEventName,
+	properties: { page: string }?,
+	anonymizedUserId: string,
+	buildVersion: string,
+	buildChannel: string,
+	buildHash: string,
+}
+
+export type TelemetryContext = {
+	buildVersion: string,
+	buildChannel: string,
+	buildHash: string,
+}
+
+export type TelemetryOptions = {
+	context: TelemetryContext,
+	isEnabled: () -> boolean,
+	getAnonymousId: () -> string,
+	transport: (envelope: TelemetryEnvelope) -> (),
+}
+
+export type TelemetryClient = {
+	capture: (event: TelemetryEvent) -> boolean,
+}
+
+return nil

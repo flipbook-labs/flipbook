@@ -24,7 +24,9 @@ local action: Action = {
 		if type(controls) ~= "table" then
 			error("controls must be a table")
 		end
-		return { controls = controller.setControls(asDictionary(controls)) }
+		return {
+			controls = controller.setControls(asDictionary(controls)),
+		}
 	end,
 }
 

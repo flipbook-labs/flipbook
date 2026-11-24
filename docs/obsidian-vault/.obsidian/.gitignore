@@ -1,0 +1,7 @@
+plugins/
+!plugins/**/data.json
+app.json
+appearance.json
+backlink.json
+graph.json
+workspace.json

@@ -1,0 +1,48 @@
+# `publish-lock` is a required check on main. The Release workflow fails it on
+# the publish pull request while that pull request is being regenerated, and
+# this workflow passes it on every other pull request so they can merge.
+name: Publish Lock
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  status:
+    if: github.event.pull_request.head.ref != 'publish-next-version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      statuses: write
+    steps:
+      # pull_request_target checks out the base branch, never the pull
+      # request's code.
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Check Publish Branch Head
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: lute run publish-lock is-publish-head
+
+      - name: Unlock Pull Request
+        if: steps.head.outputs.is-publish-head != 'true'
+        uses: flipbook-labs/changewrite/publish-lock@v0.15.1
+        with:
+          locked: false
+          sha: ${{ github.event.pull_request.head.sha }}
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

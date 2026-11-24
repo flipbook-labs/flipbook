@@ -4,14 +4,14 @@ local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
 
-types.TreeNodeIcon = {
+types.TreeNodeIcon = table.freeze({
 	None = "none" :: "none",
 	Story = "story" :: "story",
 	Storybook = "storybook" :: "storybook",
 	Folder = "folder" :: "folder",
 	Alert = "alert" :: "alert",
 	Pin = "pin" :: "pin",
-}
+})
 
 export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 

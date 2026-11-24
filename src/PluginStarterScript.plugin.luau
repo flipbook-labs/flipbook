@@ -8,6 +8,8 @@ if _G.BUILD_CHANNEL == "development" then
 	_G.__DEV__ = true
 end
 
+-- Lute's unused_variable lint doesn't count writing a property as a use.
+-- lute-lint-ignore(unused_variable)
 local Charm = require("@pkg/Charm")
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
@@ -34,7 +36,6 @@ local toolbar = plugin:CreateToolbar(PLUGIN_NAME)
 
 local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 800, 600)
 
--- selene: allow(deprecated)
 local widget = plugin:CreateDockWidgetPluginGuiAsync(PLUGIN_NAME, info)
 widget.Name = PLUGIN_NAME
 widget.Title = PLUGIN_NAME
@@ -42,6 +43,9 @@ widget.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local button = toolbar:CreateButton(PLUGIN_NAME, "Open story view", FlipbookCore.FLIPBOOK_LOGO)
 
+-- FlipbookCore takes a Pluginlike table so tests can pass a mock, and Luau
+-- can't check Studio's Plugin class against that table type.
+-- lute-lint-ignore(no_any)
 local flipbookPlugin = FlipbookCore.createFlipbookPlugin(plugin :: any, widget, button)
 
 plugin.Unloading:Connect(flipbookPlugin.destroy)

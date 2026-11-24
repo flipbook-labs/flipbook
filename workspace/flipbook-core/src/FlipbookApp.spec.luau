@@ -16,8 +16,8 @@ local jest = JestGlobals.jest
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-local container
-local mockSettings
+local container: Folder
+local mockSettings: { [string]: unknown }
 local mockPlugin: Pluginlike
 
 beforeEach(function()
@@ -31,7 +31,7 @@ beforeEach(function()
 			task.wait() -- Simulate reading from disk
 			return mockSettings[key]
 		end),
-		SetSetting = jest.fn(function(_self, key: string, value: any)
+		SetSetting = jest.fn(function(_self, key: string, value: unknown)
 			task.wait() -- Simulate writing to disk
 			mockSettings[key] = value
 		end),

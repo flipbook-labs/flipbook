@@ -1,6 +1,14 @@
 local path = require("@std/path")
 
+local types = {}
+
 export type Channel = "prod" | "beta" | "dev"
+
+types.Channel = table.freeze({
+	Prod = "prod" :: "prod",
+	Beta = "beta" :: "beta",
+	Dev = "dev" :: "dev",
+})
 export type Target = "roblox" | "rotriever"
 
 export type BuildCache = {
@@ -24,4 +32,4 @@ export type BuildGroup = {
 	step: (self: BuildGroup) -> (),
 }
 
-return nil
+return types

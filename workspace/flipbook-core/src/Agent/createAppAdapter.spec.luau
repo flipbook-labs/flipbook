@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local JestGlobals = require("@pkg/JestGlobals")
 local Storyteller = require("@pkg/Storyteller")
 
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local constants = require("@root/constants")
 local createAppAdapter = require("@root/Agent/createAppAdapter")
 local getInstancePath = require("@root/Common/getInstancePath")
@@ -13,10 +14,13 @@ local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
+type LoadedStorybook = Storyteller.LoadedStorybook
+type StoryInfo = FlipbookAgents.StoryInfo
+
 local root: Folder
 local story: ModuleScript
 local storybookModule: ModuleScript
-local storybook: Storyteller.LoadedStorybook
+local storybook: LoadedStorybook
 local openedStory: ModuleScript?
 local embeddedRuntime: Instance?
 
@@ -60,7 +64,10 @@ local function createAdapter()
 			return result
 		end,
 		getStorybooks = function()
-			return { available = { storybook }, unavailable = {} }
+			return {
+				available = { storybook },
+				unavailable = {},
+			}
 		end,
 		getCurrentStory = function()
 			return openedStory, if openedStory then storybook else nil
@@ -93,7 +100,7 @@ test("discovers orphaned Stories without a Storybook path", function()
 
 	local adapter = createAdapter()
 	local orphanPath = getInstancePath(orphan)
-	local orphanedStory
+	local orphanedStory: StoryInfo? = nil
 	for _, storyInfo in adapter.listStories(nil) do
 		if storyInfo.path == orphanPath then
 			orphanedStory = storyInfo

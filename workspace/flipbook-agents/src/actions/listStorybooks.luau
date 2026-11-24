@@ -9,7 +9,9 @@ local action: Action = {
 	title = "List Storybooks",
 	description = "List Storybooks currently available to Flipbook.",
 	run = function(controller)
-		return { storybooks = controller.listStorybooks() }
+		return {
+			storybooks = controller.listStorybooks(),
+		}
 	end,
 }
 

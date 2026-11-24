@@ -4,7 +4,7 @@ local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
-local EmbeddingTypes = require("@root/Embedding/types")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
@@ -14,7 +14,6 @@ local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNodeStore = TreeView.TreeNodeStore
-type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 type LoadedStory<T> = Storyteller.LoadedStory<T>
@@ -28,20 +27,18 @@ local useStorybooks = Storyteller.useStorybooks
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
-	launchData: LaunchData?,
 	searchTerm: string?,
-	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?) -> ())?,
-	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
 
 local function StorybookTreeView(props: Props)
-	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
-	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
+	local flipbookStore = FlipbookStoreContext.use()
+	local storybookByNodeId = useRef<<{ [string]: LoadedStorybook }>>({})
+	local unavailableStorybookByNodeId = useRef<<{ [string]: UnavailableStorybook }>>({})
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
-	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
+	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -105,43 +102,59 @@ local function StorybookTreeView(props: Props)
 
 	-- This handles automatically moving a node under the Pinned node once the
 	-- node's instance becomes pinned
-	useEffect(function()
-		if pinnedNodes ~= prevPinnedNodes then
-			-- Put any previously pinned nodes back to the root
-			if prevPinnedNodes then
-				for _, node in prevPinnedNodes do
-					if not node.getIsPinned() then
-						node.parentTo(rootNode)
+	useEffect(
+		function()
+			if pinnedNodes ~= prevPinnedNodes then
+				-- Put any previously pinned nodes back to the root
+				if prevPinnedNodes then
+					for _, node in prevPinnedNodes do
+						if not node.getIsPinned() then
+							node.parentTo(rootNode)
+						end
 					end
 				end
-			end
 
-			for _, node in pinnedNodes do
-				node.parentTo(pinned)
+				for _, node in pinnedNodes do
+					node.parentTo(pinned)
+				end
 			end
-		end
-	end, { pinnedNodes, prevPinnedNodes, pinned, rootNode } :: { unknown })
+		end,
+		{
+			pinnedNodes,
+			prevPinnedNodes,
+			pinned,
+			rootNode,
+		} :: { unknown }
+	)
 
 	-- Convert available storybooks into nodes
-	useEffect(function()
-		for _, storybook in storybooks.available do
-			if nodesByInstance.current[storybook.source] then
-				continue
+	useEffect(
+		function()
+			for _, storybook in storybooks.available do
+				if nodesByInstance.current[storybook.source] then
+					continue
+				end
+
+				local node = createTreeNodesForStorybook(storybook)
+
+				nodesByInstance.current[storybook.source] = node
+				storybookByNodeId.current[node.id] = storybook
+
+				if pinnedInstanceStore.isPinned(storybook.source) then
+					node.setIsPinned(true)
+					node.parentTo(pinned)
+				else
+					node.parentTo(rootNode)
+				end
 			end
-
-			local node = createTreeNodesForStorybook(storybook :: any)
-
-			nodesByInstance.current[storybook.source] = node
-			storybookByNodeId.current[node.id] = storybook :: any
-
-			if pinnedInstanceStore.isPinned(storybook.source) then
-				node.setIsPinned(true)
-				node.parentTo(pinned)
-			else
-				node.parentTo(rootNode)
-			end
-		end
-	end, { storybooks.available, pinnedInstanceStore.isPinned, pinned, rootNode } :: { unknown })
+		end,
+		{
+			storybooks.available,
+			pinnedInstanceStore.isPinned,
+			pinned,
+			rootNode,
+		} :: { unknown }
+	)
 
 	-- Convert unavailable storybooks into nodes
 	useEffect(function()
@@ -209,7 +222,8 @@ local function StorybookTreeView(props: Props)
 				return
 			end
 
-			local storyPath = if props.launchData then props.launchData.story else nil
+			local launchData = flipbookStore.getLaunchData()
+			local storyPath = if launchData then launchData.story else nil
 			local node = if storyPath
 				then findTreeNodeFromPath(rootNode, storyPath)
 				elseif lastOpenedStory then rootNode.findFirstDescendant(function(descendant)
@@ -224,7 +238,7 @@ local function StorybookTreeView(props: Props)
 			end
 		end,
 		{
-			props.launchData,
+			flipbookStore,
 			lastOpenedStory,
 			rootNode,
 			-- This value isn't used in the effect body but is necessary so that
@@ -236,39 +250,33 @@ local function StorybookTreeView(props: Props)
 	useEffect(
 		function()
 			if selectedNode ~= prevSelectedNode then
-				if props.onStoryChanged then
-					if selectedNode then
-						local icon = selectedNode.getIcon()
-						local instance = selectedNode.getInstance()
-
-						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
-							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
-								return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
-							end)
-
-							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
-
-							props.onStoryChanged(instance, storybook)
-							setLastOpenedStory(instance)
-						end
-					else
-						props.onStoryChanged(nil, nil)
-					end
+				if selectedNode == nil then
+					flipbookStore.openStory(nil, nil)
+					return
 				end
 
-				if props.onShowErrorPage then
-					if selectedNode and selectedNode.getIcon() == TreeView.TreeNodeIcon.Alert then
-						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
-						if unavailableStorybook then
-							props.onShowErrorPage(unavailableStorybook)
-						end
+				local icon = selectedNode.getIcon()
+				local instance = selectedNode.getInstance()
+
+				if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
+					local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
+						return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
+					end)
+
+					local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
+
+					flipbookStore.openStory(instance, storybook)
+					setLastOpenedStory(instance)
+				elseif icon == TreeView.TreeNodeIcon.Alert then
+					local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
+					if unavailableStorybook then
+						flipbookStore.showUnavailableStorybook(unavailableStorybook)
 					end
 				end
 			end
 		end,
 		{
-			props.onShowErrorPage,
-			props.onStoryChanged,
+			flipbookStore,
 			selectedNode,
 			prevSelectedNode,
 			setLastOpenedStory,

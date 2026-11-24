@@ -1,6 +1,6 @@
 local sha256 = require("@pkg/sha256")
 
-local getLocalUserId = require("@root/Telemetry/getLocalUserId")
+local getLocalUserId = require("@root/Common/getLocalUserId")
 
 --[[
 	The events we send to the backend need some persistent identifier so we can

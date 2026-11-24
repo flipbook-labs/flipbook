@@ -7,7 +7,9 @@ local expect = JestGlobals.expect
 local test = JestGlobals.test
 
 local function createScreen(): LayerCollector
-	return { Enabled = false } :: any
+	local screen = Instance.new("ScreenGui")
+	screen.Enabled = false
+	return screen
 end
 
 local function createStoryAdapter(path: string, initialValue: string)
@@ -37,7 +39,9 @@ describe("app registration", function()
 				return "ReplicatedStorage/Flipbook"
 			end,
 			listStorybooks = function()
-				return { { name = "Example", path = "ReplicatedStorage/Example.storybook" } }
+				return {
+					{ name = "Example", path = "ReplicatedStorage/Example.storybook" },
+				}
 			end,
 			listStories = function(storybookPath)
 				if storybookPath == nil then
@@ -48,10 +52,20 @@ describe("app registration", function()
 						},
 					}
 				end
-				return { { name = "Button", path = `${storybookPath}/Button.story`, storybook = storybookPath } }
+				return {
+					{
+						name = "Button",
+						path = `${storybookPath}/Button.story`,
+						storybook = storybookPath,
+					},
+				}
 			end,
 			openStory = function(storyPath, storybookPath)
-				return { name = "Button", path = storyPath, storybook = storybookPath }
+				return {
+					name = "Button",
+					path = storyPath,
+					storybook = storybookPath,
+				}
 			end,
 			getCurrentStory = function()
 				return nil
@@ -87,10 +101,16 @@ describe("story registration", function()
 				return {}
 			end,
 			openStory = function()
-				return { name = "Button", path = "ReplicatedStorage/Button.story" }
+				return {
+					name = "Button",
+					path = "ReplicatedStorage/Button.story",
+				}
 			end,
 			getCurrentStory = function()
-				return { name = "Button", path = currentStoryPath }
+				return {
+					name = "Button",
+					path = currentStoryPath,
+				}
 			end,
 		})
 
@@ -135,10 +155,16 @@ describe("story registration", function()
 				return {}
 			end,
 			openStory = function()
-				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+				return {
+					name = "Second",
+					path = "ReplicatedStorage/Second.story",
+				}
 			end,
 			getCurrentStory = function()
-				return { name = "Second", path = "ReplicatedStorage/Second.story" }
+				return {
+					name = "Second",
+					path = "ReplicatedStorage/Second.story",
+				}
 			end,
 		})
 		local cleanupFirst = controller.registerStory(createStoryAdapter("ReplicatedStorage/First.story", "First"))

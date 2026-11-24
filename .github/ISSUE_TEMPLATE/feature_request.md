@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Is there something you'd love to see in Flipbook? Submit a feature request!
-title: ''
+title: ""
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 <!-- Describe the feature you'd like to see -->
