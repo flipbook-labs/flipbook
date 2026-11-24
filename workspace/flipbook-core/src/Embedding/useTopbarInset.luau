@@ -2,6 +2,21 @@ local GuiService = game:GetService("GuiService")
 
 local React = require("@pkg/React")
 
+local function watchAbsolutePosition(container: GuiObject?, onChange: (position: Vector2) -> ()): (() -> ())?
+	if not container then
+		return nil
+	end
+
+	onChange(container.AbsolutePosition)
+	local connection = container:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+		onChange(container.AbsolutePosition)
+	end)
+
+	return function()
+		connection:Disconnect()
+	end
+end
+
 --[[
 	Returns the unoccupied area of the Roblox topbar, relative to the top-left
 	corner of `containerRef`.
@@ -25,21 +40,7 @@ local function useTopbarInset(containerRef: { current: GuiObject? }): Rect
 	end, {})
 
 	React.useEffect(function()
-		local container = containerRef.current
-		if not container then
-			return
-		end
-
-		local function updateContainerPosition()
-			setContainerPosition(container.AbsolutePosition)
-		end
-
-		updateContainerPosition()
-		local connection = container:GetPropertyChangedSignal("AbsolutePosition"):Connect(updateContainerPosition)
-
-		return function()
-			connection:Disconnect()
-		end
+		return watchAbsolutePosition(containerRef.current, setContainerPosition)
 	end, { containerRef })
 
 	local offset = containerPosition + GuiService:GetGuiInset()

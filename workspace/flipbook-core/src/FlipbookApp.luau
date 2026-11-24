@@ -46,7 +46,7 @@ local function FlipbookApp(props: Props)
 		React.useState<<UnavailableStorybook?>>(nil)
 	local navigation = NavigationContext.use()
 
-	local appRef = React.useRef(nil :: GuiObject?)
+	local appRef = React.useRef<<GuiObject?>>(nil)
 	local topbarInset = useTopbarInset(appRef)
 
 	-- The embedded app extends into the Roblox topbar, so it lays out around
