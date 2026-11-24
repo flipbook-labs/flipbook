@@ -6,8 +6,7 @@ local types = require("@root/Embedding/types")
 type LaunchData = types.LaunchData
 
 local function createEmbeddedFlipbookApp(screenGui: ScreenGui, launchData: LaunchData?)
-	local gatewayParent = screenGui.Parent
-	assert(gatewayParent ~= nil, "embedded ScreenGui must be parented")
+	assert(screenGui.Parent ~= nil, "embedded ScreenGui must be parented")
 
 	local agentController = FlipbookAgents.createAgentController(screenGui)
 	local app = createFlipbookApp(screenGui, {
@@ -18,7 +17,7 @@ local function createEmbeddedFlipbookApp(screenGui: ScreenGui, launchData: Launc
 	})
 
 	app.mount()
-	local cleanupAgentGateway = FlipbookAgents.createEmbeddedAgentGateway(agentController, gatewayParent)
+	local cleanupAgentGateway = FlipbookAgents.createEmbeddedAgentGateway(agentController, screenGui.Parent :: Instance)
 
 	local function destroy()
 		cleanupAgentGateway()
