@@ -31,12 +31,14 @@ export type StoryControlsProps = {
 	controlsSchema: Storyteller.StoryControlsSchema,
 } & Foundation.CommonProps
 
--- NOTE(Paul): In the future, we'll want to store more than just
--- controls here, we'll also want to have tabs for stuff like
--- accessibility as well. I was planning to use the <Foundation.Tabs />
--- component to show-off the Accessibility tab for future purposes,
--- but turns out it doesn't work when in a `col` with a `shrink size-full`
--- as it's sibling.
+--[[
+	NOTE(Paul): In the future, we'll want to store more than just
+	controls here, we'll also want to have tabs for stuff like
+	accessibility as well. I was planning to use the <Foundation.Tabs />
+	component to show-off the Accessibility tab for future purposes,
+	but turns out it doesn't work when in a `col` with a `shrink size-full`
+	as it's sibling.
+]]
 local function StoryControls(props: StoryControlsProps)
 	local sortedControls = useSortedControls(props.controlsSchema)
 	local controlElements: { [string]: React.ReactNode } = {}
@@ -83,11 +85,13 @@ local function StoryControls(props: StoryControlsProps)
 	return e(View, {
 		tag = "bg-surface-100 col size-full",
 	}, {
-		-- `Foundation.Tabs` doesn't look to have a way to apply spacing around
-		-- tab items when using FillBehavior.Fit. We'd use Fill but that looks
-		-- quite bad with our single button. This wrapper adds some needed
-		-- spacing, but ideally Foundation can handle this for us. When it can:
-		-- remove this wrapper.
+		--[[
+			`Foundation.Tabs` doesn't look to have a way to apply spacing around
+			tab items when using FillBehavior.Fit. We'd use Fill but that looks
+			quite bad with our single button. This wrapper adds some needed
+			spacing, but ideally Foundation can handle this for us. When it can:
+			remove this wrapper.
+		]]
 		TabsWrapper = e(Foundation.View, {
 			tag = "size-full-0 auto-y padding-x-medium gap-y-small",
 		}, {

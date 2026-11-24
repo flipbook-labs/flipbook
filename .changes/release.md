@@ -1,0 +1,1 @@
+Flipbook now runs inside Roblox experiences as well as the Studio plugin, and a shared preview link opens straight to the stories it names. Story controls gain color, date, multi-select, slider, and Object inputs, and changing one no longer rerenders the whole panel.

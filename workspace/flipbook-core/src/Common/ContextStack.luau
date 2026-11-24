@@ -1,7 +1,7 @@
 local React = require("@pkg/React")
 
 export type Props = {
-	providers: { React.ReactElement<any, any> },
+	providers: { React.ReactElement },
 	children: React.ReactNode,
 }
 

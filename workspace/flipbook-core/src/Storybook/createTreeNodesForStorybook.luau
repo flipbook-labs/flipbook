@@ -6,7 +6,7 @@ local getAncestors = require("@root/Common/getAncestors")
 
 type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
-type LoadedStory<any> = Storyteller.LoadedStory<any>
+type LoadedStory<any> = Storyteller.LoadedStory<unknown>
 
 local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNodeStore
 	local root = TreeView.createTreeNodeStore()

@@ -2,8 +2,8 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 
 local DiscardChangesDialog = require("@root/Feedback/DiscardChangesDialog")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local SuccessDialog = require("@root/Feedback/SuccessDialog")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local postFeedbackAsync = require("@root/Feedback/postFeedbackAsync")
 
@@ -13,21 +13,28 @@ local useState = React.useState
 
 export type Props = {
 	onClose: () -> (),
+	-- Sends the feedback and returns whether it was accepted. By default this is
+	-- the Feedback module's `postFeedbackAsync`, which posts to the backend.
+	-- Stories pass a fake one to show either outcome without filing a real issue.
+	postFeedbackAsync: ((title: string, body: string) -> boolean)?,
 	LayoutOrder: number?,
 }
 
 type IssueType = "bug" | "feature" | "feedback" | "other"
 
 local function FeedbackDialog(props: Props)
-	local title, setTitle = useState("" :: string?)
+	local flipbookStore = FlipbookStoreContext.use()
+	local title, setTitle = useState("")
 	local wasTitleChanged, setWasTitleChanged = useState(false)
-	local body, setBody = useState("" :: string?)
+	local body, setBody = useState("")
 	local wasBodyChanged, setWasBodyChanged = useState(false)
 	local isAcknowledgedByUser, setIsAcknowledgedByUser = useState(false)
 	local isDiscardChangesDialogOpen, setIsDiscardChangesDialogOpen = useState(false)
 	local isSuccessDialogOpen, setIsSuccessDialogOpen = useState(false)
 	local isSendingFeedback, setIsSendingFeedback = useState(false)
-	local err: string?, setErr = useState(nil :: string?)
+	local err: string?, setErr = useState<<string?>>(nil)
+
+	local sendFeedbackAsync = props.postFeedbackAsync or postFeedbackAsync
 
 	local wasChanged = wasTitleChanged or wasBodyChanged or isAcknowledgedByUser ~= false
 
@@ -42,42 +49,50 @@ local function FeedbackDialog(props: Props)
 	local onDiscard = useCallback(function()
 		props.onClose()
 
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "FeedbackDiscarded",
-			})
-		end)
-	end, {})
+		flipbookStore.telemetry.capture({
+			eventName = "FeedbackDiscarded",
+		})
+	end, { flipbookStore.telemetry, props.onClose } :: { unknown })
 
 	local onKeepEditing = useCallback(function()
 		setIsDiscardChangesDialogOpen(false)
 	end, {})
 
-	local onSubmit = useCallback(function()
-		if isSendingFeedback then
-			return
-		end
+	local onSubmit = useCallback(
+		function()
+			if isSendingFeedback then
+				return
+			end
 
-		if title ~= "" and body ~= "" and isAcknowledgedByUser then
-			setErr(nil)
-			setIsSendingFeedback(true)
+			if title ~= "" and body ~= "" and isAcknowledgedByUser then
+				setErr(nil)
+				setIsSendingFeedback(true)
 
-			task.spawn(function()
-				local res = postFeedbackAsync(title, body)
+				task.spawn(function()
+					local succeeded = sendFeedbackAsync(title, body)
 
-				setIsSendingFeedback(false)
+					setIsSendingFeedback(false)
 
-				if res.Success then
-					setIsSuccessDialogOpen(true)
-					fireEventAsync({
-						eventName = "FeedbackSubmitted",
-					})
-				else
-					setErr("Failed to submit feedback. Please try again later")
-				end
-			end)
-		end
-	end, { title, body, isAcknowledgedByUser, isSendingFeedback } :: { unknown })
+					if succeeded then
+						setIsSuccessDialogOpen(true)
+						flipbookStore.telemetry.capture({
+							eventName = "FeedbackSubmitted",
+						})
+					else
+						setErr("Failed to submit feedback. Please try again later")
+					end
+				end)
+			end
+		end,
+		{
+			title,
+			body,
+			isAcknowledgedByUser,
+			isSendingFeedback,
+			sendFeedbackAsync,
+			flipbookStore.telemetry,
+		} :: { unknown }
+	)
 
 	local onTitleChanged = useCallback(function(text)
 		if text ~= title then
@@ -96,12 +111,10 @@ local function FeedbackDialog(props: Props)
 	end, { body })
 
 	useEffect(function()
-		task.spawn(function()
-			fireEventAsync({
-				eventName = "FeedbackDialogOpened",
-			})
-		end)
-	end, {})
+		flipbookStore.telemetry.capture({
+			eventName = "FeedbackDialogOpened",
+		})
+	end, { flipbookStore.telemetry })
 
 	return React.createElement(React.Fragment, nil, {
 		FeedbackDialog = if not (isDiscardChangesDialogOpen or isSuccessDialogOpen)

@@ -1,0 +1,245 @@
+--[[
+	Reports release pipeline events to PostHog so release health can be charted
+	next to product telemetry.
+
+	Usage: lute run posthog <check | pending-changes | beta-published | prod-released> [--dry-run]
+	       lute run posthog rolled-back --channel <prod | beta> [--tag <tag>] [--dry-run]
+
+	Capturing reads POSTHOG_PROJECT_TOKEN, and the prod release and rollback
+	annotations also read POSTHOG_PERSONAL_API_KEY and POSTHOG_PROJECT_ID.
+	--dry-run prints each request instead of sending it and needs none of these.
+]]
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
+local fs = require("@std/fs")
+local json = require("@std/json")
+local path = require("@std/path")
+local process = require("@std/process")
+
+local annotateAsync = require("@scripts/lib/posthog/annotateAsync")
+local captureAsync = require("@scripts/lib/posthog/captureAsync")
+local checkPersonalApiKeyAsync = require("@scripts/lib/posthog/checkPersonalApiKeyAsync")
+local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
+local types = require("@scripts/lib/posthog/types")
+
+local run = FlipbookBatteries.run
+
+local CHANGES_DIR = ".changes"
+
+local dryRun = false
+local commandArgs: cli.Parser? = nil
+
+local function readSecret(name: string): string
+	if dryRun then
+		return `<{name}>`
+	end
+	local value = process.env[name]
+	assert(value ~= nil and value ~= "", `{name} is not set`)
+	return value
+end
+
+-- Changewrite's gate reports the version its configured source currently holds.
+local function readVersion(): string
+	local gate = json.asObject(json.deserialize(assert(run("changewrite", { "gate" }, { captureOutput = true }))))
+	local version = if gate then gate.version else nil
+	return assert(if typeof(version) == "string" then version else nil, "changewrite gate reported no version")
+end
+
+local function readLockedVersion(packageName: string): string
+	local pattern = `name = "{packageName:gsub("%-", "%%-")}"%s*\nversion = "([^"]+)"`
+	local version = fs.readFileToString("wally.lock"):match(pattern)
+	return assert(version, `Could not find {packageName} in wally.lock`)
+end
+
+local function readRunUrl(): string?
+	local server = process.env.GITHUB_SERVER_URL
+	local repository = process.env.GITHUB_REPOSITORY
+	local runId = process.env.GITHUB_RUN_ID
+	if server and repository and runId then
+		return `{server}/{repository}/actions/runs/{runId}`
+	end
+	return nil
+end
+
+-- `build_hash` matches the BUILD_HASH that `lute run build` bakes into the
+-- plugin, so CI events join product events.
+local function buildEvent(name: string): types.Event
+	local commit = assert(run("git", { "rev-parse", "HEAD" }, { captureOutput = true }))
+	local buildHash = assert(run("git", { "rev-parse", "--short", "HEAD" }, { captureOutput = true }))
+	local version = readVersion()
+
+	local properties: { [string]: json.Value } = {
+		version = version,
+		build_hash = buildHash,
+		commit = commit,
+	}
+
+	properties.run_url = readRunUrl()
+
+	return {
+		name = name,
+		properties = properties,
+	}
+end
+
+local function check()
+	checkProjectTokenAsync(readSecret("POSTHOG_PROJECT_TOKEN"), dryRun)
+	print("PostHog accepted the project token")
+
+	if dryRun or process.env.POSTHOG_PERSONAL_API_KEY then
+		checkPersonalApiKeyAsync(readSecret("POSTHOG_PERSONAL_API_KEY"), readSecret("POSTHOG_PROJECT_ID"), dryRun)
+		print("PostHog accepted the personal API key and project ID")
+	end
+end
+
+local function reportPendingChanges()
+	local total = 0
+	for _, entry in fs.listDirectory(CHANGES_DIR) do
+		local name = entry.name:lower()
+		if entry.type == "file" and path.extname(name) == ".luau" then
+			total += 1
+		end
+	end
+
+	local event = buildEvent("ci_pending_changes")
+	event.properties.total = total
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), event, dryRun)
+	print(`Reported {total} pending changes`)
+end
+
+local function reportBetaPublished()
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), buildEvent("ci_beta_published"), dryRun)
+	print("Reported the beta publish")
+end
+
+local function reportProdReleased()
+	local event = buildEvent("ci_prod_released")
+	local storyteller = readLockedVersion("flipbook-labs/storyteller")
+	local moduleLoader = readLockedVersion("flipbook-labs/module-loader")
+	event.properties.storyteller_version = storyteller
+	event.properties.module_loader_version = moduleLoader
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), event, dryRun)
+
+	local version = event.properties.version
+	annotateAsync(
+		readSecret("POSTHOG_PERSONAL_API_KEY"),
+		readSecret("POSTHOG_PROJECT_ID"),
+		`Flipbook v{version} released (Storyteller {storyteller}, ModuleLoader {moduleLoader})`,
+		dryRun
+	)
+	print(`Reported the v{version} release`)
+end
+
+--[[
+	A rollback publishes an earlier build again, so the checked-out commit says
+	nothing about what's live. A prod rollback restores a release, and the
+	Rollback workflow passes its tag along, so the event and annotation name the
+	release that run restored. Beta builds have no releases, so a beta event
+	records only the channel and the run.
+]]
+local function reportRolledBack()
+	local parsed = assert(commandArgs, "rolled-back ran before its arguments were parsed")
+	local channel = assert(parsed:get("channel"))
+	local tag = parsed:get("tag")
+
+	local version: string? = nil
+	if channel == "prod" then
+		assert(tag and tag ~= "", "--tag must name the restored release to report a prod rollback")
+		version = tag:gsub("^v", "")
+	else
+		assert(channel == "beta", `bad value for channel (must be "prod" or "beta", got "{channel}")`)
+	end
+
+	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), {
+		name = "ci_rolled_back",
+		properties = {
+			channel = channel,
+			version = version,
+			run_url = readRunUrl(),
+		},
+	}, dryRun)
+
+	if version then
+		annotateAsync(
+			readSecret("POSTHOG_PERSONAL_API_KEY"),
+			readSecret("POSTHOG_PROJECT_ID"),
+			`Flipbook rolled back to v{version}`,
+			dryRun
+		)
+	end
+
+	local note = if version then ` to v{version}` else ""
+	print(`Reported the {channel} rollback{note}`)
+end
+
+type CommandOption = {
+	name: string,
+	help: string,
+	optional: boolean?,
+}
+
+type Command = {
+	name: string,
+	help: string,
+	run: () -> (),
+	options: { CommandOption }?,
+}
+
+-- The battery's subcommands only parse arguments, so each one's handler sits
+-- beside it here and runs once parsing picks it.
+local COMMANDS: { Command } = {
+	{
+		name = "check",
+		help = "Confirm PostHog accepts the credentials without sending any data",
+		run = check,
+	},
+	{
+		name = "pending-changes",
+		help = "Report how many change entries are waiting on a release",
+		run = reportPendingChanges,
+	},
+	{
+		name = "beta-published",
+		help = "Report a beta build publishing to the Creator Store",
+		run = reportBetaPublished,
+	},
+	{
+		name = "prod-released",
+		help = "Report a release and annotate it",
+		run = reportProdReleased,
+	},
+	{
+		name = "rolled-back",
+		help = "Report a plugin rollback, annotating it for prod",
+		run = reportRolledBack,
+		options = {
+			{ name = "channel", help = `The channel rolled back: "prod" or "beta"` },
+			{ name = "tag", help = "The release a prod rollback restored", optional = true },
+		},
+	},
+}
+
+local args = cli.parser()
+args:add("script", "positional", {
+	help = "Path to the script being run. Provided automatically by Lute",
+})
+for _, command in COMMANDS do
+	local parser = args:subcommand(command.name, { help = command.help })
+	parser:add("dry-run", "flag", { help = "Print each request instead of sending it" })
+	local options: { CommandOption } = command.options or {}
+	for _, option in options do
+		parser:add(option.name, "option", { help = option.help, required = option.optional ~= true })
+	end
+end
+args:parse({ ... })
+
+local selected, selectedArgs = args:selected()
+assert(selected and selectedArgs, `Expected a command:\n{args:help()}`)
+dryRun = selectedArgs:has("dry-run")
+commandArgs = selectedArgs
+
+for _, command in COMMANDS do
+	if command.name == selected then
+		command.run()
+	end
+end

@@ -9,6 +9,15 @@ local useEffect = React.useEffect
 local useState = React.useState
 local useRef = React.useRef
 
+-- ColorPicker's availableModes takes an array of mode names, but Foundation
+-- doesn't export that type. Without it, Luau infers this table as a string
+-- array, which doesn't match, so the constant is typed `{ any }` instead.
+-- lute-lint-ignore(no_any)
+local COLOR_PICKER_MODES: { any } = {
+	"Hex",
+	"RGB",
+}
+
 export type Props = {
 	controlSchema: Storyteller.ColorControl,
 	controlValue: Color3?,
@@ -22,7 +31,7 @@ local function ColorControl(props: Props)
 
 	local isColorPickerOpen, setIsColorPickerOpen = useState(false)
 
-	local anchorRef = useRef(nil :: GuiObject?)
+	local anchorRef = useRef<<GuiObject?>>(nil)
 
 	local onColorPreviewActivated = useCallback(function()
 		setIsColorPickerOpen(function(prev)
@@ -92,10 +101,7 @@ local function ColorControl(props: Props)
 				}, {
 					ColorPicker = e(Foundation.ColorPicker, {
 						initialColor = color,
-						availableModes = {
-							"Hex",
-							"RGB",
-						} :: { any },
+						availableModes = COLOR_PICKER_MODES,
 						onColorChanged = onColorChanged,
 					}),
 				}),
