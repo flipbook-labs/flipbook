@@ -6,7 +6,7 @@ local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
 local FlipbookApp = require("@root/FlipbookApp")
-local fireEventAsync = require("@root/Telemetry/fireEventAsync")
+local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
 local logger = require("@root/logger")
 
 type AppMode = AppMode.AppMode
@@ -45,18 +45,36 @@ end
 local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	local root = ReactRoblox.createRoot(container)
 	local appOptions: Options = options or {}
+	local appPlugin = appOptions.plugin or defaultPlugin
+	local appMode: AppMode = appOptions.mode or AppMode.PluginWidget
 
-	-- FIXME: ContextProviders having an error won't fail tests. We really need
-	-- a smoketest for this file
-	local app = React.createElement(ContextProviders, {
-		plugin = appOptions.plugin or defaultPlugin,
-		overlayGui = appOptions.overlayGui or container,
-	}, {
-		FlipbookApp = React.createElement(FlipbookApp, {
+	--[[
+		The plugin unmounts the app when its widget closes and mounts it again
+		when the widget opens. Each mount builds a new store, so a reopened
+		widget starts on Home with no story selected. A story comes back only
+		when rememberLastOpenedStory is on and restores the last one opened.
+	]]
+	local store: createFlipbookStore.FlipbookStore? = nil
+
+	local function createApp(): React.Node
+		local newStore = createFlipbookStore({
+			mode = appMode,
+			plugin = appPlugin,
 			launchData = appOptions.launchData,
-			mode = appOptions.mode,
-		}),
-	})
+		})
+		store = newStore
+
+		-- FIXME: ContextProviders having an error won't fail tests. We really need
+		-- a smoketest for this file
+		return React.createElement(ContextProviders, {
+			plugin = appPlugin,
+			overlayGui = appOptions.overlayGui or container,
+			mode = appMode,
+			store = newStore,
+		}, {
+			FlipbookApp = React.createElement(FlipbookApp),
+		})
+	end
 
 	local function unmount()
 		logger:Info("unmounting app...")
@@ -65,25 +83,25 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 		end)
 		logger:Info(`unmounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
+		if store then
+			store.telemetry.capture({
 				eventName = "AppClosed",
 			})
-		end)
+		end
 	end
 
 	local function mount()
 		logger:Info("mounting app...")
 		local elapsedMs = stopwatch(function()
-			root:render(app)
+			root:render(createApp())
 		end)
 		logger:Info(`mounted app in {elapsedMs}`)
 
-		task.spawn(function()
-			fireEventAsync({
+		if store then
+			store.telemetry.capture({
 				eventName = "AppOpened",
 			})
-		end)
+		end
 	end
 
 	local function destroy()
