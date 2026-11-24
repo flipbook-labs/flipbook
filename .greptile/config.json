@@ -17,7 +17,7 @@
     },
     {
       "id": "skill-drift",
-      "rule": "When a change renames a symbol, changes a value, or fixes a bug that a skill in flipbook-labs/agent-skills describes, name the skill that now needs updating. That fix lands in agent-skills, so this is a follow-up note for the author.",
+      "rule": "When a change renames a symbol, changes a value, or fixes a bug that a skill under .claude/skills/ describes, the same PR updates that skill. Name the skill and the stale claim when it does not.",
       "severity": "low"
     },
     {
