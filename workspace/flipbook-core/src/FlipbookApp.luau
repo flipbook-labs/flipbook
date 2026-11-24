@@ -3,6 +3,7 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
 local BuildTarget = require("@root/Enums/BuildTarget")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
@@ -16,6 +17,7 @@ local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 local useAgentRegistration = require("@root/Agent/useAgentRegistration")
+local useTopbarInset = require("@root/Embedding/useTopbarInset")
 
 local useEffect = React.useEffect
 local useSignalState = ReactCharm.useSignalState
@@ -25,6 +27,13 @@ local function FlipbookApp()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 	local storybooks = Storyteller.useStorybooks()
+
+	local appRef = React.useRef<<GuiObject?>>(nil)
+	local topbarInset = useTopbarInset(appRef)
+
+	-- The embedded app extends into the Roblox topbar, so it lays out around
+	-- the core buttons drawn on top of it.
+	local occludingTopbarInset = if flipbookStore.story.getMode() == AppMode.EmbeddedClient then topbarInset else nil
 
 	--[[
 		The navigation store sends a PageChanged event when navigateTo or goBack
@@ -50,6 +59,7 @@ local function FlipbookApp()
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
+		ref = appRef,
 	}, {
 		SidebarWrapper = React.createElement(ResizablePanel, {
 			LayoutOrder = nextLayoutOrder(),
@@ -58,7 +68,9 @@ local function FlipbookApp()
 			minSize = Vector2.new(constants.SIDEBAR_MIN_WIDTH, 0),
 			maxSize = Vector2.new(constants.SIDEBAR_MAX_WIDTH, math.huge),
 		}, {
-			Sidebar = React.createElement(Sidebar),
+			Sidebar = React.createElement(Sidebar, {
+				topbarInset = occludingTopbarInset,
+			}),
 		}),
 
 		MainWrapper = React.createElement(Foundation.View, {
@@ -69,6 +81,7 @@ local function FlipbookApp()
 				showDevBadge = _G.BUILD_CHANNEL == BuildChannel.Development,
 				showBetaBadge = _G.BUILD_CHANNEL == BuildChannel.Beta,
 				showInternalBadge = _G.BUILD_TARGET == BuildTarget.Rotriever,
+				topbarInset = occludingTopbarInset,
 				LayoutOrder = nextLayoutOrder(),
 			}),
 
