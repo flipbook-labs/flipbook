@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: flipbook-labs/changewrite@v0.15.0
+      - uses: flipbook-labs/changewrite@v0.15.1
         with:
           require-entry: "true"
 
