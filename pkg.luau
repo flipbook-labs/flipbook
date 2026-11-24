@@ -1,7 +1,7 @@
 return {
 	package = {
 		name = "Flipbook",
-		version = "2.5.0",
+		version = "2.6.0",
 		dependencies = {
 			batteries = {
 				rev = "v1.0.1-nightly.20261115",
