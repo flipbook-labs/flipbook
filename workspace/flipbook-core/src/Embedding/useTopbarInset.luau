@@ -2,6 +2,8 @@ local GuiService = game:GetService("GuiService")
 
 local React = require("@pkg/React")
 
+local getContainerTopbarInset = require("@root/Embedding/getContainerTopbarInset")
+
 local function watchAbsolutePosition(container: GuiObject?, onChange: (position: Vector2) -> ()): (() -> ())?
 	if not container then
 		return nil
@@ -19,11 +21,7 @@ end
 
 --[[
 	Returns the unoccupied area of the Roblox topbar, relative to the top-left
-	corner of `containerRef`.
-
-	TopbarInset is measured from the top of the screen while AbsolutePosition
-	starts below the GUI inset, so the GUI inset is added back before
-	converting.
+	corner of `containerRef`. It updates when the topbar or the container moves.
 ]]
 local function useTopbarInset(containerRef: { current: GuiObject? }): Rect
 	local topbarInset, setTopbarInset = React.useState(GuiService.TopbarInset)
@@ -43,9 +41,7 @@ local function useTopbarInset(containerRef: { current: GuiObject? }): Rect
 		return watchAbsolutePosition(containerRef.current, setContainerPosition)
 	end, { containerRef })
 
-	local offset = containerPosition + GuiService:GetGuiInset()
-
-	return Rect.new(topbarInset.Min - offset, topbarInset.Max - offset)
+	return getContainerTopbarInset(topbarInset, containerPosition, GuiService:GetGuiInset())
 end
 
 return useTopbarInset
