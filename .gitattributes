@@ -1,2 +1,8 @@
 **/*.lock linguist-generated=true
 **/*.lock.luau linguist-generated=true
+docs/obsidian-vault/drafts/** linguist-generated=true
+
+# `lute pkg install` writes the lockfile, so GitHub collapses its diff in pull
+# requests and leaves it out of language stats. It's named on its own because
+# GitHub didn't collapse it through the `**/` pattern above.
+pkg.lock.luau linguist-generated=true

@@ -15,6 +15,9 @@ function MockPlugin.new(): Pluginlike
 		_settings = {},
 	}
 
+	-- MockPlugin gets its methods through a metatable, which Luau can't check
+	-- against the Pluginlike type that MockPlugin.new returns.
+	-- lute-lint-ignore(no_any)
 	return setmetatable(self, MockPlugin) :: any
 end
 
@@ -23,7 +26,7 @@ function MockPlugin:GetSetting(settingName: string)
 	return self._settings[settingName]
 end
 
-function MockPlugin:SetSetting(settingName: string, newValue: any)
+function MockPlugin:SetSetting(settingName: string, newValue: unknown)
 	simulateDiskAccess()
 	self._settings[settingName] = newValue
 end

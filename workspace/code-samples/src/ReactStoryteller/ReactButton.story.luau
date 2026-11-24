@@ -3,7 +3,7 @@ local Storyteller = require("@pkg/Storyteller")
 
 local ReactButton = require("./ReactButton")
 
-local story: Storyteller.Story<any> = {
+local story: Storyteller.Story<unknown> = {
 	story = function()
 		return React.createElement(ReactButton, {
 			text = "Click Me",

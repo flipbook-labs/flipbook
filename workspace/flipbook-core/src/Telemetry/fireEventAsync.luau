@@ -14,9 +14,14 @@ local function fireEventAsync(event: TelemetryEvent)
 		return
 	end
 
+	-- Only some telemetry events have properties, and Luau can't read a field
+	-- that only some members of the event union have.
+	-- lute-lint-ignore(no_any)
+	local properties = (event :: any).properties
+
 	local body = {
 		eventName = event.eventName,
-		properties = (event :: any).properties,
+		properties = properties,
 		anonymizedUserId = getAnonymizedUserId(),
 		buildVersion = _G.BUILD_VERSION,
 		buildChannel = _G.BUILD_CHANNEL,
