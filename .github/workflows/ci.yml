@@ -28,7 +28,7 @@ jobs:
 
       - uses: flipbook-labs/changewrite@v0.15.0
         with:
-          require-entry: 'true'
+          require-entry: "true"
 
   build-plugin:
     runs-on: ubuntu-latest
