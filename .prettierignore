@@ -1,0 +1,11 @@
+# Prettier also reads .gitignore, so ignored output and vendored packages are
+# skipped already. These are tracked files it should leave alone.
+
+# npm writes this lockfile.
+package-lock.json
+
+# Obsidian rewrites its own settings files in its own style.
+docs/obsidian-vault/.obsidian/
+
+# Docusaurus build caches.
+.docusaurus/
