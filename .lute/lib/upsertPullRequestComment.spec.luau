@@ -15,13 +15,11 @@ test.case("updates the marked comment across paginated results", function(assert
 	local requests: { CapturedRequest } = {}
 	local firstPage: json.Array = {}
 	for index = 1, 100 do
-		table.insert(
-			firstPage,
-			{
-				body = `Unrelated comment {index}`,
-				id = index,
-			} :: json.Object
-		)
+		local comment: json.Object = {
+			body = `Unrelated comment {index}`,
+			id = index,
+		}
+		table.insert(firstPage, comment)
 	end
 	local secondPage: json.Array = {
 		{

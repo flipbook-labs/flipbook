@@ -11,7 +11,7 @@ local function resolvePlaceId(universeId: number, placeName: string, apiKey: str
 		local url = `https://develop.roblox.com/v1/universes/{universeId}/places?limit=100&isUniverseCreation=true`
 		if cursor then
 			local encodedCursor = cursor:gsub("[^%w%-%._~]", function(character)
-				return string.format("%%%02X", string.byte(character))
+				return string.format("%%%02X", character:byte())
 			end)
 			url ..= `&cursor={encodedCursor}`
 		end
