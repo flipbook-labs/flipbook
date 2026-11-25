@@ -29,6 +29,16 @@ local function createStoryAdapter(path: string, initialValue: string)
 end
 
 describe("app registration", function()
+	test("opens an embedded screen surface", function()
+		local screenGui = createScreen()
+		screenGui.Enabled = false
+		local controller = createAgentController(screenGui)
+
+		controller.openWidget()
+
+		expect(screenGui.Enabled).toBe(true)
+	end)
+
 	test("routes app actions through the current adapter", function()
 		local screen = createScreen()
 		local controller = createAgentController(screen)
