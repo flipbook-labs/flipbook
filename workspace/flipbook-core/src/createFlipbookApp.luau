@@ -1,5 +1,6 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
+local Telemetry = require(script.Parent.Parent["flipbook-telemetry"])
 
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
@@ -14,6 +15,7 @@ type AppMode = AppMode.AppMode
 type AgentController = FlipbookAgents.AgentController
 type LaunchData = EmbeddingTypes.LaunchData
 type Pluginlike = CommonTypes.Pluginlike
+type TelemetryClient = Telemetry.TelemetryClient
 
 export type Options = {
 	launchData: LaunchData?,
@@ -21,6 +23,7 @@ export type Options = {
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
 	agentController: AgentController?,
+	telemetry: TelemetryClient?,
 	trackLifecycleTelemetry: boolean?,
 }
 
@@ -68,6 +71,7 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 			mode = appMode,
 			plugin = appPlugin,
 			launchData = appOptions.launchData,
+			telemetry = appOptions.telemetry,
 		})
 		store = newStore
 
