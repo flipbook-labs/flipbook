@@ -4,14 +4,14 @@ local types = {}
 
 export type TreeNodeIcon = "none" | "story" | "storybook" | "folder" | "alert" | "pin"
 
-types.TreeNodeIcon = {
+types.TreeNodeIcon = table.freeze({
 	None = "none" :: "none",
 	Story = "story" :: "story",
 	Storybook = "storybook" :: "storybook",
 	Folder = "folder" :: "folder",
 	Alert = "alert" :: "alert",
 	Pin = "pin" :: "pin",
-}
+})
 
 export type TreeNodeFilter = (node: TreeNodeStore) -> boolean
 
@@ -23,8 +23,6 @@ export type TreeNodeStore = {
 	-- Node properties and states
 	getName: CharmTypes.Getter<string>,
 	setName: CharmTypes.Setter<string>,
-	getOrder: CharmTypes.Getter<number?>,
-	setOrder: CharmTypes.Setter<number?>,
 	getIcon: CharmTypes.Getter<TreeNodeIcon?>,
 	setIcon: CharmTypes.Setter<TreeNodeIcon?>,
 	getIsSelected: CharmTypes.Getter<boolean>,
@@ -64,8 +62,6 @@ export type TreeNodeStore = {
 	-- DataModel
 	getInstance: CharmTypes.Getter<Instance?>,
 	setInstance: CharmTypes.Setter<Instance?>,
-	getStoryId: CharmTypes.Getter<string?>,
-	setStoryId: CharmTypes.Setter<string?>,
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,

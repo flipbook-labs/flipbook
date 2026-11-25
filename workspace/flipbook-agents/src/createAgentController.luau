@@ -1,115 +1,121 @@
 local types = require("@root/types")
 
 type AgentController = types.AgentController
-type AppImplementation = types.AppImplementation
+type AppAdapter = types.AppAdapter
 type Controls = types.Controls
-type StoryInfo = types.StoryInfo
-type StoryImplementation = types.StoryImplementation
+type MovableSurface = types.MovableSurface
+type StoryAdapter = types.StoryAdapter
 
-local function createAgentController(
-	openWidget: () -> (),
-	openViewport: (() -> ())?,
-	openCurrentSurface: (() -> ())?
-): AgentController
-	local appImplementation: AppImplementation? = nil
-	local storyImplementation: StoryImplementation? = nil
-	local showSurface = openCurrentSurface or openWidget
+local function createAgentController(surface: LayerCollector, movableSurface: MovableSurface?): AgentController
+	local appAdapter: AppAdapter? = nil
+	local storyAdapter: StoryAdapter? = nil
 
-	local function getAppImplementation(): AppImplementation
-		if appImplementation == nil then
-			error("Flipbook app is not mounted")
+	local function openWidget()
+		if movableSurface then
+			movableSurface.openWidget()
+		else
+			surface.Enabled = true
 		end
-		return appImplementation
 	end
 
-	local function getMountedStoryImplementation(story: StoryInfo?): StoryImplementation?
-		if story == nil or storyImplementation == nil then
+	local function openViewport()
+		if movableSurface == nil then
+			error("openViewport is only available in the Flipbook plugin")
+		end
+		movableSurface.openViewport()
+	end
+
+	-- Opening a story leaves the app in the viewport if it's already there.
+	local function ensureVisible()
+		if movableSurface == nil or not movableSurface.isVisible() then
+			openWidget()
+		end
+	end
+
+	local function getAppAdapter(): AppAdapter
+		if appAdapter == nil then
+			error("Flipbook app is not mounted")
+		end
+		return appAdapter
+	end
+
+	local function getMountedStoryAdapter(): StoryAdapter?
+		local currentStory = getAppAdapter().getCurrentStory()
+		if currentStory == nil or storyAdapter == nil or storyAdapter.path ~= currentStory.path then
 			return nil
 		end
-		if storyImplementation.path ~= story.path or storyImplementation.id ~= story.id then
-			return nil
-		end
-		return storyImplementation
+
+		return storyAdapter
 	end
 
 	local function getControls(): Controls
-		if appImplementation == nil then
+		local mountedStoryAdapter = getMountedStoryAdapter()
+		if mountedStoryAdapter == nil then
 			return {}
 		end
-		local mountedStory = getMountedStoryImplementation(appImplementation.getCurrentStory())
-		return if mountedStory then mountedStory.getControls() else {}
+		return mountedStoryAdapter.getControls()
 	end
 
 	return {
 		openWidget = openWidget,
 
-		openViewport = function()
-			if openViewport == nil then
-				error("Edit-mode viewport surface is unavailable")
-			end
-			openViewport()
-		end,
+		openViewport = openViewport,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
-			return getAppImplementation().embedFlipbook(parentPath, overwrite == true)
+			return getAppAdapter().embedFlipbook(parentPath, overwrite == true)
 		end,
 
 		listStorybooks = function()
-			return getAppImplementation().listStorybooks()
+			return getAppAdapter().listStorybooks()
 		end,
 
-		listStories = function(storybookPath: string)
-			return getAppImplementation().listStories(storybookPath)
+		listStories = function(storybookPath: string?)
+			return getAppAdapter().listStories(storybookPath)
 		end,
 
-		openStory = function(storyPath: string, storybookPath: string?, storyId: string?)
-			showSurface()
-			return getAppImplementation().openStory(storyPath, storybookPath, storyId)
+		openStory = function(storyPath: string, storybookPath: string?)
+			ensureVisible()
+			return getAppAdapter().openStory(storyPath, storybookPath)
 		end,
 
-		getCurrentStory = function()
-			local story = getAppImplementation().getCurrentStory()
+		getCurrentStory = function(): types.CurrentStory?
+			local story = getAppAdapter().getCurrentStory()
 			if story == nil then
 				return nil
 			end
 
-			local isMounted = getMountedStoryImplementation(story) ~= nil
-
 			return {
-				id = story.id,
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				controlsReady = isMounted,
-				isMounted = isMounted,
+				isMounted = storyAdapter ~= nil and storyAdapter.path == story.path,
 			}
 		end,
 
 		getControls = getControls,
 
 		setControls = function(controls: Controls)
-			local story = if appImplementation then appImplementation.getCurrentStory() else nil
-			local mountedStory = getMountedStoryImplementation(story)
-			if mountedStory == nil then
+			local mountedStoryAdapter = getMountedStoryAdapter()
+			if mountedStoryAdapter == nil then
 				error("setControls requires the story view to be mounted")
 			end
-			return mountedStory.setControls(controls)
+			return mountedStoryAdapter.setControls(controls)
 		end,
 
-		registerApp = function(implementation: AppImplementation)
-			appImplementation = implementation
+		registerApp = function(adapter: AppAdapter)
+			appAdapter = adapter
 			return function()
-				if appImplementation == implementation then
-					appImplementation = nil
+				if appAdapter == adapter then
+					appAdapter = nil
 				end
 			end
 		end,
 
-		registerStory = function(implementation: StoryImplementation)
-			storyImplementation = implementation
+		registerStory = function(adapter: StoryAdapter)
+			storyAdapter = adapter
 			return function()
-				if storyImplementation == implementation then
-					storyImplementation = nil
+				if storyAdapter == adapter then
+					storyAdapter = nil
 				end
 			end
 		end,

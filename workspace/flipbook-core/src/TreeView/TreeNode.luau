@@ -4,6 +4,7 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local Types = require("@root/TreeView/types")
 local useTreeNodeIcon = require("@root/TreeView/useTreeNodeIcon")
@@ -33,6 +34,7 @@ type TreeNodeProps = {
 } & Foundation.CommonProps
 
 local function TreeNode(props: TreeNodeProps)
+	local flipbookStore = FlipbookStoreContext.use()
 	local ancestors = useSignalState(props.node.getAncestors)
 	local icon = useSignalState(props.node.getIcon)
 	local instance = useSignalState(props.node.getInstance)
@@ -45,7 +47,7 @@ local function TreeNode(props: TreeNodeProps)
 	local iconName, iconStyle = useTreeNodeIcon(icon :: Types.TreeNodeIcon)
 
 	local isContextMenuOpen, setIsContextMenuOpen = useState(false)
-	local ref = useRef(nil :: GuiObject?)
+	local ref = useRef<<GuiObject?>>(nil)
 
 	local tokens = useTokens()
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
@@ -55,7 +57,7 @@ local function TreeNode(props: TreeNodeProps)
 		local elements: { [string]: React.ReactNode } = {}
 
 		for index, childNode in nodeChildren do
-			elements[childNode.id] = e(TreeNode, {
+			elements[childNode.getName()] = e(TreeNode, {
 				LayoutOrder = index,
 				node = childNode,
 				onActivated = props.onActivated,
@@ -82,9 +84,11 @@ local function TreeNode(props: TreeNodeProps)
 			if instance then
 				if isPinned then
 					pinnedInstanceStore.unpin(instance)
+					flipbookStore.telemetry.capture({ eventName = "NodeUnpinned" })
 					props.node.setIsPinned(false)
 				else
 					pinnedInstanceStore.pin(instance)
+					flipbookStore.telemetry.capture({ eventName = "NodePinned" })
 					props.node.setIsPinned(true)
 				end
 			end
@@ -92,58 +96,68 @@ local function TreeNode(props: TreeNodeProps)
 		{
 			instance,
 			isPinned,
+			flipbookStore.telemetry,
 			pinnedInstanceStore.pin,
 			pinnedInstanceStore.unpin,
 			props.node.setIsPinned,
 		} :: { unknown }
 	)
 
-	local contextMenuItems = useMemo(function()
-		local items: { Foundation.MenuItem } = {}
+	local contextMenuItems = useMemo(
+		function()
+			local items: { Foundation.MenuItem } = {}
 
-		if icon == Types.TreeNodeIcon.Storybook then
-			table.insert(items, {
-				id = "pin",
-				text = if isPinned then "Unpin" else "Pin",
-				onActivated = function()
-					onTogglePin()
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if icon == Types.TreeNodeIcon.Storybook then
+				table.insert(items, {
+					id = "pin",
+					text = if isPinned then "Unpin" else "Pin",
+					onActivated = function()
+						onTogglePin()
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		if instance then
-			table.insert(items, {
-				id = "select-in-explorer",
-				text = "Select in Explorer",
-				onActivated = function()
-					Selection:Set({ instance })
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if instance then
+				table.insert(items, {
+					id = "select-in-explorer",
+					text = "Select in Explorer",
+					onActivated = function()
+						Selection:Set({ instance })
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		if #nodeChildren > 0 then
-			table.insert(items, {
-				id = "expand-all",
-				text = "Expand all",
-				onActivated = function()
-					props.node.expandDown()
-					setIsContextMenuOpen(false)
-				end,
-			})
-			table.insert(items, {
-				id = "collapse-all",
-				text = "Collapse all",
-				onActivated = function()
-					props.node.collapseDown()
-					setIsContextMenuOpen(false)
-				end,
-			})
-		end
+			if #nodeChildren > 0 then
+				table.insert(items, {
+					id = "expand-all",
+					text = "Expand all",
+					onActivated = function()
+						props.node.expandDown()
+						setIsContextMenuOpen(false)
+					end,
+				})
+				table.insert(items, {
+					id = "collapse-all",
+					text = "Collapse all",
+					onActivated = function()
+						props.node.collapseDown()
+						setIsContextMenuOpen(false)
+					end,
+				})
+			end
 
-		return items
-	end, { isPinned, icon, instance, nodeChildren, props.node } :: { unknown })
+			return items
+		end,
+		{
+			isPinned,
+			icon,
+			instance,
+			nodeChildren,
+			props.node,
+		} :: { unknown }
+	)
 
 	if isVisible == false or isFiltered == true then
 		return nil

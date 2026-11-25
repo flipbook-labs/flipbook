@@ -1,16 +1,16 @@
 local AgentGateway = require("@pkg/AgentGateway")
 
-local asTable = require("@root/actions/params/asTable")
+local asDictionary = require("@root/actions/params/asDictionary")
 local getOptionalString = require("@root/actions/params/getOptionalString")
 local getRequiredString = require("@root/actions/params/getRequiredString")
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "openStory",
 	title = "Open Story",
-	description = "Open a concrete Story in Flipbook, defaulting to the module's first Story.",
+	description = "Open a Story module in Flipbook.",
 	inputSchema = {
 		type = "object",
 		properties = {
@@ -22,20 +22,12 @@ local action: Action = {
 				type = "string",
 				description = "Optional path to its .storybook ModuleScript",
 			},
-			storyId = {
-				type = "string",
-				description = "Optional concrete Story ID",
-			},
 		} :: { [string]: unknown },
 		required = { "story" },
 	},
 	run = function(controller, rawParams)
-		local fields = asTable(rawParams)
-		return controller.openStory(
-			getRequiredString(fields, "story"),
-			getOptionalString(fields, "storybook"),
-			getOptionalString(fields, "storyId")
-		)
+		local fields = asDictionary(rawParams)
+		return controller.openStory(getRequiredString(fields, "story"), getOptionalString(fields, "storybook"))
 	end,
 }
 

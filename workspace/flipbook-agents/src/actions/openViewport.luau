@@ -2,15 +2,17 @@ local AgentGateway = require("@pkg/AgentGateway")
 
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "openViewport",
 	title = "Open Viewport",
-	description = "Move Flipbook into an Edit-mode ScreenGui visible in the Studio viewport.",
+	description = "Move Flipbook from its widget into the Edit-mode viewport, where screenshots can see it. openWidget moves it back.",
 	run = function(controller)
 		controller.openViewport()
-		return { surface = "viewport" }
+		return {
+			enabled = true,
+		}
 	end,
 }
 

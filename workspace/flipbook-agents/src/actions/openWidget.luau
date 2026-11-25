@@ -2,7 +2,7 @@ local AgentGateway = require("@pkg/AgentGateway")
 
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
 local action: Action = {
 	name = "openWidget",
@@ -10,7 +10,9 @@ local action: Action = {
 	description = "Open the Flipbook plugin widget.",
 	run = function(controller)
 		controller.openWidget()
-		return { enabled = true, surface = "widget" }
+		return {
+			enabled = true,
+		}
 	end,
 }
 

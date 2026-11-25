@@ -15,8 +15,10 @@ if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
 end
 
 local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
 
 local prefix = `[{script.Name}]`
+local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
 
 local localPlayer = Players.LocalPlayer
 if localPlayer == nil then
@@ -27,16 +29,22 @@ local startClock = os.clock()
 print(`{prefix} starting...`)
 
 print(`{prefix} setting up Flipbook UI...`)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+
 local playerGui = localPlayer:WaitForChild("PlayerGui")
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Flipbook"
 screenGui.ResetOnSpawn = false
+screenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
 
-FlipbookCore.createEmbeddedFlipbookApp(screenGui)
+local getLaunchDataRemote = script.Parent:WaitForChild(GET_LAUNCH_DATA_REMOTE_NAME)
+assert(getLaunchDataRemote:IsA("RemoteFunction"), `{GET_LAUNCH_DATA_REMOTE_NAME} must be a RemoteFunction`)
+
+FlipbookCore.createEmbeddedFlipbookApp(screenGui, getLaunchDataRemote:InvokeServer())
 
 print(`{prefix} successfully initialized in {os.clock() - startClock}s`)

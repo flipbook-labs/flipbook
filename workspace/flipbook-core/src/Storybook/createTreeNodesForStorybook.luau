@@ -6,18 +6,16 @@ local getAncestors = require("@root/Common/getAncestors")
 
 type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
-type StoryModuleRecords = Storyteller.StoryModuleRecords
+type LoadedStory<any> = Storyteller.LoadedStory<unknown>
 
-local function createTreeNodesForStorybook(storybook: LoadedStorybook, records: StoryModuleRecords?): TreeNodeStore
+local function createTreeNodesForStorybook(storybook: LoadedStorybook): TreeNodeStore
 	local root = TreeView.createTreeNodeStore()
 	root.setName(if storybook.name then storybook.name else "Unnamed Storybook")
 	root.setIcon(TreeView.TreeNodeIcon.Storybook)
 	root.setInstance(storybook.source)
 
 	for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-		local recordsForModule = if records then records[storyModule] else nil
-		local record = if recordsForModule then recordsForModule[storybook.source] else nil
-		local currentNode = createTreeNodeForStoryModule(storyModule, record)
+		local currentNode = createTreeNodeForStoryModule(storyModule)
 
 		for _, ancestor in getAncestors(storyModule) do
 			-- This is probably expensive to be doing so frequently but it seems

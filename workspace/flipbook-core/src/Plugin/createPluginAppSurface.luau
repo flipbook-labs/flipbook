@@ -5,14 +5,26 @@ export type PluginAppSurface = {
 	destroy: () -> (),
 	getName: () -> SurfaceName,
 	isVisible: () -> boolean,
-	onVisibilityChanged: (callback: (boolean) -> ()) -> () -> (),
 	openViewport: () -> (),
 	openWidget: () -> (),
 }
 
-local function createPluginAppSurface(widget: DockWidgetPluginGui, screenParent: Instance): PluginAppSurface
+--[[
+	Gives the app one container that can sit in the plugin widget or in a
+	ScreenGui under `screenParent`. Reparenting the container keeps the React tree
+	mounted, so the open story and its controls survive the move.
+
+	`onVisibilityChanged` runs when the app becomes visible or hidden. Moving a
+	visible app between surfaces doesn't run it.
+]]
+local function createPluginAppSurface(
+	widget: DockWidgetPluginGui,
+	screenParent: Instance,
+	onVisibilityChanged: (isVisible: boolean) -> ()
+): PluginAppSurface
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "FlipbookViewport"
+	-- Keeps the app out of saved places and Play sessions.
 	screenGui.Archivable = false
 	screenGui.Enabled = false
 	screenGui.IgnoreGuiInset = true
@@ -27,67 +39,63 @@ local function createPluginAppSurface(widget: DockWidgetPluginGui, screenParent:
 	container.Parent = widget
 
 	local name: SurfaceName = "widget"
-	local visibilityChanged = Instance.new("BindableEvent")
-	local changingSurface = false
 
 	local function isVisible(): boolean
 		return if name == "viewport" then screenGui.Enabled else widget.Enabled
 	end
 
-	local function setSurface(nextName: SurfaceName)
-		changingSurface = true
-		name = nextName
+	local wasVisible = isVisible()
 
-		if nextName == "viewport" then
-			container.Parent = screenGui
-			screenGui.Enabled = true
-			widget.Enabled = false
-		else
-			screenGui.Enabled = false
-			container.Parent = widget
-			widget.Enabled = true
+	local function notifyIfVisibilityChanged()
+		local visible = isVisible()
+		if visible ~= wasVisible then
+			wasVisible = visible
+			onVisibilityChanged(visible)
 		end
+	end
 
-		changingSurface = false
-		visibilityChanged:Fire(isVisible())
+	local function moveToWidget()
+		name = "widget"
+		screenGui.Enabled = false
+		container.Parent = widget
+	end
+
+	local function openViewport()
+		name = "viewport"
+		container.Parent = screenGui
+		screenGui.Enabled = true
+		widget.Enabled = false
+		notifyIfVisibilityChanged()
+	end
+
+	local function openWidget()
+		moveToWidget()
+		widget.Enabled = true
+		notifyIfVisibilityChanged()
 	end
 
 	local widgetConnection = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-		if changingSurface then
-			return
-		end
-
 		if widget.Enabled and name == "viewport" then
-			name = "widget"
-			screenGui.Enabled = false
-			container.Parent = widget
+			moveToWidget()
 		end
-		visibilityChanged:Fire(isVisible())
+		notifyIfVisibilityChanged()
 	end)
+
+	local function destroy()
+		widgetConnection:Disconnect()
+		container:Destroy()
+		screenGui:Destroy()
+	end
 
 	return {
 		container = container,
-		destroy = function()
-			widgetConnection:Disconnect()
-			visibilityChanged:Destroy()
-			screenGui:Destroy()
-		end,
+		destroy = destroy,
 		getName = function()
 			return name
 		end,
 		isVisible = isVisible,
-		onVisibilityChanged = function(callback)
-			local connection = visibilityChanged.Event:Connect(callback)
-			return function()
-				connection:Disconnect()
-			end
-		end,
-		openViewport = function()
-			setSurface("viewport")
-		end,
-		openWidget = function()
-			setSurface("widget")
-		end,
+		openViewport = openViewport,
+		openWidget = openWidget,
 	}
 end
 

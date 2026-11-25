@@ -8,7 +8,7 @@ local test = JestGlobals.test
 
 test("publishes the embedded action manifest and cleans up", function()
 	local parent = Instance.new("Folder")
-	local controller = createAgentController(function() end)
+	local controller = createAgentController(Instance.new("ScreenGui"))
 	local cleanup = createEmbeddedAgentGateway(controller, parent)
 	local gateway = parent:FindFirstChild("FlipbookAgentGateway") :: BindableFunction
 

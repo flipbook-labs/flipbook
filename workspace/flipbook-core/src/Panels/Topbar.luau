@@ -7,8 +7,7 @@ local AboutView = require("@root/About/AboutView")
 local AppMode = require("@root/Enums/AppMode")
 local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDialog")
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
-local NavigationContext = require("@root/Navigation/NavigationContext")
-local StoryActionsContext = require("@root/Storybook/StoryActionsContext")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 
 local Object = LuauPolyfill.Object
@@ -46,10 +45,11 @@ type TopbarProps = {
 	showDevBadge: boolean?,
 	showBetaBadge: boolean?,
 	showInternalBadge: boolean?,
+	topbarInset: Rect?,
 } & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
-	local helpButtonRef = useRef(nil :: GuiObject?)
+	local helpButtonRef = useRef<<GuiObject?>>(nil)
 
 	local tokens = useTokens()
 
@@ -58,8 +58,10 @@ local function Topbar(props: TopbarProps)
 	local isHelpMenuOpen, setIsHelpMenuOpen = useState(false)
 	local isFeedbackDialogOpen, setIsFeedbackDialogOpen = useState(false)
 
-	local navigation = NavigationContext.use()
-	local storyActions = StoryActionsContext.useStoryActions()
+	local flipbookStore = FlipbookStoreContext.use()
+	local currentScreen = useSignalState(flipbookStore.navigation.getCurrentScreen)
+	local areStoryActionsDisabled = useSignalState(flipbookStore.story.getAreStoryActionsDisabled)
+	local storyMode = flipbookStore.story.getMode()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
 
@@ -76,7 +78,15 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large",
+			Size = UDim2.new(
+				1,
+				0,
+				0,
+				if props.topbarInset
+					then math.max(props.topbarInset.Max.Y, tokens.Size.Size_1400)
+					else tokens.Size.Size_1400
+			),
 		}),
 		{
 			Actions = e(ScrollView, {
@@ -104,8 +114,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassPlus,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.zoom.zoomIn,
+							isDisabled = areStoryActionsDisabled,
+							onActivated = flipbookStore.story.zoomIn,
 							size = InputSize.Small,
 						}),
 					}),
@@ -118,8 +128,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlassMinus,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.zoom.zoomOut,
+							isDisabled = areStoryActionsDisabled,
+							onActivated = flipbookStore.story.zoomOut,
 							size = InputSize.Small,
 						}),
 					}),
@@ -142,13 +152,13 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Code,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewCode,
+							isDisabled = areStoryActionsDisabled,
+							onActivated = flipbookStore.story.viewCode,
 							size = InputSize.Small,
 						}),
 					}),
 
-					Viewport = storyActions.mode == AppMode.PluginWidget and e(Tooltip, {
+					Viewport = storyMode == AppMode.PluginWidget and e(Tooltip, {
 						LayoutOrder = 2,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -156,8 +166,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.Eye,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewportPreview,
+							isDisabled = areStoryActionsDisabled,
+							onActivated = flipbookStore.story.viewportPreview,
 							size = InputSize.Small,
 						}),
 					}),
@@ -170,8 +180,8 @@ local function Topbar(props: TopbarProps)
 					}, {
 						Trigger = e(IconButton, {
 							icon = IconName.MagnifyingGlass,
-							isDisabled = storyActions.isDisabled,
-							onActivated = storyActions.viewExplorer,
+							isDisabled = areStoryActionsDisabled,
+							onActivated = flipbookStore.story.viewExplorer,
 							size = InputSize.Small,
 						}),
 					}),
@@ -245,7 +255,7 @@ local function Topbar(props: TopbarProps)
 					LayoutOrder = 2,
 					tag = "auto-xy row gap-xsmall",
 				}, {
-					EmbedIntoExperience = storyActions.mode ~= AppMode.EmbeddedClient and e(Tooltip, {
+					EmbedIntoExperience = storyMode ~= AppMode.EmbeddedClient and e(Tooltip, {
 						LayoutOrder = 1,
 						align = PopoverAlign.Center,
 						side = PopoverSide.Bottom,
@@ -285,15 +295,15 @@ local function Topbar(props: TopbarProps)
 						Trigger = e(IconButton, {
 							icon = {
 								name = IconName.Gear,
-								variant = if navigation.currentScreen == "Settings"
+								variant = if currentScreen == "Settings"
 									then IconVariant.Filled
 									else IconVariant.Regular,
 							},
 							onActivated = function()
-								if navigation.currentScreen ~= "Settings" then
-									navigation.navigateTo("Settings")
+								if currentScreen ~= "Settings" then
+									flipbookStore.navigation.navigateTo("Settings")
 								else
-									navigation.navigateTo("Home")
+									flipbookStore.navigation.navigateTo("Home")
 								end
 							end,
 							size = InputSize.Small,
@@ -358,10 +368,10 @@ local function Topbar(props: TopbarProps)
 						id = "Logs",
 						text = "Logs",
 						onActivated = function()
-							if navigation.currentScreen ~= "Settings" then
-								navigation.navigateTo("Logs")
+							if currentScreen ~= "Settings" then
+								flipbookStore.navigation.navigateTo("Logs")
 							else
-								navigation.navigateTo("Home")
+								flipbookStore.navigation.navigateTo("Home")
 							end
 							setIsHelpMenuOpen(false)
 						end,

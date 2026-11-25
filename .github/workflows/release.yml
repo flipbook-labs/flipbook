@@ -14,7 +14,23 @@ on:
   release:
     types: [published]
 
+env:
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
 jobs:
+  lock:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      statuses: write
+    steps:
+      - uses: flipbook-labs/changewrite/publish-lock@v0.16.0
+        with:
+          locked: true
+          url: ${{ env.RUN_URL }}
+
   build:
     if: >-
       github.event_name == 'push' ||
@@ -25,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
@@ -55,6 +71,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      statuses: write
     concurrency:
       group: release-pr-${{ github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -72,20 +89,36 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
 
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Record Refreshed Commit
+        id: refreshed
+        run: lute run publish-lock record-main
+
+      - name: Check Rollback
+        id: rollback
+        run: lute run rollback banner
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - uses: actions/download-artifact@v8
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.7.0
+      - uses: flipbook-labs/changewrite@v0.16.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          base: main
-          branch: ${{ github.event_name == 'pull_request' && 'debug-publish-next-version' || 'publish-next-version' }}
-          prepare-only: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
+          debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
           force-version: ${{ inputs.force-version || '' }}
-          pr-title: ${{ github.event_name == 'pull_request' && '[DEBUG] Publish v{{version}}' || 'Publish v{{version}}' }}
+          # The rollback banner is empty unless prod is rolled back. It ends with
+          # its own blank line, which separates it from the rest of the body.
           pr-body: |
-            >[!IMPORTANT]
+            ${{ steps.rollback.outputs.banner }}>[!IMPORTANT]
             > This PR prepares the next release by bumping the version and updating the changelog.
             >
             > **Merging this PR will:**
@@ -111,6 +144,33 @@ jobs:
           post-draft-hook: |
             "$CHANGEWRITE_BIN" attach --tag "$CHANGEWRITE_TAG" --files Flipbook.rbxm
 
+      - name: Unlock Publish Pull Request
+        if: github.event_name != 'pull_request'
+        uses: flipbook-labs/changewrite/publish-lock@v0.16.0
+        with:
+          locked: false
+          url: ${{ env.RUN_URL }}
+
+      # A newer run's lock job sits outside the concurrency group, so its lock
+      # can land before the unlock above and be overwritten by it. These two
+      # steps lock again when main moved during this run. The newer run's
+      # release job queues behind this one in the concurrency group, so its
+      # unlock always comes after this lock.
+      - name: Check Main Branch Head
+        id: main-moved
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REFRESHED_SHA: ${{ steps.refreshed.outputs.sha }}
+        run: lute run publish-lock main-moved
+
+      - name: Lock Publish Pull Request Again
+        if: steps.main-moved.outputs.moved == 'true'
+        uses: flipbook-labs/changewrite/publish-lock@v0.16.0
+        with:
+          locked: true
+          url: ${{ env.RUN_URL }}
+
   publish-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -124,18 +184,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
-          version: v1.1.1
+          version: v1.2.0
 
       - name: Install dependencies
         run: lute run install
 
-      - name: Create .env
-        run: cp .env.template .env
+      - name: Download Release Model
+        run: gh release download "$TAG" --pattern Flipbook.rbxm
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lune run publish-plugin --channel prod --skipBuild --apiKey ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -150,7 +213,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
@@ -162,3 +225,88 @@ jobs:
 
       - name: Publish beta build to Creator Store
         run: lune run publish-plugin --channel beta --apiKey ${{ secrets.ROBLOX_API_KEY }}
+
+  # Charts release health in PostHog: how many changes are waiting on a
+  # release, and when beta builds and releases go out. The `posthog`
+  # environment holds the 1Password service account token that `op run`
+  # resolves the op:// references with. Reporting never fails a release run;
+  # the PostHog Check workflow is where a broken credential shows up.
+  report-pending-changes:
+    if: ${{ github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
+      - name: Report pending changes
+        run: op run -- lute run posthog pending-changes
+
+  report-beta-publish:
+    needs: publish-nightly-plugin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
+      - name: Report the beta publish
+        run: op run -- lute run posthog beta-published
+
+  report-release:
+    needs: publish-plugin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    environment: posthog
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+      POSTHOG_PROJECT_TOKEN: op://Flipbook CI/flipbook-posthog-ci/project-token
+      POSTHOG_PERSONAL_API_KEY: op://Flipbook CI/flipbook-posthog-ci/personal-api-key
+      POSTHOG_PROJECT_ID: op://Flipbook CI/flipbook-posthog-ci/project-id
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - uses: 1Password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4.1.0
+        with:
+          version: 2.39.0
+
+      - name: Report the release
+        run: op run -- lute run posthog prod-released

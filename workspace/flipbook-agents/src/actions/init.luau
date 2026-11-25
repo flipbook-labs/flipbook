@@ -1,4 +1,10 @@
-return {
+local AgentGateway = require("@pkg/AgentGateway")
+
+local types = require("@root/types")
+
+type Action = AgentGateway.Action<types.AgentActions>
+
+local actions: { [string]: Action } = {
 	embedFlipbook = require("@root/actions/embedFlipbook"),
 	getControls = require("@root/actions/getControls"),
 	getCurrentStory = require("@root/actions/getCurrentStory"),
@@ -9,3 +15,5 @@ return {
 	openWidget = require("@root/actions/openWidget"),
 	setControls = require("@root/actions/setControls"),
 }
+
+return actions

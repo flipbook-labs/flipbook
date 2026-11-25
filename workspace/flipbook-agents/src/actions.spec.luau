@@ -1,4 +1,3 @@
-local AgentGateway = require("@pkg/AgentGateway")
 local JestGlobals = require("@pkg/JestGlobals")
 
 local types = require("@root/types")
@@ -6,30 +5,28 @@ local types = require("@root/types")
 local expect = JestGlobals.expect
 local test = JestGlobals.test
 
-type Action = AgentGateway.Action<types.AgentController>
-type ActionMap = { [string]: Action }
-type ControllerState = {
+type ActionsState = {
 	controls: types.Controls,
 	embeddedOverwrite: boolean,
 	embeddedParent: string?,
-	opened: boolean,
+	opened: ("viewport" | "widget")?,
 }
 
-local actions: ActionMap = require("@root/actions")
+local actions = require("@root/actions")
 
-local function createController(): (types.AgentController, ControllerState)
-	local state: ControllerState = {
+local function createActions(): (types.AgentActions, ActionsState)
+	local state: ActionsState = {
 		controls = { text = "Before" },
 		embeddedOverwrite = false,
 		embeddedParent = nil,
-		opened = false,
+		opened = nil,
 	}
-	local controller: types.AgentController = {
+	local agentActions: types.AgentActions = {
 		openWidget = function()
-			state.opened = true
+			state.opened = "widget"
 		end,
 		openViewport = function()
-			state.opened = true
+			state.opened = "viewport"
 		end,
 		embedFlipbook = function(parent, overwrite)
 			state.embeddedParent = parent
@@ -45,29 +42,33 @@ local function createController(): (types.AgentController, ControllerState)
 			}
 		end,
 		listStories = function(storybookPath)
+			if storybookPath == nil then
+				return {
+					{
+						name = "Orphan",
+						path = "ReplicatedStorage/Orphan.story",
+					},
+				}
+			end
 			return {
 				{
-					id = "primary",
-					name = "Primary",
+					name = "Button",
 					path = `{storybookPath}/Button.story`,
 					storybook = storybookPath,
 				},
 			}
 		end,
-		openStory = function(storyPath, storybookPath, storyId)
+		openStory = function(storyPath, storybookPath)
 			return {
-				id = storyId or "primary",
-				name = if storyId == "secondary" then "Secondary" else "Primary",
+				name = "Button",
 				path = storyPath,
 				storybook = storybookPath,
 			}
 		end,
 		getCurrentStory = function()
 			return {
-				id = "primary",
-				name = "Primary",
+				name = "Button",
 				path = "ReplicatedStorage/Button.story",
-				controlsReady = true,
 				isMounted = true,
 			}
 		end,
@@ -78,32 +79,44 @@ local function createController(): (types.AgentController, ControllerState)
 			state.controls = nextControls
 			return state.controls
 		end,
-		registerApp = function()
-			return function() end
-		end,
-		registerStory = function()
-			return function() end
-		end,
 	}
-	return controller, state
+	return agentActions, state
 end
 
 test("rejects params with non-string keys", function()
-	local controller = createController()
+	local agentActions = createActions()
 
 	expect(function()
-		actions.listStories.run(controller, { [1] = "ReplicatedStorage/Example.storybook" })
-	end).toThrow("params must use string keys")
+		actions.listStories.run(agentActions, { [1] = "ReplicatedStorage/Example.storybook" })
+	end).toThrow("dictionary keys must be strings")
 end)
 
-test("routes widget and embedding actions through the controller", function()
-	local controller, state = createController()
+test("rejects controls with non-string keys", function()
+	local agentActions = createActions()
 
-	expect(actions.openWidget.run(controller, nil)).toEqual({ enabled = true, surface = "widget" })
-	expect(actions.openViewport.run(controller, nil)).toEqual({ surface = "viewport" })
-	expect(state.opened).toBe(true)
+	expect(function()
+		actions.setControls.run(agentActions, { controls = { [1] = "After" } })
+	end).toThrow("dictionary keys must be strings")
+end)
 
-	expect(actions.embedFlipbook.run(controller, {
+test("opens the widget", function()
+	local agentActions, state = createActions()
+
+	expect(actions.openWidget.run(agentActions, nil)).toEqual({ enabled = true })
+	expect(state.opened).toBe("widget")
+end)
+
+test("opens the viewport", function()
+	local agentActions, state = createActions()
+
+	expect(actions.openViewport.run(agentActions, nil)).toEqual({ enabled = true })
+	expect(state.opened).toBe("viewport")
+end)
+
+test("embeds Flipbook", function()
+	local agentActions, state = createActions()
+
+	expect(actions.embedFlipbook.run(agentActions, {
 		parent = "ReplicatedStorage",
 		overwrite = true,
 	})).toEqual({ path = "ReplicatedStorage/Flipbook" })
@@ -111,10 +124,10 @@ test("routes widget and embedding actions through the controller", function()
 	expect(state.embeddedOverwrite).toBe(true)
 end)
 
-test("routes story actions through the controller", function()
-	local controller = createController()
+test("lists storybooks", function()
+	local agentActions = createActions()
 
-	expect(actions.listStorybooks.run(controller, nil)).toEqual({
+	expect(actions.listStorybooks.run(agentActions, nil)).toEqual({
 		storybooks = {
 			{
 				name = "Example",
@@ -122,42 +135,70 @@ test("routes story actions through the controller", function()
 			},
 		},
 	})
-	expect(actions.listStories.run(controller, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
+end)
+
+test("lists stories", function()
+	local agentActions = createActions()
+
+	expect(actions.listStories.run(agentActions, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
 		stories = {
 			{
-				id = "primary",
-				name = "Primary",
+				name = "Button",
 				path = "ReplicatedStorage/Example.storybook/Button.story",
 				storybook = "ReplicatedStorage/Example.storybook",
 			},
 		},
 	})
-	expect(actions.openStory.run(controller, {
+end)
+
+test("lists orphaned stories when the Storybook is omitted", function()
+	local agentActions = createActions()
+
+	expect(actions.listStories.run(agentActions, nil)).toEqual({
+		stories = {
+			{
+				name = "Orphan",
+				path = "ReplicatedStorage/Orphan.story",
+			},
+		},
+	})
+end)
+
+test("opens a story", function()
+	local agentActions = createActions()
+
+	expect(actions.openStory.run(agentActions, {
 		story = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
-		storyId = "secondary",
 	})).toEqual({
-		id = "secondary",
-		name = "Secondary",
+		name = "Button",
 		path = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
 	})
-	expect(actions.getCurrentStory.run(controller, nil)).toEqual({
-		id = "primary",
-		name = "Primary",
+end)
+
+test("gets the current story", function()
+	local agentActions = createActions()
+
+	expect(actions.getCurrentStory.run(agentActions, nil)).toEqual({
+		name = "Button",
 		path = "ReplicatedStorage/Button.story",
-		controlsReady = true,
 		isMounted = true,
 	})
 end)
 
-test("routes control actions through the controller", function()
-	local controller = createController()
+test("gets controls", function()
+	local agentActions = createActions()
 
-	expect(actions.getControls.run(controller, nil)).toEqual({
+	expect(actions.getControls.run(agentActions, nil)).toEqual({
 		controls = { text = "Before" },
 	})
-	expect(actions.setControls.run(controller, { controls = { text = "After" } })).toEqual({
+end)
+
+test("sets controls", function()
+	local agentActions = createActions()
+
+	expect(actions.setControls.run(agentActions, { controls = { text = "After" } })).toEqual({
 		controls = { text = "After" },
 	})
 end)

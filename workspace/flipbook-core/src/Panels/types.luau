@@ -1,3 +1,12 @@
+local types = {}
+
 export type DragHandle = "Top" | "Right" | "Bottom" | "Left"
 
-return nil
+types.DragHandle = table.freeze({
+	Top = "Top" :: "Top",
+	Right = "Right" :: "Right",
+	Bottom = "Bottom" :: "Bottom",
+	Left = "Left" :: "Left",
+})
+
+return types

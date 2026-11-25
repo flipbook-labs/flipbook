@@ -3,15 +3,15 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
-local AgentContext = require("@root/Agent/AgentContext")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
-local getInstancePath = require("@root/Common/getInstancePath")
 local types = require("@root/Storybook/types")
+local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -25,46 +25,34 @@ local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
-type LoadedStorybook = Storyteller.LoadedStorybook
 type ExtraStoryProps = types.ExtraStoryProps
-type StoryControlsStore = createStoryControlsStore.StoryControlsStore
+type SelectedStory = types.SelectedStory
 
-type StoryViewProps = {
-	storyId: string?,
-	storyModule: ModuleScript,
-	storybook: LoadedStorybook,
+type SelectedStoryViewProps = {
+	selectedStory: SelectedStory,
 }
 
-local function StoryView(props: StoryViewProps)
-	local agentController = AgentContext.use()
-	local story, storyError = useStory(props.storyModule, props.storybook, props.storyId)
+local function SelectedStoryView(props: SelectedStoryViewProps)
+	local flipbookStore = FlipbookStoreContext.use()
+	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
 	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
-	local storyControlsStore = useMemo(function(): StoryControlsStore?
-		return if story then createStoryControlsStore(story.controls) else nil
+	local controlsStore = useMemo(function()
+		return createStoryControlsStore(if story then story.controls else nil)
 	end, { story } :: { unknown })
-	local storyId = if story then story.id else nil
+	useAgentStoryRegistration(props.selectedStory.storyModule, story, controlsStore)
 
 	useEffect(function()
-		if agentController == nil or storyControlsStore == nil or storyId == nil then
-			return
+		flipbookStore.story.setActiveControlsStore(controlsStore)
+
+		return function()
+			if flipbookStore.story.getActiveControlsStore() == controlsStore then
+				flipbookStore.story.setActiveControlsStore(nil)
+			end
 		end
-		return agentController.registerStory({
-			id = storyId,
-			path = getInstancePath(props.storyModule),
-			getControls = function()
-				return storyControlsStore.getControls() :: any
-			end,
-			setControls = function(controls)
-				for key, value in controls do
-					storyControlsStore.setControl(key, value :: any)
-				end
-				return storyControlsStore.getControls() :: any
-			end,
-		})
-	end, { agentController, props.storyModule, storyId, storyControlsStore } :: { unknown })
+	end, { controlsStore, flipbookStore } :: { unknown })
 
 	local extraProps = useMemo(function(): ExtraStoryProps
 		return {
@@ -78,8 +66,7 @@ local function StoryView(props: StoryViewProps)
 	return e(
 		StoryControlsContext.StoryControlsProvider,
 		{
-			schema = story and story.controls or nil,
-			store = storyControlsStore,
+			store = controlsStore,
 		},
 		e(View, {
 			tag = "size-full bg-surface-200",
@@ -136,6 +123,19 @@ local function StoryView(props: StoryViewProps)
 			}),
 		})
 	)
+end
+
+local function StoryView(): React.Node
+	local flipbookStore = FlipbookStoreContext.use()
+	local selectedStory = useSignalState(flipbookStore.story.getSelectedStory)
+
+	if selectedStory == nil then
+		return nil
+	end
+
+	return e(SelectedStoryView, {
+		selectedStory = selectedStory,
+	})
 end
 
 return React.memo(StoryView)

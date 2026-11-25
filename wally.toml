@@ -1,29 +1,28 @@
 [package]
 name = "flipbook-labs/flipbook"
-version = "2.5.0"
+version = "2.6.0"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 exclude = ["*"]
 
 [dependencies]
-AgentGateway = "flipbook-labs/agent-gateway@0.2.0"
+AgentGateway = "flipbook-labs/agent-gateway@0.2.1"
 Charm = "littensy/charm@0.11.0-rc.4"
 Highlighter = "boatbomber/highlighter@0.9.0"
 Log = "realthx1/luaulog@0.3.0"
 LuauPolyfill = "jsdotlua/luau-polyfill@1.2.7"
-ModuleLoader = "flipbook-labs/module-loader@0.12.0"
 React = "jsdotlua/react@17.0.2"
 ReactCharm = "littensy/react-charm@0.4.0-rc.3"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"
-sha256 = "dekkonot/sha256@1.0.1"
 Sift = "csqrl/sift@0.0.8"
-Storyteller = "flipbook-labs/storyteller@1.12.0"
+Storyteller = "flipbook-labs/storyteller@1.13.0"
 t = "osyrisrblx/t@3.0.0"
 
 # dev dependencies
 Fusion = "elttob/fusion@0.2.0"
-Jest = "jsdotlua/jest@3.10.0"
-JestGlobals = "jsdotlua/jest-globals@3.10.0"
+UILabs = "pepeeltoro41/ui-labs@2.4.2"
+Jest = "roblox/jest@3.21.0"
+JestGlobals = "roblox/jest-globals@3.21.0"
 Roact = "roblox/roact@1.4.4"

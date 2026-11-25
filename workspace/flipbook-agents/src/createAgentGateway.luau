@@ -2,9 +2,9 @@ local AgentGateway = require("@pkg/AgentGateway")
 
 local types = require("@root/types")
 
-type Action = AgentGateway.Action<types.AgentController>
+type Action = AgentGateway.Action<types.AgentActions>
 
-local actions: { [string]: Action } = require("@root/actions")
+local actions = require("@root/actions")
 
 local CONFIG: AgentGateway.Config = {
 	name = "FlipbookAgentGateway",
@@ -22,7 +22,7 @@ local function listActions(): { Action }
 	return result
 end
 
-local function createAgentGateway(controller: types.AgentController): () -> ()
+local function createAgentGateway(controller: types.AgentActions): () -> ()
 	local registry = AgentGateway.createActionRegistry(CONFIG, controller, listActions())
 	return AgentGateway.createGateway(registry, CONFIG)
 end
