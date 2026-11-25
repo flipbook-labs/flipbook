@@ -1,6 +1,6 @@
 ---
 name: use-studio-mcp
-description: "Drive a local Flipbook build through the Studio MCP and the FlipbookAgentGateway actions, including Edit-mode screenshots and embedded Play-mode input. Use when: verifying Stories in Studio, changing gateway actions, or capturing visual evidence of Flipbook UI."
+description: "Drive a local Flipbook build through the Studio MCP and the FlipbookAgentGateway actions, including Edit-mode screenshots and input, and embedded Play mode. Use when: verifying Stories in Studio, changing gateway actions, or capturing visual evidence of Flipbook UI."
 ---
 
 # Use Studio MCP for Flipbook
@@ -31,7 +31,7 @@ Find the gateway named `FlipbookAgentGateway` and follow the protocol in the sha
 Call `list` first, then use this order:
 
 1. Call `openWidget`.
-2. Call `openViewport` if you need screenshots. Call `embedFlipbook` before Play mode if you need virtual input.
+2. Call `openViewport` if you need screenshots. Call `embedFlipbook` before Play mode only if you need to check Flipbook in a playtest.
 3. Poll `listStorybooks` until the target Storybook appears.
 4. Call `listStories` with that Storybook path.
 5. Call `openStory` with the Story and Storybook paths.
@@ -45,7 +45,7 @@ Control values are Luau values. Pass `Color3.new(1, 0, 0)` or `Enum.Font.Builder
 
 ## Screenshots
 
-Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook into the viewport first.
+Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook into the viewport first. On a build without `openViewport`, clone the widget's children into a ScreenGui under `StarterGui`, capture, and destroy the clone. A clone taller or wider than the viewport is cut off.
 
 1. Call `openViewport`. It moves the running app into `StarterGui.FlipbookViewport`, so the open Story and its control values stay as they were.
 2. Set up the Story with gateway actions. `openStory` leaves the app in the viewport.
@@ -54,7 +54,9 @@ Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook i
 
 ## Input checks
 
-`user_mouse_input` and `user_keyboard_input` only work in the Client data model, so clicking or typing in Flipbook needs embedded Play mode.
+In Edit mode, run `UserInputService:CreateVirtualInput()` through `execute_luau` to get a `VirtualInput` for the viewport. Pass the Flipbook `DockWidgetPluginGui`, found under `PluginGuiService`, to aim at the widget instead. Use `SendMousePosition` and `SendMouseButton` to click, `SendTextInput` to type into a focused TextBox, and `SendPointerAction` to scroll. Positions match `AbsolutePosition`. It refuses to send a position that lands on `CoreGui`.
+
+`user_mouse_input` and `user_keyboard_input` only work in the Client data model, so use them in embedded Play mode:
 
 1. Call `embedFlipbook`. It returns the `path` it embedded into. The `parent` param defaults to `ReplicatedStorage`. With no gateway, embed the runtime as described in [Embedding without the gateway](#embedding-without-the-gateway).
 2. Start Play mode with `start_stop_play`, then poll `get_studio_state` until the Client data model appears.
