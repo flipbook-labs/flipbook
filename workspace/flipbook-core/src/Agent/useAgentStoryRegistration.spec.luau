@@ -75,14 +75,11 @@ afterEach(function()
 	root:Destroy()
 end)
 
-local function createStory(name: string, label: string): MountedStory
+local function createStory(name: string, controls: StoryControlsSchema): MountedStory
 	local storyModule = Instance.new("ModuleScript")
 	storyModule.Name = `{name}.story`
 	storyModule.Parent = root
 
-	local controls: StoryControlsSchema = {
-		label = label,
-	}
 	local story: LoadedStory = {
 		controls = controls,
 	}
@@ -128,7 +125,7 @@ local function renderStory(mounted: MountedStory)
 end
 
 test("reads the mounted story's controls", function()
-	local rendered = renderStory(createStory("Button", "Hello"))
+	local rendered = renderStory(createStory("Button", { label = "Hello" }))
 
 	expect(controller.getControls()).toEqual({
 		label = "Hello",
@@ -138,7 +135,7 @@ test("reads the mounted story's controls", function()
 end)
 
 test("writes controls to the store the story renders from", function()
-	local mounted = createStory("Button", "Hello")
+	local mounted = createStory("Button", { label = "Hello" })
 	local rendered = renderStory(mounted)
 
 	expect(controller.setControls({
@@ -152,8 +149,8 @@ test("writes controls to the store the story renders from", function()
 end)
 
 test("switches to the next story after navigation", function()
-	local first = createStory("First", "First")
-	local second = createStory("Second", "Second")
+	local first = createStory("First", { label = "First" })
+	local second = createStory("Second", { label = "Second" })
 	local rendered = renderStory(first)
 
 	rendered.rerender(second)
@@ -171,7 +168,7 @@ test("switches to the next story after navigation", function()
 end)
 
 test("stops answering once the story unmounts", function()
-	local rendered = renderStory(createStory("Button", "Hello"))
+	local rendered = renderStory(createStory("Button", { label = "Hello" }))
 
 	rendered.unmount()
 
@@ -181,4 +178,53 @@ test("stops answering once the story unmounts", function()
 			label = "World",
 		})
 	end).toThrow("setControls requires the story view to be mounted")
+end)
+
+test("reads and writes Roblox values across a BindableFunction", function()
+	local rendered = renderStory(createStory("Button", {
+		color = Storyteller.createColorControl(Color3.new(1, 0, 0)),
+		fonts = Storyteller.createMultiSelectControl({
+			Enum.Font.BuilderSans :: EnumItem,
+			Enum.Font.BuilderSansBold,
+		}),
+	}))
+
+	-- Agents call the controller through AgentGateway's BindableFunction, and
+	-- Roblox copies the tables that pass through one. These stand in for it to
+	-- check that the values inside those tables survive.
+	local setControls = Instance.new("BindableFunction")
+	setControls.OnInvoke = controller.setControls
+	local getControls = Instance.new("BindableFunction")
+	getControls.OnInvoke = controller.getControls
+
+	local controls = {
+		color = Color3.new(0.25, 0.5, 0.75),
+		fonts = { Enum.Font.BuilderSansBold },
+	}
+
+	expect(setControls:Invoke(controls)).toEqual(controls)
+	expect(getControls:Invoke()).toEqual(controls)
+
+	rendered.unmount()
+end)
+
+test("changes nothing when one of the controls is invalid", function()
+	local mounted = createStory("Button", {
+		label = "Hello",
+		size = 1,
+	})
+	local rendered = renderStory(mounted)
+
+	expect(function()
+		controller.setControls({
+			label = "World",
+			size = "large",
+		})
+	end).toThrow("controls.size must be a number, got string")
+	expect(mounted.controlsStore.getControls()).toEqual({
+		label = "Hello",
+		size = 1,
+	})
+
+	rendered.unmount()
 end)

@@ -14,7 +14,7 @@ local action: Action = {
 		properties = {
 			controls = {
 				type = "object",
-				description = "Map of control names to JSON-safe values in the format returned by getControls",
+				description = "Map of control names to Luau values of the types getControls returns, such as Color3 or EnumItem",
 			},
 		} :: { [string]: unknown },
 		required = { "controls" },
