@@ -1,6 +1,7 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
+local Storyteller = require("@pkg/Storyteller")
 
 local AppMode = require("@root/Enums/AppMode")
 local BuildChannel = require("@root/Enums/BuildChannel")
@@ -15,6 +16,7 @@ local Topbar = require("@root/Panels/Topbar")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local constants = require("@root/constants")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
+local useAgentRegistration = require("@root/Agent/useAgentRegistration")
 local useTopbarInset = require("@root/Embedding/useTopbarInset")
 
 local useEffect = React.useEffect
@@ -24,6 +26,7 @@ local function FlipbookApp()
 	local flipbookStore = FlipbookStoreContext.use()
 	local userSettingsStore = useSignalState(UserSettingsStore.get)
 	local userSettings = useSignalState(userSettingsStore.getStorage)
+	local storybooks = Storyteller.useStorybooks()
 
 	local appRef = React.useRef<<GuiObject?>>(nil)
 	local topbarInset = useTopbarInset(appRef)
@@ -41,6 +44,18 @@ local function FlipbookApp()
 	useEffect(function()
 		flipbookStore.navigation.reportCurrentScreen()
 	end, { flipbookStore })
+
+	useAgentRegistration({
+		getCurrentStory = function()
+			local selectedStory = flipbookStore.story.getSelectedStory()
+			if selectedStory == nil then
+				return nil, nil
+			end
+			return selectedStory.storyModule, selectedStory.storybook
+		end,
+		storybooks = storybooks,
+		openStory = flipbookStore.openStory,
+	})
 
 	return React.createElement(Foundation.View, {
 		tag = "size-full row align-y-center flex-between",
