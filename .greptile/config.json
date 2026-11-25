@@ -68,7 +68,7 @@
     },
     {
       "id": "changelog-entry",
-      "rule": "A PR adds at most one .changes/ entry. Its body is one short sentence, about 140 characters at most, in present tense, with no references to PRs, branches, or how the change was developed. Maintenance with no user-facing effect uses the Internal category and a patch bump.",
+      "rule": "A PR adds at most one .changes/ entry. Its `summary` is one short sentence, about 140 characters at most, in present tense. Its optional `body` can run longer. Neither references PRs, branches, or how the change was developed. Maintenance with no user-facing effect uses the Internal category and a patch bump.",
       "scope": [".changes/**"],
       "severity": "low"
     }
