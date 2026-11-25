@@ -67,12 +67,8 @@ local function compileAsync(context: BuildContext)
 		end,
 	})
 
-	for _, member in fs.listDirectory(project.WORKSPACE_PATH) do
-		local memberPath = path.join(project.WORKSPACE_PATH, member.name)
-
-		if fs.type(memberPath) == "dir" then
-			compileWorkspaceMemberAsync(memberPath, context)
-		end
+	for _, memberPath in project.WORKSPACE_MEMBER_PATHS do
+		compileWorkspaceMemberAsync(memberPath, context)
 	end
 
 	if context.channel == types.Channel.Prod or context.channel == types.Channel.Beta then
