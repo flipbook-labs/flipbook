@@ -65,7 +65,7 @@ The internal build is a mirror of the community build, not a privileged tier. It
 
 ### Telemetry
 
-Every in-plugin event goes through `fireEventAsync`, which returns early unless the `collectAnonymousUsageData` setting is on. Keep that single gate. A first-run dialog (`TelemetryOptOutDialog`) sets the setting. Events carry a hashed user ID, never the raw ID, and `Telemetry/types.luau` mirrors the backend's event enum, so the backend must accept an event before the plugin sends it. Do not add event properties that hold user IDs, names, file paths, or place or universe IDs.
+Every in-plugin event goes through the telemetry client's `capture`, which sends nothing unless consent is `Granted`. Keep that single gate. The client lives in `workspace/flipbook-telemetry`, and `createTelemetry` connects it to plugin settings and the backend. Consent starts `Unknown`. The first-run dialog (`TelemetryConsentDialog`) and the Settings row (`TelemetrySettingRow`) change it. The embedded client never collects. Events carry a random ID that the client creates when someone grants consent and deletes when they revoke it, never a user ID. `types.luau` in `flipbook-telemetry` mirrors the backend's event enum, so the backend must accept an event before the plugin sends it. Do not add event properties that hold user IDs, names, file paths, or place or universe IDs.
 
 Release-pipeline health is reported separately from Lute through `.lute/posthog.luau`. That path never runs inside the plugin.
 
@@ -81,5 +81,6 @@ Mark any claim about UI Labs or another storybook tool as unverified unless you 
 git grep -n -E "createFlipbookPlugin|createEmbeddedFlipbookApp" -- workspace/flipbook-core/src
 git grep -n "type Pluginlike" -- workspace/flipbook-core/src
 git grep -n "FLIPBOOK_RUNTIME_TAG" -- workspace
-git grep -n -E "fireEventAsync|collectAnonymousUsageData" -- workspace/flipbook-core/src/Telemetry
+git grep -n "ConsentState.Granted" -- workspace/flipbook-telemetry/src/createTelemetryClient.luau
+git grep -n -E "TelemetryConsentDialog|TelemetrySettingRow" -- workspace/flipbook-core/src
 ```
