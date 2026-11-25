@@ -33,15 +33,17 @@ test("creates and selects each Story from a Storybook-keyed record", function()
 		}
 	end
 
+	local record: Storyteller.LoadedStoryModule = {
+		status = "Loaded",
+		name = "Buttons",
+		stories = {
+			makeStory("primary", "Primary"),
+			makeStory("secondary", "Secondary"),
+		},
+	}
 	local root = createTreeNodesForStorybook(storybook, {
 		[storybookSource] = {
-			[storyModule] = {
-				name = "Buttons",
-				stories = {
-					makeStory("primary", "Primary"),
-					makeStory("secondary", "Secondary"),
-				},
-			},
+			[storyModule] = record,
 		},
 	})
 	local group = root.getChildren()[1]

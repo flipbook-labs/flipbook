@@ -14,7 +14,7 @@ local action: Action = {
 		properties = {
 			controls = {
 				type = "object",
-				description = "Map of control names to JSON-safe values in the format returned by getControls",
+				description = "Map of control names to Luau values of the types getControls returns, such as Color3 or EnumItem",
 			},
 		} :: { [string]: unknown },
 		required = { "controls" },
@@ -24,7 +24,9 @@ local action: Action = {
 		if type(controls) ~= "table" then
 			error("controls must be a table")
 		end
-		return { controls = controller.setControls(asDictionary(controls)) }
+		return {
+			controls = controller.setControls(asDictionary(controls)),
+		}
 	end,
 }
 

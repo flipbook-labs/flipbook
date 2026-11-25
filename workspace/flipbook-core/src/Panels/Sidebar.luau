@@ -1,8 +1,8 @@
-local EmbeddingTypes = require("@root/Embedding/types")
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
+
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local Storyteller = require("@pkg/Storyteller")
 
 local InputSize = Foundation.Enums.InputSize
 local ScrollView = Foundation.ScrollView
@@ -14,18 +14,14 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
 
-type LoadedStorybook = Storyteller.LoadedStorybook
-type LaunchData = EmbeddingTypes.LaunchData
-type UnavailableStorybook = Storyteller.UnavailableStorybook
-
 type SidebarProps = {
-	launchData: LaunchData?,
-	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> (),
-	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
+	topbarInset: Rect?,
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local initialSearchTerm = if props.launchData then props.launchData.search else nil
+	local flipbookStore = FlipbookStoreContext.use()
+	local launchData = flipbookStore.getLaunchData()
+	local initialSearchTerm = if launchData then launchData.search else nil
 	local searchTerm: string?, setSearchTerm = useState(initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
@@ -35,6 +31,11 @@ local function Sidebar(props: SidebarProps)
 		View,
 		withCommonProps(props, {
 			tag = "bg-surface-0 col size-full",
+			padding = if props.topbarInset
+				then {
+					top = UDim.new(0, math.max(props.topbarInset.Max.Y, 0)),
+				}
+				else nil,
 		}),
 		{
 			Search = e(View, {
@@ -63,9 +64,6 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
-					launchData = props.launchData,
-					onShowErrorPage = props.onShowErrorPage,
-					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
 				}),
 			}),

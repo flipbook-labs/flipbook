@@ -8,7 +8,7 @@ local e = React.createElement
 export type Props = {
 	controlSchema: Storyteller.ObjectControl?,
 	controlValue: Instance?,
-	onChanged: (Instance?) -> (),
+	onChanged: (instance: Instance?) -> (),
 }
 
 local function ObjectControl(props: Props)

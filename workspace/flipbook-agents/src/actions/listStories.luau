@@ -21,7 +21,9 @@ local action: Action = {
 	},
 	run = function(controller, rawParams)
 		local fields = asDictionary(rawParams)
-		return { stories = controller.listStories(getOptionalString(fields, "storybook")) }
+		return {
+			stories = controller.listStories(getOptionalString(fields, "storybook")),
+		}
 	end,
 }
 

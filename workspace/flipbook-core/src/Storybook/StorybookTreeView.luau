@@ -5,7 +5,7 @@ local Sift = require("@pkg/Sift")
 local Storyteller = require("@pkg/Storyteller")
 local TreeView = require("@root/TreeView")
 
-local EmbeddingTypes = require("@root/Embedding/types")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
@@ -16,7 +16,6 @@ local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
 type TreeNodeStore = TreeView.TreeNodeStore
-type LaunchData = EmbeddingTypes.LaunchData
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
 type StoryModuleRecord = Storyteller.StoryModuleRecord
@@ -33,10 +32,7 @@ local useStoryModuleRecords = Storyteller.useStoryModuleRecords
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
-	launchData: LaunchData?,
 	searchTerm: string?,
-	onStoryChanged: ((storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> ())?,
-	onShowErrorPage: ((unavailableStorybook: UnavailableStorybook) -> ())?,
 	layoutOrder: number?,
 }
 
@@ -52,14 +48,14 @@ end
 
 local function getRecordSignature(record: StoryModuleRecord): string
 	local parts: { string } = {}
-	if record.name then
+	if record.status == "Loaded" then
 		table.insert(parts, record.name)
-	end
-	if record.stories then
 		for _, story in record.stories do
 			table.insert(parts, story.id)
 			table.insert(parts, story.name)
 		end
+	else
+		table.insert(parts, record.problem)
 	end
 	return table.concat(parts, "\0")
 end
@@ -81,7 +77,7 @@ local function findStoryNode(node: TreeNodeStore, storyId: string?): TreeNodeSto
 		return node
 	end
 
-	local firstStoryNode
+	local firstStoryNode: TreeNodeStore?
 	for _, child in node.getChildren() do
 		if child.getIcon() == TreeView.TreeNodeIcon.Story then
 			firstStoryNode = firstStoryNode or child
@@ -99,7 +95,7 @@ local function indexStoryModuleNodes(
 	root: TreeNodeStore,
 	storyModules: { ModuleScript }
 ): { [ModuleScript]: TreeNodeStore }
-	local expectedModules = {} :: { [ModuleScript]: boolean }
+	local expectedModules: { [ModuleScript]: boolean } = {}
 	for _, storyModule in storyModules do
 		expectedModules[storyModule] = true
 	end
@@ -118,7 +114,7 @@ local function indexStoryModuleNodes(
 end
 
 local function getStorybookTreeSignature(storybook: LoadedStorybook, storyModules: { ModuleScript }): { unknown }
-	local parts = { storybook.name } :: { unknown }
+	local parts: { unknown } = { storybook.name }
 	for _, storyRoot in storybook.storyRoots do
 		table.insert(parts, storyRoot)
 		table.insert(parts, storyRoot.Name)
@@ -162,15 +158,16 @@ local function findStoryModuleNode(root: TreeNodeStore, storyModule: ModuleScrip
 end
 
 local function StorybookTreeView(props: Props)
-	local storybookByNodeId = useRef({} :: { [string]: LoadedStorybook })
-	local unavailableStorybookByNodeId = useRef({} :: { [string]: UnavailableStorybook })
-	local recordSignaturesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: string } })
-	local storyModuleNodesByStorybookSource = useRef({} :: { [Instance]: { [ModuleScript]: TreeNodeStore } })
-	local storybookTreeSignaturesBySource = useRef({} :: { [Instance]: { unknown } })
+	local flipbookStore = FlipbookStoreContext.use()
+	local storybookByNodeId = useRef<<{ [string]: LoadedStorybook }>>({})
+	local unavailableStorybookByNodeId = useRef<<{ [string]: UnavailableStorybook }>>({})
+	local recordSignaturesByStorybookSource = useRef<<{ [Instance]: { [ModuleScript]: string } }>>({})
+	local storyModuleNodesByStorybookSource = useRef<<{ [Instance]: { [ModuleScript]: TreeNodeStore } }>>({})
+	local storybookTreeSignaturesBySource = useRef<<{ [Instance]: { unknown } }>>({})
 	local lastOpenedStory, setLastOpenedStory = useLastOpenedStory()
 	local storybooks = useStorybooks()
 	local orphanedStoryModules = useOrphanedStoryModules()
-	local nodesByInstance = useRef({} :: { [Instance]: TreeNodeStore })
+	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 	local orphanedStorybook = useMemo(createLoadedStorybook, {})
 	local storyRequests = useMemo(function(): { StoryRequest }
 		local requests = {}
@@ -310,22 +307,30 @@ local function StorybookTreeView(props: Props)
 
 	-- This handles automatically moving a node under the Pinned node once the
 	-- node's instance becomes pinned
-	useEffect(function()
-		if pinnedNodes ~= prevPinnedNodes then
-			-- Put any previously pinned nodes back to the root
-			if prevPinnedNodes then
-				for _, node in prevPinnedNodes do
-					if not node.getIsPinned() then
-						node.parentTo(rootNode)
+	useEffect(
+		function()
+			if pinnedNodes ~= prevPinnedNodes then
+				-- Put any previously pinned nodes back to the root
+				if prevPinnedNodes then
+					for _, node in prevPinnedNodes do
+						if not node.getIsPinned() then
+							node.parentTo(rootNode)
+						end
 					end
 				end
-			end
 
-			for _, node in pinnedNodes do
-				node.parentTo(pinned)
+				for _, node in pinnedNodes do
+					node.parentTo(pinned)
+				end
 			end
-		end
-	end, { pinnedNodes, prevPinnedNodes, pinned, rootNode } :: { unknown })
+		end,
+		{
+			pinnedNodes,
+			prevPinnedNodes,
+			pinned,
+			rootNode,
+		} :: { unknown }
+	)
 
 	-- Convert available storybooks into nodes
 	useEffect(
@@ -439,30 +444,38 @@ local function StorybookTreeView(props: Props)
 	end, { storybooks.unavailable, unavailableStorybooks })
 
 	-- Convert orphaned stories into nodes
-	useEffect(function()
-		unknownStories.setIsVisible(#orphanedStoryModules > 0)
-		local source = orphanedStorybook.source
-		local storyModuleNodes = storyModuleNodesByStorybookSource.current[source] or {}
-		local recordSignatures = recordSignaturesByStorybookSource.current[source] or {}
+	useEffect(
+		function()
+			unknownStories.setIsVisible(#orphanedStoryModules > 0)
+			local source = orphanedStorybook.source
+			local storyModuleNodes = storyModuleNodesByStorybookSource.current[source] or {}
+			local recordSignatures = recordSignaturesByStorybookSource.current[source] or {}
 
-		for _, orphan in orphanedStoryModules do
-			if nodesByInstance.current[orphan] then
-				continue
-			end
+			for _, orphan in orphanedStoryModules do
+				if nodesByInstance.current[orphan] then
+					continue
+				end
 
-			local recordsForStorybook = storyModuleRecords[source]
-			local record = if recordsForStorybook then recordsForStorybook[orphan] else nil
-			local node = createTreeNodeForStoryModule(orphan, record)
-			node.parentTo(unknownStories)
-			nodesByInstance.current[orphan] = node
-			storyModuleNodes[orphan] = node
-			if record then
-				recordSignatures[orphan] = getRecordSignature(record)
+				local recordsForStorybook = storyModuleRecords[source]
+				local record = if recordsForStorybook then recordsForStorybook[orphan] else nil
+				local node = createTreeNodeForStoryModule(orphan, record)
+				node.parentTo(unknownStories)
+				nodesByInstance.current[orphan] = node
+				storyModuleNodes[orphan] = node
+				if record then
+					recordSignatures[orphan] = getRecordSignature(record)
+				end
 			end
-		end
-		storyModuleNodesByStorybookSource.current[source] = storyModuleNodes
-		recordSignaturesByStorybookSource.current[source] = recordSignatures
-	end, { orphanedStoryModules, orphanedStorybook, storyRequests, unknownStories } :: { unknown })
+			storyModuleNodesByStorybookSource.current[source] = storyModuleNodes
+			recordSignaturesByStorybookSource.current[source] = recordSignatures
+		end,
+		{
+			orphanedStoryModules,
+			orphanedStorybook,
+			storyRequests,
+			unknownStories,
+		} :: { unknown }
+	)
 
 	-- Replace only the affected module node as records arrive. Rebuilding an
 	-- entire storybook for every background publication makes large storybooks
@@ -521,39 +534,47 @@ local function StorybookTreeView(props: Props)
 	end, { orphanedStorybook, storyRequests, storyModuleRecords } :: { unknown })
 
 	-- Handle the removal of any nodes when instances get removed
-	useEffect(function()
-		local instances: { Instance } = Sift.List.join(
-			Sift.List.map(storybooks.available, function(storybook)
-				return storybook.source
-			end),
-			Sift.List.map(storybooks.unavailable, function(unavailableStorybook)
-				return unavailableStorybook.storybook.source
-			end),
-			orphanedStoryModules
-		)
+	useEffect(
+		function()
+			local instances: { Instance } = Sift.List.join(
+				Sift.List.map(storybooks.available, function(storybook)
+					return storybook.source
+				end),
+				Sift.List.map(storybooks.unavailable, function(unavailableStorybook)
+					return unavailableStorybook.storybook.source
+				end),
+				orphanedStoryModules
+			)
 
-		for instance, node in nodesByInstance.current do
-			if not table.find(instances, instance) then
-				node.parentTo(nil)
-				storybookByNodeId.current[node.id] = nil
-				unavailableStorybookByNodeId.current[node.id] = nil
-				nodesByInstance.current[instance] = nil
-				storyModuleNodesByStorybookSource.current[instance] = nil
-				recordSignaturesByStorybookSource.current[instance] = nil
-				storybookTreeSignaturesBySource.current[instance] = nil
-				if instance:IsA("ModuleScript") then
-					local orphanedNodes = storyModuleNodesByStorybookSource.current[orphanedStorybook.source]
-					local orphanedSignatures = recordSignaturesByStorybookSource.current[orphanedStorybook.source]
-					if orphanedNodes then
-						orphanedNodes[instance] = nil
-					end
-					if orphanedSignatures then
-						orphanedSignatures[instance] = nil
+			for instance, node in nodesByInstance.current do
+				if not table.find(instances, instance) then
+					node.parentTo(nil)
+					storybookByNodeId.current[node.id] = nil
+					unavailableStorybookByNodeId.current[node.id] = nil
+					nodesByInstance.current[instance] = nil
+					storyModuleNodesByStorybookSource.current[instance] = nil
+					recordSignaturesByStorybookSource.current[instance] = nil
+					storybookTreeSignaturesBySource.current[instance] = nil
+					if instance:IsA("ModuleScript") then
+						local orphanedNodes = storyModuleNodesByStorybookSource.current[orphanedStorybook.source]
+						local orphanedSignatures = recordSignaturesByStorybookSource.current[orphanedStorybook.source]
+						if orphanedNodes then
+							orphanedNodes[instance] = nil
+						end
+						if orphanedSignatures then
+							orphanedSignatures[instance] = nil
+						end
 					end
 				end
 			end
-		end
-	end, { storybooks.available, storybooks.unavailable, orphanedStoryModules, orphanedStorybook } :: { unknown })
+		end,
+		{
+			storybooks.available,
+			storybooks.unavailable,
+			orphanedStoryModules,
+			orphanedStorybook,
+		} :: { unknown }
+	)
 
 	-- Open the requested story, or reopen the story from the previous session.
 	local wasInitialStoryOpened = useRef(false)
@@ -564,13 +585,14 @@ local function StorybookTreeView(props: Props)
 				return
 			end
 
-			local storyPath = if props.launchData then props.launchData.story else nil
-			local node
+			local launchData = flipbookStore.getLaunchData()
+			local storyPath = if launchData then launchData.story else nil
+			local node: TreeNodeStore?
 			if storyPath then
 				local pathNode = findTreeNodeFromPath(rootNode, storyPath)
 				node = if pathNode then findStoryNode(pathNode, nil) else nil
 			elseif lastOpenedStory then
-				local storyModuleNode
+				local storyModuleNode: TreeNodeStore?
 				if lastOpenedStory.storybookSource then
 					local nodesForStorybook = storyModuleNodesByStorybookSource.current[lastOpenedStory.storybookSource]
 					storyModuleNode = if nodesForStorybook then nodesForStorybook[lastOpenedStory.storyModule] else nil
@@ -588,7 +610,7 @@ local function StorybookTreeView(props: Props)
 			end
 		end,
 		{
-			props.launchData,
+			flipbookStore,
 			lastOpenedStory,
 			rootNode,
 			storyModuleRecords,
@@ -597,44 +619,37 @@ local function StorybookTreeView(props: Props)
 			descendants,
 		} :: { unknown }
 	)
-
 	useEffect(
 		function()
 			if selectedNode ~= prevSelectedNode then
-				if props.onStoryChanged then
-					if selectedNode then
-						local icon = selectedNode.getIcon()
-						local instance = selectedNode.getInstance()
-
-						if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
-							local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
-								return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
-							end)
-
-							local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
-							local storyId = selectedNode.getStoryId()
-
-							props.onStoryChanged(instance, storybook, storyId)
-							setLastOpenedStory(instance, if storybook then storybook.source else nil, storyId)
-						end
-					else
-						props.onStoryChanged(nil, nil, nil)
-					end
+				if selectedNode == nil then
+					flipbookStore.openStory(nil, nil)
+					return
 				end
 
-				if props.onShowErrorPage then
-					if selectedNode and selectedNode.getIcon() == TreeView.TreeNodeIcon.Alert then
-						local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
-						if unavailableStorybook then
-							props.onShowErrorPage(unavailableStorybook)
-						end
+				local icon = selectedNode.getIcon()
+				local instance = selectedNode.getInstance()
+
+				if icon == TreeView.TreeNodeIcon.Story and instance and instance:IsA("ModuleScript") then
+					local storybookNode = selectedNode.findFirstAncestor(function(ancestor)
+						return ancestor.getIcon() == TreeView.TreeNodeIcon.Storybook
+					end)
+
+					local storybook = if storybookNode then storybookByNodeId.current[storybookNode.id] else nil
+					local storyId = selectedNode.getStoryId()
+
+					flipbookStore.openStory(instance, storybook, storyId)
+					setLastOpenedStory(instance, if storybook then storybook.source else nil, storyId)
+				elseif icon == TreeView.TreeNodeIcon.Alert then
+					local unavailableStorybook = unavailableStorybookByNodeId.current[selectedNode.id]
+					if unavailableStorybook then
+						flipbookStore.showUnavailableStorybook(unavailableStorybook)
 					end
 				end
 			end
 		end,
 		{
-			props.onShowErrorPage,
-			props.onStoryChanged,
+			flipbookStore,
 			selectedNode,
 			prevSelectedNode,
 			setLastOpenedStory,

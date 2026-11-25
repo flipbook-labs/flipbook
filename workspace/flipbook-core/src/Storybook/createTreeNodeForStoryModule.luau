@@ -18,11 +18,12 @@ end
 
 local function createTreeNodeForStoryModule(storyModule: ModuleScript, record: StoryModuleRecord?): TreeNodeStore
 	local moduleName = storyModule.Name:gsub("%.story", "")
-	local stories = if record then record.stories else nil
+	local loaded = if record and record.status == "Loaded" then record else nil
+	local stories = if loaded then loaded.stories else nil
 
-	if stories and #stories > 1 then
+	if loaded and stories and #stories > 1 then
 		local groupNode = TreeView.createTreeNodeStore()
-		groupNode.setName(if record and record.name then record.name else moduleName)
+		groupNode.setName(loaded.name)
 		groupNode.setIcon(TreeView.TreeNodeIcon.Folder)
 		groupNode.setInstance(storyModule)
 

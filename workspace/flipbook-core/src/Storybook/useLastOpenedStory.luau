@@ -53,7 +53,7 @@ local function useLastOpenedStory(): (LastOpenedStory?, (
 
 		if lastOpenedStoryPath then
 			local instance = getInstanceFromPath(lastOpenedStoryPath)
-			local storybookSource
+			local storybookSource: ModuleScript?
 			if localStorage.lastOpenedStorybookPath then
 				local storedStorybook = getInstanceFromPath(localStorage.lastOpenedStorybookPath)
 				if storedStorybook and storedStorybook:IsA("ModuleScript") then

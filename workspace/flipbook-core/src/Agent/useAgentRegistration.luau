@@ -14,10 +14,9 @@ type Storybooks = {
 }
 
 export type Options = {
-	storyModule: ModuleScript?,
-	storybook: LoadedStorybook?,
+	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
 	storybooks: Storybooks,
-	openStory: (ModuleScript, LoadedStorybook?) -> (),
+	openStory: (storyModule: ModuleScript, storybook: LoadedStorybook?) -> (),
 }
 
 local function useAgentRegistration(options: Options)
@@ -36,7 +35,7 @@ local function useAgentRegistration(options: Options)
 				return latest.current.storybooks
 			end,
 			getCurrentStory = function()
-				return latest.current.storyModule, latest.current.storybook
+				return latest.current.getCurrentStory()
 			end,
 			openStory = function(storyModule, storybook)
 				latest.current.openStory(storyModule, storybook)

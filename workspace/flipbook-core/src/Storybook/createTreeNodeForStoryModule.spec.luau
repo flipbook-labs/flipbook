@@ -41,6 +41,7 @@ test("keeps single-story modules as one leaf", function()
 	storyModule.Name = "Button.story"
 
 	local node = createTreeNodeForStoryModule(storyModule, {
+		status = "Loaded",
 		name = "Buttons",
 		stories = {
 			makeStory("default", "Primary"),
@@ -58,6 +59,7 @@ test("creates an ordered group for multi-story modules", function()
 	storyModule.Name = "Button.story"
 
 	local node = createTreeNodeForStoryModule(storyModule, {
+		status = "Loaded",
 		name = "Buttons",
 		stories = {
 			makeStory("secondary", "Secondary"),

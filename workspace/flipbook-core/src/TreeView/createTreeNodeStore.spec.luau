@@ -84,14 +84,16 @@ describe("node activation", function()
 		expect(root.getIsSelected()).toBe(true)
 	end)
 
-	-- Initially we were trying to allow any number of nodes to be selected at a
-	-- time but it was getting very difficult to juggle the selection state
-	-- across several nodes from consumers of TreeNodeStore.
-	--
-	-- In Flipbook's case, we only want one node selected at a time and we
-	-- currently have no features that would require multi-selection. So for now
-	-- we're going to only allow one selection, and in the future we can
-	-- look to loosen this restriction
+	--[[
+		Initially we were trying to allow any number of nodes to be selected at a
+		time but it was getting very difficult to juggle the selection state
+		across several nodes from consumers of TreeNodeStore.
+
+		In Flipbook's case, we only want one node selected at a time and we
+		currently have no features that would require multi-selection. So for now
+		we're going to only allow one selection, and in the future we can
+		look to loosen this restriction
+	]]
 	test("only one node in a tree can be selected at a time", function()
 		local root = createTreeNodeStore()
 
@@ -426,7 +428,12 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 	end)
 
 	test("basic alphabetical sorting", function()
@@ -450,13 +457,23 @@ describe("node sorting", function()
 		childA.parentTo(root)
 		childB.parentTo(root)
 
-		expect(root.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(root.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 
 		root.setSortOrder(function(a, b)
 			return a.getName() < b.getName()
 		end)
 
-		expect(root.getChildren()).toEqual({ childA, childB, childC, childD })
+		expect(root.getChildren()).toEqual({
+			childA,
+			childB,
+			childC,
+			childD,
+		})
 	end)
 
 	test("specifying the sort function will cascade down to descendants", function()
@@ -486,13 +503,23 @@ describe("node sorting", function()
 		childA.parentTo(descendant2)
 		childB.parentTo(descendant2)
 
-		expect(descendant2.getChildren()).toEqual({ childC, childD, childA, childB })
+		expect(descendant2.getChildren()).toEqual({
+			childC,
+			childD,
+			childA,
+			childB,
+		})
 
 		root.setSortOrder(function(a, b)
 			return a.getName() < b.getName()
 		end)
 
-		expect(descendant2.getChildren()).toEqual({ childA, childB, childC, childD })
+		expect(descendant2.getChildren()).toEqual({
+			childA,
+			childB,
+			childC,
+			childD,
+		})
 	end)
 
 	test("nodes are sorted as they get added", function()
@@ -543,7 +570,15 @@ describe("expand and collapse nodes", function()
 
 		root.expandDown()
 
-		for _, node in { root, descendant1, descendant2, descendant3, descendant4 } do
+		for _, node in
+			{
+				root,
+				descendant1,
+				descendant2,
+				descendant3,
+				descendant4,
+			}
+		do
 			expect(node.getIsExpanded()).toBe(true)
 		end
 	end)
