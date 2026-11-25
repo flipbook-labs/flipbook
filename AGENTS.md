@@ -60,7 +60,7 @@ flipbook/
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── pkg.luau                # Lute package manifest (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
+├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
 ├── pkg.lock.luau           # Lute package lockfile
 ├── .config.luau            # Luau aliases, including `@lpm` for the vendored Lute packages
 └── .env / .env.template    # Environment variables (copy template to .env)
@@ -165,7 +165,7 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 ### Workspace members and production pruning
 
-The `workspace/` directory is a monorepo-style structure. Each member has its own `src/` and sometimes `rotriever.toml`. When adding a new workspace member that should not ship in the production plugin, add it to `PROD_CONFIG.prunedDirs` in `project.luau`.
+`workspace/` is a Lute package workspace. The root `pkg.luau` has no name or version, which makes it a virtual root, and each member is a path dependency in it. Each member has its own `pkg.luau`, `src/`, and sometimes `rotriever.toml`, and reads its version and `files` from the root's `metadata`. Members in the root's `dependencies` ship with the plugin. Members in its `dev_dependencies` are development-only, and production builds prune them. `project.luau` reads both lists from `pkg.luau`, so registering a member there is what makes the build compile it. Members' Roblox dependencies still come from Wally and `roblox-packages`, not `pkg.luau`.
 
 ### Wally vs Lute packages
 

@@ -11,7 +11,6 @@ export type UserSettings = {
 	themeName: string,
 	sidebarWidth: number,
 	controlsHeight: number,
-	collectAnonymousUsageData: boolean,
 }
 
 local defaultValue: UserSettings = {
@@ -20,7 +19,6 @@ local defaultValue: UserSettings = {
 	themeName = defaultSettings.themeName.choices[1].name,
 	sidebarWidth = defaultSettings.sidebarWidth.value,
 	controlsHeight = defaultSettings.controlsHeight.value,
-	collectAnonymousUsageData = defaultSettings.collectAnonymousUsageData.value,
 }
 
 local validate = t.interface({
@@ -29,7 +27,6 @@ local validate = t.interface({
 	themeName = t.string,
 	sidebarWidth = t.number,
 	controlsHeight = t.number,
-	collectAnonymousUsageData = t.boolean,
 })
 
 -- Settings saved by older versions of Flipbook store the color mode as `theme`.

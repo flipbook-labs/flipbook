@@ -12,12 +12,11 @@ local SettingType = table.freeze({
 	Number = "number" :: "number",
 })
 
-export type SettingGroup = "UI" | "Stories" | "Telemetry"
+export type SettingGroup = "UI" | "Stories"
 
 local SettingGroup = table.freeze({
 	UI = "UI" :: "UI",
 	Stories = "Stories" :: "Stories",
-	Telemetry = "Telemetry" :: "Telemetry",
 })
 
 export type SettingChoice = {
@@ -163,15 +162,6 @@ local controlsHeight: NumberSetting = {
 	value = constants.CONTROLS_INITIAL_HEIGHT,
 }
 
-local collectAnonymousUsageData: CheckboxSetting = {
-	name = "collectAnonymousUsageData",
-	group = SettingGroup.Telemetry,
-	displayName = "Help improve Flipbook by sending anonymous usage data",
-	description = "Allow Flipbook to collect anonymous usage data to help improve the product. No personal data or story content is collected",
-	settingType = SettingType.Checkbox,
-	value = true,
-}
-
 local settings = {
 	-- expandNodesOnStart = expandNodesOnStart,
 	rememberLastOpenedStory = rememberLastOpenedStory,
@@ -179,7 +169,6 @@ local settings = {
 	themeName = themeName,
 	sidebarWidth = sidebarWidth,
 	controlsHeight = controlsHeight,
-	collectAnonymousUsageData = collectAnonymousUsageData,
 }
 
 export type Settings = typeof(settings)

@@ -4,19 +4,16 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local JestGlobals = require("@pkg/JestGlobals")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
+local createEmbeddedFlipbookApp = require("./createEmbeddedFlipbookApp")
 local getInstancePath = require("@root/Common/getInstancePath")
 
 local act = ReactRoblox.act
 local afterEach = JestGlobals.afterEach
 local beforeEach = JestGlobals.beforeEach
 local expect = JestGlobals.expect
-local jest = JestGlobals.jest
 local test = JestGlobals.test
 
 local GATEWAY_NAME = "FlipbookAgentGateway"
-
--- Required in beforeEach, after requestAsync and PluginStore are mocked.
-local createEmbeddedFlipbookApp: typeof(require("./createEmbeddedFlipbookApp"))
 
 local container: Folder
 local screenGui: ScreenGui
@@ -24,36 +21,6 @@ local story: ModuleScript
 local app: typeof(createEmbeddedFlipbookApp(Instance.new("ScreenGui")))?
 
 beforeEach(function()
-	-- The app sends telemetry when it mounts and unmounts. This keeps those
-	-- events from becoming real HTTP requests.
-	jest.mock(script.Parent.Parent.Http.requestAsync, function()
-		return function()
-			return nil
-		end
-	end)
-
-	--[[
-		When the app mounts, it puts a stand-in plugin in PluginStore. That lets
-		local storage finish loading, and then the telemetry dialog opens. The
-		dialog's animation connects to RenderStepped, which errors in the cloud
-		server that runs the specs. This PluginStore ignores the stand-in, so
-		local storage keeps loading and the dialog stays closed.
-	]]
-	jest.mock(script.Parent.Parent.Plugin.PluginStore, function()
-		return {
-			get = function()
-				return {
-					getPlugin = function()
-						return nil
-					end,
-					setPlugin = function() end,
-				}
-			end,
-		}
-	end)
-
-	createEmbeddedFlipbookApp = require("./createEmbeddedFlipbookApp")
-
 	container = Instance.new("Folder")
 	container.Parent = CoreGui
 
