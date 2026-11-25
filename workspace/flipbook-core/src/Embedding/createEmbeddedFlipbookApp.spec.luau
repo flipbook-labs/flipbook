@@ -32,11 +32,13 @@ beforeEach(function()
 		end
 	end)
 
-	-- When the app mounts, it puts a stand-in plugin in PluginStore. That lets
-	-- local storage finish loading, and then the telemetry dialog opens. The
-	-- dialog's animation connects to RenderStepped, which errors in the cloud
-	-- server that runs the specs. This PluginStore ignores the stand-in, so
-	-- local storage keeps loading and the dialog stays closed.
+	--[[
+		When the app mounts, it puts a stand-in plugin in PluginStore. That lets
+		local storage finish loading, and then the telemetry dialog opens. The
+		dialog's animation connects to RenderStepped, which errors in the cloud
+		server that runs the specs. This PluginStore ignores the stand-in, so
+		local storage keeps loading and the dialog stays closed.
+	]]
 	jest.mock(script.Parent.Parent.Plugin.PluginStore, function()
 		return {
 			get = function()
