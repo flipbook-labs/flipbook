@@ -5,7 +5,7 @@ return {
 		current = "2.6.0",
 		mirror = {
 			{ file = "wally.toml" },
-			{ file = "workspace/shared.luau", pattern = 'version%s*=%s*"([^"]+)"' },
+			{ file = "pkg.luau", pattern = 'version%s*=%s*"([^"]+)"' },
 			{ file = "workspace/flipbook-core/rotriever.toml", pattern = 'version%s*=%s*"([^"]+)"' },
 		},
 	},

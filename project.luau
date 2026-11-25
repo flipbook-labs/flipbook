@@ -1,7 +1,6 @@
 local path = require("@std/path")
 
 local manifest = require("./pkg")
-local shared = require("./workspace/shared")
 
 type DependencySpec = { sourceKind: string, source: string? }
 
@@ -71,7 +70,7 @@ return {
 	PROD_CONFIG = {
 		-- Members that are dev dependencies in `pkg.luau` don't ship.
 		prunedDirs = devMemberPaths,
-		prunedFiles = shared.prunedFiles,
+		prunedFiles = manifest.package.metadata.prunedFiles,
 	},
 
 	ROBLOX_STORYBOOK_UNIVERSE_ID = 10262009842,

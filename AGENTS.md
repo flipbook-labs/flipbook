@@ -48,8 +48,7 @@ flipbook/
 │   ├── test-runner/        # Runs Jest.runCLI against flipbook-core tests
 │   ├── example/            # Dogfood stories/components
 │   ├── code-samples/       # Sample stories for Roact, Fusion, React+Storyteller
-│   ├── template/           # Scaffold for new workspace members
-│   └── shared.luau         # Version and package files every member's pkg.luau reads
+│   └── template/           # Scaffold for new workspace members
 ├── build/                  # Build output (gitignored):
 │   ├── dev/roblox/         # Dev plugin build
 │   ├── prod/roblox/        # Production build
@@ -166,7 +165,7 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 ### Workspace members and production pruning
 
-`workspace/` is a Lute package workspace. The root `pkg.luau` has no name or version, which makes it a virtual root, and each member is a path dependency in it. Each member has its own `pkg.luau`, `src/`, and sometimes `rotriever.toml`, and reads its version and `files` from `workspace/shared.luau`. Members in the root's `dependencies` ship with the plugin. Members in its `dev_dependencies` are development-only, and production builds prune them. `project.luau` reads both lists from `pkg.luau`, so registering a member there is what makes the build compile it. Members' Roblox dependencies still come from Wally and `roblox-packages`, not `pkg.luau`.
+`workspace/` is a Lute package workspace. The root `pkg.luau` has no name or version, which makes it a virtual root, and each member is a path dependency in it. Each member has its own `pkg.luau`, `src/`, and sometimes `rotriever.toml`, and reads its version and `files` from the root's `metadata`. Members in the root's `dependencies` ship with the plugin. Members in its `dev_dependencies` are development-only, and production builds prune them. `project.luau` reads both lists from `pkg.luau`, so registering a member there is what makes the build compile it. Members' Roblox dependencies still come from Wally and `roblox-packages`, not `pkg.luau`.
 
 ### Wally vs Lute packages
 

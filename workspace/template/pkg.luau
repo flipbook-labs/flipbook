@@ -1,9 +1,9 @@
-local shared = require("../shared")
+local root = require("../../pkg")
 
 return {
 	package = {
 		name = "Template",
-		version = shared.version,
-		files = shared.files,
+		version = root.package.metadata.version,
+		files = root.package.metadata.memberFiles,
 	},
 }
