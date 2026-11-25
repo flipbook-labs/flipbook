@@ -41,6 +41,8 @@ Call `list` first, then use this order:
 
 Take every path from gateway results.
 
+Control values are Luau values. Pass `Color3.new(1, 0, 0)` or `Enum.Font.BuilderSans` straight to `setControls`. To read them, return the `getControls` response from `execute_luau` as it is. `HttpService:JSONEncode` turns these types into `null`.
+
 ## Visual and input checks
 
 Studio MCP viewport captures do not include plugin dock widgets, so a capture in Edit mode never shows Flipbook. Embed it and playtest instead.

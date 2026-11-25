@@ -44,6 +44,14 @@ describe("app registration", function()
 				}
 			end,
 			listStories = function(storybookPath)
+				if storybookPath == nil then
+					return {
+						{
+							name = "Orphan",
+							path = "ReplicatedStorage/Orphan.story",
+						},
+					}
+				end
 				return {
 					{
 						name = "Button",
@@ -67,6 +75,7 @@ describe("app registration", function()
 		expect(controller.listStorybooks()[1].name).toBe("Example")
 		expect(controller.embedFlipbook("ReplicatedStorage", true)).toBe("ReplicatedStorage/Flipbook")
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
+		expect(controller.listStories(nil)[1].name).toBe("Orphan")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
 		expect(screen.Enabled).toBe(true)
 
