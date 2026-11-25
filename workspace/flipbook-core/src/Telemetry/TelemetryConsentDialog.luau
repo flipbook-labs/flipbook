@@ -1,60 +1,51 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
-local Sift = require("@pkg/Sift")
+local Telemetry = require(script.Parent.Parent.Parent["flipbook-telemetry"])
 
+local AppMode = require("@root/Enums/AppMode")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
-local LocalStorageStore = require("@root/Plugin/LocalStorageStore")
-local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
 local useSignalState = ReactCharm.useSignalState
 local useCallback = React.useCallback
 local useState = React.useState
 
-local function TelemetryOptOutDialog(): React.Node?
+local function TelemetryConsentDialog(): React.Node?
 	local flipbookStore = FlipbookStoreContext.use()
-	local userSettingsStore = useSignalState(UserSettingsStore.get)
-	local localStorageStore = useSignalState(LocalStorageStore.get)
-	local storage = useSignalState(localStorageStore.getStorage)
-	local isStorageLoading = useSignalState(localStorageStore.getIsLoading)
-	local isOptedIn, setIsOptedIn = useState(true)
+	local consent = useSignalState(flipbookStore.telemetry.getConsent)
+	local isLoading = useSignalState(flipbookStore.telemetry.getIsLoading)
+	local isOptedIn, setIsOptedIn = useState(false)
+	local isSaving, setIsSaving = useState(false)
+	local didSaveFail, setDidSaveFail = useState(false)
 
-	local onClose = useCallback(
-		function()
-			localStorageStore.setStorage(function(prev)
-				return Sift.Dictionary.join(prev, {
-					wasUserPromptedForTelemetry = true,
-				})
-			end)
+	local onClose = useCallback(function()
+		if isSaving then
+			return
+		end
 
-			userSettingsStore.setStorage(function(prev)
-				return Sift.Dictionary.join(prev, {
-					collectAnonymousUsageData = isOptedIn,
-				})
-			end)
-
-			if isOptedIn then
+		setIsSaving(true)
+		task.spawn(function()
+			local decision: Telemetry.ConsentDecision = if isOptedIn
+				then Telemetry.ConsentState.Granted
+				else Telemetry.ConsentState.Denied
+			local saved = flipbookStore.telemetry.setConsent(decision)
+			if saved and isOptedIn then
 				flipbookStore.telemetry.capture({
 					eventName = "TelemetryOptedIn",
 				})
-			else
-				flipbookStore.telemetry.capture({
-					eventName = "TelemetryOptedOut",
-				})
 			end
-		end,
-		{
-			flipbookStore.telemetry,
-			localStorageStore.setStorage,
-			userSettingsStore.setStorage,
-			isOptedIn,
-		} :: { unknown }
-	)
 
-	-- We check `isStorageLoading` to prevent the dialog from briefly flashing
-	-- on screen
-	if isStorageLoading or storage.wasUserPromptedForTelemetry then
+			setDidSaveFail(not saved)
+			setIsSaving(false)
+		end)
+	end, { flipbookStore.telemetry, isOptedIn, isSaving } :: { unknown })
+
+	if flipbookStore.story.getMode() == AppMode.EmbeddedClient or isLoading then
+		return nil
+	end
+
+	if consent ~= Telemetry.ConsentState.Unknown and not didSaveFail then
 		return nil
 	end
 
@@ -76,13 +67,13 @@ local function TelemetryOptOutDialog(): React.Node?
 			}, {
 				MainParagraph = React.createElement(Foundation.Dialog.Text, {
 					tag = "auto-xy text-wrap text-body-medium",
-					Text = "Flipbook would like to send anonymized usage data to help us improve the quality of the plugin.",
+					Text = "Flipbook does not send usage data until you choose to share it. Anonymous usage data helps us improve the quality of the plugin.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
-				WhereToOptOut = React.createElement(Foundation.Dialog.Text, {
+				WhatIsExcluded = React.createElement(Foundation.Dialog.Text, {
 					tag = "auto-xy text-wrap text-body-medium",
-					Text = "You can opt out at any time in the settings.",
+					Text = "No personal data or story content is collected. You can change this choice at any time in Settings.",
 					LayoutOrder = nextLayoutOrder(),
 				}),
 
@@ -92,6 +83,14 @@ local function TelemetryOptOutDialog(): React.Node?
 					onActivated = setIsOptedIn,
 					LayoutOrder = nextLayoutOrder(),
 				}),
+
+				SaveError = if didSaveFail
+					then React.createElement(Foundation.Dialog.Text, {
+						tag = "auto-xy text-wrap text-body-medium content-alert",
+						Text = "Flipbook couldn't save your choice. Try again.",
+						LayoutOrder = nextLayoutOrder(),
+					})
+					else nil,
 			}),
 		}),
 
@@ -108,4 +107,4 @@ local function TelemetryOptOutDialog(): React.Node?
 	})
 end
 
-return TelemetryOptOutDialog
+return TelemetryConsentDialog

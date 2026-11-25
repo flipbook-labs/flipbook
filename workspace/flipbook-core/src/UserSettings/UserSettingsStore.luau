@@ -9,7 +9,6 @@ export type UserSettings = {
 	theme: string,
 	sidebarWidth: number,
 	controlsHeight: number,
-	collectAnonymousUsageData: boolean,
 }
 
 local defaultValue: UserSettings = {
@@ -17,7 +16,6 @@ local defaultValue: UserSettings = {
 	theme = defaultSettings.theme.choices[1].name,
 	sidebarWidth = defaultSettings.sidebarWidth.value,
 	controlsHeight = defaultSettings.controlsHeight.value,
-	collectAnonymousUsageData = defaultSettings.collectAnonymousUsageData.value,
 }
 
 local validate = t.interface({
@@ -25,7 +23,6 @@ local validate = t.interface({
 	theme = t.string,
 	sidebarWidth = t.number,
 	controlsHeight = t.number,
-	collectAnonymousUsageData = t.boolean,
 })
 
 -- defaultValue needs to be kept in sync with the keys in defaultSettings

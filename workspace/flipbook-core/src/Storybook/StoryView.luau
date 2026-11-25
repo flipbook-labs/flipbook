@@ -11,6 +11,7 @@ local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
+local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
 local useThemeName = require("@root/Common/useThemeName")
 
 local Divider = Foundation.Divider
@@ -41,6 +42,7 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 	local controlsStore = useMemo(function()
 		return createStoryControlsStore(if story then story.controls else nil)
 	end, { story } :: { unknown })
+	useAgentStoryRegistration(props.selectedStory.storyModule, story, controlsStore)
 
 	useEffect(function()
 		flipbookStore.story.setActiveControlsStore(controlsStore)
