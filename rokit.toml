@@ -4,11 +4,11 @@
 # New tools can be added by running `rokit add <tool>` in a terminal.
 
 [tools]
-changewrite = "flipbook-labs/changewrite@0.15.1"
+changewrite = "flipbook-labs/changewrite@0.16.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.69.0"
 lune = "lune-org/lune@0.9.4"
 lute = "luau-lang/lute@1.0.1-nightly.20261117"
-roblox-packages = "flipbook-labs/roblox-packages@0.5.1"
+roblox-packages = "flipbook-labs/roblox-packages@0.5.2"
 rocale = "Roblox/rocale-cli@0.1.3"
 rojo = "rojo-rbx/rojo@7.7.0"
 stylua = "JohnnyMorganz/StyLua@2.5.2"
