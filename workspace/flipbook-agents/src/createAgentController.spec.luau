@@ -39,6 +39,74 @@ describe("app registration", function()
 		expect(screenGui.Enabled).toBe(true)
 	end)
 
+	test("moves the app between a movable surface's widget and viewport", function()
+		local opened: { string } = {}
+		local controller = createAgentController(createScreen(), {
+			isVisible = function()
+				return true
+			end,
+			openViewport = function()
+				table.insert(opened, "viewport")
+			end,
+			openWidget = function()
+				table.insert(opened, "widget")
+			end,
+		})
+
+		controller.openViewport()
+		controller.openWidget()
+
+		expect(opened).toEqual({ "viewport", "widget" })
+	end)
+
+	test.each({
+		{ isVisible = true, expected = 0 },
+		{ isVisible = false, expected = 1 },
+	})("opens the widget for a story only when the app is hidden: %p", function(case)
+		local widgetOpens = 0
+		local controller = createAgentController(createScreen(), {
+			isVisible = function()
+				return case.isVisible
+			end,
+			openViewport = function() end,
+			openWidget = function()
+				widgetOpens += 1
+			end,
+		})
+		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
+			listStorybooks = function()
+				return {}
+			end,
+			listStories = function()
+				return {}
+			end,
+			openStory = function(storyPath)
+				return {
+					name = "Button",
+					path = storyPath,
+				}
+			end,
+			getCurrentStory = function()
+				return nil
+			end,
+		})
+
+		controller.openStory("ReplicatedStorage/Button.story", nil)
+
+		expect(widgetOpens).toBe(case.expected)
+	end)
+
+	test("rejects the viewport when the surface can't move", function()
+		local controller = createAgentController(createScreen())
+
+		expect(function()
+			controller.openViewport()
+		end).toThrow("openViewport is only available in the Flipbook plugin")
+	end)
+
 	test("routes app actions through the current adapter", function()
 		local screen = createScreen()
 		local controller = createAgentController(screen)
