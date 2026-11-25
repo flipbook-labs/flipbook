@@ -71,7 +71,7 @@ The whole pipeline is driven by `lute run build`. Lute is a Luau task runner; bu
 
 ## Agent Runtime
 
-`workspace/flipbook-agents` provides the AgentGateway boundary separately from `flipbook-core`. Its controller receives application and mounted-Story adapters, then exposes actions for opening the widget, embedding Flipbook, listing Storybooks and Stories, opening a Story, reading the current Story, and getting or setting Controls.
+`workspace/flipbook-agents` provides the AgentGateway boundary separately from `flipbook-core`. Its controller receives application and mounted-Story adapters, then exposes actions for opening the widget, moving Flipbook into the Edit-mode viewport, embedding Flipbook, listing Storybooks and Stories, opening a Story, reading the current Story, and getting or setting Controls.
 
 The controller only exposes operations backed by the currently registered adapters. For example, `setControls` requires the selected Story view to be mounted. Keeping this layer separate lets plugin and embedded surfaces share the protocol without putting Studio objects into the action definitions.
 

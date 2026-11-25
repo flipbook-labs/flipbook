@@ -16,6 +16,7 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	-- too, so a choice made in its consent dialog or Settings also covers the
 	-- AppOpened and AppClosed events sent here.
 	local telemetry = createTelemetry(AppMode.PluginWidget, plugin)
+
 	local function fireLifecycleEvent(eventName: "AppOpened" | "AppClosed")
 		if eventName == "AppOpened" then
 			telemetry.capture({
@@ -28,6 +29,8 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 		end
 	end
 
+	-- In the viewport, the app goes in StarterGui because Studio MCP's screen_capture leaves
+	-- out anything under CoreGui.
 	local surface = createPluginAppSurface(widget, StarterGui, function(isVisible)
 		fireLifecycleEvent(if isVisible then "AppOpened" else "AppClosed")
 	end)

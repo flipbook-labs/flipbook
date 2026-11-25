@@ -29,7 +29,8 @@ export type StoryAdapter = {
 	setControls: (controls: Controls) -> Controls,
 }
 
--- A surface that can move between the plugin widget and the Edit-mode viewport.
+-- Moves the plugin's app between its widget and the Edit-mode viewport. Embedded
+-- Flipbook has no widget, so it doesn't provide one.
 export type MovableSurface = {
 	isVisible: () -> boolean,
 	openViewport: () -> (),

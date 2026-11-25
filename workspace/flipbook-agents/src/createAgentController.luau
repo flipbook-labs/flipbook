@@ -25,7 +25,8 @@ local function createAgentController(surface: LayerCollector, movableSurface: Mo
 		movableSurface.openViewport()
 	end
 
-	-- Opening a story leaves the app in the viewport if it's already there.
+	-- A story opens wherever the app already shows, so an agent that moved it to the
+	-- viewport can keep taking screenshots. A hidden app opens in the widget.
 	local function ensureVisible()
 		if movableSurface == nil or not movableSurface.isVisible() then
 			openWidget()

@@ -1,11 +1,11 @@
 ---
 name: use-studio-mcp
-description: "Drive a local Flipbook build through the Studio MCP and the FlipbookAgentGateway actions, including embedded Play-mode screenshots and input. Use when: verifying Stories in Studio, changing gateway actions, or capturing visual evidence of Flipbook UI."
+description: "Drive a local Flipbook build through the Studio MCP and the FlipbookAgentGateway actions, including Edit-mode screenshots and embedded Play-mode input. Use when: verifying Stories in Studio, changing gateway actions, or capturing visual evidence of Flipbook UI."
 ---
 
 # Use Studio MCP for Flipbook
 
-Build Flipbook, open the generated Storybook experience in Studio, drive it through the gateway, and embed it for visual checks. For the protocol, polling, and connection errors, read the shared `agent-gateway/use-agent-gateway` skill.
+Build Flipbook, open the generated Storybook experience in Studio, drive it through the gateway, and move it into the viewport for screenshots. For the protocol, polling, and connection errors, read the shared `agent-gateway/use-agent-gateway` skill.
 
 ## When not to use
 
@@ -26,12 +26,12 @@ If Studio MCP reports `Not connected to the WS host`, stop and ask the user to e
 
 ## Drive Flipbook
 
-Find the gateway named `FlipbookAgentGateway` and follow the protocol in the shared `agent-gateway/use-agent-gateway` skill. Flipbook only creates this gateway once its app adapter is wired in. If the gateway isn't in `CoreGui`, the build you're running doesn't have it, so use the [embedded Play-mode workflow](#visual-and-input-checks) for navigation as well as capture.
+Find the gateway named `FlipbookAgentGateway` and follow the protocol in the shared `agent-gateway/use-agent-gateway` skill. The plugin puts it in `CoreGui` in the Edit data model. Embedded Flipbook puts one in `LocalPlayer.PlayerGui` in the Client data model during Play mode, with the discovery, navigation, and control actions only. If neither is there, the build you're running predates the gateway, so use the [embedded Play-mode workflow](#input-checks) for navigation as well as capture.
 
 Call `list` first, then use this order:
 
 1. Call `openWidget`.
-2. Call `embedFlipbook` before Play mode if you need screenshots or virtual input.
+2. Call `openViewport` if you need screenshots. Call `embedFlipbook` before Play mode if you need virtual input.
 3. Poll `listStorybooks` until the target Storybook appears.
 4. Call `listStories` with that Storybook path.
 5. Call `openStory` with the Story and Storybook paths.
@@ -43,9 +43,18 @@ Take every path from gateway results.
 
 Control values are Luau values. Pass `Color3.new(1, 0, 0)` or `Enum.Font.BuilderSans` straight to `setControls`. To read them, return the `getControls` response from `execute_luau` as it is. `HttpService:JSONEncode` turns these types into `null`.
 
-## Visual and input checks
+## Screenshots
 
-Studio MCP viewport captures do not include plugin dock widgets, so a capture in Edit mode never shows Flipbook. Embed it and playtest instead.
+Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook into the viewport first.
+
+1. Call `openViewport`. It moves the running app into `StarterGui.FlipbookViewport`, so the open Story and its control values stay as they were.
+2. Set up the Story with gateway actions. `openStory` leaves the app in the viewport.
+3. Capture with `screen_capture` in Edit mode.
+4. Call `openWidget` to move the app back.
+
+## Input checks
+
+`user_mouse_input` and `user_keyboard_input` only work in the Client data model, so clicking or typing in Flipbook needs embedded Play mode.
 
 1. Call `embedFlipbook`. It returns the `path` it embedded into. The `parent` param defaults to `ReplicatedStorage`. With no gateway, embed the runtime as described in [Embedding without the gateway](#embedding-without-the-gateway).
 2. Start Play mode with `start_stop_play`, then poll `get_studio_state` until the Client data model appears.
@@ -81,7 +90,7 @@ These behaviors were observed with the built-in Studio MCP server. Re-check them
 
 ```sh
 git grep -n -E "listStorybooks|openStory|setControls|getCurrentStory" -- workspace/flipbook-agents/src
-git grep -n embedFlipbook -- workspace/flipbook-agents/src
+git grep -n -E "embedFlipbook|openViewport" -- workspace/flipbook-agents/src
 git grep -n FlipbookAgentGateway -- workspace
 # The root project embeds the dev build under ReplicatedStorage.Flipbook.
 grep -n '"Flipbook"' default.project.json
@@ -89,4 +98,4 @@ grep -n '"Flipbook"' default.project.json
 git grep -n 'screenGui.Name = "Flipbook"' -- src/EmbeddedClientStarterScript.client.luau
 ```
 
-To check whether the app wires in the gateway yet, run `git grep -n createAgentGateway -- workspace/flipbook-core/src src`. No match means builds have no gateway, and the embedded workflow is the only path.
+The plugin wires in its gateway with `createAgentGateway` in `workspace/flipbook-core/src/Plugin/createFlipbookPlugin.luau`, and the embedded app with `createEmbeddedAgentGateway` in `workspace/flipbook-core/src/Embedding/createEmbeddedFlipbookApp.luau`.

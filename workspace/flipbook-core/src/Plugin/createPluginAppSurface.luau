@@ -15,7 +15,7 @@ export type PluginAppSurface = {
 	mounted, so the open story and its controls survive the move.
 
 	`onVisibilityChanged` runs when the app becomes visible or hidden. Moving a
-	visible app between surfaces doesn't run it.
+	visible app between surfaces doesn't run it, and neither does `destroy`.
 ]]
 local function createPluginAppSurface(
 	widget: DockWidgetPluginGui,
@@ -75,6 +75,8 @@ local function createPluginAppSurface(
 	end
 
 	local widgetConnection = widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+		-- Studio can open the widget on its own. The
+		-- app follows, because an open widget without it would be empty.
 		if widget.Enabled and name == "viewport" then
 			moveToWidget()
 		end
