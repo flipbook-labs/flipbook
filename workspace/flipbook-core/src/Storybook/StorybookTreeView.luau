@@ -8,6 +8,7 @@ local TreeView = require("@root/TreeView")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PinnedInstanceStore = require("@root/Storybook/PinnedInstanceStore")
 local createLoadedStorybook = require("@root/Storybook/createLoadedStorybook")
+local createStoryModuleRecordsStore = require("@root/Storybook/createStoryModuleRecordsStore")
 local createTreeNodeForStoryModule = require("@root/Storybook/createTreeNodeForStoryModule")
 local createTreeNodesForStorybook = require("@root/Storybook/createTreeNodesForStorybook")
 local doesTreeNodeMatchSearch = require("@root/Storybook/doesTreeNodeMatchSearch")
@@ -15,6 +16,7 @@ local findTreeNodeFromPath = require("@root/TreeView/findTreeNodeFromPath")
 local useLastOpenedStory = require("@root/Storybook/useLastOpenedStory")
 local usePrevious = require("@root/Common/usePrevious")
 
+type LastOpenedStory = useLastOpenedStory.LastOpenedStory
 type TreeNodeStore = TreeView.TreeNodeStore
 type LoadedStorybook = Storyteller.LoadedStorybook
 type UnavailableStorybook = Storyteller.UnavailableStorybook
@@ -26,25 +28,13 @@ local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useRef = React.useRef
 local useSignalState = ReactCharm.useSignalState
-local useStory = Storyteller.useStory
 local useStorybooks = Storyteller.useStorybooks
-local useStoryModuleRecords = Storyteller.useStoryModuleRecords
 local useOrphanedStoryModules = Storyteller.useOrphanedStoryModules
 
 export type Props = {
 	searchTerm: string?,
 	layoutOrder: number?,
 }
-
-type PrioritizedStoryRequestProps = {
-	request: StoryRequest,
-	storyId: string?,
-}
-
-local function PrioritizedStoryRequest(props: PrioritizedStoryRequestProps)
-	useStory(props.request.storyModule, props.request.storybook, props.storyId)
-	return nil
-end
 
 local function getRecordSignature(record: StoryModuleRecord): string
 	local parts: { string } = {}
@@ -169,33 +159,6 @@ local function StorybookTreeView(props: Props)
 	local orphanedStoryModules = useOrphanedStoryModules()
 	local nodesByInstance = useRef<<{ [Instance]: TreeNodeStore }>>({})
 	local orphanedStorybook = useMemo(createLoadedStorybook, {})
-	local storyRequests = useMemo(function(): { StoryRequest }
-		local requests = {}
-		local seen = {}
-
-		for _, storybook in storybooks.available do
-			for _, storyModule in Storyteller.findStoryModulesForStorybook(storybook) do
-				seen[storyModule] = true
-				table.insert(requests, {
-					storyModule = storyModule,
-					storybook = storybook,
-				})
-			end
-		end
-
-		for _, storyModule in orphanedStoryModules do
-			if not seen[storyModule] then
-				seen[storyModule] = true
-				table.insert(requests, {
-					storyModule = storyModule,
-					storybook = orphanedStorybook,
-				})
-			end
-		end
-
-		return requests
-	end, { storybooks.available, orphanedStoryModules, orphanedStorybook } :: { unknown })
-	local storyModuleRecords = useStoryModuleRecords(storyRequests)
 
 	local pinnedInstanceStore = useSignalState(PinnedInstanceStore.get)
 
@@ -250,39 +213,58 @@ local function StorybookTreeView(props: Props)
 			return sources
 		end)
 	end, { rootNode })
-	local expandedStorybookSources = useSignalState(getExpandedStorybookSources)
-	local isUnknownStoriesExpanded = useSignalState(unknownStories.getIsExpanded)
-	local prioritizedStoryRequests = useMemo(
-		function(): { PrioritizedStoryRequestProps }
-			local requests = {}
+	-- The store's priorities read Charm state, so the last opened Story is
+	-- copied into a signal for them.
+	local lastOpenedStorySignal = useMemo(function()
+		local get, set = Charm.signal<<LastOpenedStory?>>(nil)
+		return {
+			get = get,
+			set = set,
+		}
+	end, {})
+	useEffect(function()
+		lastOpenedStorySignal.set(lastOpenedStory)
+	end, { lastOpenedStorySignal, lastOpenedStory } :: { unknown })
 
-			for _, request in storyRequests do
-				local isLastOpenedStory = lastOpenedStory ~= nil
-					and request.storyModule == lastOpenedStory.storyModule
-					and (
-						lastOpenedStory.storybookSource == nil
-						or request.storybook.source == lastOpenedStory.storybookSource
-					)
-				local isExpanded = expandedStorybookSources[request.storybook.source]
-					or (request.storybook == orphanedStorybook and isUnknownStoriesExpanded)
-				if isExpanded or isLastOpenedStory then
-					table.insert(requests, {
-						request = request,
-						storyId = if isLastOpenedStory and lastOpenedStory then lastOpenedStory.storyId else nil,
-					})
-				end
-			end
-
-			return requests
+	-- Stories in an expanded Storybook or an expanded Unknown Stories folder, and
+	-- the last opened Story, load ahead of the rest because someone is about to
+	-- look at them.
+	local storyModuleRecordsStore = useMemo(
+		function()
+			return createStoryModuleRecordsStore({
+				orphanedStorybook = orphanedStorybook,
+				isInteractive = function(request: StoryRequest): boolean
+					local lastOpened = lastOpenedStorySignal.get()
+					if
+						lastOpened
+						and request.storyModule == lastOpened.storyModule
+						and (
+							lastOpened.storybookSource == nil
+							or request.storybook.source == lastOpened.storybookSource
+						)
+					then
+						return true
+					end
+					if request.storybook == orphanedStorybook then
+						return unknownStories.getIsExpanded()
+					end
+					return getExpandedStorybookSources()[request.storybook.source] == true
+				end,
+			})
 		end,
 		{
-			expandedStorybookSources,
-			isUnknownStoriesExpanded,
-			lastOpenedStory,
+			getExpandedStorybookSources,
+			lastOpenedStorySignal,
 			orphanedStorybook,
-			storyRequests,
+			unknownStories,
 		} :: { unknown }
 	)
+	useEffect(function()
+		storyModuleRecordsStore.start()
+		return storyModuleRecordsStore.releaseAll
+	end, { storyModuleRecordsStore })
+	local storyRequests = useSignalState(storyModuleRecordsStore.getRequests, { storyModuleRecordsStore })
+	local storyModuleRecords = useSignalState(storyModuleRecordsStore.getRecords, { storyModuleRecordsStore })
 
 	local pinnedChildren = useSignalState(pinned.getChildren)
 	local pinnedNodes = useSignalState(rootNode.getPinnedDescendants)
@@ -656,21 +638,11 @@ local function StorybookTreeView(props: Props)
 		} :: { unknown }
 	)
 
-	local children: { [string]: React.ReactNode } = {
-		TreeView = React.createElement(TreeView.TreeView, {
-			root = rootNode,
-			filter = if props.searchTerm and props.searchTerm ~= "" then filter else nil,
-			layoutOrder = props.layoutOrder,
-		}),
-	}
-	for index, prioritizedRequest in prioritizedStoryRequests do
-		children[`PrioritizedStoryRequest{index}`] = React.createElement(PrioritizedStoryRequest, {
-			request = prioritizedRequest.request,
-			storyId = prioritizedRequest.storyId,
-		})
-	end
-
-	return React.createElement(React.Fragment, nil, children)
+	return React.createElement(TreeView.TreeView, {
+		root = rootNode,
+		filter = if props.searchTerm and props.searchTerm ~= "" then filter else nil,
+		layoutOrder = props.layoutOrder,
+	})
 end
 
 return StorybookTreeView
