@@ -24,6 +24,11 @@ beforeEach(function()
 
 	enableOutputLogging = require("./enableOutputLogging")
 	logger = require("@root/logger")
+
+	-- The logger's level and sinks come from the build's `.env`, so each test
+	-- starts from a known state: every level logged, and nothing in Output.
+	logger.setLevel("Trace")
+	logger.removeSink(require("./outputSink"))
 end)
 
 test("send the logger's records to Output once enabled", function()
