@@ -74,9 +74,20 @@ local NOISE_RATIO = 0.001
 -- fits along its axis.
 local MAX_CHART_POINTS = 12
 
--- A part smaller than this share of the plugin is folded into one slice of
--- the pie chart.
-local SMALL_SLICE_RATIO = 0.01
+-- A part smaller than this share of the plugin is folded into one bar of the
+-- parts chart.
+local SMALL_PART_RATIO = 0.01
+
+--[[
+	GitHub draws a Mermaid chart as wide as the comment and scales its height
+	to match, so a chart's shape decides how tall it gets. These lines go at
+	the top of a chart to make it wide and short. Both charts are Mermaid's XY
+	chart because it's the kind whose shape can be set.
+]]
+local CHART_SIZES = {
+	history = '%%{init: {"xyChart": {"width": 900, "height": 260}}}%%',
+	parts = '%%{init: {"xyChart": {"width": 900, "height": 220}}}%%',
+}
 
 local BAR_LENGTH = 20
 local MINUS = "−"
@@ -313,6 +324,7 @@ local function renderSizeReport(report: Report, baseReport: Report?, options: Op
 	add("")
 	if #chartSizes >= 2 then
 		add("```mermaid")
+		add(CHART_SIZES.history)
 		add("xychart-beta")
 		add(`    x-axis [{table.concat(chartLabels, ", ")}]`)
 		add(`    y-axis "Size (MB)" 0 --> {math.ceil(largestBytes / 1_000_000)}`)
@@ -332,24 +344,43 @@ local function renderSizeReport(report: Report, baseReport: Report?, options: Op
 	add("")
 	add("### 🧩 What the prod plugin is made of")
 	add("")
-	add("```mermaid")
-	add("pie showData")
-
+	-- One bar for each part of the prod plugin, biggest first, with the
+	-- small parts added up into a last bar.
+	local prodParts: { Part } = {}
 	local otherBytes = 0
 	for _, part in report.parts do
 		local bytes = part.bytes[PROD_CHANNEL]
 		if not bytes then
 			continue
-		elseif bytes < prodBytes * SMALL_SLICE_RATIO then
+		elseif bytes < prodBytes * SMALL_PART_RATIO then
 			otherBytes += bytes
 		else
-			add(`    "{part.name} (MB)" : {formatMegabytes(bytes)}`)
+			table.insert(prodParts, part)
 		end
 	end
-	-- Mermaid refuses a slice of zero, which is what a few bytes round to.
-	if formatMegabytes(otherBytes) ~= "0.00" then
-		add(`    "Everything else (MB)" : {formatMegabytes(otherBytes)}`)
+	table.sort(prodParts, function(a: Part, b: Part)
+		return a.bytes[PROD_CHANNEL] > b.bytes[PROD_CHANNEL]
+	end)
+
+	local barLabels: { string }, barSizes: { string } = {}, {}
+	local largestPartBytes = otherBytes
+	for _, part in prodParts do
+		local bytes = part.bytes[PROD_CHANNEL]
+		table.insert(barLabels, `"{part.name}"`)
+		table.insert(barSizes, formatMegabytes(bytes))
+		largestPartBytes = math.max(largestPartBytes, bytes)
 	end
+	if otherBytes > 0 then
+		table.insert(barLabels, '"Everything else"')
+		table.insert(barSizes, formatMegabytes(otherBytes))
+	end
+
+	add("```mermaid")
+	add(CHART_SIZES.parts)
+	add("xychart-beta horizontal")
+	add(`    x-axis [{table.concat(barLabels, ", ")}]`)
+	add(`    y-axis "Size (MB)" 0 --> {math.ceil(largestPartBytes / 1_000_000)}`)
+	add(`    bar [{table.concat(barSizes, ", ")}]`)
 	add("```")
 
 	local header = { "Part" }

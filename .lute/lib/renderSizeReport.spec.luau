@@ -135,7 +135,7 @@ test.suite("renderSizeReport", function(suite)
 	suite:case("says when the chart will show up while there's only one commit", function(assert)
 		local markdown = renderSizeReport(getReport())
 
-		assert.eq(hasText(markdown, "xychart-beta"), false)
+		assert.eq(hasText(markdown, "    line ["), false)
 		assert.eq(hasText(markdown, "shows up here once `main` has a report to start from"), true)
 	end)
 
@@ -172,12 +172,20 @@ test.suite("renderSizeReport", function(suite)
 		assert.eq(hasText(markdown, 'x-axis ["commit4", '), true)
 	end)
 
-	suite:case("draws the prod plugin's parts as a pie and folds the small ones together", function(assert)
-		local markdown = renderSizeReport(getReport())
+	suite:case("draws a bar for each part of the prod plugin and adds the small ones up", function(assert)
+		local report = getReport()
+		local part: renderSizeReport.Part = {
+			name = "RobloxPackages",
+			bytes = { prod = 1_800_000 },
+		}
+		table.insert(report.parts, part)
 
-		assert.eq(hasLine(markdown, '    "Packages (MB)" : 0.80'), true)
-		assert.eq(hasLine(markdown, '    "Everything else (MB)" : 0.01'), true)
-		assert.eq(hasText(markdown, '"src (MB)"'), false)
+		local markdown = renderSizeReport(report)
+
+		assert.eq(hasLine(markdown, "xychart-beta horizontal"), true)
+		assert.eq(hasLine(markdown, '    x-axis ["RobloxPackages", "Packages", "Everything else"]'), true)
+		assert.eq(hasLine(markdown, '    y-axis "Size (MB)" 0 --> 2'), true)
+		assert.eq(hasLine(markdown, "    bar [1.80, 0.80, 0.01]"), true)
 	end)
 
 	suite:case("lists every part with a dash where a channel leaves it out", function(assert)
