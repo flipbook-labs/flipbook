@@ -45,7 +45,7 @@ Control values are Luau values. Pass `Color3.new(1, 0, 0)` or `Enum.Font.Builder
 
 ## Screenshots
 
-Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook into the viewport first. On a build without `openViewport`, clone the widget's children into a ScreenGui under `StarterGui`, capture, and destroy the clone. A clone taller or wider than the viewport is cut off.
+Studio MCP viewport captures do not include plugin dock widgets. Move Flipbook into the viewport first. On a build without `openViewport`, clone the widget's children into a ScreenGui under `StarterGui`, capture, and destroy the clone. A clone taller or wider than the viewport is cut off. To save a capture to a file and attach it to a pull request, follow [`story-screenshots`](../story-screenshots/SKILL.md).
 
 1. Call `openViewport`. It moves the running app into `StarterGui.FlipbookViewport`, so the open Story and its control values stay as they were.
 2. Set up the Story with gateway actions. `openStory` leaves the app in the viewport.
