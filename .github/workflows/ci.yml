@@ -190,11 +190,11 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      # Runs on main upload their report as an artifact. The report is only
-      # there to compare with, so a pull request goes without one when the
-      # download fails.
+      # Every run uploads its report as an artifact. This gets the newest one
+      # from main, which a run compares itself with and takes its history
+      # from. The report still works without it, so a failed download doesn't
+      # fail the job.
       - name: Download the size report from main
-        if: github.event_name == 'pull_request'
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -208,7 +208,10 @@ jobs:
           unzip -o "$RUNNER_TEMP/size-report.zip" -d "$RUNNER_TEMP/base"
 
       - name: Measure every build
-        run: lute run size-report --base "$RUNNER_TEMP/base/size-report.json"
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: lute run size-report --base "$RUNNER_TEMP/base/size-report.json" --sha "$HEAD_SHA" --run-url "$RUN_URL"
 
       - name: Add the report to the run summary
         run: cat build/size-report.md >> "$GITHUB_STEP_SUMMARY"

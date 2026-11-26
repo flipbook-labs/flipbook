@@ -18,6 +18,9 @@ local ROTRIEVER_BUNDLE_NAME = "flipbook-core-rotriever"
 local REPORT_JSON_PATH = path.join(project.BUILD_PATH, "size-report.json")
 local REPORT_MARKDOWN_PATH = path.join(project.BUILD_PATH, "size-report.md")
 
+-- How many commits a report's history holds before the oldest drop off.
+local MAX_HISTORY_LENGTH = 50
+
 local args = cli.parser()
 
 args:add("script", "positional", {
@@ -25,6 +28,13 @@ args:add("script", "positional", {
 })
 args:add("base", "option", {
 	help = "Path to another run's size-report.json to show changes from. A path with no file there is ignored",
+})
+
+args:add("sha", "option", {
+	help = "The commit being measured. Defaults to the one checked out",
+})
+args:add("run-url", "option", {
+	help = "Link to the CI run doing the measuring, which the report's footer points at",
 })
 
 args:parse({ ... })
@@ -99,11 +109,21 @@ local function build(buildArgs: { string })
 	run("lute", params)
 end
 
+local sha = args:get("sha")
+if typeof(sha) ~= "string" or sha == "" then
+	sha = run("git", { "rev-parse", "HEAD" }, {
+		captureOutput = true,
+	})
+end
+assert(typeof(sha) == "string" and sha ~= "", "couldn't work out which commit is being measured")
+
 local report: Report = {
+	sha = sha:sub(1, 7),
 	bundles = {},
 	channels = CHANNELS,
 	parts = {},
 	storybookDeployBytes = 0,
+	history = {},
 }
 
 local partsByName: { [string]: renderSizeReport.Part } = {}
@@ -199,7 +219,36 @@ if typeof(basePath) == "string" and fs.exists(basePath) then
 	baseReport = (json.deserialize(fs.readFileToString(basePath)) :: unknown) :: Report
 end
 
-local markdown = renderSizeReport(report, baseReport)
+--[[
+	The history carries over from the base report, which ends with the base
+	commit itself, and this run goes on the end. Measuring a commit again
+	replaces its earlier entry.
+]]
+if baseReport and baseReport.history then
+	for _, entry in baseReport.history do
+		if entry.sha ~= report.sha then
+			table.insert(report.history, entry)
+		end
+	end
+end
+
+local sizes: { [string]: number } = {}
+for _, bundle in report.bundles do
+	sizes[bundle.name] = bundle.bytes
+end
+table.insert(report.history, {
+	sha = report.sha,
+	bytes = sizes,
+})
+
+while #report.history > MAX_HISTORY_LENGTH do
+	table.remove(report.history, 1)
+end
+
+local runUrl = args:get("run-url")
+local markdown = renderSizeReport(report, baseReport, {
+	runUrl = if typeof(runUrl) == "string" and runUrl ~= "" then runUrl else nil,
+})
 
 fs.writeStringToFile(REPORT_JSON_PATH, json.serialize((report :: unknown) :: json.Value, true))
 fs.writeStringToFile(REPORT_MARKDOWN_PATH, markdown)
