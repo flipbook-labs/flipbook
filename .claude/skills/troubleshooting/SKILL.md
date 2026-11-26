@@ -15,7 +15,7 @@ Flipbook's root `AGENTS.md` covers the commands and the Charm workaround. This s
 
 **An injected global is nil at runtime.** Darklua substitutes the value at build time and prints a `WARN` that the environment variable is not defined, then uses `nil`. The build still succeeds. `BASE_URL`, `LOG_LEVEL`, and `ENABLE_OUTPUT_LOGGING` come from `.env` through the process environment, so a missing `.env` is the usual cause. `lute run build` stops when `BASE_URL` is unset, but it does not check `LOG_LEVEL` or `ENABLE_OUTPUT_LOGGING`. Copy `.env.template` to `.env` and rebuild with `--clean`.
 
-**Logs appear in Studio Output, or do not appear in Help > Logs.** `ENABLE_OUTPUT_LOGGING` is compared as the string `"true"` in `workspace/flipbook-core/src/logger.luau`, and `LOG_LEVEL` filters before either destination. Both are baked in, so changing them needs a rebuild.
+**Logs appear in Studio Output, or do not appear in Help > Logs.** `ENABLE_OUTPUT_LOGGING` is compared as the string `"true"` in `workspace/flipbook-core/src/logger.luau`, and `LOG_LEVEL` filters before either destination. Both are baked in, so changing them needs a rebuild. Embedded Flipbook always writes to Output, because its starter scripts call `enableOutputLogging`.
 
 **Studio reports a missing `@pkg` or `@workspace` alias.** Darklua left a string require unresolved, so the plugin carries a Luau-style path that Roblox cannot load. Causes are a stale `sourcemap-darklua.json` or an absolute source path handed to Darklua. The build regenerates the sourcemap with Rojo and passes a relative path. If you changed `compileAsync.luau`, keep both.
 
