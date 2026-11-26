@@ -17,7 +17,7 @@ ReactCharm = "littensy/react-charm@0.4.0-rc.3"
 ReactRoblox = "jsdotlua/react-roblox@17.0.2"
 ReactSpring = "chriscerie/react-spring@2.0.0"
 Sift = "csqrl/sift@0.0.8"
-Storyteller = "flipbook-labs/storyteller@1.13.0"
+Storyteller = "flipbook-labs/storyteller@1.14.0"
 t = "osyrisrblx/t@3.0.0"
 
 # dev dependencies
