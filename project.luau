@@ -39,7 +39,6 @@ return {
 	EXAMPLE_PATH = path.resolve("./example"),
 	WORKSPACE_PATH = path.resolve("./workspace"),
 	WORKSPACE_MEMBER_PATHS = memberPaths,
-	LUAU_PACKAGES_PATH = path.resolve("./LuauPackages"),
 
 	PLUGIN_FILENAME = "Flipbook.rbxm",
 
