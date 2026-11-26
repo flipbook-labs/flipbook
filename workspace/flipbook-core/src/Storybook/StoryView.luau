@@ -12,7 +12,7 @@ local StoryPreview = require("@root/Storybook/StoryPreview")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
 local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
-local useThemeName = require("@root/Common/useThemeName")
+local useExtraStoryProps = require("@root/Storybook/useExtraStoryProps")
 
 local Divider = Foundation.Divider
 local Text = Foundation.Text
@@ -25,7 +25,6 @@ local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
-type ExtraStoryProps = types.ExtraStoryProps
 type SelectedStory = types.SelectedStory
 
 type SelectedStoryViewProps = {
@@ -36,7 +35,6 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
 	local story, storyError =
 		useStory(props.selectedStory.storyModule, props.selectedStory.storybook, props.selectedStory.storyId)
-	local theme = useThemeName()
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
@@ -55,14 +53,10 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 		end
 	end, { controlsStore, flipbookStore } :: { unknown })
 
-	local extraProps = useMemo(function(): ExtraStoryProps
-		return {
-			theme = theme :: useThemeName.ThemeName,
-			locale = "en-us",
-			plugin = plugin,
-			widget = overlayGui,
-		}
-	end, { theme, plugin, overlayGui } :: { unknown })
+	local extraProps = useExtraStoryProps({
+		plugin = plugin,
+		widget = overlayGui,
+	})
 
 	return e(
 		StoryControlsContext.StoryControlsProvider,
