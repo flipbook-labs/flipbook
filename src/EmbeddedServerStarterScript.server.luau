@@ -10,21 +10,12 @@ local startTime = os.clock()
 -- lute-lint-ignore(unused_variable)
 local Players = game:GetService("Players")
 
-local Archivist = require("@pkg/Archivist")
 local FlipbookCore = require("@workspace/flipbook-core/src")
+local FlipbookLogger = require("@workspace/flipbook-core/src/logger")
+local enableOutputLogging = require("@workspace/flipbook-core/src/Logs/enableOutputLogging")
 
---[[
-	These lines confirm in Output that the embedded app started. The plugin's
-	logger writes to Output only when the build sets `ENABLE_OUTPUT_LOGGING`, so
-	these scripts use their own logger with Archivist's default console sink. Its
-	level is fixed at Info so the lines show whatever `LOG_LEVEL` the build used.
-]]
-local logger = Archivist.createLogger(script.Name, {
-	level = "Info",
-	middleware = {
-		Archivist.middleware.name,
-	},
-})
+enableOutputLogging()
+local logger = FlipbookLogger.child(script.Name)
 
 local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
 

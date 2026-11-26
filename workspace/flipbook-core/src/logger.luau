@@ -1,6 +1,7 @@
 local Archivist = require("@pkg/Archivist")
 
 local LogsStore = require("@root/Logs/LogsStore")
+local outputSink = require("@root/Logs/outputSink")
 
 --[[
 	`_G.LOG_LEVEL` and `_G.ENABLE_OUTPUT_LOGGING` are build globals. The build
@@ -28,16 +29,7 @@ local sinks: { Archivist.Sink } = {
 }
 
 if _G.ENABLE_OUTPUT_LOGGING == "true" then
-	table.insert(
-		sinks,
-		Archivist.createConsoleSink({
-			formatter = Archivist.createPrettyFormatter({
-				middleware = {
-					Archivist.middleware.name,
-				},
-			}),
-		})
-	)
+	table.insert(sinks, outputSink)
 end
 
 return Archivist.createLogger("Flipbook", {
