@@ -90,6 +90,18 @@ local function createFakeRuntime()
 	}
 end
 
+--[[
+	Splits a fake runtime's log into its first `requestCount` entries, in
+	order, and the rest, sorted. The store keeps requests in tables keyed by
+	Story module, so requests it releases while walking them can happen in any
+	order.
+]]
+local function splitLog(log: { string }, requestCount: number): ({ string }, { string })
+	local releases = table.move(log, requestCount + 1, #log, 1, {})
+	table.sort(releases)
+	return table.move(log, 1, requestCount, 1, {}), releases
+end
+
 local function createRecord(storyModule: ModuleScript): StoryModuleRecord
 	local record: Storyteller.UnavailableStoryModule = {
 		status = "Unavailable",
@@ -220,10 +232,15 @@ test("releases a module's request when it's no longer listed", function()
 	-- has the store look for Story modules again.
 	fake.setStorybooks({ createStorybook("Components", { root }) })
 
-	expect(fake.log).toEqual({
+	-- The new Storybook has its own source, so Button gets a new request and
+	-- both old requests are released.
+	local requests, releases = splitLog(fake.log, 3)
+	expect(requests).toEqual({
 		"request Button.story Background",
 		"request Toggle.story Background",
 		"request Button.story Background",
+	})
+	expect(releases).toEqual({
 		"release Button.story Background",
 		"release Toggle.story Background",
 	})
@@ -301,9 +318,12 @@ test("releaseAll releases every request and stops following changes", function()
 	store.releaseAll()
 	fake.setOrphans({})
 
-	expect(fake.log).toEqual({
+	local requests, releases = splitLog(fake.log, 2)
+	expect(requests).toEqual({
 		"request Button.story Background",
 		"request Orphan.story Background",
+	})
+	expect(releases).toEqual({
 		"release Button.story Background",
 		"release Orphan.story Background",
 	})
