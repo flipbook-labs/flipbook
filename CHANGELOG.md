@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.7.0
+
+Features 2 · Changes 2 · Fixes 2 · Dependencies 1 · Internal 8
+
+### Features
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-agents-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-agents-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-agents-light.png" alt="Agents" height="18" align="texttop" /></picture> Connect the plugin to the agent runtime so tools can find and open stories, edit their controls, and embed Flipbook. ([#639](https://github.com/flipbook-labs/flipbook/pull/639))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-stories-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-stories-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-stories-light.png" alt="Stories" height="18" align="texttop" /></picture> Add a theme picker for Foundation app themes. Stories receive `colorMode` and `themeName`, and `theme` is deprecated. ([#663](https://github.com/flipbook-labs/flipbook/pull/663))
+
+<details>
+<summary>Details</summary>
+
+Missing saved settings now use their defaults instead of resetting every setting, and a saved `theme` setting migrates to `colorMode`.
+
+</details>
+
+### Changes
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-light.png" alt="Build" height="18" align="texttop" /></picture> Leave packages the plugin never requires out of release builds, which shrinks Flipbook from 4.3 MB to 2.7 MB. ([#731](https://github.com/flipbook-labs/flipbook/pull/731))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-light.png" alt="Packages" height="18" align="texttop" /></picture> Stop shipping Roblox's copy of React alongside Flipbook's own. ([#745](https://github.com/flipbook-labs/flipbook/pull/745))
+
+### Fixes
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-telemetry-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-telemetry-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-telemetry-light.png" alt="Telemetry" height="18" align="texttop" /></picture> Wait for explicit consent before collecting anonymous telemetry. ([#655](https://github.com/flipbook-labs/flipbook/pull/655))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-embedded-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-embedded-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-embedded-light.png" alt="Embedded" height="18" align="texttop" /></picture> Upgrade Storyteller to 1.14.0 so opening a Story in Play mode no longer crashes. ([#725](https://github.com/flipbook-labs/flipbook/pull/725))
+
+### Dependencies
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-light.png" alt="Tooling" height="18" align="texttop" /></picture> Move to Changewrite v0.16.0, AgentSkills v0.9.0, Storyteller v1.13.0, and ModuleLoader v0.13.0. ([#711](https://github.com/flipbook-labs/flipbook/pull/711))
+
+### Internal
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.png" alt="Contributing" height="18" align="texttop" /></picture> Apply the Greptile changelog length rule to `summary` and let `body` run longer. ([#716](https://github.com/flipbook-labs/flipbook/pull/716))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-packages-light.png" alt="Packages" height="18" align="texttop" /></picture> Get ModuleLoader through Storyteller instead of pinning it separately. ([#707](https://github.com/flipbook-labs/flipbook/pull/707))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-build-light.png" alt="Build" height="18" align="texttop" /></picture> Declare the `workspace/` members as a Lute package workspace. ([#690](https://github.com/flipbook-labs/flipbook/pull/690))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-docs-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-docs-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-docs-light.png" alt="Docs" height="18" align="texttop" /></picture> Document every surface Flipbook runs on and who can use it. ([#722](https://github.com/flipbook-labs/flipbook/pull/722))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-tooling-light.png" alt="Tooling" height="18" align="texttop" /></picture> Add a screenshot task and skill so agents attach Story screenshots to pull requests. ([#602](https://github.com/flipbook-labs/flipbook/pull/602))
+
+<details>
+<summary>See 3 more</summary>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-release-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-release-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-release-light.png" alt="Release" height="18" align="texttop" /></picture> Publish the plugin from Lute through Open Cloud, which fixes the nightly dev plugin publish and drops Lune and rbxasset. ([#736](https://github.com/flipbook-labs/flipbook/pull/736))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.png" alt="Contributing" height="18" align="texttop" /></picture> Add a Visuals section to the pull request template for screenshots and video. ([#741](https://github.com/flipbook-labs/flipbook/pull/741))
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-ci-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-ci-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-ci-light.png" alt="CI" height="18" align="texttop" /></picture> Report the size of every build on each pull request. ([#742](https://github.com/flipbook-labs/flipbook/pull/742))
+
+</details>
+
 ## v2.6.0
 
 Flipbook now runs inside Roblox experiences as well as the Studio plugin, and a shared preview link opens straight to the stories it names. Story controls gain color, date, multi-select, slider, and Object inputs, and changing one no longer rerenders the whole panel.
