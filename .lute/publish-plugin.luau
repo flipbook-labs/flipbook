@@ -7,9 +7,9 @@
 
 	Build the plugin first with `lute run build plugin`. This only uploads the
 	`.rbxm` it's given, which is `Flipbook.rbxm` by default. The channel picks
-	the asset, as `ASSET_NAMES_BY_CHANNEL` in `.lute/lib/creator-store/assets.luau`
-	maps it, so beta builds land on the dev asset. `--smoketest` publishes to
-	the smoketest asset whatever the channel is.
+	the asset, as `ASSET_NAMES_BY_CHANNEL` in `creator-store.luau` maps it, so
+	beta builds land on the dev asset. `--smoketest` publishes to the smoketest
+	asset whatever the channel is.
 
 	The Open Cloud API key comes from ROBLOX_API_KEY, set in the environment or
 	in `.env`. When that's empty, `--apiKey` supplies it.
@@ -19,7 +19,7 @@ local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local process = require("@std/process")
 
-local assets = require("@scripts/lib/creator-store/assets")
+local creatorStore = require("@repo/creator-store")
 local project = require("@repo/project")
 local publishPluginAsync = require("@scripts/lib/creator-store/publishPluginAsync")
 
@@ -46,17 +46,15 @@ args:add("apiKey", "option", {
 })
 args:parse({ ... })
 
+-- `--channel` takes the lowercase names that `lute run build` uses.
 local channelArg = assert(args:get("channel"))
-local channel: assets.ChannelName
-if channelArg == assets.ChannelName.Dev then
-	channel = assets.ChannelName.Dev
-elseif channelArg == assets.ChannelName.Beta then
-	channel = assets.ChannelName.Beta
-elseif channelArg == assets.ChannelName.Prod then
-	channel = assets.ChannelName.Prod
-else
-	error(`bad value for channel (must be one of "dev", "beta", or "prod", got "{channelArg}")`, 0)
+local channel: creatorStore.ChannelName? = nil
+for name in creatorStore.ASSET_NAMES_BY_CHANNEL do
+	if name:lower() == channelArg then
+		channel = name
+	end
 end
+assert(channel, `bad value for channel (must be one of "dev", "beta", or "prod", got "{channelArg}")`)
 
 local apiKey = process.env.ROBLOX_API_KEY
 if apiKey == nil or apiKey == "" then
@@ -67,8 +65,10 @@ assert(apiKey ~= nil and apiKey ~= "", "An Open Cloud API key must be supplied w
 local file = assert(args:get("file"))
 assert(fs.exists(file), `{file} doesn't exist. Build it first with \`lute run build plugin\``)
 
-local assetName = if args:has("smoketest") then assets.AssetName.Smoketest else assets.ASSET_NAMES_BY_CHANNEL[channel]
-local assetId = assets.ASSETS[assetName].assetId
+local assetName = if args:has("smoketest")
+	then creatorStore.AssetName.Smoketest
+	else creatorStore.ASSET_NAMES_BY_CHANNEL[channel]
+local assetId = creatorStore.ASSETS[assetName].assetId
 
 print(`Publishing {file} to the {assetName} asset ({string.format("%d", assetId)})`)
 local versionNumber = publishPluginAsync(file, assetName, apiKey)

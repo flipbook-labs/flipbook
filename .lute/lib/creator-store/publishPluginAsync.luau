@@ -3,8 +3,8 @@ local path = require("@std/path")
 local task = require("@std/task")
 
 local Assets = require("@lpm/open-cloud-assets@v0.2.0")
-local assets = require("./assets")
 local createOpenCloudClient = require("./createOpenCloudClient")
+local creatorStore = require("@repo/creator-store")
 local project = require("@repo/project")
 local runLuauTaskAsync = require("./runLuauTaskAsync")
 
@@ -15,10 +15,10 @@ local POLL_INTERVAL_SECONDS = 2
 
 --[[
 	A new version doesn't change the asset's name or description on the Creator
-	Store, so this sets them from `assets.luau` after each publish. The update
+	Store, so this sets them from `creator-store.luau` after each publish. The update
 	is an operation that finishes in the background, so this waits for it.
 ]]
-local function updateAssetDetailsAsync(client: Assets.Client, asset: assets.Asset)
+local function updateAssetDetailsAsync(client: Assets.Client, asset: creatorStore.Asset)
 	local operation = Assets.updateAsset(client, {
 		assetId = asset.assetId,
 		updateMask = { "displayName", "description" },
@@ -43,23 +43,23 @@ end
 
 --[[
 	Publishes a plugin build to one of the Creator Store assets in
-	`assets.luau` and returns the asset version it created.
+	`creator-store.luau` and returns the asset version it created.
 
 	The Open Cloud Assets API doesn't accept plugins from an API key, so the
 	upload happens in a Luau Execution task that calls `AssetService`. The
 	`.rbxm` file goes to that task as its binary input.
 ]]
-local function publishPluginAsync(rbxmPath: path.Pathlike, assetName: assets.AssetName, apiKey: string): number
-	local asset = assets.ASSETS[assetName]
+local function publishPluginAsync(rbxmPath: path.Pathlike, assetName: creatorStore.AssetName, apiKey: string): number
+	local asset = creatorStore.ASSETS[assetName]
 	local client = createOpenCloudClient(apiKey)
 
 	local messages = runLuauTaskAsync(client, fs.readFileToString(PUBLISH_TASK_PATH), {
-		universeId = assets.UNIVERSE_ID,
-		placeId = assets.PLACE_ID,
+		universeId = creatorStore.UNIVERSE_ID,
+		placeId = creatorStore.PLACE_ID,
 		globals = {
 			ASSET_ID = asset.assetId,
-			CREATOR_ID = assets.CREATOR_ID,
-			CREATOR_TYPE = assets.CREATOR_TYPE,
+			CREATOR_ID = creatorStore.CREATOR_ID,
+			CREATOR_TYPE = creatorStore.CREATOR_TYPE,
 		},
 		binaryInput = fs.readFileToString(rbxmPath),
 	})

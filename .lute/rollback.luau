@@ -37,8 +37,8 @@ local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local process = require("@std/process")
 
-local assets = require("@scripts/lib/creator-store/assets")
 local createOpenCloudClient = require("@scripts/lib/creator-store/createOpenCloudClient")
+local creatorStore = require("@repo/creator-store")
 local project = require("@repo/project")
 local publishPluginAsync = require("@scripts/lib/creator-store/publishPluginAsync")
 local readLatestReleaseTag = require("@scripts/lib/releases/readLatestReleaseTag")
@@ -116,7 +116,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		project.PLUGIN_FILENAME,
 		"--clobber",
 	})
-	publishPluginAsync(project.PLUGIN_FILENAME, "prod", apiKey)
+	publishPluginAsync(project.PLUGIN_FILENAME, creatorStore.AssetName.Prod, apiKey)
 	run("gh", {
 		"release",
 		"edit",
@@ -139,7 +139,7 @@ end
 local function restoreBeta(requested: string?, dryRun: boolean)
 	local client = createOpenCloudClient(assertEnv("ROBLOX_API_KEY"))
 	-- Beta builds publish to the dev asset.
-	local assetId = assets.ASSETS[assets.ASSET_NAMES_BY_CHANNEL[assets.ChannelName.Beta]].assetId
+	local assetId = creatorStore.ASSETS[creatorStore.ASSET_NAMES_BY_CHANNEL[creatorStore.ChannelName.Beta]].assetId
 
 	-- The versions list starts with the newest version.
 	local response = Assets.listAssetVersions(client, { assetId = assetId, maxPageSize = 2 })

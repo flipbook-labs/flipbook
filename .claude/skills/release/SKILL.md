@@ -19,7 +19,7 @@ To exercise the release path from an ordinary pull request, apply the `debug:rel
 
 ## Channels and assets
 
-The `beta` channel publishes to the dev asset on purpose. Nightly builds from `main` use `--channel beta` and land on the Flipbook (Dev) asset. Do not add a separate beta asset or "fix" the mapping. `ASSET_NAMES_BY_CHANNEL` in `.lute/lib/creator-store/assets.luau` is the source of truth, and the same file defines the assets and their IDs.
+The `beta` channel publishes to the dev asset on purpose. Nightly builds from `main` use `--channel beta` and land on the Flipbook (Dev) asset. Do not add a separate beta asset or "fix" the mapping. `ASSET_NAMES_BY_CHANNEL` in `creator-store.luau` at the repo root is the source of truth, and the same file defines the assets and their IDs.
 
 The smoketest has its own asset, `smoketest`, selected by the `--smoketest` flag rather than by channel. `strict.yml` builds a prod plugin on a secretless runner, then publishes it to the smoketest asset from the gated job. A smoketest failure means the Creator Store rejected the build or the asset is misconfigured. It does not mean the tests failed.
 
@@ -63,7 +63,7 @@ Dependency bumps. After changing `wally.toml`, `pkg.luau`, `rokit.toml`, or `Rob
 
 ```sh
 ls .github/workflows/release.yml .github/workflows/storybook.yml .github/workflows/strict.yml
-git grep -n ASSET_NAMES_BY_CHANNEL -- .lute/lib/creator-store/assets.luau
+git grep -n ASSET_NAMES_BY_CHANNEL -- creator-store.luau
 git grep -n CreateAssetVersionAsync -- .lute/tasks/publish-plugin.luau
 git grep -n luau-execution-gated -- .github/workflows
 git grep -n "flipbook-cli comment" -- .github/workflows/storybook.yml
