@@ -115,6 +115,9 @@ lute run lint
 lute run analyze
 lute run test
 
+# Build every channel and target, and report how big each one is
+lute run size-report
+
 # Specs for the `.lute` scripts themselves, which run on Lute instead of in a Roblox place
 lute test .lute
 ```

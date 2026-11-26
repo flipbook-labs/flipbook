@@ -164,3 +164,52 @@ jobs:
 
       - name: Test the build scripts
         run: lute test .lute
+
+  # Builds everything Flipbook publishes or deploys and reports how big each
+  # one is. A pull request from this repository gets the report as a comment,
+  # with each size beside the one from the latest report on main.
+  size-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Create .env
+        run: cp .env.template .env
+
+      # Every run uploads its report as an artifact, and this compares itself
+      # with the newest one from main and takes its history from there.
+      - name: Measure every build
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: lute run size-report --compare-with-main --sha "$HEAD_SHA" --run-url "$RUN_URL"
+
+      - name: Add the report to the run summary
+        run: cat build/size-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: size-report
+          path: build/size-report.json
+
+      # Pull requests from forks and from Dependabot get a read-only token, so
+      # their report stays in the run summary.
+      - name: Comment the report on the pull request
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: lute run size-report-comment --pr "$PULL_REQUEST_NUMBER"
