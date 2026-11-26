@@ -222,7 +222,10 @@ build()
 
 if args:has("watch") then
 	local function onChanged(filePath: path.Path)
-		if tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
+		-- A dev build recompiles only the workspace member that changed. A
+		-- prod or beta build has removed the packages nothing required, and
+		-- the change may require one of them, so it runs the full build.
+		if channel == "dev" and tostring(filePath):match(tostring(project.WORKSPACE_PATH)) then
 			local memberPath = tostring(filePath):match(`({project.WORKSPACE_PATH}/[%w%-]+)/`)
 			buildSystem.compileWorkspaceMemberAsync(memberPath, context)
 			buildSystem.writeBuildCacheAsync(context.cache)

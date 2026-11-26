@@ -3,8 +3,10 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local logger = require("@scripts/lib/logger")
 local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
+local prunePackagesAsync = require("@scripts/lib/build-system/prunePackagesAsync")
 local runBuildGroupAsync = require("@scripts/lib/build-system/runBuildGroupAsync")
 local runCodeModsAsync = require("@scripts/lib/build-system/runCodeModsAsync")
 local types = require("@scripts/lib/build-system/types")
@@ -16,6 +18,8 @@ local run = FlipbookBatteries.run
 type BuildContext = types.BuildContext
 
 local function compileAsync(context: BuildContext)
+	local isRelease = context.channel == types.Channel.Prod or context.channel == types.Channel.Beta
+
 	if context.shouldRebuild then
 		fs.removeDirectory(context.dest, {
 			recursive = true,
@@ -52,13 +56,23 @@ local function compileAsync(context: BuildContext)
 		context = context,
 	})
 
+	--[[
+		A build group normally skips its step when its paths haven't changed
+		since the last build. A prod or beta build removes packages from its
+		copy of the dependencies further down, and code that changed since the
+		last build may now require one of them. So these builds copy the
+		dependencies every time, which `shouldRebuild` forces for this group.
+	]]
+	local dependenciesContext = table.clone(context)
+	dependenciesContext.shouldRebuild = context.shouldRebuild or isRelease
+
 	runBuildGroupAsync({
 		name = "🚚 dependencies",
 		paths = {
 			project.PACKAGES_PATH,
 			project.ROBLOX_PACKAGES_PATH,
 		},
-		context = context,
+		context = dependenciesContext,
 		step = function(group)
 			for _, filePath in group.paths do
 				local relativePath = path.relative(project.REPO_PATH, filePath)
@@ -71,7 +85,7 @@ local function compileAsync(context: BuildContext)
 		compileWorkspaceMemberAsync(memberPath, context)
 	end
 
-	if context.channel == types.Channel.Prod or context.channel == types.Channel.Beta then
+	if isRelease then
 		for _, dir in project.PROD_CONFIG.prunedDirs do
 			local relativePath = path.relative(project.REPO_PATH, dir)
 
@@ -79,6 +93,15 @@ local function compileAsync(context: BuildContext)
 				recursive = true,
 			})
 		end
+
+		local removedPackages = prunePackagesAsync({
+			buildFolder = context.dest,
+			installFolderNames = {
+				path.basename(project.PACKAGES_PATH) :: string,
+				path.basename(project.ROBLOX_PACKAGES_PATH) :: string,
+			},
+		})
+		logger.info(`removed {#removedPackages} packages that the plugin doesn't require`)
 	end
 
 	if context.target == "rotriever" then

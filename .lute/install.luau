@@ -46,7 +46,6 @@ do
 
 	local run = FlipbookBatteries.run
 	local find = FlipbookBatteries.find
-	local findAndReplace = FlipbookBatteries.findAndReplace
 
 	--[[
 		Some of our Wally packages are written with string requires, which
@@ -87,6 +86,21 @@ do
 		patchStringRequires()
 	end
 
+	--[[
+		Flipbook gets React from Wally, and Roblox's packages bring a copy of
+		their own. Two copies of React can't share components, so every Roblox
+		package has to use Flipbook's. This returns the `--external` value
+		that tells roblox-packages to point a package's linkers at the Wally
+		copy and to leave Roblox's copy out. The value is double-quoted
+		for the shell, with single quotes inside it, because that reads the
+		same on Windows as everywhere else.
+	]]
+	local function getExternal(name: string): string
+		local robloxPackages = path.basename(project.ROBLOX_PACKAGES_PATH)
+		local packages = path.basename(project.PACKAGES_PATH)
+		return `"{name}=script:FindFirstAncestor('{robloxPackages}').Parent.{packages}.{name}"`
+	end
+
 	local function installRobloxPackages()
 		local tmpdir = system.tmpdir()
 
@@ -97,14 +111,10 @@ do
 			project.ROBLOX_PACKAGES_VERSION,
 			"-d",
 			"Foundation",
-
-			-- These are only included so the above dependencies work as expected.
-			-- It seems like roblox-packages has a bug with its dependency
-			-- resolution that is resulting in over-pruning
-			"-d",
-			"Promise",
-			"-d",
-			"Dash",
+			"--external",
+			getExternal("React"),
+			"--external",
+			getExternal("ReactRoblox"),
 		})
 
 		local dest = project.ROBLOX_PACKAGES_PATH
@@ -114,30 +124,6 @@ do
 			})
 		end
 		move(path.join(tmpdir, "Packages"), project.ROBLOX_PACKAGES_PATH)
-
-		-- Patch React and RoactCompat dependencies to use ours
-		for _, name in { "React", "RoactCompat", "Roact" } do
-			local linkers = find(project.ROBLOX_PACKAGES_PATH, `^{name}%..*`)
-
-			for _, linker in linkers do
-				-- All Roact linkers in RobloxPackages point to Roblox's
-				-- RoactCompat, so we need to update them to point to ours instead.
-				if name == "Roact" then
-					name = "RoactCompat"
-				end
-
-				findAndReplace(
-					linker,
-					"local PackageIndex = .*_Index",
-					'local Root = script:FindFirstAncestor("RobloxPackages")'
-				)
-				findAndReplace(
-					linker,
-					"local Package = require%(.*%)",
-					`local Package = require(Root.Parent.Packages.{name})`
-				)
-			end
-		end
 	end
 
 	--[[
