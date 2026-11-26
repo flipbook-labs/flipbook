@@ -33,7 +33,8 @@ type SelectedStoryViewProps = {
 
 local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
-	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
+	local story, storyError =
+		useStory(props.selectedStory.storyModule, props.selectedStory.storybook, props.selectedStory.storyId)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()

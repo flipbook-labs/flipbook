@@ -30,7 +30,7 @@ export type FlipbookStore = {
 	story: StoryStore,
 	telemetry: TelemetryClient,
 	getLaunchData: () -> LaunchData?,
-	openStory: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
+	openStory: (storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> (),
 	showUnavailableStorybook: (unavailableStorybook: UnavailableStorybook) -> (),
 }
 
@@ -47,9 +47,9 @@ local function createFlipbookStore(options: Options): FlipbookStore
 		return options.launchData
 	end
 
-	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?)
+	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?)
 		navigation.navigateTo(navigationEnums.Screen.Home)
-		story.openStory(storyModule, storybook)
+		story.openStory(storyModule, storybook, storyId)
 	end
 
 	return {
