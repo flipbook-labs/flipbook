@@ -11,7 +11,7 @@ Flipbook's `AGENTS.md` lists the tools and the common commands. This skill cover
 
 Run `rokit install` and then `lute run install` from the repo root. Copy `.env.template` to `.env` in Flipbook before building. The build fails without `BASE_URL`, and `lute run test` reads the Open Cloud values from the same file.
 
-`Packages/`, `RobloxPackages/`, `LuauPackages/`, `.lpm/`, `.env`, and `build/` are all gitignored. A new worktree starts with none of them, so run the install and create `.env` again in each one. Never edit them by hand.
+`Packages/`, `RobloxPackages/`, `.lpm/`, `.env`, and `build/` are all gitignored. A new worktree starts with none of them, so run the install and create `.env` again in each one. Never edit them by hand.
 
 `lute run install` also patches some third-party packages after fetching them, so a hand-edited `Packages/` does not survive it.
 
