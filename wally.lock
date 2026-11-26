@@ -8,6 +8,11 @@ version = "0.9.0"
 dependencies = []
 
 [[package]]
+name = "centau/vide"
+version = "0.4.1"
+dependencies = []
+
+[[package]]
 name = "chriscerie/react-spring"
 version = "2.0.0"
 dependencies = [["Promise", "evaera/promise@4.0.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["TestEZ", "roblox/testez@0.4.1"]]
@@ -20,11 +25,6 @@ dependencies = []
 [[package]]
 name = "csqrl/sift"
 version = "0.0.8"
-dependencies = []
-
-[[package]]
-name = "dekkonot/sha256"
-version = "1.0.1"
 dependencies = []
 
 [[package]]
@@ -43,19 +43,29 @@ version = "4.0.0"
 dependencies = []
 
 [[package]]
-name = "flipbook-labs/flipbook"
-version = "2.5.0"
-dependencies = [["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.11.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.12.0"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
-
-[[package]]
-name = "flipbook-labs/module-loader"
-version = "0.11.0"
+name = "flipbook-labs/agent-gateway"
+version = "0.2.1"
 dependencies = [["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"]]
 
 [[package]]
+name = "flipbook-labs/archivist"
+version = "0.3.1"
+dependencies = []
+
+[[package]]
+name = "flipbook-labs/flipbook"
+version = "2.6.0"
+dependencies = [["AgentGateway", "flipbook-labs/agent-gateway@0.2.1"], ["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.14.0"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["t", "osyrisrblx/t@3.1.1"]]
+
+[[package]]
+name = "flipbook-labs/module-loader"
+version = "0.13.0"
+dependencies = [["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"]]
+
+[[package]]
 name = "flipbook-labs/storyteller"
-version = "1.12.0"
-dependencies = [["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Fusion3", "elttob/fusion@0.3.0"], ["GreenTea", "corecii/greentea@0.4.11"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["ModuleLoader", "flipbook-labs/module-loader@0.11.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Roact", "roblox/roact@1.4.4"], ["RoactCompat", "jsdotlua/roact-compat@17.2.1"], ["Sift", "csqrl/sift@0.0.8"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["t", "osyrisrblx/t@3.1.1"]]
+version = "1.14.0"
+dependencies = [["Archivist", "flipbook-labs/archivist@0.3.1"], ["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Fusion3", "elttob/fusion@0.3.0"], ["GreenTea", "corecii/greentea@0.4.11"], ["Iris", "sirmallard/iris@2.5.1"], ["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"], ["ModuleLoader", "flipbook-labs/module-loader@0.13.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Roact", "roblox/roact@1.4.4"], ["RoactCompat", "jsdotlua/roact-compat@17.2.1"], ["Sift", "csqrl/sift@0.0.8"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["Vide", "centau/vide@0.4.1"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "jsdotlua/boolean"
@@ -348,11 +358,271 @@ version = "0.3.0"
 dependencies = []
 
 [[package]]
+name = "roblox/chalk-lua"
+version = "0.3.0"
+dependencies = []
+
+[[package]]
+name = "roblox/diff-sequences"
+version = "3.21.0"
+dependencies = []
+
+[[package]]
+name = "roblox/expect"
+version = "3.21.0"
+dependencies = [["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestMatcherUtils", "roblox/jest-matcher-utils@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestSnapshot", "roblox/jest-snapshot@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest"
+version = "3.21.0"
+dependencies = [["JestCore", "roblox/jest-core@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-circus"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["Expect", "roblox/expect@3.21.0"], ["JestEach", "roblox/jest-each@3.21.0"], ["JestEnvironment", "roblox/jest-environment@3.21.0"], ["JestMatcherUtils", "roblox/jest-matcher-utils@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestRuntime", "roblox/jest-runtime@3.21.0"], ["JestSnapshot", "roblox/jest-snapshot@3.21.0"], ["JestTestResult", "roblox/jest-test-result@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["Symbol", "roblox/symbol@1.0.1"], ["Throat", "roblox/throat@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-config"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestEnvironmentLuau", "roblox/jest-environment-luau@3.21.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["JestValidate", "roblox/jest-validate@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-console"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestEach", "roblox/jest-each@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["RobloxShared", "roblox/roblox-shared@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-core"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestConfig", "roblox/jest-config@3.21.0"], ["JestConsole", "roblox/jest-console@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestReporters", "roblox/jest-reporters@3.21.0"], ["JestRunner", "roblox/jest-runner@3.21.0"], ["JestRuntime", "roblox/jest-runtime@3.21.0"], ["JestSnapshot", "roblox/jest-snapshot@3.21.0"], ["JestTestResult", "roblox/jest-test-result@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-diff"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["DiffSequences", "roblox/diff-sequences@3.21.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest-each"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["RegExp", "roblox/regexp@0.3.0"]]
+
+[[package]]
+name = "roblox/jest-environment"
+version = "3.21.0"
+dependencies = [["JestFakeTimers", "roblox/jest-fake-timers@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["JestMockGenv", "roblox/jest-mock-genv@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-environment-luau"
+version = "3.21.0"
+dependencies = [["JestEnvironment", "roblox/jest-environment@3.21.0"], ["JestFakeTimers", "roblox/jest-fake-timers@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["Promise", "roblox/promise@3.5.2"]]
+
+[[package]]
+name = "roblox/jest-fake-timers"
+version = "3.21.0"
+dependencies = [["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"]]
+
+[[package]]
+name = "roblox/jest-get-type"
+version = "3.21.0"
+dependencies = [["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["RegExp", "roblox/regexp@0.3.0"]]
+
+[[package]]
+name = "roblox/jest-globals"
+version = "3.21.0"
+dependencies = [["Expect", "roblox/expect@3.21.0"], ["JestEnvironment", "roblox/jest-environment@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"]]
+
+[[package]]
+name = "roblox/jest-matcher-utils"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestDiff", "roblox/jest-diff@3.21.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["RegExp", "roblox/regexp@0.3.0"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest-message-util"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-mock"
+version = "3.21.0"
+dependencies = [["JestMockGenv", "roblox/jest-mock-genv@3.21.0"], ["JestMockRbx", "roblox/jest-mock-rbx@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest-mock-genv"
+version = "3.21.0"
+dependencies = []
+
+[[package]]
+name = "roblox/jest-mock-rbx"
+version = "3.21.0"
+dependencies = [["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"]]
+
+[[package]]
+name = "roblox/jest-reporters"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestConsole", "roblox/jest-console@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["JestTestResult", "roblox/jest-test-result@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Path", "roblox/path@3.21.0"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["TestUtils", "roblox/test-utils@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-runner"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestCircus", "roblox/jest-circus@3.21.0"], ["JestConsole", "roblox/jest-console@3.21.0"], ["JestEnvironment", "roblox/jest-environment@3.21.0"], ["JestMessageUtil", "roblox/jest-message-util@3.21.0"], ["JestRuntime", "roblox/jest-runtime@3.21.0"], ["JestTestResult", "roblox/jest-test-result@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["JestUtil", "roblox/jest-util@3.21.0"], ["Promise", "roblox/promise@3.5.2"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["Throat", "roblox/throat@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-runtime"
+version = "3.21.0"
+dependencies = [["Expect", "roblox/expect@3.21.0"], ["JestFakeTimers", "roblox/jest-fake-timers@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["JestMockGenv", "roblox/jest-mock-genv@3.21.0"], ["JestSnapshot", "roblox/jest-snapshot@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Promise", "roblox/promise@3.5.2"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest-snapshot"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestDiff", "roblox/jest-diff@3.21.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestMatcherUtils", "roblox/jest-matcher-utils@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"], ["Promise", "roblox/promise@3.5.2"], ["RobloxShared", "roblox/roblox-shared@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-test-result"
+version = "3.21.0"
+dependencies = [["JestTypes", "roblox/jest-types@3.21.0"]]
+
+[[package]]
+name = "roblox/jest-types"
+version = "3.21.0"
+dependencies = [["RegExp", "roblox/regexp@0.3.0"]]
+
+[[package]]
+name = "roblox/jest-util"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Picomatch", "roblox/picomatch@0.4.3"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/jest-validate"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestTypes", "roblox/jest-types@3.21.0"]]
+
+[[package]]
+name = "roblox/luau-polyfill"
+version = "1.2.5"
+dependencies = [["Boolean", "roblox/luau-polyfill-boolean@1.2.5"], ["Collections", "roblox/luau-polyfill-collections@1.2.5"], ["Console", "roblox/luau-polyfill-console@1.2.5"], ["ES7Types", "roblox/luau-polyfill-es7-types@1.2.5"], ["InstanceOf", "roblox/luau-polyfill-instance-of@1.2.5"], ["Math", "roblox/luau-polyfill-math@1.2.5"], ["Number", "roblox/luau-polyfill-number@1.2.5"], ["String", "roblox/luau-polyfill-string@1.2.5"], ["Symbol", "roblox/symbol@1.0.1"], ["Timers", "roblox/luau-polyfill-timers@1.2.5"]]
+
+[[package]]
+name = "roblox/luau-polyfill-boolean"
+version = "1.2.5"
+dependencies = [["Number", "roblox/luau-polyfill-number@1.2.5"]]
+
+[[package]]
+name = "roblox/luau-polyfill-collections"
+version = "1.2.5"
+dependencies = [["ES7Types", "roblox/luau-polyfill-es7-types@1.2.5"], ["InstanceOf", "roblox/luau-polyfill-instance-of@1.2.5"]]
+
+[[package]]
+name = "roblox/luau-polyfill-console"
+version = "1.2.5"
+dependencies = [["Collections", "roblox/luau-polyfill-collections@1.2.5"]]
+
+[[package]]
+name = "roblox/luau-polyfill-es7-types"
+version = "1.2.5"
+dependencies = []
+
+[[package]]
+name = "roblox/luau-polyfill-instance-of"
+version = "1.2.5"
+dependencies = []
+
+[[package]]
+name = "roblox/luau-polyfill-math"
+version = "1.2.5"
+dependencies = []
+
+[[package]]
+name = "roblox/luau-polyfill-number"
+version = "1.2.5"
+dependencies = []
+
+[[package]]
+name = "roblox/luau-polyfill-string"
+version = "1.2.5"
+dependencies = [["ES7Types", "roblox/luau-polyfill-es7-types@1.2.5"], ["Number", "roblox/luau-polyfill-number@1.2.5"]]
+
+[[package]]
+name = "roblox/luau-polyfill-timers"
+version = "1.2.5"
+dependencies = [["Collections", "roblox/luau-polyfill-collections@1.2.5"]]
+
+[[package]]
+name = "roblox/path"
+version = "3.21.0"
+dependencies = []
+
+[[package]]
+name = "roblox/picomatch"
+version = "0.4.3"
+dependencies = [["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["Promise", "roblox/promise@3.5.2"], ["RegExp", "roblox/regexp@0.3.0"]]
+
+[[package]]
+name = "roblox/pretty-format"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestGetType", "roblox/jest-get-type@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["ReactIs", "roblox/react-is@17.3.13"], ["RegExp", "roblox/regexp@0.3.0"], ["RobloxShared", "roblox/roblox-shared@3.21.0"], ["Symbol", "roblox/symbol@1.0.1"]]
+
+[[package]]
+name = "roblox/promise"
+version = "3.5.2"
+dependencies = []
+
+[[package]]
+name = "roblox/react-globals"
+version = "17.3.13"
+dependencies = [["SafeFlags", "roblox/safe-flags@0.1.2"]]
+
+[[package]]
+name = "roblox/react-is"
+version = "17.3.13"
+dependencies = [["ReactGlobals", "roblox/react-globals@17.3.13"], ["SafeFlags", "roblox/safe-flags@0.1.2"], ["Shared", "roblox/react-shared@17.3.13"]]
+
+[[package]]
+name = "roblox/react-shared"
+version = "17.3.13"
+dependencies = [["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["ReactGlobals", "roblox/react-globals@17.3.13"], ["SafeFlags", "roblox/safe-flags@0.1.2"]]
+
+[[package]]
+name = "roblox/regexp"
+version = "0.3.0"
+dependencies = []
+
+[[package]]
 name = "roblox/roact"
 version = "1.4.4"
 dependencies = []
 
 [[package]]
+name = "roblox/roblox-shared"
+version = "3.21.0"
+dependencies = [["JestGetType", "roblox/jest-get-type@3.21.0"], ["JestMock", "roblox/jest-mock@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"]]
+
+[[package]]
+name = "roblox/safe-flags"
+version = "0.1.2"
+dependencies = []
+
+[[package]]
+name = "roblox/symbol"
+version = "1.0.1"
+dependencies = []
+
+[[package]]
+name = "roblox/test-utils"
+version = "3.21.0"
+dependencies = [["ChalkLua", "roblox/chalk-lua@0.3.0"], ["JestEnvironmentLuau", "roblox/jest-environment-luau@3.21.0"], ["JestTypes", "roblox/jest-types@3.21.0"], ["LuauPolyfill", "roblox/luau-polyfill@1.2.5"], ["PrettyFormat", "roblox/pretty-format@3.21.0"]]
+
+[[package]]
 name = "roblox/testez"
 version = "0.4.1"
+dependencies = []
+
+[[package]]
+name = "roblox/throat"
+version = "3.21.0"
+dependencies = [["JestTypes", "roblox/jest-types@3.21.0"], ["Promise", "roblox/promise@3.5.2"]]
+
+[[package]]
+name = "sirmallard/iris"
+version = "2.5.1"
 dependencies = []

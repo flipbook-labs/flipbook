@@ -21,7 +21,8 @@ return {
 	},
 	story = function(props)
 		return React.createElement(Foundation.FoundationProvider, {
-			theme = props.theme,
+			colorMode = props.colorMode,
+			themeName = props.themeName,
 		}, {
 			ScrollView = React.createElement(Foundation.ScrollView, {
 				tag = "size-full",

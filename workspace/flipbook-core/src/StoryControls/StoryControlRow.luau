@@ -1,6 +1,5 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
 local BooleanControl = require("@root/StoryControls/ControlElements/BooleanControl")
@@ -15,13 +14,13 @@ local SelectControl = require("@root/StoryControls/ControlElements/SelectControl
 local SliderControl = require("@root/StoryControls/ControlElements/SliderControl")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StringControl = require("@root/StoryControls/ControlElements/StringControl")
+local useStoryControlValue = require("@root/StoryControls/useStoryControlValue")
 
 local ControlType = Storyteller.ControlType
 type ControlType = Storyteller.ControlType
 
 local e = React.createElement
 local useCallback = React.useCallback
-local useSignalState = ReactCharm.useSignalState
 
 local useStoryControls = StoryControlsContext.useStoryControls
 
@@ -33,9 +32,11 @@ export type Props = {
 
 local function StoryControlRow(props: Props)
 	local storyControls = useStoryControls()
-	local controlType = props.control.type
-	local shouldCoerceToNumber = controlType == ControlType.Number or controlType == ControlType.Slider
+	local shouldCoerceToNumber = props.control.type == ControlType.Number or props.control.type == ControlType.Slider
 
+	-- Each control's onChanged takes its own value type, so no single type for
+	-- newValue fits every control and also satisfies storyControls.setControl.
+	-- lute-lint-ignore(no_any)
 	local setControl = useCallback(function(newValue: any)
 		if shouldCoerceToNumber then
 			local newValueAsNumber = tonumber(newValue)
@@ -48,70 +49,70 @@ local function StoryControlRow(props: Props)
 		storyControls.setControl(props.controlName, newValue)
 	end, { props.controlName, shouldCoerceToNumber, storyControls } :: { unknown })
 
-	local controlValue = useSignalState(storyControls.getControlValue(props.controlName))
+	local controlValue = useStoryControlValue(props.controlName)
 
 	local controlElement: React.Node
-	if controlType == ControlType.Boolean then
+	if props.control.type == ControlType.Boolean then
 		controlElement = e(BooleanControl, {
 			controlSchema = props.control :: Storyteller.BooleanControl,
 			controlValue = controlValue :: boolean,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Number then
+	elseif props.control.type == ControlType.Number then
 		controlElement = e(NumberControl, {
 			controlSchema = props.control :: Storyteller.NumberControl,
 			controlValue = controlValue :: number,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Object then
+	elseif props.control.type == ControlType.Object then
 		controlElement = e(ObjectControl, {
 			controlSchema = props.control :: Storyteller.ObjectControl,
 			controlValue = controlValue :: Instance?,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.String then
+	elseif props.control.type == ControlType.String then
 		controlElement = e(StringControl, {
 			controlSchema = props.control :: Storyteller.StringControl,
 			controlValue = controlValue :: string,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Check then
+	elseif props.control.type == ControlType.Check then
 		controlElement = e(CheckControl, {
 			controlSchema = props.control :: Storyteller.CheckControl,
 			controlValue = (controlValue :: { Storyteller.StoryControlValue }) or {},
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Color then
+	elseif props.control.type == ControlType.Color then
 		controlElement = e(ColorControl, {
 			controlSchema = props.control :: Storyteller.ColorControl,
 			controlValue = controlValue :: Color3,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Date then
+	elseif props.control.type == ControlType.Date then
 		controlElement = e(DateControl, {
 			controlSchema = props.control :: Storyteller.DateControl,
 			controlValue = controlValue :: DateTime,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.MultiSelect then
+	elseif props.control.type == ControlType.MultiSelect then
 		controlElement = e(MultiSelectControl, {
 			controlSchema = props.control :: Storyteller.MultiSelectControl,
 			controlValue = (controlValue :: { Storyteller.StoryControlValue }) or {},
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Radio then
+	elseif props.control.type == ControlType.Radio then
 		controlElement = e(RadioControl, {
 			controlSchema = props.control :: Storyteller.SelectControl,
 			controlValue = controlValue :: Storyteller.StoryControlValue,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Select then
+	elseif props.control.type == ControlType.Select then
 		controlElement = e(SelectControl, {
 			controlSchema = props.control :: Storyteller.SelectControl,
 			controlValue = controlValue :: Storyteller.StoryControlValue,
 			onChanged = setControl,
 		})
-	elseif controlType == ControlType.Slider then
+	elseif props.control.type == ControlType.Slider then
 		controlElement = e(SliderControl, {
 			controlSchema = props.control :: Storyteller.SliderControl,
 			controlValue = controlValue :: number,

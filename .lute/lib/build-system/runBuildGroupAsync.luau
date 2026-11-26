@@ -1,6 +1,6 @@
 local fs = require("@std/fs")
 local process = require("@std/process")
-local richterm = require("@luaupkg/lute@v1.0.1-nightly.20260612/batteries/richterm")
+local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
 
 local hashPath = require("@scripts/lib/build-system/hashPath")
 local types = require("@scripts/lib/build-system/types")
@@ -14,7 +14,6 @@ end
 
 local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local prefix = richterm.bold(`[{buildGroup.name}]`)
-	local buildCache = buildGroup.context.cache
 	local changedPaths = {}
 
 	for _, filePath in buildGroup.paths do
@@ -23,8 +22,8 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 		local key = `{buildGroup.context.channel}-{buildGroup.context.target}-{filePath}`
 		local hash = hashPath(filePath)
 
-		if hash ~= buildCache[key] or buildGroup.context.shouldRebuild then
-			buildCache[key] = hash
+		if hash ~= buildGroup.context.cache[key] or buildGroup.context.shouldRebuild then
+			buildGroup.context.cache[key] = hash
 			table.insert(changedPaths, filePath)
 		end
 	end
@@ -39,6 +38,9 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	print(`{prefix} starting build step...`)
 
 	local startTime = os.clock()
+	-- Luau can't infer xpcall's generics when the error handler is
+	-- debug.traceback, so xpcall is cast to `any`.
+	-- lute-lint-ignore(no_any)
 	local ok, err = (xpcall :: any)(function()
 		buildGroup.step(processedBuildGroup)
 	end, debug.traceback)

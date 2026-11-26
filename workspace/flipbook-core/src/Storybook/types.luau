@@ -1,11 +1,28 @@
-local CommonTypes = require("@root/Common/types")
-local useThemeName = require("@root/Common/useThemeName")
+local Foundation = require("@rbxpkg/Foundation")
+local Storyteller = require("@pkg/Storyteller")
 
+local CommonTypes = require("@root/Common/types")
+local useColorMode = require("@root/Common/useColorMode")
+
+type ColorMode = useColorMode.ColorMode
 type Pluginlike = CommonTypes.Pluginlike
-type ThemeName = useThemeName.ThemeName
+
+export type SelectedStory = {
+	kind: "Story",
+	storyModule: ModuleScript,
+	storybook: Storyteller.LoadedStorybook,
+}
+
+export type StorySelection = { kind: "None" } | SelectedStory | {
+	kind: "UnavailableStorybook",
+	unavailableStorybook: Storyteller.UnavailableStorybook,
+}
 
 export type ExtraStoryProps = {
-	theme: ThemeName,
+	colorMode: ColorMode,
+	themeName: Foundation.ThemeName,
+	-- Deprecated. Use `colorMode` instead.
+	theme: ColorMode,
 	locale: string,
 
 	-- TODO: Make these reequired in the future. Only reason they're not is

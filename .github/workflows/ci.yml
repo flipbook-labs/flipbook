@@ -10,12 +10,26 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: read
   id-token: write
   attestations: write
   artifact-metadata: write
   pull-requests: write
 
 jobs:
+  changelog:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: flipbook-labs/changewrite@v0.16.0
+        with:
+          require-entry: "true"
+
   build-plugin:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -51,6 +65,7 @@ jobs:
           path: ${{ env.MODEL_FILE }}
 
       - uses: actions/attest-build-provenance@v3
+        if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
         with:
           subject-path: ${{ env.MODEL_FILE }}
 
@@ -87,6 +102,7 @@ jobs:
           zip -r ../${{ env.ARTIFACT_NAME }} ${{ matrix.package }}-${{ matrix.target }}
 
       - uses: actions/attest-build-provenance@v3
+        if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
         with:
           subject-path: ${{ env.ARTIFACT_NAME }}
 
@@ -94,6 +110,32 @@ jobs:
         with:
           path: ${{ env.ARTIFACT_NAME }}
           name: ${{ matrix.package }}-${{ matrix.target }}-${{ matrix.channel }}
+
+  # Runs every PostHog report without credentials, printing the requests the
+  # release workflow would send, so changes to them are exercised before they
+  # reach main.
+  posthog-dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
+        with:
+          version: v1.2.0
+
+      - name: Install dependencies
+        run: lute run install
+
+      - name: Dry-run PostHog reports
+        run: |
+          set -euo pipefail
+          lute run posthog check --dry-run
+          lute run posthog pending-changes --dry-run
+          lute run posthog beta-published --dry-run
+          lute run posthog prod-released --dry-run
+          lute run posthog rolled-back --channel prod --tag v2.4.0 --dry-run
+          lute run posthog rolled-back --channel beta --dry-run
 
   analyze:
     runs-on: ubuntu-latest
@@ -108,8 +150,8 @@ jobs:
       - name: Install dependencies
         run: lute run install
 
-      - name: Setup Lune typedefs
-        run: lune setup
+      - name: Create .env
+        run: cp .env.template .env
 
       - name: Setup Lute typedefs
         run: lute setup

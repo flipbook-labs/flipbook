@@ -2,8 +2,10 @@ local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
 local Sift = require("@pkg/Sift")
 
-local NavigationContext = require("@root/Navigation/NavigationContext")
+local AppMode = require("@root/Enums/AppMode")
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local SettingRow = require("@root/UserSettings/SettingRow")
+local TelemetrySettingRow = require("@root/UserSettings/TelemetrySettingRow")
 local defaultSettings = require("@root/UserSettings/defaultSettings")
 local nextLayoutOrder = require("@root/Common/nextLayoutOrder")
 
@@ -18,7 +20,7 @@ type SettingsGroup = {
 }
 
 local function SettingsView()
-	local navigation = NavigationContext.use()
+	local flipbookStore = FlipbookStoreContext.use()
 	local settingsByGroup: { SettingsGroup } = useMemo(function()
 		local settings = Sift.Dictionary.values(defaultSettings)
 
@@ -64,6 +66,17 @@ local function SettingsView()
 		end
 	end
 
+	if flipbookStore.story.getMode() ~= AppMode.EmbeddedClient then
+		children.Telemetry = React.createElement(Foundation.Text, {
+			tag = "auto-xy text-heading-medium padding-medium",
+			Text = "Telemetry",
+			LayoutOrder = nextLayoutOrder(),
+		})
+		children.TelemetrySetting = React.createElement(TelemetrySettingRow, {
+			layoutOrder = nextLayoutOrder(),
+		})
+	end
+
 	return React.createElement(Foundation.ScrollView, {
 		tag = "size-full bg-surface-200 gap-large padding-y-large",
 		scroll = {
@@ -90,7 +103,7 @@ local function SettingsView()
 				icon = "x",
 				isCircular = true,
 				onActivated = function()
-					navigation.navigateTo("Home")
+					flipbookStore.navigation.navigateTo("Home")
 				end,
 				variant = Foundation.Enums.ButtonVariant.OverMedia,
 			}),

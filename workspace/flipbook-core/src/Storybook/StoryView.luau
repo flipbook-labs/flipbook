@@ -3,52 +3,64 @@ local React = require("@pkg/React")
 local ReactCharm = require("@pkg/ReactCharm")
 local Storyteller = require("@pkg/Storyteller")
 
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
-local useThemeName = require("@root/Common/useThemeName")
+local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
+local useExtraStoryProps = require("@root/Storybook/useExtraStoryProps")
 
 local Divider = Foundation.Divider
 local Text = Foundation.Text
 local View = Foundation.View
 
 local e = React.createElement
+local useEffect = React.useEffect
 local useMemo = React.useMemo
 local useSignalState = ReactCharm.useSignalState
 local useStory = Storyteller.useStory
 local useOverlay = Foundation.Hooks.useOverlay
 
-type LoadedStorybook = Storyteller.LoadedStorybook
-type ExtraStoryProps = types.ExtraStoryProps
+type SelectedStory = types.SelectedStory
 
-type StoryViewProps = {
-	storyModule: ModuleScript,
-	storybook: LoadedStorybook,
+type SelectedStoryViewProps = {
+	selectedStory: SelectedStory,
 }
 
-local function StoryView(props: StoryViewProps)
-	local story, storyError = useStory(props.storyModule, props.storybook)
-	local theme = useThemeName()
+local function SelectedStoryView(props: SelectedStoryViewProps)
+	local flipbookStore = FlipbookStoreContext.use()
+	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
+	local controlsStore = useMemo(function()
+		return createStoryControlsStore(if story then story.controls else nil)
+	end, { story } :: { unknown })
+	useAgentStoryRegistration(props.selectedStory.storyModule, story, controlsStore)
 
-	local extraProps = useMemo(function(): ExtraStoryProps
-		return {
-			theme = theme :: useThemeName.ThemeName,
-			locale = "en-us",
-			plugin = plugin,
-			widget = overlayGui,
-		}
-	end, { theme, plugin, overlayGui } :: { unknown })
+	useEffect(function()
+		flipbookStore.story.setActiveControlsStore(controlsStore)
+
+		return function()
+			if flipbookStore.story.getActiveControlsStore() == controlsStore then
+				flipbookStore.story.setActiveControlsStore(nil)
+			end
+		end
+	end, { controlsStore, flipbookStore } :: { unknown })
+
+	local extraProps = useExtraStoryProps({
+		plugin = plugin,
+		widget = overlayGui,
+	})
 
 	return e(
 		StoryControlsContext.StoryControlsProvider,
 		{
-			schema = story and story.controls or nil,
+			store = controlsStore,
 		},
 		e(View, {
 			tag = "size-full bg-surface-200",
@@ -105,6 +117,19 @@ local function StoryView(props: StoryViewProps)
 			}),
 		})
 	)
+end
+
+local function StoryView(): React.Node
+	local flipbookStore = FlipbookStoreContext.use()
+	local selectedStory = useSignalState(flipbookStore.story.getSelectedStory)
+
+	if selectedStory == nil then
+		return nil
+	end
+
+	return e(SelectedStoryView, {
+		selectedStory = selectedStory,
+	})
 end
 
 return React.memo(StoryView)

@@ -1,12 +1,11 @@
-local FlipbookBatteries = require("@luaupkg/flipbook-batteries@v0.11.1")
-local cli = require("@luaupkg/lute@v1.0.1-nightly.20260612/batteries/cli")
-local dotenv = require("@luaupkg/dotenv@v0.1.0/src")
+local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
+local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
-local pp = require("@luaupkg/lute@v1.0.1-nightly.20260612/batteries/pp")
+local pp = require("@lpm/batteries@v1.0.1-nightly.20261115/pp")
 local process = require("@std/process")
-local richterm = require("@luaupkg/lute@v1.0.1-nightly.20260612/batteries/richterm")
-local toml = require("@luaupkg/lute@v1.0.1-nightly.20260612/batteries/toml")
+local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
+local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
@@ -21,7 +20,7 @@ local WALLY_MANIFEST_PATH = path.resolve("wally.toml")
 
 type BuildContext = buildSystem.BuildContext
 
-dotenv.config()
+FlipbookBatteries.dotenv()
 
 local args = cli.parser()
 
@@ -110,7 +109,7 @@ local context: BuildContext = {
 	shouldRebuild = args:has("clean"),
 	dest = path.join(project.BUILD_PATH, channel, target),
 	env = {
-		BUILD_VERSION = (readWallyManifestAsync() :: any).package.version,
+		BUILD_VERSION = (readWallyManifestAsync() :: { package: { version: string } }).package.version,
 		BUILD_CHANNEL = if channel == "prod" then "production" elseif channel == "beta" then "beta" else "development",
 		BUILD_HASH = getCommitHash(),
 		BUILD_TARGET = target,
@@ -157,8 +156,8 @@ end
 local function build()
 	local startTime = os.clock()
 
-	local contextNoCache = table.clone(context)
-	contextNoCache.cache = nil :: any
+	local contextNoCache = table.clone(context) :: { [string]: unknown }
+	contextNoCache.cache = nil
 	print(richterm.dim(`build context: {pp(contextNoCache)}`))
 
 	buildSystem.compileAsync(context)
@@ -169,14 +168,23 @@ local function build()
 	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
--- Builds the storybook placefile that hosts our stories. The bundle gets sent
--- along by the deploy-storybook action and published with the latest version of
--- Flipbook to the experience.
---
--- Check out Flipbook's own storybook here:
--- https://www.roblox.com/games/139676401890813/Flipbook-Stories
+--[[
+	Builds the storybook placefile that hosts our stories. The bundle gets sent
+	along by the deploy-storybook action and published with the latest version of
+	Flipbook to the experience.
+
+	Check out Flipbook's own storybook here:
+	https://www.roblox.com/games/139676401890813/Flipbook-Stories
+]]
 local function buildStorybookPlace()
-	run("lute", { "run", "build", "workspace", "--channel", "dev", "--clean" })
+	run("lute", {
+		"run",
+		"build",
+		"workspace",
+		"--channel",
+		"dev",
+		"--clean",
+	})
 
 	local placePath = rojoBuild({
 		output = path.join(project.BUILD_PATH, "flipbook-storybook.rbxl"),

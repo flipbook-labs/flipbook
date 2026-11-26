@@ -7,14 +7,6 @@
     {
       "path": ".github/MERGE_POLICY.md",
       "description": "Authoritative ownership and merge requirements"
-    },
-    {
-      "path": ".agents/skills/README.md",
-      "description": "Trust and maintenance model for the vendored agent-skill library"
-    },
-    {
-      "path": ".agents/skills/flipbook-change-control/SKILL.md",
-      "description": "Pull request, review, and release workflow"
     }
   ]
 }

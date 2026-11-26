@@ -10,7 +10,7 @@ local useState = React.useState
 
 export type Props = {
 	value: Instance?,
-	onChanged: (Instance?) -> (),
+	onChanged: (instance: Instance?) -> (),
 	LayoutOrder: number?,
 }
 

@@ -8,11 +8,17 @@
     "example": {
       "$path": "example"
     },
+    "flipbook-agents": {
+      "$path": "flipbook-agents"
+    },
     "flipbook-core": {
       "$path": "flipbook-core"
     },
     "flipbook-next": {
       "$path": "flipbook-next"
+    },
+    "flipbook-telemetry": {
+      "$path": "flipbook-telemetry"
     },
     "template": {
       "$path": "template"

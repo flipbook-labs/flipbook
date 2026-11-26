@@ -1,12 +1,12 @@
 local Foundation = require("@rbxpkg/Foundation")
 local React = require("@pkg/React")
-local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
-local Storyteller = require("@pkg/Storyteller")
 
-local IconName = Foundation.Enums.IconName
+local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
+local StorybookTreeView = require("@root/Storybook/StorybookTreeView")
+
 local InputSize = Foundation.Enums.InputSize
 local ScrollView = Foundation.ScrollView
-local TextInput = Foundation.TextInput
+local SearchInput = Foundation.SearchInput
 local View = Foundation.View
 local withCommonProps = Foundation.Utility.withCommonProps
 
@@ -14,16 +14,15 @@ local e = React.createElement
 local useCallback = React.useCallback
 local useState = React.useState
 
-type LoadedStorybook = Storyteller.LoadedStorybook
-type UnavailableStorybook = Storyteller.UnavailableStorybook
-
 type SidebarProps = {
-	onStoryChanged: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
-	onShowErrorPage: (unavailableStorybook: UnavailableStorybook) -> (),
+	topbarInset: Rect?,
 } & Foundation.CommonProps
 
 local function Sidebar(props: SidebarProps)
-	local searchTerm: string?, setSearchTerm = useState(nil :: string?)
+	local flipbookStore = FlipbookStoreContext.use()
+	local launchData = flipbookStore.getLaunchData()
+	local initialSearchTerm = if launchData then launchData.search else nil
+	local searchTerm: string?, setSearchTerm = useState(initialSearchTerm)
 	local onSearchTermChanged = useCallback(function(newSearchTerm: string)
 		setSearchTerm(if newSearchTerm == "" then nil else newSearchTerm)
 	end, {})
@@ -32,19 +31,22 @@ local function Sidebar(props: SidebarProps)
 		View,
 		withCommonProps(props, {
 			tag = "bg-surface-0 col size-full",
+			padding = if props.topbarInset
+				then {
+					top = UDim.new(0, math.max(props.topbarInset.Max.Y, 0)),
+				}
+				else nil,
 		}),
 		{
 			Search = e(View, {
 				LayoutOrder = 1,
 				tag = "auto-y padding-medium size-full-0",
 			}, {
-				SearchBar = e(TextInput, {
-					label = "",
-					leadingIcon = IconName.MagnifyingGlass,
+				SearchBar = e(SearchInput, {
 					onChanged = onSearchTermChanged,
 					placeholder = "Search...",
 					size = InputSize.Small,
-					text = "",
+					text = searchTerm or "",
 					width = UDim.new(1, 0),
 				}),
 			}),
@@ -62,8 +64,6 @@ local function Sidebar(props: SidebarProps)
 				tag = "shrink size-full",
 			}, {
 				StorybookTreeView = e(StorybookTreeView, {
-					onShowErrorPage = props.onShowErrorPage,
-					onStoryChanged = props.onStoryChanged,
 					searchTerm = searchTerm,
 				}),
 			}),

@@ -1,5 +1,7 @@
 local AppMode = require("@root/Enums/AppMode")
+local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local createFlipbookApp = require("@root/createFlipbookApp")
+local createTelemetry = require("@root/Telemetry/createTelemetry")
 
 local CommonTypes = require("@root/Common/types")
 
@@ -7,11 +9,60 @@ type Pluginlike = CommonTypes.Pluginlike
 
 local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPluginGui, button: PluginToolbarButton?)
 	local connections: { RBXScriptConnection } = {}
+	local agentController = FlipbookAgents.createAgentController(widget)
+	local cleanupAgentGateway = FlipbookAgents.createAgentGateway(agentController)
+	-- Each telemetry client keeps its own consent in memory. The app uses this one
+	-- too, so a choice made in its consent dialog or Settings also covers the
+	-- AppOpened and AppClosed events sent here.
+	local telemetry = createTelemetry(AppMode.PluginWidget, plugin)
 	local app = createFlipbookApp(widget, {
 		plugin = plugin,
 		overlayGui = widget :: GuiBase2d,
 		mode = AppMode.PluginWidget,
+		agentController = agentController,
+		telemetry = telemetry,
+		-- The React tree stays mounted for agent discovery, so widget visibility
+		-- owns session telemetry instead of the app lifecycle.
+		trackLifecycleTelemetry = false,
 	})
+	local isMounted = false
+	local isVisible = widget.Enabled
+
+	local function fireLifecycleEvent(eventName: "AppOpened" | "AppClosed")
+		if eventName == "AppOpened" then
+			telemetry.capture({
+				eventName = "AppOpened",
+			})
+		else
+			telemetry.capture({
+				eventName = "AppClosed",
+			})
+		end
+	end
+
+	local function mount()
+		if not isMounted then
+			isMounted = true
+			app.mount()
+		end
+	end
+
+	table.insert(
+		connections,
+		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+			if widget.Enabled ~= isVisible then
+				isVisible = widget.Enabled
+				fireLifecycleEvent(if isVisible then "AppOpened" else "AppClosed")
+			end
+		end)
+	)
+
+	local function unmount()
+		if isMounted then
+			isMounted = false
+			app.unmount()
+		end
+	end
 
 	if button ~= nil then
 		table.insert(
@@ -29,23 +80,19 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 		)
 	end
 
-	table.insert(
-		connections,
-		widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-			if widget.Enabled then
-				app.mount()
-			else
-				app.unmount()
-			end
-		end)
-	)
-
-	if widget.Enabled then
-		app.mount()
+	-- Agent discovery must remain available while the widget is hidden.
+	mount()
+	if isVisible then
+		fireLifecycleEvent("AppOpened")
 	end
 
 	local function destroy()
-		app.destroy()
+		cleanupAgentGateway()
+		unmount()
+		if isVisible then
+			isVisible = false
+			fireLifecycleEvent("AppClosed")
+		end
 
 		for _, connection in connections do
 			connection:Disconnect()
@@ -53,8 +100,8 @@ local function createFlipbookPlugin(plugin: Pluginlike, widget: DockWidgetPlugin
 	end
 
 	return {
-		mount = app.mount,
-		unmount = app.unmount,
+		mount = mount,
+		unmount = unmount,
 		destroy = destroy,
 	}
 end
