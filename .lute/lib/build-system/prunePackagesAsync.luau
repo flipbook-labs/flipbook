@@ -109,10 +109,11 @@ local function prunePackagesAsync(options: Options): { string }
 
 	--[[
 		A linker usually requires a package in `_Index`. `lute run install`
-		rewrites some of Rotriever's linkers to require a linker at the top of
-		`Packages` instead, so both installs share one copy of React. This
-		returns the path the linker requires and whether that path is a package.
-		The path is nil when a rewritten linker names a linker that isn't there.
+		has roblox-packages point Rotriever's React linkers at the linker at
+		the top of `Packages` instead, so both installs share one copy of
+		React. This returns the path the linker requires and whether that
+		path is a package. The path is nil when such a linker names a linker
+		that isn't there.
 	]]
 	local function getLinkerTarget(linkerPath: path.Path): (path.Path?, boolean)
 		local requireArgument = getRequireArguments(linkerPath)[1]
