@@ -170,7 +170,7 @@ jobs:
   # with each size beside the one from the latest report on main.
   size-report:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     permissions:
       contents: read
       actions: read
@@ -180,7 +180,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: CompeyDev/setup-rokit@v0.1.2
+      - uses: CompeyDev/setup-rokit@d49be92bd9502180218c3f43e7988faa945217b0 # v0.1.2
         with:
           version: v1.2.0
 
@@ -190,28 +190,13 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
-      # Every run uploads its report as an artifact. This gets the newest one
-      # from main, which a run compares itself with and takes its history
-      # from. The report still works without it, so a failed download doesn't
-      # fail the job.
-      - name: Download the size report from main
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          artifact_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=size-report&per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false and .workflow_run.head_branch == "main" and .workflow_run.head_repository_id == .workflow_run.repository_id)][0].id // empty')
-          if [ -z "$artifact_id" ]; then
-            echo "main has no size report yet"
-            exit 0
-          fi
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id/zip" > "$RUNNER_TEMP/size-report.zip"
-          unzip -o "$RUNNER_TEMP/size-report.zip" -d "$RUNNER_TEMP/base"
-
+      # Every run uploads its report as an artifact, and this compares itself
+      # with the newest one from main and takes its history from there.
       - name: Measure every build
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: lute run size-report --base "$RUNNER_TEMP/base/size-report.json" --sha "$HEAD_SHA" --run-url "$RUN_URL"
+        run: lute run size-report --compare-with-main --sha "$HEAD_SHA" --run-url "$RUN_URL"
 
       - name: Add the report to the run summary
         run: cat build/size-report.md >> "$GITHUB_STEP_SUMMARY"
@@ -221,18 +206,10 @@ jobs:
           name: size-report
           path: build/size-report.json
 
-      # A pull request from a fork gets a read-only token, so its report stays
-      # in the run summary.
+      # Pull requests from forks and from Dependabot get a read-only token, so
+      # their report stays in the run summary.
       - name: Comment the report on the pull request
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set -euo pipefail
-          comment_id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PULL_REQUEST_NUMBER/comments" --paginate \
-            --jq '.[] | select(.body | startswith("<!-- size-report -->")) | .id' | head -n 1)
-          if [ -n "$comment_id" ]; then
-            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" -F body=@build/size-report.md
-          else
-            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PULL_REQUEST_NUMBER/comments" -F body=@build/size-report.md
-          fi
+        run: lute run size-report-comment --pr "$PULL_REQUEST_NUMBER"

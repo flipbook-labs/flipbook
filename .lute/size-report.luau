@@ -5,6 +5,7 @@ local json = require("@std/json")
 local path = require("@std/path")
 local system = require("@std/system")
 
+local downloadMainSizeReport = require("@scripts/lib/downloadMainSizeReport")
 local project = require("@repo/project")
 local renderSizeReport = require("@scripts/lib/renderSizeReport")
 local rojoBuild = require("@scripts/lib/rojoBuild")
@@ -30,6 +31,9 @@ args:add("base", "option", {
 	help = "Path to another run's size-report.json to show changes from. A path with no file there is ignored",
 })
 
+args:add("compare-with-main", "flag", {
+	help = "Download the newest report from main with the gh CLI and show changes from it. Overrides --base",
+})
 args:add("sha", "option", {
 	help = "The commit being measured. Defaults to the one checked out",
 })
@@ -214,9 +218,12 @@ table.sort(report.parts, function(a: renderSizeReport.Part, b: renderSizeReport.
 end)
 
 local baseReport: Report? = nil
-local basePath = args:get("base")
-if typeof(basePath) == "string" and fs.exists(basePath) then
-	baseReport = (json.deserialize(fs.readFileToString(basePath)) :: unknown) :: Report
+local basePath: unknown = args:get("base")
+if args:has("compare-with-main") then
+	basePath = downloadMainSizeReport(path.join(system.tmpdir(), "size-report-from-main"))
+end
+if basePath and fs.exists(basePath :: path.Pathlike) then
+	baseReport = (json.deserialize(fs.readFileToString(basePath :: path.Pathlike)) :: unknown) :: Report
 end
 
 --[[
