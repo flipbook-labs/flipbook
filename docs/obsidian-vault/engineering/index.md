@@ -16,7 +16,7 @@ Technical specs, proposals, and working notes for Flipbook maintainers.
 - [Module Loader](./module-loader.md): Module loading and story sandboxing
 - [Story Container](./story-container.md): Story container architecture
 - [Instance Collector](./instance-collector.md): Instance collection for story discovery
-- [Flipbook Mounts Anywhere](./flipbook-mounts-anywhere.md): Mounting in plugin widget, 3D viewport, and standalone experiences
+- [Flipbook Mounts Anywhere](./flipbook-mounts-anywhere.md): Every surface Flipbook runs on, and who can use it there
 - [Flipbook Companion Package](./flipbook-companion-package.md): Tech spec for exposing Storyteller types to story authors
 - [Ecosystem](./ecosystem.md): Map of all active flipbook-labs repos and their relationships
 - [Changewrite](./changewrite.md): GitHub Action and CLI for managing release cycles
