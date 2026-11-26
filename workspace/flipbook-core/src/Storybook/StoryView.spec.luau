@@ -45,9 +45,13 @@ afterEach(function()
 	container:Destroy()
 end)
 
+-- Each version counts how many times the module has run in its `Evaluations`
+-- attribute, so the test can tell whether Storyteller loaded it again.
 local function createStorySource(frameName: string): string
 	return string.format(
 		[[
+script:SetAttribute("Evaluations", (script:GetAttribute("Evaluations") or 0) + 1)
+
 return {
 	story = function(storyContainer, _props)
 		local frame = Instance.new("Frame")
@@ -119,6 +123,8 @@ test("keeps the last working Story and shows the error when an edit fails to loa
 	end)
 	expect(findNotice()).toBeDefined()
 	expect(container:FindFirstChild("FirstVersion", true)).toBeDefined()
+	-- The last working version stayed loaded, rather than the module running again.
+	expect(storyModule:GetAttribute("Evaluations")).toBe(1)
 
 	storyModule.Source = createStorySource("SecondVersion")
 	waitUntil(function()
