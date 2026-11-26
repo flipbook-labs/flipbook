@@ -6,6 +6,7 @@ local ReactCharm = require("@pkg/ReactCharm")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Storyteller = require("@pkg/Storyteller")
 
+local ErrorBoundary = require("@root/Common/ErrorBoundary")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local StoryError = require("@root/Storybook/StoryError")
 local types = require("@root/Storybook/types")
@@ -43,18 +44,35 @@ local function StoryPreview(props: Props): React.Node
 		})
 	end
 
+	--[[
+		Storyteller reports most Story errors through `onError`, but an error
+		that escapes the Story would otherwise unmount all of Flipbook. The
+		boundary shows it like any other Story error, and clears once a
+		different Story is selected.
+	]]
+	local storyContainer = e(ErrorBoundary, {
+		resetKey = props.story,
+		fallback = function(problem: string)
+			return e(StoryError, {
+				errorMessage = problem,
+			})
+		end,
+	}, {
+		StoryContainer = e(Storyteller.StoryContainer, {
+			story = props.story,
+			controls = controls,
+			extraProps = props.extraProps,
+			onError = setErr,
+		}),
+	})
+
 	if isMountedInViewport then
 		return ReactRoblox.createPortal({
 			Story = e("ScreenGui", {
 				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 				ref = flipbookStore.story.setStoryContainer,
 			}, {
-				StoryContainer = e(Storyteller.StoryContainer, {
-					story = props.story,
-					controls = controls,
-					extraProps = props.extraProps,
-					onError = setErr,
-				}),
+				StoryContainer = storyContainer,
 			}),
 		}, CoreGui)
 	end
@@ -76,12 +94,7 @@ local function StoryPreview(props: Props): React.Node
 			Scale = 1 + zoom,
 		}),
 
-		StoryContainer = e(Storyteller.StoryContainer, {
-			story = props.story,
-			controls = controls,
-			extraProps = props.extraProps,
-			onError = setErr,
-		}),
+		StoryContainer = storyContainer,
 	})
 end
 

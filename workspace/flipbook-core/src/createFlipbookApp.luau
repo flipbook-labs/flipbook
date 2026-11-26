@@ -2,10 +2,12 @@ local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 local Telemetry = require(script.Parent.Parent["flipbook-telemetry"])
 
+local AppErrorFallback = require("@root/Common/AppErrorFallback")
 local AppMode = require("@root/Enums/AppMode")
 local CommonTypes = require("@root/Common/types")
 local ContextProviders = require("@root/Common/ContextProviders")
 local EmbeddingTypes = require("@root/Embedding/types")
+local ErrorBoundary = require("@root/Common/ErrorBoundary")
 local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local FlipbookApp = require("@root/FlipbookApp")
 local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
@@ -84,7 +86,18 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 			store = newStore,
 			agentController = appOptions.agentController,
 		}, {
-			FlipbookApp = React.createElement(FlipbookApp),
+			-- An error that escapes the app shows a way to reload it, instead of
+			-- unmounting Flipbook until Studio restarts.
+			ErrorBoundary = React.createElement(ErrorBoundary, {
+				fallback = function(problem: string, reset: () -> ())
+					return React.createElement(AppErrorFallback, {
+						problem = problem,
+						onReload = reset,
+					})
+				end,
+			}, {
+				FlipbookApp = React.createElement(FlipbookApp),
+			}),
 		})
 	end
 
