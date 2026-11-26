@@ -27,7 +27,7 @@ Flipbook's root `AGENTS.md` covers the commands and the Charm workaround. This s
 
 **Tests never start on a fork PR.** `.github/workflows/strict.yml` runs the `tests` job in the `luau-execution-gated` environment for fork PRs, which waits for a maintainer approval. Same-repo PRs use `luau-execution`. Locally, `lute run test` needs `ROBLOX_API_KEY` and always does a clean dev build first, so `--filter` also rebuilds.
 
-**A new build channel fails to deploy.** Channels map to asset names in `rbxasset.toml`, which defines only `prod`, `dev`, and `smoketest`. The beta channel reuses the `dev` asset through the table in `.lune/publish-plugin.luau`. A channel without an entry there fails at publish time, not at build time (#596, `0d045ce9`).
+**A new build channel fails to deploy.** Channels map to asset names in `.lute/lib/creator-store/assets.luau`, which defines only `prod`, `dev`, and `smoketest`. The beta channel reuses the `dev` asset through `ASSET_NAMES_BY_CHANNEL` in the same file. A channel without an entry there fails at publish time, not at build time (#596, `0d045ce9`).
 
 ## Do not repeat
 

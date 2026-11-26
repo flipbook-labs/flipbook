@@ -31,21 +31,21 @@
 	`banner` and prod restores read GITHUB_REPOSITORY (owner/name) and need `gh`
 	to be signed in, through GH_TOKEN in CI.
 ]]
+local Assets = require("@lpm/open-cloud-assets@v0.2.0")
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
-local json = require("@std/json")
-local net = require("@std/net")
 local process = require("@std/process")
-local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
+local assets = require("@scripts/lib/creator-store/assets")
+local createOpenCloudClient = require("@scripts/lib/creator-store/createOpenCloudClient")
+local project = require("@repo/project")
+local publishPluginAsync = require("@scripts/lib/creator-store/publishPluginAsync")
 local readLatestReleaseTag = require("@scripts/lib/releases/readLatestReleaseTag")
 local readPublishedReleases = require("@scripts/lib/releases/readPublishedReleases")
 local readRollbackState = require("@scripts/lib/releases/readRollbackState")
 
 local run = FlipbookBatteries.run
-
-local ASSETS_URL = "https://apis.roblox.com/assets/v1/assets"
 
 type AssetVersion = {
 	number: number,
@@ -95,10 +95,10 @@ local function chooseRelease(repo: string, requestedTag: string?): string
 	error(`The Latest release, {latestTag}, is not among the published releases`, 0)
 end
 
--- The release's own Flipbook.rbxm goes through the same publish script as a
--- release, with its build step skipped.
+-- The release's own Flipbook.rbxm is published to the prod asset the same
+-- way a release is.
 local function restoreProd(requested: string?, dryRun: boolean)
-	assertEnv("ROBLOX_API_KEY")
+	local apiKey = assertEnv("ROBLOX_API_KEY")
 	local repo = assertEnv("GITHUB_REPOSITORY")
 	local tag = chooseRelease(repo, requested)
 	print(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
@@ -113,16 +113,10 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		"download",
 		tag,
 		"--pattern",
-		"Flipbook.rbxm",
+		project.PLUGIN_FILENAME,
 		"--clobber",
 	})
-	run("lune", {
-		"run",
-		"publish-plugin",
-		"--channel",
-		"prod",
-		"--skipBuild",
-	})
+	publishPluginAsync(project.PLUGIN_FILENAME, "prod", apiKey)
 	run("gh", {
 		"release",
 		"edit",
@@ -132,59 +126,26 @@ local function restoreProd(requested: string?, dryRun: boolean)
 	print(`Restored {tag} and marked it as the Latest release`)
 end
 
--- rbxasset records each published asset's ID in rbxasset.lock. Beta builds
--- publish to the dev asset, as ASSET_NAMES_BY_CHANNEL in
--- .lune/publish-plugin.luau decides.
-local function readDevAssetId(): string
-	local function field(value: unknown, key: string): unknown
-		return if typeof(value) == "table" then (value :: { [string]: unknown })[key] else nil
-	end
-
-	local lock: unknown = toml.deserialize(fs.readFileToString("rbxasset.lock"))
-	local assetId = field(field(field(lock, "assets"), "dev"), "assetId")
-	assert(typeof(assetId) == "string", `rbxasset.lock has no asset ID for "dev"`)
-	return assetId
-end
-
-local function requestJson(method: string, url: string, apiKey: string, body: json.Value?): json.Object
-	local metadata: net.Metadata = {
-		method = method,
-		headers = { ["x-api-key"] = apiKey, ["Content-Type"] = "application/json" },
-	}
-	if body ~= nil then
-		metadata.body = json.serialize(body)
-	end
-
-	local response = net.request(url, metadata)
-	if not response.ok then
-		error(`Open Cloud returned {response.status} for {method} {url}\n{response.body}`, 0)
-	end
-	return assert(json.asObject(json.deserialize(response.body)), `Expected a JSON object from {url}`)
-end
-
 -- Versions are named by path, as in "assets/123/versions/16".
-local function parseAssetVersion(value: json.Value): AssetVersion
-	local object = assert(json.asObject(value), "Expected an asset version object")
-	local versionPath = object.path
-	local createTime = object.createTime
-	assert(typeof(versionPath) == "string" and typeof(createTime) == "string", "Malformed asset version")
-
+local function parseAssetVersion(version: Assets.AssetVersion): AssetVersion
+	local versionPath = assert(version.path, "The asset version has no path")
 	local number = tonumber(versionPath:match("/versions/(%d+)$"))
 	return {
 		number = assert(number, `Unexpected version path {versionPath}`),
-		createTime = createTime,
+		createTime = assert(version.createTime, "The asset version has no creation time"),
 	}
 end
 
 local function restoreBeta(requested: string?, dryRun: boolean)
-	local apiKey = assertEnv("ROBLOX_API_KEY")
-	local assetId = readDevAssetId()
+	local client = createOpenCloudClient(assertEnv("ROBLOX_API_KEY"))
+	-- Beta builds publish to the dev asset.
+	local assetId = assets.ASSETS[assets.ASSET_NAMES_BY_CHANNEL[assets.ChannelName.Beta]].assetId
 
 	-- The versions list starts with the newest version.
-	local response = requestJson("GET", `{ASSETS_URL}/{assetId}/versions?maxPageSize=2`, apiKey)
+	local response = Assets.listAssetVersions(client, { assetId = assetId, maxPageSize = 2 })
 	local recent: { AssetVersion } = {}
-	for _, value in json.asArray(response.assetVersions) or {} do
-		table.insert(recent, parseAssetVersion(value))
+	for _, version in response.assetVersions or {} do
+		table.insert(recent, parseAssetVersion(version))
 	end
 	local latest = assert(recent[1], `Asset {assetId} has no versions`)
 
@@ -192,7 +153,7 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 	if requested then
 		local number = tonumber(requested)
 		assert(number and number % 1 == 0, `bad value for version (expected a whole number, got "{requested}")`)
-		target = parseAssetVersion(requestJson("GET", `{ASSETS_URL}/{assetId}/versions/{number}`, apiKey))
+		target = parseAssetVersion(Assets.getAssetVersion(client, { assetId = assetId, versionNumber = number }))
 	else
 		target = assert(recent[2], `Asset {assetId} has no earlier version to roll back to`)
 	end
@@ -206,8 +167,9 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 		return
 	end
 
-	local restored = requestJson("POST", `{ASSETS_URL}/{assetId}/versions:rollback`, apiKey, {
-		assetVersion = `assets/{assetId}/versions/{target.number}`,
+	local restored = Assets.rollbackAssetVersion(client, {
+		assetId = assetId,
+		body = { assetVersion = `assets/{assetId}/versions/{target.number}` },
 	})
 	print(`Published version {target.number} again as {restored.path}`)
 end
