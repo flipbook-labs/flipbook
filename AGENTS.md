@@ -167,6 +167,8 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 `workspace/` is a Lute package workspace. The root `pkg.luau` has no name or version, which makes it a virtual root, and each member is a path dependency in it. Each member has its own `pkg.luau`, `src/`, and sometimes `rotriever.toml`, and reads its version and `files` from the root's `metadata`. Members in the root's `dependencies` ship with the plugin. Members in its `dev_dependencies` are development-only, and production builds prune them. `project.luau` reads both lists from `pkg.luau`, so registering a member there is what makes the build compile it. Members' Roblox dependencies still come from Wally and `roblox-packages`, not `pkg.luau`.
 
+Prod and beta builds also remove the Wally and Roblox packages that nothing in the plugin requires (`.lute/lib/build-system/prunePackagesAsync.luau`). The step follows requires from the plugin's own code through each package's linkers, so a dependency declared in `wally.toml` ships only when code left in the build requires it. Dev builds keep every package.
+
 ### Wally vs Lute packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
