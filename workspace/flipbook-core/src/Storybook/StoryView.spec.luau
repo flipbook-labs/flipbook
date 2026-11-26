@@ -69,7 +69,7 @@ end
 
 local function findNotice(): TextLabel?
 	for _, descendant in container:GetDescendants() do
-		if descendant:IsA("TextLabel") and descendant.Text:find("last version that loaded", 1, true) then
+		if descendant:IsA("TextLabel") and descendant.Text:find("latest edit has an error", 1, true) then
 			return descendant
 		end
 	end
