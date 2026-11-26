@@ -17,6 +17,8 @@ local LOG_LEVELS: { [string]: Archivist.LogLevel } = {
 	warn = "Warn",
 	warning = "Warn",
 	err = "Err",
+	-- lute-lint-ignore(no_error_field)
+	error = "Err",
 }
 
 local sinks: { Archivist.Sink } = {
