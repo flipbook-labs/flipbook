@@ -234,7 +234,7 @@ fs.createDirectory(path.dirname(outputPath), {
 if extension == "jpg" or extension == "jpeg" then
 	fs.writeStringToFile(outputPath, image)
 else
-	local jpegPath = `{outputPath}.jpg`
+	local jpegPath = tostring(path.join(process.env.TMPDIR or "/tmp", `flipbook-screenshot-{process.pid()}.jpg`))
 	fs.writeStringToFile(jpegPath, image)
 	local converted = process.run({
 		"sips",

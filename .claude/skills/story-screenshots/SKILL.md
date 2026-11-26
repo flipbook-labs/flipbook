@@ -26,7 +26,7 @@ The [`use-studio-mcp`](../use-studio-mcp/SKILL.md) skill covers building Flipboo
    lute run screenshot build/screenshots/<story>.png
    ```
 
-   [`screenshot`](../../../.lute/screenshot.luau) calls Studio MCP's `screen_capture` itself and writes the image, because the tool returns the image to the agent without saving it. Pass `--studio <id>` when more than one Studio is open. On Windows, pass `--studio-mcp` with the path to Studio's `StudioMCP` program.
+   [`screenshot`](../../../.lute/screenshot.luau) calls Studio MCP's `screen_capture` itself and writes the image, because the tool returns the image to the agent without saving it. Pass `--studio <id>` when more than one Studio is open. On Windows, pass `--studio-mcp` with the path to Studio's `StudioMCP` program, and write a `.jpg`. Studio captures JPEG, and converting to any other format uses `sips`, which only ships with macOS.
 
 5. Open the file and check that it shows the Story you meant, fully rendered.
 
@@ -41,6 +41,9 @@ GitHub has no API for adding an image to a pull request body. It hosts an image 
 
    ```js
    const click = HTMLInputElement.prototype.click;
+   window.agentDraft = document.querySelector(
+   	'textarea[aria-label="Markdown value"]',
+   ).value;
    HTMLInputElement.prototype.click = function () {
    	if (this.type !== "file") return click.call(this);
    	HTMLInputElement.prototype.click = click;
@@ -58,14 +61,14 @@ GitHub has no API for adding an image to a pull request body. It hosts an image 
 
 3. Give `#agent-file-input` the image with the browser tool. Chrome DevTools only reads files under `$TMPDIR`, so copy the image there first.
 4. Read the comment box, `textarea[aria-label="Markdown value"]`, until it holds an `<img>` tag with a `user-attachments` URL.
-5. Never submit the comment. Clear the box, because GitHub keeps the draft and shows it again later:
+5. Never submit the comment. Put the box back the way it was, because GitHub keeps the draft and shows it again later. The snippet in step 2 saved any text the person had already typed, and this restores it:
 
    ```js
    const ta = document.querySelector('textarea[aria-label="Markdown value"]');
    Object.getOwnPropertyDescriptor(
    	HTMLTextAreaElement.prototype,
    	"value",
-   ).set.call(ta, "");
+   ).set.call(ta, window.agentDraft ?? "");
    ta.dispatchEvent(new Event("input", { bubbles: true }));
    ```
 
