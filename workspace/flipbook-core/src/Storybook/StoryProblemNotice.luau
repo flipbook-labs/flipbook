@@ -12,6 +12,14 @@ export type Props = {
 
 local function StoryProblemNotice(props: Props)
 	local tokens = useTokens()
+	--[[
+		Storyteller's `problem` is the error as ModuleLoader raised it: the
+		error's message on the first line, then a traceback through
+		ModuleLoader's own functions. The message names the module and line
+		that failed, so the notice shows that line alone and leaves the
+		traceback out.
+	]]
+	local message = props.problem:match("^[^\n]*") or props.problem
 
 	return e(Foundation.View, {
 		LayoutOrder = props.LayoutOrder,
@@ -25,7 +33,7 @@ local function StoryProblemNotice(props: Props)
 
 		Problem = e("TextLabel", {
 			LayoutOrder = 2,
-			Text = props.problem,
+			Text = message,
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Size = UDim2.fromScale(1, 0),
 			BackgroundTransparency = 1,
