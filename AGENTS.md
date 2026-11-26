@@ -115,6 +115,9 @@ lute run build --channel prod
 lute run lint
 lute run analyze
 lute run test
+
+# Specs for the `.lute` scripts themselves, which run on Lute instead of in a Roblox place
+lute test .lute
 ```
 
 Use `--clean` after dependency changes or when build output appears stale. `--channel dev` retains tests and stories; `--channel prod` prunes development files.
