@@ -1,8 +1,9 @@
 --[[
 	Posts the size report that `lute run size-report` wrote as a comment on a
 	pull request, using the `gh` CLI. The report's first line is a marker that
-	only size reports start with. When the pull request already has a comment
-	starting with it, that comment is updated and no new one is added.
+	only size reports start with. When CI has already left a comment starting
+	with it on the pull request, that comment is updated and no new one is
+	added.
 ]]
 local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
@@ -15,7 +16,11 @@ local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
 
-type Comment = { id: number, body: string }
+type Comment = { id: number, body: string, user: { login: string } }
+
+-- The account CI comments as. A copy of the report that someone else pasted
+-- into a comment isn't CI's to edit, so only this account's comments count.
+local CI_LOGIN = "github-actions[bot]"
 
 local REPORT_MARKDOWN_PATH = path.join(project.BUILD_PATH, "size-report.md")
 
@@ -62,7 +67,7 @@ local pages = (json.deserialize(output) :: unknown) :: { { Comment } }
 local commentId: string? = nil
 for _, comments in pages do
 	for _, comment in comments do
-		if comment.body:sub(1, #marker) == marker then
+		if comment.user.login == CI_LOGIN and comment.body:sub(1, #marker) == marker then
 			commentId = ("%.0f"):format(comment.id)
 			break
 		end

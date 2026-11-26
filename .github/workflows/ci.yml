@@ -171,6 +171,12 @@ jobs:
   size-report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # A newer push to a pull request cancels the run for the push before it,
+    # so an older report can't finish last and replace a newer one. Runs on
+    # main each get a group of their own, since every one adds to the history.
+    concurrency:
+      group: size-report-${{ github.event.pull_request.number || github.sha }}
+      cancel-in-progress: true
     permissions:
       contents: read
       actions: read
