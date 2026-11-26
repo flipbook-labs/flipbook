@@ -45,7 +45,7 @@ Flipbook's root `AGENTS.md` covers the commands and the Charm workaround. This s
 
 **`pull_request_target`.** Fork support (#559) switched the whole CI workflow to `pull_request_target`, which then deployed dev builds from every PR (#561) and checked out the wrong code for tests. #563 (`5c997592`) and #562 (`64ed0047`) moved the secret-requiring work into `strict.yml`. That workflow builds PR code on a runner with no secrets and hands only build artifacts to the gated jobs, which check out the base commit. Keep that split. Never run PR code in a job that has `ROBLOX_API_KEY`, and never make a release or deploy job depend on `pull_request_target`.
 
-**Package patching.** Install-time patches exist for three reasons: string requires in `luaulog`, `charm`, and `react-charm` (`patchStringRequires`), Roact and React linkers pointing at Flipbook's own copies, and the Foundation MainGui fix from #666. The Foundation patch unblocked the RobloxPackages 0.747 upgrade and is the exception, not a pattern. For an upstream bug, fix it in Flipbook code if you can. Otherwise write up an upstream report and ask before adding another patch.
+**Package patching.** Install-time patches exist for two reasons: string requires in `luaulog`, `charm`, and `react-charm` (`patchStringRequires`), and the Foundation MainGui fix from #666. Roblox's React linkers point at Flipbook's own copies without a patch, through roblox-packages' `--external` option. The Foundation patch unblocked the RobloxPackages 0.747 upgrade and is the exception, not a pattern. For an upstream bug, fix it in Flipbook code if you can. Otherwise write up an upstream report and ask before adding another patch.
 
 ## Measure instead of guessing
 

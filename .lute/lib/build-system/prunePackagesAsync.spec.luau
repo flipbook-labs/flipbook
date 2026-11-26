@@ -94,8 +94,8 @@ test.suite("prunePackagesAsync", function(suite)
 
 	suite:case("follows a linker that requires a linker in another install folder", function(assert)
 		local rewrittenLinker = table.concat({
-			'local Root = script:FindFirstAncestor("RobloxPackages")',
-			"local Package = require(Root.Parent.Packages.React)",
+			"local PackageIndex = script.Parent.Parent.Parent._Index",
+			"local Package = require(script:FindFirstAncestor('RobloxPackages').Parent.Packages.React)",
 			"return Package",
 			"",
 		}, "\n")
