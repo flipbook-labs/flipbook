@@ -3,6 +3,7 @@ local process = require("@std/process")
 local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
 
 local hashPath = require("@scripts/lib/build-system/hashPath")
+local logger = require("@scripts/lib/logger")
 local types = require("@scripts/lib/build-system/types")
 
 type BuildGroup = types.BuildGroup
@@ -35,7 +36,7 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 	local processedBuildGroup = table.clone(buildGroup)
 	processedBuildGroup.paths = changedPaths
 
-	print(`{prefix} starting build step...`)
+	logger.info(`{prefix} starting build step...`)
 
 	local startTime = os.clock()
 	-- Luau can't infer xpcall's generics when the error handler is
@@ -47,11 +48,9 @@ local function runBuildGroupAsync(buildGroup: BuildGroup)
 
 	if ok then
 		local elapsedMs = trimDecimals((os.clock() - startTime) * 1000, 3)
-		local message = richterm.cyan(`step completed in {elapsedMs}ms`)
-		print(`{prefix} {message}`)
+		logger.info(`{prefix} step completed in {elapsedMs}ms`)
 	else
-		local message = richterm.red(`step failed: {err}`)
-		print(`{prefix} {message}`)
+		logger.err(`{prefix} step failed: {err}`)
 		process.exit(1)
 	end
 end

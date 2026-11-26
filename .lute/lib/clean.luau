@@ -2,6 +2,7 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 
 local PATHS_TO_CLEAN: { path.Pathlike } = {
@@ -15,7 +16,7 @@ local function clean()
 		local filePath = path.resolve(pathToClean)
 
 		if fs.exists(filePath) then
-			print(`removing {filePath}`)
+			logger.debug(`removing {filePath}`)
 
 			if fs.type(filePath) == "dir" then
 				fs.removeDirectory(filePath, {

@@ -65,14 +65,14 @@ local function createTelemetry(mode: AppMode, plugin: Pluginlike): TelemetryClie
 				end,
 			},
 		transport = function(envelope: TelemetryEnvelope)
-			logger:Info(`firing event {envelope.eventName}`)
+			logger.info(`firing event {envelope.eventName}`)
 			requestAsync(`{_G.BASE_URL}/telemetry`, {
 				method = "POST",
 				body = envelope,
 			})
 		end,
 		warn = function(message: string)
-			logger:Warn(message)
+			logger.warn(message)
 		end,
 	})
 end

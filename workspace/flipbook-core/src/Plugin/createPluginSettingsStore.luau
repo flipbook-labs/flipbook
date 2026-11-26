@@ -45,7 +45,7 @@ local function createPluginSettingsStore<T>(
 	local prevStorage: T?
 
 	local function readPluginSettingsAsync(plugin: Pluginlike): T?
-		logger:Info(`reading plugin settings for {storageKey} from disk...`)
+		logger.info(`reading plugin settings for {storageKey} from disk...`)
 
 		local data: unknown
 		local success, err = pcall(function()
@@ -53,15 +53,15 @@ local function createPluginSettingsStore<T>(
 		end)
 
 		if success then
-			logger:Info(`read raw plugin settings for {storageKey}:`, data)
+			logger.info(`read raw plugin settings for {storageKey}:`, data)
 		else
-			logger:Warn(`failed to read plugin settings for {storageKey}: {err}`)
+			logger.warn(`failed to read plugin settings for {storageKey}: {err}`)
 			setErr(err)
 			return nil
 		end
 
 		if typeof(data) == "string" then
-			logger:Info(`deserializing plugin settings for {storageKey} to object...`)
+			logger.info(`deserializing plugin settings for {storageKey} to object...`)
 
 			local json: unknown
 			success, err = pcall(function()
@@ -69,7 +69,7 @@ local function createPluginSettingsStore<T>(
 			end)
 
 			if not success then
-				logger:Warn(`failed to load plugin settings for {storageKey}: {err}`)
+				logger.warn(`failed to load plugin settings for {storageKey}: {err}`)
 				setErr(err)
 				return nil
 			end
@@ -87,32 +87,32 @@ local function createPluginSettingsStore<T>(
 			success, err = validate(json)
 
 			if not success then
-				logger:Warn(`plugin settings are malformed for {storageKey}: {err}`)
+				logger.warn(`plugin settings are malformed for {storageKey}: {err}`)
 				setErr(err)
 				return nil
 			end
 
-			logger:Info(`got plugin settings for {storageKey}:`, json)
+			logger.info(`got plugin settings for {storageKey}:`, json)
 
 			return json :: T
 		end
 
-		logger:Info("no plugin settings to read")
+		logger.info("no plugin settings to read")
 
 		return nil
 	end
 
 	local function writePluginSettingsAsync(plugin: Pluginlike, storage: T)
-		logger:Info("writing plugin settings to disk...")
+		logger.info("writing plugin settings to disk...")
 		local data: string?
 		local success, err = pcall(function()
 			data = HttpService:JSONEncode(storage)
 		end)
 
 		if success then
-			logger:Info(`parsed storage value into JSON: {data}`)
+			logger.info(`parsed storage value into JSON: {data}`)
 		else
-			logger:Warn(`failed to parse storage value into JSON: {err}`)
+			logger.warn(`failed to parse storage value into JSON: {err}`)
 			setErr(err)
 			return
 		end
@@ -123,9 +123,9 @@ local function createPluginSettingsStore<T>(
 			end)
 
 			if success then
-				logger:Info(`wrote plugin settings to disk: {data}`)
+				logger.info(`wrote plugin settings to disk: {data}`)
 			else
-				logger:Warn(`failed to write plugin settings to disk: {err}`)
+				logger.warn(`failed to write plugin settings to disk: {err}`)
 			end
 		end
 	end
@@ -146,7 +146,7 @@ local function createPluginSettingsStore<T>(
 				end)
 			end
 		else
-			logger:Debug("skipping disk write since storage value did not change")
+			logger.debug("skipping disk write since storage value did not change")
 		end
 
 		prevStorage = newStorage
@@ -171,25 +171,25 @@ local function createPluginSettingsStore<T>(
 
 	local function loadInitialSettings(plugin: Pluginlike)
 		if not getIsLoading() then
-			logger:Warn("attempt to load initial plugin settings after loading has already finished")
+			logger.warn("attempt to load initial plugin settings after loading has already finished")
 			return
 		end
 
 		if getIsInitialized() then
-			logger:Warn("attempt to load initial settings after they've already been initialized")
+			logger.warn("attempt to load initial settings after they've already been initialized")
 			return
 		end
 
-		logger:Debug("loading initial plugin settings")
+		logger.debug("loading initial plugin settings")
 
 		task.spawn(function()
 			local data = readPluginSettingsAsync(plugin)
 
 			if data then
 				setStorageInternal(data)
-				logger:Debug("finished loading plugin settings")
+				logger.debug("finished loading plugin settings")
 			else
-				logger:Debug("no data on disk")
+				logger.debug("no data on disk")
 			end
 
 			setIsLoading(false)

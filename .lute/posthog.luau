@@ -20,6 +20,7 @@ local annotateAsync = require("@scripts/lib/posthog/annotateAsync")
 local captureAsync = require("@scripts/lib/posthog/captureAsync")
 local checkPersonalApiKeyAsync = require("@scripts/lib/posthog/checkPersonalApiKeyAsync")
 local checkProjectTokenAsync = require("@scripts/lib/posthog/checkProjectTokenAsync")
+local logger = require("@scripts/lib/logger")
 local types = require("@scripts/lib/posthog/types")
 
 local run = FlipbookBatteries.run
@@ -84,11 +85,11 @@ end
 
 local function check()
 	checkProjectTokenAsync(readSecret("POSTHOG_PROJECT_TOKEN"), dryRun)
-	print("PostHog accepted the project token")
+	logger.info("PostHog accepted the project token")
 
 	if dryRun or process.env.POSTHOG_PERSONAL_API_KEY then
 		checkPersonalApiKeyAsync(readSecret("POSTHOG_PERSONAL_API_KEY"), readSecret("POSTHOG_PROJECT_ID"), dryRun)
-		print("PostHog accepted the personal API key and project ID")
+		logger.info("PostHog accepted the personal API key and project ID")
 	end
 end
 
@@ -104,12 +105,12 @@ local function reportPendingChanges()
 	local event = buildEvent("ci_pending_changes")
 	event.properties.total = total
 	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), event, dryRun)
-	print(`Reported {total} pending changes`)
+	logger.info(`Reported {total} pending changes`)
 end
 
 local function reportBetaPublished()
 	captureAsync(readSecret("POSTHOG_PROJECT_TOKEN"), buildEvent("ci_beta_published"), dryRun)
-	print("Reported the beta publish")
+	logger.info("Reported the beta publish")
 end
 
 local function reportProdReleased()
@@ -127,7 +128,7 @@ local function reportProdReleased()
 		`Flipbook v{version} released (Storyteller {storyteller}, ModuleLoader {moduleLoader})`,
 		dryRun
 	)
-	print(`Reported the v{version} release`)
+	logger.info(`Reported the v{version} release`)
 end
 
 --[[
@@ -169,7 +170,7 @@ local function reportRolledBack()
 	end
 
 	local note = if version then ` to v{version}` else ""
-	print(`Reported the {channel} rollback{note}`)
+	logger.info(`Reported the {channel} rollback{note}`)
 end
 
 type CommandOption = {

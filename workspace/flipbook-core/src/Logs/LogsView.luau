@@ -17,7 +17,7 @@ local function LogsView()
 	local children: { [string]: React.Node } = {}
 	for i = math.min(#history, maxLines), 1, -1 do
 		children[`Line{i}`] = React.createElement(LogLine, {
-			event = history[i],
+			record = history[i],
 		})
 	end
 

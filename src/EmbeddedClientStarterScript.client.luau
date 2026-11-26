@@ -17,7 +17,21 @@ end
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 
-local prefix = `[{script.Name}]`
+local Archivist = require("@pkg/Archivist")
+
+--[[
+	These lines confirm in Output that the embedded app started. The plugin's
+	logger writes to Output only when the build sets `ENABLE_OUTPUT_LOGGING`, so
+	these scripts use their own logger with Archivist's default console sink. Its
+	level is fixed at Info so the lines show whatever `LOG_LEVEL` the build used.
+]]
+local logger = Archivist.createLogger(script.Name, {
+	level = "Info",
+	middleware = {
+		Archivist.middleware.name,
+	},
+})
+
 local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
 
 local localPlayer = Players.LocalPlayer
@@ -26,9 +40,9 @@ if localPlayer == nil then
 end
 
 local startClock = os.clock()
-print(`{prefix} starting...`)
+logger.info("starting...")
 
-print(`{prefix} setting up Flipbook UI...`)
+logger.info("setting up Flipbook UI...")
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
 local playerGui = localPlayer:WaitForChild("PlayerGui")
@@ -47,4 +61,4 @@ assert(getLaunchDataRemote:IsA("RemoteFunction"), `{GET_LAUNCH_DATA_REMOTE_NAME}
 
 FlipbookCore.createEmbeddedFlipbookApp(screenGui, getLaunchDataRemote:InvokeServer())
 
-print(`{prefix} successfully initialized in {os.clock() - startClock}s`)
+logger.info(`successfully initialized in {os.clock() - startClock}s`)

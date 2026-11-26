@@ -24,6 +24,8 @@ local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 
+local logger = require("@scripts/lib/logger")
+
 local DEFAULT_STUDIO_MCP_PATH = "/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP"
 local RESPONSE_TIMEOUT_SECONDS = 30
 
@@ -251,4 +253,4 @@ else
 	end
 end
 
-print(`Wrote {outputPath}`)
+logger.info(`Wrote {outputPath}`)

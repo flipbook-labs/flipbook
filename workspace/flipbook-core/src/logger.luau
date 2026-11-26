@@ -1,39 +1,44 @@
-local Log = require("@pkg/Log")
+local Archivist = require("@pkg/Archivist")
 
 local LogsStore = require("@root/Logs/LogsStore")
 
-local function stringToLogLevel(logLevel: string)
-	if logLevel == "info" then
-		return Log.LogLevel.Information
-	elseif logLevel == "warn" or logLevel == "warning" then
-		return Log.LogLevel.Warning
-	elseif logLevel == "debug" then
-		return Log.LogLevel.Debugging
-	elseif logLevel == "err" or logLevel == "error" then
-		return Log.LogLevel.Error
-	end
-	return Log.LogLevel.Warning
-end
+--[[
+	`_G.LOG_LEVEL` and `_G.ENABLE_OUTPUT_LOGGING` are build globals. The build
+	replaces each read of them in Flipbook's own source with the value from
+	`.env`, but it leaves packages alone, and nothing sets them at runtime. So
+	Archivist's own read of `_G.LOG_LEVEL` would find nil. Instead, the level is
+	looked up here and passed to Archivist. A missing or unrecognized level falls
+	back to "Warn".
+]]
+local LOG_LEVELS: { [string]: Archivist.LogLevel } = {
+	trace = "Trace",
+	debug = "Debug",
+	info = "Info",
+	warn = "Warn",
+	warning = "Warn",
+	err = "Err",
+}
 
-local sinks = {
-	Log.LogSink.new(function(event)
-		LogsStore.get().addLine(event)
+local sinks: { Archivist.Sink } = {
+	Archivist.createCallbackSink(function(record)
+		LogsStore.get().addRecord(record)
 	end),
 }
 
 if _G.ENABLE_OUTPUT_LOGGING == "true" then
-	table.insert(sinks, Log.Common.RobloxLogSink())
+	table.insert(
+		sinks,
+		Archivist.createConsoleSink({
+			formatter = Archivist.createPrettyFormatter({
+				middleware = {
+					Archivist.middleware.name,
+				},
+			}),
+		})
+	)
 end
 
-local logger = Log.Logger.new(
-	{
-		Log.Common.Enrichers.LogLevelEnricher(),
-		Log.Common.Enrichers.DynSourceEnricher(true),
-	},
-	sinks,
-	{
-		Log.Common.Filters.MinLevelFilter(stringToLogLevel(_G.LOG_LEVEL)),
-	}
-)
-
-return logger
+return Archivist.createLogger("Flipbook", {
+	level = LOG_LEVELS[_G.LOG_LEVEL] or "Warn",
+	sinks = sinks,
+})

@@ -39,6 +39,7 @@ local net = require("@std/net")
 local process = require("@std/process")
 local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
+local logger = require("@scripts/lib/logger")
 local readLatestReleaseTag = require("@scripts/lib/releases/readLatestReleaseTag")
 local readPublishedReleases = require("@scripts/lib/releases/readPublishedReleases")
 local readRollbackState = require("@scripts/lib/releases/readRollbackState")
@@ -101,7 +102,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 	assertEnv("ROBLOX_API_KEY")
 	local repo = assertEnv("GITHUB_REPOSITORY")
 	local tag = chooseRelease(repo, requested)
-	print(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
+	logger.info(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
 	writeOutput("tag", tag)
 
 	if dryRun then
@@ -129,7 +130,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		tag,
 		"--latest",
 	})
-	print(`Restored {tag} and marked it as the Latest release`)
+	logger.info(`Restored {tag} and marked it as the Latest release`)
 end
 
 -- rbxasset records each published asset's ID in rbxasset.lock. Beta builds
@@ -201,7 +202,7 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 		`Version {target.number} is not older than the latest version, {latest.number}`
 	)
 
-	print(`Rolling the dev asset ({assetId}) back from version {latest.number} to {target.number}`)
+	logger.info(`Rolling the dev asset ({assetId}) back from version {latest.number} to {target.number}`)
 	if dryRun then
 		return
 	end
@@ -209,7 +210,7 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 	local restored = requestJson("POST", `{ASSETS_URL}/{assetId}/versions:rollback`, apiKey, {
 		assetVersion = `assets/{assetId}/versions/{target.number}`,
 	})
-	print(`Published version {target.number} again as {restored.path}`)
+	logger.info(`Published version {target.number} again as {restored.path}`)
 end
 
 local function restore(commandArgs: cli.Parser)

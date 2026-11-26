@@ -1,79 +1,64 @@
 local HttpService = game:GetService("HttpService")
 
+local Archivist = require("@pkg/Archivist")
 local Foundation = require("@rbxpkg/Foundation")
-local Log = require("@pkg/Log")
 local React = require("@pkg/React")
 
 local useMemo = React.useMemo
 local useTokens = Foundation.Hooks.useTokens
 
-type LogEvent = typeof(Log.LogEvent.new(Log.LogLevel.Information, {}, {}))
-
-local function isLogLevel(str: string)
-	local lower = str:lower()
-	return lower == "debug" or lower == "warn" or lower == "info" or lower == "err"
-end
-
-local function getLogLevelColor(tokens: Foundation.Tokens, logLevel: string): Color3
-	local lower = logLevel:lower()
-	if lower == "debug" then
-		return tokens.Color.Content.Muted.Color3
-	elseif lower == "warn" then
+local function getLogLevelColor(tokens: Foundation.Tokens, logLevel: Archivist.LogLevel): Color3
+	if logLevel == "Warn" then
 		return tokens.Color.System.Warning.Color3
-	elseif lower == "err" then
+	elseif logLevel == "Err" then
 		return tokens.Color.System.Alert.Color3
-	elseif lower == "info" then
+	elseif logLevel == "Info" then
 		return tokens.Color.System.Success.Color3
 	else
 		return tokens.Color.Content.Muted.Color3
 	end
 end
 
+local function stringify(value: unknown): string
+	if typeof(value) == "table" then
+		local ok, encoded = pcall(HttpService.JSONEncode, HttpService, value)
+		if ok then
+			return encoded
+		end
+	end
+	return tostring(value)
+end
+
 export type Props = {
-	event: LogEvent,
+	record: Archivist.LogRecord,
 }
 
 local function LogLine(props: Props)
 	local tokens = useTokens()
 	local fontStyle = tokens.Typography.BodyMedium
 
-	local info = useMemo(function()
-		local text = ""
+	local text = useMemo(function()
+		local mutedColor = tokens.Color.Content.Muted.Color3:ToHex()
+		local levelColor = getLogLevelColor(tokens, props.record.level):ToHex()
 
-		local timestamp = DateTime.fromUnixTimestamp(props.event.Timestamp)
+		local timestamp = DateTime.fromUnixTimestamp(props.record.timestamp)
 			:FormatLocalTime("YYYY-MM-DD hh:mm:ss A", "en-us")
-		text ..= timestamp
+		local info = `{timestamp} <font color="#{levelColor}">{props.record.level:lower()}</font> {props.record.name}`
 
-		if #props.event.Prefixes > 0 then
-			for _, prefix in props.event.Prefixes do
-				if isLogLevel(prefix) then
-					local color = getLogLevelColor(tokens, prefix):ToHex()
-					text = `{text} <font color="#{color}">{prefix}</font>`
-				else
-					text = `{text} {prefix}`
-				end
-			end
+		local parts = {}
+		for index = 1, props.record.args.n do
+			table.insert(parts, stringify(props.record.args[index]))
+		end
+		if props.record.fields then
+			table.insert(parts, stringify(props.record.fields))
 		end
 
-		local color = tokens.Color.Content.Muted.Color3:ToHex()
-		text = `<font color="#{color}">{text}</font>`
-
-		return text
-	end, { props.event })
-
-	local message = ""
-	for _, arg in props.event.Args do
-		if typeof(arg) == "table" then
-			message ..= HttpService:JSONEncode(arg)
-		else
-			message ..= tostring(arg)
-		end
-		message ..= " "
-	end
+		return `<font color="#{mutedColor}">{info}</font>: {table.concat(parts, " ")}`
+	end, { props.record, tokens } :: { unknown })
 
 	return React.createElement(Foundation.Text, {
 		tag = "auto-xy text-wrap text-align-x-left text-align-y-top content-emphasis",
-		Text = `{info}: {message}`,
+		Text = text,
 		RichText = true,
 		fontStyle = {
 			Font = Enum.Font.RobotoMono,

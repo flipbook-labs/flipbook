@@ -2,13 +2,12 @@ local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local cli = require("@lpm/batteries@v1.0.1-nightly.20261115/cli")
 local fs = require("@std/fs")
 local path = require("@std/path")
-local pp = require("@lpm/batteries@v1.0.1-nightly.20261115/pp")
 local process = require("@std/process")
-local richterm = require("@lpm/batteries@v1.0.1-nightly.20261115/richterm")
 local toml = require("@lpm/batteries@v1.0.1-nightly.20261115/toml")
 
 local buildSystem = require("@scripts/lib/build-system")
 local getStudioPluginsPath = require("@scripts/lib/getStudioPluginsPath")
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 local rojoBuild = require("@scripts/lib/rojoBuild")
 
@@ -158,14 +157,14 @@ local function build()
 
 	local contextNoCache = table.clone(context) :: { [string]: unknown }
 	contextNoCache.cache = nil
-	print(richterm.dim(`build context: {pp(contextNoCache)}`))
+	logger.debug("build context:", contextNoCache)
 
 	buildSystem.compileAsync(context)
 	buildSystem.writeBuildCacheAsync(context.cache)
 
 	buildPluginBinary()
 
-	print(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
+	logger.info(`build completed in {("%.2f"):format(os.clock() - startTime)}s`)
 end
 
 --[[
@@ -211,7 +210,7 @@ local function buildStorybookPlace()
 		},
 	})
 
-	print(`Built storybook place: {placePath}`)
+	logger.info(`built storybook place: {placePath}`)
 end
 
 if subcommand == "storybook" then
