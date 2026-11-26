@@ -79,14 +79,22 @@ local MAX_CHART_POINTS = 12
 local SMALL_PART_RATIO = 0.01
 
 --[[
-	GitHub draws a Mermaid chart as wide as the comment and scales its height
-	to match, so a chart's shape decides how tall it gets. These lines go at
-	the top of a chart to make it wide and short. Both charts are Mermaid's XY
-	chart because it's the kind whose shape can be set.
+	GitHub draws a Mermaid chart as wide as the comment, whatever size the
+	chart asks for, and scales everything in it to fit. So the width here
+	sets how big the chart's text and bars look: a comment is about 900
+	pixels wide, and a chart 1,400 wide is drawn at about two thirds of its
+	size. The height then sets the chart's shape. Both charts are Mermaid's
+	XY chart because it's the kind that takes a size.
 ]]
+local CHART_WIDTH = 1400
+
+local function getChartSize(height: number): string
+	return `%%\{init: \{"xyChart": \{"width": {CHART_WIDTH}, "height": {height}}}}%%`
+end
+
 local CHART_SIZES = {
-	history = '%%{init: {"xyChart": {"width": 900, "height": 260}}}%%',
-	parts = '%%{init: {"xyChart": {"width": 900, "height": 220}}}%%',
+	history = getChartSize(270),
+	parts = getChartSize(220),
 }
 
 local BAR_LENGTH = 20
