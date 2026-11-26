@@ -45,7 +45,7 @@ Control values are Luau values. Pass `Color3.new(1, 0, 0)` or `Enum.Font.Builder
 
 ## Visual and input checks
 
-Studio MCP viewport captures do not include plugin dock widgets, so a capture in Edit mode never shows Flipbook. Embed it and playtest instead.
+Studio MCP viewport captures do not include plugin dock widgets, so a capture in Edit mode never shows Flipbook. Embed it and playtest instead. To save a capture to a file and attach it to a pull request, follow [`story-screenshots`](../story-screenshots/SKILL.md).
 
 1. Call `embedFlipbook`. It returns the `path` it embedded into. The `parent` param defaults to `ReplicatedStorage`. With no gateway, embed the runtime as described in [Embedding without the gateway](#embedding-without-the-gateway).
 2. Start Play mode with `start_stop_play`, then poll `get_studio_state` until the Client data model appears.
