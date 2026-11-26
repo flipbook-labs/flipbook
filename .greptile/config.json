@@ -43,7 +43,7 @@
     },
     {
       "id": "visual-evidence",
-      "rule": "When a change affects what users see or how they interact with Flipbook, the PR description includes screenshots, video, or the PR's Storybook preview. Flag a visible change that has none.",
+      "rule": "When a change affects what users see or how they interact with Flipbook, the PR description includes screenshots or video of the result. A link to the PR's Storybook preview doesn't count, since CI posts one on every PR. Flag a visible change that has none.",
       "scope": ["workspace/flipbook-core/**", "workspace/flipbook-next/**"],
       "severity": "medium"
     },
