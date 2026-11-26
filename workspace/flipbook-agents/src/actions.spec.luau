@@ -1,5 +1,6 @@
 local JestGlobals = require("@pkg/JestGlobals")
 
+local StoryStatus = require("@root/StoryStatus")
 local types = require("@root/types")
 
 local expect = JestGlobals.expect
@@ -42,6 +43,8 @@ local function createActions(): (types.AgentActions, ActionsState)
 			if storybookPath == nil then
 				return {
 					{
+						id = "default",
+						status = StoryStatus.Loaded,
 						name = "Orphan",
 						path = "ReplicatedStorage/Orphan.story",
 					},
@@ -49,14 +52,18 @@ local function createActions(): (types.AgentActions, ActionsState)
 			end
 			return {
 				{
+					id = "default",
+					status = StoryStatus.Loaded,
 					name = "Button",
 					path = `{storybookPath}/Button.story`,
 					storybook = storybookPath,
 				},
 			}
 		end,
-		openStory = function(storyPath, storybookPath)
+		openStory = function(storyPath, storybookPath, storyId)
 			return {
+				id = storyId or "default",
+				status = StoryStatus.Loaded,
 				name = "Button",
 				path = storyPath,
 				storybook = storybookPath,
@@ -64,6 +71,8 @@ local function createActions(): (types.AgentActions, ActionsState)
 		end,
 		getCurrentStory = function()
 			return {
+				id = "default",
+				status = StoryStatus.Loaded,
 				name = "Button",
 				path = "ReplicatedStorage/Button.story",
 				isMounted = true,
@@ -133,6 +142,8 @@ test("lists stories", function()
 	expect(actions.listStories.run(agentActions, { storybook = "ReplicatedStorage/Example.storybook" })).toEqual({
 		stories = {
 			{
+				id = "default",
+				status = StoryStatus.Loaded,
 				name = "Button",
 				path = "ReplicatedStorage/Example.storybook/Button.story",
 				storybook = "ReplicatedStorage/Example.storybook",
@@ -147,6 +158,8 @@ test("lists orphaned stories when the Storybook is omitted", function()
 	expect(actions.listStories.run(agentActions, nil)).toEqual({
 		stories = {
 			{
+				id = "default",
+				status = StoryStatus.Loaded,
 				name = "Orphan",
 				path = "ReplicatedStorage/Orphan.story",
 			},
@@ -161,9 +174,25 @@ test("opens a story", function()
 		story = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
 	})).toEqual({
+		id = "default",
+		status = StoryStatus.Loaded,
 		name = "Button",
 		path = "ReplicatedStorage/Button.story",
 		storybook = "ReplicatedStorage/Example.storybook",
+	})
+end)
+
+test("opens a Story by id", function()
+	local agentActions = createActions()
+
+	expect(actions.openStory.run(agentActions, {
+		story = "ReplicatedStorage/Button.story",
+		storyId = "secondary",
+	})).toEqual({
+		id = "secondary",
+		status = StoryStatus.Loaded,
+		name = "Button",
+		path = "ReplicatedStorage/Button.story",
 	})
 end)
 
@@ -171,6 +200,8 @@ test("gets the current story", function()
 	local agentActions = createActions()
 
 	expect(actions.getCurrentStory.run(agentActions, nil)).toEqual({
+		id = "default",
+		status = StoryStatus.Loaded,
 		name = "Button",
 		path = "ReplicatedStorage/Button.story",
 		isMounted = true,

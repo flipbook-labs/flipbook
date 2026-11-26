@@ -9,6 +9,7 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type SelectedStory = {
 	kind: "Story",
+	storyId: string?,
 	storyModule: ModuleScript,
 	storybook: Storyteller.LoadedStorybook,
 }

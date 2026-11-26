@@ -13,6 +13,7 @@ type StoryControlsStore = createStoryControlsStore.StoryControlsStore
 type StoryControlValue = Storyteller.StoryControlValue | { Storyteller.StoryControlValue }
 
 export type LoadedStory = {
+	id: string,
 	controls: StoryControlsSchema?,
 }
 
@@ -36,6 +37,7 @@ local function useAgentStoryRegistration(
 				return
 			end
 			return agentController.registerStory({
+				id = story.id,
 				path = getInstancePath(storyModule),
 				getControls = controlsStore.getControls,
 				setControls = function(controls)
