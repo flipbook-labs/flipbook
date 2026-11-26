@@ -65,6 +65,13 @@ local function createFoundationStub(): FoundationStub
 				ButtonVariant = {
 					Emphasis = "Emphasis",
 				},
+				-- Flipbook's default settings read names from this enum when they
+				-- load. Each value in Foundation's enum is its own name.
+				ThemeName = setmetatable({}, {
+					__index = function(_self, themeName: string)
+						return themeName
+					end,
+				}),
 			},
 			View = createComponent("View"),
 		},

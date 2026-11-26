@@ -7,14 +7,16 @@ linter-yaml-title-alias: Story Props
 
 When a Story's `story` property is a function, Flipbook calls it with a single `StoryProps` table containing the following.
 
-| **Property** | **Type**            | **Description**                                                                                                                                                                     |
-| ------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `container`  | `Instance`          | Where the Story renders. Parent your UI here when you don't return it from the function.                                                                                            |
-| `controls`   | `{ [string]: any }` | The current value of each of the Story's [Controls](../usage/controls.md), keyed by control name. Changing a control re-renders the Story with the new values.                      |
-| `theme`      | `"Dark" \| "Light"` | The theme Flipbook is rendering with: Studio's theme, unless overridden in [Settings](../usage/the-flipbook-interface.md#settings). Use it to match your UI's colors to the canvas. |
-| `locale`     | `string`            | Currently always `"en-us"`.                                                                                                                                                         |
-| `plugin`     | `Pluginlike`        | A wrapper around Flipbook's plugin instance. Its methods do nothing when Flipbook is [embedded in an experience](../usage/embedding-flipbook.md).                                   |
-| `widget`     | `GuiBase2d`         | The GUI hosting Flipbook's interface. Useful for mounting overlays, like popups and tooltips, that need to escape the Story's container.                                            |
+| **Property** | **Type**            | **Description**                                                                                                                                                                          |
+| ------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `container`  | `Instance`          | Where the Story renders. Parent your UI here when you don't return it from the function.                                                                                                 |
+| `controls`   | `{ [string]: any }` | The current value of each of the Story's [Controls](../usage/controls.md), keyed by control name. Changing a control re-renders the Story with the new values.                           |
+| `colorMode`  | `"Dark" \| "Light"` | The color mode Flipbook is rendering with: Studio's theme, unless overridden in [Settings](../usage/the-flipbook-interface.md#settings). Use it to match your UI's colors to the canvas. |
+| `themeName`  | `string`            | The app theme Flipbook is rendering with, such as `"Default"` or `"Kids"`. Matches Foundation's `ThemeName` enum. Set it in [Settings](../usage/the-flipbook-interface.md#settings).     |
+| `theme`      | `"Dark" \| "Light"` | **Deprecated.** Use `colorMode` instead.                                                                                                                                                 |
+| `locale`     | `string`            | Currently always `"en-us"`.                                                                                                                                                              |
+| `plugin`     | `Pluginlike`        | A wrapper around Flipbook's plugin instance. Its methods do nothing when Flipbook is [embedded in an experience](../usage/embedding-flipbook.md).                                        |
+| `widget`     | `GuiBase2d`         | The GUI hosting Flipbook's interface. Useful for mounting overlays, like popups and tooltips, that need to escape the Story's container.                                                 |
 
 This Story parents its UI to `props.container` instead of returning it, and returns a cleanup function that runs when the Story unmounts:
 

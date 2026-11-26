@@ -10,6 +10,7 @@ local FlipbookAgents = require("@workspace/flipbook-agents/src")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local PluginStore = require("@root/Plugin/PluginStore")
 local createFlipbookStore = require("@root/FlipbookStore/createFlipbookStore")
+local useColorMode = require("@root/Common/useColorMode")
 local useThemeName = require("@root/Common/useThemeName")
 
 local useEffect = React.useEffect
@@ -22,7 +23,8 @@ type Pluginlike = CommonTypes.Pluginlike
 
 export type Props = {
 	plugin: Pluginlike,
-	theme: Foundation.Theme?,
+	colorMode: Foundation.ColorMode?,
+	themeName: Foundation.ThemeName?,
 	overlayGui: GuiBase2d?,
 	mode: AppMode?,
 	store: FlipbookStore?,
@@ -31,7 +33,8 @@ export type Props = {
 }
 
 local function ContextProviders(props: Props)
-	local themeName: Foundation.Theme = useThemeName()
+	local colorMode: Foundation.ColorMode = useColorMode()
+	local themeName: Foundation.ThemeName = useThemeName()
 	local store = useMemo(function()
 		return props.store
 			or createFlipbookStore({
@@ -50,7 +53,8 @@ local function ContextProviders(props: Props)
 				value = props.agentController,
 			}),
 			React.createElement(Foundation.FoundationProvider, {
-				theme = props.theme or themeName,
+				colorMode = props.colorMode or colorMode,
+				themeName = props.themeName or themeName,
 				overlayGui = props.overlayGui,
 			}),
 			React.createElement(FlipbookStoreContext.Provider, {
