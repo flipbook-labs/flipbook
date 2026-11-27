@@ -114,7 +114,8 @@ test("keeps the last working Story and shows the error when an edit fails to loa
 	waitUntil(function()
 		return container:FindFirstChild("FirstVersion", true) ~= nil
 	end)
-	expect(container:FindFirstChild("FirstVersion", true)).toBeDefined()
+	local firstVersion = container:FindFirstChild("FirstVersion", true)
+	expect(firstVersion).toBeDefined()
 	expect(findNotice()).toBeUndefined()
 
 	storyModule.Source = "return {"
@@ -122,7 +123,8 @@ test("keeps the last working Story and shows the error when an edit fails to loa
 		return findNotice() ~= nil
 	end)
 	expect(findNotice()).toBeDefined()
-	expect(container:FindFirstChild("FirstVersion", true)).toBeDefined()
+	-- The same frame, so the Story stayed mounted rather than mounting again.
+	expect(container:FindFirstChild("FirstVersion", true)).toBe(firstVersion)
 	-- The last working version stayed loaded, rather than the module running again.
 	expect(storyModule:GetAttribute("Evaluations")).toBe(1)
 

@@ -98,4 +98,16 @@ local function StoryPreview(props: Props): React.Node
 	})
 end
 
-return StoryPreview
+--[[
+	Memoized so the preview renders again only when its own props change. The
+	Story view around it renders again for other reasons, such as the problem
+	notice appearing or clearing while someone edits a Story that fails to
+	load.
+
+	That matters because Storyteller's StoryContainer updates the Story the
+	first time it renders again after mounting, even when nothing changed.
+	Most renderers update in place. The manual renderer, used for Stories
+	that are a function or an Instance, updates by tearing the Story down and
+	running it again, so the Story would lose whatever state it had.
+]]
+return React.memo(StoryPreview)
