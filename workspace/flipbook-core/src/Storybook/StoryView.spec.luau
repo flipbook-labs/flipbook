@@ -67,9 +67,9 @@ return {
 	)
 end
 
-local function findNotice(): TextLabel?
+local function findNotice(): GuiObject?
 	for _, descendant in container:GetDescendants() do
-		if descendant:IsA("TextLabel") and descendant.Text:find("latest edit has an error", 1, true) then
+		if descendant:IsA("GuiObject") and descendant:HasTag("data-testid=story-problem-notice") then
 			return descendant
 		end
 	end

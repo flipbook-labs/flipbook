@@ -124,23 +124,25 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 					LayoutOrder = 2,
 				}),
 
-				Problem = storyProblem ~= nil and e(StoryProblemNotice, {
-					LayoutOrder = 3,
-					problem = storyProblem,
-				}),
-
 				Preview = e(View, {
-					LayoutOrder = 4,
+					LayoutOrder = 3,
 					tag = "shrink size-full",
 				}, {
 					StoryPreview = React.createElement(StoryPreview, {
 						story = story,
 						extraProps = extraProps,
 					}),
+
+					-- Drawn over the bottom of the preview rather than above it,
+					-- so the Story doesn't move each time the notice appears or
+					-- clears while someone types.
+					Problem = storyProblem ~= nil and e(StoryProblemNotice, {
+						problem = storyProblem,
+					}),
 				}),
 
 				Controls = story.controls ~= nil and next(story.controls) ~= nil and e(StoryControlsPanel, {
-					LayoutOrder = 5,
+					LayoutOrder = 4,
 					controlsSchema = story.controls,
 				}),
 			}),
