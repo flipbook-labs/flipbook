@@ -32,7 +32,7 @@ return {
 		metadata = {
 			-- Flipbook's version. changewrite bumps it here along with the other
 			-- manifests listed in `changewrite.luau`.
-			version = "2.6.0",
+			version = "2.7.0",
 			memberFiles = memberFiles,
 			prunedFiles = PRUNED_FILES,
 		},
