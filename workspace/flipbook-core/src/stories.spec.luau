@@ -34,7 +34,7 @@ describeEach({
 	-- ModuleLoader instance
 	-- lute-lint-ignore(no_any)
 	local mockModuleLoader = ({
-		require = function(_self, path)
+		require = function(path)
 			return (require :: any)(path)
 		end,
 	}) :: any
