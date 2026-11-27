@@ -16,8 +16,8 @@ on:
 jobs:
   rollback:
     runs-on: ubuntu-latest
-    # A prod rollback uploads through publish-plugin, like the release publish
-    # job, so it gets the same limit for slow Creator Store uploads.
+    # A prod rollback publishes the plugin the same way the release publish
+    # job does, so it gets the same limit for slow Creator Store uploads.
     timeout-minutes: 15
     # Shares each channel's publish concurrency group in release.yml, so a
     # rollback never races a publish to the same asset.

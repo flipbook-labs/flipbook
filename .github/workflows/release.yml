@@ -198,7 +198,9 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --skipBuild --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run publish-plugin --channel prod
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -223,8 +225,13 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
+      - name: Build beta plugin
+        run: lute run build plugin --channel beta --output Flipbook.rbxm
+
       - name: Publish beta build to Creator Store
-        run: lune run publish-plugin --channel beta --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run publish-plugin --channel beta
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
   # Charts release health in PostHog: how many changes are waiting on a
   # release, and when beta builds and releases go out. The `posthog`

@@ -32,7 +32,7 @@ return {
 		metadata = {
 			-- Flipbook's version. changewrite bumps it here along with the other
 			-- manifests listed in `changewrite.luau`.
-			version = "2.6.0",
+			version = "2.7.0",
 			memberFiles = memberFiles,
 			prunedFiles = PRUNED_FILES,
 		},
@@ -52,6 +52,24 @@ return {
 				rev = "v0.13.1",
 				sourceKind = "github",
 				source = "https://github.com/flipbook-labs/flipbook-batteries",
+			},
+			["open-cloud-assets"] = {
+				rev = "v0.2.0",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/open-cloud",
+				target = "workspace/assets",
+			},
+			["open-cloud-luau-execution"] = {
+				rev = "v0.2.0",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/open-cloud",
+				target = "workspace/luau-execution",
+			},
+			["openapi-lute-transport"] = {
+				rev = "v0.1.0",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/openapi-luau",
+				target = "workspace/openapi-lute-transport",
 			},
 		},
 		dev_dependencies = {

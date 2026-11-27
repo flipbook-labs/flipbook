@@ -72,7 +72,7 @@ GitHub has no API for adding an image to a pull request body. It hosts an image 
    ta.dispatchEvent(new Event("input", { bubbles: true }));
    ```
 
-6. Put the images in the pull request body, next to the part of Solution or Testing they show, with a line saying what each one is. Lay out a before and after as a two-column table.
+6. Put the images in the pull request template's Visuals section, which sits between Solution and Testing, with a line before each one saying what it shows. Lay out a before and after as a two-column table.
 
 If no browser is available, don't skip the evidence silently. Say in Testing which screenshots were captured and where they are, so the person can attach them.
 
