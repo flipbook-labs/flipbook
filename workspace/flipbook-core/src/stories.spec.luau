@@ -33,11 +33,16 @@ describeEach({
 	-- to keep this for now, but in the future this should really be a
 	-- ModuleLoader instance
 	-- lute-lint-ignore(no_any)
-	local mockModuleLoader = ({
-		require = function(_self, path)
-			return (require :: any)(path)
-		end,
-	}) :: any
+	local mockModuleLoader = (
+		{
+			require = function(path)
+				return (require :: any)(path)
+			end,
+			getLastError = function()
+				return nil
+			end,
+		}
+	) :: any
 
 	local storybook = Storyteller.loadStorybookModule(storybookModule, mockModuleLoader)
 

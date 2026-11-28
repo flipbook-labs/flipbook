@@ -17,11 +17,10 @@ export type Props = {
 ]]
 local function StoryProblemNotice(props: Props)
 	--[[
-		Storyteller's `problem` is the error as ModuleLoader raised it: the
-		error's message on the first line, then a traceback through
-		ModuleLoader's own functions. The message names the module and line
-		that failed, so the notice shows that line alone and leaves the
-		traceback out.
+		Storyteller's `problem` puts the error's message on the first line,
+		then the stack from where the error was raised. The message names the
+		module and line that failed, so the notice shows that line alone and
+		leaves the stack out.
 	]]
 	local message = props.problem:match("^[^\n]*") or props.problem
 

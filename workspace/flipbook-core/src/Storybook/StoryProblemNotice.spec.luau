@@ -42,13 +42,13 @@ local function renderedText(): { string }
 	return texts
 end
 
-test("shows the error's message without the traceback after it", function()
+test("shows the error's message without the stack after it", function()
 	act(function()
 		root:render(React.createElement(ContextProviders, {
 			plugin = MockPlugin.new(),
 		}, {
 			Notice = React.createElement(StoryProblemNotice, {
-				problem = `{MESSAGE}\nReplicatedStorage.Packages.ModuleLoader:162 function require`,
+				problem = `{MESSAGE}\nReplicatedStorage.Stories.Button:12 function require`,
 			}),
 		}))
 	end)
@@ -56,6 +56,6 @@ test("shows the error's message without the traceback after it", function()
 	local texts = renderedText()
 	expect(texts).toContain(MESSAGE)
 	for _, text in texts do
-		expect(text).never.toMatch("ModuleLoader")
+		expect(text).never.toMatch("function require")
 	end
 end)
