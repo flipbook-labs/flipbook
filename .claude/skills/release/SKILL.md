@@ -43,7 +43,9 @@ Fork and Dependabot builds skip build provenance attestation in `ci.yml`, becaus
 
 ## Storybook previews
 
-A pull request storybook deliberately uses the last public Flipbook release as its runtime, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. On `main`, the workflow embeds a fresh prod build instead, which catches embedding problems before a release. Do not pass `flipbook-rbxm` for pull request deploys. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 still only comments on `pull_request` events. The deploy job posts the preview link with `flipbook-cli comment` instead.
+Each pull request storybook deploys the branch's stories to two places. The PR build's place embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that is the build about to ship. The release place passes no `flipbook-rbxm`, so deploy-storybook embeds the last public Flipbook release. It's a baseline, so a reviewer can tell whether a difference comes from the runtime or the stories. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
+
+The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `approve` job's `luau-execution` or `luau-execution-gated` environment. Never build pull request code in a job that holds secrets. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 only comments on `pull_request` events. The deploy job posts one comment with `flipbook-cli comment` for the pull request build's place. Its `--comment-template` adds a link to the release place, whose ID `lute run resolve-place-id` looks up.
 
 ## PostHog release reporting
 
@@ -67,5 +69,6 @@ git grep -n ASSET_NAMES_BY_CHANNEL -- creator-store.luau
 git grep -n CreateAssetVersionAsync -- .lute/tasks/publish-plugin.luau
 git grep -n luau-execution-gated -- .github/workflows
 git grep -n "flipbook-cli comment" -- .github/workflows/storybook.yml
+git grep -n resolve-place-id -- .github/workflows/storybook.yml
 ls .lute/posthog.luau
 ```
