@@ -36,18 +36,22 @@ Do not claim the change is tested. Run `lute run check` in Flipbook, or lint and
 
 ## Testing Storyteller or ModuleLoader changes in Flipbook
 
-Wally resolves only from its registry, so Flipbook cannot depend on a local checkout. The `try-in-flipbook` script in each dependency repo is the workaround. It deletes the `dist/` folder inside the installed package under `Packages/_Index`, runs `lute run build`, and copies the fresh `dist/` over it.
+Wally resolves only from its registry, so Flipbook cannot depend on a local checkout. Each dependency repo has a script that builds it and copies the build over the installed package in another checkout's `Packages/_Index`. Both scripts use `overlayWallyPackage` from flipbook-batteries. Pass the checkout's path, so a worktree under `.claude/worktrees/` gets the build rather than the main checkout.
 
-- Storyteller: run `lute run try-in-flipbook` in the Storyteller repo.
-- ModuleLoader: run `lute run try-in-flipbook` in the ModuleLoader repo. To test it through Storyteller as well, run `lute run try-in-storyteller` there first, then `try-in-flipbook` in Storyteller.
+- Storyteller: in the Storyteller repo, run `lute run try-in-flipbook --flipbook <path>`. Without `--flipbook`, it looks for a `flipbook` folder beside the Storyteller checkout or one of its parent folders.
+- ModuleLoader: in the ModuleLoader repo, run `lute run try-in --storyteller <path> --flipbook <path>`. Pass either option alone to overlay one checkout. With both, it overlays ModuleLoader into each, then runs `try-in-flipbook` in that Storyteller checkout, so Flipbook also gets a Storyteller build from it.
+
+Flipbook installs ModuleLoader only through Storyteller, under `Packages/_Index/flipbook-labs_module-loader@<version>`. The overlay finds every installed copy of the package, including ones another package brought in. It fails when the checkout doesn't install the package at all.
+
+The overlay also rewrites the Wally link files that point at each copy, such as Storyteller's `ModuleLoader.lua`. wally-package-types generated those links' type re-exports from the released version, and a breaking build can remove a type a link still re-exports. The script prints each type a link gained or lost. When the build depends on a package the installed version didn't, it adds that link if the checkout installs the package, or prints a warning if it doesn't.
 
 Then rebuild Flipbook with `lute run build plugin --channel dev --clean`, or run `lute run test`, which rebuilds on its own.
 
 Three things trip this up:
 
-- The scripts find Flipbook as a sibling directory named `flipbook`. They write to that checkout, not to a worktree of it. To test from a worktree, copy the built `dist/` into that worktree's own `Packages/_Index` entry.
-- Flipbook's `lute run install` runs `wally install` again and discards the overlay. Overlay after installing, never before.
-- The overlay builds with the default prod channel. The overlaid package therefore has no tests or stories.
+- Flipbook's `lute run install` runs `wally install` again and discards the overlay. Overlay after installing, never before. The install can also leave a change in `wally.lock`. Revert it rather than commit it with the change you're testing.
+- The overlay keeps the installed version's folder name. A ModuleLoader 1.0 build overlaid on a 0.13.0 install still sits in `flipbook-labs_module-loader@0.13.0`.
+- ModuleLoader's overlay builds with the default prod channel, so it has no tests. Storyteller's builds with the dev channel and keeps its tests and stories.
 
 ## StudioPlugins
 
