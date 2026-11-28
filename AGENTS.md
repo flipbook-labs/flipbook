@@ -56,11 +56,10 @@ flipbook/
 ├── .lute/                  # Lute task scripts
 ├── Packages/               # Wally installs (gitignored)
 ├── .lpm/                   # Lute packages vendored by `lute run install` (gitignored)
-├── LuauPackages/           # rbxasset only
 ├── RobloxPackages/         # roblox-packages CLI installs (Foundation, Promise, Dash, etc.)
 ├── project.luau            # Shared path constants used by all Lute scripts
 ├── wally.toml              # Roblox runtime dependencies
-├── pkg.luau                # Lute package manifest (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
+├── pkg.luau                # Virtual root manifest: workspace members plus Lute tooling (batteries, flipbook-batteries; agent-skills and code-quality dev deps)
 ├── pkg.lock.luau           # Lute package lockfile
 ├── .config.luau            # Luau aliases, including `@lpm` for the vendored Lute packages
 └── .env / .env.template    # Environment variables (copy template to .env)
@@ -115,6 +114,12 @@ lute run build --channel prod
 lute run lint
 lute run analyze
 lute run test
+
+# Build every channel and target, and report how big each one is
+lute run size-report
+
+# Specs for the `.lute` scripts themselves, which run on Lute instead of in a Roblox place
+lute test .lute
 ```
 
 Use `--clean` after dependency changes or when build output appears stale. `--channel dev` retains tests and stories; `--channel prod` prunes development files.
@@ -165,13 +170,14 @@ When editing or reviewing, treat surviving history-relative comments as litter t
 
 ### Workspace members and production pruning
 
-The `workspace/` directory is a monorepo-style structure. Each member has its own `src/` and sometimes `rotriever.toml`. When adding a new workspace member that should not ship in the production plugin, add it to `PROD_CONFIG.prunedDirs` in `project.luau`.
+`workspace/` is a Lute package workspace. The root `pkg.luau` has no name or version, which makes it a virtual root, and each member is a path dependency in it. Each member has its own `pkg.luau`, `src/`, and sometimes `rotriever.toml`, and reads its version and `files` from the root's `metadata`. Members in the root's `dependencies` ship with the plugin. Members in its `dev_dependencies` are development-only, and production builds prune them. `project.luau` reads both lists from `pkg.luau`, so registering a member there is what makes the build compile it. Members' Roblox dependencies still come from Wally and `roblox-packages`, not `pkg.luau`.
+
+Prod and beta builds also remove the Wally and Roblox packages that nothing in the plugin requires (`.lute/lib/build-system/prunePackagesAsync.luau`). The step follows requires from the plugin's own code through each package's linkers, so a dependency declared in `wally.toml` ships only when code left in the build requires it. Dev builds keep every package.
 
 ### Wally vs Lute packages
 
 - **Wally** (`Packages/`) installs Roblox runtime deps (React, Charm, Storyteller, ModuleLoader, etc.)
-- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime). The `code-quality` dev dependency holds the CodeQuality lint rules, which `.lute/lint.luau` points `lute lint` at
-- `LuauPackages/` holds only rbxasset, which `.lune/publish-plugin.luau` requires as `@lunepkg`. Lune reads aliases only from `.luaurc`, so `.lune/.luaurc` declares the Lune aliases
+- **Lute packages** are the tooling that `.lute/` scripts use, declared in `pkg.luau` with lowercase kebab-case keys. `lute run install` runs `lute pkg install --vendor`, which copies each one into a gitignored `.lpm/<key>@<rev>` folder. `.config.luau` has one alias for all of them, `lpm = "./.lpm"`, so scripts require a dependency through its folder, as in `require("@lpm/batteries@v1.0.1-nightly.20261115/cli")`. A vendored package's own `@lpm` requires resolve through this repo's alias, so the alias has to stay; [#694](https://github.com/flipbook-labs/flipbook/issues/694) tracks removing that requirement. Scripts load `.env` with flipbook-batteries' `dotenv`. The shared skill library is the `agent-skills` dev dependency, vendored into `.lpm/agent-skills@<rev>` for agents to read (not required at runtime). The `code-quality` dev dependency holds the CodeQuality lint rules, which `.lute/lint.luau` points `lute lint` at Publishing to the Creator Store uses the `open-cloud-*` packages, typed Open Cloud clients from [flipbook-labs/open-cloud](https://github.com/flipbook-labs/open-cloud).
 
 ### The build and require paths
 
@@ -185,7 +191,7 @@ Flipbook's own design contracts and runbooks live in [`.claude/skills/`](.claude
 
 Before preparing, reviewing, or merging a pull request, read [.github/MERGE_POLICY.md](.github/MERGE_POLICY.md). When the change touches releases, workflows, telemetry, or dependencies, also read the [`release`](.claude/skills/release/SKILL.md) skill. Ownership is inferred from changed files. Mixed application and engine changes require application review. Workspace release manifests are an explicit engine-owned exception; every other path outside the application domain, including repository-stewardship files, also belongs to `@flipbook-labs/flipbook-engine`.
 
-Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, include visual evidence that lets the application reviewer evaluate the result.
+Preserve `.github/pull_request_template.md` instead of replacing it with an agent-authored structure. For user-visible changes, attach screenshots or video that let the application reviewer evaluate the result, as the [`story-screenshots`](.claude/skills/story-screenshots/SKILL.md) skill describes.
 
 Greptile must treat this file, `.github/MERGE_POLICY.md`, and the relevant skills as authoritative repository guidance. The repositories listed in `.greptile/config.json` provide shared conventions and cross-repository implementation context. Keep `.greptile/files.json` limited to stable initial context, then follow this index and the changed code into specialized skills. When sources conflict, prefer this repository and then the shared skills. Assess implementation safety independently from merge authorization: a change requiring human application approval is not inherently lower quality.
 
@@ -196,6 +202,7 @@ Greptile findings must be evaluated rather than accepted mechanically. Fix valid
 - [`architecture`](.claude/skills/architecture/SKILL.md): the contracts the code does not make obvious. Pluginlike and embedding, the Flipbook to Storyteller to ModuleLoader layering, why state lives in Charm, reload behavior, plugin versus embedded limits, and the community-first policy for the internal build, telemetry, and claims about other tools. Use when changing embedding or bootstrap code, story loading, stores, telemetry, or the internal build.
 - [`dev-env`](.claude/skills/dev-env/SKILL.md): set up, repair, and validate the environment. Installs, `.env`, lint, analyze, cloud tests and their Open Cloud key, testing local Storyteller or ModuleLoader changes in Flipbook, StudioPlugins, and what counts as evidence for a fix. Use when setting up, running checks, when tests cannot run, or when testing a dependency change in Flipbook.
 - [`release`](.claude/skills/release/SKILL.md): how releases happen and what an agent must not do in them. Channels and assets, CI environments and secrets, storybook previews, PostHog release reporting, and the rules for telemetry, community parity, and dependency bumps. Use when a change touches releases, publishing, workflows, telemetry, or dependencies.
+- [`story-screenshots`](.claude/skills/story-screenshots/SKILL.md): capture screenshots of Stories in Studio and attach them to a pull request. Use when a pull request changes what people see in Flipbook, or Greptile's visual-evidence rule flags one.
 - [`troubleshooting`](.claude/skills/troubleshooting/SKILL.md): non-obvious runtime and build failures, past incidents not to repeat, and measurement techniques. Use when the plugin is stale, an injected global is wrong, tests wait on a fork PR, a Windows or Rotriever build breaks, or you need evidence for a build or re-render fix.
 - [`use-studio-mcp`](.claude/skills/use-studio-mcp/SKILL.md): build and validate Flipbook through Studio MCP and FlipbookAgentGateway. Use when driving a local build, changing gateway actions, or verifying Stories through semantic actions, embedded Play-mode input, and screenshots.
 - [`write-docs`](.claude/skills/write-docs/SKILL.md): authoring the docs site. Where pages live, the sidebar, code samples, and grounding every claim in source. Use when writing or editing anything under `docs/`.

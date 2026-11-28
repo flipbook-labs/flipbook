@@ -43,7 +43,7 @@
     },
     {
       "id": "visual-evidence",
-      "rule": "When a change affects what users see or how they interact with Flipbook, the PR description includes screenshots, video, or the PR's Storybook preview. Flag a visible change that has none.",
+      "rule": "When a change affects what users see or how they interact with Flipbook, the PR description includes screenshots or video of the result. A link to the PR's Storybook preview doesn't count, since CI posts one on every PR. Flag a visible change that has none.",
       "scope": ["workspace/flipbook-core/**", "workspace/flipbook-next/**"],
       "severity": "medium"
     },
@@ -68,7 +68,7 @@
     },
     {
       "id": "changelog-entry",
-      "rule": "A PR adds at most one .changes/ entry. Its body is one short sentence, about 140 characters at most, in present tense, with no references to PRs, branches, or how the change was developed. Maintenance with no user-facing effect uses the Internal category and a patch bump.",
+      "rule": "A PR adds at most one .changes/ entry. Its `summary` is one short sentence, about 140 characters at most, in present tense. Its optional `body` can run longer. Neither references PRs, branches, or how the change was developed. Maintenance with no user-facing effect uses the Internal category and a patch bump.",
       "scope": [".changes/**"],
       "severity": "low"
     }

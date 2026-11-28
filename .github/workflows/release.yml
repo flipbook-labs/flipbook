@@ -26,7 +26,7 @@ jobs:
       contents: read
       statuses: write
     steps:
-      - uses: flipbook-labs/changewrite/publish-lock@v0.15.1
+      - uses: flipbook-labs/changewrite/publish-lock@v0.16.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
@@ -110,7 +110,7 @@ jobs:
         with:
           name: flipbook-rbxm
 
-      - uses: flipbook-labs/changewrite@v0.15.1
+      - uses: flipbook-labs/changewrite@v0.16.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'debug:release-pr') }}
@@ -146,7 +146,7 @@ jobs:
 
       - name: Unlock Publish Pull Request
         if: github.event_name != 'pull_request'
-        uses: flipbook-labs/changewrite/publish-lock@v0.15.1
+        uses: flipbook-labs/changewrite/publish-lock@v0.16.0
         with:
           locked: false
           url: ${{ env.RUN_URL }}
@@ -166,7 +166,7 @@ jobs:
 
       - name: Lock Publish Pull Request Again
         if: steps.main-moved.outputs.moved == 'true'
-        uses: flipbook-labs/changewrite/publish-lock@v0.15.1
+        uses: flipbook-labs/changewrite/publish-lock@v0.16.0
         with:
           locked: true
           url: ${{ env.RUN_URL }}
@@ -198,7 +198,9 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
 
       - name: Publish release to Creator Store
-        run: lune run publish-plugin --channel prod --skipBuild --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run publish-plugin --channel prod
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
   publish-nightly-plugin:
     runs-on: ubuntu-latest
@@ -223,8 +225,13 @@ jobs:
       - name: Create .env
         run: cp .env.template .env
 
+      - name: Build beta plugin
+        run: lute run build plugin --channel beta --output Flipbook.rbxm
+
       - name: Publish beta build to Creator Store
-        run: lune run publish-plugin --channel beta --apiKey ${{ secrets.ROBLOX_API_KEY }}
+        run: lute run publish-plugin --channel beta
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
   # Charts release health in PostHog: how many changes are waiting on a
   # release, and when beta builds and releases go out. The `posthog`

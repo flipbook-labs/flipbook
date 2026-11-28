@@ -8,6 +8,11 @@ version = "0.9.0"
 dependencies = []
 
 [[package]]
+name = "centau/vide"
+version = "0.4.1"
+dependencies = []
+
+[[package]]
 name = "chriscerie/react-spring"
 version = "2.0.0"
 dependencies = [["Promise", "evaera/promise@4.0.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["TestEZ", "roblox/testez@0.4.1"]]
@@ -20,11 +25,6 @@ dependencies = []
 [[package]]
 name = "csqrl/sift"
 version = "0.0.8"
-dependencies = []
-
-[[package]]
-name = "dekkonot/sha256"
-version = "1.0.1"
 dependencies = []
 
 [[package]]
@@ -44,23 +44,28 @@ dependencies = []
 
 [[package]]
 name = "flipbook-labs/agent-gateway"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"]]
+
+[[package]]
+name = "flipbook-labs/archivist"
+version = "0.3.1"
+dependencies = []
 
 [[package]]
 name = "flipbook-labs/flipbook"
-version = "2.5.0"
-dependencies = [["AgentGateway", "flipbook-labs/agent-gateway@0.2.0"], ["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["ModuleLoader", "flipbook-labs/module-loader@0.11.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.12.0"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["sha256", "dekkonot/sha256@1.0.1"], ["t", "osyrisrblx/t@3.1.1"]]
+version = "2.6.0"
+dependencies = [["AgentGateway", "flipbook-labs/agent-gateway@0.2.1"], ["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Highlighter", "boatbomber/highlighter@0.9.0"], ["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"], ["Log", "realthx1/luaulog@0.3.0"], ["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.7"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["Roact", "roblox/roact@1.4.4"], ["Sift", "csqrl/sift@0.0.8"], ["Storyteller", "flipbook-labs/storyteller@1.14.0"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "flipbook-labs/module-loader"
-version = "0.11.0"
-dependencies = [["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"]]
+version = "0.13.0"
+dependencies = [["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"]]
 
 [[package]]
 name = "flipbook-labs/storyteller"
-version = "1.12.0"
-dependencies = [["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Fusion3", "elttob/fusion@0.3.0"], ["GreenTea", "corecii/greentea@0.4.11"], ["Jest", "jsdotlua/jest@3.10.0"], ["JestGlobals", "jsdotlua/jest-globals@3.10.0"], ["ModuleLoader", "flipbook-labs/module-loader@0.11.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Roact", "roblox/roact@1.4.4"], ["RoactCompat", "jsdotlua/roact-compat@17.2.1"], ["Sift", "csqrl/sift@0.0.8"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["t", "osyrisrblx/t@3.1.1"]]
+version = "1.14.0"
+dependencies = [["Archivist", "flipbook-labs/archivist@0.3.1"], ["Charm", "littensy/charm@0.11.0-rc.4"], ["Fusion", "elttob/fusion@0.2.0"], ["Fusion3", "elttob/fusion@0.3.0"], ["GreenTea", "corecii/greentea@0.4.11"], ["Iris", "sirmallard/iris@2.5.1"], ["Jest", "roblox/jest@3.21.0"], ["JestGlobals", "roblox/jest-globals@3.21.0"], ["ModuleLoader", "flipbook-labs/module-loader@0.13.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.4.0-rc.3"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Roact", "roblox/roact@1.4.4"], ["RoactCompat", "jsdotlua/roact-compat@17.2.1"], ["Sift", "csqrl/sift@0.0.8"], ["UILabs", "pepeeltoro41/ui-labs@2.4.2"], ["Vide", "centau/vide@0.4.1"], ["t", "osyrisrblx/t@3.1.1"]]
 
 [[package]]
 name = "jsdotlua/boolean"
@@ -616,3 +621,8 @@ dependencies = []
 name = "roblox/throat"
 version = "3.21.0"
 dependencies = [["JestTypes", "roblox/jest-types@3.21.0"], ["Promise", "roblox/promise@3.5.2"]]
+
+[[package]]
+name = "sirmallard/iris"
+version = "2.5.1"
+dependencies = []

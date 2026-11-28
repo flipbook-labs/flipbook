@@ -22,6 +22,7 @@ export type Options = {
 	mode: AppMode,
 	plugin: Pluginlike,
 	launchData: LaunchData?,
+	telemetry: TelemetryClient?,
 }
 
 export type FlipbookStore = {
@@ -34,7 +35,7 @@ export type FlipbookStore = {
 }
 
 local function createFlipbookStore(options: Options): FlipbookStore
-	local telemetry = createTelemetry()
+	local telemetry = options.telemetry or createTelemetry(options.mode, options.plugin)
 	local navigation = createNavigationStore(telemetry)
 	local story = createStoryStore({
 		mode = options.mode,

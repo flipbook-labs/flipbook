@@ -19,9 +19,11 @@ To exercise the release path from an ordinary pull request, apply the `debug:rel
 
 ## Channels and assets
 
-The `beta` channel publishes to the dev asset on purpose. Nightly builds from `main` use `--channel beta` and land on the Flipbook (Dev) asset. Do not add a separate beta asset or "fix" the mapping. `ASSET_NAMES_BY_CHANNEL` in `.lune/publish-plugin.luau` is the source of truth, and the assets are defined in `rbxasset.toml`.
+The `beta` channel publishes to the dev asset on purpose. Nightly builds from `main` use `--channel beta` and land on the Flipbook (Dev) asset. Do not add a separate beta asset or "fix" the mapping. `ASSET_NAMES_BY_CHANNEL` in `creator-store.luau` at the repo root is the source of truth, and the same file defines the assets and their IDs.
 
-The smoketest has its own asset, `smoketest`, selected by the `--smoketest` flag rather than by channel. `strict.yml` builds a prod plugin on a secretless runner, then publishes it to the smoketest asset from the gated job with `--skipBuild`. A smoketest failure means the Creator Store rejected the build or the asset is misconfigured. It does not mean the tests failed.
+The smoketest has its own asset, `smoketest`, selected by the `--smoketest` flag rather than by channel. `strict.yml` builds a prod plugin on a secretless runner, then publishes it to the smoketest asset from the gated job. A smoketest failure means the Creator Store rejected the build or the asset is misconfigured. It does not mean the tests failed.
+
+`lute run publish-plugin` only uploads a built `.rbxm`, so each publish job builds or downloads `Flipbook.rbxm` first. The Open Cloud Assets API rejects plugin uploads made with an API key, so the script uploads through a Luau Execution task that calls `AssetService:CreateAssetVersionAsync`. That task is `.lute/tasks/publish-plugin.luau`.
 
 ## Environments and secrets
 
@@ -41,9 +43,9 @@ Fork and Dependabot builds skip build provenance attestation in `ci.yml`, becaus
 
 ## Storybook previews
 
-Each pull request storybook deploys the branch's stories to two places. One embeds the last public Flipbook release, so a UI change is previewed against the shipped baseline and a half-built plugin cannot hide it. The other embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that second place runs the build that is about to ship. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
+Each pull request storybook deploys the branch's stories to two places. The main one embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that is the build about to ship. The other embeds the last public Flipbook release as a baseline, so a reviewer can tell whether a difference comes from the runtime or the stories. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
 
-The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `luau-execution` approval gate. Never build pull request code in a job that holds secrets. The deploy job posts one comment with links to both places through `lute run comment-storybook-preview`. deploy-storybook's own comment stays off, because v0.4.0 only comments on `pull_request` events.
+The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `luau-execution` approval gate. Never build pull request code in a job that holds secrets. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 still only comments on `pull_request` events. The deploy job posts one comment with `flipbook-cli comment` for the pull request build's place. Its `--comment-template` adds a link to the release place, whose ID `lute run resolve-place-id` looks up.
 
 ## PostHog release reporting
 
@@ -53,7 +55,7 @@ Release jobs report to PostHog after the fact: pending changes on each push to `
 
 Community first. Flipbook may run inside internal Roblox environments, but the internal build must not gain features that the community build cannot have. If a feature needs an internal-only API, do not ship it here. Raise it as future work.
 
-Telemetry. Collection is gated by the `collectAnonymousUsageData` setting, checked in `fireEventAsync`. Any change that adds events, fields, or a new kind of collection must stay behind that setting and must say in the pull request what is collected, why, and how it respects privacy. Do not add collection that bypasses `fireEventAsync`.
+Telemetry. Collection is opt-in. The telemetry client's `capture` sends nothing unless consent is `Granted`. Any change that adds events, fields, or a new kind of collection must stay behind that consent and must say in the pull request what is collected, why, and how it respects privacy. Do not add collection that bypasses `capture`.
 
 Dependency bumps. After changing `wally.toml`, `pkg.luau`, `rokit.toml`, or `RobloxPackages`, rebuild with `--clean` before you trust any result, because a cached build can hide a broken require. For Storyteller or ModuleLoader changes, verify through Flipbook with the overlay described in [`dev-env`](../dev-env/SKILL.md) before relying on a release of the dependency. Confirm the overlay is the code that ran. Do not bump tool versions as a side effect of another change.
 
@@ -63,8 +65,10 @@ Dependency bumps. After changing `wally.toml`, `pkg.luau`, `rokit.toml`, or `Rob
 
 ```sh
 ls .github/workflows/release.yml .github/workflows/storybook.yml .github/workflows/strict.yml
-git grep -n ASSET_NAMES_BY_CHANNEL -- .lune/publish-plugin.luau
+git grep -n ASSET_NAMES_BY_CHANNEL -- creator-store.luau
+git grep -n CreateAssetVersionAsync -- .lute/tasks/publish-plugin.luau
 git grep -n luau-execution-gated -- .github/workflows
-git grep -n comment-storybook-preview -- .github/workflows/storybook.yml
+git grep -n "flipbook-cli comment" -- .github/workflows/storybook.yml
+git grep -n resolve-place-id -- .github/workflows/storybook.yml
 ls .lute/posthog.luau
 ```

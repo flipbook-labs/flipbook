@@ -2,15 +2,13 @@ local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local path = require("@std/path")
 local system = require("@std/system")
 
-local project = require("@repo/project")
-
 local run = FlipbookBatteries.run
 
 run("changewrite", { "check", "--fix" })
 run("lute", { "setup" })
 run("lute", { "run", "lint" })
 run("lute", { "run", "analyze" })
-run("lute", { "test", project.SCRIPTS_PATH })
+run("lute", { "test", ".lute" })
 run("lute", {
 	"run",
 	"build",

@@ -2,10 +2,10 @@ return {
 	categories = { "Features", "Changes", "Fixes", "Dependencies", "Internal" },
 	collapsed = { "Dependencies", "Internal" },
 	version = {
-		current = "2.5.0",
+		current = "2.7.0",
 		mirror = {
 			{ file = "wally.toml" },
-			{ file = "pkg.luau" },
+			{ file = "pkg.luau", pattern = 'version%s*=%s*"([^"]+)"' },
 			{ file = "workspace/flipbook-core/rotriever.toml", pattern = 'version%s*=%s*"([^"]+)"' },
 		},
 	},

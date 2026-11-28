@@ -80,6 +80,6 @@ jobs:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
 
       - name: Deploy smoketest plugin to Creator Store
-        run: lune run publish-plugin --smoketest --channel prod --skipBuild
+        run: lute run publish-plugin --smoketest
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}

@@ -9,6 +9,7 @@ local EmbedIntoExperienceDialog = require("@root/Embedding/EmbedIntoExperienceDi
 local FeedbackDialog = require("@root/Feedback/FeedbackDialog")
 local FlipbookStoreContext = require("@root/FlipbookStore/FlipbookStoreContext")
 local UserSettingsStore = require("@root/UserSettings/UserSettingsStore")
+local defaultSettings = require("@root/UserSettings/defaultSettings")
 
 local Object = LuauPolyfill.Object
 
@@ -41,10 +42,16 @@ local useSignalState = ReactSignals.useSignalState
 
 type ItemId = number | string
 
+local THEME_NAME_ITEMS: { Foundation.DropdownItem } = {}
+for _, choice in defaultSettings.themeName.choices do
+	table.insert(THEME_NAME_ITEMS, { id = choice.name, text = choice.displayName })
+end
+
 type TopbarProps = {
 	showDevBadge: boolean?,
 	showBetaBadge: boolean?,
 	showInternalBadge: boolean?,
+	topbarInset: Rect?,
 } & Foundation.CommonProps
 
 local function Topbar(props: TopbarProps)
@@ -66,10 +73,18 @@ local function Topbar(props: TopbarProps)
 
 	local hasBadges = props.showDevBadge or props.showBetaBadge or props.showInternalBadge
 
-	local onThemeChanged = useCallback(function(itemId: ItemId)
+	local onColorModeChanged = useCallback(function(itemId: ItemId)
 		userSettingsStore.setStorage(function(currentValue)
 			return Object.assign({}, currentValue, {
-				theme = itemId,
+				colorMode = itemId,
+			})
+		end)
+	end, { userSettingsStore.setStorage })
+
+	local onThemeNameChanged = useCallback(function(itemId: ItemId)
+		userSettingsStore.setStorage(function(currentValue)
+			return Object.assign({}, currentValue, {
+				themeName = itemId,
 			})
 		end)
 	end, { userSettingsStore.setStorage })
@@ -77,7 +92,15 @@ local function Topbar(props: TopbarProps)
 	return e(
 		View,
 		withCommonProps(props, {
-			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large size-full-1400",
+			tag = "align-y-center bg-surface-0 flex-x-between padding-right-medium padding-y-medium row gap-large",
+			Size = UDim2.new(
+				1,
+				0,
+				0,
+				if props.topbarInset
+					then math.max(props.topbarInset.Max.Y, tokens.Size.Size_1400)
+					else tokens.Size.Size_1400
+			),
 		}),
 		{
 			Actions = e(ScrollView, {
@@ -183,7 +206,7 @@ local function Topbar(props: TopbarProps)
 					orientation = Orientation.Vertical,
 				}),
 
-				Theme = e(Dropdown.Root, {
+				ColorMode = e(Dropdown.Root, {
 					LayoutOrder = 5,
 					items = {
 						{ id = "system", text = "System" },
@@ -191,10 +214,21 @@ local function Topbar(props: TopbarProps)
 						{ id = "light", text = "Light" },
 					},
 					label = "",
-					onItemChanged = onThemeChanged,
+					onItemChanged = onColorModeChanged,
+					placeholder = "Color mode",
+					size = InputSize.Small,
+					value = userSettings.colorMode,
+					width = UDim.new(0, 160),
+				}),
+
+				ThemeName = e(Dropdown.Root, {
+					LayoutOrder = 6,
+					items = THEME_NAME_ITEMS,
+					label = "",
+					onItemChanged = onThemeNameChanged,
 					placeholder = "Theme",
 					size = InputSize.Small,
-					value = userSettings.theme,
+					value = userSettings.themeName,
 					width = UDim.new(0, 160),
 				}),
 			}),
