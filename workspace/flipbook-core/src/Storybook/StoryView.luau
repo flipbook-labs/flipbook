@@ -9,6 +9,7 @@ local StoryControlsContext = require("@root/StoryControls/StoryControlsContext")
 local StoryControlsPanel = require("@root/StoryControls/StoryControlsPanel")
 local StoryError = require("@root/Storybook/StoryError")
 local StoryPreview = require("@root/Storybook/StoryPreview")
+local StoryProblemNotice = require("@root/Storybook/StoryProblemNotice")
 local createStoryControlsStore = require("@root/StoryControls/createStoryControlsStore")
 local types = require("@root/Storybook/types")
 local useAgentStoryRegistration = require("@root/Agent/useAgentStoryRegistration")
@@ -34,6 +35,29 @@ type SelectedStoryViewProps = {
 local function SelectedStoryView(props: SelectedStoryViewProps)
 	local flipbookStore = FlipbookStoreContext.use()
 	local story, storyError = useStory(props.selectedStory.storyModule, props.selectedStory.storybook)
+	--[[
+		When an edit to a Story module fails to load, Storyteller keeps the
+		module's record `Loaded` with the last version that loaded, and puts the
+		error in the record's `problem`. `useStory` returns that last version
+		without the error, so the record is read here to show the error above
+		the preview.
+
+		A module that has never loaded has an `Unavailable` record instead, and
+		`useStory` already returns its problem as `storyError`. Only `Loaded`
+		records are read here, so the error isn't shown twice.
+
+		`getStoryModuleRecord` reads Storyteller's shared runtime, while
+		`useStory` reads the store from the nearest `StorytellerProvider`. They
+		agree because `ContextProviders` mounts that provider without a custom
+		store.
+	]]
+	local storyProblem = useSignalState(function()
+		local record = Storyteller.getStoryModuleRecord({
+			storyModule = props.selectedStory.storyModule,
+			storybook = props.selectedStory.storybook,
+		})
+		return if record and record.status == "Loaded" then record.problem else nil
+	end, { props.selectedStory.storyModule, props.selectedStory.storybook } :: { unknown })
 	local pluginStore = useSignalState(PluginStore.get)
 	local plugin = useSignalState(pluginStore.getPlugin)
 	local overlayGui = useOverlay()
@@ -107,6 +131,13 @@ local function SelectedStoryView(props: SelectedStoryViewProps)
 					StoryPreview = React.createElement(StoryPreview, {
 						story = story,
 						extraProps = extraProps,
+					}),
+
+					-- Drawn over the bottom of the preview rather than above it,
+					-- so the Story doesn't move each time the notice appears or
+					-- clears while someone types.
+					Problem = storyProblem ~= nil and e(StoryProblemNotice, {
+						problem = storyProblem,
 					}),
 				}),
 
