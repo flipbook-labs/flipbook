@@ -42,6 +42,11 @@ return {
 			["flipbook-next"] = member("flipbook-next"),
 			["flipbook-telemetry"] = member("flipbook-telemetry"),
 
+			archivist = {
+				rev = "v0.3.1",
+				sourceKind = "github",
+				source = "https://github.com/flipbook-labs/archivist",
+			},
 			batteries = {
 				rev = "v1.0.1-nightly.20261115",
 				sourceKind = "github",

@@ -11,6 +11,7 @@ local json = require("@std/json")
 local path = require("@std/path")
 local process = require("@std/process")
 
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
@@ -81,7 +82,7 @@ if commentId then
 		"-F",
 		body,
 	})
-	print(`updated the size report comment on #{pullRequest}`)
+	logger.info(`updated the size report comment on #{pullRequest}`)
 else
 	run("gh", {
 		"api",
@@ -91,5 +92,5 @@ else
 		"-F",
 		body,
 	})
-	print(`commented the size report on #{pullRequest}`)
+	logger.info(`commented the size report on #{pullRequest}`)
 end

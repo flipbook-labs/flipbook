@@ -4,6 +4,7 @@ local path = require("@std/path")
 local process = require("@std/process")
 local system = require("@std/system")
 
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 local rojoBuild = require("@scripts/lib/rojoBuild")
 
@@ -78,7 +79,7 @@ if not runOnly then
 		},
 	})
 
-	print(`Built test place: {builtPlacePath}`)
+	logger.info(`built test place: {builtPlacePath}`)
 end
 
 if not buildOnly then

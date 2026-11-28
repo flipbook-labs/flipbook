@@ -6,6 +6,7 @@ local path = require("@std/path")
 local system = require("@std/system")
 
 local downloadMainSizeReport = require("@scripts/lib/downloadMainSizeReport")
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 local renderSizeReport = require("@scripts/lib/renderSizeReport")
 local rojoBuild = require("@scripts/lib/rojoBuild")
@@ -260,5 +261,5 @@ local markdown = renderSizeReport(report, baseReport, {
 fs.writeStringToFile(REPORT_JSON_PATH, json.serialize((report :: unknown) :: json.Value, true))
 fs.writeStringToFile(REPORT_MARKDOWN_PATH, markdown)
 
-print(markdown)
-print(`wrote {REPORT_JSON_PATH} and {REPORT_MARKDOWN_PATH}`)
+logger.info(markdown)
+logger.info(`wrote {REPORT_JSON_PATH} and {REPORT_MARKDOWN_PATH}`)

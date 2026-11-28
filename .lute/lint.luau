@@ -3,6 +3,7 @@ local FlipbookBatteries = require("@lpm/flipbook-batteries@v0.13.1")
 local path = require("@std/path")
 local process = require("@std/process")
 
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 
 local run = FlipbookBatteries.run
@@ -33,7 +34,9 @@ CodeQuality.lint(project.FOLDERS_TO_LINT)
 
 local files = findLuaFiles()
 if #files > 0 then
-	print("[err] the following file(s) are using the '.lua' extension. Please change to '.luau' and try again")
-	print(`{table.concat(files, "\n")}`)
+	local fileList = table.concat(files, "\n")
+	logger.err(
+		`the following file(s) are using the '.lua' extension. Please change to '.luau' and try again\n{fileList}`
+	)
 	process.exit(1)
 end

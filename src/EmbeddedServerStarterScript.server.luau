@@ -5,19 +5,23 @@ if PluginDebugService and PluginDebugService:IsAncestorOf(script) then
 end
 
 local startTime = os.clock()
-local prefix = `[{script.Name}]`
 
 -- Lute's unused_variable lint doesn't count writing a property as a use.
 -- lute-lint-ignore(unused_variable)
 local Players = game:GetService("Players")
 
 local FlipbookCore = require("@workspace/flipbook-core/src")
+local FlipbookLogger = require("@workspace/flipbook-core/src/logger")
+local enableOutputLogging = require("@workspace/flipbook-core/src/Logs/enableOutputLogging")
+
+enableOutputLogging()
+local logger = FlipbookLogger.child(script.Name)
 
 local GET_LAUNCH_DATA_REMOTE_NAME = "GetLaunchData"
 
-print(`{prefix} starting...`)
+logger.info("starting...")
 
-print(`{prefix} disabling character auto-loading...`)
+logger.info("disabling character auto-loading...")
 Players.CharacterAutoLoads = false
 
 -- Lute's unused_variable lint doesn't count writing a property as a use.
@@ -29,4 +33,4 @@ getLaunchDataRemote.OnServerInvoke = function(player)
 end
 getLaunchDataRemote.Parent = script.Parent
 
-print(`{prefix} successfully initialized in {os.clock() - startTime}s`)
+logger.info(`successfully initialized in {os.clock() - startTime}s`)

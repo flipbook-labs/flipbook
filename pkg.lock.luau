@@ -1,6 +1,7 @@
 return {
   version = 5,
   dependencies = {
+    archivist = "archivist@v0.3.1",
     batteries = "batteries@v1.0.1-nightly.20261115",
     ["flipbook-agents"] = "flipbook-agents",
     ["flipbook-batteries"] = "flipbook-batteries@v0.13.1",
@@ -27,6 +28,16 @@ return {
       source = "https://github.com/flipbook-labs/agent-skills",
       sourceKind = "github",
       dependencies = {},
+    },
+    ["archivist@v0.3.1"] = {
+      installPath = "@pkg/archivist--github-dc96cda73d8887932ad2546f1f9df0f81dbec0be73dde4f1b1dff46effc662ab@245b3e17e57deeaa008d767d0e8e8a4600ce59a712b55ef3dc2a96c81aaf0a20/.",
+      name = "archivist",
+      rev = "v0.3.1",
+      source = "https://github.com/flipbook-labs/archivist",
+      sourceKind = "github",
+      dependencies = {
+        batteries = "batteries@v1.0.1-nightly.20261115",
+      },
     },
     ["batteries@v1.0.1-nightly.20261115"] = {
       installPath = "@pkg/lute--github-6e87d56ef86974ca90629c5ef7ab70e40b102f8210ee178dc95916f940d6854e@6dba55fa3cf083d10fb5dcb54a22cb87d3d11735a512215b835f33d3c571033d/batteries",

@@ -5,6 +5,8 @@ local task = require("@std/task")
 local LuauExecution = require("@lpm/open-cloud-luau-execution@v0.2.0")
 local OpenApiRuntime = require("@lpm/openapi-runtime@v0.1.0")
 
+local logger = require("@scripts/lib/logger")
+
 -- How long to wait between checks on whether a task has finished.
 local POLL_INTERVAL_SECONDS = 2
 
@@ -129,7 +131,7 @@ local function runLuauTaskAsync(client: OpenApiRuntime.Client, script: string, o
 		})
 		for _, chunk in page.luauExecutionSessionTaskLogs or {} do
 			for _, message in chunk.messages or {} do
-				print(message)
+				logger.info(message)
 				table.insert(messages, message)
 			end
 		end

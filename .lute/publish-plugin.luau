@@ -20,6 +20,7 @@ local fs = require("@std/fs")
 local process = require("@std/process")
 
 local creatorStore = require("@repo/creator-store")
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 local publishPluginAsync = require("@scripts/lib/creator-store/publishPluginAsync")
 
@@ -70,6 +71,6 @@ local assetName = if args:has("smoketest")
 	else creatorStore.ASSET_NAMES_BY_CHANNEL[channel]
 local assetId = creatorStore.ASSETS[assetName].assetId
 
-print(`Publishing {file} to the {assetName} asset ({string.format("%d", assetId)})`)
+logger.info(`Publishing {file} to the {assetName} asset ({string.format("%d", assetId)})`)
 local versionNumber = publishPluginAsync(file, assetName, apiKey)
-print(`Published version {versionNumber}: https://create.roblox.com/store/asset/{string.format("%d", assetId)}`)
+logger.info(`Published version {versionNumber}: https://create.roblox.com/store/asset/{string.format("%d", assetId)}`)

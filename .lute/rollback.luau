@@ -39,6 +39,7 @@ local process = require("@std/process")
 
 local createOpenCloudClient = require("@scripts/lib/creator-store/createOpenCloudClient")
 local creatorStore = require("@repo/creator-store")
+local logger = require("@scripts/lib/logger")
 local project = require("@repo/project")
 local publishPluginAsync = require("@scripts/lib/creator-store/publishPluginAsync")
 local readLatestReleaseTag = require("@scripts/lib/releases/readLatestReleaseTag")
@@ -101,7 +102,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 	local apiKey = assertEnv("ROBLOX_API_KEY")
 	local repo = assertEnv("GITHUB_REPOSITORY")
 	local tag = chooseRelease(repo, requested)
-	print(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
+	logger.info(`Republishing the Flipbook.rbxm attached to {tag} to the prod asset`)
 	writeOutput("tag", tag)
 
 	if dryRun then
@@ -123,7 +124,7 @@ local function restoreProd(requested: string?, dryRun: boolean)
 		tag,
 		"--latest",
 	})
-	print(`Restored {tag} and marked it as the Latest release`)
+	logger.info(`Restored {tag} and marked it as the Latest release`)
 end
 
 -- Versions are named by path, as in "assets/123/versions/16".
@@ -162,7 +163,7 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 		`Version {target.number} is not older than the latest version, {latest.number}`
 	)
 
-	print(`Rolling the dev asset ({assetId}) back from version {latest.number} to {target.number}`)
+	logger.info(`Rolling the dev asset ({assetId}) back from version {latest.number} to {target.number}`)
 	if dryRun then
 		return
 	end
@@ -171,7 +172,7 @@ local function restoreBeta(requested: string?, dryRun: boolean)
 		assetId = assetId,
 		body = { assetVersion = `assets/{assetId}/versions/{target.number}` },
 	})
-	print(`Published version {target.number} again as {restored.path}`)
+	logger.info(`Published version {target.number} again as {restored.path}`)
 end
 
 local function restore(commandArgs: cli.Parser)

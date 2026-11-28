@@ -1,13 +1,14 @@
 local net = require("@std/net")
 
+local logger = require("@scripts/lib/logger")
 local types = require("@scripts/lib/posthog/types")
 
--- A dry run prints the request instead of sending it.
+-- A dry run logs the request instead of sending it.
 local function sendAsync(request: types.Request, dryRun: boolean)
 	if dryRun then
-		print(`{request.metadata.method} {request.url}`)
+		logger.info(`{request.metadata.method} {request.url}`)
 		if request.metadata.body then
-			print(request.metadata.body)
+			logger.info(request.metadata.body)
 		end
 		return
 	end

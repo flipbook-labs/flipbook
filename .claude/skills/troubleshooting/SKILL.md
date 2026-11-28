@@ -15,7 +15,7 @@ Flipbook's root `AGENTS.md` covers the commands and the Charm workaround. This s
 
 **An injected global is nil at runtime.** Darklua substitutes the value at build time and prints a `WARN` that the environment variable is not defined, then uses `nil`. The build still succeeds. `BASE_URL`, `LOG_LEVEL`, and `ENABLE_OUTPUT_LOGGING` come from `.env` through the process environment, so a missing `.env` is the usual cause. `lute run build` stops when `BASE_URL` is unset, but it does not check `LOG_LEVEL` or `ENABLE_OUTPUT_LOGGING`. Copy `.env.template` to `.env` and rebuild with `--clean`.
 
-**Logs appear in Studio Output, or do not appear in Help > Logs.** `ENABLE_OUTPUT_LOGGING` is compared as the string `"true"` in `workspace/flipbook-core/src/logger.luau`, and `LOG_LEVEL` filters before either destination. Both are baked in, so changing them needs a rebuild.
+**Logs appear in Studio Output, or do not appear in Help > Logs.** `ENABLE_OUTPUT_LOGGING` is compared as the string `"true"` in `workspace/flipbook-core/src/logger.luau`, and `LOG_LEVEL` filters before either destination. Both are baked in, so changing them needs a rebuild. Embedded Flipbook always writes to Output, because its starter scripts call `enableOutputLogging`.
 
 **Studio reports a missing `@pkg` or `@workspace` alias.** Darklua left a string require unresolved, so the plugin carries a Luau-style path that Roblox cannot load. Causes are a stale `sourcemap-darklua.json` or an absolute source path handed to Darklua. The build regenerates the sourcemap with Rojo and passes a relative path. If you changed `compileAsync.luau`, keep both.
 
@@ -45,7 +45,7 @@ Flipbook's root `AGENTS.md` covers the commands and the Charm workaround. This s
 
 **`pull_request_target`.** Fork support (#559) switched the whole CI workflow to `pull_request_target`, which then deployed dev builds from every PR (#561) and checked out the wrong code for tests. #563 (`5c997592`) and #562 (`64ed0047`) moved the secret-requiring work into `strict.yml`. That workflow builds PR code on a runner with no secrets and hands only build artifacts to the gated jobs, which check out the base commit. Keep that split. Never run PR code in a job that has `ROBLOX_API_KEY`, and never make a release or deploy job depend on `pull_request_target`.
 
-**Package patching.** Install-time patches exist for two reasons: string requires in `luaulog`, `charm`, and `react-charm` (`patchStringRequires`), and the Foundation MainGui fix from #666. Roblox's React linkers point at Flipbook's own copies without a patch, through roblox-packages' `--external` option. The Foundation patch unblocked the RobloxPackages 0.747 upgrade and is the exception, not a pattern. For an upstream bug, fix it in Flipbook code if you can. Otherwise write up an upstream report and ask before adding another patch.
+**Package patching.** Install-time patches exist for two reasons: string requires in `charm` and `react-charm` (`patchStringRequires`), and the Foundation MainGui fix from #666. Roblox's React linkers point at Flipbook's own copies without a patch, through roblox-packages' `--external` option. The Foundation patch unblocked the RobloxPackages 0.747 upgrade and is the exception, not a pattern. For an upstream bug, fix it in Flipbook code if you can. Otherwise write up an upstream report and ask before adding another patch.
 
 ## Measure instead of guessing
 

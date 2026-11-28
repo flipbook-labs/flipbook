@@ -1,22 +1,20 @@
+local Archivist = require("@pkg/Archivist")
 local Charm = require("@pkg/Charm")
-local Log = require("@pkg/Log")
 local Sift = require("@pkg/Sift")
 
-type LogEvent = typeof(Log.LogEvent.new(Log.LogLevel.Information, {}, {}))
-
 local function createLogsStore()
-	local getHistory, setHistory = Charm.signal({})
+	local getHistory, setHistory = Charm.signal<<{ Archivist.LogRecord }>>({})
 
-	local function addLine(event: LogEvent)
+	local function addRecord(record: Archivist.LogRecord)
 		setHistory(function(prev)
-			return Sift.List.append(prev, event)
+			return Sift.List.append(prev, record)
 		end)
 	end
 
 	return {
 		getHistory = getHistory,
 
-		addLine = addLine,
+		addRecord = addRecord,
 	}
 end
 

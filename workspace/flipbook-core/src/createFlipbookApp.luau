@@ -89,11 +89,11 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	end
 
 	local function unmount()
-		logger:Info("unmounting app...")
+		logger.info("unmounting app...")
 		local elapsedMs = stopwatch(function()
 			root:unmount()
 		end)
-		logger:Info(`unmounted app in {elapsedMs}`)
+		logger.info(`unmounted app in {elapsedMs}`)
 
 		if store and trackLifecycleTelemetry then
 			store.telemetry.capture({
@@ -103,11 +103,11 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	end
 
 	local function mount()
-		logger:Info("mounting app...")
+		logger.info("mounting app...")
 		local elapsedMs = stopwatch(function()
 			root:render(createApp())
 		end)
-		logger:Info(`mounted app in {elapsedMs}`)
+		logger.info(`mounted app in {elapsedMs}`)
 
 		if store and trackLifecycleTelemetry then
 			store.telemetry.capture({
@@ -117,9 +117,9 @@ local function createFlipbookApp(container: GuiBase2d, options: Options?)
 	end
 
 	local function destroy()
-		logger:Info("destroying app...")
+		logger.info("destroying app...")
 		local elapsedMs = stopwatch(unmount)
-		logger:Info(`destroyed app in {elapsedMs}`)
+		logger.info(`destroyed app in {elapsedMs}`)
 	end
 
 	return {

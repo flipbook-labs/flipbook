@@ -3,6 +3,8 @@ local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
 
+local logger = require("@scripts/lib/logger")
+
 local run = FlipbookBatteries.run
 
 local WORKFLOW_FILE = "ci.yml"
@@ -42,7 +44,7 @@ local function downloadMainSizeReport(destFolder: path.Pathlike): path.Path?
 	end)
 
 	if not listed or typeof(output) ~= "string" then
-		print(`couldn't list the runs on main: {output}`)
+		logger.warn(`couldn't list the runs on main: {output}`)
 		return nil
 	end
 
@@ -75,7 +77,7 @@ local function downloadMainSizeReport(destFolder: path.Pathlike): path.Path?
 		end
 	end
 
-	print(`none of the last {#runs} runs on main has a size report`)
+	logger.warn(`none of the last {#runs} runs on main has a size report`)
 	return nil
 end
 

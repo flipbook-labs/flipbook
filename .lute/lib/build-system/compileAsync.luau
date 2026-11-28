@@ -3,6 +3,7 @@ local fs = require("@std/fs")
 local path = require("@std/path")
 
 local compileWorkspaceMemberAsync = require("@scripts/lib/build-system/compileWorkspaceMemberAsync")
+local logger = require("@scripts/lib/logger")
 local packToRbxm = require("@scripts/lib/packToRbxm")
 local project = require("@repo/project")
 local prunePackagesAsync = require("@scripts/lib/build-system/prunePackagesAsync")
@@ -100,7 +101,7 @@ local function compileAsync(context: BuildContext)
 				path.basename(project.ROBLOX_PACKAGES_PATH) :: string,
 			},
 		})
-		print(`removed {#removedPackages} packages that the plugin doesn't require`)
+		logger.info(`removed {#removedPackages} packages that the plugin doesn't require`)
 	end
 
 	if context.target == "rotriever" then
