@@ -1,0 +1,21 @@
+# Groups of paths for dorny/paths-filter. A workflow checks a group to skip its
+# jobs when a change touches none of the group's paths.
+
+# Everything that goes into the Storybook preview: the storybook place, the
+# Flipbook build it embeds, and the workflow and scripts that deploy them.
+storybook:
+  - .config.luau
+  - .env.template
+  - .github/path-filters.yml
+  - .github/workflows/storybook.yml
+  - .lute/**
+  - default.project.json
+  - pkg.lock.luau
+  - pkg.luau
+  - project.luau
+  - rokit.toml
+  - sourcemap.project.json
+  - src/**
+  - wally.lock
+  - wally.toml
+  - workspace/**
