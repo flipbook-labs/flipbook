@@ -17,31 +17,34 @@ permissions:
   contents: read
 
 jobs:
-  # The preview only needs a new deploy when a change touches the `storybook`
-  # group in .github/path-filters.yml. On pull requests, this reads the group
-  # from the base branch and lists changed files through the API, so it never
-  # runs pull request code.
-  changes:
+  # A pull request's preview only needs a new deploy when the pull request
+  # touches the `storybook` group in .github/path-filters.yml. The filter reads
+  # that group from the base branch and lists changed files through the API, so
+  # it never runs pull request code. Pushes to `main` and manual runs skip the
+  # filter, and the output falls back to 'true' so they always deploy.
+  storybook-loading:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read
       pull-requests: read
     outputs:
-      storybook: ${{ steps.filter.outputs.storybook }}
+      storybook: ${{ steps.filter.outputs.storybook || 'true' }}
     steps:
       - uses: actions/checkout@v7
+        if: github.event_name == 'pull_request_target'
         with:
           persist-credentials: false
 
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
+        if: github.event_name == 'pull_request_target'
         with:
           filters: .github/path-filters.yml
 
   build:
-    needs: changes
-    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.storybook == 'true'
+    needs: storybook-loading
+    if: needs.storybook-loading.outputs.storybook == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
