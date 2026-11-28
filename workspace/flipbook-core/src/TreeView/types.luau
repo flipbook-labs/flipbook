@@ -23,6 +23,8 @@ export type TreeNodeStore = {
 	-- Node properties and states
 	getName: CharmTypes.Getter<string>,
 	setName: CharmTypes.Setter<string>,
+	getOrder: CharmTypes.Getter<number?>,
+	setOrder: CharmTypes.Setter<number?>,
 	getIcon: CharmTypes.Getter<TreeNodeIcon?>,
 	setIcon: CharmTypes.Setter<TreeNodeIcon?>,
 	getIsSelected: CharmTypes.Getter<boolean>,
@@ -62,6 +64,8 @@ export type TreeNodeStore = {
 	-- DataModel
 	getInstance: CharmTypes.Getter<Instance?>,
 	setInstance: CharmTypes.Setter<Instance?>,
+	getStoryId: CharmTypes.Getter<string?>,
+	setStoryId: CharmTypes.Setter<string?>,
 
 	-- Other
 	snapshot: () -> TreeNodeSnapshot,
