@@ -15,7 +15,7 @@ Every image is evidence of something, so check each one before using it. A blank
 
 ## Capture
 
-The [`use-studio-mcp`](../use-studio-mcp/SKILL.md) skill covers building Flipbook, opening the Storybook place, embedding Flipbook, and driving it through `FlipbookAgentGateway`. Studio MCP's `screen_capture` leaves out plugin widgets and anything under `CoreGui`, so capture Flipbook embedded in Play mode:
+The [`use-studio-mcp`](../use-studio-mcp/SKILL.md) skill covers building Flipbook, opening the Storybook place, embedding Flipbook, and driving it through `FlipbookAgentGateway`. Studio MCP's `screen_capture` leaves out plugin widgets and anything under `CoreGui`. On a build with the `openViewport` gateway action, call it to move Flipbook into the viewport, capture in Edit mode, and call `openWidget` afterward, as `use-studio-mcp` describes. Otherwise, capture Flipbook embedded in Play mode:
 
 1. Build the plugin and the Storybook place, open the place, and call `embedFlipbook` from the plugin's gateway.
 2. Start Play mode. In the Client data model, the embedded gateway is `LocalPlayer.PlayerGui.FlipbookAgentGateway`.

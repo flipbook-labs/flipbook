@@ -3,14 +3,34 @@ local types = require("@root/types")
 type AgentController = types.AgentController
 type AppAdapter = types.AppAdapter
 type Controls = types.Controls
+type MovableSurface = types.MovableSurface
 type StoryAdapter = types.StoryAdapter
 
-local function createAgentController(surface: LayerCollector): AgentController
+local function createAgentController(surface: LayerCollector, movableSurface: MovableSurface?): AgentController
 	local appAdapter: AppAdapter? = nil
 	local storyAdapter: StoryAdapter? = nil
 
-	local function openSurface()
-		surface.Enabled = true
+	local function openWidget()
+		if movableSurface then
+			movableSurface.openWidget()
+		else
+			surface.Enabled = true
+		end
+	end
+
+	local function openViewport()
+		if movableSurface == nil then
+			error("openViewport is only available in the Flipbook plugin")
+		end
+		movableSurface.openViewport()
+	end
+
+	-- A story opens wherever the app already shows, so an agent that moved it to the
+	-- viewport can keep taking screenshots. A hidden app opens in the widget.
+	local function ensureVisible()
+		if movableSurface == nil or not movableSurface.isVisible() then
+			openWidget()
+		end
 	end
 
 	local function getAppAdapter(): AppAdapter
@@ -38,7 +58,9 @@ local function createAgentController(surface: LayerCollector): AgentController
 	end
 
 	return {
-		openWidget = openSurface,
+		openWidget = openWidget,
+
+		openViewport = openViewport,
 
 		embedFlipbook = function(parentPath: string?, overwrite: boolean?)
 			return getAppAdapter().embedFlipbook(parentPath, overwrite == true)
@@ -53,7 +75,7 @@ local function createAgentController(surface: LayerCollector): AgentController
 		end,
 
 		openStory = function(storyPath: string, storybookPath: string?)
-			openSurface()
+			ensureVisible()
 			return getAppAdapter().openStory(storyPath, storybookPath)
 		end,
 

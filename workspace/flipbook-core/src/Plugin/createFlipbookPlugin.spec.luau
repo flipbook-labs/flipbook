@@ -3,6 +3,7 @@ local ReactRoblox = require("@pkg/ReactRoblox")
 local Telemetry = require(script.Parent.Parent.Parent["flipbook-telemetry"])
 
 local CommonTypes = require("@root/Common/types")
+local createPluginAppSurface = require("./createPluginAppSurface")
 
 local ConsentState = Telemetry.ConsentState
 local act = ReactRoblox.act
@@ -13,6 +14,7 @@ local jest = JestGlobals.jest
 local test = JestGlobals.test
 
 type Pluginlike = CommonTypes.Pluginlike
+type PluginAppSurface = createPluginAppSurface.PluginAppSurface
 type TelemetryClient = Telemetry.TelemetryClient
 
 -- Required in beforeEach, after it mocks the modules they depend on.
@@ -21,11 +23,14 @@ local createFlipbookPlugin: typeof(require("./createFlipbookPlugin"))
 
 local flipbookPlugin: { destroy: () -> () }?
 local widget: DockWidgetPluginGui
+local toolbarClick: BindableEvent
 local mockAppTelemetry: TelemetryClient?
+local mockSurface: PluginAppSurface?
 local mockSentEvents: { string }
 
 beforeEach(function()
 	mockAppTelemetry = nil
+	mockSurface = nil
 	mockSentEvents = {}
 
 	jest.mock(script.Parent.Parent.Http.requestAsync, function()
@@ -38,7 +43,9 @@ beforeEach(function()
 	-- The agent gateway is published under CoreGui, which specs can't access.
 	jest.mock(script.Parent.Parent.Parent["flipbook-agents"], function()
 		return {
-			createAgentController = function()
+			-- Keeps the surface so specs can move the app the way an agent would.
+			createAgentController = function(_widget: DockWidgetPluginGui, surface: PluginAppSurface)
+				mockSurface = surface
 				return {}
 			end,
 			createAgentGateway = function()
@@ -63,9 +70,13 @@ beforeEach(function()
 	-- Enabled property.
 	widget = (Instance.new("ScreenGui") :: Instance) :: DockWidgetPluginGui
 	widget.Enabled = false
+
+	-- Only Studio can create a PluginToolbarButton. The plugin only needs its
+	-- Click signal and SetActive.
+	toolbarClick = Instance.new("BindableEvent")
 end)
 
-local function createPlugin(): TelemetryClient
+local function createPlugin(withButton: boolean?): TelemetryClient
 	local settings: { [string]: unknown } = {}
 	local plugin: Pluginlike = {
 		GetSetting = function(_self, key: string)
@@ -77,7 +88,13 @@ local function createPlugin(): TelemetryClient
 	} :: Pluginlike
 
 	act(function()
-		flipbookPlugin = createFlipbookPlugin(plugin, widget)
+		local button = if withButton
+			then ({
+				Click = toolbarClick.Event,
+				SetActive = function() end,
+			} :: unknown) :: PluginToolbarButton
+			else nil
+		flipbookPlugin = createFlipbookPlugin(plugin, widget, button)
 	end)
 	assert(mockAppTelemetry, "the app did not mount")
 
@@ -107,6 +124,7 @@ end
 afterEach(function()
 	destroyPlugin()
 	widget:Destroy()
+	toolbarClick:Destroy()
 end)
 
 test("sends nothing about the widget before consent is granted", function()
@@ -147,4 +165,25 @@ test("reports an open widget closing when the plugin is destroyed", function()
 	destroyPlugin()
 
 	expect(mockSentEvents).toEqual({ "AppOpened", "AppClosed" })
+end)
+
+test("brings the app back from the viewport when the toolbar button is clicked", function()
+	local appTelemetry = createPlugin(true)
+	appTelemetry.setConsent(ConsentState.Granted)
+	local surface = assert(mockSurface, "the plugin did not create a surface")
+
+	act(function()
+		surface.openViewport()
+		task.wait()
+	end)
+
+	act(function()
+		toolbarClick:Fire()
+		task.wait()
+	end)
+
+	expect(surface.getName()).toBe("widget")
+	expect(widget.Enabled).toBe(true)
+	-- The app stays visible through the move, so it reports no close or reopen.
+	expect(mockSentEvents).toEqual({ "AppOpened" })
 end)

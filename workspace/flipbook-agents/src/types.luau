@@ -29,8 +29,17 @@ export type StoryAdapter = {
 	setControls: (controls: Controls) -> Controls,
 }
 
+-- Moves the plugin's app between its widget and the Edit-mode viewport. Embedded
+-- Flipbook has no widget, so it doesn't provide one.
+export type MovableSurface = {
+	isVisible: () -> boolean,
+	openViewport: () -> (),
+	openWidget: () -> (),
+}
+
 export type AgentActions = {
 	openWidget: () -> (),
+	openViewport: () -> (),
 	embedFlipbook: (parentPath: string?, overwrite: boolean?) -> string,
 	listStorybooks: () -> { StorybookInfo },
 	listStories: (storybookPath: string?) -> { StoryInfo },

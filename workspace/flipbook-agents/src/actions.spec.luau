@@ -9,7 +9,7 @@ type ActionsState = {
 	controls: types.Controls,
 	embeddedOverwrite: boolean,
 	embeddedParent: string?,
-	opened: boolean,
+	opened: ("viewport" | "widget")?,
 }
 
 local actions = require("@root/actions")
@@ -19,11 +19,14 @@ local function createActions(): (types.AgentActions, ActionsState)
 		controls = { text = "Before" },
 		embeddedOverwrite = false,
 		embeddedParent = nil,
-		opened = false,
+		opened = nil,
 	}
 	local agentActions: types.AgentActions = {
 		openWidget = function()
-			state.opened = true
+			state.opened = "widget"
+		end,
+		openViewport = function()
+			state.opened = "viewport"
 		end,
 		embedFlipbook = function(parent, overwrite)
 			state.embeddedParent = parent
@@ -100,7 +103,14 @@ test("opens the widget", function()
 	local agentActions, state = createActions()
 
 	expect(actions.openWidget.run(agentActions, nil)).toEqual({ enabled = true })
-	expect(state.opened).toBe(true)
+	expect(state.opened).toBe("widget")
+end)
+
+test("opens the viewport", function()
+	local agentActions, state = createActions()
+
+	expect(actions.openViewport.run(agentActions, nil)).toEqual({ enabled = true })
+	expect(state.opened).toBe("viewport")
 end)
 
 test("embeds Flipbook", function()
