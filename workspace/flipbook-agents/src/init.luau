@@ -7,10 +7,12 @@ export type Controls = types.Controls
 export type CurrentStory = types.CurrentStory
 export type StoryAdapter = types.StoryAdapter
 export type StoryInfo = types.StoryInfo
+export type StoryStatus = types.StoryStatus
 export type StorybookInfo = types.StorybookInfo
 
 return {
 	createAgentController = require("@root/createAgentController"),
 	createAgentGateway = require("@root/createAgentGateway"),
 	createEmbeddedAgentGateway = require("@root/createEmbeddedAgentGateway"),
+	StoryStatus = require("@root/StoryStatus"),
 }

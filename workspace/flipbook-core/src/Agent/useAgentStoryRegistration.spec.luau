@@ -56,6 +56,8 @@ beforeEach(function()
 		end,
 		openStory = function(storyPath)
 			return {
+				id = "default",
+				status = "Loaded",
 				name = "Story",
 				path = storyPath,
 			}
@@ -63,6 +65,8 @@ beforeEach(function()
 		getCurrentStory = function()
 			return if currentStoryPath
 				then {
+					id = "default",
+					status = "Loaded",
 					name = "Story",
 					path = currentStoryPath,
 				}
@@ -81,6 +85,7 @@ local function createStory(name: string, controls: StoryControlsSchema): Mounted
 	storyModule.Parent = root
 
 	local story: LoadedStory = {
+		id = "default",
 		controls = controls,
 	}
 

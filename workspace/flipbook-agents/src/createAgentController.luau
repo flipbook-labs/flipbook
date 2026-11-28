@@ -4,6 +4,7 @@ type AgentController = types.AgentController
 type AppAdapter = types.AppAdapter
 type Controls = types.Controls
 type StoryAdapter = types.StoryAdapter
+type StoryInfo = types.StoryInfo
 
 local function createAgentController(surface: LayerCollector): AgentController
 	local appAdapter: AppAdapter? = nil
@@ -20,13 +21,24 @@ local function createAgentController(surface: LayerCollector): AgentController
 		return appAdapter
 	end
 
-	local function getMountedStoryAdapter(): StoryAdapter?
-		local currentStory = getAppAdapter().getCurrentStory()
-		if currentStory == nil or storyAdapter == nil or storyAdapter.path ~= currentStory.path then
+	--[[
+		Returns the registered story adapter only when it belongs to `story`.
+		Stories from one module share a path, so the id has to match too. While
+		the selection moves between them, the outgoing Story stays registered
+		until its view unmounts.
+	]]
+	local function getStoryAdapterFor(story: StoryInfo?): StoryAdapter?
+		if story == nil or storyAdapter == nil then
 			return nil
 		end
-
+		if storyAdapter.path ~= story.path or storyAdapter.id ~= story.id then
+			return nil
+		end
 		return storyAdapter
+	end
+
+	local function getMountedStoryAdapter(): StoryAdapter?
+		return getStoryAdapterFor(getAppAdapter().getCurrentStory())
 	end
 
 	local function getControls(): Controls
@@ -52,9 +64,9 @@ local function createAgentController(surface: LayerCollector): AgentController
 			return getAppAdapter().listStories(storybookPath)
 		end,
 
-		openStory = function(storyPath: string, storybookPath: string?)
+		openStory = function(storyPath: string, storybookPath: string?, storyId: string?)
 			openSurface()
-			return getAppAdapter().openStory(storyPath, storybookPath)
+			return getAppAdapter().openStory(storyPath, storybookPath, storyId)
 		end,
 
 		getCurrentStory = function(): types.CurrentStory?
@@ -64,10 +76,13 @@ local function createAgentController(surface: LayerCollector): AgentController
 			end
 
 			return {
+				id = story.id,
 				name = story.name,
 				path = story.path,
 				storybook = story.storybook,
-				isMounted = storyAdapter ~= nil and storyAdapter.path == story.path,
+				status = story.status,
+				problem = story.problem,
+				isMounted = getStoryAdapterFor(story) ~= nil,
 			}
 		end,
 

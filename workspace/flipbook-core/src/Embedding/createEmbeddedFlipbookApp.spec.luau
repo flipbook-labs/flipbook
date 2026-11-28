@@ -29,6 +29,7 @@ beforeEach(function()
 
 	story = Instance.new("ModuleScript")
 	story.Name = "EmbeddedGateway.story"
+	story.Source = "return { story = function() end }"
 	story.Parent = ReplicatedStorage
 
 	app = nil
@@ -74,10 +75,10 @@ test("routes gateway actions to the mounted app", function()
 	})
 
 	expect(response.ok).toBe(true)
-	expect(response.result.stories).toContainEqual({
+	expect(response.result.stories).toContainEqual(expect.objectContaining({
 		name = "EmbeddedGateway",
 		path = getInstancePath(story),
-	})
+	}))
 end)
 
 test("removes the gateway and unmounts the app when destroyed", function()

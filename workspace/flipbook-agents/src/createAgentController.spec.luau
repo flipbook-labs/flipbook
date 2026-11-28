@@ -1,5 +1,6 @@
 local JestGlobals = require("@pkg/JestGlobals")
 
+local StoryStatus = require("@root/StoryStatus")
 local createAgentController = require("@root/createAgentController")
 
 local describe = JestGlobals.describe
@@ -12,9 +13,10 @@ local function createScreen(): LayerCollector
 	return screen
 end
 
-local function createStoryAdapter(path: string, initialValue: string)
+local function createStoryAdapter(path: string, initialValue: string, id: string?)
 	local controls: { [string]: unknown } = { label = initialValue }
 	return {
+		id = id or "default",
 		path = path,
 		getControls = function()
 			return controls
@@ -57,6 +59,8 @@ describe("app registration", function()
 				if storybookPath == nil then
 					return {
 						{
+							id = "default",
+							status = StoryStatus.Loaded,
 							name = "Orphan",
 							path = "ReplicatedStorage/Orphan.story",
 						},
@@ -64,14 +68,18 @@ describe("app registration", function()
 				end
 				return {
 					{
+						id = "default",
+						status = StoryStatus.Loaded,
 						name = "Button",
 						path = `${storybookPath}/Button.story`,
 						storybook = storybookPath,
 					},
 				}
 			end,
-			openStory = function(storyPath, storybookPath)
+			openStory = function(storyPath, storybookPath, storyId)
 				return {
+					id = storyId or "default",
+					status = StoryStatus.Loaded,
 					name = "Button",
 					path = storyPath,
 					storybook = storybookPath,
@@ -87,6 +95,7 @@ describe("app registration", function()
 		expect(controller.listStories("ReplicatedStorage/Example.storybook")[1].name).toBe("Button")
 		expect(controller.listStories(nil)[1].name).toBe("Orphan")
 		expect(controller.openStory("ReplicatedStorage/Button.story", nil).path).toBe("ReplicatedStorage/Button.story")
+		expect(controller.openStory("ReplicatedStorage/Button.story", nil, "secondary").id).toBe("secondary")
 		expect(screen.Enabled).toBe(true)
 
 		cleanup()
@@ -112,12 +121,16 @@ describe("story registration", function()
 			end,
 			openStory = function()
 				return {
+					id = "default",
+					status = StoryStatus.Loaded,
 					name = "Button",
 					path = "ReplicatedStorage/Button.story",
 				}
 			end,
 			getCurrentStory = function()
 				return {
+					id = "default",
+					status = StoryStatus.Loaded,
 					name = "Button",
 					path = currentStoryPath,
 				}
@@ -125,6 +138,8 @@ describe("story registration", function()
 		})
 
 		expect(controller.getCurrentStory()).toEqual({
+			id = "default",
+			status = StoryStatus.Loaded,
 			name = "Button",
 			path = "ReplicatedStorage/Button.story",
 			isMounted = false,
@@ -152,6 +167,49 @@ describe("story registration", function()
 		end).toThrow("setControls requires the story view to be mounted")
 	end)
 
+	test("treats another Story from the same module as unmounted", function()
+		local controller = createAgentController(createScreen())
+		local currentStoryId = "primary"
+		controller.registerApp({
+			embedFlipbook = function()
+				return "ReplicatedStorage/Flipbook"
+			end,
+			listStorybooks = function()
+				return {}
+			end,
+			listStories = function()
+				return {}
+			end,
+			openStory = function()
+				error("not used")
+			end,
+			getCurrentStory = function()
+				return {
+					id = currentStoryId,
+					status = StoryStatus.Loaded,
+					name = currentStoryId,
+					path = "ReplicatedStorage/Buttons.story",
+				}
+			end,
+		})
+		controller.registerStory(createStoryAdapter("ReplicatedStorage/Buttons.story", "Primary", "primary"))
+
+		local primary = controller.getCurrentStory()
+		assert(primary ~= nil, "expected a current story")
+		expect(primary.isMounted).toBe(true)
+		expect(controller.getControls()).toEqual({ label = "Primary" })
+
+		currentStoryId = "secondary"
+		local secondary = controller.getCurrentStory()
+		assert(secondary ~= nil, "expected a current story")
+		expect(secondary.id).toBe("secondary")
+		expect(secondary.isMounted).toBe(false)
+		expect(controller.getControls()).toEqual({})
+		expect(function()
+			controller.setControls({ label = "Wrong story" })
+		end).toThrow("setControls requires the story view to be mounted")
+	end)
+
 	test("does not let an old cleanup unregister the current story", function()
 		local controller = createAgentController(createScreen())
 		controller.registerApp({
@@ -166,12 +224,16 @@ describe("story registration", function()
 			end,
 			openStory = function()
 				return {
+					id = "default",
+					status = StoryStatus.Loaded,
 					name = "Second",
 					path = "ReplicatedStorage/Second.story",
 				}
 			end,
 			getCurrentStory = function()
 				return {
+					id = "default",
+					status = StoryStatus.Loaded,
 					name = "Second",
 					path = "ReplicatedStorage/Second.story",
 				}

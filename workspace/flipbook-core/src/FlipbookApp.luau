@@ -51,7 +51,7 @@ local function FlipbookApp()
 			if selectedStory == nil then
 				return nil, nil
 			end
-			return selectedStory.storyModule, selectedStory.storybook
+			return selectedStory.storyModule, selectedStory.storybook, selectedStory.storyId
 		end,
 		storybooks = storybooks,
 		openStory = flipbookStore.openStory,

@@ -41,6 +41,7 @@ beforeEach(function()
 
 	story = Instance.new("ModuleScript")
 	story.Name = "Button.story"
+	story.Source = "return { story = function() end }"
 	story.Parent = stories
 
 	storybook = {

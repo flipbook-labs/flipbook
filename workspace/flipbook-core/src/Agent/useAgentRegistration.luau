@@ -14,9 +14,9 @@ type Storybooks = {
 }
 
 export type Options = {
-	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?),
+	getCurrentStory: () -> (ModuleScript?, LoadedStorybook?, string?),
 	storybooks: Storybooks,
-	openStory: (storyModule: ModuleScript, storybook: LoadedStorybook?) -> (),
+	openStory: (storyModule: ModuleScript, storybook: LoadedStorybook?, storyId: string?) -> (),
 }
 
 local function useAgentRegistration(options: Options)
@@ -29,7 +29,7 @@ local function useAgentRegistration(options: Options)
 			return
 		end
 
-		return agentController.registerApp(createAppAdapter({
+		local adapter, releaseRequests = createAppAdapter({
 			embedFlipbook = embedFlipbookRuntime,
 			getStorybooks = function()
 				return latest.current.storybooks
@@ -37,10 +37,16 @@ local function useAgentRegistration(options: Options)
 			getCurrentStory = function()
 				return latest.current.getCurrentStory()
 			end,
-			openStory = function(storyModule, storybook)
-				latest.current.openStory(storyModule, storybook)
+			openStory = function(storyModule, storybook, storyId)
+				latest.current.openStory(storyModule, storybook, storyId)
 			end,
-		}))
+		})
+		local unregister = agentController.registerApp(adapter)
+
+		return function()
+			unregister()
+			releaseRequests()
+		end
 	end, { agentController })
 end
 

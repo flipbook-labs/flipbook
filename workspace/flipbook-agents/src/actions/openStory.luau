@@ -10,7 +10,7 @@ type Action = AgentGateway.Action<types.AgentActions>
 local action: Action = {
 	name = "openStory",
 	title = "Open Story",
-	description = "Open a Story module in Flipbook.",
+	description = "Open a Story in Flipbook. Without a storyId, opens the module's first Story.",
 	inputSchema = {
 		type = "object",
 		properties = {
@@ -22,12 +22,20 @@ local action: Action = {
 				type = "string",
 				description = "Optional path to its .storybook ModuleScript",
 			},
+			storyId = {
+				type = "string",
+				description = "Optional id of a Story in the module, from listStories",
+			},
 		} :: { [string]: unknown },
 		required = { "story" },
 	},
 	run = function(controller, rawParams)
 		local fields = asDictionary(rawParams)
-		return controller.openStory(getRequiredString(fields, "story"), getOptionalString(fields, "storybook"))
+		return controller.openStory(
+			getRequiredString(fields, "story"),
+			getOptionalString(fields, "storybook"),
+			getOptionalString(fields, "storyId")
+		)
 	end,
 }
 

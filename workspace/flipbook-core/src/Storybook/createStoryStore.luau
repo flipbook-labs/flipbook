@@ -33,7 +33,7 @@ export type StoryStore = {
 	getSelectionKind: () -> StorySelectionKind,
 	getSelectedStory: () -> SelectedStory?,
 	getUnavailableStorybook: () -> UnavailableStorybook?,
-	openStory: (storyModule: ModuleScript?, storybook: LoadedStorybook?) -> (),
+	openStory: (storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?) -> (),
 	showUnavailableStorybook: (unavailableStorybook: UnavailableStorybook) -> (),
 
 	getActiveControlsStore: () -> StoryControlsStore?,
@@ -92,7 +92,7 @@ local function createStoryStore(options: Options): StoryStore
 		end
 	end
 
-	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?)
+	local function openStory(storyModule: ModuleScript?, storybook: LoadedStorybook?, storyId: string?)
 		Charm.batch(function()
 			setActiveControlsStore(nil)
 			setZoom(0)
@@ -106,6 +106,7 @@ local function createStoryStore(options: Options): StoryStore
 
 			setSelection({
 				kind = StorySelectionKind.Story,
+				storyId = storyId,
 				storyModule = storyModule,
 				storybook = storybook or defaultStorybook,
 			})
