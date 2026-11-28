@@ -5,17 +5,14 @@ on:
     branches:
       - main
     paths:
-      - .darklua.json
+      - .config.luau
       - .env.template
       - .github/workflows/storybook.yml
-      - .luaurc
       - .lute/**
       - default.project.json
-      - loom.config.luau
-      - loom.lock.luau
+      - pkg.lock.luau
+      - pkg.luau
       - project.luau
-      - rbxasset.lock
-      - rbxasset.toml
       - rokit.toml
       - sourcemap.project.json
       - src/**
@@ -26,17 +23,14 @@ on:
     branches:
       - main
     paths:
-      - .darklua.json
+      - .config.luau
       - .env.template
       - .github/workflows/storybook.yml
-      - .luaurc
       - .lute/**
       - default.project.json
-      - loom.config.luau
-      - loom.lock.luau
+      - pkg.lock.luau
+      - pkg.luau
       - project.luau
-      - rbxasset.lock
-      - rbxasset.toml
       - rokit.toml
       - sourcemap.project.json
       - src/**
@@ -78,8 +72,9 @@ jobs:
         run: lute run build storybook
 
       - name: Build Flipbook runtime
-        # Pull request runtimes are built without secrets and reach only the
-        # branch-build place after the protected deployment gate.
+        # This runner has no secrets, so building a pull request's Flipbook here
+        # is safe. The deploy job embeds it only in the PR build's place, after
+        # the `approve` job's environment gate.
         run: lute run build plugin --channel prod --skip-reload --clean
 
       - uses: actions/upload-artifact@v7
@@ -109,8 +104,8 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      PREVIEW_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }}
-      BRANCH_RUNTIME_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }} PR Flipbook
+      PR_BUILD_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }} PR Flipbook
+      RELEASE_PLACE_NAME: Flipbook Preview ${{ github.event.pull_request.number }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -138,7 +133,19 @@ jobs:
           place-id: ${{ steps.ids.outputs.place-id }}
           place-file: build/flipbook-storybook.rbxl
           flipbook-rbxm: build/prod/Flipbook.rbxm
-          cli-version: 0.6.0
+          cli-version: 0.7.0
+
+      - name: Deploy PR stories with the PR's Flipbook
+        if: github.event_name == 'pull_request_target'
+        uses: flipbook-labs/deploy-storybook@v0.4.1
+        with:
+          api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
+          universe-id: ${{ steps.ids.outputs.universe-id }}
+          place-name: ${{ env.PR_BUILD_PLACE_NAME }}
+          place-file: build/flipbook-storybook.rbxl
+          flipbook-rbxm: build/prod/Flipbook.rbxm
+          cli-version: 0.7.0
+          comment: "false"
 
       - name: Deploy PR stories with released Flipbook
         if: github.event_name == 'pull_request_target'
@@ -146,28 +153,47 @@ jobs:
         with:
           api-key: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
           universe-id: ${{ steps.ids.outputs.universe-id }}
-          place-name: ${{ env.PREVIEW_PLACE_NAME }}
+          place-name: ${{ env.RELEASE_PLACE_NAME }}
           place-file: build/flipbook-storybook.rbxl
-          cli-version: 0.6.0
+          cli-version: 0.7.0
           comment: "false"
 
-      - name: Deploy PR stories with pull request Flipbook
-        if: github.event_name == 'pull_request_target'
-        env:
-          ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-        run: >-
-          lute run deploy-storybook-preview
-          --universe-id "${{ steps.ids.outputs.universe-id }}"
-          --place-name "$BRANCH_RUNTIME_PLACE_NAME"
-
+      # The comment's buttons and QR code open the PR build's place. Its
+      # template adds a link to the release place, so a reviewer can tell
+      # whether a difference comes from this PR's Flipbook or from the Stories.
+      # Lute and flipbook-cli come from the deploy-storybook action above. It
+      # sets up Rokit, which installs the tools in rokit.toml, and adds
+      # flipbook-cli.
       - name: Comment preview links
         if: github.event_name == 'pull_request_target'
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_STORYBOOK_PREVIEW_API_KEY }}
-        run: >-
-          lute run comment-storybook-preview
-          --universe-id "${{ steps.ids.outputs.universe-id }}"
-          --release-place-name "$PREVIEW_PLACE_NAME"
-          --branch-place-name "$BRANCH_RUNTIME_PLACE_NAME"
-          --pull-request "${{ github.event.pull_request.number }}"
+          UNIVERSE_ID: ${{ steps.ids.outputs.universe-id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          release_place_id=$(lute run resolve-place-id "$UNIVERSE_ID" "$RELEASE_PLACE_NAME")
+          template=$(cat <<EOF
+          These Stories run on the Flipbook this pull request builds.
+
+          {{launchButton}} {{experienceButton}}
+
+          To see them on the released Flipbook, [launch the release preview ↗](https://www.roblox.com/games/start?placeId=$release_place_id).
+
+          <details>
+          <summary>📱 Preview on mobile</summary>
+
+          Scan to join the preview in the Roblox app.
+
+          {{qrCodeMarkdown}}
+
+          </details>
+          EOF
+          )
+          flipbook-cli comment \
+            --pr "$PR_NUMBER" \
+            --universe-id "$UNIVERSE_ID" \
+            --place-name "$PR_BUILD_PLACE_NAME" \
+            --github-repository "$GITHUB_REPOSITORY" \
+            --comment-template "$template"

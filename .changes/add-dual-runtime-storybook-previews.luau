@@ -2,5 +2,5 @@ return {
 	bump = "patch",
 	category = "Internal",
 	kind = "ci",
-	summary = "Deploy pull request stories with both the released Flipbook runtime and the runtime built from the pull request.",
+	summary = "Preview pull request stories on the pull request's Flipbook, with a link to compare against the release.",
 }

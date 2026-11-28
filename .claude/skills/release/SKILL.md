@@ -43,9 +43,9 @@ Fork and Dependabot builds skip build provenance attestation in `ci.yml`, becaus
 
 ## Storybook previews
 
-Each pull request storybook deploys the branch's stories to two places. The main one embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that is the build about to ship. The other embeds the last public Flipbook release as a baseline, so a reviewer can tell whether a difference comes from the runtime or the stories. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
+Each pull request storybook deploys the branch's stories to two places. The PR build's place embeds the pull request's own prod build, so runtime changes can be tried in an experience. On the publish pull request, that is the build about to ship. The release place passes no `flipbook-rbxm`, so deploy-storybook embeds the last public Flipbook release. It's a baseline, so a reviewer can tell whether a difference comes from the runtime or the stories. On `main`, the workflow embeds a fresh prod build, which catches embedding problems before a release.
 
-The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `luau-execution` approval gate. Never build pull request code in a job that holds secrets. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 still only comments on `pull_request` events. The deploy job posts one comment with `flipbook-cli comment` for the pull request build's place. Its `--comment-template` adds a link to the release place, whose ID `lute run resolve-place-id` looks up.
+The pull request runtime is built on the secretless `build` runner and reaches the deploy job only as an artifact, after the `approve` job's `luau-execution` or `luau-execution-gated` environment. Never build pull request code in a job that holds secrets. On `pull_request_target` runs, deploy-storybook's own comment is turned off because v0.4.1 only comments on `pull_request` events. The deploy job posts one comment with `flipbook-cli comment` for the pull request build's place. Its `--comment-template` adds a link to the release place, whose ID `lute run resolve-place-id` looks up.
 
 ## PostHog release reporting
 
