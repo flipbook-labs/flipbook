@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.7.1
+
+Internal 1
+
+### Internal
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.svg" /><img src="https://raw.githubusercontent.com/flipbook-labs/flipbook/main/.changes/assets/kind-contributing-light.png" alt="Contributing" height="18" align="texttop" /></picture> Describe how to overlay local Storyteller and ModuleLoader builds into a Flipbook worktree. ([#747](https://github.com/flipbook-labs/flipbook/pull/747))
+
 ## v2.7.0
 
 Features 2 · Changes 2 · Fixes 2 · Dependencies 1 · Internal 8
